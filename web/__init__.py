@@ -35,7 +35,7 @@ def create_app():
         
         server.config['MONGODB_SETTINGS'] = {
             'db': 'dev',
-            'host': 'mongo',
+            'host': host,
             'port': 27017
         }
 
