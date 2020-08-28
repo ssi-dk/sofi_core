@@ -1,7 +1,7 @@
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_mongoengine import MongoEngine
 from flask_login import UserMixin
-
+from enum import Enum
 
 db = MongoEngine()
 
@@ -12,6 +12,7 @@ class User(UserMixin, db.Document):
     email = db.StringField(required=True, max_length=50)
     password = db.StringField(required=True, max_length=512)
     admin = db.BooleanField(required=True)
+    role = db.StringField(required=True)
 
     @staticmethod
     def check_user_password(password, hashed):
@@ -35,9 +36,18 @@ class User(UserMixin, db.Document):
         print(users)
         return users
 
+    @staticmethod
+    def update_password():
+        pass
+
+    def is_role(self, role):
+        return Role(self.role) == role 
 
 
-
-def update_password():
-    pass
-
+class Role(Enum):
+    Administrator = 'Administrator'
+    ITSupporter = 'ITSupporter'
+    SuperUser = 'SuperUser'
+    Analyst = 'Analyst'
+    FVSTLAB = 'FVSTLAB'
+    SSILAB = 'SSILAB'

@@ -26,5 +26,5 @@ filename = os.path.join(dirname, '311-calls.csv')
 collection.insert_many(csv_to_json(filename))
 
 password = generate_password_hash('test', 'pbkdf2:sha512')
-database['user'].insert_one({'_cls' : 'User', 'username': 'test', 'email': 'test@test.test', 'password': password, 'admin': True})
+database['user'].insert_one({'_cls' : 'User', 'username': 'test', 'email': 'test@test.test', 'password': password, 'admin': True, 'role': 'Administrator'})
 

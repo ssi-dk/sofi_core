@@ -4,7 +4,7 @@ from flask import Flask
 from dash import Dash
 from flask_assets import Environment
 from flask_login import LoginManager
-from .users_management import db, User
+from .models.users_management import db, User, Role
 
 
 def script_runs_within_container():

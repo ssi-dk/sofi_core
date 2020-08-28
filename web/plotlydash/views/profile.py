@@ -4,7 +4,7 @@ import dash_bootstrap_components as dbc
 from dash.dependencies import Input, Output, State
 
 from flask_login import current_user
-from web.users_management import update_password
+from web import User
 from werkzeug.security import check_password_hash
 
 
@@ -160,7 +160,7 @@ def init_callbacks(app):
         if (n_clicks > 0) or (newPassword1Submit > 0) or (newPassword2Submit) > 0:
             if check_password_hash(current_user.password, oldPassword) and newPassword1 == newPassword2:
                 try:
-                    update_password(current_user.username, newPassword1)
+                    User.update_password(current_user.username, newPassword1)
                     return html.Div(children=['Update Successful'], className='text-success')
                 except Exception as e:
                     return html.Div(children=['Update Not Successful: {e}'.format(e=e)], className='text-danger')
