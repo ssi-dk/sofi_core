@@ -30,9 +30,8 @@ def init_callbacks(app):
     login.init_callbacks(app)
     profile.init_callbacks(app)
     user_admin.init_callbacks(app)
-    ################################################################################
-    # HANDLE PAGE ROUTING - IF USER NOT LOGGED IN, ALWAYS RETURN TO LOGIN SCREEN
-    ################################################################################
+
+    # Main routing of pages within the dash app. Flask routes have higher precedence
     @app.callback(Output('pageContent', 'children'),
                 [Input('url', 'pathname')])
     def displayPage(pathname):
@@ -87,9 +86,7 @@ def init_callbacks(app):
             return error.layout
 
 
-    ################################################################################
-    # ONLY SHOW NAVIGATION BAR WHEN A USER IS LOGGED IN
-    ################################################################################
+    # nav bar when user is logged in
     @app.callback(
         Output('navBar', 'children'),
         [Input('pageContent', 'children')])

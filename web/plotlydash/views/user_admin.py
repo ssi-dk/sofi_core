@@ -102,7 +102,7 @@ def layout():
                         columns = [{'name' : 'Username', 'id' : 'username'},
                                     {'name' : 'Email', 'id' : 'email'},
                                     {'name' : 'Role', 'id' : 'role'}],
-                        data=User.show_users(),
+                        data=User.get_users(),
                     ),
                 ], md=12),
             ]),

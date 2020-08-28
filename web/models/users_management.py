@@ -23,7 +23,11 @@ class User(UserMixin, db.Document):
         User.objects.insert(User(username=username, password=hashed_password, email=email, role=role))
 
     @staticmethod
-    def show_users():
+    def get_user(username):
+        return User.objects(username=username).first()
+
+    @staticmethod
+    def get_users():
         users = []
         for x in User.objects():
             users.append({
@@ -36,8 +40,14 @@ class User(UserMixin, db.Document):
         return users
 
     @staticmethod
-    def update_password():
-        pass
+    def update_password(username, password):
+        hashed_password = generate_password_hash(password, method='pbkdf2:sha512')
+
+        user_to_update = User.get_user(username)
+        user_to_update.password = hashed_password
+        user_to_update.save()
+
+
 
     def is_role(self, role):
         return Role(self.role) == role 
