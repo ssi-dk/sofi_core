@@ -4,111 +4,110 @@ import dash_bootstrap_components as dbc
 import dash_table as dt
 from dash.dependencies import Input, Output, State
 
-from web import User
+from web import User, Role
 
 
-layout = dbc.Container([
-    html.Br(),
-    dbc.Container([
-        dcc.Location(id='urlUserAdmin', refresh=True),
-        html.H3('Add New User'),
-        html.Hr(),
-        dbc.Row([
-            dbc.Col([
-                dbc.Label('Username: '),
-                dcc.Input(
-                    id='newUsername',
-                    className='form-control',
-                    n_submit=0,
-                    style={
-                        'width' : '90%'
-                    },
-                ),
-                html.Br(),
-                dbc.Label('Password: '),
-                dcc.Input(
-                    id='newPwd1',
-                    type='password',
-                    className='form-control',
-                    n_submit=0,
-                    style={
-                        'width' : '90%'
-                    },
-                ),
-                html.Br(),
-                dbc.Label('Retype New Password: '),
-                dcc.Input(
-                    id='newPwd2',
-                    type='password',
-                    className='form-control',
-                    n_submit=0,
-                    style={
-                        'width' : '90%'
-                    },
-                ),
-                html.Br(),
-            ], md=4),
+def layout():
+    return dbc.Container([
+        dcc.Store(id='user_store'),
+        html.Br(),
+        dbc.Container([
+            dcc.Location(id='urlUserAdmin', refresh=True),
+            html.H3('Add New User'),
+            html.Hr(),
+            dbc.Row([
+                dbc.Col([
+                    dbc.Label('Username: '),
+                    dcc.Input(
+                        id='newUsername',
+                        className='form-control',
+                        n_submit=0,
+                        style={
+                            'width' : '90%'
+                        },
+                    ),
+                    html.Br(),
+                    dbc.Label('Password: '),
+                    dcc.Input(
+                        id='newPwd1',
+                        type='password',
+                        className='form-control',
+                        n_submit=0,
+                        style={
+                            'width' : '90%'
+                        },
+                    ),
+                    html.Br(),
+                    dbc.Label('Retype New Password: '),
+                    dcc.Input(
+                        id='newPwd2',
+                        type='password',
+                        className='form-control',
+                        n_submit=0,
+                        style={
+                            'width' : '90%'
+                        },
+                    ),
+                    html.Br(),
+                ], md=4),
 
-            dbc.Col([
-                dbc.Label('Email: '),
-                dcc.Input(
-                    id='newEmail',
-                    className='form-control',
-                    n_submit=0,
-                    style={
-                        'width' : '90%'
-                    },
-                ),
-                html.Br(),
-                dbc.Label('Admin? '),
-                dcc.Dropdown(
-                    id='admin',
-                    style={
-                        'width' : '90%'
-                    },
-                    options=[
-                        {'label' : 'Yes', 'value' : 1},
-                        {'label' : 'No', 'value' : 0},
-                    ],
-                    value=0,
-                    clearable=False
-                ),
-                html.Br(),
-                html.Br(),
-                html.Button(
-                    children='Create User',
-                    id='createUserButton',
-                    n_clicks=0,
-                    type='submit',
-                    className='btn btn-primary btn-lg'
-                ),
-                html.Br(),
-                html.Div(id='createUserSuccess')
-            ], md=4),
+                dbc.Col([
+                    dbc.Label('Email: '),
+                    dcc.Input(
+                        id='newEmail',
+                        className='form-control',
+                        n_submit=0,
+                        style={
+                            'width' : '90%'
+                        },
+                    ),
+                    html.Br(),
+                    dbc.Label('Role '),
+                    dcc.Dropdown(
+                        id='role',
+                        style={
+                            'width' : '90%'
+                        },
+                        options=[{'label': role, 'value': role} for role in Role._member_names_],
+                        value=0,
+                        clearable=False
+                    ),
+                    html.Br(),
+                    html.Br(),
+                    html.Button(
+                        children='Create User',
+                        id='createUserButton',
+                        n_clicks=0,
+                        type='submit',
+                        className='btn btn-primary btn-lg'
+                    ),
+                    html.Br(),
+                    html.Div(id='createUserSuccess')
+                ], md=4),
 
-            dbc.Col([
+                dbc.Col([
 
-            ], md=4)
+                ], md=4)
 
-        ]),
-    ], className='jumbotron'),
+            ]),
+        ], className='jumbotron'),
 
-    dbc.Container([
-        html.H3('View Users'),
-        html.Hr(),
-        dbc.Row([
-            dbc.Col([
-                dt.DataTable(
-                    id='users',
-                    columns = [{'name' : 'Username', 'id' : 'username'},
-                                {'name' : 'Email', 'id' : 'email'},
-                                {'name' : 'Admin', 'id' : 'admin'}],
-                    data=User.show_users(),
-                ),
-            ], md=12),
-        ]),
-    ], className='jumbotron')
-])
+        dbc.Container([
+            html.H3('View Users'),
+            html.Hr(),
+            dbc.Row([
+                dbc.Col([
+                    dt.DataTable(
+                        id='users',
+                        columns = [{'name' : 'Username', 'id' : 'username'},
+                                    {'name' : 'Email', 'id' : 'email'},
+                                    {'name' : 'Role', 'id' : 'role'}],
+                        data=User.show_users(),
+                    ),
+                ], md=12),
+            ]),
+        ], className='jumbotron')
+    ])
 
 
 def init_callbacks(app):
@@ -210,10 +209,10 @@ def init_callbacks(app):
                 State('newPwd1', 'value'),
                 State('newPwd2', 'value'),
                 State('newEmail', 'value'),
-                State('admin', 'value')])
+                State('role', 'value')])
 
     def createUser(n_clicks, usernameSubmit, newPassword1Submit, newPassword2Submit,
-                newEmailSubmit, pageContent, newUser, newPassword1, newPassword2, newEmail, admin):
+                newEmailSubmit, pageContent, newUser, newPassword1, newPassword2, newEmail, role):
         if (n_clicks > 0) or (usernameSubmit > 0) or (newPassword1Submit > 0) or \
             (newPassword2Submit > 0) or (newEmailSubmit > 0):
 
@@ -222,7 +221,7 @@ def init_callbacks(app):
                 if newPassword1 == newPassword2:
                     if len(newPassword1) > 7:
                         try:
-                            User.add_user(newUser, newPassword1, newEmail, admin)
+                            User.add_user(newUser, newPassword1, newEmail, role)
                             return html.Div(children=['New User created'], className='text-success')
                         except Exception as e:
                             return html.Div(children=['New User not created: {e}'.format(e=e)], className='text-danger')

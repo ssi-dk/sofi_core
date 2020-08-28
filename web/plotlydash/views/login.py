@@ -54,9 +54,6 @@ def init_callbacks(app):
                 State('passwordBox', 'value')])
     def success(n_clicks, usernameSubmit, passwordSubmit, username, password):
         user = User.objects(username=username).first()
-        print(username, file=sys.stderr)
-        print(User.objects(), file=sys.stderr)
-
         if user:
             if User.check_user_password(password, user.password):
                 login_user(user)

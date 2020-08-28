@@ -4,6 +4,7 @@ import dash_html_components as html
 from dash.dependencies import Input, Output
 import dash_bootstrap_components as dbc
 
+from web import Role
 from flask_login import logout_user, current_user
 from .views import login, error, page1, page2, profile, user_admin, newick
 
@@ -74,8 +75,8 @@ def init_callbacks(app):
 
         if pathname == '/admin':
             if current_user.is_authenticated:
-                if current_user.admin == 1:
-                    return user_admin.layout
+                if current_user.is_role(Role.Administrator):
+                    return user_admin.layout()
                 else:
                     return error.layout
             else:
@@ -94,7 +95,7 @@ def init_callbacks(app):
         [Input('pageContent', 'children')])
     def navBar(input1):
         if current_user.is_authenticated:
-            if current_user.admin == 1:
+            if current_user.is_role(Role.Administrator):
                 navBarContents = [
                     dbc.NavItem(dbc.NavLink('Page 1', href='/page1')),
                     dbc.NavItem(dbc.NavLink('Page 2', href='/page2')),

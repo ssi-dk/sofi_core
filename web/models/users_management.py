@@ -11,7 +11,6 @@ class User(UserMixin, db.Document):
     username = db.StringField(required=True, max_length=15)
     email = db.StringField(required=True, max_length=50)
     password = db.StringField(required=True, max_length=512)
-    admin = db.BooleanField(required=True)
     role = db.StringField(required=True)
 
     @staticmethod
@@ -19,9 +18,9 @@ class User(UserMixin, db.Document):
         return check_password_hash(hashed, password)
 
     @staticmethod
-    def add_user(username, password, email, admin):
+    def add_user(username, password, email, role):
         hashed_password = generate_password_hash(password, method='pbkdf2:sha512')
-        User.objects.insert(User(username=username, password=hashed_password, email=email, admin=admin))
+        User.objects.insert(User(username=username, password=hashed_password, email=email, role=role))
 
     @staticmethod
     def show_users():
@@ -30,7 +29,7 @@ class User(UserMixin, db.Document):
             users.append({
                 'username' : x["username"],
                 'email' : x["email"],
-                'admin' : str(x["admin"])
+                'role' : str(x["role"])
             })
 
         print(users)
