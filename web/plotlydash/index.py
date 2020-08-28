@@ -8,7 +8,7 @@ from flask_login import logout_user, current_user
 from .views import login, error, page1, page2, profile, user_admin, newick
 
 
-navBar = dbc.Navbar(id='navBar',
+navBar = dbc.NavbarSimple(id='navBar',
     children=[],
     sticky='top',
     color='primary',
