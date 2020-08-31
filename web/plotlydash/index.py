@@ -9,21 +9,22 @@ from flask_login import logout_user, current_user
 from .views import login, error, page1, page2, profile, user_admin, newick
 
 
-navBar = dbc.NavbarSimple(id='navBar',
+navBar = dbc.NavbarSimple(
+    id="navBar",
     children=[],
-    sticky='top',
-    color='primary',
-    className='navbar navbar-expand-lg navbar-dark bg-primary',
+    sticky="top",
+    color="primary",
+    className="navbar navbar-expand-lg navbar-dark bg-primary",
 )
 
 
-layout = html.Div([
-    dcc.Location(id='url', refresh=False),
-    html.Div([
-        navBar,
-        html.Div(id='pageContent')
-    ])
-], id='table-wrapper')
+layout = html.Div(
+    [
+        dcc.Location(id="url", refresh=False),
+        html.Div([navBar, html.Div(id="pageContent")]),
+    ],
+    id="table-wrapper",
+)
 
 
 def init_callbacks(app):
@@ -32,47 +33,46 @@ def init_callbacks(app):
     user_admin.init_callbacks(app)
 
     # Main routing of pages within the dash app. Flask routes have higher precedence
-    @app.callback(Output('pageContent', 'children'),
-                [Input('url', 'pathname')])
+    @app.callback(Output("pageContent", "children"), [Input("url", "pathname")])
     def displayPage(pathname):
-        if pathname == '/':
+        if pathname == "/":
             if current_user.is_authenticated:
                 return page1.layout
             else:
                 return login.layout
 
-        elif pathname == '/login':
+        elif pathname == "/login":
             if current_user.is_authenticated:
                 return page1.layout
             else:
                 return login.layout
 
-        elif pathname == '/logout':
+        elif pathname == "/logout":
             if current_user.is_authenticated:
                 logout_user()
                 return login.layout
             else:
                 return login.layout
 
-        if pathname == '/page1':
+        if pathname == "/page1":
             if current_user.is_authenticated:
                 return newick.create_tree(app)
             else:
                 return login.layout
 
-        if pathname == '/page2':
+        if pathname == "/page2":
             if current_user.is_authenticated:
                 return page2.layout
             else:
                 return login.layout
 
-        if pathname == '/profile':
+        if pathname == "/profile":
             if current_user.is_authenticated:
                 return profile.layout
             else:
                 return login.layout
 
-        if pathname == '/admin':
+        if pathname == "/admin":
             if current_user.is_authenticated:
                 if current_user.is_role(Role.Administrator):
                     return user_admin.layout()
@@ -81,30 +81,26 @@ def init_callbacks(app):
             else:
                 return login.layout
 
-
         else:
             return error.layout
 
-
     # nav bar when user is logged in
-    @app.callback(
-        Output('navBar', 'children'),
-        [Input('pageContent', 'children')])
+    @app.callback(Output("navBar", "children"), [Input("pageContent", "children")])
     def navBar(input1):
         if current_user.is_authenticated:
             if current_user.is_role(Role.Administrator):
                 navBarContents = [
-                    dbc.NavItem(dbc.NavLink('Page 1', href='/page1')),
-                    dbc.NavItem(dbc.NavLink('Page 2', href='/page2')),
+                    dbc.NavItem(dbc.NavLink("Page 1", href="/page1")),
+                    dbc.NavItem(dbc.NavLink("Page 2", href="/page2")),
                     dbc.DropdownMenu(
                         nav=True,
                         in_navbar=True,
                         label=current_user.username,
                         children=[
-                            dbc.DropdownMenuItem('Profile', href='/profile'),
-                            dbc.DropdownMenuItem('Admin', href='/admin'),
+                            dbc.DropdownMenuItem("Profile", href="/profile"),
+                            dbc.DropdownMenuItem("Admin", href="/admin"),
                             dbc.DropdownMenuItem(divider=True),
-                            dbc.DropdownMenuItem('Logout', href='/logout'),
+                            dbc.DropdownMenuItem("Logout", href="/logout"),
                         ],
                     ),
                 ]
@@ -112,21 +108,20 @@ def init_callbacks(app):
 
             else:
                 navBarContents = [
-                    dbc.NavItem(dbc.NavLink('Page 1', href='/page1')),
-                    dbc.NavItem(dbc.NavLink('Page 2', href='/page2')),
+                    dbc.NavItem(dbc.NavLink("Page 1", href="/page1")),
+                    dbc.NavItem(dbc.NavLink("Page 2", href="/page2")),
                     dbc.DropdownMenu(
                         nav=True,
                         in_navbar=True,
                         label=current_user.username,
                         children=[
-                            dbc.DropdownMenuItem('Profile', href='/profile'),
+                            dbc.DropdownMenuItem("Profile", href="/profile"),
                             dbc.DropdownMenuItem(divider=True),
-                            dbc.DropdownMenuItem('Logout', href='/logout'),
+                            dbc.DropdownMenuItem("Logout", href="/logout"),
                         ],
                     ),
                 ]
                 return navBarContents
 
         else:
-            return ''
-
+            return ""

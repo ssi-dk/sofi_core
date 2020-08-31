@@ -5,8 +5,9 @@ from enum import Enum
 
 db = MongoEngine()
 
+
 class User(UserMixin, db.Document):
-    meta = {'allow_inheritance': True}
+    meta = {"allow_inheritance": True}
 
     username = db.StringField(required=True, max_length=15)
     email = db.StringField(required=True, max_length=50)
@@ -19,8 +20,10 @@ class User(UserMixin, db.Document):
 
     @staticmethod
     def add_user(username, password, email, role):
-        hashed_password = generate_password_hash(password, method='pbkdf2:sha512')
-        User.objects.insert(User(username=username, password=hashed_password, email=email, role=role))
+        hashed_password = generate_password_hash(password, method="pbkdf2:sha512")
+        User.objects.insert(
+            User(username=username, password=hashed_password, email=email, role=role)
+        )
 
     @staticmethod
     def get_user(username):
@@ -30,33 +33,29 @@ class User(UserMixin, db.Document):
     def get_users():
         users = []
         for x in User.objects():
-            users.append({
-                'username' : x["username"],
-                'email' : x["email"],
-                'role' : str(x["role"])
-            })
+            users.append(
+                {"username": x["username"], "email": x["email"], "role": str(x["role"])}
+            )
 
         print(users)
         return users
 
     @staticmethod
     def update_password(username, password):
-        hashed_password = generate_password_hash(password, method='pbkdf2:sha512')
+        hashed_password = generate_password_hash(password, method="pbkdf2:sha512")
 
         user_to_update = User.get_user(username)
         user_to_update.password = hashed_password
         user_to_update.save()
 
-
-
     def is_role(self, role):
-        return Role(self.role) == role 
+        return Role(self.role) == role
 
 
 class Role(Enum):
-    Administrator = 'Administrator'
-    ITSupporter = 'ITSupporter'
-    SuperUser = 'SuperUser'
-    Analyst = 'Analyst'
-    FVSTLAB = 'FVSTLAB'
-    SSILAB = 'SSILAB'
+    Administrator = "Administrator"
+    ITSupporter = "ITSupporter"
+    SuperUser = "SuperUser"
+    Analyst = "Analyst"
+    FVSTLAB = "FVSTLAB"
+    SSILAB = "SSILAB"

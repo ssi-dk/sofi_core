@@ -38,6 +38,8 @@ stylesheet = [
         },
     },
 ]
+
+
 def generate_elements(tree, xlen=30, ylen=30, grabbable=False):
     def get_col_positions(tree, column_width=80):
         """Create a mapping of each clade to its column position."""
@@ -146,6 +148,7 @@ def generate_elements(tree, xlen=30, ylen=30, grabbable=False):
 
     return nodes, edges
 
+
 PATH = pathlib.Path(__file__).parent.parent.parent
 DATA_PATH = PATH.joinpath("data").resolve()
 
@@ -154,34 +157,24 @@ tree = Phylo.read(DATA_PATH.joinpath("phylo.xml"), "phyloxml")
 nodes, edges = generate_elements(tree)
 elements = nodes + edges
 
+
 def create_tree(server):
     # Create Layout
-    return html.Div([
-        html.Div(
-            className="header",
-            children=[
-                html.H4("Phylogeny"),
-                cyto.Cytoscape(
-                    id="cytoscape",
-                    className="cytoscape",
-                    elements=elements,
-                    stylesheet=stylesheet,
-                    layout={"name": "preset", "fit": True, "animate": True},
-                    minZoom=0.25,
-                ),
-            ],
-        ),
-    ])
-
-
-def create_data_table(df):
-    """Create Dash datatable from Pandas DataFrame."""
-    table = dash_table.DataTable(
-        id='database-table',
-        columns=[{"name": i, "id": i} for i in df.columns],
-        data=df.to_dict('records'),
-        sort_action="native",
-        sort_mode='native',
-        page_size=300
+    return html.Div(
+        [
+            html.Div(
+                className="header",
+                children=[
+                    html.H4("Phylogeny"),
+                    cyto.Cytoscape(
+                        id="cytoscape",
+                        className="cytoscape",
+                        elements=elements,
+                        stylesheet=stylesheet,
+                        layout={"name": "preset", "fit": True, "animate": True},
+                        minZoom=0.25,
+                    ),
+                ],
+            ),
+        ]
     )
-    return table
