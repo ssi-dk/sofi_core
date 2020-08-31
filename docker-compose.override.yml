@@ -6,6 +6,6 @@ services:
       - mongo
   dashboard:
     volumes:
-        # Change path before : to point to local web. ./web might work.
-        - /c/Users/asa/AppData/Local/Packages/CanonicalGroupLimited.UbuntuonWindows_79rhkp1fndgsc/LocalState/rootfs/home/ahmad/SAP/web:/app/web
+        # Change path before : to point to local web.
+        - ./web:/app/web
     command: ["/bin/sh", "-c", "/app/start.sh"]
