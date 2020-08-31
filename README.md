@@ -1,3 +1,12 @@
+# Initial setup 
+Install the provided pre-commit hooks to get project-wide autoformatting and
+linting.
+
+```shell
+pip3 install pre-commit
+pre-commit install
+```
+
 # Running
 ```
 docker compose up --build
