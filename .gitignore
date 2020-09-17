@@ -6,6 +6,7 @@ __pycache__
 .webassets-cache
 .vscode/
 
+node_modules/
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
