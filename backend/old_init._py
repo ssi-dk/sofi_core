@@ -11,14 +11,6 @@ from apispec_webframeworks.flask import FlaskPlugin
 from .routes import myblueprint
 
 
-spec = APISpec(
-    title="Test",
-    version="1.0.0",
-    openapi_version="3.0.2",
-    plugins=[FlaskPlugin(), MarshmallowPlugin()],
-)
-
-
 def script_runs_within_container():
     with open("/proc/1/cgroup", "r") as cgroup_file:
         return "docker" in cgroup_file.read()

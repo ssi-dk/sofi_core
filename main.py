@@ -1,5 +1,6 @@
 """Application entry point."""
-from web import create_app
+from __future__ import absolute_import
+from backend.openapi_server import create_app
 
 app = create_app()
 
