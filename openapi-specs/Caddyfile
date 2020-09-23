@@ -1,0 +1,6 @@
+http://localhost
+
+route /lims/* {
+	uri strip_prefix /lims
+	reverse_proxy lims_mock:4010
+}

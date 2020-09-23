@@ -1,0 +1,403 @@
+openapi: 3.0.0
+info:
+  title: lims
+  version: '1.0'
+  description: LIMS web service
+  contact:
+    name: LimsMock
+servers:
+  - url: 'http://localhost:4010/lims'
+paths:
+  /actions/GetIsolate:
+    post:
+      summary: Get isolate
+      operationId: post-actions-GetIsolate
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IsolateGetResponse'
+              examples:
+                example:
+                  value:
+                    output:
+                      sapresponse:
+                        isolateId: abcx
+                        isolateApproved: false
+                        metadata:
+                          - metaFieldName: projektnummer
+                            metaFieldValue: test-project-123
+                          - metaFieldName: projekttitel
+                            metaFieldValue: test-project
+                          - metaFieldName: datoudtagning
+                            metaFieldValue: 14-09-2020
+                          - metaFieldName: datomodtagelse
+                            metaFieldValue: 14-09-2020
+                          - metaFieldName: produkttype
+                            metaFieldValue: test-produkt-type
+                          - metaFieldName: produkt
+                            metaFieldValue: test-product
+                          - metaFieldName: dyreart
+                            metaFieldValue: test-animal
+                        data:
+                          - fieldName: Agens bakterie
+                            fieldValue: value1
+                          - fieldName: species
+                            fieldValue: value2
+                          - fieldName: serotype
+                            fieldValue: value3
+                          - fieldName: STtype
+                            fieldValue: value4
+                          - fieldName: virulensgener
+                            fieldValue: value5
+                          - fieldName: AMRgener
+                            fieldValue: value6
+                          - fieldName: resfinder version
+                            fieldValue: value7
+                          - fieldName: RunId
+                            fieldValue: value8
+                          - fieldName: sekvensID
+                            fieldValue: value9
+                        success: true
+                    message: Action GetIsolate executed successfully
+      description: Get isolate information
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IsolateGetRequest'
+            examples:
+              example:
+                value:
+                  isolateId: abcx
+        description: Isolate Id to fetch information for
+      tags:
+        - isolate
+  /actions/UpdateIsolate:
+    post:
+      summary: Update isolate
+      operationId: post-actions-UpdateIsolate
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IsolateUpdateResponse'
+              examples:
+                example:
+                  value:
+                    output:
+                      sapresponse:
+                        succcess: true
+                    message: Action UpdateIsolate executed successfully
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IsolateUpdateRequest'
+            examples:
+              example:
+                value:
+                  isolateId: abcx
+                  data:
+                    - fieldName: species
+                      fieldValue: value2
+                    - fieldName: AMRgener
+                      fieldValue: value6
+        description: Isolate update
+      description: Update isolate information
+      tags:
+        - isolate
+  '/connections/{connectionId}':
+    get:
+      summary: Check connection
+      tags:
+        - connections
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+              examples:
+                example:
+                  value:
+                    message: Connection fvstlims|admin198020663280 checked
+      operationId: get-connections
+      description: Check connection
+      parameters: []
+    delete:
+      summary: Delete connection
+      operationId: delete-connections
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+              examples:
+                example:
+                  value:
+                    message: Connection fvstlims|admin1013035459275 cleared
+      description: Delete connection
+      tags:
+        - connections
+    put:
+      summary: ''
+      operationId: put-connections
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+              examples:
+                example:
+                  value:
+                    message: Connection fvstlims|admin198020663280 refreshed
+      description: Refreshes connection
+      tags:
+        - connections
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+    parameters:
+      - schema:
+          type: string
+          example: fvstlims|admin719456522586
+        name: connectionId
+        in: path
+        required: true
+  /connections:
+    post:
+      summary: ''
+      operationId: post-connections
+      responses:
+        '201':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConnectionCreateResponse'
+              examples:
+                example:
+                  value:
+                    message: Connection fvstlims|admin719456522586 created
+                    connections:
+                      connectionid: fvstlims|admin719456522586
+      description: Create connection
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConnectionCreateRequest'
+            examples:
+              example:
+                value:
+                  databaseid: db1
+                  username: admin
+                  password: admin
+      tags:
+        - connections
+components:
+  schemas:
+    DataEntry:
+      title: DataEntry
+      type: object
+      properties:
+        fieldName:
+          type: string
+        fieldValue:
+          type: string
+      x-examples:
+        example:
+          fieldName: species
+          fieldValue: value2
+      description: Data entry
+    MetaDataEntry:
+      title: MetaDataEntry
+      type: object
+      properties:
+        metaFieldName:
+          type: string
+        metaFieldValue:
+          type: string
+      x-examples:
+        example:
+          metaFieldName: dyreart
+          metaFieldValue: test-animal
+      description: Meta data entry
+    IsolateGetResponse:
+      title: IsolateGetResponse
+      type: object
+      x-examples:
+        example:
+          output:
+            sapresponse:
+              isolateId: abcx
+              isolateApproved: false
+              metadata:
+                - metaFieldName: projektnummer
+                  metaFieldValue: test-project-123
+                - metaFieldName: projekttitel
+                  metaFieldValue: test-project
+                - metaFieldName: datoudtagning
+                  metaFieldValue: 14-09-2020
+                - metaFieldName: datomodtagelse
+                  metaFieldValue: 14-09-2020
+                - metaFieldName: produkttype
+                  metaFieldValue: test-produkt-type
+                - metaFieldName: produkt
+                  metaFieldValue: test-product
+                - metaFieldName: dyreart
+                  metaFieldValue: test-animal
+              data:
+                - fieldName: Agens bakterie
+                  fieldValue: value1
+                - fieldName: species
+                  fieldValue: value2
+                - fieldName: serotype
+                  fieldValue: value3
+                - fieldName: STtype
+                  fieldValue: value4
+                - fieldName: virulensgener
+                  fieldValue: value5
+                - fieldName: AMRgener
+                  fieldValue: value6
+                - fieldName: resfinder version
+                  fieldValue: value7
+                - fieldName: RunId
+                  fieldValue: value8
+                - fieldName: sekvensID
+                  fieldValue: value9
+              success: true
+          message: Action GetIsolate executed successfully
+      description: Isolate get response
+      properties:
+        output:
+          type: object
+          properties:
+            sapresponse:
+              type: object
+              properties:
+                isolateId:
+                  type: string
+                isolateApproved:
+                  type: boolean
+                data:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/DataEntry'
+                metadata:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/MetaDataEntry'
+                success:
+                  type: boolean
+        message:
+          type: string
+    IsolateGetRequest:
+      title: IsolateGetRequest
+      type: object
+      properties:
+        isolateId:
+          type: string
+      x-examples:
+        example:
+          isolateId: abcx
+      description: Isolate get request
+    IsolateUpdateRequest:
+      title: IsolateUpdateRequest
+      type: object
+      properties:
+        isolateId:
+          type: string
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/DataEntry'
+      description: Isolate update request
+      x-examples:
+        example:
+          isolateId: abcx
+          data:
+            - fieldName: species
+              fieldValue: value2
+            - fieldName: AMRgener
+              fieldValue: value6
+    IsolateUpdateResponse:
+      title: IsolateUpdateResponse
+      type: object
+      description: Isolate update response
+      x-examples:
+        example:
+          output:
+            sapresponse:
+              succcess: true
+          message: Action UpdateIsolate executed successfully
+      properties:
+        message:
+          type: string
+        output:
+          type: object
+          properties:
+            sapresponse:
+              type: object
+              properties:
+                success:
+                  type: boolean
+    MessageResponse:
+      title: MessageResponse
+      type: object
+      properties:
+        message:
+          type: string
+      description: Message response
+      x-examples:
+        example:
+          message: Some message
+    ConnectionCreateRequest:
+      title: ConnectionCreateRequest
+      type: object
+      description: Connection create request
+      x-examples:
+        example:
+          databaseid: fvstlims
+          username: admin
+          password: admin
+      properties:
+        databaseid:
+          type: string
+        username:
+          type: string
+        password:
+          type: string
+    ConnectionCreateResponse:
+      title: ConnectionCreateResponse
+      type: object
+      properties:
+        message:
+          type: string
+        connections:
+          type: object
+          properties:
+            connectionid:
+              type: string
+      x-examples:
+        example:
+          message: Connection fvstlims|admin719456522586 created
+          connections:
+            connectionid: fvstlims|admin719456522586
+      description: Connection create response
+  securitySchemes: {}
+tags:
+  - name: isolate
+  - name: connections
