@@ -1,8 +1,9 @@
 import connexion
 import six
 
-from ..models.user import User  # noqa: E501
+from web.SAP.generated.models.user import User  # noqa: E501
 from .. import util
+from ...src.controllers import UserController
 
 
 def create_user(body):  # noqa: E501
@@ -17,7 +18,7 @@ def create_user(body):  # noqa: E501
     """
     if connexion.request.is_json:
         body = User.from_dict(connexion.request.get_json())  # noqa: E501
-    return 'do some magic!'
+    return UserController.create_user(body)
 
 
 def delete_user(username):  # noqa: E501
@@ -30,7 +31,7 @@ def delete_user(username):  # noqa: E501
 
     :rtype: None
     """
-    return 'do some magic!'
+    return UserController.delete_user(username)
 
 
 def get_user_by_name(username):  # noqa: E501
@@ -43,7 +44,7 @@ def get_user_by_name(username):  # noqa: E501
 
     :rtype: User
     """
-    return 'do some magic!'
+    return UserController.get_user_by_name(username)
 
 
 def login_user(username, password):  # noqa: E501
@@ -58,7 +59,7 @@ def login_user(username, password):  # noqa: E501
 
     :rtype: str
     """
-    return 'do some magic!'
+    return UserController.login_user(username, password)
 
 
 def logout_user():  # noqa: E501
@@ -69,7 +70,7 @@ def logout_user():  # noqa: E501
 
     :rtype: None
     """
-    return 'do some magic!'
+    return UserController.logout_user()
 
 
 def update_user(username, body):  # noqa: E501
@@ -86,4 +87,4 @@ def update_user(username, body):  # noqa: E501
     """
     if connexion.request.is_json:
         body = User.from_dict(connexion.request.get_json())  # noqa: E501
-    return 'do some magic!'
+    return UserController.update_user(username, body)

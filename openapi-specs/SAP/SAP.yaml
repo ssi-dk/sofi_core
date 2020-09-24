@@ -28,7 +28,7 @@ paths:
       tags:
       - user
       x-codegen-request-body-name: body
-      x-openapi-router-controller: backend.openapi_server.controllers.user_controller
+      x-openapi-router-controller: web.SAP.generated.controllers.user_controller
   /user/login:
     get:
       operationId: login_user
@@ -70,7 +70,7 @@ paths:
       summary: Logs user into the system
       tags:
       - user
-      x-openapi-router-controller: backend.openapi_server.controllers.user_controller
+      x-openapi-router-controller: web.SAP.generated.controllers.user_controller
   /user/logout:
     get:
       operationId: logout_user
@@ -81,7 +81,7 @@ paths:
       summary: Logs out current logged in user session
       tags:
       - user
-      x-openapi-router-controller: backend.openapi_server.controllers.user_controller
+      x-openapi-router-controller: web.SAP.generated.controllers.user_controller
   /user/{username}:
     delete:
       description: This can only be done by the logged in user.
@@ -105,7 +105,7 @@ paths:
       summary: Delete user
       tags:
       - user
-      x-openapi-router-controller: backend.openapi_server.controllers.user_controller
+      x-openapi-router-controller: web.SAP.generated.controllers.user_controller
     get:
       operationId: get_user_by_name
       parameters:
@@ -133,7 +133,7 @@ paths:
       summary: Get user by user name
       tags:
       - user
-      x-openapi-router-controller: backend.openapi_server.controllers.user_controller
+      x-openapi-router-controller: web.SAP.generated.controllers.user_controller
     put:
       description: This can only be done by the logged in user.
       operationId: update_user
@@ -164,7 +164,7 @@ paths:
       tags:
       - user
       x-codegen-request-body-name: body
-      x-openapi-router-controller: backend.openapi_server.controllers.user_controller
+      x-openapi-router-controller: web.SAP.generated.controllers.user_controller
 components:
   schemas:
     User:
