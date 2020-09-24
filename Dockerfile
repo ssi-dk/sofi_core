@@ -3,5 +3,7 @@ FROM tiangolo/meinheld-gunicorn-flask:python3.8
 COPY ./requirements.txt .
 RUN pip install -r requirements.txt
 
-COPY ["main.py", "gunicorn_conf.py", "openapi-specs", "seed_data", "web", "/app"]
+COPY openapi-specs/SAP/SAP.yaml /app/openapi-specs/SAP/
+
+COPY ["main.py", "start.sh", "gunicorn_conf.py", "seed_data", "web", "/app/"]
 RUN chmod +x start.sh
