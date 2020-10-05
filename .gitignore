@@ -134,3 +134,7 @@ dmypy.json
 # etc
 .idea
 .DS_Store
+
+# openapi generator
+.openapi-generator
+.openapi-generator-ignore
