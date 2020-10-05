@@ -4,7 +4,7 @@ services:
     build: ./seed_data/
     depends_on:
       - mongo
-  dashboard:
+  sap_api:
     volumes:
         # Change path before : to point to local web.
         - ./web:/app/web
