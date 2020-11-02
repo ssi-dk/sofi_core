@@ -4,6 +4,7 @@ export const borderStyle = "1px solid black";
 
 export const cell = css({
   margin: 0,
+  width: "1%",
   padding: "0.5rem",
   overflow: "hidden",
   whiteSpace: "nowrap",
@@ -16,18 +17,27 @@ export const cell = css({
 });
 
 export default css({
-  ".table": {
-    display: "inline-block",
+  display: "block",
+  maxWidth: "100%",
+  ".tableWrap": {
+    display: "block",
+    maxWidth: "100%",
+    overflowX: "scroll",
+    overflowY: "hidden",
+    borderBottom: borderStyle
+  },
+  table: {
+    width: "100%",
     borderSpacing: 0,
     border: borderStyle,
-    ".tr": {
-      ":last-child": {
-        ".td": {
-          borderBottom: 0,
-        },
+  },
+  tr: {
+    ":last-child": {
+      td: {
+        borderBottom: 0,
       },
     },
-    ".th": { ...cell },
-    ".td": { ...cell },
   },
+  th: { ...cell },
+  td: { ...cell },
 });

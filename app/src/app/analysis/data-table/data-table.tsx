@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import React from "react";
-import { useTable, useBlockLayout, Column } from "react-table";
+import { useTable, useBlockLayout, Column, useResizeColumns, useFlexLayout, useRowSelect } from "react-table";
 import { FixedSizeList } from "react-window";
 import scrollbarWidth from "app/analysis/data-table/scrollbar-width-calculator";
 import dtStyle from "app/analysis/data-table/data-table.styles";
@@ -14,13 +14,14 @@ type DataTableProps<T extends object = {}> = {
 function DataTable<T extends object = {}>(props: DataTableProps<T>) {
   const defaultColumn = React.useMemo(
     () => ({
-      width: 150,
+        width: 129
     }),
     []
   );
 
   const scrollBarSize = React.useMemo(() => scrollbarWidth(), []);
 
+  const { columns, data } = props;
   const {
     getTableProps,
     getTableBodyProps,
@@ -30,11 +31,11 @@ function DataTable<T extends object = {}>(props: DataTableProps<T>) {
     prepareRow,
   } = useTable(
     {
-      columns: props.columns,
-      data: props.data ?? [],
-      defaultColumn,
+      columns,
+      data: data ?? [],
+      defaultColumn
     },
-    useBlockLayout
+    useBlockLayout,
   );
 
   const RenderRow = React.useCallback(
@@ -49,13 +50,12 @@ function DataTable<T extends object = {}>(props: DataTableProps<T>) {
           className="tr"
         >
           {row.cells.map((cell) => (
-            <div
+            <td
               key={cell.getCellProps().key}
               {...cell.getCellProps()}
-              className="td"
             >
               {cell.render("Cell")}
-            </div>
+            </td>
           ))}
         </div>
       );
@@ -66,24 +66,21 @@ function DataTable<T extends object = {}>(props: DataTableProps<T>) {
   // Render the UI for your table
   return (
     <div css={dtStyle}>
-      <div {...getTableProps()} className="table">
+      <table {...getTableProps()} className="tableWrap">
         <div>
           {headerGroups.map((headerGroup) => (
-            <div
+            <tr
               {...headerGroup.getHeaderGroupProps()}
-              key={headerGroup.id}
-              className="tr"
             >
               {headerGroup.headers.map((column) => (
-                <div
+                <th
                   {...column.getHeaderProps()}
                   key={column.id}
-                  className="th"
                 >
                   {column.render("Header")}
-                </div>
+                </th>
               ))}
-            </div>
+            </tr>
           ))}
         </div>
 
@@ -97,7 +94,7 @@ function DataTable<T extends object = {}>(props: DataTableProps<T>) {
             {RenderRow}
           </FixedSizeList>
         </div>
-      </div>
+      </table>
     </div>
   );
 }

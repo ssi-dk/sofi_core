@@ -84,7 +84,7 @@ function AnalysisDataTable() {
 
   const reqs = React.useMemo(
     () =>
-      Array.from(Array(100).keys()).map((i) => ({
+      Array.from(Array(5).keys()).map((i) => ({
         ...RequestPageOfAnalysis({ pageSize: 1000 }),
         queryKey: `${i}`,
       })),
@@ -100,7 +100,7 @@ function AnalysisDataTable() {
     <>
       {isPending && `Fetching... ${data.length}`}
       {isFinished && `Found ${data.length} records.`}
-      <DataTable columns={columns} data={data} />
+      {isFinished && <DataTable columns={columns} data={data} />}
     </>
   );
 }
