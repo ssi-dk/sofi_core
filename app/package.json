@@ -3,7 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@emotion/core": "^10.0.35",
+    "@chakra-ui/core": "^0.8.0",
+    "@emotion/core": "^10.1.1",
     "@emotion/styled": "^10.0.27",
     "@reduxjs/toolkit": "^1.4.0",
     "@testing-library/dom": "~5.0.0",
@@ -18,10 +19,11 @@
     "@types/react-table": "^7.0.23",
     "@types/react-window": "^1.8.2",
     "@types/webpack-env": "^1.15.2",
-    "@typescript-eslint/eslint-plugin": "^4.4.0",
-    "@typescript-eslint/parser": "^4.4.0",
+    "@typescript-eslint/eslint-plugin": "^4.6.0",
+    "@typescript-eslint/parser": "^4.6.0",
     "axios": "^0.20.0",
-    "eslint": "^6.6.0",
+    "emotion-theming": "^10.0.27",
+    "eslint": "6.6.0",
     "prettier": "^2.1.2",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
@@ -41,7 +43,9 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "lint:fix": "eslint src/**/*.js --fix"
+    "format": "prettier --write src/**/*.ts{,x}",
+    "lint": "tsc --noEmit && eslint src/**/*.ts{,x}",
+    "lint:fix": "tsc --noEmit && eslint src/**/*.ts{,x} --fix"
   },
   "browserslist": {
     "production": [
@@ -54,5 +58,19 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^4.6.0",
+    "@typescript-eslint/parser": "^4.6.0",
+    "eslint": "^6.6.0",
+    "eslint-config-airbnb": "18.2.0",
+    "eslint-config-airbnb-typescript": "^12.0.0",
+    "eslint-config-prettier": "^6.15.0",
+    "eslint-plugin-import": "2.21.2",
+    "eslint-plugin-jest": "^24.1.0",
+    "eslint-plugin-jsx-a11y": "6.3.0",
+    "eslint-plugin-prettier": "^3.1.4",
+    "eslint-plugin-react": "7.20.0",
+    "eslint-plugin-react-hooks": "4.0.0"
   }
 }
