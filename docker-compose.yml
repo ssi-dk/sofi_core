@@ -2,12 +2,39 @@ version: '3'
 services:
   sap_api:
     build: .
-    ports:
-      - "8080:80"
+    expose:
+      - 6000
     environment:
-      -  APP_MODULE=wsgi:app
+      - APP_MODULE=wsgi:app
     depends_on:
       - "mongo"
+
+  sap_app:
+    build:
+      context: ./app
+    expose:
+      - 3000
+    environment:
+      - NODE_ENV=production
+    depends_on:
+      - "sap_api"
+
+  proxy:
+    image: caddy:2.2.0-alpine
+    ports:
+      - "8080:80"
+      - "8081:443"
+    command:
+      - "caddy"
+      - "run"
+      - "-config"
+      - "/etc/Caddyfile"
+    depends_on:
+      -  "sap_api"
+      -  "sap_app"
+    volumes:
+        - ./Caddyfile:/etc/Caddyfile
+
   mongo:
     image: "mongo:latest"
     ports:

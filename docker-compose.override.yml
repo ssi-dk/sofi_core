@@ -1,24 +1,50 @@
 version: '3'
 services:
+
   mongo_seeding:
     build: ./seed_data/
     depends_on:
       - mongo
+
   sap_api:
+    environment:
+    # don't litter host with pyc files; we always want latest state from file
+      - PYTHONDONTWRITEBYTECODE=1
     volumes:
-        # Change path before : to point to local web.
-        - ./web:/app/web
+    # Change path before : to point to local web.
+      - ./web:/app/web:ro
     command: ["/bin/sh", "-c", "/app/start.sh"]
+
+  sap_app:
+    build:
+      context: ./app
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - ./app:/app:rw
+    stdin_open: true
+
   mocks:
     image: caddy
     volumes:
       - ./openapi-specs/Caddyfile:/etc/caddy/Caddyfile
     ports:
-      - '4010:80'
+      - '4099:4099'
     depends_on:
       - lims_mock
+      - sap_mock
   lims_mock:
     image: stoplight/prism:latest
-    command: mock /openapi-specs/lims.v1.yaml -h 0.0.0.0
+    command: mock /openapi-specs/lims.v1.yaml -h 0.0.0.0 -p 4021
     volumes:
       - ./openapi-specs:/openapi-specs
+  sap_mock:
+    image: stoplight/prism:latest
+    command: mock /openapi-specs/SAP/SAP.yaml -h 0.0.0.0 -p 4011 -d
+    volumes:
+      - ./openapi-specs:/openapi-specs
+
+

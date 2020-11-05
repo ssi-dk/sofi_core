@@ -1,16 +1,17 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
+import { Provider as ReduxQueryProvider } from "redux-query-react";
 
-import * as serviceWorker from "serviceWorker";
-import store from "app/store";
-import "./index.css";
+import store, { getQueries } from "app/store";
 
 function render() {
-  const App = require("./app/App").default;
+  const App = require("./app/app").default;
   ReactDOM.render(
     <Provider store={store}>
-      <App />
+      <ReduxQueryProvider queriesSelector={getQueries}>
+        <App />
+      </ReduxQueryProvider>
     </Provider>,
     document.getElementById("root")
   );
@@ -19,5 +20,5 @@ function render() {
 render();
 
 if (process.env.NODE_ENV === "development" && module.hot) {
-  module.hot.accept("./app/App", render);
+  module.hot.accept("./app/app", render);
 }

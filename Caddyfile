@@ -1,0 +1,15 @@
+http://localhost {
+    route /api/* {
+        uri strip_prefix /api
+        reverse_proxy sap_api:6000
+    }
+
+    route /mock/* {
+        uri strip_prefix /mock
+        reverse_proxy mocks:4099
+    }
+
+    route /* {
+        reverse_proxy sap_app:3000
+    }
+}

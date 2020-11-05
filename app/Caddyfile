@@ -1,0 +1,5 @@
+:3000 {
+    root * /var/www/html
+    file_server
+    log
+}

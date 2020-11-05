@@ -1,6 +1,6 @@
 import React from "react";
 import TodoListItem from "./TodoListItem";
-import { RootState } from "app/rootReducer";
+import { RootState } from "app/root-reducer";
 import { useSelector, useDispatch } from "react-redux";
 import { toggleTodo } from "./todoSlice";
 import { VisibilityFilter } from "features/visiblityFilter/visibilityFilterSlice";

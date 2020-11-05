@@ -1,6 +1,11 @@
-http://localhost
+http://localhost:4099
 
 route /lims/* {
 	uri strip_prefix /lims
 	reverse_proxy lims_mock:4010
+}
+
+route /sap/* {
+	uri strip_prefix /sap
+	reverse_proxy sap_mock:4011
 }

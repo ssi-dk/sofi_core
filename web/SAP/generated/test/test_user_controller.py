@@ -23,7 +23,7 @@ class TestUserController(BaseTestCase):
             'Content-Type': 'application/json',
         }
         response = self.client.open(
-            '/user',
+            '/api/user',
             method='POST',
             headers=headers,
             data=json.dumps(body),
@@ -39,7 +39,7 @@ class TestUserController(BaseTestCase):
         headers = { 
         }
         response = self.client.open(
-            '/user/{username}'.format(username='username_example'),
+            '/api/user/{username}'.format(username='username_example'),
             method='DELETE',
             headers=headers)
         self.assert200(response,
@@ -54,7 +54,7 @@ class TestUserController(BaseTestCase):
             'Accept': 'application/json',
         }
         response = self.client.open(
-            '/user/{username}'.format(username='username_example'),
+            '/api/user/{username}'.format(username='username_example'),
             method='GET',
             headers=headers)
         self.assert200(response,
@@ -71,7 +71,7 @@ class TestUserController(BaseTestCase):
             'Accept': 'application/json',
         }
         response = self.client.open(
-            '/user/login',
+            '/api/user/login',
             method='GET',
             headers=headers,
             query_string=query_string)
@@ -86,7 +86,7 @@ class TestUserController(BaseTestCase):
         headers = { 
         }
         response = self.client.open(
-            '/user/logout',
+            '/api/user/logout',
             method='GET',
             headers=headers)
         self.assert200(response,
@@ -103,7 +103,7 @@ class TestUserController(BaseTestCase):
             'Content-Type': 'application/json',
         }
         response = self.client.open(
-            '/user/{username}'.format(username='username_example'),
+            '/api/user/{username}'.format(username='username_example'),
             method='PUT',
             headers=headers,
             data=json.dumps(body),

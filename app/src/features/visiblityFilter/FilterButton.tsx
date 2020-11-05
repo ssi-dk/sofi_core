@@ -5,7 +5,7 @@ import {
   VisibilityFilter,
 } from "features/visiblityFilter/visibilityFilterSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "app/rootReducer";
+import { RootState } from "app/root-reducer";
 
 interface FilterButtonProps {
   visibilityFilter: VisibilityFilter;

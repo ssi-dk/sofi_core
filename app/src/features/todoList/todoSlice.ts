@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import { AppThunk, AppDispatch } from "app/store";
-import { RootState } from "app/rootReducer";
+import { RootState } from "app/root-reducer";
 import { writeTodos, readTodos as fetchTodos } from "api/todoStore";
 import { Todo } from "features/todoList/types";
 
@@ -11,14 +11,14 @@ const todoSlice = createSlice({
   name: "todos",
   initialState,
   reducers: {
-    receiveTodos(state, action: PayloadAction<Todo[]>) {
+    receiveTodos(_, action: PayloadAction<Todo[]>) {
       return action.payload;
     },
     receiveTodo(state, action: PayloadAction<Todo>) {
       state.push(action.payload);
     },
     toggleTodo(state, action: PayloadAction<Todo>) {
-      let todo = state.find((todo) => todo.id === action.payload.id);
+      const todo = state.find((todo) => todo.id === action.payload.id);
 
       if (todo) {
         todo.completed = !todo.completed;
@@ -29,7 +29,7 @@ const todoSlice = createSlice({
 
 export const { toggleTodo } = todoSlice.actions;
 
-export const createTodoList = (): AppThunk => async (dispatch: AppDispatch) => {
+export const createTodoList = (): AppThunk => async (_: AppDispatch) => {
   const id = Math.random().toString(36).substr(2, 9);
   window.history.pushState(null, document.title, `${id}`);
 };
