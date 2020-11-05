@@ -1,0 +1,4 @@
+FROM mongo:4.2.8
+
+COPY bifrost_dev_nofiles.archive /tmp/bifrost_dev_nofiles.archive
+COPY restore_dev_db.sh /docker-entrypoint-initdb.d/

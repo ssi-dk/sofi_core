@@ -7,7 +7,7 @@ services:
     environment:
       - APP_MODULE=wsgi:app
     depends_on:
-      - "mongo"
+      - "bifrost_db"
 
   sap_app:
     build:
@@ -35,7 +35,9 @@ services:
     volumes:
         - ./Caddyfile:/etc/Caddyfile
 
-  mongo:
-    image: "mongo:latest"
+  bifrost_db:
+    build: bifrost_db
+    expose:
+      - 27017
     ports:
       - "27017:27017"

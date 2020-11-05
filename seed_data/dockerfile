@@ -1,9 +1,0 @@
-FROM python:3.8-buster
-
-RUN pip install 'pymongo==3.11.0'
-RUN pip install 'pandas==1.1.0'
-RUN pip install 'Werkzeug==1.0.1'
-
-COPY seed.py /
-COPY 311-calls.csv /
-CMD python3 /seed.py

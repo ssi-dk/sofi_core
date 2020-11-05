@@ -1,11 +1,5 @@
 version: '3'
 services:
-
-  mongo_seeding:
-    build: ./seed_data/
-    depends_on:
-      - mongo
-
   sap_api:
     environment:
     # don't litter host with pyc files; we always want latest state from file
@@ -14,7 +8,6 @@ services:
     # Change path before : to point to local web.
       - ./web:/app/web:ro
     command: ["/bin/sh", "-c", "/app/start.sh"]
-
   sap_app:
     build:
       context: ./app
