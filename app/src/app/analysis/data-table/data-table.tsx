@@ -1,6 +1,13 @@
 /** @jsx jsx */
 import React from "react";
-import { useTable, useBlockLayout, Column, useResizeColumns, useFlexLayout, useRowSelect } from "react-table";
+import {
+  useTable,
+  useBlockLayout,
+  Column,
+  useResizeColumns,
+  useFlexLayout,
+  useRowSelect,
+} from "react-table";
 import { FixedSizeList } from "react-window";
 import scrollbarWidth from "app/analysis/data-table/scrollbar-width-calculator";
 import dtStyle from "app/analysis/data-table/data-table.styles";
@@ -14,7 +21,7 @@ type DataTableProps<T extends object = {}> = {
 function DataTable<T extends object = {}>(props: DataTableProps<T>) {
   const defaultColumn = React.useMemo(
     () => ({
-        width: 129
+      width: 129,
     }),
     []
   );
@@ -33,9 +40,9 @@ function DataTable<T extends object = {}>(props: DataTableProps<T>) {
     {
       columns,
       data: data ?? [],
-      defaultColumn
+      defaultColumn,
     },
-    useBlockLayout,
+    useBlockLayout
   );
 
   const RenderRow = React.useCallback(
@@ -43,21 +50,17 @@ function DataTable<T extends object = {}>(props: DataTableProps<T>) {
       const row = rows[index];
       prepareRow(row);
       return (
-        <div
+        <tr
           {...row.getRowProps({
             style,
           })}
-          className="tr"
         >
           {row.cells.map((cell) => (
-            <td
-              key={cell.getCellProps().key}
-              {...cell.getCellProps()}
-            >
+            <td key={cell.getCellProps().key} {...cell.getCellProps()}>
               {cell.render("Cell")}
             </td>
           ))}
-        </div>
+        </tr>
       );
     },
     [prepareRow, rows]
@@ -67,33 +70,28 @@ function DataTable<T extends object = {}>(props: DataTableProps<T>) {
   return (
     <div css={dtStyle}>
       <table {...getTableProps()} className="tableWrap">
-        <div>
+        <thead>
           {headerGroups.map((headerGroup) => (
-            <tr
-              {...headerGroup.getHeaderGroupProps()}
-            >
+            <tr {...headerGroup.getHeaderGroupProps()}>
               {headerGroup.headers.map((column) => (
-                <th
-                  {...column.getHeaderProps()}
-                  key={column.id}
-                >
+                <th {...column.getHeaderProps()} key={column.id}>
                   {column.render("Header")}
                 </th>
               ))}
             </tr>
           ))}
-        </div>
+        </thead>
 
-        <div {...getTableBodyProps()}>
+        <tbody {...getTableBodyProps()}>
           <FixedSizeList
-            height={400}
+            height={600}
             itemCount={rows.length}
-            itemSize={35}
+            itemSize={50}
             width={totalColumnsWidth + scrollBarSize}
           >
             {RenderRow}
           </FixedSizeList>
-        </div>
+        </tbody>
       </table>
     </div>
   );

@@ -24,11 +24,15 @@
     "axios": "^0.20.0",
     "emotion-theming": "^10.0.27",
     "eslint": "6.6.0",
+    "i18next": "^19.8.3",
     "prettier": "^2.1.2",
     "react": "^16.13.1",
+    "react-datepicker": "^3.3.0",
     "react-dom": "^16.13.1",
+    "react-i18next": "^11.7.3",
     "react-redux": "7.1.0",
     "react-scripts": "3.4.3",
+    "react-select": "^3.1.0",
     "react-table": "^7.5.2",
     "react-window": "^1.8.5",
     "redux": "~4.0.0",
@@ -60,6 +64,7 @@
     ]
   },
   "devDependencies": {
+    "@types/react-datepicker": "^3.1.1",
     "@typescript-eslint/eslint-plugin": "^4.6.0",
     "@typescript-eslint/parser": "^4.6.0",
     "eslint": "^6.6.0",

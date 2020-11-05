@@ -1,11 +1,11 @@
 /** @jsx jsx */
 import { useDispatch } from "react-redux";
-import { Global, jsx } from "@emotion/core";
-import { flex, reset } from "./app.styles";
-
-import Analysis from "./analysis/analysis";
-import appTheme from "app/app.theme"
+import { Global, jsx, css } from "@emotion/core";
+import "./i18n";
+import appTheme from "app/app.theme";
 import { ThemeProvider, CSSReset, Box } from "@chakra-ui/core";
+import Analysis from "./analysis/analysis";
+import { flex, reset, globalCss } from "./app.styles";
 
 export default function App() {
   const dispatch = useDispatch();
@@ -13,6 +13,7 @@ export default function App() {
   return (
     <ThemeProvider theme={appTheme}>
       <CSSReset />
+      <Global styles={globalCss} />
       <Box p={6}>
         <Analysis />
       </Box>

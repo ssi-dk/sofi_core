@@ -1,19 +1,15 @@
 import { css } from "@emotion/core";
 
-export const borderStyle = "1px solid black";
-
 export const cell = css({
   margin: 0,
   width: "1%",
-  padding: "0.5rem",
+  padding: "0.8rem",
   overflow: "hidden",
   whiteSpace: "nowrap",
+  fontSize: "15px",
+  textAlign: "left",
   textOverflow: "ellipsis",
-  borderBottom: borderStyle,
-  borderRight: borderStyle,
-  ":last-child": {
-    borderRight: borderStyle,
-  },
+  ":last-child": {},
 });
 
 export default css({
@@ -22,14 +18,12 @@ export default css({
   ".tableWrap": {
     display: "block",
     maxWidth: "100%",
-    overflowX: "scroll",
+    overflowX: "hidden",
     overflowY: "hidden",
-    borderBottom: borderStyle
   },
   table: {
     width: "100%",
     borderSpacing: 0,
-    border: borderStyle,
   },
   tr: {
     ":last-child": {
@@ -37,6 +31,10 @@ export default css({
         borderBottom: 0,
       },
     },
+    borderBottom: "1px solid rgba(0,0,0,0.05)",
+  },
+  thead: {
+    borderBottom: "2px solid rgba(0,0,0,0.05)",
   },
   th: { ...cell },
   td: { ...cell },

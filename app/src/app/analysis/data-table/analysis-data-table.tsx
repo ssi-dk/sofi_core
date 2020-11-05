@@ -14,70 +14,70 @@ function AnalysisDataTable() {
         Header: "Row Index",
         accessor: (row: any, i: number) => i,
       },
+      // {
+      //  Header: "Run",
+      //  columns: [
       {
-        Header: "Run",
-        columns: [
-          {
-            Header: "ID",
-            accessor: "analysisId",
-          },
-          {
-            Header: "Isolate",
-            accessor: "isolateId",
-          },
-          {
-            Header: "Job time",
-            accessor: "testTimestamp",
-          },
-        ],
+        Header: "ID",
+        accessor: "analysisId",
       },
       {
-        Header: "Source",
-        columns: [
-          {
-            Header: "Organization",
-            accessor: "organization",
-          },
-          {
-            Header: "Date Received",
-            accessor: "dateReceived",
-          },
-          {
-            Header: "Project",
-            accessor: "project",
-          },
-        ],
+        Header: "Isolate",
+        accessor: "isolateId",
       },
       {
-        Header: "Details",
-        columns: [
-          {
-            Header: "Agent",
-            accessor: "agent",
-          },
-          {
-            Header: "Species",
-            accessor: "species",
-          },
-          {
-            Header: "Resfinder Ver.",
-            accessor: "resfinderVersion",
-          },
-          {
-            Header: "Serum type",
-            accessor: "serumType",
-          },
-        ],
+        Header: "Job time",
+        accessor: "testTimestamp",
+      },
+      //  ],
+      // },
+      // {
+      //  Header: "Source",
+      //  columns: [
+      {
+        Header: "Organization",
+        accessor: "organization",
       },
       {
-        Header: "Status",
-        columns: [
-          {
-            Header: "Approved",
-            accessor: "approved",
-          },
-        ],
+        Header: "Date Received",
+        accessor: "dateReceived",
       },
+      {
+        Header: "Project",
+        accessor: "project",
+      },
+      //  ],
+      // },
+      // {
+      //  Header: "Details",
+      //  columns: [
+      {
+        Header: "Agent",
+        accessor: "agent",
+      },
+      {
+        Header: "Species",
+        accessor: "species",
+      },
+      {
+        Header: "Resfinder Ver.",
+        accessor: "resfinderVersion",
+      },
+      {
+        Header: "Serum type",
+        accessor: "serumType",
+      },
+      //   ],
+      // },
+      // {
+      //   Header: "Status",
+      //   columns: [
+      {
+        Header: "Approved",
+        accessor: "approved",
+      },
+      //   ],
+      // },
     ],
     []
   );
@@ -98,9 +98,9 @@ function AnalysisDataTable() {
 
   return (
     <>
+      <DataTable columns={columns} data={data} />
       {isPending && `Fetching... ${data.length}`}
       {isFinished && `Found ${data.length} records.`}
-      {isFinished && <DataTable columns={columns} data={data} />}
     </>
   );
 }
