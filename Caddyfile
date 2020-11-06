@@ -1,6 +1,5 @@
 http://localhost {
     route /api/* {
-        uri strip_prefix /api
         reverse_proxy sap_api:6000
     }
 

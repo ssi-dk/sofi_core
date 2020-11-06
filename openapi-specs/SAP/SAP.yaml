@@ -15,6 +15,7 @@ paths:
     get:
       description: Page through all the analysis in the system (WIP)
       operationId: get_analysis
+      x-openapi-router-controller: web.SAP.generated.controllers.analysis_controller
       tags:
       - analysis
       parameters:
