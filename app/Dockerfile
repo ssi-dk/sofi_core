@@ -4,11 +4,16 @@ WORKDIR /app
 ENV PATH /app/node_modules/.bin:$PATH
 COPY package.json ./
 COPY yarn.lock ./
-COPY ./sap-client ./sap-client
 RUN yarn install --frozen-lockfile
 RUN yarn global add react-scripts@3.4.3
 COPY . ./
 RUN yarn run build
+
+FROM build as testing
+ENV CI true
+LABEL test=true
+# RUN yarn run lint
+RUN yarn run test-ci
 
 # runtime environment
 FROM caddy:2.2.0-alpine

@@ -1,0 +1,23 @@
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  imageName: 'sap-web:$(Build.SourceBranchName)'
+
+steps:
+- script: docker build -f Dockerfile -t $(imageName) .
+  displayName: 'docker build'
+
+- script: |
+    export id=$(docker images --filter "label=test=true" -q | head -1)
+    docker create --name testcontainer $id
+    docker cp testcontainer:/app/junit.xml ./testresults
+    docker rm testcontainer
+  displayName: 'Get test results'
+
+- task: PublishTestResults@2
+  inputs:
+    testResultsFiles: '**/*.xml' 
+    searchFolder: '$(System.DefaultWorkingDirectory)/testresults'
+    publishRunAttachments: true
+  displayName: 'Publish test results'
