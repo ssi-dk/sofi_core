@@ -5,6 +5,7 @@
     <RootNamespace>TBR_SAP_integration</RootNamespace>
     <UserSecretsId>1e5788a7-183d-4e5f-8d7f-62471bb4f58a</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <DockerfileFile>..\Dockerfile</DockerfileFile>
   </PropertyGroup>
 
   <ItemGroup>
