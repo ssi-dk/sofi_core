@@ -14,4 +14,4 @@ RUN pip install -r requirements-dev.txt
 RUN pytest tests --junitxml=junit.xml 
 
 FROM base
-RUN rm -r /app/web/tests
+RUN rm -r /app/tests
