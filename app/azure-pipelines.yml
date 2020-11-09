@@ -6,7 +6,7 @@ variables:
 
 steps:
 - script: docker build -f Dockerfile -t $(imageName) .
-  displayName: 'docker build'
+  displayName: 'Docker build and test'
   workingDirectory: app
 
 - script: |
@@ -22,3 +22,9 @@ steps:
     searchFolder: '$(System.DefaultWorkingDirectory)/'
     publishRunAttachments: true
   displayName: 'Publish test results'
+
+- script: |
+    echo "Publishing docker image, but not really"
+    echo 'docker login -u $(dockerId) -p $(dockerPass) $(dockerid).azurecr.io'
+    echo 'docker push $(dockerId).azurecr.io/$(imageName)'
+  displayName: 'Publish docker image'
