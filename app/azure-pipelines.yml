@@ -22,6 +22,7 @@ steps:
     testResultsFiles: '**/junit.xml' 
     searchFolder: '$(System.DefaultWorkingDirectory)/'
     publishRunAttachments: true
+    failTaskOnFailedTests: true
   displayName: 'Publish test results'
   condition: succeededOrFailed()
 

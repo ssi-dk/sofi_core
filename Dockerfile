@@ -12,7 +12,7 @@ FROM base as testing
 COPY ./requirements-dev.txt .
 RUN pip install -r requirements-dev.txt
 LABEL test=true
-RUN pytest tests --junitxml=junit.xml 
+RUN pytest tests --junitxml=junit.xml; exit 0
 
 FROM base as final
 RUN rm -r /app/tests
