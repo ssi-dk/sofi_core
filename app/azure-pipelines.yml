@@ -7,6 +7,7 @@ variables:
 steps:
 - script: docker build -f Dockerfile -t $(imageName) .
   displayName: 'docker build'
+  workingDirectory: app
 
 - script: |
     export id=$(docker images --filter "label=test=true" -q | head -1)
