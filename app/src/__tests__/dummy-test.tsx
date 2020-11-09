@@ -5,5 +5,5 @@ import AnalysisHeader from 'app/analysis/header/analysis-header'
 
 it('Checks header for SAP', () => {
   render(<AnalysisHeader sidebarWidth="300px"/>)
-  expect(screen.getByText('SOMENOTSAP')).toBeInTheDocument()
+  expect(screen.getByText('SAP')).toBeInTheDocument()
 })
