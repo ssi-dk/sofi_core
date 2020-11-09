@@ -19,6 +19,6 @@ steps:
 - task: PublishTestResults@2
   inputs:
     testResultsFiles: '**/junit.xml' 
-    searchFolder: '$(System.DefaultWorkingDirectory)/testresults'
+    searchFolder: '$(System.DefaultWorkingDirectory)/'
     publishRunAttachments: true
   displayName: 'Publish test results'
