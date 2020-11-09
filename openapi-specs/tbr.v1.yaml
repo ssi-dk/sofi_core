@@ -1,0 +1,131 @@
+openapi: 3.0.1
+info:
+  title: TBR-SAP
+  description: TBR integration for SAP
+  version: v1
+paths:
+  '/api/Isolate/{isolateId}':
+    get:
+      tags:
+        - Isolate
+      parameters:
+        - name: isolateId
+          in: path
+          required: true
+          schema:
+            type: string
+            nullable: true
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Isolate'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Isolate'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+  /api/Isolate:
+    put:
+      tags:
+        - Isolate
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Approval'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: boolean
+            application/problem+json:
+              schema:
+                type: boolean
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+components:
+  schemas:
+    Isolate:
+      type: object
+      properties:
+        isolateId:
+          type: string
+          nullable: true
+        samplingDate:
+          type: string
+          format: date-time
+        receivedDate:
+          type: string
+          format: date-time
+        kma:
+          type: string
+          nullable: true
+        agents:
+          type: string
+          nullable: true
+        public:
+          type: boolean
+      additionalProperties: false
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type: string
+          nullable: true
+        title:
+          type: string
+          nullable: true
+        status:
+          type: integer
+          format: int32
+          nullable: true
+        detail:
+          type: string
+          nullable: true
+        instance:
+          type: string
+          nullable: true
+      additionalProperties:
+        type: object
+        additionalProperties: false
+    FieldApproval:
+      type: object
+      properties:
+        name:
+          type: string
+          nullable: true
+        value:
+          type: string
+          nullable: true
+      additionalProperties: false
+    Approval:
+      type: object
+      properties:
+        isolateId:
+          type: string
+          nullable: true
+        fields:
+          type: array
+          items:
+            $ref: '#/components/schemas/FieldApproval'
+          nullable: true
+      additionalProperties: false

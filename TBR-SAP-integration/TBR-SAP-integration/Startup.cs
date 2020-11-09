@@ -10,6 +10,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.OpenApi.Models;
+using TBR_SAP_integration.Repositories;
 
 namespace TBR_SAP_integration
 {
@@ -26,6 +28,23 @@ namespace TBR_SAP_integration
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.AddSwaggerGen(c =>
+            {
+                c.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
+                c.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Version = "v1",
+                    Title = "TBR-SAP",
+                    Description = "TBR integration for SAP",
+                });
+            });
+
+            LoadMockDependencies(services);
+        }
+
+        private void LoadMockDependencies(IServiceCollection services)
+        {
+            services.AddScoped<IIsolateRepository, MockIsolateRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -35,6 +54,14 @@ namespace TBR_SAP_integration
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("swagger/v1/swagger.json", "TBR integration for SAP");
+                c.RoutePrefix = string.Empty;
+            });
+
 
             app.UseHttpsRedirection();
 
