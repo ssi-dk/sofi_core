@@ -1,0 +1,29 @@
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  imageName: 'sap-api:$(Build.SourceBranchName)'
+
+steps:
+- script: docker build -f Dockerfile -t $(imageName) .
+  displayName: 'Docker build and test'
+
+- script: |
+    export id=$(docker images --filter "label=test=true" -q | head -1)
+    docker create --name testcontainer $id
+    docker cp testcontainer:/app/junit.xml ./junit.xml
+    docker rm testcontainer
+  displayName: 'Get test results'
+
+- task: PublishTestResults@2
+  inputs:
+    testResultsFiles: '**/junit.xml' 
+    searchFolder: '$(System.DefaultWorkingDirectory)/'
+    publishRunAttachments: true
+  displayName: 'Publish test results'
+
+- script: |
+    echo "Publishing docker image, but not really"
+    echo 'docker login -u $(dockerId) -p $(dockerPass) $(dockerid).azurecr.io'
+    echo 'docker push $(dockerId).azurecr.io/$(imageName)'
+  displayName: 'Publish docker image'
