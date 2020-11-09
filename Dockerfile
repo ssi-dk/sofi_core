@@ -8,11 +8,10 @@ COPY openapi-specs/SAP/SAP.yaml /app/openapi-specs/SAP/
 COPY ["main.py", "start.sh", "gunicorn_conf.py", "web", "/app/"]
 RUN chmod +x start.sh
 
-FROM base as testing
+FROM base AS testing
 COPY ./requirements-dev.txt .
 RUN pip install -r requirements-dev.txt
 LABEL test=true
 RUN pytest tests --junitxml=junit.xml; exit 0
 
-FROM base as final
-RUN rm -r /app/tests
+FROM base AS final
