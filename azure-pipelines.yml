@@ -14,6 +14,7 @@ steps:
     docker cp testcontainer:/app/junit.xml ./junit.xml
     docker rm testcontainer
   displayName: 'Get test results'
+  condition: succeededOrFailed()
 
 - task: PublishTestResults@2
   inputs:
@@ -21,6 +22,7 @@ steps:
     searchFolder: '$(System.DefaultWorkingDirectory)/'
     publishRunAttachments: true
   displayName: 'Publish test results'
+  condition: succeededOrFailed()
 
 - script: |
     echo "Publishing docker image, but not really"

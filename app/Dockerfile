@@ -9,14 +9,14 @@ RUN yarn global add react-scripts@3.4.3
 COPY . ./
 RUN yarn run build
 
-FROM build as testing
+FROM build AS testing
 ENV CI true
 LABEL test=true
 # RUN yarn run lint
 RUN yarn run test-ci
 
 # runtime environment
-FROM caddy:2.2.0-alpine
+FROM caddy:2.2.0-alpine AS final
 COPY --from=build /app/build /var/www/html
 COPY ./Caddyfile /etc/Caddyfile
 EXPOSE 3000
