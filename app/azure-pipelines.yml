@@ -2,7 +2,7 @@ pool:
   vmImage: 'ubuntu-latest'
 
 variables:
-  imageName: 'sap-web:$(Build.SourceBranchName)'
+  imageName: '$(dockerId)/sap-web:$(Build.SourceBranchName)'
 
 steps:
 - script: docker build -f Dockerfile -t $(imageName) .
