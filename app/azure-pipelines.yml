@@ -28,5 +28,5 @@ steps:
 
 - script: |
     docker login -u $(dockerId) -p $(dockerPass)
-    docker push $(dockerId)/$(imageName)
+    docker push $(imageName)
   displayName: 'Publish docker image'
