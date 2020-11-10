@@ -27,7 +27,6 @@ steps:
   condition: succeededOrFailed()
 
 - script: |
-    echo "Publishing docker image, but not really"
-    echo 'docker login -u $(dockerId) -p $(dockerPass) $(dockerid).azurecr.io'
-    echo 'docker push $(dockerId).azurecr.io/$(imageName)'
+    docker login -u $(dockerId) -p $(dockerPass)
+    docker push $(dockerId)/$(imageName)
   displayName: 'Publish docker image'
