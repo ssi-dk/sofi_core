@@ -1,4 +1,5 @@
 import { css } from "@emotion/core";
+import apptheme from "app/app.theme";
 
 export const flex = css({
   display: "flex",
@@ -14,7 +15,7 @@ export const reset = css({
     margin: 0,
     padding: 0,
     fontFamily: "sans-serif",
-    backgroundColor: "#FAFAFA",
+    backgroundColor: apptheme.colors.white,
   },
   "*": {
     boxSizing: "border-box",
@@ -23,7 +24,7 @@ export const reset = css({
 
 export const globalCss = css({
   body: {
-    backgroundColor: "#FDFDFD",
+    backgroundColor: apptheme.colors.white,
   },
   // ".react-datepicker-wrapper": {
   //   border: "1px solid #e2e8f0",

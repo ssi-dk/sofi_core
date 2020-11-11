@@ -10,10 +10,6 @@ import RequestPageOfAnalysis from "./analysis-query-configs";
 function AnalysisDataTable() {
   const columns = React.useMemo(
     (): Column<Analysis>[] => [
-      {
-        Header: "Row Index",
-        accessor: (row: any, i: number) => i,
-      },
       // {
       //  Header: "Run",
       //  columns: [
@@ -98,7 +94,13 @@ function AnalysisDataTable() {
 
   return (
     <>
-      <DataTable columns={columns} data={data} />
+      <DataTable<Analysis>
+        columns={columns}
+        data={data}
+        primaryKey="analysisId"
+        onSelect={() => { }}
+        onSelectMultiple={() => { }}
+      />
       {isPending && `Fetching... ${data.length}`}
       {isFinished && `Found ${data.length} records.`}
     </>
