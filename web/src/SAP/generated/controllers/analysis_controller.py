@@ -13,8 +13,8 @@ def get_analysis(paging_token=None, page_size=None):  # noqa: E501
 
     :param paging_token: opaque token to supply to get the next page of isolates
     :type paging_token: str
-    :param page_size:
-    :type page_size:
+    :param page_size: 
+    :type page_size: 
 
     :rtype: PageOfAnalysis
     """

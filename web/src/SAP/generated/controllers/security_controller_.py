@@ -12,4 +12,6 @@ def info_from_SAP_auth(token):
     :return: Decoded token information or None if token is invalid
     :rtype: dict | None
     """
-    return {"uid": "user_id"}
+    return {'uid': 'user_id'}
+
+

@@ -13,16 +13,23 @@ class TestAnalysisController(BaseTestCase):
     """AnalysisController integration test stubs"""
 
     def test_get_analysis(self):
-        """Test case for get_analysis"""
-        query_string = [("pagingToken", None), ("pageSize", 100)]
-        headers = {
-            "Accept": "application/json",
+        """Test case for get_analysis
+
+        
+        """
+        query_string = [('pagingToken', None),
+                        ('pageSize', 100)]
+        headers = { 
+            'Accept': 'application/json',
         }
         response = self.client.open(
-            "/api/analysis", method="GET", headers=headers, query_string=query_string
-        )
-        self.assert200(response, "Response body is : " + response.data.decode("utf-8"))
+            '/api/analysis',
+            method='GET',
+            headers=headers,
+            query_string=query_string)
+        self.assert200(response,
+                       'Response body is : ' + response.data.decode('utf-8'))
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     unittest.main()

@@ -32,16 +32,17 @@ class MetaDataEntry(object):
       attribute_map (dict): The key is attribute name
                             and the value is json key in definition.
     """
-    openapi_types = {"meta_field_name": "str", "meta_field_value": "str"}
-
-    attribute_map = {
-        "meta_field_name": "metaFieldName",
-        "meta_field_value": "metaFieldValue",
+    openapi_types = {
+        'meta_field_name': 'str',
+        'meta_field_value': 'str'
     }
 
-    def __init__(
-        self, meta_field_name=None, meta_field_value=None, local_vars_configuration=None
-    ):  # noqa: E501
+    attribute_map = {
+        'meta_field_name': 'metaFieldName',
+        'meta_field_value': 'metaFieldValue'
+    }
+
+    def __init__(self, meta_field_name=None, meta_field_value=None, local_vars_configuration=None):  # noqa: E501
         """MetaDataEntry - a model defined in OpenAPI"""  # noqa: E501
         if local_vars_configuration is None:
             local_vars_configuration = Configuration()
@@ -105,20 +106,18 @@ class MetaDataEntry(object):
         for attr, _ in six.iteritems(self.openapi_types):
             value = getattr(self, attr)
             if isinstance(value, list):
-                result[attr] = list(
-                    map(lambda x: x.to_dict() if hasattr(x, "to_dict") else x, value)
-                )
+                result[attr] = list(map(
+                    lambda x: x.to_dict() if hasattr(x, "to_dict") else x,
+                    value
+                ))
             elif hasattr(value, "to_dict"):
                 result[attr] = value.to_dict()
             elif isinstance(value, dict):
-                result[attr] = dict(
-                    map(
-                        lambda item: (item[0], item[1].to_dict())
-                        if hasattr(item[1], "to_dict")
-                        else item,
-                        value.items(),
-                    )
-                )
+                result[attr] = dict(map(
+                    lambda item: (item[0], item[1].to_dict())
+                    if hasattr(item[1], "to_dict") else item,
+                    value.items()
+                ))
             else:
                 result[attr] = value
 
