@@ -10,7 +10,7 @@ docker run --rm -v "${DIR}:/mnt" \
                 --user "$(id -u):$(id -g)" \
                 "openapitools/openapi-generator:cli-v4.3.0" \
                 generate \
-                -i "/mnt/openapi-specs/SAP/SAP.yaml" \
+                -i "/mnt/openapi_specs/SAP/SAP.yaml" \
                 -g typescript-redux-query \
                 -o /mnt/app/src/sap-client
 mv "${DIR}/app/src/sap-client/src/"* "${DIR}/app/src/sap-client"
@@ -21,11 +21,11 @@ docker run --rm -v "${DIR}:/mnt" \
                 --user "$(id -u):$(id -g)" \
                 "openapitools/openapi-generator:cli-v4.3.0" \
                 generate \
-                -i "/mnt/openapi-specs/SAP/SAP.yaml" \
+                -i "/mnt/openapi_specs/SAP/SAP.yaml" \
                 -g python-flask \
                 -o "/mnt/web/src/SAP" \
-                -t "/mnt/openapi-specs/SAP/templates" \
-                -c "/mnt/openapi-specs/SAP/SAP-config.yaml"
+                -t "/mnt/openapi_specs/SAP/templates" \
+                -c "/mnt/openapi_specs/SAP/SAP-config.yaml"
 
 rm -rf "${DIR}/web/src/SAP/generated"
 mv "${DIR}/web/src/SAP/web/src/SAP/generated" "${DIR}/web/src/SAP/generated"

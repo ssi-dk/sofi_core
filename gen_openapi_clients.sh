@@ -1,6 +1,6 @@
 rm -r web/src/services/lims/openapi
 docker run --rm --user "$(id -u):$(id -g)" -v "${PWD}:/local" openapitools/openapi-generator-cli generate \
-    -i /local/openapi-specs/lims.v1.yaml \
+    -i /local/openapi_specs/lims.v1.yaml \
     -g python \
     -o /local \
     --additional-properties packageName=web.src.services.lims.openapi \
