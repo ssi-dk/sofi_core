@@ -3,9 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using TBR_SAP_integration.Models;
+using DG.SAP.TBRIntegration.Models;
 
-namespace TBR_SAP_integration.Repositories
+namespace DG.SAP.TBRIntegration.Repositories
 {
     public class MockIsolateRepository : IIsolateRepository
     {

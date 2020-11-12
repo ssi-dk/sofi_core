@@ -7,16 +7,16 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS build
 WORKDIR /src
-COPY ["TBR-SAP-integration/TBR-SAP-integration.csproj", "TBR-SAP-integration/"]
-RUN dotnet restore "TBR-SAP-integration/TBR-SAP-integration.csproj"
+COPY ["DG.SAP.TBRIntegration/DG.SAP.TBRIntegration.csproj", "DG.SAP.TBRIntegration/"]
+RUN dotnet restore "DG.SAP.TBRIntegration/DG.SAP.TBRIntegration.csproj"
 COPY . .
-WORKDIR "/src/TBR-SAP-integration"
-RUN dotnet build "TBR-SAP-integration.csproj" -c Release -o /app/build
+WORKDIR "/src/DG.SAP.TBRIntegration"
+RUN dotnet build "DG.SAP.TBRIntegration.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "TBR-SAP-integration.csproj" -c Release -o /app/publish
+RUN dotnet publish "DG.SAP.TBRIntegration.csproj" -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "TBR-SAP-integration.dll"]
+ENTRYPOINT ["dotnet", "DG.SAP.TBRIntegration.dll"]

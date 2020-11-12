@@ -4,12 +4,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using TBR_SAP_integration.Models;
-using TBR_SAP_integration.Repositories;
+using DG.SAP.TBRIntegration.Models;
+using DG.SAP.TBRIntegration.Repositories;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
-namespace TBR_SAP_integration.Controllers
+namespace DG.SAP.TBRIntegration.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

@@ -41,7 +41,7 @@ services:
       - ./openapi-specs:/openapi-specs
   
   tbr_integration:
-    build: ./TBR-SAP-integration
+    build: ./sap_tbr_integration
     ports:
       - '5000:80'
       - '5001:443'

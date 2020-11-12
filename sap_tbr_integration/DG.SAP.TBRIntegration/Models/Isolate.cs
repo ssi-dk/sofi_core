@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace TBR_SAP_integration.Models
+namespace DG.SAP.TBRIntegration.Models
 {
     public class Isolate
     {
