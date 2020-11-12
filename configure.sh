@@ -23,9 +23,9 @@ docker run --rm -v "${DIR}:/mnt" \
                 generate \
                 -i "/mnt/openapi-specs/SAP/SAP.yaml" \
                 -g python-flask \
-                -o "/mnt/web/SAP" \
+                -o "/mnt/web/src/SAP" \
                 -t "/mnt/openapi-specs/SAP/templates" \
                 -c "/mnt/openapi-specs/SAP/SAP-config.yaml"
 
-rm -rf "${DIR}/web/SAP/generated"
-mv "${DIR}/web/SAP/web/SAP/generated" "${DIR}/web/SAP/generated"
+rm -rf "${DIR}/web/src/SAP/generated"
+mv "${DIR}/web/src/SAP/web/src/SAP/generated" "${DIR}/web/src/SAP/generated"
