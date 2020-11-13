@@ -1,4 +1,4 @@
-version: '3.8'
+version: '3.4'
 services:
   sap_api:
     environment:
@@ -23,7 +23,7 @@ services:
   mocks:
     image: caddy
     volumes:
-      - ./openapi-specs/Caddyfile:/etc/caddy/Caddyfile
+      - ./openapi_specs/Caddyfile:/etc/caddy/Caddyfile
     ports:
       - '4099:4099'
     depends_on:
@@ -31,13 +31,13 @@ services:
       - sap_mock
   lims_mock:
     image: stoplight/prism:latest
-    command: mock /openapi-specs/lims.v1.yaml -h 0.0.0.0 -p 4021
+    command: mock /openapi_specs/lims.v1.yaml -h 0.0.0.0 -p 4021
     volumes:
-      - ./openapi-specs:/openapi-specs
+      - ./openapi_specs:/openapi_specs
   sap_mock:
     image: stoplight/prism:latest
-    command: mock /openapi-specs/SAP/SAP.yaml -h 0.0.0.0 -p 4011 -d
+    command: mock /openapi_specs/SAP/SAP.yaml -h 0.0.0.0 -p 4011 -d
     volumes:
-      - ./openapi-specs:/openapi-specs
+      - ./openapi_specs:/openapi_specs
 
 
