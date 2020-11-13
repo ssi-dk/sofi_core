@@ -149,6 +149,10 @@ class ConnectionsApi(object):
 
         # Authentication setting
         auth_settings = []  # noqa: E501
+        
+        response_types_map = {
+            200: "MessageResponse",
+        }
 
         return self.api_client.call_api(
             '/connections/{connectionId}', 'DELETE',
@@ -158,7 +162,7 @@ class ConnectionsApi(object):
             body=body_params,
             post_params=form_params,
             files=local_var_files,
-            response_type='MessageResponse',  # noqa: E501
+            response_types_map=response_types_map,
             auth_settings=auth_settings,
             async_req=local_var_params.get('async_req'),
             _return_http_data_only=local_var_params.get('_return_http_data_only'),  # noqa: E501
@@ -280,6 +284,10 @@ class ConnectionsApi(object):
 
         # Authentication setting
         auth_settings = []  # noqa: E501
+        
+        response_types_map = {
+            200: "MessageResponse",
+        }
 
         return self.api_client.call_api(
             '/connections/{connectionId}', 'GET',
@@ -289,7 +297,7 @@ class ConnectionsApi(object):
             body=body_params,
             post_params=form_params,
             files=local_var_files,
-            response_type='MessageResponse',  # noqa: E501
+            response_types_map=response_types_map,
             auth_settings=auth_settings,
             async_req=local_var_params.get('async_req'),
             _return_http_data_only=local_var_params.get('_return_http_data_only'),  # noqa: E501
@@ -411,6 +419,10 @@ class ConnectionsApi(object):
 
         # Authentication setting
         auth_settings = []  # noqa: E501
+        
+        response_types_map = {
+            201: "ConnectionCreateResponse",
+        }
 
         return self.api_client.call_api(
             '/connections', 'POST',
@@ -420,7 +432,7 @@ class ConnectionsApi(object):
             body=body_params,
             post_params=form_params,
             files=local_var_files,
-            response_type='ConnectionCreateResponse',  # noqa: E501
+            response_types_map=response_types_map,
             auth_settings=auth_settings,
             async_req=local_var_params.get('async_req'),
             _return_http_data_only=local_var_params.get('_return_http_data_only'),  # noqa: E501
@@ -553,6 +565,10 @@ class ConnectionsApi(object):
 
         # Authentication setting
         auth_settings = []  # noqa: E501
+        
+        response_types_map = {
+            200: "MessageResponse",
+        }
 
         return self.api_client.call_api(
             '/connections/{connectionId}', 'PUT',
@@ -562,7 +578,7 @@ class ConnectionsApi(object):
             body=body_params,
             post_params=form_params,
             files=local_var_files,
-            response_type='MessageResponse',  # noqa: E501
+            response_types_map=response_types_map,
             auth_settings=auth_settings,
             async_req=local_var_params.get('async_req'),
             _return_http_data_only=local_var_params.get('_return_http_data_only'),  # noqa: E501

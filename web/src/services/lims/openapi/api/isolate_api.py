@@ -149,6 +149,10 @@ class IsolateApi(object):
 
         # Authentication setting
         auth_settings = []  # noqa: E501
+        
+        response_types_map = {
+            200: "IsolateGetResponse",
+        }
 
         return self.api_client.call_api(
             '/actions/GetIsolate', 'POST',
@@ -158,7 +162,7 @@ class IsolateApi(object):
             body=body_params,
             post_params=form_params,
             files=local_var_files,
-            response_type='IsolateGetResponse',  # noqa: E501
+            response_types_map=response_types_map,
             auth_settings=auth_settings,
             async_req=local_var_params.get('async_req'),
             _return_http_data_only=local_var_params.get('_return_http_data_only'),  # noqa: E501
@@ -280,6 +284,10 @@ class IsolateApi(object):
 
         # Authentication setting
         auth_settings = []  # noqa: E501
+        
+        response_types_map = {
+            200: "IsolateUpdateResponse",
+        }
 
         return self.api_client.call_api(
             '/actions/UpdateIsolate', 'POST',
@@ -289,7 +297,7 @@ class IsolateApi(object):
             body=body_params,
             post_params=form_params,
             files=local_var_files,
-            response_type='IsolateUpdateResponse',  # noqa: E501
+            response_types_map=response_types_map,
             auth_settings=auth_settings,
             async_req=local_var_params.get('async_req'),
             _return_http_data_only=local_var_params.get('_return_http_data_only'),  # noqa: E501
