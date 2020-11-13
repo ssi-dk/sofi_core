@@ -3,3 +3,4 @@
 app/
 
 **/*.pyc
+**/azure-pipelines.yml

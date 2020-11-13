@@ -1,7 +1,9 @@
-version: '3'
+version: '3.4'
 services:
   sap_api:
-    build: .
+    build: 
+      context: .
+      target: final
     expose:
       - 6000
     environment:

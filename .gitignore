@@ -137,4 +137,3 @@ dmypy.json
 
 # openapi generator
 .openapi-generator
-.openapi-generator-ignore
