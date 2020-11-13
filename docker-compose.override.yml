@@ -39,5 +39,10 @@ services:
     command: mock /openapi_specs/SAP/SAP.yaml -h 0.0.0.0 -p 4011 -d
     volumes:
       - ./openapi_specs:/openapi_specs
-
+  
+  tbr_integration:
+    build: ./sap_tbr_integration
+    ports:
+      - '5000:80'
+      - '5001:443'
 

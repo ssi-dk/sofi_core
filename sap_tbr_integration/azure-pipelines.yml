@@ -1,0 +1,38 @@
+trigger:
+  - master
+  
+pool:
+  vmImage: 'windows-latest'
+
+variables:
+  buildConfiguration: 'Release'
+
+steps:
+- task: DotNetCoreCLI@2
+  inputs:
+    projects: 'TBR-SAP-integration'
+    command: restore
+
+- task: DotNetCoreCLI@2
+  inputs:
+    projects: 'TBR-SAP-integration'
+    command: 'build'
+    arguments: '--configuration $(buildConfiguration) --no-restore'
+  displayName: 'dotnet build $(buildConfiguration)'
+
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet publish backend'
+  name: PublishBackendProject
+  inputs:
+    command: publish
+    projects: 'TBR-SAP-integration'
+    publishWebProjects: false
+    arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory) /p:WebPublishMethod=Package'
+    zipAfterPublish: true
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Build artifacts'
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'drop'
+    publishLocation: 'Container'

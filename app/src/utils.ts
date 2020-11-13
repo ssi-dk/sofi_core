@@ -1,10 +1,10 @@
-type StringOrNumber = string | number;
+export type StringOrNumber = string | number;
 
-type NotEmpty = {
+export type NotEmpty = {
   [K in StringOrNumber]: any;
 };
 
-type IndexableOf<T extends NotEmpty> = keyof Pick<
+export type IndexableOf<T extends NotEmpty> = keyof Pick<
   T,
   { [K in keyof T]: T[K] extends string | number ? K : never }[keyof T]
 >;
