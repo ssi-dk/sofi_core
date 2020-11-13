@@ -1,4 +1,6 @@
 import { css } from "@emotion/core";
+import { flex } from "app/app.styles";
+import theme from "app/app.theme";
 
 export const cell = css({
   margin: 0,
@@ -12,6 +14,10 @@ export const cell = css({
   ":last-child": {},
 });
 
+export const selectedCell = css({
+  backgroundColor: theme.colors.blue[200]
+});
+
 export default css({
   display: "block",
   maxWidth: "100%",
@@ -21,21 +27,33 @@ export default css({
     overflowX: "hidden",
     overflowY: "hidden",
   },
-  table: {
+  "div[role=table]": {
     width: "100%",
     borderSpacing: 0,
   },
-  tr: {
+  "div[role=row]": {
     ":last-child": {
       td: {
         borderBottom: 0,
       },
     },
-    borderBottom: "1px solid rgba(0,0,0,0.05)",
+    borderBottom: theme.borders["1px"],
   },
-  thead: {
-    borderBottom: "2px solid rgba(0,0,0,0.05)",
+  "div[role=rowgroup]": {
+    borderBottom: theme.borders["2px"],
   },
-  th: { ...cell },
-  td: { ...cell },
+  "div[role=separator]": css({
+    borderLeft: theme.borders["2px"],
+    position: "absolute",
+    display: "inline-block",
+    right: 0,
+    top: 0,
+    width: "1ch",
+    height: "100%"
+  }),
+  "[role=columnheader]": css({
+    fontWeight: 'bold',
+    borderBottom: theme.borders["2px"],
+  }, cell),
+  "div[role=cell]": { ...cell }
 });
