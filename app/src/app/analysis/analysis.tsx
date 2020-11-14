@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Flex, Divider } from "@chakra-ui/core";
+import { Box, Flex } from "@chakra-ui/react";
 import AnalysisDataTable from "./data-table/analysis-data-table";
 import AnalysisHeader from "./header/analysis-header";
 import AnalysisSidebar from "./sidebar/analysis-sidebar";

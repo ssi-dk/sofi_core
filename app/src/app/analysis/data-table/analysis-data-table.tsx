@@ -98,8 +98,8 @@ function AnalysisDataTable() {
         columns={columns}
         data={data}
         primaryKey="analysisId"
-        onSelect={() => { }}
-        onSelectMultiple={() => { }}
+        onSelect={() => {}}
+        onSelectMultiple={() => {}}
       />
       {isPending && `Fetching... ${data.length}`}
       {isFinished && `Found ${data.length} records.`}

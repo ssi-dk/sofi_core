@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { Box, Heading, Text, Grid, Flex, Button, SimpleGrid } from "@chakra-ui/core";
+import { Text, Button, SimpleGrid } from "@chakra-ui/react";
 import Select from "react-select";
 import { selectTheme } from "app/app.styles";
-import DatePicker from "react-datepicker"
+import DatePicker from "react-datepicker";
 
 import { useTranslation } from "react-i18next";
 import FilterBox from "../filter-box";
@@ -29,7 +29,14 @@ const rfvOptions = [
 export default function MetaFilter() {
   const { t, i18n } = useTranslation();
   const ExampleCustomInput = ({ value, onClick }) => (
-    <Button onClick={onClick} variant="outline" pl={4} pr={8} backgroundColor={"#fff"} fontWeight={500}>
+    <Button
+      onClick={onClick}
+      variant="outline"
+      pl={4}
+      pr={8}
+      backgroundColor="#fff"
+      fontWeight={500}
+    >
       {value}
     </Button>
   );
@@ -39,18 +46,18 @@ export default function MetaFilter() {
       <Text>Prøvetagningsdato</Text>
       <SimpleGrid columns={2}>
         <DatePicker
-            selected={startDate}
-            isClearable
-            onChange={c => setStartDate(c as any)}
-            placeholderText="-"
-            customInput={<ExampleCustomInput value='' onClick={_=>{}} />}
+          selected={startDate}
+          isClearable
+          onChange={(c) => setStartDate(c as any)}
+          placeholderText="-"
+          customInput={<ExampleCustomInput value="" onClick={(_) => {}} />}
         />
         <DatePicker
-            selected={startDate}
-            isClearable
-            onChange={c => setStartDate(c as any)}
-            placeholderText="-"
-            customInput={<ExampleCustomInput value='' onClick={_=>{}} />}
+          selected={startDate}
+          isClearable
+          onChange={(c) => setStartDate(c as any)}
+          placeholderText="-"
+          customInput={<ExampleCustomInput value="" onClick={(_) => {}} />}
         />
       </SimpleGrid>
       <Text mt={2}>{t("Organisation")}</Text>
@@ -60,18 +67,18 @@ export default function MetaFilter() {
       <Text mt={2}>{t("Modtagedato")}</Text>
       <SimpleGrid columns={2}>
         <DatePicker
-            selected={startDate}
-            isClearable
-            onChange={c => setStartDate(c as any)}
-            placeholderText="-"
-            customInput={<ExampleCustomInput value='' onClick={_=>{}} />}
+          selected={startDate}
+          isClearable
+          onChange={(c) => setStartDate(c as any)}
+          placeholderText="-"
+          customInput={<ExampleCustomInput value="" onClick={(_) => {}} />}
         />
         <DatePicker
-            selected={startDate}
-            isClearable
-            onChange={c => setStartDate(c as any)}
-            placeholderText="-"
-            customInput={<ExampleCustomInput value='' onClick={_=>{}} />}
+          selected={startDate}
+          isClearable
+          onChange={(c) => setStartDate(c as any)}
+          placeholderText="-"
+          customInput={<ExampleCustomInput value="" onClick={(_) => {}} />}
         />
       </SimpleGrid>
       <Text mt={2}>{t("Dyreart")}</Text>

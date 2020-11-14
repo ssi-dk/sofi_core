@@ -1,7 +1,7 @@
 import React from "react";
 import Select from "react-select";
 import { selectTheme } from "app/app.styles";
-import { Text } from "@chakra-ui/core";
+import { Text } from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
 import FilterBox from "../filter-box";
 

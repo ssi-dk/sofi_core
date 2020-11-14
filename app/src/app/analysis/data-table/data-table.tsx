@@ -1,3 +1,4 @@
+/** @jsxRuntime classic */
 /** @jsx jsx */
 import React from "react";
 import {
@@ -10,14 +11,16 @@ import {
   useSortBy,
 } from "react-table";
 import { FixedSizeList } from "react-window";
+import { jsx, css } from "@emotion/react";
 import scrollbarWidth from "app/analysis/data-table/scrollbar-width-calculator";
-import dtStyle, { selectedCell } from "app/analysis/data-table/data-table.styles";
-import { jsx } from "@emotion/core";
-import SelectionCheckBox from "./selection-check-box";
+import dtStyle, {
+  selectedCell,
+} from "app/analysis/data-table/data-table.styles";
 import { IndexableOf, NotEmpty } from "utils";
+import SelectionCheckBox from "./selection-check-box";
 
 type DataTableSelection<T extends NotEmpty> = {
-  [K in IndexableOf<T>]: { [K in IndexableOf<T>]: boolean }
+  [K in IndexableOf<T>]: { [k in IndexableOf<T>]: boolean };
 };
 
 type DataTableProps<T extends NotEmpty> = {
@@ -39,28 +42,38 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
   const scrollBarSize = React.useMemo(() => scrollbarWidth(), []);
 
   const { columns, data, primaryKey, onSelect, onSelectMultiple } = props;
-  const [selection, setSelection] = React.useState({} as DataTableSelection<T>); 
+  const [selection, setSelection] = React.useState({} as DataTableSelection<T>);
 
-  const isInSelection = React.useCallback((cell: Cell<T, any>) => {
-    var row = cell.row.original[primaryKey];
-    var col = cell.column.id as IndexableOf<T>;
-    return selection[row] && selection[row][col];
-  }, [selection, primaryKey]);
+  const isInSelection = React.useCallback(
+    (cell: Cell<T, any>) => {
+      const row = cell.row.original[primaryKey];
+      const col = cell.column.id as IndexableOf<T>;
+      return selection[row] && selection[row][col];
+    },
+    [selection, primaryKey]
+  );
 
-  const getSelectionStyle = React.useCallback((cell: Cell<T, any>) => {
-    return isInSelection(cell) ? selectedCell : [];
-  }, [isInSelection]);
+  const getSelectionStyle = React.useCallback(
+    (cell: Cell<T, any>) => {
+      return isInSelection(cell) ? selectedCell : [];
+    },
+    [isInSelection]
+  );
 
-  const onSelectCell = React.useCallback((cell: Cell<T, any>) => {
-    if (cell.column.id === "selection") return; // cannot select the selection checkbox
-    const row = cell.row.original[primaryKey];
-    const col = cell.column.id as IndexableOf<T>;
-    const incSel = { ...selection, [row]: { ...(selection[row] || {}), [col]: !isInSelection(cell) } };
-    setSelection(incSel);
-    onSelect(row, Object.keys((selection[row] || {})), cell.row.original);
-  }, [onSelect, isInSelection, selection, primaryKey])
-
-
+  const onSelectCell = React.useCallback(
+    (cell: Cell<T, any>) => {
+      if (cell.column.id === "selection") return; // cannot select the selection checkbox
+      const row = cell.row.original[primaryKey];
+      const col = cell.column.id as IndexableOf<T>;
+      const incSel = {
+        ...selection,
+        [row]: { ...(selection[row] || {}), [col]: !isInSelection(cell) },
+      };
+      setSelection(incSel);
+      onSelect(row, Object.keys(selection[row] || {}), cell.row.original);
+    },
+    [onSelect, isInSelection, selection, primaryKey]
+  );
 
   const {
     getTableProps,
@@ -79,73 +92,112 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
     useResizeColumns,
     useSortBy
   );
-  
+
   const calcTableSelectionState = React.useCallback(() => {
     // TODO: Probably have to filter out 'unapprovable' columns when we know what those are
-    const columnCount = columns.filter(x => typeof(x.accessor) === "string").length;
-    const count = Object.values(selection)
-                        .reduce((acc: number, val) => acc + Object.values(val).reduce((a, v) => v ? a + 1 : a, 0), 0);
-    if (count === 0) return {checked: false, indeterminate: false};
-    if (count === columnCount * rows.length) return {checked: true, indeterminate: false};
-    return {indeterminate: true, checked: false};
+    const columnCount = columns.filter((x) => typeof x.accessor === "string")
+      .length;
+    const count = Object.values(selection).reduce(
+      (acc: number, val) =>
+        acc + Object.values(val).reduce((a, v) => (v ? a + 1 : a), 0),
+      0
+    );
+    if (count === 0) return { checked: false, indeterminate: false };
+    if (count === columnCount * rows.length)
+      return { checked: true, indeterminate: false };
+    return { indeterminate: true, checked: false };
   }, [selection, rows, columns]);
 
-  const calcRowSelectionState = React.useCallback((row: Row<T>) => {
-    const r = selection[row.original[primaryKey]] || {};
-    // TODO: Probably have to filter out 'unapprovable' columns when we know what those are
-    const columnCount = columns.filter(x => typeof(x.accessor) === "string").length;
-    const count = Object.values(r).reduce((acc: number, val) => val ? acc + 1 : acc, 0);
-    if (count === 0) return {checked: false, indeterminate: false};
-    if (count === columnCount) return {checked: true, indeterminate: false};
-    return {indeterminate: true, checked: false};
-  }, [selection, primaryKey, columns]);
+  const calcRowSelectionState = React.useCallback(
+    (row: Row<T>) => {
+      const r = selection[row.original[primaryKey]] || {};
+      // TODO: Probably have to filter out 'unapprovable' columns when we know what those are
+      const columnCount = columns.filter((x) => typeof x.accessor === "string")
+        .length;
+      const count = Object.values(r).reduce(
+        (acc: number, val) => (val ? acc + 1 : acc),
+        0
+      );
+      if (count === 0) return { checked: false, indeterminate: false };
+      if (count === columnCount) return { checked: true, indeterminate: false };
+      return { indeterminate: true, checked: false };
+    },
+    [selection, primaryKey, columns]
+  );
 
-  const onSelectRow = React.useCallback((row: Row<T>) => {
-    const {checked} = calcRowSelectionState(row);
-    const id = row.original[primaryKey];
-    const cols = columns.filter(x => typeof(x.accessor) === "string")
-                        .map(x => ({[x.accessor as string]: !checked}))
-                        .reduce((acc, val) => ({...acc, ...val}));
-    const incSel = { ...selection, [id]: {...cols} };
-    setSelection(incSel);
-    onSelect(id, Object.keys(cols), row.original);
-  }, [onSelect, selection, primaryKey, columns, calcRowSelectionState])
+  const onSelectRow = React.useCallback(
+    (row: Row<T>) => {
+      const { checked } = calcRowSelectionState(row);
+      const id = row.original[primaryKey];
+      const cols = columns
+        .filter((x) => typeof x.accessor === "string")
+        .map((x) => ({ [x.accessor as string]: !checked }))
+        .reduce((acc, val) => ({ ...acc, ...val }));
+      const incSel = { ...selection, [id]: { ...cols } };
+      setSelection(incSel);
+      onSelect(id, Object.keys(cols), row.original);
+    },
+    [onSelect, selection, primaryKey, columns, calcRowSelectionState]
+  );
 
   const onSelectAllRows = React.useCallback(() => {
-    const {checked} = calcTableSelectionState();
-    const allCols = columns.filter(x => typeof(x.accessor) === "string")
-                           .map(x => ({[x.accessor as string]: !checked}))
-                           .reduce((acc, val) => ({...acc, ...val})); 
-    const sel = rows.map(r => ({ [r.original[primaryKey]]: allCols}))
-                    .reduce((acc, val) => ({...acc, ...val}));
+    const { checked } = calcTableSelectionState();
+    const allCols = columns
+      .filter((x) => typeof x.accessor === "string")
+      .map((x) => ({ [x.accessor as string]: !checked }))
+      .reduce((acc, val) => ({ ...acc, ...val }));
+    const sel = rows
+      .map((r) => ({ [r.original[primaryKey]]: allCols }))
+      .reduce((acc, val) => ({ ...acc, ...val }));
     const incSel = { ...selection, ...sel };
     setSelection(incSel);
     onSelectMultiple(incSel);
-  }, [onSelectMultiple, selection, primaryKey, rows, columns, calcTableSelectionState])
+  }, [
+    onSelectMultiple,
+    selection,
+    primaryKey,
+    rows,
+    columns,
+    calcTableSelectionState,
+  ]);
 
   const RenderRow = React.useCallback(
     ({ index, style }) => {
       const row = rows[index];
       prepareRow(row);
       return (
-        <div role="row"
+        <div
+          role="row"
           {...row.getRowProps({
             style,
           })}
         >
-          <SelectionCheckBox onClick={() => onSelectRow(row)} {...calcRowSelectionState(row)} />
+          <SelectionCheckBox
+            onClick={() => onSelectRow(row)}
+            {...calcRowSelectionState(row)}
+          />
           {row.cells.map((cell) => (
-            <div role="cell"
-                 css={getSelectionStyle(cell)}
-                 onClick={() => onSelectCell(cell)}
-                 key={cell.getCellProps().key} {...cell.getCellProps()}>
+            <div
+              role="cell"
+              css={getSelectionStyle(cell)}
+              onClick={() => onSelectCell(cell)}
+              key={cell.getCellProps().key}
+              {...cell.getCellProps()}
+            >
               {cell.render("Cell")}
             </div>
           ))}
         </div>
       );
     },
-    [prepareRow, rows, getSelectionStyle, onSelectCell, onSelectRow, calcRowSelectionState]
+    [
+      prepareRow,
+      rows,
+      getSelectionStyle,
+      onSelectCell,
+      onSelectRow,
+      calcRowSelectionState,
+    ]
   );
 
   // Render the UI for your table
@@ -155,18 +207,25 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
         <div role="rowgroup">
           {headerGroups.map((headerGroup) => (
             <div role="row" {...headerGroup.getHeaderGroupProps()}>
-              <SelectionCheckBox onClick={() => onSelectAllRows()} {...calcTableSelectionState()} />
+              <SelectionCheckBox
+                onClick={() => onSelectAllRows()}
+                {...calcTableSelectionState()}
+              />
               {headerGroup.headers.map((column) => (
-                <div role="columnheader" {...column.getHeaderProps(column.getSortByToggleProps())} key={column.id}>
+                <div
+                  role="columnheader"
+                  {...column.getHeaderProps(column.getSortByToggleProps())}
+                  key={column.id}
+                >
                   {column.render("Header")}
                   <span>
                     {column.isSorted
                       ? column.isSortedDesc
-                        ? ' 🔽'
-                        : ' 🔼'
-                      : ''}
+                        ? " 🔽"
+                        : " 🔼"
+                      : ""}
                   </span>
-                  <div role="separator" {...column.getResizerProps()}/>
+                  <div role="separator" {...column.getResizerProps()} />
                 </div>
               ))}
             </div>

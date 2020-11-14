@@ -1,4 +1,4 @@
-import { theme } from "@chakra-ui/core";
+import { theme } from "@chakra-ui/react";
 
 export default {
   ...theme,
@@ -9,5 +9,5 @@ export default {
     ...theme.borders,
     "1px": "1px solid rgba(0,0,0,0.05)",
     "2px": "2px solid rgba(0,0,0,0.05)",
-  }
+  },
 };

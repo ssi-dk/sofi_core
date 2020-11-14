@@ -1,5 +1,4 @@
-import { css } from "@emotion/core";
-import { flex } from "app/app.styles";
+import { css } from "@emotion/react";
 import theme from "app/app.theme";
 
 export const cell = css({
@@ -15,7 +14,7 @@ export const cell = css({
 });
 
 export const selectedCell = css({
-  backgroundColor: theme.colors.blue[200]
+  backgroundColor: theme.colors.blue[200],
 });
 
 export default css({
@@ -49,11 +48,14 @@ export default css({
     right: 0,
     top: 0,
     width: "1ch",
-    height: "100%"
+    height: "100%",
   }),
-  "[role=columnheader]": css({
-    fontWeight: 'bold',
-    borderBottom: theme.borders["2px"],
-  }, cell),
-  "div[role=cell]": { ...cell }
+  "[role=columnheader]": css(
+    {
+      fontWeight: "bold",
+      borderBottom: theme.borders["2px"],
+    },
+    cell
+  ),
+  "div[role=cell]": { ...cell },
 });

@@ -1,22 +1,18 @@
-/** @jsx jsx */
-import { useDispatch } from "react-redux";
-import { Global, jsx, css } from "@emotion/core";
-import "./i18n";
+import React from "react";
+import { Global } from "@emotion/react";
+import { ChakraProvider, Box } from "@chakra-ui/react";
 import appTheme from "app/app.theme";
-import { ThemeProvider, CSSReset, Box } from "@chakra-ui/core";
 import Analysis from "./analysis/analysis";
-import { flex, reset, globalCss } from "./app.styles";
+import { globalCss } from "./app.styles";
+import "./i18n";
 
 export default function App() {
-  const dispatch = useDispatch();
-
   return (
-    <ThemeProvider theme={appTheme}>
-      <CSSReset />
+    <ChakraProvider theme={appTheme}>
       <Global styles={globalCss} />
       <Box p={6}>
         <Analysis />
       </Box>
-    </ThemeProvider>
+    </ChakraProvider>
   );
 }

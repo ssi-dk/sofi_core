@@ -1,4 +1,4 @@
-import { css } from "@emotion/core";
+import { css } from "@emotion/react";
 import apptheme from "app/app.theme";
 
 export const flex = css({

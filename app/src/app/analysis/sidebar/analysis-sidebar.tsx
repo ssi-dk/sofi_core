@@ -1,5 +1,5 @@
 import React from "react";
-import { Stack, Box } from "@chakra-ui/core";
+import { Box } from "@chakra-ui/react";
 import MetaFilter from "./meta-filter/meta-filter";
 import AnalysisFilter from "./analysis-filter/analysis-filter";
 
