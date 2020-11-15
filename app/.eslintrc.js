@@ -40,7 +40,7 @@ module.exports = {
     "import/prefer-default-export": "warn",
     "react/destructuring-assignment": "warn",
     'prettier/prettier': [
-      'error',
+      'warn',
       {
         endOfLine: 'auto',
       },

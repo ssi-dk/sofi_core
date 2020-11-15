@@ -68,10 +68,6 @@ function AnalysisDataTable() {
       // {
       //   Header: "Status",
       //   columns: [
-      {
-        Header: "Approved",
-        accessor: "approved",
-      },
       //   ],
       // },
     ],

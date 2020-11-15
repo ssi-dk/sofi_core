@@ -1,4 +1,4 @@
-http://localhost {
+:80, :443 {
     route /api/* {
         reverse_proxy sap_api:6000
     }
