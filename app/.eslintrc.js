@@ -39,6 +39,7 @@ module.exports = {
     "@typescript-eslint/ban-types": "warn",
     "import/prefer-default-export": "warn",
     "react/destructuring-assignment": "warn",
+    "no-param-reassign": "warn",
     'prettier/prettier': [
       'warn',
       {

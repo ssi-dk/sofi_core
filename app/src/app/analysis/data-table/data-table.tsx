@@ -17,6 +17,7 @@ import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { jsx, css } from "@emotion/react";
 import scrollbarWidth from "app/analysis/data-table/scrollbar-width-calculator";
 import dtStyle, {
+  columnNameStyle,
   selectedCell,
 } from "app/analysis/data-table/data-table.styles";
 import { IndexableOf, NotEmpty } from "utils";
@@ -79,6 +80,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
   );
 
   const {
+    toggleSortBy,
     getTableProps,
     getTableBodyProps,
     headerGroups,
@@ -250,7 +252,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
                 currentColOrder.current = allColumns.map((o) => o.id);
               }}
               onDragEnd={() => {}}
-              onDragUpdate={(dragUpdateObj, b) => {
+              onDragUpdate={(dragUpdateObj) => {
                 const colOrder = [...currentColOrder.current];
                 const sIndex = dragUpdateObj.source.index;
                 const dIndex =
@@ -264,13 +266,12 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
               }}
             >
               <Droppable droppableId="droppable" direction="horizontal">
-                {(droppableProvided, _) => (
+                {(droppableProvided) => (
                   <React.Fragment>
                     <div
                       role="row"
                       {...headerGroup.getHeaderGroupProps()}
                       ref={droppableProvided.innerRef}
-                      className="row header-group"
                     >
                       <SelectionCheckBox
                         onClick={() => onSelectAllRows()}
@@ -283,37 +284,41 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
                           index={index}
                           isDragDisabled={!(column as any).accessor}
                         >
-                          {(provided, __) => {
+                          {(provided) => {
                             return (
                               <div
                                 role="columnheader"
+                                ref={provided.innerRef}
                                 key={column.id}
                                 {...column.getHeaderProps(
                                   column.getSortByToggleProps()
                                 )}
                               >
                                 <div
-                                  {...provided.draggableProps}
                                   {...provided.dragHandleProps}
-                                  ref={provided.innerRef}
+                                  {...provided.draggableProps}
                                 >
                                   <SelectionCheckBox
                                     onClick={() => onSelectCol(column)}
                                     {...calcColSelectionState(column)}
                                   />
-                                  {column.render("Header")}
-                                  <span>
+                                  <span>{column.render("Header")}</span>
+                                  <button type="button">
                                     {column.isSorted
                                       ? column.isSortedDesc
-                                        ? " 🔽"
-                                        : " 🔼"
-                                      : ""}
-                                  </span>
-                                  <div
-                                    role="separator"
-                                    {...column.getResizerProps()}
-                                  />
+                                        ? " ⬇"
+                                        : " ⬆"
+                                      : " ⬍"}
+                                  </button>
                                 </div>
+                                <div
+                                  role="separator"
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                  }}
+                                  {...column.getResizerProps()}
+                                />
                               </div>
                             );
                           }}

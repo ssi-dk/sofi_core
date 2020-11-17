@@ -1,8 +1,13 @@
-import { css } from "@emotion/react";
+import { css, keyframes } from "@emotion/react";
 import theme from "app/app.theme";
 
+export const columnNameStyle = css({
+  textAlign: "left",
+  textOverflow: "ellipsis",
+});
+
 export const cell = css({
-  margin: 0,
+  margin: "2px",
   width: "1%",
   padding: "0.8rem",
   overflow: "hidden",
@@ -13,8 +18,16 @@ export const cell = css({
   ":last-child": {},
 });
 
+const ants = keyframes`to { background-position: 100% 100% }`;
+
 export const selectedCell = css({
-  backgroundColor: theme.colors.blue[200],
+  border: "1px solid transparent",
+  background:
+    "linear-gradient(white, white) padding-box, repeating-linear-gradient(-45deg, black 0, black 25%, transparent 0, transparent 50%) 0 / .6em .6em",
+  animation: `${ants} 10s linear infinite`,
+  fontWeight: "bold",
+  maxWidth: "20em",
+  borderBottom: "1px solid transparent",
 });
 
 export default css({
@@ -56,6 +69,7 @@ export default css({
       alignItems: "center",
       fontWeight: "bold",
       borderBottom: theme.borders["2px"],
+      userSelect: "none",
     },
     cell
   ),
