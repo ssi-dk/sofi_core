@@ -4,11 +4,7 @@ import { ChakraProvider } from "@chakra-ui/react";
 import theme from "app/app.theme";
 
 const AllTheProviders = ({ children }) => {
-  return (
-    <ChakraProvider theme={theme}>
-      {children}
-    </ChakraProvider>
-  );
+  return <ChakraProvider theme={theme}>{children}</ChakraProvider>;
 };
 
 const customRender = (ui, options?) =>

@@ -52,6 +52,8 @@ export default css({
   }),
   "[role=columnheader]": css(
     {
+      display: "flex",
+      alignItems: "center",
       fontWeight: "bold",
       borderBottom: theme.borders["2px"],
     },

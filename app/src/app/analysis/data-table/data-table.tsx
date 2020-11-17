@@ -9,8 +9,11 @@ import {
   Cell,
   Row,
   useSortBy,
+  useColumnOrder,
+  IdType
 } from "react-table";
 import { FixedSizeList } from "react-window";
+import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { jsx, css } from "@emotion/react";
 import scrollbarWidth from "app/analysis/data-table/scrollbar-width-calculator";
 import dtStyle, {
@@ -82,6 +85,8 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
     rows,
     totalColumnsWidth,
     prepareRow,
+    allColumns,
+    setColumnOrder,
   } = useTable(
     {
       columns,
@@ -90,8 +95,11 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
     },
     useBlockLayout,
     useResizeColumns,
+    useColumnOrder,
     useSortBy
   );
+
+  const currentColOrder = React.useRef<Array<IdType<T>>>();
 
   const calcTableSelectionState = React.useCallback(() => {
     // TODO: Probably have to filter out 'unapprovable' columns when we know what those are
@@ -206,29 +214,85 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
       <div role="table" {...getTableProps()} className="tableWrap">
         <div role="rowgroup">
           {headerGroups.map((headerGroup) => (
-            <div role="row" {...headerGroup.getHeaderGroupProps()}>
-              <SelectionCheckBox
-                onClick={() => onSelectAllRows()}
-                {...calcTableSelectionState()}
-              />
-              {headerGroup.headers.map((column) => (
-                <div
-                  role="columnheader"
-                  {...column.getHeaderProps(column.getSortByToggleProps())}
-                  key={column.id}
-                >
-                  {column.render("Header")}
-                  <span>
-                    {column.isSorted
-                      ? column.isSortedDesc
-                        ? " 🔽"
-                        : " 🔼"
-                      : ""}
-                  </span>
-                  <div role="separator" {...column.getResizerProps()} />
-                </div>
-              ))}
-            </div>
+            <DragDropContext
+              onDragStart={() => {
+                currentColOrder.current = allColumns.map((o) => o.id);
+              }}
+              onDragEnd={() => {}}
+              onDragUpdate={(dragUpdateObj, b) => {
+                const colOrder = [...currentColOrder.current];
+                const sIndex = dragUpdateObj.source.index;
+                const dIndex =
+                  dragUpdateObj.destination && dragUpdateObj.destination.index;
+
+                if (typeof sIndex === "number" && typeof dIndex === "number") {
+                  colOrder.splice(sIndex, 1);
+                  colOrder.splice(dIndex, 0, dragUpdateObj.draggableId);
+                  setColumnOrder(colOrder);
+                }
+              }}
+            >
+              <Droppable droppableId="droppable" direction="horizontal">
+                {(droppableProvided, _) => (
+                  <React.Fragment>
+                    <div
+                      role="row"
+                      {...headerGroup.getHeaderGroupProps()}
+                      ref={droppableProvided.innerRef}
+                      className="row header-group"
+                    >
+                      <SelectionCheckBox
+                        onClick={() => onSelectAllRows()}
+                        {...calcTableSelectionState()}
+                      />
+                    </div>
+                    {headerGroup.headers.map((column, index) => (
+                      <Draggable
+                        key={column.id}
+                        draggableId={column.id}
+                        index={index}
+                        isDragDisabled={!(column as any).accessor}
+                      >
+                        {(provided, __) => {
+                          return (
+                            <div
+                              role="columnheader"
+                              key={column.id}
+                              {...column.getHeaderProps(
+                                column.getSortByToggleProps()
+                              )}
+                            >
+                              <div
+                                {...provided.draggableProps}
+                                {...provided.dragHandleProps}
+                                ref={provided.innerRef}
+                              >
+                                <SelectionCheckBox
+                                  onClick={() => onSelectAllRows()}
+                                  {...calcTableSelectionState()}
+                                />
+                                {column.render("Header")}
+                                <span>
+                                  {column.isSorted
+                                    ? column.isSortedDesc
+                                      ? " 🔽"
+                                      : " 🔼"
+                                    : ""}
+                                </span>
+                                <div
+                                  role="separator"
+                                  {...column.getResizerProps()}
+                                />
+                              </div>
+                            </div>
+                          );
+                        }}
+                      </Draggable>
+                    ))}
+                  </React.Fragment>
+                )}
+              </Droppable>
+            </DragDropContext>
           ))}
         </div>
 

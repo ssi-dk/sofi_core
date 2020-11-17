@@ -4,7 +4,8 @@ import React, { DetailedHTMLProps, forwardRef, useEffect } from "react";
 import { css, jsx } from "@emotion/react";
 
 const checkboxStyle = css({
-  margin: "0.8rem",
+  marginLeft: "5px",
+  marginRight: "5px",
 });
 
 type SelectionCheckBoxProps = DetailedHTMLProps<
