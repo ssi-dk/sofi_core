@@ -10,7 +10,7 @@ import {
   Row,
   useSortBy,
   useColumnOrder,
-  IdType
+  IdType,
 } from "react-table";
 import { FixedSizeList } from "react-window";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
@@ -133,6 +133,18 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
     [selection, primaryKey, columns]
   );
 
+  const calcColSelectionState = React.useCallback(
+    (col: Column<T>) => {
+      // TODO: Check if column is approvable and return visible: false if it isn't
+      const c = Object.values(selection).filter((x) => x[col.id] === true);
+      if (c.length === 0) return { checked: false, indeterminate: false };
+      if (c.length === rows.length)
+        return { checked: true, indeterminate: false };
+      return { indeterminate: true, checked: false, visible: true };
+    },
+    [selection, rows]
+  );
+
   const onSelectRow = React.useCallback(
     (row: Row<T>) => {
       const { checked } = calcRowSelectionState(row);
@@ -146,6 +158,25 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
       onSelect(id, Object.keys(cols), row.original);
     },
     [onSelect, selection, primaryKey, columns, calcRowSelectionState]
+  );
+
+  const onSelectCol = React.useCallback(
+    (col: Column<T>) => {
+      const { checked } = calcColSelectionState(col);
+      console.log(checked);
+      const sel = rows
+        .map((r) => ({
+          [r.original[primaryKey]]: {
+            ...selection[r.original[primaryKey]],
+            [col.id as string]: !checked,
+          },
+        }))
+        .reduce((acc, val) => ({ ...acc, ...val }));
+      const incSel = { ...selection, ...sel };
+      setSelection(incSel);
+      onSelectMultiple(incSel);
+    },
+    [onSelectMultiple, selection, primaryKey, rows, calcColSelectionState]
   );
 
   const onSelectAllRows = React.useCallback(() => {
@@ -245,50 +276,50 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
                         onClick={() => onSelectAllRows()}
                         {...calcTableSelectionState()}
                       />
-                    </div>
-                    {headerGroup.headers.map((column, index) => (
-                      <Draggable
-                        key={column.id}
-                        draggableId={column.id}
-                        index={index}
-                        isDragDisabled={!(column as any).accessor}
-                      >
-                        {(provided, __) => {
-                          return (
-                            <div
-                              role="columnheader"
-                              key={column.id}
-                              {...column.getHeaderProps(
-                                column.getSortByToggleProps()
-                              )}
-                            >
+                      {headerGroup.headers.map((column, index) => (
+                        <Draggable
+                          key={column.id}
+                          draggableId={column.id}
+                          index={index}
+                          isDragDisabled={!(column as any).accessor}
+                        >
+                          {(provided, __) => {
+                            return (
                               <div
-                                {...provided.draggableProps}
-                                {...provided.dragHandleProps}
-                                ref={provided.innerRef}
+                                role="columnheader"
+                                key={column.id}
+                                {...column.getHeaderProps(
+                                  column.getSortByToggleProps()
+                                )}
                               >
-                                <SelectionCheckBox
-                                  onClick={() => onSelectAllRows()}
-                                  {...calcTableSelectionState()}
-                                />
-                                {column.render("Header")}
-                                <span>
-                                  {column.isSorted
-                                    ? column.isSortedDesc
-                                      ? " 🔽"
-                                      : " 🔼"
-                                    : ""}
-                                </span>
                                 <div
-                                  role="separator"
-                                  {...column.getResizerProps()}
-                                />
+                                  {...provided.draggableProps}
+                                  {...provided.dragHandleProps}
+                                  ref={provided.innerRef}
+                                >
+                                  <SelectionCheckBox
+                                    onClick={() => onSelectCol(column)}
+                                    {...calcColSelectionState(column)}
+                                  />
+                                  {column.render("Header")}
+                                  <span>
+                                    {column.isSorted
+                                      ? column.isSortedDesc
+                                        ? " 🔽"
+                                        : " 🔼"
+                                      : ""}
+                                  </span>
+                                  <div
+                                    role="separator"
+                                    {...column.getResizerProps()}
+                                  />
+                                </div>
                               </div>
-                            </div>
-                          );
-                        }}
-                      </Draggable>
-                    ))}
+                            );
+                          }}
+                        </Draggable>
+                      ))}
+                    </div>
                   </React.Fragment>
                 )}
               </Droppable>
