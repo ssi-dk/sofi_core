@@ -1,8 +1,39 @@
 import { css, keyframes } from "@emotion/react";
 import theme from "app/app.theme";
+import {
+  DraggableStateSnapshot,
+  DraggingStyle,
+  NotDraggingStyle,
+} from "react-beautiful-dnd";
 
-export const columnNameStyle = css({
-  textAlign: "left",
+export const getColumnStyle = (
+  { isDragging, isDropAnimating }: DraggableStateSnapshot,
+  draggableStyle: DraggingStyle | NotDraggingStyle
+) =>
+  css({
+    ...draggableStyle,
+    userSelect: "none",
+    // prevent react-beautiful-dnd from blowing columns all over the place
+    ...(!isDragging && { transform: "translate(0,0) !important" }),
+    ...(!isDropAnimating && { transitionDuration: "0.001s" }),
+    textAlign: "left",
+    textOverflow: "ellipsis",
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+  });
+
+export const headerButton = css({
+  flex: "0 0 16px",
+  verticalAlign: "center",
+  alignSelf: "center",
+});
+
+export const headerName = css({
+  verticalAlign: "center",
+  flex: "1 1 auto",
+  overflow: "hidden",
+  textAlign: "center",
   textOverflow: "ellipsis",
 });
 
@@ -22,8 +53,9 @@ const ants = keyframes`to { background-position: 100% 100% }`;
 
 export const selectedCell = css({
   border: "1px solid transparent",
-  background:
-    "linear-gradient(white, white) padding-box, repeating-linear-gradient(-45deg, black 0, black 25%, transparent 0, transparent 50%) 0 / .6em .6em",
+  margin: "2px",
+  background: `linear-gradient(white, white) padding-box,
+     repeating-linear-gradient(-45deg, black 0, black 25%, transparent 0, transparent 50%) 0 / .6em .6em`,
   animation: `${ants} 10s linear infinite`,
   fontWeight: "bold",
   maxWidth: "20em",

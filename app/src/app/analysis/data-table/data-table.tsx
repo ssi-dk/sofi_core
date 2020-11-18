@@ -11,13 +11,16 @@ import {
   useSortBy,
   useColumnOrder,
   IdType,
+  useAbsoluteLayout,
 } from "react-table";
 import { FixedSizeList } from "react-window";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { jsx, css } from "@emotion/react";
 import scrollbarWidth from "app/analysis/data-table/scrollbar-width-calculator";
 import dtStyle, {
-  columnNameStyle,
+  getColumnStyle,
+  headerButton,
+  headerName,
   selectedCell,
 } from "app/analysis/data-table/data-table.styles";
 import { IndexableOf, NotEmpty } from "utils";
@@ -80,7 +83,6 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
   );
 
   const {
-    toggleSortBy,
     getTableProps,
     getTableBodyProps,
     headerGroups,
@@ -214,14 +216,20 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
           })}
         >
           <SelectionCheckBox
-            onClick={() => onSelectRow(row)}
+            onClick={(e) => {
+              onSelectRow(row);
+              e.preventDefault();
+              e.stopPropagation();
+            }}
             {...calcRowSelectionState(row)}
           />
           {row.cells.map((cell) => (
+            // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
             <div
               role="cell"
               css={getSelectionStyle(cell)}
               onClick={() => onSelectCell(cell)}
+              onKeyDown={() => onSelectCell(cell)}
               key={cell.getCellProps().key}
               {...cell.getCellProps()}
             >
@@ -265,7 +273,10 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
                 }
               }}
             >
-              <Droppable droppableId="droppable" direction="horizontal">
+              <Droppable
+                droppableId="droppableColumnOrder"
+                direction="horizontal"
+              >
                 {(droppableProvided) => (
                   <React.Fragment>
                     <div
@@ -284,35 +295,61 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
                           index={index}
                           isDragDisabled={!(column as any).accessor}
                         >
-                          {(provided) => {
+                          {(provided, snapshot) => {
                             return (
                               <div
+                                tabIndex={column.index}
                                 role="columnheader"
                                 ref={provided.innerRef}
                                 key={column.id}
                                 {...column.getHeaderProps(
                                   column.getSortByToggleProps()
                                 )}
+                                onClick={() => {}} // Do not sort on header-click -- handled by button
+                                onKeyDown={() => {}}
                               >
                                 <div
+                                  role="tab"
                                   {...provided.dragHandleProps}
                                   {...provided.draggableProps}
+                                  css={getColumnStyle(
+                                    snapshot,
+                                    provided.draggableProps.style
+                                  )}
                                 >
                                   <SelectionCheckBox
-                                    onClick={() => onSelectCol(column)}
+                                    onClick={(e) => {
+                                      onSelectCol(column);
+                                      e.stopPropagation();
+                                    }}
+                                    css={headerButton}
                                     {...calcColSelectionState(column)}
                                   />
-                                  <span>{column.render("Header")}</span>
-                                  <button type="button">
+                                  <span css={headerName}>
+                                    {column.render("Header")}
+                                  </span>
+                                  <button
+                                    type="button"
+                                    css={headerButton}
+                                    onClick={() =>
+                                      column.toggleSortBy(!column.isSortedDesc)
+                                    }
+                                    onKeyDown={() =>
+                                    column.toggleSortBy(!column.isSortedDesc)}
+                                  >
                                     {column.isSorted
                                       ? column.isSortedDesc
-                                        ? " ⬇"
-                                        : " ⬆"
+                                        ? " ⯯"
+                                        : " ⯭"
                                       : " ⬍"}
                                   </button>
                                 </div>
                                 <div
                                   role="separator"
+                                  onKeyDown={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                  }}
                                   onClick={(e) => {
                                     e.preventDefault();
                                     e.stopPropagation();
