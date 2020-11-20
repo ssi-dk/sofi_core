@@ -36,11 +36,13 @@ module.exports = {
     "react/require-default-props": "off",
     "react/prop-types": "off",
     "@typescript-eslint/ban-types": "warn",
+    "@typescript-eslint/explicit-module-boundary-types": "off",
     "import/prefer-default-export": "warn",
     "react/destructuring-assignment": "warn",
-    "no-param-reassign": "warn",
+    "no-param-reassign": "off",
+    "import/prefer-default-export": "off",
     'prettier/prettier': [
-      'warn',
+      'off',
       {
         endOfLine: 'auto',
       },

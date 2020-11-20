@@ -62,6 +62,14 @@ export const selectedCell = css({
   borderBottom: "1px solid transparent",
 });
 
+export const approvedCell = css({
+  border: "1px solid transparent",
+  margin: "2px",
+  fontWeight: "bold",
+  maxWidth: "20em",
+  backgroundColor: theme.colors.yellow[200],
+});
+
 export default css({
   display: "block",
   maxWidth: "100%",

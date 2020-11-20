@@ -11,22 +11,20 @@ import {
   useSortBy,
   useColumnOrder,
   IdType,
-  useAbsoluteLayout,
 } from "react-table";
 import { FixedSizeList } from "react-window";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
-import { jsx, css } from "@emotion/react";
+import { jsx, SerializedStyles } from "@emotion/react";
 import scrollbarWidth from "app/analysis/data-table/scrollbar-width-calculator";
 import dtStyle, {
   getColumnStyle,
   headerButton,
   headerName,
-  selectedCell,
 } from "app/analysis/data-table/data-table.styles";
 import { IndexableOf, NotEmpty } from "utils";
 import SelectionCheckBox from "./selection-check-box";
 
-type DataTableSelection<T extends NotEmpty> = {
+export type DataTableSelection<T extends NotEmpty> = {
   [K in IndexableOf<T>]: { [k in IndexableOf<T>]: boolean };
 };
 
@@ -34,8 +32,8 @@ type DataTableProps<T extends NotEmpty> = {
   columns: Column<T>[];
   data: T[];
   primaryKey: keyof T;
-  onSelect: (key: keyof T, fields: Array<keyof T>, item: T) => void;
-  onSelectMultiple: (sel: DataTableSelection<T>) => void;
+  selectionStyle: SerializedStyles;
+  onSelect: (sel: DataTableSelection<T>) => void;
 };
 
 function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
@@ -48,11 +46,11 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
 
   const scrollBarSize = React.useMemo(() => scrollbarWidth(), []);
 
-  const { columns, data, primaryKey, onSelect, onSelectMultiple } = props;
+  const { columns, data, primaryKey, onSelect, selectionStyle } = props;
   const [selection, setSelection] = React.useState({} as DataTableSelection<T>);
 
   const isInSelection = React.useCallback(
-    (cell: Cell<T, any>) => {
+    (cell: Cell<T, T>) => {
       const row = cell.row.original[primaryKey];
       const col = cell.column.id as IndexableOf<T>;
       return selection[row] && selection[row][col];
@@ -61,14 +59,14 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
   );
 
   const getSelectionStyle = React.useCallback(
-    (cell: Cell<T, any>) => {
-      return isInSelection(cell) ? selectedCell : [];
+    (cell: Cell<T, T>) => {
+      return isInSelection(cell) ? selectionStyle : [];
     },
-    [isInSelection]
+    [isInSelection, selectionStyle]
   );
 
   const onSelectCell = React.useCallback(
-    (cell: Cell<T, any>) => {
+    (cell: Cell<T, T>) => {
       if (cell.column.id === "selection") return; // cannot select the selection checkbox
       const row = cell.row.original[primaryKey];
       const col = cell.column.id as IndexableOf<T>;
@@ -77,7 +75,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
         [row]: { ...(selection[row] || {}), [col]: !isInSelection(cell) },
       };
       setSelection(incSel);
-      onSelect(row, Object.keys(selection[row] || {}), cell.row.original);
+      onSelect(incSel);
     },
     [onSelect, isInSelection, selection, primaryKey]
   );
@@ -159,7 +157,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
         .reduce((acc, val) => ({ ...acc, ...val }));
       const incSel = { ...selection, [id]: { ...cols } };
       setSelection(incSel);
-      onSelect(id, Object.keys(cols), row.original);
+      onSelect(incSel);
     },
     [onSelect, selection, primaryKey, columns, calcRowSelectionState]
   );
@@ -167,7 +165,6 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
   const onSelectCol = React.useCallback(
     (col: Column<T>) => {
       const { checked } = calcColSelectionState(col);
-      console.log(checked);
       const sel = rows
         .map((r) => ({
           [r.original[primaryKey]]: {
@@ -178,9 +175,9 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
         .reduce((acc, val) => ({ ...acc, ...val }));
       const incSel = { ...selection, ...sel };
       setSelection(incSel);
-      onSelectMultiple(incSel);
+      onSelect(incSel);
     },
-    [onSelectMultiple, selection, primaryKey, rows, calcColSelectionState]
+    [selection, primaryKey, rows, calcColSelectionState, onSelect]
   );
 
   const onSelectAllRows = React.useCallback(() => {
@@ -194,15 +191,8 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
       .reduce((acc, val) => ({ ...acc, ...val }));
     const incSel = { ...selection, ...sel };
     setSelection(incSel);
-    onSelectMultiple(incSel);
-  }, [
-    onSelectMultiple,
-    selection,
-    primaryKey,
-    rows,
-    columns,
-    calcTableSelectionState,
-  ]);
+    onSelect(incSel);
+  }, [selection, primaryKey, rows, columns, calcTableSelectionState, onSelect]);
 
   const RenderRow = React.useCallback(
     ({ index, style }) => {
@@ -293,7 +283,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
                           key={column.id}
                           draggableId={column.id}
                           index={index}
-                          isDragDisabled={!(column as any).accessor}
+                          isDragDisabled={false}
                         >
                           {(provided, snapshot) => {
                             return (
@@ -335,7 +325,8 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
                                       column.toggleSortBy(!column.isSortedDesc)
                                     }
                                     onKeyDown={() =>
-                                    column.toggleSortBy(!column.isSortedDesc)}
+                                      column.toggleSortBy(!column.isSortedDesc)
+                                    }
                                   >
                                     {column.isSorted
                                       ? column.isSortedDesc
@@ -344,6 +335,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
                                       : " ⬍"}
                                   </button>
                                 </div>
+                                {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions */}
                                 <div
                                   role="separator"
                                   onKeyDown={(e) => {
