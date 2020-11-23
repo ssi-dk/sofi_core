@@ -3,7 +3,7 @@ import { Box, Heading } from "@chakra-ui/react";
 
 type FilterBoxProps = {
   title: string;
-  children: any;
+  children: JSX.Element | JSX.Element[];
 };
 
 export default function FilterBox({ title, children }: FilterBoxProps) {

@@ -4,7 +4,8 @@ import React, { DetailedHTMLProps, forwardRef, useEffect } from "react";
 import { css, jsx } from "@emotion/react";
 
 const checkboxStyle = css({
-  margin: "0.8rem",
+  marginLeft: "5px",
+  marginRight: "5px",
 });
 
 type SelectionCheckBoxProps = DetailedHTMLProps<
@@ -13,11 +14,15 @@ type SelectionCheckBoxProps = DetailedHTMLProps<
 > & {
   checked?: boolean;
   indeterminate?: boolean;
-  onClick?: () => void;
+  visible?: boolean;
+  onClick?: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
 };
 
 const SelectionCheckBox = forwardRef(
-  ({ indeterminate, checked, ...rest }: SelectionCheckBoxProps, ref) => {
+  (
+    { indeterminate, checked, visible, ...rest }: SelectionCheckBoxProps,
+    ref
+  ) => {
     const defaultRef = React.useRef<HTMLInputElement>();
     const resolvedRef = (ref || defaultRef) as React.MutableRefObject<
       HTMLInputElement
@@ -26,7 +31,9 @@ const SelectionCheckBox = forwardRef(
     useEffect(() => {
       resolvedRef.current.indeterminate = indeterminate;
       resolvedRef.current.checked = checked;
-    }, [resolvedRef, indeterminate, checked]);
+      resolvedRef.current.style.visibility =
+        visible !== false ? "visible" : "hidden";
+    }, [resolvedRef, indeterminate, checked, visible]);
 
     return (
       <input css={checkboxStyle} type="checkbox" ref={resolvedRef} {...rest} />
