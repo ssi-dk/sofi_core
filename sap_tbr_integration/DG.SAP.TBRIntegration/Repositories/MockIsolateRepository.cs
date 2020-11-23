@@ -9,7 +9,7 @@ namespace DG.SAP.TBRIntegration.Repositories
 {
     public class MockIsolateRepository : IIsolateRepository
     {
-        List<Isolate> isolates = new List<Isolate> {
+        private readonly List<Isolate> _isolates = new List<Isolate> {
             new Isolate
             {
                 IsolateId = "Test1"
@@ -24,14 +24,14 @@ namespace DG.SAP.TBRIntegration.Repositories
             }
         };
 
-        public bool Approve(Approval isolateAnalysisApproval)
+        public Task<bool> Approve(Approval isolateAnalysisApproval)
         {
             throw new NotImplementedException();
         }
 
-        public Isolate GetIsolate(string isolateID)
+        public Task<Isolate> GetIsolate(string isolateId)
         {
-            return isolates.Where(i => i.IsolateId == isolateID).FirstOrDefault();
+            return Task.FromResult(_isolates.FirstOrDefault(i => i.IsolateId == isolateId));
         }
     }
 }
