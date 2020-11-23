@@ -31,16 +31,18 @@ module.exports = {
   rules: {
     'linebreak-style': 'off',
     'no-nested-ternary': 'off',
-    "jsx-a11y/click-events-have-key-events": "warn",
     "jsx-a11y/no-noninteractive-element-interactions": "warn",
-    "react/jsx-props-no-spreading": "warn",
+    "react/jsx-props-no-spreading": "off",
     "react/require-default-props": "off",
     "react/prop-types": "off",
     "@typescript-eslint/ban-types": "warn",
+    "@typescript-eslint/explicit-module-boundary-types": "off",
     "import/prefer-default-export": "warn",
     "react/destructuring-assignment": "warn",
+    "no-param-reassign": "off",
+    "import/prefer-default-export": "off",
     'prettier/prettier': [
-      'warn',
+      'off',
       {
         endOfLine: 'auto',
       },

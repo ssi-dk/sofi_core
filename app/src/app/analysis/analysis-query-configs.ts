@@ -20,14 +20,13 @@ export const requestPageOfAnalysis = (params: GetAnalysisRequest) => {
   // template the full path for the url
   base.url = getUrl(base.url);
   // define a transform for normalizing the data into our desired state
-  base.transform = (response: PageOfAnalysis) =>
-    ({
-      analysisTotalCount: response.totalCount,
-      analysisPagingToken: response.pagingToken,
-      analysis: response.items
-        ? arrayToNormalizedHashmap(response.items, "analysisId")
-        : {},
-    } as any);
+  base.transform = (response: PageOfAnalysis) => ({
+    analysisTotalCount: response.totalCount,
+    analysisPagingToken: response.pagingToken,
+    analysis: response.items
+      ? arrayToNormalizedHashmap(response.items, "analysisId")
+      : {},
+  });
   // define the update strategy for our state
   base.update = {
     analysisTotalCount: (_, newValue) => newValue,

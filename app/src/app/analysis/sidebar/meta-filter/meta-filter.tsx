@@ -27,7 +27,7 @@ const rfvOptions = [
 ];
 
 export default function MetaFilter() {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const ExampleCustomInput = ({ value, onClick }) => (
     <Button
       onClick={onClick}
@@ -48,16 +48,16 @@ export default function MetaFilter() {
         <DatePicker
           selected={startDate}
           isClearable
-          onChange={(c) => setStartDate(c as any)}
+          onChange={(c) => setStartDate(c as Date)}
           placeholderText="-"
-          customInput={<ExampleCustomInput value="" onClick={(_) => {}} />}
+          customInput={<ExampleCustomInput value="" onClick={() => {}} />}
         />
         <DatePicker
           selected={startDate}
           isClearable
-          onChange={(c) => setStartDate(c as any)}
+          onChange={(c) => setStartDate(c as Date)}
           placeholderText="-"
-          customInput={<ExampleCustomInput value="" onClick={(_) => {}} />}
+          customInput={<ExampleCustomInput value="" onClick={() => {}} />}
         />
       </SimpleGrid>
       <Text mt={2}>{t("Organisation")}</Text>
@@ -69,16 +69,16 @@ export default function MetaFilter() {
         <DatePicker
           selected={startDate}
           isClearable
-          onChange={(c) => setStartDate(c as any)}
+          onChange={(c) => setStartDate(c as Date)}
           placeholderText="-"
-          customInput={<ExampleCustomInput value="" onClick={(_) => {}} />}
+          customInput={<ExampleCustomInput value="" onClick={() => {}} />}
         />
         <DatePicker
           selected={startDate}
           isClearable
-          onChange={(c) => setStartDate(c as any)}
+          onChange={(c) => setStartDate(c as Date)}
           placeholderText="-"
-          customInput={<ExampleCustomInput value="" onClick={(_) => {}} />}
+          customInput={<ExampleCustomInput value="" onClick={() => {}} />}
         />
       </SimpleGrid>
       <Text mt={2}>{t("Dyreart")}</Text>

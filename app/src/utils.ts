@@ -1,6 +1,7 @@
 export type StringOrNumber = string | number;
 
 export type NotEmpty = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [K in StringOrNumber]: any;
 };
 
@@ -24,7 +25,7 @@ export type IndexableOf<T extends NotEmpty> = keyof Pick<
 export function arrayToNormalizedHashmap<
   T extends NotEmpty,
   K extends IndexableOf<T>
->(array: T[], keyField: K) {
+>(array: T[], keyField: K): { [k in T[K]]: T } {
   return array.reduce((obj: { [k in T[K]]: T }, item) => {
     const cpy = { ...obj };
     cpy[item[keyField]] = item;

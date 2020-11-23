@@ -4,6 +4,14 @@ import { initReactI18next } from "react-i18next";
 const resources = {
   da: {
     translation: {
+      Select: "Tilvælg",
+      Cancel: "Annullér",
+      Found: "Fundet",
+      records: "enheder",
+      Staging: "Forbereder",
+      Approve: "Godkend",
+      "Approval submitted": "Godkendelse indsendt",
+      "have been submitted for approval.": "er blevet registeret som godkendt.",
       MetadataFilter: "Metadata filter",
       AnalysisFilter: "Analyse filter",
       Prøvetagningsdato: "Prøvetagningsdato",

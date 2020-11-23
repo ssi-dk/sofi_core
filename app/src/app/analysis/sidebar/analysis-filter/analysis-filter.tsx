@@ -24,7 +24,7 @@ const rfvOptions = [
 ];
 
 export default function AnalysisFilter() {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   return (
     <FilterBox title="Analysis filter">
       <Text>{t("Agens")}</Text>

@@ -9,17 +9,22 @@ import {
   Cell,
   Row,
   useSortBy,
+  useColumnOrder,
+  IdType,
 } from "react-table";
 import { FixedSizeList } from "react-window";
-import { jsx, css } from "@emotion/react";
+import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
+import { jsx, SerializedStyles } from "@emotion/react";
 import scrollbarWidth from "app/analysis/data-table/scrollbar-width-calculator";
 import dtStyle, {
-  selectedCell,
+  getColumnStyle,
+  headerButton,
+  headerName,
 } from "app/analysis/data-table/data-table.styles";
 import { IndexableOf, NotEmpty } from "utils";
 import SelectionCheckBox from "./selection-check-box";
 
-type DataTableSelection<T extends NotEmpty> = {
+export type DataTableSelection<T extends NotEmpty> = {
   [K in IndexableOf<T>]: { [k in IndexableOf<T>]: boolean };
 };
 
@@ -27,8 +32,8 @@ type DataTableProps<T extends NotEmpty> = {
   columns: Column<T>[];
   data: T[];
   primaryKey: keyof T;
-  onSelect: (key: keyof T, fields: Array<keyof T>, item: T) => void;
-  onSelectMultiple: (sel: DataTableSelection<T>) => void;
+  selectionStyle: SerializedStyles;
+  onSelect: (sel: DataTableSelection<T>) => void;
 };
 
 function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
@@ -41,11 +46,11 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
 
   const scrollBarSize = React.useMemo(() => scrollbarWidth(), []);
 
-  const { columns, data, primaryKey, onSelect, onSelectMultiple } = props;
+  const { columns, data, primaryKey, onSelect, selectionStyle } = props;
   const [selection, setSelection] = React.useState({} as DataTableSelection<T>);
 
   const isInSelection = React.useCallback(
-    (cell: Cell<T, any>) => {
+    (cell: Cell<T, T>) => {
       const row = cell.row.original[primaryKey];
       const col = cell.column.id as IndexableOf<T>;
       return selection[row] && selection[row][col];
@@ -54,14 +59,14 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
   );
 
   const getSelectionStyle = React.useCallback(
-    (cell: Cell<T, any>) => {
-      return isInSelection(cell) ? selectedCell : [];
+    (cell: Cell<T, T>) => {
+      return isInSelection(cell) ? selectionStyle : [];
     },
-    [isInSelection]
+    [isInSelection, selectionStyle]
   );
 
   const onSelectCell = React.useCallback(
-    (cell: Cell<T, any>) => {
+    (cell: Cell<T, T>) => {
       if (cell.column.id === "selection") return; // cannot select the selection checkbox
       const row = cell.row.original[primaryKey];
       const col = cell.column.id as IndexableOf<T>;
@@ -70,7 +75,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
         [row]: { ...(selection[row] || {}), [col]: !isInSelection(cell) },
       };
       setSelection(incSel);
-      onSelect(row, Object.keys(selection[row] || {}), cell.row.original);
+      onSelect(incSel);
     },
     [onSelect, isInSelection, selection, primaryKey]
   );
@@ -82,6 +87,8 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
     rows,
     totalColumnsWidth,
     prepareRow,
+    allColumns,
+    setColumnOrder,
   } = useTable(
     {
       columns,
@@ -90,8 +97,11 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
     },
     useBlockLayout,
     useResizeColumns,
+    useColumnOrder,
     useSortBy
   );
+
+  const currentColOrder = React.useRef<Array<IdType<T>>>();
 
   const calcTableSelectionState = React.useCallback(() => {
     // TODO: Probably have to filter out 'unapprovable' columns when we know what those are
@@ -125,6 +135,18 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
     [selection, primaryKey, columns]
   );
 
+  const calcColSelectionState = React.useCallback(
+    (col: Column<T>) => {
+      // TODO: Check if column is approvable and return visible: false if it isn't
+      const c = Object.values(selection).filter((x) => x[col.id] === true);
+      if (c.length === 0) return { checked: false, indeterminate: false };
+      if (c.length === rows.length)
+        return { checked: true, indeterminate: false };
+      return { indeterminate: true, checked: false, visible: true };
+    },
+    [selection, rows]
+  );
+
   const onSelectRow = React.useCallback(
     (row: Row<T>) => {
       const { checked } = calcRowSelectionState(row);
@@ -135,9 +157,27 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
         .reduce((acc, val) => ({ ...acc, ...val }));
       const incSel = { ...selection, [id]: { ...cols } };
       setSelection(incSel);
-      onSelect(id, Object.keys(cols), row.original);
+      onSelect(incSel);
     },
     [onSelect, selection, primaryKey, columns, calcRowSelectionState]
+  );
+
+  const onSelectCol = React.useCallback(
+    (col: Column<T>) => {
+      const { checked } = calcColSelectionState(col);
+      const sel = rows
+        .map((r) => ({
+          [r.original[primaryKey]]: {
+            ...selection[r.original[primaryKey]],
+            [col.id as string]: !checked,
+          },
+        }))
+        .reduce((acc, val) => ({ ...acc, ...val }));
+      const incSel = { ...selection, ...sel };
+      setSelection(incSel);
+      onSelect(incSel);
+    },
+    [selection, primaryKey, rows, calcColSelectionState, onSelect]
   );
 
   const onSelectAllRows = React.useCallback(() => {
@@ -151,15 +191,8 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
       .reduce((acc, val) => ({ ...acc, ...val }));
     const incSel = { ...selection, ...sel };
     setSelection(incSel);
-    onSelectMultiple(incSel);
-  }, [
-    onSelectMultiple,
-    selection,
-    primaryKey,
-    rows,
-    columns,
-    calcTableSelectionState,
-  ]);
+    onSelect(incSel);
+  }, [selection, primaryKey, rows, columns, calcTableSelectionState, onSelect]);
 
   const RenderRow = React.useCallback(
     ({ index, style }) => {
@@ -173,14 +206,20 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
           })}
         >
           <SelectionCheckBox
-            onClick={() => onSelectRow(row)}
+            onClick={(e) => {
+              onSelectRow(row);
+              e.preventDefault();
+              e.stopPropagation();
+            }}
             {...calcRowSelectionState(row)}
           />
           {row.cells.map((cell) => (
+            // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
             <div
               role="cell"
               css={getSelectionStyle(cell)}
               onClick={() => onSelectCell(cell)}
+              onKeyDown={() => onSelectCell(cell)}
               key={cell.getCellProps().key}
               {...cell.getCellProps()}
             >
@@ -206,29 +245,119 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
       <div role="table" {...getTableProps()} className="tableWrap">
         <div role="rowgroup">
           {headerGroups.map((headerGroup) => (
-            <div role="row" {...headerGroup.getHeaderGroupProps()}>
-              <SelectionCheckBox
-                onClick={() => onSelectAllRows()}
-                {...calcTableSelectionState()}
-              />
-              {headerGroup.headers.map((column) => (
-                <div
-                  role="columnheader"
-                  {...column.getHeaderProps(column.getSortByToggleProps())}
-                  key={column.id}
-                >
-                  {column.render("Header")}
-                  <span>
-                    {column.isSorted
-                      ? column.isSortedDesc
-                        ? " 🔽"
-                        : " 🔼"
-                      : ""}
-                  </span>
-                  <div role="separator" {...column.getResizerProps()} />
-                </div>
-              ))}
-            </div>
+            <DragDropContext
+              onDragStart={() => {
+                currentColOrder.current = allColumns.map((o) => o.id);
+              }}
+              onDragEnd={() => {}}
+              onDragUpdate={(dragUpdateObj) => {
+                const colOrder = [...currentColOrder.current];
+                const sIndex = dragUpdateObj.source.index;
+                const dIndex =
+                  dragUpdateObj.destination && dragUpdateObj.destination.index;
+
+                if (typeof sIndex === "number" && typeof dIndex === "number") {
+                  colOrder.splice(sIndex, 1);
+                  colOrder.splice(dIndex, 0, dragUpdateObj.draggableId);
+                  setColumnOrder(colOrder);
+                }
+              }}
+            >
+              <Droppable
+                droppableId="droppableColumnOrder"
+                direction="horizontal"
+              >
+                {(droppableProvided) => (
+                  <React.Fragment>
+                    <div
+                      role="row"
+                      {...headerGroup.getHeaderGroupProps()}
+                      ref={droppableProvided.innerRef}
+                    >
+                      <SelectionCheckBox
+                        onClick={() => onSelectAllRows()}
+                        {...calcTableSelectionState()}
+                      />
+                      {headerGroup.headers.map((column, index) => (
+                        <Draggable
+                          key={column.id}
+                          draggableId={column.id}
+                          index={index}
+                          isDragDisabled={false}
+                        >
+                          {(provided, snapshot) => {
+                            return (
+                              <div
+                                tabIndex={column.index}
+                                role="columnheader"
+                                ref={provided.innerRef}
+                                key={column.id}
+                                {...column.getHeaderProps(
+                                  column.getSortByToggleProps()
+                                )}
+                                onClick={() => {}} // Do not sort on header-click -- handled by button
+                                onKeyDown={() => {}}
+                              >
+                                <div
+                                  role="tab"
+                                  {...provided.dragHandleProps}
+                                  {...provided.draggableProps}
+                                  css={getColumnStyle(
+                                    snapshot,
+                                    provided.draggableProps.style
+                                  )}
+                                >
+                                  <SelectionCheckBox
+                                    onClick={(e) => {
+                                      onSelectCol(column);
+                                      e.stopPropagation();
+                                    }}
+                                    css={headerButton}
+                                    {...calcColSelectionState(column)}
+                                  />
+                                  <span css={headerName}>
+                                    {column.render("Header")}
+                                  </span>
+                                  <button
+                                    type="button"
+                                    css={headerButton}
+                                    onClick={() =>
+                                      column.toggleSortBy(!column.isSortedDesc)
+                                    }
+                                    onKeyDown={() =>
+                                      column.toggleSortBy(!column.isSortedDesc)
+                                    }
+                                  >
+                                    {column.isSorted
+                                      ? column.isSortedDesc
+                                        ? " ⯯"
+                                        : " ⯭"
+                                      : " ⬍"}
+                                  </button>
+                                </div>
+                                {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions */}
+                                <div
+                                  role="separator"
+                                  onKeyDown={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                  }}
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                  }}
+                                  {...column.getResizerProps()}
+                                />
+                              </div>
+                            );
+                          }}
+                        </Draggable>
+                      ))}
+                    </div>
+                  </React.Fragment>
+                )}
+              </Droppable>
+            </DragDropContext>
           ))}
         </div>
 
