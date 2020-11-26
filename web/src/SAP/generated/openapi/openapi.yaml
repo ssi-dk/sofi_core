@@ -337,6 +337,122 @@ components:
           format: int32
           type: integer
       type: object
+    BaseMetadata:
+      properties:
+        isolate_id:
+          type: string
+        sequence_id:
+          type: string
+        sequence_filename:
+          type: string
+        institution:
+          enum:
+          - FVST
+          - SSI
+          type: string
+        project_number:
+          type: number
+        project_title:
+          type: string
+        sampling_date:
+          type: string
+        received_date:
+          type: string
+        run_id:
+          type: string
+        public:
+          type: string
+        provided_species:
+          type: string
+        primary_isolate:
+          type: string
+        fud_number:
+          type: string
+        cluster_id:
+          type: string
+        epi_export:
+          type: string
+      required:
+      - institution
+      - isolate_id
+      - primary_isolate
+      - provided_species
+      - received_date
+      - run_id
+      - sequence_filename
+      - sequence_id
+    TbrMetadata:
+      allOf:
+      - $ref: '#/components/schemas/BaseMetadata'
+      - $ref: '#/components/schemas/TbrMetadata_allOf'
+    LimsMetadata:
+      allOf:
+      - $ref: '#/components/schemas/BaseMetadata'
+      - $ref: '#/components/schemas/LimsMetadata_allOf'
+    AnalysisResult:
+      properties:
+        _id:
+          type: string
+        isolateId:
+          maxLength: 100
+          type: string
+        QC_provided_species:
+          type: number
+        QC_genome1x:
+          type: number
+        QC_genome10x:
+          type: number
+        QC_Gsize_diff1x10:
+          type: number
+        QC_Avg_coverage:
+          type: number
+      required:
+      - _id
+      - isolateId
+      type: object
+    TbrMetadata_allOf:
+      properties:
+        cpr:
+          type: string
+        gender:
+          enum:
+          - M
+          - K
+          type: string
+        name:
+          type: string
+        age:
+          type: number
+        travel:
+          type: string
+        travel_country:
+          type: string
+        run_date:
+          type: string
+        kma_received_date:
+          type: string
+        kma:
+          type: string
+        region:
+          type: string
+      required:
+      - run_date
+    LimsMetadata_allOf:
+      properties:
+        chr_number:
+          type: number
+        aut_number:
+          type: string
+        product_type:
+          type: string
+        product:
+          type: string
+        origin_country:
+          type: string
+        animal_species:
+          type: string
+        sample_info:
+          type: string
   securitySchemes:
     SAP_auth:
       scheme: bearer
