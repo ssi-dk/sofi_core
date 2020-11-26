@@ -147,7 +147,7 @@
         }
       ]
     },
-    "sap_sample_results": {
+    "sap_analysis_results": {
       "type": "object",
       "required": [
         "_id",
@@ -160,6 +160,21 @@
         "isolateId": {
           "type": "string",
           "maxLength": 100
+        },
+        "QC_provided_species": {
+          "type": "number"
+        },
+        "QC_genome1x": {
+          "type": "number"
+        },
+        "QC_genome10x": {
+          "type": "number"
+        },
+        "QC_Gsize_diff1x10": {
+          "type": "number"
+        },
+        "QC_Avg_coverage": {
+          "type": "number"
         }
       }
     },

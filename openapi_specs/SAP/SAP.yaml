@@ -4,12 +4,12 @@ info:
   title: SAP
   version: 0.1.0
 servers:
-- url: http://localhost:8080/api/
+  - url: 'http://localhost:8080/api/'
 tags:
-- description: Operations about user
-  name: user
-- description: Operations for isolates
-  name: analysis
+  - description: Operations about user
+    name: user
+  - description: Operations for isolates
+    name: analysis
 paths:
   /analysis:
     get:
@@ -17,7 +17,7 @@ paths:
       operationId: get_analysis
       x-openapi-router-controller: web.src.SAP.generated.controllers.analysis_controller
       tags:
-      - analysis
+        - analysis
       parameters:
         - name: pagingToken
           in: query
@@ -34,13 +34,12 @@ paths:
             type: number
             default: 100
       responses:
-        "200":
+        '200':
           description: Page of isolates
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/PageOfAnalysis"
-
+                $ref: '#/components/schemas/PageOfAnalysis'
   /user:
     post:
       description: This can only be done by the logged in user.
@@ -58,31 +57,31 @@ paths:
           description: successful operation
       summary: Create user
       tags:
-      - user
+        - user
       x-codegen-request-body-name: body
       x-openapi-router-controller: web.src.SAP.generated.controllers.user_controller
   /user/login:
     get:
       operationId: login_user
       parameters:
-      - description: The user name for login
-        explode: true
-        in: query
-        name: username
-        required: true
-        schema:
-          type: string
-        style: form
-      - description: The password for login in clear text
-        explode: true
-        in: query
-        name: password
-        required: true
-        schema:
-          type: string
-        style: form
+        - description: The user name for login
+          explode: true
+          in: query
+          name: username
+          required: true
+          schema:
+            type: string
+          style: form
+        - description: The password for login in clear text
+          explode: true
+          in: query
+          name: password
+          required: true
+          schema:
+            type: string
+          style: form
       responses:
-        "200":
+        '200':
           content:
             application/json:
               schema:
@@ -96,12 +95,12 @@ paths:
                 format: date-time
                 type: string
               style: simple
-        "400":
+        '400':
           content: {}
           description: Invalid username/password supplied
       summary: Logs user into the system
       tags:
-      - user
+        - user
       x-openapi-router-controller: web.src.SAP.generated.controllers.user_controller
   /user/logout:
     get:
@@ -112,72 +111,72 @@ paths:
           description: successful operation
       summary: Logs out current logged in user session
       tags:
-      - user
+        - user
       x-openapi-router-controller: web.src.SAP.generated.controllers.user_controller
-  /user/{username}:
+  '/user/{username}':
     delete:
       description: This can only be done by the logged in user.
       operationId: delete_user
       parameters:
-      - description: The name that needs to be deleted
-        explode: false
-        in: path
-        name: username
-        required: true
-        schema:
-          type: string
-        style: simple
+        - description: The name that needs to be deleted
+          explode: false
+          in: path
+          name: username
+          required: true
+          schema:
+            type: string
+          style: simple
       responses:
-        "400":
+        '400':
           content: {}
           description: Invalid username supplied
-        "404":
+        '404':
           content: {}
           description: User not found
       summary: Delete user
       tags:
-      - user
+        - user
       x-openapi-router-controller: web.src.SAP.generated.controllers.user_controller
     get:
       operationId: get_user_by_name
       parameters:
-      - description: 'The name that needs to be fetched. Use user1 for testing. '
-        explode: false
-        in: path
-        name: username
-        required: true
-        schema:
-          type: string
-        style: simple
+        - description: 'The name that needs to be fetched. Use user1 for testing. '
+          explode: false
+          in: path
+          name: username
+          required: true
+          schema:
+            type: string
+          style: simple
       responses:
-        "200":
+        '200':
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
           description: successful operation
-        "400":
+        '400':
           content: {}
           description: Invalid username supplied
-        "404":
+        '404':
           content: {}
           description: User not found
       summary: Get user by user name
       tags:
-      - user
+        - user
       x-openapi-router-controller: web.src.SAP.generated.controllers.user_controller
     put:
       description: This can only be done by the logged in user.
       operationId: update_user
       parameters:
-      - description: name that need to be updated
-        explode: false
-        in: path
-        name: username
-        required: true
-        schema:
-          type: string
-        style: simple
+        - description: name that need to be updated
+          explode: false
+          in: path
+          name: username
+          required: true
+          schema:
+            type: string
+          style: simple
       requestBody:
         content:
           '*/*':
@@ -186,28 +185,26 @@ paths:
         description: Updated user object
         required: true
       responses:
-        "400":
+        '400':
           content: {}
           description: Invalid user supplied
-        "404":
+        '404':
           content: {}
           description: User not found
       summary: Updated user
       tags:
-      - user
+        - user
       x-codegen-request-body-name: body
       x-openapi-router-controller: web.src.SAP.generated.controllers.user_controller
-
 components:
   schemas:
-
     Analysis:
       required:
-      - analysisId
-      - isolateId
-      - testTimestamp
-      - dateReceived
-      - approved
+        - analysisId
+        - isolateId
+        - testTimestamp
+        - dateReceived
+        - approved
       properties:
         analysisId:
           type: string
@@ -215,7 +212,7 @@ components:
         isolateId:
           type: string
           example: 1231_14_XDR
-          pattern: '^\d{4}_\d{2}_[A-Z0-9]{3}$' 
+          pattern: '^\d{4}_\d{2}_[A-Z0-9]{3}$'
         testTimestamp:
           type: string
           format: date-time
@@ -225,7 +222,7 @@ components:
         resfinderVersion:
           type: string
           example: 1.99
-          pattern: '^\d*\.\d*$'
+          pattern: ^\d*\.\d*$
         serumType:
           type: string
           example: XXXYYAAA
@@ -250,13 +247,12 @@ components:
         project:
           type: string
         approved:
-          type:  boolean
-    
+          type: boolean
     PageOfAnalysis:
       required:
-      - pagingToken
-      - totalCount
-      - items
+        - pagingToken
+        - totalCount
+        - items
       properties:
         pagingToken:
           type: string
@@ -264,11 +260,10 @@ components:
           pattern: '^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$'
         totalCount:
           type: number
-        items: 
+        items:
           type: array
-          items: 
+          items:
             $ref: '#/components/schemas/Analysis'
-
     User:
       example:
         firstName: firstName
@@ -300,6 +295,119 @@ components:
           format: int32
           type: integer
       type: object
+    BaseMetadata:
+      required:
+        - isolate_id
+        - sequence_id
+        - sequence_filename
+        - institution
+        - received_date
+        - run_id
+        - provided_species
+        - primary_isolate
+      properties:
+        isolate_id:
+          type: string
+        sequence_id:
+          type: string
+        sequence_filename:
+          type: string
+        institution:
+          type: string
+          enum:
+            - FVST
+            - SSI
+        project_number:
+          type: number
+        project_title:
+          type: string
+        sampling_date:
+          type: string
+        received_date:
+          type: string
+        run_id:
+          type: string
+        public:
+          type: string
+        provided_species:
+          type: string
+        primary_isolate:
+          type: string
+        fud_number:
+          type: string
+        cluster_id:
+          type: string
+        epi_export:
+          type: string
+    TbrMetadata:
+      allOf:
+        - $ref: '#/components/schemas/BaseMetadata'
+        - required:
+            - run_date
+          properties:
+            cpr:
+              type: string
+            gender:
+              type: string
+              enum:
+                - M
+                - K
+            name:
+              type: string
+            age:
+              type: number
+            travel:
+              type: string
+            travel_country:
+              type: string
+            run_date:
+              type: string
+            kma_received_date:
+              type: string
+            kma:
+              type: string
+            region:
+              type: string
+    LimsMetadata:
+      allOf:
+        - $ref: '#/components/schemas/BaseMetadata'
+        - properties:
+            chr_number:
+              type: number
+            aut_number:
+              type: string
+            product_type:
+              type: string
+            product:
+              type: string
+            origin_country:
+              type: string
+            animal_species:
+              type: string
+            sample_info:
+              type: string
+    AnalysisResult:
+      type: object
+      required:
+        - _id
+        - isolateId
+      properties:
+        _id:
+          type: string
+        isolateId:
+          type: string
+          maxLength: 100
+        QC_provided_species:
+          type: number
+        QC_genome1x:
+          type: number
+        QC_genome10x:
+          type: number
+        QC_Gsize_diff1x10:
+          type: number
+        QC_Avg_coverage:
+          type: number
+
   securitySchemes:
     SAP_auth:
       scheme: bearer
