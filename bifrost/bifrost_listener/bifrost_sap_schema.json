@@ -1,0 +1,197 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema",
+  "definitions": {
+    "references": {
+      "base_metadata": {
+        "required": [
+          "isolate_id",
+          "sequence_id",
+          "sequence_filename",
+          "institution",
+          "received_date",
+          "run_id",
+          "provided_species",
+          "primary_isolate"
+        ],
+        "properties": {
+          "isolate_id": {
+            "type": "string"
+          },
+          "sequence_id": {
+            "type": "string"
+          },
+          "sequence_filename": {
+            "type": "string"
+          },
+          "institution": {
+            "type": "string",
+            "enum": [
+              "FVST",
+              "SSI"
+            ]
+          },
+          "project_number": {
+            "type": "number"
+          },
+          "project_title": {
+            "type": "string"
+          },
+          "sampling_date": {
+            "type": "string"
+          },
+          "received_date": {
+            "type": "string"
+          },
+          "run_id": {
+            "type": "string"
+          },
+          "public": {
+            "type": "string"
+          },
+          "provided_species": {
+            "type": "string"
+          },
+          "primary_isolate": {
+            "type": "string"
+          },
+          "fud_number": {
+            "type": "string"
+          },
+          "cluster_id": {
+            "type": "string"
+          },
+          "epi_export": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "sap_user": {},
+    "sap_tbr_metadata": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/references/base_metadata"
+        },
+        {
+          "required": [
+            "run_date"
+          ],
+          "properties": {
+            "cpr": {
+              "type": "string"
+            },
+            "gender": {
+              "type": "string",
+              "enum": [
+                "M",
+                "K"
+              ]
+            },
+            "name": {
+              "type": "string"
+            },
+            "age": {
+              "type": "number"
+            },
+            "travel": {
+              "type": "string"
+            },
+            "travel_country": {
+              "type": "string"
+            },
+            "run_date": {
+              "type": "string"
+            },
+            "kma_received_date": {
+              "type": "string"
+            },
+            "kma": {
+              "type": "string"
+            },
+            "region": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "sap_lims_metadata": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/references/base_metadata"
+        },
+        {
+          "properties": {
+            "chr_number": {
+              "type": "number"
+            },
+            "aut_number": {
+              "type": "string"
+            },
+            "product_type": {
+              "type": "string"
+            },
+            "product": {
+              "type": "string"
+            },
+            "origin_country": {
+              "type": "string"
+            },
+            "animal_species": {
+              "type": "string"
+            },
+            "sample_info": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "sap_analysis_results": {
+      "type": "object",
+      "required": [
+        "_id",
+        "isolateId"
+      ],
+      "properties": {
+        "_id": {
+          "type": "string"
+        },
+        "isolateId": {
+          "type": "string",
+          "maxLength": 100
+        },
+        "QC_provided_species": {
+          "type": "number"
+        },
+        "QC_genome1x": {
+          "type": "number"
+        },
+        "QC_genome10x": {
+          "type": "number"
+        },
+        "QC_Gsize_diff1x10": {
+          "type": "number"
+        },
+        "QC_Avg_coverage": {
+          "type": "number"
+        }
+      }
+    },
+    "sap_audit_trail": {
+      "type": "object",
+      "required": [
+        "_id",
+        "action"
+      ],
+      "properties": {
+        "_id": {
+          "type": "string"
+        },
+        "action": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

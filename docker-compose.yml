@@ -38,7 +38,7 @@ services:
         - ./Caddyfile:/etc/Caddyfile
 
   bifrost_db:
-    build: bifrost_db
+    build: bifrost/bifrost_db
     expose:
       - 27017
     ports:
