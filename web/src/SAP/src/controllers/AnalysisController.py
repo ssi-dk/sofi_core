@@ -7,3 +7,6 @@ import json
 
 def get_analysis(paging_token, page_size):  # noqa: E501
     return jsonify(get_all_analysis())
+
+def get_columns(): # noqa: E501
+    return []

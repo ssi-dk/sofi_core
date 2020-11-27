@@ -19,7 +19,7 @@ paths:
       tags:
         - analysis
       parameters:
-        - name: pagingToken
+        - name: paging_token
           in: query
           description: opaque token to supply to get the next page of isolates
           required: false
@@ -27,7 +27,7 @@ paths:
             type: string
             format: byte
             nullable: true
-        - name: pageSize
+        - name: page_size
           in: query
           required: false
           schema:
@@ -40,6 +40,79 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PageOfAnalysis'
+
+  /analysis/columns:
+    get:
+      description: Get column metadata, scoped to authenticated user
+      operationId: get_columns
+      x-openapi-router-controller: web.src.SAP.generated.controllers.analysis_controller
+      tags:
+        - analysis
+      responses:
+        '200':
+          description: Column collection
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Column'
+
+  /approvals:
+    get:
+      description: Retrieve list of approvals for authenticated user
+      operationId: get_approvals
+      tags:
+        - approval
+      x-openapi-router-controller: web.src.SAP.generated.controllers.approval_controller
+      responses:
+        '200':
+          description: List of Approvals
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Approval'
+    post:
+      description: Submit approval/rejection information
+      operationId: create_approval
+      tags:
+        - approval
+      x-openapi-router-controller: web.src.SAP.generated.controllers.approval_controller
+      x-codegen-request-body-name: body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApprovalRequest'
+      responses:
+        '201':
+          description: Approval accepted 
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Approval'
+
+  '/approvals/{id}':
+    delete:
+      description: Cancel a pending approval
+      operationId: cancel_approval
+      tags:
+        - approval
+      x-openapi-router-controller: web.src.SAP.generated.controllers.approval_controller
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Id of approval to cancel
+          explode: true
+      responses:
+        '204':
+          description: Approval cancelled successfully.
+      
   /user:
     post:
       description: This can only be done by the logged in user.
@@ -60,6 +133,55 @@ paths:
         - user
       x-codegen-request-body-name: body
       x-openapi-router-controller: web.src.SAP.generated.controllers.user_controller
+  /user/views:
+    get:
+      operationId: get_user_views
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/UserDefinedView"
+          description: Return user-defined view collection for the authenticated user
+      tags:
+        - user
+      x-openapi-router-controller: web.src.SAP.generated.controllers.user_controller
+    post:
+      operationId: create_user_view
+      requestBody:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserDefinedView"
+      responses:
+        '204':
+          description: "User-defined view created."
+      tags:
+        - user
+      x-openapi-router-controller: web.src.SAP.generated.controllers.user_controller
+  /user/views/{name}:
+    delete:
+      description: Cancel a pending approval
+      operationId: delete_view
+      tags:
+        - user
+      x-openapi-router-controller: web.src.SAP.generated.controllers.user_controller
+      parameters:
+        - name: name
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Name of view to delete
+          explode: true
+      responses:
+        '204':
+          description: View deleted successfully.
+
+
+
   /user/login:
     get:
       operationId: login_user
@@ -264,6 +386,22 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Analysis'
+    Column:
+      properties:
+        approvable:
+          type: boolean
+        editable:
+          type: boolean
+        pii:
+          type: boolean
+        organization:
+          type: string
+        field_name:
+          type: string
+        approves_with:
+          type: array
+          items:
+            type: string
     User:
       example:
         firstName: firstName
@@ -295,6 +433,47 @@ components:
           format: int32
           type: integer
       type: object
+    UserDefinedView:
+      type: object
+      properties:
+        name:
+          type: string
+        columns:
+          type: array
+          items:
+            type: string
+    ApprovalRequest:
+      type: object
+      required:
+        - matrix
+      properties:
+        matrix:
+          $ref: "#/components/schemas/ApprovalMatrix"
+
+    Approval:
+      allOf:
+        - $ref: '#/components/schemas/ApprovalRequest'
+        - properties:
+            id:
+              type: string
+            approver:
+              type: string
+            timestamp:
+              type: string
+              format: date-time
+            status:
+              type: string
+              enum: [pending, cancelled, submitted]
+            matrix:
+              $ref: "#/components/schemas/ApprovalMatrix"
+
+    ApprovalMatrix:
+      type: object
+      additionalProperties:
+        type: object
+        additionalProperties:
+          type: boolean
+
     BaseMetadata:
       required:
         - isolate_id
