@@ -19,7 +19,7 @@ paths:
       - description: opaque token to supply to get the next page of isolates
         explode: true
         in: query
-        name: pagingToken
+        name: paging_token
         required: false
         schema:
           format: byte
@@ -28,7 +28,7 @@ paths:
         style: form
       - explode: true
         in: query
-        name: pageSize
+        name: page_size
         required: false
         schema:
           default: 100
@@ -44,6 +44,76 @@ paths:
       tags:
       - analysis
       x-openapi-router-controller: web.src.SAP.generated.controllers.analysis_controller
+  /analysis/columns:
+    get:
+      description: Get column metadata, scoped to authenticated user
+      operationId: get_columns
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Column'
+                type: array
+          description: Column collection
+      tags:
+      - analysis
+      x-openapi-router-controller: web.src.SAP.generated.controllers.analysis_controller
+  /approvals:
+    get:
+      description: Retrieve list of approvals for authenticated user
+      operationId: get_approvals
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Approval'
+                type: array
+          description: List of Approvals
+      tags:
+      - approval
+      x-openapi-router-controller: web.src.SAP.generated.controllers.approval_controller
+    post:
+      description: Submit approval/rejection information
+      operationId: create_approval
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApprovalRequest'
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Approval'
+          description: Approval accepted
+      tags:
+      - approval
+      x-openapi-router-controller: web.src.SAP.generated.controllers.approval_controller
+      x-codegen-request-body-name: body
+  /approvals/{id}:
+    delete:
+      description: Cancel a pending approval
+      operationId: cancel_approval
+      parameters:
+      - description: Id of approval to cancel
+        explode: true
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "204":
+          description: Approval cancelled successfully.
+      tags:
+      - approval
+      x-openapi-router-controller: web.src.SAP.generated.controllers.approval_controller
   /user:
     post:
       description: This can only be done by the logged in user.
@@ -114,6 +184,53 @@ paths:
           content: {}
           description: successful operation
       summary: Logs out current logged in user session
+      tags:
+      - user
+      x-openapi-router-controller: web.src.SAP.generated.controllers.user_controller
+  /user/views:
+    get:
+      operationId: get_user_views
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/UserDefinedView'
+                type: array
+          description: Return user-defined view collection for the authenticated user
+      tags:
+      - user
+      x-openapi-router-controller: web.src.SAP.generated.controllers.user_controller
+    post:
+      operationId: create_user_view
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserDefinedView'
+      responses:
+        "204":
+          description: User-defined view created.
+      tags:
+      - user
+      x-openapi-router-controller: web.src.SAP.generated.controllers.user_controller
+  /user/views/{name}:
+    delete:
+      description: Cancel a pending approval
+      operationId: delete_view
+      parameters:
+      - description: Name of view to delete
+        explode: true
+        in: path
+        name: name
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "204":
+          description: View deleted successfully.
       tags:
       - user
       x-openapi-router-controller: web.src.SAP.generated.controllers.user_controller
@@ -306,6 +423,31 @@ components:
       - items
       - pagingToken
       - totalCount
+    Column:
+      example:
+        pii: true
+        approves_with:
+        - approves_with
+        - approves_with
+        approvable: true
+        editable: true
+        organization: organization
+        field_name: field_name
+      properties:
+        approvable:
+          type: boolean
+        editable:
+          type: boolean
+        pii:
+          type: boolean
+        organization:
+          type: string
+        field_name:
+          type: string
+        approves_with:
+          items:
+            type: string
+          type: array
     User:
       example:
         firstName: firstName
@@ -336,6 +478,60 @@ components:
           description: User Status
           format: int32
           type: integer
+      type: object
+    UserDefinedView:
+      example:
+        columns:
+        - columns
+        - columns
+        name: name
+      properties:
+        name:
+          type: string
+        columns:
+          items:
+            type: string
+          type: array
+      type: object
+    ApprovalRequest:
+      example:
+        matrix:
+          key:
+            key: true
+      properties:
+        matrix:
+          additionalProperties:
+            additionalProperties:
+              type: boolean
+            type: object
+          type: object
+      required:
+      - matrix
+      type: object
+    Approval:
+      allOf:
+      - $ref: '#/components/schemas/ApprovalRequest'
+      - properties:
+          id:
+            type: string
+          approver:
+            type: string
+          timestamp:
+            format: date-time
+            type: string
+          status:
+            enum:
+            - pending
+            - cancelled
+            - submitted
+            type: string
+          matrix:
+            $ref: '#/components/schemas/ApprovalMatrix'
+    ApprovalMatrix:
+      additionalProperties:
+        additionalProperties:
+          type: boolean
+        type: object
       type: object
     BaseMetadata:
       properties:
@@ -384,11 +580,50 @@ components:
     TbrMetadata:
       allOf:
       - $ref: '#/components/schemas/BaseMetadata'
-      - $ref: '#/components/schemas/TbrMetadata_allOf'
+      - properties:
+          cpr:
+            type: string
+          gender:
+            enum:
+            - M
+            - K
+            type: string
+          name:
+            type: string
+          age:
+            type: number
+          travel:
+            type: string
+          travel_country:
+            type: string
+          run_date:
+            type: string
+          kma_received_date:
+            type: string
+          kma:
+            type: string
+          region:
+            type: string
+        required:
+        - run_date
     LimsMetadata:
       allOf:
       - $ref: '#/components/schemas/BaseMetadata'
-      - $ref: '#/components/schemas/LimsMetadata_allOf'
+      - properties:
+          chr_number:
+            type: number
+          aut_number:
+            type: string
+          product_type:
+            type: string
+          product:
+            type: string
+          origin_country:
+            type: string
+          animal_species:
+            type: string
+          sample_info:
+            type: string
     AnalysisResult:
       properties:
         _id:
@@ -410,49 +645,6 @@ components:
       - _id
       - isolateId
       type: object
-    TbrMetadata_allOf:
-      properties:
-        cpr:
-          type: string
-        gender:
-          enum:
-          - M
-          - K
-          type: string
-        name:
-          type: string
-        age:
-          type: number
-        travel:
-          type: string
-        travel_country:
-          type: string
-        run_date:
-          type: string
-        kma_received_date:
-          type: string
-        kma:
-          type: string
-        region:
-          type: string
-      required:
-      - run_date
-    LimsMetadata_allOf:
-      properties:
-        chr_number:
-          type: number
-        aut_number:
-          type: string
-        product_type:
-          type: string
-        product:
-          type: string
-        origin_country:
-          type: string
-        animal_species:
-          type: string
-        sample_info:
-          type: string
   securitySchemes:
     SAP_auth:
       scheme: bearer

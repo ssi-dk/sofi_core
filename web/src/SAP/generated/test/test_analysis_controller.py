@@ -5,6 +5,7 @@ import unittest
 from flask import json
 from six import BytesIO
 
+from web.src.SAP.generated.models.column import Column  # noqa: E501
 from web.src.SAP.generated.models.page_of_analysis import PageOfAnalysis  # noqa: E501
 from .test import BaseTestCase
 
@@ -17,8 +18,8 @@ class TestAnalysisController(BaseTestCase):
 
         
         """
-        query_string = [('pagingToken', None),
-                        ('pageSize', 100)]
+        query_string = [('paging_token', None),
+                        ('page_size', 100)]
         headers = { 
             'Accept': 'application/json',
         }
@@ -27,6 +28,21 @@ class TestAnalysisController(BaseTestCase):
             method='GET',
             headers=headers,
             query_string=query_string)
+        self.assert200(response,
+                       'Response body is : ' + response.data.decode('utf-8'))
+
+    def test_get_columns(self):
+        """Test case for get_columns
+
+        
+        """
+        headers = { 
+            'Accept': 'application/json',
+        }
+        response = self.client.open(
+            '/api/analysis/columns',
+            method='GET',
+            headers=headers)
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
 

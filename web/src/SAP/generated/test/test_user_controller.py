@@ -6,6 +6,7 @@ from flask import json
 from six import BytesIO
 
 from web.src.SAP.generated.models.user import User  # noqa: E501
+from web.src.SAP.generated.models.user_defined_view import UserDefinedView  # noqa: E501
 from .test import BaseTestCase
 
 
@@ -31,6 +32,27 @@ class TestUserController(BaseTestCase):
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
 
+    def test_create_user_view(self):
+        """Test case for create_user_view
+
+        
+        """
+        user_defined_view = {
+  "columns" : [ "columns", "columns" ],
+  "name" : "name"
+}
+        headers = { 
+            'Content-Type': 'application/json',
+        }
+        response = self.client.open(
+            '/api/user/views',
+            method='POST',
+            headers=headers,
+            data=json.dumps(user_defined_view),
+            content_type='application/json')
+        self.assert200(response,
+                       'Response body is : ' + response.data.decode('utf-8'))
+
     def test_delete_user(self):
         """Test case for delete_user
 
@@ -40,6 +62,20 @@ class TestUserController(BaseTestCase):
         }
         response = self.client.open(
             '/api/user/{username}'.format(username='username_example'),
+            method='DELETE',
+            headers=headers)
+        self.assert200(response,
+                       'Response body is : ' + response.data.decode('utf-8'))
+
+    def test_delete_view(self):
+        """Test case for delete_view
+
+        
+        """
+        headers = { 
+        }
+        response = self.client.open(
+            '/api/user/views/{name}'.format(name='name_example'),
             method='DELETE',
             headers=headers)
         self.assert200(response,
@@ -55,6 +91,21 @@ class TestUserController(BaseTestCase):
         }
         response = self.client.open(
             '/api/user/{username}'.format(username='username_example'),
+            method='GET',
+            headers=headers)
+        self.assert200(response,
+                       'Response body is : ' + response.data.decode('utf-8'))
+
+    def test_get_user_views(self):
+        """Test case for get_user_views
+
+        
+        """
+        headers = { 
+            'Accept': 'application/json',
+        }
+        response = self.client.open(
+            '/api/user/views',
             method='GET',
             headers=headers)
         self.assert200(response,

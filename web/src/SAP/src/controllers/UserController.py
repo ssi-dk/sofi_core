@@ -20,3 +20,12 @@ def logout_user():  # noqa: E501
 
 def update_user(username, body):  # noqa: E501
     return "updated"
+
+def get_user_views(): # noqa: E501
+    return []
+
+def create_user_view(body): # noqa: E501
+    return 
+
+def delete_view(): # noqa: E501
+    return

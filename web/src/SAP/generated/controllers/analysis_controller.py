@@ -1,6 +1,7 @@
 import connexion
 import six
 
+from web.src.SAP.generated.models.column import Column  # noqa: E501
 from web.src.SAP.generated.models.page_of_analysis import PageOfAnalysis  # noqa: E501
 from .. import util
 from ...src.controllers import AnalysisController
@@ -19,3 +20,14 @@ def get_analysis(paging_token=None, page_size=None):  # noqa: E501
     :rtype: PageOfAnalysis
     """
     return AnalysisController.get_analysis(paging_token, page_size)
+
+
+def get_columns():  # noqa: E501
+    """get_columns
+
+    Get column metadata, scoped to authenticated user # noqa: E501
+
+
+    :rtype: List[Column]
+    """
+    return AnalysisController.get_columns()
