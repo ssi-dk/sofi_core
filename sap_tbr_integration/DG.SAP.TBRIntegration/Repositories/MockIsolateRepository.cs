@@ -24,7 +24,7 @@ namespace DG.SAP.TBRIntegration.Repositories
             }
         };
 
-        public Task<bool> Approve(Approval isolateAnalysisApproval)
+        public Task<bool> UpdateIsolate(IsolateUpdate isolateUpdate)
         {
             throw new NotImplementedException();
         }

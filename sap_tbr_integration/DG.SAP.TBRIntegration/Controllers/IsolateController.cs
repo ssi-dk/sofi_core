@@ -48,9 +48,9 @@ namespace DG.SAP.TBRIntegration.Controllers
         [Produces("application/json", "application/problem+json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<bool>> ApproveAnalysisValues([FromBody] Approval approval)
+        public async Task<ActionResult<bool>> ApproveAnalysisValues([FromBody] IsolateUpdate isolateUpdate)
         {
-            return await _isolateRepository.Approve(approval);
+            return await _isolateRepository.UpdateIsolate(isolateUpdate);
         }
     }
 }

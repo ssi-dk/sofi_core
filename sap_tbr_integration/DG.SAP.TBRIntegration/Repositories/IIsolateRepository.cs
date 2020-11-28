@@ -5,7 +5,7 @@ namespace DG.SAP.TBRIntegration.Repositories
 {
     public interface IIsolateRepository
     {
-        Task<bool> Approve(Approval isolateAnalysisApproval);
+        Task<bool> UpdateIsolate(IsolateUpdate isolate);
         Task<Isolate> GetIsolate(string isolateId);
     }
 }

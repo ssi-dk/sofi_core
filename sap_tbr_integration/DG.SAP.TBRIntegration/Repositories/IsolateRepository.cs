@@ -1,5 +1,7 @@
 using System;
+using System.Data;
 using System.Data.SqlClient;
+using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
 using DG.SAP.TBRIntegration.Models;
@@ -28,17 +30,33 @@ namespace DG.SAP.TBRIntegration.Repositories
         {
         }
 
-        public Task<bool> Approve(Approval isolateAnalysisApproval)
+        public async Task<bool> UpdateIsolate(IsolateUpdate isolateUpdate)
         {
-            throw new NotImplementedException();
+            await using var connection = new SqlConnection(_connectionString);
+            try
+            {
+                await connection.ExecuteAsync(
+                    "FVST_DTU.UpdateIsolate", 
+                    isolateUpdate, 
+                    commandType: CommandType.StoredProcedure
+                );
+                return true;
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
         }
 
         public async Task<Isolate> GetIsolate(string isolateId)
         {
-            const string sql = "EXEC [FVST_DTU].[GetIsolate] @Isolatnr = @IsolateId";
-            var parameters = new {IsolateId = isolateId};
             await using var connection = new SqlConnection(_connectionString);
-            return await connection.QuerySingleOrDefaultAsync<Isolate>(sql, parameters);
+            var isolate = await connection.QueryAsync<Isolate>(
+                "FVST_DTU.GetIsolate", 
+                new {Isolatnr = isolateId},
+                commandType: CommandType.StoredProcedure
+            );
+            return isolate.SingleOrDefault();
         }
     }
 }
