@@ -1,3 +1,6 @@
+USE [IB_Tarmbakdata]
+GO
+
 ALTER TABLE [dbo].[tbl_Isolater_SAP]
 ADD Dato_godkendt_toxin [datetime] NULL; 
 

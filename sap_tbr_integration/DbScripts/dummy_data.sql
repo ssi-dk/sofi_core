@@ -1,4 +1,5 @@
-/***** Insert data *****/
+USE [IB_Tarmbakdata]
+GO
 
 INSERT INTO IB_Tarmbakdata.dbo.tbl_KMA (kmanr, kmanavn, regionsnr) VALUES (N'1', N'kma1', N'1');
 INSERT INTO IB_Tarmbakdata.dbo.tbl_KMA (kmanr, kmanavn, regionsnr) VALUES (N'2', N'kma2', N'2');

@@ -4,10 +4,10 @@ GO
 
 CREATE PROCEDURE FVST_DTU.UpdateIsolate(
         @IsolateId [nvarchar](14),
-    	@Serotype [nvarchar](50) NULL,
-    	@ST [smallint] NULL,
-    	@FudNr [nvarchar](10) NULL,
-    	@ClusterId [nvarchar](50) NULL,
+        @Serotype [nvarchar](50) NULL,
+        @ST [smallint] NULL,
+        @FudNr [nvarchar](10) NULL,
+        @ClusterId [nvarchar](50) NULL,
         @Species [nvarchar](50) NULL,
         @Subspecies [nvarchar](50) NULL,
         @Pathotype [nvarchar](10) NULL,
