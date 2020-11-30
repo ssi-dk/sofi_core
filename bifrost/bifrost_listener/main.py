@@ -2,13 +2,13 @@ import logging
 import pymongo
 import subprocess
 
-client = pymongo.MongoClient('localhost', replicaset='rs0')
+client = pymongo.MongoClient('localhost')
 
 
 pipeline = [{"$match": {"operationType": {"$in": ["replace", "update"]},
                         "fullDocument.status": "Success"}}]
 options = {"full_document": "updateLookup"}
-
+#"""
 resume_token = None
 def watch_loop():
     with client["bifrost_test"]["sample_components"].watch(pipeline, **options) as stream:
@@ -25,3 +25,4 @@ while(True):
     except pymongo.errors.PyMongoError:
         if resume_token is None:
             logging.error('Resume token error. Listener is stopping...')
+            

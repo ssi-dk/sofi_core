@@ -4,6 +4,7 @@ refreshSAPAnalysisResults = function () {
   db.samples.aggregate([
     {
       $project: {
+        "isolate_id": "$name",
         "QC_provided_species": "$properties.stamper.summary.test__sample__species_provided_is_detected.value",
         "QC_genome1x": "$properties.stamper.summary.test__denovo_assembly__genome_size_at_1x.value",
         "QC_genome10x": "$properties.stamper.summary.test__denovo_assembly__genome_size_at_10x.value",

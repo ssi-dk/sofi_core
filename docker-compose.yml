@@ -8,8 +8,6 @@ services:
       - 6000
     environment:
       - APP_MODULE=wsgi:app
-    depends_on:
-      - "bifrost_db"
 
   sap_app:
     build:
@@ -36,10 +34,3 @@ services:
       -  "sap_app"
     volumes:
         - ./Caddyfile:/etc/Caddyfile
-
-  bifrost_db:
-    build: bifrost/bifrost_db
-    expose:
-      - 27017
-    ports:
-      - "27017:27017"
