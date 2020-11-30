@@ -64,6 +64,12 @@
             "type": "string"
           }
         }
+      },
+      "approval_matrix": {
+        "type": "object",
+        "additionalProperties": {
+          "type": "integer"
+        }
       }
     },
     "sap_user": {},
@@ -190,6 +196,41 @@
         },
         "action": {
           "type": "string"
+        }
+      }
+    },
+    "sap_approvals": {
+      "type": "object",
+      "required": [
+        "_id",
+        "action"
+      ],
+      "properties": {
+        "_id": {
+          "type": "string"
+        },
+        "action": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "approver": {
+          "type": "string"
+        },
+        "timestamp": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "pending",
+            "cancelled",
+            "submitted"
+          ]
+        },
+        "matrix": {
+          "$ref": "#/definitions/references/approval_matrix"
         }
       }
     }
