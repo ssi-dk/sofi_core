@@ -320,6 +320,9 @@ paths:
       x-openapi-router-controller: web.src.SAP.generated.controllers.user_controller
 components:
   schemas:
+    Organization:
+      type: string
+      enum: [SSI, FVST]
     Analysis:
       required:
         - analysisId
@@ -362,10 +365,7 @@ components:
             - pig
             - dog
         organization:
-          type: string
-          enum:
-            - FVST
-            - SSI
+          $ref: "#/components/schemas/Organization"
         project:
           type: string
         approved:
@@ -394,8 +394,10 @@ components:
           type: boolean
         pii:
           type: boolean
-        organization:
-          type: string
+        organizations:
+          type: array
+          items:
+            $ref: "#/components/schemas/Organization"
         field_name:
           type: string
         approves_with:
@@ -442,6 +444,7 @@ components:
           type: array
           items:
             type: string
+
     ApprovalRequest:
       type: object
       required:
@@ -492,10 +495,7 @@ components:
         sequence_filename:
           type: string
         institution:
-          type: string
-          enum:
-            - FVST
-            - SSI
+          $ref: "#/components/schemas/Organization"
         project_number:
           type: number
         project_title:
