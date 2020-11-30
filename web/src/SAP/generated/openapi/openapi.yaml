@@ -319,6 +319,11 @@ paths:
       x-openapi-router-controller: web.src.SAP.generated.controllers.user_controller
 components:
   schemas:
+    Organization:
+      enum:
+      - SSI
+      - FVST
+      type: string
     Analysis:
       example:
         testTimestamp: 2000-01-23T04:56:07.000+00:00
@@ -328,7 +333,6 @@ components:
         resfinderVersion: "1.99"
         species: rat
         dateReceived: 2000-01-23
-        organization: FVST
         analysisId: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
         project: project
         serumType: XXXYYAAA
@@ -367,10 +371,7 @@ components:
           - dog
           type: string
         organization:
-          enum:
-          - FVST
-          - SSI
-          type: string
+          $ref: '#/components/schemas/Organization'
         project:
           type: string
         approved:
@@ -393,7 +394,6 @@ components:
           resfinderVersion: "1.99"
           species: rat
           dateReceived: 2000-01-23
-          organization: FVST
           analysisId: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
           project: project
           serumType: XXXYYAAA
@@ -404,7 +404,6 @@ components:
           resfinderVersion: "1.99"
           species: rat
           dateReceived: 2000-01-23
-          organization: FVST
           analysisId: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
           project: project
           serumType: XXXYYAAA
@@ -431,7 +430,9 @@ components:
         - approves_with
         approvable: true
         editable: true
-        organization: organization
+        organizations:
+        - null
+        - null
         field_name: field_name
       properties:
         approvable:
@@ -440,8 +441,10 @@ components:
           type: boolean
         pii:
           type: boolean
-        organization:
-          type: string
+        organizations:
+          items:
+            $ref: '#/components/schemas/Organization'
+          type: array
         field_name:
           type: string
         approves_with:
@@ -542,10 +545,7 @@ components:
         sequence_filename:
           type: string
         institution:
-          enum:
-          - FVST
-          - SSI
-          type: string
+          $ref: '#/components/schemas/Organization'
         project_number:
           type: number
         project_title:
