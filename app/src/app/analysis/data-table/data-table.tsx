@@ -23,6 +23,7 @@ import dtStyle, {
 } from "app/analysis/data-table/data-table.styles";
 import { IndexableOf, NotEmpty } from "utils";
 import SelectionCheckBox from "./selection-check-box";
+import { ColumnConfigWidget } from "./column-config-widget";
 
 export type DataTableSelection<T extends NotEmpty> = {
   [K in IndexableOf<T>]: { [k in IndexableOf<T>]: boolean };
@@ -353,6 +354,19 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
                           }}
                         </Draggable>
                       ))}
+                      <div style={{ marginLeft: "auto" }}>
+                        <ColumnConfigWidget>
+                          {allColumns.map((column) => (
+                            <div key={column.id} style={{ marginTop: "5px" }}>
+                              <input
+                                type="checkbox"
+                                {...column.getToggleHiddenProps()}
+                              />{" "}
+                              {column.id}
+                            </div>
+                          ))}
+                        </ColumnConfigWidget>
+                      </div>
                     </div>
                   </React.Fragment>
                 )}
@@ -364,6 +378,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
         <div role="rowgroup" {...getTableBodyProps()}>
           <FixedSizeList
             height={600}
+            overscanCount={2}
             itemCount={rows.length}
             itemSize={50}
             width={totalColumnsWidth + scrollBarSize}

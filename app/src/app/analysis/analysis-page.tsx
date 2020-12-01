@@ -122,7 +122,7 @@ export default function AnalysisPage() {
         <Box minW={sidebarWidth} pr={5}>
           <AnalysisSidebar />
         </Box>
-        <Box borderWidth="1px" rounded="md">
+        <Box borderWidth="1px" rounded="md" overflowX="auto">
           <Box margin="4px">
             <Button
               margin="4px"
