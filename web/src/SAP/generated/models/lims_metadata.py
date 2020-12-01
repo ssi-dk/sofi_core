@@ -7,10 +7,12 @@ from typing import List, Dict  # noqa: F401
 
 from .base_model_ import Model
 from web.src.SAP.generated.models.base_metadata import BaseMetadata
+from web.src.SAP.generated.models.lims_specific_metadata import LimsSpecificMetadata
 from web.src.SAP.generated.models.organization import Organization
 from .. import util
 
 from web.src.SAP.generated.models.base_metadata import BaseMetadata  # noqa: E501
+from web.src.SAP.generated.models.lims_specific_metadata import LimsSpecificMetadata  # noqa: E501
 from web.src.SAP.generated.models.organization import Organization  # noqa: E501
 
 class LimsMetadata(Model):

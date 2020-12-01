@@ -456,7 +456,8 @@ components:
     Approval:
       allOf:
         - $ref: '#/components/schemas/ApprovalRequest'
-        - properties:
+        - type: object
+          properties:
             id:
               type: string
             approver:
@@ -467,8 +468,6 @@ components:
             status:
               type: string
               enum: [pending, cancelled, submitted]
-            matrix:
-              $ref: "#/components/schemas/ApprovalMatrix"
 
     ApprovalMatrix:
       type: object
@@ -476,6 +475,10 @@ components:
         type: object
         additionalProperties:
           type: boolean
+    
+    Resistance:
+      type: string
+      enum: ["Sensitiv", "Resistent", "Ukendt"]
 
     BaseMetadata:
       required:
@@ -518,74 +521,221 @@ components:
           type: string
         epi_export:
           type: string
+
+    TbrSpecificMetadata:
+      type: object
+      required:
+        - run_date
+      properties:
+        cpr:
+          type: string
+        gender:
+          type: string
+          enum:
+            - M
+            - K
+        name:
+          type: string
+        age:
+          type: number
+        travel:
+          type: string
+        travel_country:
+          type: string
+        run_date:
+          type: string
+        kma_received_date:
+          type: string
+        kma:
+          type: string
+        region:
+          type: string
+
     TbrMetadata:
       allOf:
         - $ref: '#/components/schemas/BaseMetadata'
-        - required:
-            - run_date
-          properties:
-            cpr:
-              type: string
-            gender:
-              type: string
-              enum:
-                - M
-                - K
-            name:
-              type: string
-            age:
-              type: number
-            travel:
-              type: string
-            travel_country:
-              type: string
-            run_date:
-              type: string
-            kma_received_date:
-              type: string
-            kma:
-              type: string
-            region:
-              type: string
+        - $ref: '#/components/schemas/TbrSpecificMetadata'
+
+    LimsSpecificMetadata:
+      type: object
+      properties:
+        chr_number:
+          type: number
+        aut_number:
+          type: string
+        product_type:
+          type: string
+        product:
+          type: string
+        origin_country:
+          type: string
+        animal_species:
+          type: string
+        sample_info:
+          type: string
     LimsMetadata:
       allOf:
         - $ref: '#/components/schemas/BaseMetadata'
-        - properties:
-            chr_number:
-              type: number
-            aut_number:
-              type: string
-            product_type:
-              type: string
-            product:
-              type: string
-            origin_country:
-              type: string
-            animal_species:
-              type: string
-            sample_info:
-              type: string
+        - $ref: '#/components/schemas/LimsSpecificMetadata'
+
     AnalysisResult:
-      type: object
-      required:
-        - _id
-        - isolateId
-      properties:
-        _id:
-          type: string
-        isolateId:
-          type: string
-          maxLength: 100
-        QC_provided_species:
-          type: number
-        QC_genome1x:
-          type: number
-        QC_genome10x:
-          type: number
-        QC_Gsize_diff1x10:
-          type: number
-        QC_Avg_coverage:
-          type: number
+      allOf:
+        - $ref: '#/components/schemas/BaseMetadata'
+        - $ref: '#/components/schemas/LimsSpecificMetadata'
+        - $ref: '#/components/schemas/TbrSpecificMetadata'
+        - type: object
+          required:
+            - _id
+            - isolate_id
+          properties:
+            _id:
+              type: string
+            QC_provided_species:
+              type: number
+            QC_genome1x:
+              type: number
+            QC_genome10x:
+              type: number
+            QC_Gsize_diff1x10:
+              type: number
+            QC_Avg_coverage:
+              type: number
+            QC_final:
+              type: string
+              enum: ["A", "B", "C"]
+            subspecies:
+              type: string
+            species_final:
+              type: string
+            st:
+              type: string
+            pathotype:
+              type: string
+            pathotype_final:
+              type: string
+            serotype:
+              type: string
+            serotype_final:
+              type: string
+            adhesion:
+              type: string
+            toxins:
+              type: string
+            FUDnr:
+              type: string
+            resistance_genes:
+              type: string
+            AMR_profile:
+              type: string
+            AMR_ami:
+              $ref: "#/components/schemas/Resistance"
+            AMR_amp:
+              $ref: "#/components/schemas/Resistance"
+            AMR_azi:
+              $ref: "#/components/schemas/Resistance"
+            AMR_fep:
+              $ref: "#/components/schemas/Resistance"
+            AMR_fot:
+              $ref: "#/components/schemas/Resistance"
+            AMR_f_c:
+              $ref: "#/components/schemas/Resistance"
+            AMR_fox:
+              $ref: "#/components/schemas/Resistance"
+            AMR_taz:
+              $ref: "#/components/schemas/Resistance"
+            AMR_t_c:
+              $ref: "#/components/schemas/Resistance"
+            AMR_chl:
+              $ref: "#/components/schemas/Resistance"
+            AMR_cip:
+              $ref: "#/components/schemas/Resistance"
+            AMR_cli:
+              $ref: "#/components/schemas/Resistance"
+            AMR_col:
+              $ref: "#/components/schemas/Resistance"
+            AMR_dap:
+              $ref: "#/components/schemas/Resistance"
+            AMR_etp:
+              $ref: "#/components/schemas/Resistance"
+            AMR_ery:
+              $ref: "#/components/schemas/Resistance"
+            AMR_fus:
+              $ref: "#/components/schemas/Resistance"
+            AMR_gen:
+              $ref: "#/components/schemas/Resistance"
+            AMR_imi:
+              $ref: "#/components/schemas/Resistance"
+            AMR_kan:
+              $ref: "#/components/schemas/Resistance"
+            AMR_lzd:
+              $ref: "#/components/schemas/Resistance"
+            AMR_mero:
+              $ref: "#/components/schemas/Resistance"
+            AMR_mup:
+              $ref: "#/components/schemas/Resistance"
+            AMR_nal:
+              $ref: "#/components/schemas/Resistance"
+            AMR_pen:
+              $ref: "#/components/schemas/Resistance"
+            AMR_syn:
+              $ref: "#/components/schemas/Resistance"
+            AMR_rif:
+              $ref: "#/components/schemas/Resistance"
+            AMR_str:
+              $ref: "#/components/schemas/Resistance"
+            AMR_sul:
+              $ref: "#/components/schemas/Resistance"
+            AMR_tei:
+              $ref: "#/components/schemas/Resistance"
+            AMR_trm:
+              $ref: "#/components/schemas/Resistance"
+            AMR_tet:
+              $ref: "#/components/schemas/Resistance"
+            AMR_tia:
+              $ref: "#/components/schemas/Resistance"
+            AMR_tgc:
+              $ref: "#/components/schemas/Resistance"
+            AMR_tmp:
+              $ref: "#/components/schemas/Resistance"
+            AMR_van:
+              $ref: "#/components/schemas/Resistance"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            
+
+
+
+
+
+
+
+
+
+
 
   securitySchemes:
     SAP_auth:

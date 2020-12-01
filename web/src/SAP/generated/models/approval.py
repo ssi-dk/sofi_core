@@ -6,9 +6,11 @@ from datetime import date, datetime  # noqa: F401
 from typing import List, Dict  # noqa: F401
 
 from .base_model_ import Model
+from web.src.SAP.generated.models.approval_all_of import ApprovalAllOf
 from web.src.SAP.generated.models.approval_request import ApprovalRequest
 from .. import util
 
+from web.src.SAP.generated.models.approval_all_of import ApprovalAllOf  # noqa: E501
 from web.src.SAP.generated.models.approval_request import ApprovalRequest  # noqa: E501
 
 class Approval(Model):
