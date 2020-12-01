@@ -1,0 +1,84 @@
+// Column configuration
+//
+// This file defines which fields are approvable and their relations between one another,
+// as well as various properties for controlling how the application handles these fields.
+//
+// It is helpful when editing to change the file extension to .ts and uncomment the lines below:
+//
+//import { AnalysisResult } from '../app/src/sap-client/models/AnalysisResult';
+//import { StrictColumn } from '../app/src/app/types';
+//var typeCheckedColumnConfig: StrictColumn<AnalysisResult>[] =
+[
+  {
+    "fieldName": "QC_final",
+    "approvesWith": ["species_final", "run_id"]
+  },
+  {
+    "fieldName": "st",
+    "approvable": true,
+    "organization": ["FVST", "SSI"],
+    "approvesWith": ["st"]
+  },
+  {
+    "fieldName": "serotype",
+    "approvable": true,
+    "organization": ["FVST", "SSI"],
+    "approvesWith": [
+      "serotype_final",
+      "subspecies",
+      "pathotype",
+      "adhesion",
+      "toxins"
+    ]
+  },
+  {
+    "fieldName": "resistance_genes",
+    "approvable": true,
+    "organization": ["FVST", "SSI"],
+    "approvesWith": [
+           "AMR_profile",
+           "AMR_ami",
+           "AMR_amp",
+           "AMR_azi",
+           "AMR_fep",
+           "AMR_fot",
+           "AMR_f_c",
+           "AMR_fox",
+           "AMR_taz",
+           "AMR_t_c",
+           "AMR_chl",
+           "AMR_cip",
+           "AMR_cli",
+           "AMR_col",
+           "AMR_dap",
+           "AMR_etp",
+           "AMR_ery",
+           "AMR_fus",
+           "AMR_gen",
+           "AMR_imi",
+           "AMR_kan",
+           "AMR_lzd",
+           "AMR_mero",
+           "AMR_mup",
+           "AMR_nal",
+           "AMR_pen",
+           "AMR_syn",
+           "AMR_rif",
+           "AMR_str",
+           "AMR_sul",
+           "AMR_tei",
+           "AMR_trm",
+           "AMR_tet",
+           "AMR_tia",
+           "AMR_tgc",
+           "AMR_tmp",
+           "AMR_van",
+      ]
+  },
+  {
+    "fieldName": "cluster_id",
+    "approvable": true,
+    "organization": ["FVST", "SSI"],
+    "approvesWith": ["FUDnr"]
+  }
+]

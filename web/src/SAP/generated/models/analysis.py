@@ -6,9 +6,11 @@ from datetime import date, datetime  # noqa: F401
 from typing import List, Dict  # noqa: F401
 
 from .base_model_ import Model
+from web.src.SAP.generated.models.organization import Organization
 import re
 from .. import util
 
+from web.src.SAP.generated.models.organization import Organization  # noqa: E501
 import re  # noqa: E501
 
 class Analysis(Model):
@@ -37,7 +39,7 @@ class Analysis(Model):
         :param species: The species of this Analysis.  # noqa: E501
         :type species: str
         :param organization: The organization of this Analysis.  # noqa: E501
-        :type organization: str
+        :type organization: Organization
         :param project: The project of this Analysis.  # noqa: E501
         :type project: str
         :param approved: The approved of this Analysis.  # noqa: E501
@@ -52,7 +54,7 @@ class Analysis(Model):
             'serum_type': str,
             'agent': str,
             'species': str,
-            'organization': str,
+            'organization': Organization,
             'project': str,
             'approved': bool
         }
@@ -294,7 +296,7 @@ class Analysis(Model):
 
 
         :return: The organization of this Analysis.
-        :rtype: str
+        :rtype: Organization
         """
         return self._organization
 
@@ -304,14 +306,8 @@ class Analysis(Model):
 
 
         :param organization: The organization of this Analysis.
-        :type organization: str
+        :type organization: Organization
         """
-        allowed_values = ["FVST", "SSI"]  # noqa: E501
-        if organization not in allowed_values:
-            raise ValueError(
-                "Invalid value for `organization` ({0}), must be one of {1}"
-                .format(organization, allowed_values)
-            )
 
         self._organization = organization
 
