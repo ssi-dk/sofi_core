@@ -10,12 +10,12 @@ variables:
 steps:
 - task: DotNetCoreCLI@2
   inputs:
-    projects: 'TBR-SAP-integration'
+    projects: 'sap_tbr_integration'
     command: restore
 
 - task: DotNetCoreCLI@2
   inputs:
-    projects: 'TBR-SAP-integration'
+    projects: 'sap_tbr_integration'
     command: 'build'
     arguments: '--configuration $(buildConfiguration) --no-restore'
   displayName: 'dotnet build $(buildConfiguration)'
@@ -25,7 +25,7 @@ steps:
   name: PublishBackendProject
   inputs:
     command: publish
-    projects: 'TBR-SAP-integration'
+    projects: 'sap_tbr_integration'
     publishWebProjects: false
     arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory) /p:WebPublishMethod=Package'
     zipAfterPublish: true
