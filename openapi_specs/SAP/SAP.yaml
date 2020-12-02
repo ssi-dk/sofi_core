@@ -385,7 +385,7 @@ components:
         items:
           type: array
           items:
-            $ref: '#/components/schemas/Analysis'
+            $ref: '#/components/schemas/AnalysisResult'
     Column:
       properties:
         approvable:

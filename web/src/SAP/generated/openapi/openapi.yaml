@@ -325,17 +325,6 @@ components:
       - FVST
       type: string
     Analysis:
-      example:
-        testTimestamp: 2000-01-23T04:56:07.000+00:00
-        isolateId: 1231_14_XDR
-        agent: e.coli
-        approved: true
-        resfinderVersion: "1.99"
-        species: rat
-        dateReceived: 2000-01-23
-        analysisId: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
-        project: project
-        serumType: XXXYYAAA
       properties:
         analysisId:
           format: uuid
@@ -387,26 +376,8 @@ components:
         pagingToken: pagingToken
         totalCount: 0.8008281904610115
         items:
-        - testTimestamp: 2000-01-23T04:56:07.000+00:00
-          isolateId: 1231_14_XDR
-          agent: e.coli
-          approved: true
-          resfinderVersion: "1.99"
-          species: rat
-          dateReceived: 2000-01-23
-          analysisId: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
-          project: project
-          serumType: XXXYYAAA
-        - testTimestamp: 2000-01-23T04:56:07.000+00:00
-          isolateId: 1231_14_XDR
-          agent: e.coli
-          approved: true
-          resfinderVersion: "1.99"
-          species: rat
-          dateReceived: 2000-01-23
-          analysisId: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
-          project: project
-          serumType: XXXYYAAA
+        - null
+        - null
       properties:
         pagingToken:
           nullable: true
@@ -416,7 +387,7 @@ components:
           type: number
         items:
           items:
-            $ref: '#/components/schemas/Analysis'
+            $ref: '#/components/schemas/AnalysisResult'
           type: array
       required:
       - items

@@ -29,6 +29,7 @@ module.exports = {
     project: './tsconfig.json',
   },
   rules: {
+    'no-cond-assign': 'off',
     'linebreak-style': 'off',
     'no-nested-ternary': 'off',
     "jsx-a11y/no-noninteractive-element-interactions": "warn",

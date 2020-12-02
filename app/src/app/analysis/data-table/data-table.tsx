@@ -12,7 +12,7 @@ import {
   useColumnOrder,
   IdType,
 } from "react-table";
-import { FixedSizeList } from "react-window";
+import { FixedSizeGrid, FixedSizeList } from "react-window";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { jsx, SerializedStyles } from "@emotion/react";
 import scrollbarWidth from "app/analysis/data-table/scrollbar-width-calculator";
@@ -33,6 +33,8 @@ type DataTableProps<T extends NotEmpty> = {
   columns: Column<T>[];
   data: T[];
   primaryKey: keyof T;
+  canSelectColumn: (columnName: string) => boolean;
+  canEditColumn: (columnName: string) => boolean;
   selectionStyle: SerializedStyles;
   onSelect: (sel: DataTableSelection<T>) => void;
 };
@@ -54,6 +56,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
     (cell: Cell<T, T>) => {
       const row = cell.row.original[primaryKey];
       const col = cell.column.id as IndexableOf<T>;
+      console.log(primaryKey)
       return selection[row] && selection[row][col];
     },
     [selection, primaryKey]
@@ -206,6 +209,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
             style,
           })}
         >
+
           <SelectionCheckBox
             onClick={(e) => {
               onSelectRow(row);
@@ -244,6 +248,14 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
   return (
     <div css={dtStyle}>
       <div role="table" {...getTableProps()} className="tableWrap">
+          <ColumnConfigWidget>
+            {allColumns.map((column) => (
+              <div key={column.id} style={{ marginTop: "5px" }}>
+                <input type="checkbox" {...column.getToggleHiddenProps()} />{" "}
+                {column.id}
+              </div>
+            ))}
+          </ColumnConfigWidget>
         <div role="rowgroup">
           {headerGroups.map((headerGroup) => (
             <DragDropContext
@@ -354,19 +366,6 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
                           }}
                         </Draggable>
                       ))}
-                      <div style={{ marginLeft: "auto" }}>
-                        <ColumnConfigWidget>
-                          {allColumns.map((column) => (
-                            <div key={column.id} style={{ marginTop: "5px" }}>
-                              <input
-                                type="checkbox"
-                                {...column.getToggleHiddenProps()}
-                              />{" "}
-                              {column.id}
-                            </div>
-                          ))}
-                        </ColumnConfigWidget>
-                      </div>
                     </div>
                   </React.Fragment>
                 )}
@@ -378,7 +377,6 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
         <div role="rowgroup" {...getTableBodyProps()}>
           <FixedSizeList
             height={600}
-            overscanCount={2}
             itemCount={rows.length}
             itemSize={50}
             width={totalColumnsWidth + scrollBarSize}
@@ -391,6 +389,5 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
   );
 }
 
-DataTable.whyDidYouRender = true;
 
 export default DataTable;

@@ -1,11 +1,11 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 import React from "react";
-import { css, jsx } from "@emotion/react";
+import { jsx } from "@emotion/react";
 import {
   Box,
-  Button,
-  ButtonGroup,
+  Divider,
+  Heading,
   IconButton,
   Popover,
   PopoverArrow,
@@ -30,7 +30,7 @@ export const ColumnConfigWidget: React.FC = ({ children }) => {
         isOpen={isOpen}
         onOpen={onOpen}
         onClose={onClose}
-        placement="bottom-start"
+        placement="left"
         closeOnBlur={false}
       >
         <PopoverTrigger>
@@ -40,10 +40,14 @@ export const ColumnConfigWidget: React.FC = ({ children }) => {
             icon={<SettingsIcon />}
           />
         </PopoverTrigger>
-        <PopoverContent p={5}>
+        <PopoverContent p={5} >
           <PopoverArrow />
           <PopoverCloseButton />
-          <Form>{children}</Form>
+          <Heading size="sm">Visible columns</Heading>
+          <Divider />
+          <Box maxHeight="90vh" overflowY="auto">
+            <Form>{children}</Form>
+          </Box>
         </PopoverContent>
       </Popover>
     </React.Fragment>
