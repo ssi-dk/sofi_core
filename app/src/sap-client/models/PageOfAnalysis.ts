@@ -13,9 +13,9 @@
 
 import { exists, mapValues } from '../runtime';
 import {
-    Analysis,
-    AnalysisFromJSON,
-    AnalysisToJSON,
+    AnalysisResult,
+    AnalysisResultFromJSON,
+    AnalysisResultToJSON,
 } from './';
 
 /**
@@ -38,17 +38,17 @@ export interface PageOfAnalysis  {
     totalCount: number;
     /**
      * 
-     * @type {Array<Analysis>}
+     * @type {Array<AnalysisResult>}
      * @memberof PageOfAnalysis
      */
-    items: Array<Analysis>;
+    items: Array<AnalysisResult>;
 }
 
 export function PageOfAnalysisFromJSON(json: any): PageOfAnalysis {
     return {
         'pagingToken': json['pagingToken'],
         'totalCount': json['totalCount'],
-        'items': (json['items'] as Array<any>).map(AnalysisFromJSON),
+        'items': (json['items'] as Array<any>).map(AnalysisResultFromJSON),
     };
 }
 
@@ -59,7 +59,7 @@ export function PageOfAnalysisToJSON(value?: PageOfAnalysis): any {
     return {
         'pagingToken': value.pagingToken,
         'totalCount': value.totalCount,
-        'items': (value.items as Array<any>).map(AnalysisToJSON),
+        'items': (value.items as Array<any>).map(AnalysisResultToJSON),
     };
 }
 

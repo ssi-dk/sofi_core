@@ -6,11 +6,11 @@ from datetime import date, datetime  # noqa: F401
 from typing import List, Dict  # noqa: F401
 
 from .base_model_ import Model
-from web.src.SAP.generated.models.analysis import Analysis
+from web.src.SAP.generated.models.analysis_result import AnalysisResult
 import re
 from .. import util
 
-from web.src.SAP.generated.models.analysis import Analysis  # noqa: E501
+from web.src.SAP.generated.models.analysis_result import AnalysisResult  # noqa: E501
 import re  # noqa: E501
 
 class PageOfAnalysis(Model):
@@ -27,12 +27,12 @@ class PageOfAnalysis(Model):
         :param total_count: The total_count of this PageOfAnalysis.  # noqa: E501
         :type total_count: float
         :param items: The items of this PageOfAnalysis.  # noqa: E501
-        :type items: List[Analysis]
+        :type items: List[AnalysisResult]
         """
         self.openapi_types = {
             'paging_token': str,
             'total_count': float,
-            'items': List[Analysis]
+            'items': List[AnalysisResult]
         }
 
         self.attribute_map = {
@@ -110,7 +110,7 @@ class PageOfAnalysis(Model):
 
 
         :return: The items of this PageOfAnalysis.
-        :rtype: List[Analysis]
+        :rtype: List[AnalysisResult]
         """
         return self._items
 
@@ -120,7 +120,7 @@ class PageOfAnalysis(Model):
 
 
         :param items: The items of this PageOfAnalysis.
-        :type items: List[Analysis]
+        :type items: List[AnalysisResult]
         """
         if items is None:
             raise ValueError("Invalid value for `items`, must not be `None`")  # noqa: E501

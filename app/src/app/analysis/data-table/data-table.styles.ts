@@ -75,12 +75,10 @@ export default css({
   maxWidth: "100%",
   ".tableWrap": {
     display: "block",
-    maxWidth: "100%",
-    overflowX: "hidden",
+    width: "100%",
     overflowY: "hidden",
   },
   "div[role=table]": {
-    width: "100%",
     borderSpacing: 0,
   },
   "div[role=row]": {
@@ -93,6 +91,7 @@ export default css({
   },
   "div[role=rowgroup]": {
     borderBottom: theme.borders["2px"],
+    width: "100%"
   },
   "div[role=separator]": css({
     borderLeft: theme.borders["2px"],
@@ -110,6 +109,11 @@ export default css({
       fontWeight: "bold",
       borderBottom: theme.borders["2px"],
       userSelect: "none",
+      width: "1%",
+      /* But "collapsed" cells should be as small as possible */
+      "&.collapse": {
+        width: "0.0000000001%"
+      }
     },
     cell
   ),

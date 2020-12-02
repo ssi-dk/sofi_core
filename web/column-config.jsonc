@@ -10,20 +10,20 @@
 //var typeCheckedColumnConfig: StrictColumn<AnalysisResult>[] =
 [
   {
-    "fieldName": "QC_final",
+    "field_name": "QC_final",
     "approvesWith": ["species_final", "run_id"]
   },
   {
-    "fieldName": "st",
+    "field_name": "st",
     "approvable": true,
     "organization": ["FVST", "SSI"],
-    "approvesWith": ["st"]
+    "approves_with": ["st"]
   },
   {
-    "fieldName": "serotype",
+    "field_name": "serotype",
     "approvable": true,
     "organization": ["FVST", "SSI"],
-    "approvesWith": [
+    "approves_with": [
       "serotype_final",
       "subspecies",
       "pathotype",
@@ -32,10 +32,10 @@
     ]
   },
   {
-    "fieldName": "resistance_genes",
+    "field_name": "resistance_genes",
     "approvable": true,
     "organization": ["FVST", "SSI"],
-    "approvesWith": [
+    "approves_with": [
            "AMR_profile",
            "AMR_ami",
            "AMR_amp",
@@ -76,9 +76,9 @@
       ]
   },
   {
-    "fieldName": "cluster_id",
+    "field_name": "cluster_id",
     "approvable": true,
     "organization": ["FVST", "SSI"],
-    "approvesWith": ["FUDnr"]
+    "approves_with": ["FUDnr"]
   }
 ]
