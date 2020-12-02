@@ -8,12 +8,17 @@ import { useTranslation } from "react-i18next";
 import { RootState } from "app/root-reducer";
 import DataTable from "./data-table/data-table";
 import { approvedCell, selectedCell } from "./data-table/data-table.styles";
-import { requestPageOfAnalysis, requestColumns, ColumnSlice } from "./analysis-query-configs";
+import {
+  requestPageOfAnalysis,
+  requestColumns,
+  ColumnSlice,
+} from "./analysis-query-configs";
 import AnalysisHeader from "./header/analysis-header";
 import AnalysisSidebar from "./sidebar/analysis-sidebar";
 import { setSelection } from "./analysis-selection-configs";
 
 export default function AnalysisPage() {
+  const { t } = useTranslation();
   const reqs = React.useMemo(
     () =>
       Array.from(Array(5).keys()).map((i) => ({
@@ -39,10 +44,10 @@ export default function AnalysisPage() {
         (k) =>
           ({
             accessor: k,
-            Header: k,
+            Header: t(k),
           } as Column<AnalysisResult>)
       ),
-    [columnConfigs]
+    [columnConfigs, t]
   );
 
   const [pageState, setPageState] = useState({ isNarrowed: false });
@@ -51,15 +56,30 @@ export default function AnalysisPage() {
   const selection = useSelector<RootState>((s) => s.selection.selection);
 
   const toast = useToast();
-  const { t } = useTranslation();
 
-  const canSelectColumn = React.useCallback((columnName: string) => {
-    return columnConfigs[columnName]?.approvable;
-  }, [columnConfigs]);
+  const canSelectColumn = React.useCallback(
+    (columnName: string) => {
+      return columnConfigs[columnName]?.approvable;
+    },
+    [columnConfigs]
+  );
 
-  const canEditColumn = React.useCallback((columnName: string) => {
-    return columnConfigs[columnName]?.editable;
-  }, [columnConfigs]);
+  const canEditColumn = React.useCallback(
+    (columnName: string) => {
+      return columnConfigs[columnName]?.editable;
+    },
+    [columnConfigs]
+  );
+
+  const getDependentColumns = React.useCallback(
+    (columnName: keyof AnalysisResult) => {
+      return (
+        columnConfigs[columnName]?.approves_with ??
+        ([] as Array<keyof AnalysisResult>)
+      );
+    },
+    [columnConfigs]
+  );
 
   const approveSelection = React.useCallback(() => {
     toast({
@@ -75,7 +95,7 @@ export default function AnalysisPage() {
 
   const sidebarWidth = "300px";
   if (!columnLoadState.isFinished) {
-    return (<div>Loading</div>);
+    return <div>Loading</div>;
   }
   return (
     <Box w="100%">
@@ -109,6 +129,7 @@ export default function AnalysisPage() {
             columns={columns /* todo: filter on permission level */}
             canSelectColumn={canSelectColumn}
             canEditColumn={canEditColumn}
+            getDependentColumns={getDependentColumns}
             data={
               pageState.isNarrowed
                 ? data.filter((x) => selection[x.isolate_id])

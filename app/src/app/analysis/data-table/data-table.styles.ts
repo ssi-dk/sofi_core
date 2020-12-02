@@ -91,7 +91,7 @@ export default css({
   },
   "div[role=rowgroup]": {
     borderBottom: theme.borders["2px"],
-    width: "100%"
+    width: "100%",
   },
   "div[role=separator]": css({
     borderLeft: theme.borders["2px"],
@@ -112,8 +112,8 @@ export default css({
       width: "1%",
       /* But "collapsed" cells should be as small as possible */
       "&.collapse": {
-        width: "0.0000000001%"
-      }
+        width: "0.0000000001%",
+      },
     },
     cell
   ),

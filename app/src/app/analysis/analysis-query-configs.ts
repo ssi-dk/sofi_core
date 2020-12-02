@@ -51,14 +51,14 @@ export const requestColumns = () => {
   // use generated api client as base
   const base = getColumns<ColumnSlice>();
   // template the full path for the url
-  base.url = `${window.location.protocol}//${window.location.host}/api/${(base.url)}`;
+  base.url = `${window.location.protocol}//${window.location.host}/api/${base.url}`;
   // define a transform for normalizing the data into our desired state
   base.transform = (response: Column[]) => ({
     columns: arrayToNormalizedHashmap(response, "field_name"),
   });
   // define the update strategy for our state
   base.update = {
-    columns: (_, newValue) => newValue
+    columns: (_, newValue) => newValue,
   };
   return base;
 };

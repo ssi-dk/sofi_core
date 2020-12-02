@@ -40,7 +40,7 @@ export const ColumnConfigWidget: React.FC = ({ children }) => {
             icon={<SettingsIcon />}
           />
         </PopoverTrigger>
-        <PopoverContent p={5} >
+        <PopoverContent p={5}>
           <PopoverArrow />
           <PopoverCloseButton />
           <Heading size="sm">Visible columns</Heading>
