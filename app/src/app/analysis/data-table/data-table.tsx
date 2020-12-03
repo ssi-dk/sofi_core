@@ -12,7 +12,7 @@ import {
   useColumnOrder,
   IdType,
 } from "react-table";
-import { FixedSizeGrid, FixedSizeList } from "react-window";
+import { FixedSizeList } from "react-window";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { jsx, SerializedStyles } from "@emotion/react";
 import scrollbarWidth from "app/analysis/data-table/scrollbar-width-calculator";
@@ -24,7 +24,7 @@ import dtStyle, {
 import { IndexableOf, NotEmpty } from "utils";
 import SelectionCheckBox from "./selection-check-box";
 import { ColumnConfigWidget } from "./column-config-widget";
-import { exportDataTable } from "./table-spy";
+import { exportDataTable } from './table-spy';
 
 export type DataTableSelection<T extends NotEmpty> = {
   [K in IndexableOf<T>]: { [k in IndexableOf<T>]: boolean };
@@ -183,14 +183,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
       setSelection(incSel);
       onSelect(incSel);
     },
-    [
-      onSelect,
-      selection,
-      primaryKey,
-      columns,
-      calcRowSelectionState,
-      canApproveColumn,
-    ]
+    [onSelect, selection, primaryKey, columns, calcRowSelectionState, canApproveColumn]
   );
 
   const onSelectCol = React.useCallback(
@@ -441,6 +434,4 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
   );
 }
 
-DataTable.whyDidYouRender = true;
-
-export default DataTable;
+export default React.memo(DataTable) as typeof DataTable;
