@@ -24,6 +24,7 @@ import dtStyle, {
 import { IndexableOf, NotEmpty } from "utils";
 import SelectionCheckBox from "./selection-check-box";
 import { ColumnConfigWidget } from "./column-config-widget";
+import { exportDataTable } from "./table-spy";
 
 export type DataTableSelection<T extends NotEmpty> = {
   [K in IndexableOf<T>]: { [k in IndexableOf<T>]: boolean };
@@ -34,6 +35,7 @@ type DataTableProps<T extends NotEmpty> = {
   data: T[];
   primaryKey: keyof T;
   canSelectColumn: (columnName: string) => boolean;
+  canApproveColumn: (columnName: string) => boolean;
   canEditColumn: (columnName: string) => boolean;
   getDependentColumns: (columnName: keyof T) => Array<keyof T>;
   selectionStyle: SerializedStyles;
@@ -47,7 +49,6 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
     }),
     []
   );
-
   const noop = React.useCallback(() => {}, []);
 
   const scrollBarSize = React.useMemo(() => scrollbarWidth(), []);
@@ -60,6 +61,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
     selectionStyle,
     canEditColumn,
     canSelectColumn,
+    canApproveColumn,
     getDependentColumns,
   } = props;
   const [selection, setSelection] = React.useState({} as DataTableSelection<T>);
@@ -68,7 +70,6 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
     (cell: Cell<T, T>) => {
       const row = cell.row.original[primaryKey];
       const col = cell.column.id as IndexableOf<T>;
-      console.log(primaryKey);
       return selection[row] && selection[row][col];
     },
     [selection, primaryKey]
@@ -100,6 +101,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
   );
 
   const {
+    state,
     getTableProps,
     getTableBodyProps,
     headerGroups,
@@ -119,6 +121,9 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
     useColumnOrder,
     useSortBy
   );
+
+  // Make data table configuration externally visible
+  exportDataTable(state);
 
   const currentColOrder = React.useRef<Array<IdType<T>>>();
 
@@ -171,13 +176,21 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
       const id = row.original[primaryKey];
       const cols = columns
         .filter((x) => typeof x.accessor === "string")
+        .filter((x) => canApproveColumn(x.accessor as string))
         .map((x) => ({ [x.accessor as string]: !checked }))
-        .reduce((acc, val) => ({ ...acc, ...val }));
+        .reduce((acc, val) => ({ ...acc, ...val }), []);
       const incSel = { ...selection, [id]: { ...cols } };
       setSelection(incSel);
       onSelect(incSel);
     },
-    [onSelect, selection, primaryKey, columns, calcRowSelectionState]
+    [
+      onSelect,
+      selection,
+      primaryKey,
+      columns,
+      calcRowSelectionState,
+      canApproveColumn,
+    ]
   );
 
   const onSelectCol = React.useCallback(
@@ -427,5 +440,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
     </div>
   );
 }
+
+DataTable.whyDidYouRender = true;
 
 export default DataTable;
