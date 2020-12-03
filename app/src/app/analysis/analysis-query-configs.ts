@@ -7,7 +7,7 @@ import {
   AnalysisResult,
 } from "sap-client";
 import { getUrl } from "service";
-import { arrayToNormalizedHashmap, deepMerge } from "utils";
+import { arrayToNormalizedHashmap } from "utils";
 
 export type AnalysisSlice = {
   analysisTotalCount: number;
