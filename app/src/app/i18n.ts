@@ -22,6 +22,9 @@ const resources = {
       Agens: "Agens",
       Serotyp: "Serotyp",
       ResfinderVersion: "Resfinder version",
+      "Save current view": "Gem nuværende view",
+      "Predefined views": "Prædefinerede views",
+      "My views": "Mine views",
     },
   },
 };

@@ -13,7 +13,7 @@ docker run --rm -v "${DIR}:/mnt" \
                 -i "/mnt/openapi_specs/SAP/SAP.yaml" \
                 -g typescript-redux-query \
                 -o /mnt/app/src/sap-client
-mv "${DIR}/app/src/sap-client/src/"* "${DIR}/app/src/sap-client"
+cp -r "${DIR}/app/src/sap-client/src/"* "${DIR}/app/src/sap-client"
 rm -rf "${DIR}/app/src/sap-client/src/"
 
 # generate flask api from api-spec

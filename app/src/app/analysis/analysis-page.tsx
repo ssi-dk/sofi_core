@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Box, Button, Flex, useToast } from "@chakra-ui/react";
 import { Column } from "react-table";
-import { Analysis } from "sap-client";
+import { Analysis, UserDefinedView } from "sap-client";
 import { useRequests } from "redux-query-react";
 import { useDispatch, useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
@@ -98,6 +98,7 @@ export default function AnalysisPage() {
 
   const dispatch = useDispatch();
   const selection = useSelector<RootState>((s) => s.selection.selection);
+  const view = useSelector<RootState>((s) => s.view.view) as UserDefinedView;
 
   const toast = useToast();
   const { t } = useTranslation();
@@ -144,7 +145,7 @@ export default function AnalysisPage() {
             </Button>
           </Box>
           <DataTable<Analysis>
-            columns={columns}
+            columns={columns.filter(x => view.columns.includes(x.accessor as string))}
             data={
               pageState.isNarrowed
                 ? data.filter((x) => selection[x.analysisId])
