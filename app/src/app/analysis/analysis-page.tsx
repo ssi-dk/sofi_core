@@ -107,7 +107,7 @@ export default function AnalysisPage() {
             </Button>
           </Box>
           <DataTable<AnalysisResult>
-            columns={columns.filter(x => view.columns.includes(x.Header) ) /* todo: filter on permission level */}
+            columns={columns.filter(x => view.columns.length === 0 || view.columns.includes(x.Header as string)) /* todo: filter on permission level */}
             canSelectColumn={canSelectColumn}
             canEditColumn={canEditColumn}
             data={

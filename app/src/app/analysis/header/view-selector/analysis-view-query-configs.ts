@@ -4,7 +4,6 @@ import {
   createUserView,
 } from "sap-client";
 import { getUrl } from "service";
-import { defaultViews } from './analysis-view-selection-config';
 
 type UserDefinedViews = {
   userViews: UserDefinedView[];
@@ -18,10 +17,13 @@ export const requestUserViews = () => {
   });
   base.update = {
     userViews: (_, newValue) =>
-    // Fake some random views - don't map once backend has views implemented.
+    // Fake some random views - obivously don't map once backend has views implemented.
     newValue.map(v => ({
       ...v,
-      columns: defaultViews[0].columns.filter(() => Math.random() > 0.25)
+      columns: [
+        "isolate_id", "sequence_id", "institution", "project_number", "project_title", "sampling_date",
+        "received_date", "run_id", "name", "cpr", "gender", "age"
+      ].filter(() => Math.random() > 0.25)
     })),
   };
   return base;

@@ -56,7 +56,6 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
     (cell: Cell<T, T>) => {
       const row = cell.row.original[primaryKey];
       const col = cell.column.id as IndexableOf<T>;
-      console.log(primaryKey)
       return selection[row] && selection[row][col];
     },
     [selection, primaryKey]

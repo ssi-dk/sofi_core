@@ -3,18 +3,7 @@ import { UserDefinedView } from 'sap-client';
 
 const defaultView: UserDefinedView = {
     name: "Default",
-    columns: [
-        "analysisId",
-        "isolateId",
-        "testTimestamp",
-        "organization",
-        "dateReceived",
-        "project",
-        "agent",
-        "species",
-        "resfinderVersion",
-        "serumType",
-  ]
+    columns: []
 }
 
 export const defaultViews = [defaultView];
