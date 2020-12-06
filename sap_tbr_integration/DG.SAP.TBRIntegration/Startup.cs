@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DG.SAP.TBRIntegration.Options;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -39,9 +40,15 @@ namespace DG.SAP.TBRIntegration
                 });
             });
 
-            LoadMockDependencies(services);
+            LoadDependencies(services);
         }
 
+        private void LoadDependencies(IServiceCollection services)
+        {
+            var dbOptions = Configuration.GetSection("database").Get<DatabaseOptions>();
+            services.AddSingleton<IIsolateRepository>(provider => new IsolateRepository(dbOptions));
+        }
+        
         private void LoadMockDependencies(IServiceCollection services)
         {
             services.AddScoped<IIsolateRepository, MockIsolateRepository>();
