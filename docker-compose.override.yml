@@ -9,8 +9,11 @@ services:
       - ./web:/app/web:ro
     ports:
       - "6000:6000"
-
+    depends_on:
+      - "bifrost_db"
     command: ["/bin/sh", "-c", "/app/start.sh"]
+
+
   sap_app:
     build:
       context: ./app
@@ -49,3 +52,12 @@ services:
       - '5000:80'
       - '5001:443'
 
+
+  bifrost_db:
+    build: bifrost/bifrost_db
+    expose:
+      - 27017
+    ports:
+      - "27017:27017"
+    extra_hosts:
+      bifrost_db: 127.0.0.1

@@ -12,6 +12,9 @@
  */
 
 import {
+    ApprovalAllOf,
+    ApprovalAllOfFromJSON,
+    ApprovalAllOfToJSON,
     ApprovalRequest,
     ApprovalRequestFromJSON,
     ApprovalRequestToJSON,
@@ -21,11 +24,12 @@ import {
  * @type Approval
  * @export
  */
-export interface Approval extends ApprovalRequest {
+export interface Approval extends ApprovalAllOf, ApprovalRequest {
 }
 
 export function ApprovalFromJSON(json: any): Approval {
     return {
+        ...ApprovalAllOfFromJSON(json),
         ...ApprovalRequestFromJSON(json),
     };
 }
@@ -35,6 +39,7 @@ export function ApprovalToJSON(value?: Approval): any {
         return undefined;
     }
     return {
+        ...ApprovalAllOfToJSON(value),
         ...ApprovalRequestToJSON(value),
     };
 }

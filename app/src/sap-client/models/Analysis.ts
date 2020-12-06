@@ -12,6 +12,12 @@
  */
 
 import { exists, mapValues } from '../runtime';
+import {
+    Organization,
+    OrganizationFromJSON,
+    OrganizationToJSON,
+} from './';
+
 /**
  * 
  * @export
@@ -68,10 +74,10 @@ export interface Analysis  {
     species?: AnalysisSpeciesEnum;
     /**
      * 
-     * @type {string}
+     * @type {Organization}
      * @memberof Analysis
      */
-    organization?: AnalysisOrganizationEnum;
+    organization?: Organization;
     /**
      * 
      * @type {string}
@@ -96,7 +102,7 @@ export function AnalysisFromJSON(json: any): Analysis {
         'serumType': !exists(json, 'serumType') ? undefined : json['serumType'],
         'agent': !exists(json, 'agent') ? undefined : json['agent'],
         'species': !exists(json, 'species') ? undefined : json['species'],
-        'organization': !exists(json, 'organization') ? undefined : json['organization'],
+        'organization': !exists(json, 'organization') ? undefined : OrganizationFromJSON(json['organization']),
         'project': !exists(json, 'project') ? undefined : json['project'],
         'approved': json['approved'],
     };
@@ -115,7 +121,7 @@ export function AnalysisToJSON(value?: Analysis): any {
         'serumType': value.serumType,
         'agent': value.agent,
         'species': value.species,
-        'organization': value.organization,
+        'organization': OrganizationToJSON(value.organization),
         'project': value.project,
         'approved': value.approved,
     };
@@ -126,26 +132,18 @@ export function AnalysisToJSON(value?: Analysis): any {
 * @enum {string}
 */
 export enum AnalysisAgentEnum {
-    EColi = 'e.coli',
-    Salmonella = 'salmonella'
+    e_coli = 'e.coli',
+    salmonella = 'salmonella'
 }
 /**
 * @export
 * @enum {string}
 */
 export enum AnalysisSpeciesEnum {
-    Rat = 'rat',
-    Human = 'human',
-    Pig = 'pig',
-    Dog = 'dog'
-}
-/**
-* @export
-* @enum {string}
-*/
-export enum AnalysisOrganizationEnum {
-    FVST = 'FVST',
-    SSI = 'SSI'
+    rat = 'rat',
+    human = 'human',
+    pig = 'pig',
+    dog = 'dog'
 }
 
 

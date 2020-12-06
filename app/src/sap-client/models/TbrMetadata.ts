@@ -15,18 +15,25 @@ import {
     BaseMetadata,
     BaseMetadataFromJSON,
     BaseMetadataToJSON,
+    Organization,
+    OrganizationFromJSON,
+    OrganizationToJSON,
+    TbrSpecificMetadata,
+    TbrSpecificMetadataFromJSON,
+    TbrSpecificMetadataToJSON,
 } from './';
 
 /**
  * @type TbrMetadata
  * @export
  */
-export interface TbrMetadata extends BaseMetadata {
+export interface TbrMetadata extends BaseMetadata, TbrSpecificMetadata {
 }
 
 export function TbrMetadataFromJSON(json: any): TbrMetadata {
     return {
         ...BaseMetadataFromJSON(json),
+        ...TbrSpecificMetadataFromJSON(json),
     };
 }
 
@@ -36,5 +43,6 @@ export function TbrMetadataToJSON(value?: TbrMetadata): any {
     }
     return {
         ...BaseMetadataToJSON(value),
+        ...TbrSpecificMetadataToJSON(value),
     };
 }

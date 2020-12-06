@@ -15,18 +15,25 @@ import {
     BaseMetadata,
     BaseMetadataFromJSON,
     BaseMetadataToJSON,
+    LimsSpecificMetadata,
+    LimsSpecificMetadataFromJSON,
+    LimsSpecificMetadataToJSON,
+    Organization,
+    OrganizationFromJSON,
+    OrganizationToJSON,
 } from './';
 
 /**
  * @type LimsMetadata
  * @export
  */
-export interface LimsMetadata extends BaseMetadata {
+export interface LimsMetadata extends BaseMetadata, LimsSpecificMetadata {
 }
 
 export function LimsMetadataFromJSON(json: any): LimsMetadata {
     return {
         ...BaseMetadataFromJSON(json),
+        ...LimsSpecificMetadataFromJSON(json),
     };
 }
 
@@ -36,5 +43,6 @@ export function LimsMetadataToJSON(value?: LimsMetadata): any {
     }
     return {
         ...BaseMetadataToJSON(value),
+        ...LimsSpecificMetadataToJSON(value),
     };
 }

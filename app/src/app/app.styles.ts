@@ -25,6 +25,7 @@ export const reset = css({
 export const globalCss = css({
   body: {
     backgroundColor: apptheme.colors.white,
+    overflowX: "hidden",
   },
   // ".react-datepicker-wrapper": {
   //   border: "1px solid #e2e8f0",

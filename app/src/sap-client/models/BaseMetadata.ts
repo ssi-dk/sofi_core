@@ -12,6 +12,12 @@
  */
 
 import { exists, mapValues } from '../runtime';
+import {
+    Organization,
+    OrganizationFromJSON,
+    OrganizationToJSON,
+} from './';
+
 /**
  * 
  * @export
@@ -23,55 +29,55 @@ export interface BaseMetadata  {
      * @type {string}
      * @memberof BaseMetadata
      */
-    isolateId: string;
+    isolate_id: string;
     /**
      * 
      * @type {string}
      * @memberof BaseMetadata
      */
-    sequenceId: string;
+    sequence_id: string;
     /**
      * 
      * @type {string}
      * @memberof BaseMetadata
      */
-    sequenceFilename: string;
+    sequence_filename: string;
     /**
      * 
-     * @type {string}
+     * @type {Organization}
      * @memberof BaseMetadata
      */
-    institution: BaseMetadataInstitutionEnum;
+    institution: Organization;
     /**
      * 
      * @type {number}
      * @memberof BaseMetadata
      */
-    projectNumber?: number;
+    project_number?: number;
     /**
      * 
      * @type {string}
      * @memberof BaseMetadata
      */
-    projectTitle?: string;
+    project_title?: string;
     /**
      * 
      * @type {string}
      * @memberof BaseMetadata
      */
-    samplingDate?: string;
+    sampling_date?: string;
     /**
      * 
      * @type {string}
      * @memberof BaseMetadata
      */
-    receivedDate: string;
+    received_date: string;
     /**
      * 
      * @type {string}
      * @memberof BaseMetadata
      */
-    runId: string;
+    run_id: string;
     /**
      * 
      * @type {string}
@@ -83,50 +89,50 @@ export interface BaseMetadata  {
      * @type {string}
      * @memberof BaseMetadata
      */
-    providedSpecies: string;
+    provided_species: string;
     /**
      * 
      * @type {string}
      * @memberof BaseMetadata
      */
-    primaryIsolate: string;
+    primary_isolate: string;
     /**
      * 
      * @type {string}
      * @memberof BaseMetadata
      */
-    fudNumber?: string;
+    fud_number?: string;
     /**
      * 
      * @type {string}
      * @memberof BaseMetadata
      */
-    clusterId?: string;
+    cluster_id?: string;
     /**
      * 
      * @type {string}
      * @memberof BaseMetadata
      */
-    epiExport?: string;
+    epi_export?: string;
 }
 
 export function BaseMetadataFromJSON(json: any): BaseMetadata {
     return {
-        'isolateId': json['isolate_id'],
-        'sequenceId': json['sequence_id'],
-        'sequenceFilename': json['sequence_filename'],
-        'institution': json['institution'],
-        'projectNumber': !exists(json, 'project_number') ? undefined : json['project_number'],
-        'projectTitle': !exists(json, 'project_title') ? undefined : json['project_title'],
-        'samplingDate': !exists(json, 'sampling_date') ? undefined : json['sampling_date'],
-        'receivedDate': json['received_date'],
-        'runId': json['run_id'],
+        'isolate_id': json['isolate_id'],
+        'sequence_id': json['sequence_id'],
+        'sequence_filename': json['sequence_filename'],
+        'institution': OrganizationFromJSON(json['institution']),
+        'project_number': !exists(json, 'project_number') ? undefined : json['project_number'],
+        'project_title': !exists(json, 'project_title') ? undefined : json['project_title'],
+        'sampling_date': !exists(json, 'sampling_date') ? undefined : json['sampling_date'],
+        'received_date': json['received_date'],
+        'run_id': json['run_id'],
         '_public': !exists(json, 'public') ? undefined : json['public'],
-        'providedSpecies': json['provided_species'],
-        'primaryIsolate': json['primary_isolate'],
-        'fudNumber': !exists(json, 'fud_number') ? undefined : json['fud_number'],
-        'clusterId': !exists(json, 'cluster_id') ? undefined : json['cluster_id'],
-        'epiExport': !exists(json, 'epi_export') ? undefined : json['epi_export'],
+        'provided_species': json['provided_species'],
+        'primary_isolate': json['primary_isolate'],
+        'fud_number': !exists(json, 'fud_number') ? undefined : json['fud_number'],
+        'cluster_id': !exists(json, 'cluster_id') ? undefined : json['cluster_id'],
+        'epi_export': !exists(json, 'epi_export') ? undefined : json['epi_export'],
     };
 }
 
@@ -135,31 +141,22 @@ export function BaseMetadataToJSON(value?: BaseMetadata): any {
         return undefined;
     }
     return {
-        'isolate_id': value.isolateId,
-        'sequence_id': value.sequenceId,
-        'sequence_filename': value.sequenceFilename,
-        'institution': value.institution,
-        'project_number': value.projectNumber,
-        'project_title': value.projectTitle,
-        'sampling_date': value.samplingDate,
-        'received_date': value.receivedDate,
-        'run_id': value.runId,
+        'isolate_id': value.isolate_id,
+        'sequence_id': value.sequence_id,
+        'sequence_filename': value.sequence_filename,
+        'institution': OrganizationToJSON(value.institution),
+        'project_number': value.project_number,
+        'project_title': value.project_title,
+        'sampling_date': value.sampling_date,
+        'received_date': value.received_date,
+        'run_id': value.run_id,
         'public': value._public,
-        'provided_species': value.providedSpecies,
-        'primary_isolate': value.primaryIsolate,
-        'fud_number': value.fudNumber,
-        'cluster_id': value.clusterId,
-        'epi_export': value.epiExport,
+        'provided_species': value.provided_species,
+        'primary_isolate': value.primary_isolate,
+        'fud_number': value.fud_number,
+        'cluster_id': value.cluster_id,
+        'epi_export': value.epi_export,
     };
-}
-
-/**
-* @export
-* @enum {string}
-*/
-export enum BaseMetadataInstitutionEnum {
-    FVST = 'FVST',
-    SSI = 'SSI'
 }
 
 

@@ -12,6 +12,12 @@
  */
 
 import { exists, mapValues } from '../runtime';
+import {
+    Organization,
+    OrganizationFromJSON,
+    OrganizationToJSON,
+} from './';
+
 /**
  * 
  * @export
@@ -38,22 +44,22 @@ export interface Column  {
     pii?: boolean;
     /**
      * 
-     * @type {string}
+     * @type {Array<Organization>}
      * @memberof Column
      */
-    organization?: string;
+    organizations?: Array<Organization>;
     /**
      * 
      * @type {string}
      * @memberof Column
      */
-    fieldName?: string;
+    field_name?: string;
     /**
      * 
      * @type {Array<string>}
      * @memberof Column
      */
-    approvesWith?: Array<string>;
+    approves_with?: Array<string>;
 }
 
 export function ColumnFromJSON(json: any): Column {
@@ -61,9 +67,9 @@ export function ColumnFromJSON(json: any): Column {
         'approvable': !exists(json, 'approvable') ? undefined : json['approvable'],
         'editable': !exists(json, 'editable') ? undefined : json['editable'],
         'pii': !exists(json, 'pii') ? undefined : json['pii'],
-        'organization': !exists(json, 'organization') ? undefined : json['organization'],
-        'fieldName': !exists(json, 'field_name') ? undefined : json['field_name'],
-        'approvesWith': !exists(json, 'approves_with') ? undefined : json['approves_with'],
+        'organizations': !exists(json, 'organizations') ? undefined : (json['organizations'] as Array<any>).map(OrganizationFromJSON),
+        'field_name': !exists(json, 'field_name') ? undefined : json['field_name'],
+        'approves_with': !exists(json, 'approves_with') ? undefined : json['approves_with'],
     };
 }
 
@@ -75,9 +81,9 @@ export function ColumnToJSON(value?: Column): any {
         'approvable': value.approvable,
         'editable': value.editable,
         'pii': value.pii,
-        'organization': value.organization,
-        'field_name': value.fieldName,
-        'approves_with': value.approvesWith,
+        'organizations': value.organizations === undefined ? undefined : (value.organizations as Array<any>).map(OrganizationToJSON),
+        'field_name': value.field_name,
+        'approves_with': value.approves_with,
     };
 }
 

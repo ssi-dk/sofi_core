@@ -1,85 +1,19 @@
 import React, { useState } from "react";
 import { Box, Button, Flex, useToast } from "@chakra-ui/react";
 import { Column } from "react-table";
-import { Analysis, UserDefinedView } from "sap-client";
-import { useRequests } from "redux-query-react";
+import { AnalysisResult, UserDefinedView } from "sap-client";
+import { useRequest, useRequests } from "redux-query-react";
 import { useDispatch, useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { RootState } from "app/root-reducer";
 import DataTable from "./data-table/data-table";
 import { approvedCell, selectedCell } from "./data-table/data-table.styles";
-import { requestPageOfAnalysis } from "./analysis-query-configs";
+import { requestPageOfAnalysis, requestColumns, ColumnSlice } from "./analysis-query-configs";
 import AnalysisHeader from "./header/analysis-header";
 import AnalysisSidebar from "./sidebar/analysis-sidebar";
 import { setSelection } from "./analysis-selection-configs";
 
 export default function AnalysisPage() {
-  const columns = React.useMemo(
-    (): Column<Analysis>[] => [
-      // {
-      //  Header: "Run",
-      //  columns: [
-      {
-        Header: "ID",
-        accessor: "analysisId",
-      },
-      {
-        Header: "Isolate",
-        accessor: "isolateId",
-      },
-      {
-        Header: "Job time",
-        accessor: "testTimestamp",
-      },
-      //  ],
-      // },
-      // {
-      //  Header: "Source",
-      //  columns: [
-      {
-        Header: "Organization",
-        accessor: "organization",
-      },
-      {
-        Header: "Date Received",
-        accessor: "dateReceived",
-      },
-      {
-        Header: "Project",
-        accessor: "project",
-      },
-      //  ],
-      // },
-      // {
-      //  Header: "Details",
-      //  columns: [
-      {
-        Header: "Agent",
-        accessor: "agent",
-      },
-      {
-        Header: "Species",
-        accessor: "species",
-      },
-      {
-        Header: "Resfinder Ver.",
-        accessor: "resfinderVersion",
-      },
-      {
-        Header: "Serum type",
-        accessor: "serumType",
-      },
-      //   ],
-      // },
-      // {
-      //   Header: "Status",
-      //   columns: [
-      //   ],
-      // },
-    ],
-    []
-  );
-
   const reqs = React.useMemo(
     () =>
       Array.from(Array(5).keys()).map((i) => ({
@@ -88,11 +22,28 @@ export default function AnalysisPage() {
       })),
     []
   );
+  const [columnLoadState] = useRequest(requestColumns());
   const [{ isPending, isFinished }] = useRequests(reqs);
   // TODO: Figure out how to make this strongly typed
   const data = useSelector<RootState>((s) =>
     Object.values(s.entities.analysis ?? {})
-  ) as Analysis[];
+  ) as AnalysisResult[];
+
+  const columnConfigs = useSelector<RootState>(
+    (s) => s.entities.columns
+  ) as ColumnSlice;
+
+  const columns = React.useMemo(
+    () =>
+      Object.keys(columnConfigs || []).map(
+        (k) =>
+          ({
+            accessor: k,
+            Header: k,
+          } as Column<AnalysisResult>)
+      ),
+    [columnConfigs]
+  );
 
   const [pageState, setPageState] = useState({ isNarrowed: false });
 
@@ -103,10 +54,18 @@ export default function AnalysisPage() {
   const toast = useToast();
   const { t } = useTranslation();
 
+  const canSelectColumn = React.useCallback((columnName: string) => {
+    return columnConfigs[columnName]?.approvable;
+  }, [columnConfigs]);
+
+  const canEditColumn = React.useCallback((columnName: string) => {
+    return columnConfigs[columnName]?.editable;
+  }, [columnConfigs]);
+
   const approveSelection = React.useCallback(() => {
     toast({
       title: t("Approval submitted"),
-      description: `${data.filter((x) => selection[x.analysisId]).length} ${t(
+      description: `${data.filter((x) => selection[x.isolate_id]).length} ${t(
         "records"
       )} ${t("have been submitted for approval.")}`,
       status: "info",
@@ -116,6 +75,9 @@ export default function AnalysisPage() {
   }, [selection, toast, data, t]);
 
   const sidebarWidth = "300px";
+  if (!columnLoadState.isFinished) {
+    return (<div>Loading</div>);
+  }
   return (
     <Box w="100%">
       <AnalysisHeader sidebarWidth={sidebarWidth} />
@@ -123,7 +85,7 @@ export default function AnalysisPage() {
         <Box minW={sidebarWidth} pr={5}>
           <AnalysisSidebar />
         </Box>
-        <Box borderWidth="1px" rounded="md">
+        <Box borderWidth="1px" rounded="md" overflowX="auto">
           <Box margin="4px">
             <Button
               margin="4px"
@@ -144,14 +106,16 @@ export default function AnalysisPage() {
               {t("Approve")}
             </Button>
           </Box>
-          <DataTable<Analysis>
-            columns={columns.filter(x => view.columns.includes(x.accessor as string))}
+          <DataTable<AnalysisResult>
+            columns={columns.filter(x => view.columns.includes(x.Header) ) /* todo: filter on permission level */}
+            canSelectColumn={canSelectColumn}
+            canEditColumn={canEditColumn}
             data={
               pageState.isNarrowed
-                ? data.filter((x) => selection[x.analysisId])
+                ? data.filter((x) => selection[x.isolate_id])
                 : data
             }
-            primaryKey="analysisId"
+            primaryKey="isolate_id"
             selectionStyle={pageState.isNarrowed ? approvedCell : selectedCell}
             onSelect={(sel) => dispatch(setSelection(sel))}
           />
@@ -162,7 +126,7 @@ export default function AnalysisPage() {
           {isFinished &&
             pageState.isNarrowed &&
             `${t("Staging")} ${
-              data.filter((x) => selection[x.analysisId]).length
+              data.filter((x) => selection[x.isolate_id]).length
             } ${t("records")}.`}
         </Box>
       </Flex>

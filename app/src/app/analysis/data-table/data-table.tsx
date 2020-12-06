@@ -12,7 +12,7 @@ import {
   useColumnOrder,
   IdType,
 } from "react-table";
-import { FixedSizeList } from "react-window";
+import { FixedSizeGrid, FixedSizeList } from "react-window";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { jsx, SerializedStyles } from "@emotion/react";
 import scrollbarWidth from "app/analysis/data-table/scrollbar-width-calculator";
@@ -23,6 +23,7 @@ import dtStyle, {
 } from "app/analysis/data-table/data-table.styles";
 import { IndexableOf, NotEmpty } from "utils";
 import SelectionCheckBox from "./selection-check-box";
+import { ColumnConfigWidget } from "./column-config-widget";
 
 export type DataTableSelection<T extends NotEmpty> = {
   [K in IndexableOf<T>]: { [k in IndexableOf<T>]: boolean };
@@ -32,6 +33,8 @@ type DataTableProps<T extends NotEmpty> = {
   columns: Column<T>[];
   data: T[];
   primaryKey: keyof T;
+  canSelectColumn: (columnName: string) => boolean;
+  canEditColumn: (columnName: string) => boolean;
   selectionStyle: SerializedStyles;
   onSelect: (sel: DataTableSelection<T>) => void;
 };
@@ -53,6 +56,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
     (cell: Cell<T, T>) => {
       const row = cell.row.original[primaryKey];
       const col = cell.column.id as IndexableOf<T>;
+      console.log(primaryKey)
       return selection[row] && selection[row][col];
     },
     [selection, primaryKey]
@@ -205,6 +209,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
             style,
           })}
         >
+
           <SelectionCheckBox
             onClick={(e) => {
               onSelectRow(row);
@@ -243,6 +248,14 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
   return (
     <div css={dtStyle}>
       <div role="table" {...getTableProps()} className="tableWrap">
+          <ColumnConfigWidget>
+            {allColumns.map((column) => (
+              <div key={column.id} style={{ marginTop: "5px" }}>
+                <input type="checkbox" {...column.getToggleHiddenProps()} />{" "}
+                {column.id}
+              </div>
+            ))}
+          </ColumnConfigWidget>
         <div role="rowgroup">
           {headerGroups.map((headerGroup) => (
             <DragDropContext
@@ -376,6 +389,5 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
   );
 }
 
-DataTable.whyDidYouRender = true;
 
 export default DataTable;

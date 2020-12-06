@@ -1,16 +1,24 @@
 import {
-  Analysis,
+  Column,
+  getColumns,
   getAnalysis,
   GetAnalysisRequest,
   PageOfAnalysis,
+  AnalysisResult,
 } from "sap-client";
 import { getUrl } from "service";
-import { arrayToNormalizedHashmap } from "utils";
+import { arrayToNormalizedHashmap, deepMerge } from "utils";
 
-type AnalysisSlice = {
+export type AnalysisSlice = {
   analysisTotalCount: number;
   analysisPagingToken: string;
-  analysis: { [K: string]: Analysis };
+  analysis: { [K: string]: AnalysisResult };
+};
+
+type NormalizedColumnCollection = { [K: string]: Column };
+
+export type ColumnSlice = {
+  columns: NormalizedColumnCollection;
 };
 
 // query config for retrieving a page of analysis
@@ -24,7 +32,7 @@ export const requestPageOfAnalysis = (params: GetAnalysisRequest) => {
     analysisTotalCount: response.totalCount,
     analysisPagingToken: response.pagingToken,
     analysis: response.items
-      ? arrayToNormalizedHashmap(response.items, "analysisId")
+      ? arrayToNormalizedHashmap(response.items, "isolate_id")
       : {},
   });
   // define the update strategy for our state
@@ -39,4 +47,18 @@ export const requestPageOfAnalysis = (params: GetAnalysisRequest) => {
   return base;
 };
 
-export default requestPageOfAnalysis;
+export const requestColumns = () => {
+  // use generated api client as base
+  const base = getColumns<ColumnSlice>();
+  // template the full path for the url
+  base.url = `${window.location.protocol}//${window.location.host}/api/${(base.url)}`;
+  // define a transform for normalizing the data into our desired state
+  base.transform = (response: Column[]) => ({
+    columns: arrayToNormalizedHashmap(response, "field_name"),
+  });
+  // define the update strategy for our state
+  base.update = {
+    columns: (_, newValue) => newValue
+  };
+  return base;
+};
