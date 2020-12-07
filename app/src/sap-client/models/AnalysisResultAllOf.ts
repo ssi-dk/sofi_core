@@ -137,223 +137,223 @@ export interface AnalysisResultAllOf  {
      * @type {string}
      * @memberof AnalysisResultAllOf
      */
-    AMR_profile?: string;
+    amr_profile?: string;
     /**
      * 
      * @type {Resistance}
      * @memberof AnalysisResultAllOf
      */
-    AMR_ami?: Resistance;
+    amr_ami?: Resistance;
     /**
      * 
      * @type {Resistance}
      * @memberof AnalysisResultAllOf
      */
-    AMR_amp?: Resistance;
+    amr_amp?: Resistance;
     /**
      * 
      * @type {Resistance}
      * @memberof AnalysisResultAllOf
      */
-    AMR_azi?: Resistance;
+    amr_azi?: Resistance;
     /**
      * 
      * @type {Resistance}
      * @memberof AnalysisResultAllOf
      */
-    AMR_fep?: Resistance;
+    amr_fep?: Resistance;
     /**
      * 
      * @type {Resistance}
      * @memberof AnalysisResultAllOf
      */
-    AMR_fot?: Resistance;
+    amr_fot?: Resistance;
     /**
      * 
      * @type {Resistance}
      * @memberof AnalysisResultAllOf
      */
-    AMR_f_c?: Resistance;
+    amr_f_c?: Resistance;
     /**
      * 
      * @type {Resistance}
      * @memberof AnalysisResultAllOf
      */
-    AMR_fox?: Resistance;
+    amr_fox?: Resistance;
     /**
      * 
      * @type {Resistance}
      * @memberof AnalysisResultAllOf
      */
-    AMR_taz?: Resistance;
+    amr_taz?: Resistance;
     /**
      * 
      * @type {Resistance}
      * @memberof AnalysisResultAllOf
      */
-    AMR_t_c?: Resistance;
+    amr_t_c?: Resistance;
     /**
      * 
      * @type {Resistance}
      * @memberof AnalysisResultAllOf
      */
-    AMR_chl?: Resistance;
+    amr_chl?: Resistance;
     /**
      * 
      * @type {Resistance}
      * @memberof AnalysisResultAllOf
      */
-    AMR_cip?: Resistance;
+    amr_cip?: Resistance;
     /**
      * 
      * @type {Resistance}
      * @memberof AnalysisResultAllOf
      */
-    AMR_cli?: Resistance;
+    amr_cli?: Resistance;
     /**
      * 
      * @type {Resistance}
      * @memberof AnalysisResultAllOf
      */
-    AMR_col?: Resistance;
+    amr_col?: Resistance;
     /**
      * 
      * @type {Resistance}
      * @memberof AnalysisResultAllOf
      */
-    AMR_dap?: Resistance;
+    amr_dap?: Resistance;
     /**
      * 
      * @type {Resistance}
      * @memberof AnalysisResultAllOf
      */
-    AMR_etp?: Resistance;
+    amr_etp?: Resistance;
     /**
      * 
      * @type {Resistance}
      * @memberof AnalysisResultAllOf
      */
-    AMR_ery?: Resistance;
+    amr_ery?: Resistance;
     /**
      * 
      * @type {Resistance}
      * @memberof AnalysisResultAllOf
      */
-    AMR_fus?: Resistance;
+    amr_fus?: Resistance;
     /**
      * 
      * @type {Resistance}
      * @memberof AnalysisResultAllOf
      */
-    AMR_gen?: Resistance;
+    amr_gen?: Resistance;
     /**
      * 
      * @type {Resistance}
      * @memberof AnalysisResultAllOf
      */
-    AMR_imi?: Resistance;
+    amr_imi?: Resistance;
     /**
      * 
      * @type {Resistance}
      * @memberof AnalysisResultAllOf
      */
-    AMR_kan?: Resistance;
+    amr_kan?: Resistance;
     /**
      * 
      * @type {Resistance}
      * @memberof AnalysisResultAllOf
      */
-    AMR_lzd?: Resistance;
+    amr_lzd?: Resistance;
     /**
      * 
      * @type {Resistance}
      * @memberof AnalysisResultAllOf
      */
-    AMR_mero?: Resistance;
+    amr_mero?: Resistance;
     /**
      * 
      * @type {Resistance}
      * @memberof AnalysisResultAllOf
      */
-    AMR_mup?: Resistance;
+    amr_mup?: Resistance;
     /**
      * 
      * @type {Resistance}
      * @memberof AnalysisResultAllOf
      */
-    AMR_nal?: Resistance;
+    amr_nal?: Resistance;
     /**
      * 
      * @type {Resistance}
      * @memberof AnalysisResultAllOf
      */
-    AMR_pen?: Resistance;
+    amr_pen?: Resistance;
     /**
      * 
      * @type {Resistance}
      * @memberof AnalysisResultAllOf
      */
-    AMR_syn?: Resistance;
+    amr_syn?: Resistance;
     /**
      * 
      * @type {Resistance}
      * @memberof AnalysisResultAllOf
      */
-    AMR_rif?: Resistance;
+    amr_rif?: Resistance;
     /**
      * 
      * @type {Resistance}
      * @memberof AnalysisResultAllOf
      */
-    AMR_str?: Resistance;
+    amr_str?: Resistance;
     /**
      * 
      * @type {Resistance}
      * @memberof AnalysisResultAllOf
      */
-    AMR_sul?: Resistance;
+    amr_sul?: Resistance;
     /**
      * 
      * @type {Resistance}
      * @memberof AnalysisResultAllOf
      */
-    AMR_tei?: Resistance;
+    amr_tei?: Resistance;
     /**
      * 
      * @type {Resistance}
      * @memberof AnalysisResultAllOf
      */
-    AMR_trm?: Resistance;
+    amr_trm?: Resistance;
     /**
      * 
      * @type {Resistance}
      * @memberof AnalysisResultAllOf
      */
-    AMR_tet?: Resistance;
+    amr_tet?: Resistance;
     /**
      * 
      * @type {Resistance}
      * @memberof AnalysisResultAllOf
      */
-    AMR_tia?: Resistance;
+    amr_tia?: Resistance;
     /**
      * 
      * @type {Resistance}
      * @memberof AnalysisResultAllOf
      */
-    AMR_tgc?: Resistance;
+    amr_tgc?: Resistance;
     /**
      * 
      * @type {Resistance}
      * @memberof AnalysisResultAllOf
      */
-    AMR_tmp?: Resistance;
+    amr_tmp?: Resistance;
     /**
      * 
      * @type {Resistance}
      * @memberof AnalysisResultAllOf
      */
-    AMR_van?: Resistance;
+    amr_van?: Resistance;
 }
 
 export function AnalysisResultAllOfFromJSON(json: any): AnalysisResultAllOf {
@@ -376,43 +376,43 @@ export function AnalysisResultAllOfFromJSON(json: any): AnalysisResultAllOf {
         'toxins': !exists(json, 'toxins') ? undefined : json['toxins'],
         'FUDnr': !exists(json, 'FUDnr') ? undefined : json['FUDnr'],
         'resistance_genes': !exists(json, 'resistance_genes') ? undefined : json['resistance_genes'],
-        'AMR_profile': !exists(json, 'AMR_profile') ? undefined : json['AMR_profile'],
-        'AMR_ami': !exists(json, 'AMR_ami') ? undefined : ResistanceFromJSON(json['AMR_ami']),
-        'AMR_amp': !exists(json, 'AMR_amp') ? undefined : ResistanceFromJSON(json['AMR_amp']),
-        'AMR_azi': !exists(json, 'AMR_azi') ? undefined : ResistanceFromJSON(json['AMR_azi']),
-        'AMR_fep': !exists(json, 'AMR_fep') ? undefined : ResistanceFromJSON(json['AMR_fep']),
-        'AMR_fot': !exists(json, 'AMR_fot') ? undefined : ResistanceFromJSON(json['AMR_fot']),
-        'AMR_f_c': !exists(json, 'AMR_f_c') ? undefined : ResistanceFromJSON(json['AMR_f_c']),
-        'AMR_fox': !exists(json, 'AMR_fox') ? undefined : ResistanceFromJSON(json['AMR_fox']),
-        'AMR_taz': !exists(json, 'AMR_taz') ? undefined : ResistanceFromJSON(json['AMR_taz']),
-        'AMR_t_c': !exists(json, 'AMR_t_c') ? undefined : ResistanceFromJSON(json['AMR_t_c']),
-        'AMR_chl': !exists(json, 'AMR_chl') ? undefined : ResistanceFromJSON(json['AMR_chl']),
-        'AMR_cip': !exists(json, 'AMR_cip') ? undefined : ResistanceFromJSON(json['AMR_cip']),
-        'AMR_cli': !exists(json, 'AMR_cli') ? undefined : ResistanceFromJSON(json['AMR_cli']),
-        'AMR_col': !exists(json, 'AMR_col') ? undefined : ResistanceFromJSON(json['AMR_col']),
-        'AMR_dap': !exists(json, 'AMR_dap') ? undefined : ResistanceFromJSON(json['AMR_dap']),
-        'AMR_etp': !exists(json, 'AMR_etp') ? undefined : ResistanceFromJSON(json['AMR_etp']),
-        'AMR_ery': !exists(json, 'AMR_ery') ? undefined : ResistanceFromJSON(json['AMR_ery']),
-        'AMR_fus': !exists(json, 'AMR_fus') ? undefined : ResistanceFromJSON(json['AMR_fus']),
-        'AMR_gen': !exists(json, 'AMR_gen') ? undefined : ResistanceFromJSON(json['AMR_gen']),
-        'AMR_imi': !exists(json, 'AMR_imi') ? undefined : ResistanceFromJSON(json['AMR_imi']),
-        'AMR_kan': !exists(json, 'AMR_kan') ? undefined : ResistanceFromJSON(json['AMR_kan']),
-        'AMR_lzd': !exists(json, 'AMR_lzd') ? undefined : ResistanceFromJSON(json['AMR_lzd']),
-        'AMR_mero': !exists(json, 'AMR_mero') ? undefined : ResistanceFromJSON(json['AMR_mero']),
-        'AMR_mup': !exists(json, 'AMR_mup') ? undefined : ResistanceFromJSON(json['AMR_mup']),
-        'AMR_nal': !exists(json, 'AMR_nal') ? undefined : ResistanceFromJSON(json['AMR_nal']),
-        'AMR_pen': !exists(json, 'AMR_pen') ? undefined : ResistanceFromJSON(json['AMR_pen']),
-        'AMR_syn': !exists(json, 'AMR_syn') ? undefined : ResistanceFromJSON(json['AMR_syn']),
-        'AMR_rif': !exists(json, 'AMR_rif') ? undefined : ResistanceFromJSON(json['AMR_rif']),
-        'AMR_str': !exists(json, 'AMR_str') ? undefined : ResistanceFromJSON(json['AMR_str']),
-        'AMR_sul': !exists(json, 'AMR_sul') ? undefined : ResistanceFromJSON(json['AMR_sul']),
-        'AMR_tei': !exists(json, 'AMR_tei') ? undefined : ResistanceFromJSON(json['AMR_tei']),
-        'AMR_trm': !exists(json, 'AMR_trm') ? undefined : ResistanceFromJSON(json['AMR_trm']),
-        'AMR_tet': !exists(json, 'AMR_tet') ? undefined : ResistanceFromJSON(json['AMR_tet']),
-        'AMR_tia': !exists(json, 'AMR_tia') ? undefined : ResistanceFromJSON(json['AMR_tia']),
-        'AMR_tgc': !exists(json, 'AMR_tgc') ? undefined : ResistanceFromJSON(json['AMR_tgc']),
-        'AMR_tmp': !exists(json, 'AMR_tmp') ? undefined : ResistanceFromJSON(json['AMR_tmp']),
-        'AMR_van': !exists(json, 'AMR_van') ? undefined : ResistanceFromJSON(json['AMR_van']),
+        'amr_profile': !exists(json, 'amr_profile') ? undefined : json['amr_profile'],
+        'amr_ami': !exists(json, 'amr_ami') ? undefined : ResistanceFromJSON(json['amr_ami']),
+        'amr_amp': !exists(json, 'amr_amp') ? undefined : ResistanceFromJSON(json['amr_amp']),
+        'amr_azi': !exists(json, 'amr_azi') ? undefined : ResistanceFromJSON(json['amr_azi']),
+        'amr_fep': !exists(json, 'amr_fep') ? undefined : ResistanceFromJSON(json['amr_fep']),
+        'amr_fot': !exists(json, 'amr_fot') ? undefined : ResistanceFromJSON(json['amr_fot']),
+        'amr_f_c': !exists(json, 'amr_f_c') ? undefined : ResistanceFromJSON(json['amr_f_c']),
+        'amr_fox': !exists(json, 'amr_fox') ? undefined : ResistanceFromJSON(json['amr_fox']),
+        'amr_taz': !exists(json, 'amr_taz') ? undefined : ResistanceFromJSON(json['amr_taz']),
+        'amr_t_c': !exists(json, 'amr_t_c') ? undefined : ResistanceFromJSON(json['amr_t_c']),
+        'amr_chl': !exists(json, 'amr_chl') ? undefined : ResistanceFromJSON(json['amr_chl']),
+        'amr_cip': !exists(json, 'amr_cip') ? undefined : ResistanceFromJSON(json['amr_cip']),
+        'amr_cli': !exists(json, 'amr_cli') ? undefined : ResistanceFromJSON(json['amr_cli']),
+        'amr_col': !exists(json, 'amr_col') ? undefined : ResistanceFromJSON(json['amr_col']),
+        'amr_dap': !exists(json, 'amr_dap') ? undefined : ResistanceFromJSON(json['amr_dap']),
+        'amr_etp': !exists(json, 'amr_etp') ? undefined : ResistanceFromJSON(json['amr_etp']),
+        'amr_ery': !exists(json, 'amr_ery') ? undefined : ResistanceFromJSON(json['amr_ery']),
+        'amr_fus': !exists(json, 'amr_fus') ? undefined : ResistanceFromJSON(json['amr_fus']),
+        'amr_gen': !exists(json, 'amr_gen') ? undefined : ResistanceFromJSON(json['amr_gen']),
+        'amr_imi': !exists(json, 'amr_imi') ? undefined : ResistanceFromJSON(json['amr_imi']),
+        'amr_kan': !exists(json, 'amr_kan') ? undefined : ResistanceFromJSON(json['amr_kan']),
+        'amr_lzd': !exists(json, 'amr_lzd') ? undefined : ResistanceFromJSON(json['amr_lzd']),
+        'amr_mero': !exists(json, 'amr_mero') ? undefined : ResistanceFromJSON(json['amr_mero']),
+        'amr_mup': !exists(json, 'amr_mup') ? undefined : ResistanceFromJSON(json['amr_mup']),
+        'amr_nal': !exists(json, 'amr_nal') ? undefined : ResistanceFromJSON(json['amr_nal']),
+        'amr_pen': !exists(json, 'amr_pen') ? undefined : ResistanceFromJSON(json['amr_pen']),
+        'amr_syn': !exists(json, 'amr_syn') ? undefined : ResistanceFromJSON(json['amr_syn']),
+        'amr_rif': !exists(json, 'amr_rif') ? undefined : ResistanceFromJSON(json['amr_rif']),
+        'amr_str': !exists(json, 'amr_str') ? undefined : ResistanceFromJSON(json['amr_str']),
+        'amr_sul': !exists(json, 'amr_sul') ? undefined : ResistanceFromJSON(json['amr_sul']),
+        'amr_tei': !exists(json, 'amr_tei') ? undefined : ResistanceFromJSON(json['amr_tei']),
+        'amr_trm': !exists(json, 'amr_trm') ? undefined : ResistanceFromJSON(json['amr_trm']),
+        'amr_tet': !exists(json, 'amr_tet') ? undefined : ResistanceFromJSON(json['amr_tet']),
+        'amr_tia': !exists(json, 'amr_tia') ? undefined : ResistanceFromJSON(json['amr_tia']),
+        'amr_tgc': !exists(json, 'amr_tgc') ? undefined : ResistanceFromJSON(json['amr_tgc']),
+        'amr_tmp': !exists(json, 'amr_tmp') ? undefined : ResistanceFromJSON(json['amr_tmp']),
+        'amr_van': !exists(json, 'amr_van') ? undefined : ResistanceFromJSON(json['amr_van']),
     };
 }
 
@@ -439,43 +439,43 @@ export function AnalysisResultAllOfToJSON(value?: AnalysisResultAllOf): any {
         'toxins': value.toxins,
         'FUDnr': value.FUDnr,
         'resistance_genes': value.resistance_genes,
-        'AMR_profile': value.AMR_profile,
-        'AMR_ami': ResistanceToJSON(value.AMR_ami),
-        'AMR_amp': ResistanceToJSON(value.AMR_amp),
-        'AMR_azi': ResistanceToJSON(value.AMR_azi),
-        'AMR_fep': ResistanceToJSON(value.AMR_fep),
-        'AMR_fot': ResistanceToJSON(value.AMR_fot),
-        'AMR_f_c': ResistanceToJSON(value.AMR_f_c),
-        'AMR_fox': ResistanceToJSON(value.AMR_fox),
-        'AMR_taz': ResistanceToJSON(value.AMR_taz),
-        'AMR_t_c': ResistanceToJSON(value.AMR_t_c),
-        'AMR_chl': ResistanceToJSON(value.AMR_chl),
-        'AMR_cip': ResistanceToJSON(value.AMR_cip),
-        'AMR_cli': ResistanceToJSON(value.AMR_cli),
-        'AMR_col': ResistanceToJSON(value.AMR_col),
-        'AMR_dap': ResistanceToJSON(value.AMR_dap),
-        'AMR_etp': ResistanceToJSON(value.AMR_etp),
-        'AMR_ery': ResistanceToJSON(value.AMR_ery),
-        'AMR_fus': ResistanceToJSON(value.AMR_fus),
-        'AMR_gen': ResistanceToJSON(value.AMR_gen),
-        'AMR_imi': ResistanceToJSON(value.AMR_imi),
-        'AMR_kan': ResistanceToJSON(value.AMR_kan),
-        'AMR_lzd': ResistanceToJSON(value.AMR_lzd),
-        'AMR_mero': ResistanceToJSON(value.AMR_mero),
-        'AMR_mup': ResistanceToJSON(value.AMR_mup),
-        'AMR_nal': ResistanceToJSON(value.AMR_nal),
-        'AMR_pen': ResistanceToJSON(value.AMR_pen),
-        'AMR_syn': ResistanceToJSON(value.AMR_syn),
-        'AMR_rif': ResistanceToJSON(value.AMR_rif),
-        'AMR_str': ResistanceToJSON(value.AMR_str),
-        'AMR_sul': ResistanceToJSON(value.AMR_sul),
-        'AMR_tei': ResistanceToJSON(value.AMR_tei),
-        'AMR_trm': ResistanceToJSON(value.AMR_trm),
-        'AMR_tet': ResistanceToJSON(value.AMR_tet),
-        'AMR_tia': ResistanceToJSON(value.AMR_tia),
-        'AMR_tgc': ResistanceToJSON(value.AMR_tgc),
-        'AMR_tmp': ResistanceToJSON(value.AMR_tmp),
-        'AMR_van': ResistanceToJSON(value.AMR_van),
+        'amr_profile': value.amr_profile,
+        'amr_ami': ResistanceToJSON(value.amr_ami),
+        'amr_amp': ResistanceToJSON(value.amr_amp),
+        'amr_azi': ResistanceToJSON(value.amr_azi),
+        'amr_fep': ResistanceToJSON(value.amr_fep),
+        'amr_fot': ResistanceToJSON(value.amr_fot),
+        'amr_f_c': ResistanceToJSON(value.amr_f_c),
+        'amr_fox': ResistanceToJSON(value.amr_fox),
+        'amr_taz': ResistanceToJSON(value.amr_taz),
+        'amr_t_c': ResistanceToJSON(value.amr_t_c),
+        'amr_chl': ResistanceToJSON(value.amr_chl),
+        'amr_cip': ResistanceToJSON(value.amr_cip),
+        'amr_cli': ResistanceToJSON(value.amr_cli),
+        'amr_col': ResistanceToJSON(value.amr_col),
+        'amr_dap': ResistanceToJSON(value.amr_dap),
+        'amr_etp': ResistanceToJSON(value.amr_etp),
+        'amr_ery': ResistanceToJSON(value.amr_ery),
+        'amr_fus': ResistanceToJSON(value.amr_fus),
+        'amr_gen': ResistanceToJSON(value.amr_gen),
+        'amr_imi': ResistanceToJSON(value.amr_imi),
+        'amr_kan': ResistanceToJSON(value.amr_kan),
+        'amr_lzd': ResistanceToJSON(value.amr_lzd),
+        'amr_mero': ResistanceToJSON(value.amr_mero),
+        'amr_mup': ResistanceToJSON(value.amr_mup),
+        'amr_nal': ResistanceToJSON(value.amr_nal),
+        'amr_pen': ResistanceToJSON(value.amr_pen),
+        'amr_syn': ResistanceToJSON(value.amr_syn),
+        'amr_rif': ResistanceToJSON(value.amr_rif),
+        'amr_str': ResistanceToJSON(value.amr_str),
+        'amr_sul': ResistanceToJSON(value.amr_sul),
+        'amr_tei': ResistanceToJSON(value.amr_tei),
+        'amr_trm': ResistanceToJSON(value.amr_trm),
+        'amr_tet': ResistanceToJSON(value.amr_tet),
+        'amr_tia': ResistanceToJSON(value.amr_tia),
+        'amr_tgc': ResistanceToJSON(value.amr_tgc),
+        'amr_tmp': ResistanceToJSON(value.amr_tmp),
+        'amr_van': ResistanceToJSON(value.amr_van),
     };
 }
 

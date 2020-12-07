@@ -1,7 +1,7 @@
 #import .database
 import pymongo
 import json
-from web.src.SAP.generated.models import Analysis
+from web.src.SAP.generated.models import AnalysisResult
 import sys
     
 def remove_id(item):

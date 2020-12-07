@@ -324,53 +324,6 @@ components:
       - SSI
       - FVST
       type: string
-    Analysis:
-      properties:
-        analysisId:
-          format: uuid
-          type: string
-        isolateId:
-          example: 1231_14_XDR
-          pattern: ^\d{4}_\d{2}_[A-Z0-9]{3}$
-          type: string
-        testTimestamp:
-          format: date-time
-          type: string
-        dateReceived:
-          format: date
-          type: string
-        resfinderVersion:
-          example: "1.99"
-          pattern: ^\d*\.\d*$
-          type: string
-        serumType:
-          example: XXXYYAAA
-          pattern: ^[A-Z]{8}$
-          type: string
-        agent:
-          enum:
-          - e.coli
-          - salmonella
-          type: string
-        species:
-          enum:
-          - rat
-          - human
-          - pig
-          - dog
-          type: string
-        organization:
-          $ref: '#/components/schemas/Organization'
-        project:
-          type: string
-        approved:
-          type: boolean
-      required:
-      - analysisId
-      - approved
-      - dateReceived
-      - isolateId
-      - testTimestamp
     PageOfAnalysis:
       example:
         pagingToken: pagingToken
@@ -655,79 +608,79 @@ components:
           type: string
         resistance_genes:
           type: string
-        AMR_profile:
+        amr_profile:
           type: string
-        AMR_ami:
+        amr_ami:
           $ref: '#/components/schemas/Resistance'
-        AMR_amp:
+        amr_amp:
           $ref: '#/components/schemas/Resistance'
-        AMR_azi:
+        amr_azi:
           $ref: '#/components/schemas/Resistance'
-        AMR_fep:
+        amr_fep:
           $ref: '#/components/schemas/Resistance'
-        AMR_fot:
+        amr_fot:
           $ref: '#/components/schemas/Resistance'
-        AMR_f_c:
+        amr_f_c:
           $ref: '#/components/schemas/Resistance'
-        AMR_fox:
+        amr_fox:
           $ref: '#/components/schemas/Resistance'
-        AMR_taz:
+        amr_taz:
           $ref: '#/components/schemas/Resistance'
-        AMR_t_c:
+        amr_t_c:
           $ref: '#/components/schemas/Resistance'
-        AMR_chl:
+        amr_chl:
           $ref: '#/components/schemas/Resistance'
-        AMR_cip:
+        amr_cip:
           $ref: '#/components/schemas/Resistance'
-        AMR_cli:
+        amr_cli:
           $ref: '#/components/schemas/Resistance'
-        AMR_col:
+        amr_col:
           $ref: '#/components/schemas/Resistance'
-        AMR_dap:
+        amr_dap:
           $ref: '#/components/schemas/Resistance'
-        AMR_etp:
+        amr_etp:
           $ref: '#/components/schemas/Resistance'
-        AMR_ery:
+        amr_ery:
           $ref: '#/components/schemas/Resistance'
-        AMR_fus:
+        amr_fus:
           $ref: '#/components/schemas/Resistance'
-        AMR_gen:
+        amr_gen:
           $ref: '#/components/schemas/Resistance'
-        AMR_imi:
+        amr_imi:
           $ref: '#/components/schemas/Resistance'
-        AMR_kan:
+        amr_kan:
           $ref: '#/components/schemas/Resistance'
-        AMR_lzd:
+        amr_lzd:
           $ref: '#/components/schemas/Resistance'
-        AMR_mero:
+        amr_mero:
           $ref: '#/components/schemas/Resistance'
-        AMR_mup:
+        amr_mup:
           $ref: '#/components/schemas/Resistance'
-        AMR_nal:
+        amr_nal:
           $ref: '#/components/schemas/Resistance'
-        AMR_pen:
+        amr_pen:
           $ref: '#/components/schemas/Resistance'
-        AMR_syn:
+        amr_syn:
           $ref: '#/components/schemas/Resistance'
-        AMR_rif:
+        amr_rif:
           $ref: '#/components/schemas/Resistance'
-        AMR_str:
+        amr_str:
           $ref: '#/components/schemas/Resistance'
-        AMR_sul:
+        amr_sul:
           $ref: '#/components/schemas/Resistance'
-        AMR_tei:
+        amr_tei:
           $ref: '#/components/schemas/Resistance'
-        AMR_trm:
+        amr_trm:
           $ref: '#/components/schemas/Resistance'
-        AMR_tet:
+        amr_tet:
           $ref: '#/components/schemas/Resistance'
-        AMR_tia:
+        amr_tia:
           $ref: '#/components/schemas/Resistance'
-        AMR_tgc:
+        amr_tgc:
           $ref: '#/components/schemas/Resistance'
-        AMR_tmp:
+        amr_tmp:
           $ref: '#/components/schemas/Resistance'
-        AMR_van:
+        amr_van:
           $ref: '#/components/schemas/Resistance'
       required:
       - _id
