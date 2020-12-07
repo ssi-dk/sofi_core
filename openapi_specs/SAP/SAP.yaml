@@ -503,10 +503,42 @@ components:
       properties:
         name:
           type: string
-        columns:
-          type: array
-          items:
-            type: string
+        tableState:
+          type: object
+          properties:
+            hiddenColumns:
+              type: array
+              items:
+                type: string
+            columnResizing:
+              type: object
+              properties:
+                columnWidths:
+                  type: object
+                columnWidth:
+                  type: integer
+                headerIdWidths:
+                  type: array
+                  items:
+                    type: array
+                    items: {}
+                isResizingColumn:
+                  type: boolean
+                startX:
+                  type: 'null'
+            sortBy:
+              type: array
+              items:
+                type: object
+                properties:
+                  desc:
+                    type: boolean
+                  id:
+                    type: string
+            columnOrder:
+              type: array
+              items:
+                type: string
     ApprovalRequest:
       type: object
       required:
@@ -688,7 +720,7 @@ components:
               type: string
             resistance_genes:
               type: string
-            amr_profile:
+            AMR_profile:
               type: string
             AMR_ami:
               $ref: '#/components/schemas/Resistance'

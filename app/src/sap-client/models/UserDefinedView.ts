@@ -12,6 +12,12 @@
  */
 
 import { exists, mapValues } from '../runtime';
+import {
+    UserDefinedViewTableState,
+    UserDefinedViewTableStateFromJSON,
+    UserDefinedViewTableStateToJSON,
+} from './';
+
 /**
  * 
  * @export
@@ -26,16 +32,16 @@ export interface UserDefinedView  {
     name?: string;
     /**
      * 
-     * @type {Array<string>}
+     * @type {UserDefinedViewTableState}
      * @memberof UserDefinedView
      */
-    columns?: Array<string>;
+    tableState?: UserDefinedViewTableState;
 }
 
 export function UserDefinedViewFromJSON(json: any): UserDefinedView {
     return {
         'name': !exists(json, 'name') ? undefined : json['name'],
-        'columns': !exists(json, 'columns') ? undefined : json['columns'],
+        'tableState': !exists(json, 'tableState') ? undefined : UserDefinedViewTableStateFromJSON(json['tableState']),
     };
 }
 
@@ -45,7 +51,7 @@ export function UserDefinedViewToJSON(value?: UserDefinedView): any {
     }
     return {
         'name': value.name,
-        'columns': value.columns,
+        'tableState': UserDefinedViewTableStateToJSON(value.tableState),
     };
 }
 

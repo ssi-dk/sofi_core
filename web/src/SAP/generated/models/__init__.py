@@ -3,6 +3,7 @@
 # flake8: noqa
 from __future__ import absolute_import
 # import models into model package
+from .analysis import Analysis
 from .analysis_result import AnalysisResult
 from .analysis_result_all_of import AnalysisResultAllOf
 from .approval import Approval
@@ -19,3 +20,6 @@ from .tbr_metadata import TbrMetadata
 from .tbr_specific_metadata import TbrSpecificMetadata
 from .user import User
 from .user_defined_view import UserDefinedView
+from .user_defined_view_table_state import UserDefinedViewTableState
+from .user_defined_view_table_state_column_resizing import UserDefinedViewTableStateColumnResizing
+from .user_defined_view_table_state_sort_by import UserDefinedViewTableStateSortBy

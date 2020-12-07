@@ -392,6 +392,53 @@ components:
       - SSI
       - FVST
       type: string
+    Analysis:
+      properties:
+        analysisId:
+          format: uuid
+          type: string
+        isolateId:
+          example: 1231_14_XDR
+          pattern: ^\d{4}_\d{2}_[A-Z0-9]{3}$
+          type: string
+        testTimestamp:
+          format: date-time
+          type: string
+        dateReceived:
+          format: date
+          type: string
+        resfinderVersion:
+          example: "1.99"
+          pattern: ^\d*\.\d*$
+          type: string
+        serumType:
+          example: XXXYYAAA
+          pattern: ^[A-Z]{8}$
+          type: string
+        agent:
+          enum:
+          - e.coli
+          - salmonella
+          type: string
+        species:
+          enum:
+          - rat
+          - human
+          - pig
+          - dog
+          type: string
+        organization:
+          $ref: '#/components/schemas/Organization'
+        project:
+          type: string
+        approved:
+          type: boolean
+      required:
+      - analysisId
+      - approved
+      - dateReceived
+      - isolateId
+      - testTimestamp
     PageOfAnalysis:
       example:
         pagingToken: pagingToken
@@ -476,17 +523,34 @@ components:
       type: object
     UserDefinedView:
       example:
-        columns:
-        - columns
-        - columns
         name: name
+        tableState:
+          hiddenColumns:
+          - hiddenColumns
+          - hiddenColumns
+          columnOrder:
+          - columnOrder
+          - columnOrder
+          sortBy:
+          - id: id
+            desc: true
+          - id: id
+            desc: true
+          columnResizing:
+            headerIdWidths:
+            - - ""
+              - ""
+            - - ""
+              - ""
+            isResizingColumn: true
+            columnWidth: 0
+            columnWidths: '{}'
+            startX: ""
       properties:
         name:
           type: string
-        columns:
-          items:
-            type: string
-          type: array
+        tableState:
+          $ref: '#/components/schemas/UserDefinedView_tableState'
       type: object
     ApprovalRequest:
       example:
@@ -619,6 +683,78 @@ components:
       - $ref: '#/components/schemas/LimsSpecificMetadata'
       - $ref: '#/components/schemas/TbrSpecificMetadata'
       - $ref: '#/components/schemas/AnalysisResult_allOf'
+    UserDefinedView_tableState_columnResizing:
+      example:
+        headerIdWidths:
+        - - ""
+          - ""
+        - - ""
+          - ""
+        isResizingColumn: true
+        columnWidth: 0
+        columnWidths: '{}'
+        startX: ""
+      properties:
+        columnWidths:
+          type: object
+        columnWidth:
+          type: integer
+        headerIdWidths:
+          items:
+            items: {}
+            type: array
+          type: array
+        isResizingColumn:
+          type: boolean
+        startX:
+          type: "null"
+    UserDefinedView_tableState_sortBy:
+      example:
+        id: id
+        desc: true
+      properties:
+        desc:
+          type: boolean
+        id:
+          type: string
+    UserDefinedView_tableState:
+      example:
+        hiddenColumns:
+        - hiddenColumns
+        - hiddenColumns
+        columnOrder:
+        - columnOrder
+        - columnOrder
+        sortBy:
+        - id: id
+          desc: true
+        - id: id
+          desc: true
+        columnResizing:
+          headerIdWidths:
+          - - ""
+            - ""
+          - - ""
+            - ""
+          isResizingColumn: true
+          columnWidth: 0
+          columnWidths: '{}'
+          startX: ""
+      properties:
+        hiddenColumns:
+          items:
+            type: string
+          type: array
+        columnResizing:
+          $ref: '#/components/schemas/UserDefinedView_tableState_columnResizing'
+        sortBy:
+          items:
+            $ref: '#/components/schemas/UserDefinedView_tableState_sortBy'
+          type: array
+        columnOrder:
+          items:
+            type: string
+          type: array
     Approval_allOf:
       properties:
         id:
@@ -676,79 +812,79 @@ components:
           type: string
         resistance_genes:
           type: string
-        amr_profile:
+        AMR_profile:
           type: string
-        amr_ami:
+        AMR_ami:
           $ref: '#/components/schemas/Resistance'
-        amr_amp:
+        AMR_amp:
           $ref: '#/components/schemas/Resistance'
-        amr_azi:
+        AMR_azi:
           $ref: '#/components/schemas/Resistance'
-        amr_fep:
+        AMR_fep:
           $ref: '#/components/schemas/Resistance'
-        amr_fot:
+        AMR_fot:
           $ref: '#/components/schemas/Resistance'
-        amr_f_c:
+        AMR_f_c:
           $ref: '#/components/schemas/Resistance'
-        amr_fox:
+        AMR_fox:
           $ref: '#/components/schemas/Resistance'
-        amr_taz:
+        AMR_taz:
           $ref: '#/components/schemas/Resistance'
-        amr_t_c:
+        AMR_t_c:
           $ref: '#/components/schemas/Resistance'
-        amr_chl:
+        AMR_chl:
           $ref: '#/components/schemas/Resistance'
-        amr_cip:
+        AMR_cip:
           $ref: '#/components/schemas/Resistance'
-        amr_cli:
+        AMR_cli:
           $ref: '#/components/schemas/Resistance'
-        amr_col:
+        AMR_col:
           $ref: '#/components/schemas/Resistance'
-        amr_dap:
+        AMR_dap:
           $ref: '#/components/schemas/Resistance'
-        amr_etp:
+        AMR_etp:
           $ref: '#/components/schemas/Resistance'
-        amr_ery:
+        AMR_ery:
           $ref: '#/components/schemas/Resistance'
-        amr_fus:
+        AMR_fus:
           $ref: '#/components/schemas/Resistance'
-        amr_gen:
+        AMR_gen:
           $ref: '#/components/schemas/Resistance'
-        amr_imi:
+        AMR_imi:
           $ref: '#/components/schemas/Resistance'
-        amr_kan:
+        AMR_kan:
           $ref: '#/components/schemas/Resistance'
-        amr_lzd:
+        AMR_lzd:
           $ref: '#/components/schemas/Resistance'
-        amr_mero:
+        AMR_mero:
           $ref: '#/components/schemas/Resistance'
-        amr_mup:
+        AMR_mup:
           $ref: '#/components/schemas/Resistance'
-        amr_nal:
+        AMR_nal:
           $ref: '#/components/schemas/Resistance'
-        amr_pen:
+        AMR_pen:
           $ref: '#/components/schemas/Resistance'
-        amr_syn:
+        AMR_syn:
           $ref: '#/components/schemas/Resistance'
-        amr_rif:
+        AMR_rif:
           $ref: '#/components/schemas/Resistance'
-        amr_str:
+        AMR_str:
           $ref: '#/components/schemas/Resistance'
-        amr_sul:
+        AMR_sul:
           $ref: '#/components/schemas/Resistance'
-        amr_tei:
+        AMR_tei:
           $ref: '#/components/schemas/Resistance'
-        amr_trm:
+        AMR_trm:
           $ref: '#/components/schemas/Resistance'
-        amr_tet:
+        AMR_tet:
           $ref: '#/components/schemas/Resistance'
-        amr_tia:
+        AMR_tia:
           $ref: '#/components/schemas/Resistance'
-        amr_tgc:
+        AMR_tgc:
           $ref: '#/components/schemas/Resistance'
-        amr_tmp:
+        AMR_tmp:
           $ref: '#/components/schemas/Resistance'
-        amr_van:
+        AMR_van:
           $ref: '#/components/schemas/Resistance'
       required:
       - _id

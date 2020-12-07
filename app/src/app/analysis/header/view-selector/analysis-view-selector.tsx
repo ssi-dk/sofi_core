@@ -2,15 +2,14 @@ import React from "react";
 import Select from "react-select";
 import { RootState } from 'app/root-reducer';
 import { selectTheme } from "app/app.styles";
-import { UserDefinedView } from 'sap-client';
+import { UserDefinedView, UserDefinedViewTableState } from "sap-client";
 import { useRequest } from 'redux-query-react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { requestAsync } from 'redux-query';
 import { requestUserViews, addUserView } from './analysis-view-query-configs';
 import { defaultViews, setView } from './analysis-view-selection-config';
-
-
+import { spyDataTable } from "../../data-table/table-spy";
 
 export default function AnalysisViewSelector() {
   const { t } = useTranslation();
@@ -38,9 +37,12 @@ export default function AnalysisViewSelector() {
     const { value } = event;
     if (value === addViewValue) {
       const viewName = prompt("View name");
-      const newView = {name: viewName, columns: view.columns};
-      dispatch(requestAsync(addUserView(newView)));
-      dispatch(setView(newView));
+      if (viewName) {
+        const tableState = spyDataTable()
+        const newView = { name: viewName, tableState: tableState as UserDefinedViewTableState };
+        dispatch(requestAsync(addUserView(newView)));
+        dispatch(setView(newView));
+      }
     } else {
       dispatch(setView(value))
     }

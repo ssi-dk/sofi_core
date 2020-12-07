@@ -27,15 +27,13 @@ def create_user_view(user_defined_view=None):  # noqa: E501
 
      # noqa: E501
 
-    :param user_defined_view:
+    :param user_defined_view: 
     :type user_defined_view: dict | bytes
 
     :rtype: List[UserDefinedView]
     """
     if connexion.request.is_json:
-        user_defined_view = UserDefinedView.from_dict(
-            connexion.request.get_json()
-        )  # noqa: E501
+        user_defined_view = UserDefinedView.from_dict(connexion.request.get_json())  # noqa: E501
     return UserController.create_user_view(user_defined_view)
 
 
@@ -70,7 +68,7 @@ def get_user_by_name(username):  # noqa: E501
 
      # noqa: E501
 
-    :param username: The name that needs to be fetched. Use user1 for testing.
+    :param username: The name that needs to be fetched. Use user1 for testing. 
     :type username: str
 
     :rtype: User

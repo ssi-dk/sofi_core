@@ -3,7 +3,7 @@ import { UserDefinedView } from 'sap-client';
 
 const defaultView: UserDefinedView = {
     name: "Default",
-    columns: []
+    tableState: {}
 }
 
 export const defaultViews = [defaultView];

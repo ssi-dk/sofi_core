@@ -1,3 +1,4 @@
+export * from './Analysis';
 export * from './AnalysisResult';
 export * from './AnalysisResultAllOf';
 export * from './Approval';
@@ -14,3 +15,6 @@ export * from './TbrMetadata';
 export * from './TbrSpecificMetadata';
 export * from './User';
 export * from './UserDefinedView';
+export * from './UserDefinedViewTableState';
+export * from './UserDefinedViewTableStateColumnResizing';
+export * from './UserDefinedViewTableStateSortBy';
