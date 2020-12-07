@@ -23,10 +23,10 @@ const initialState: SelectedViewState = {
 
 export const viewReducer = createReducer(initialState, (builder) => {
   builder
-    .addCase(setView, (state, action) => {
-      state.view = action.payload
+    .addCase(setView, (state, action: any) => {
+      state.view = {...action.payload}
     })
     .addCase(setDefaultView, (state) => {
-      state.view = defaultView;
+      state.view = {...defaultView};
     });
 });

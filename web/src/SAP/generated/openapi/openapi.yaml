@@ -213,14 +213,7 @@ paths:
               $ref: '#/components/schemas/UserDefinedView'
       responses:
         "204":
-          content:
-            application/json:
-              examples: {}
-              schema:
-                items:
-                  $ref: '#/components/schemas/UserDefinedView'
-                type: array
-          description: User-defined view created.
+          description: No Content
       tags:
       - user
       x-openapi-router-controller: web.src.SAP.generated.controllers.user_controller

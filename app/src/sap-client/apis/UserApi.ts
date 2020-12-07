@@ -106,7 +106,7 @@ export function createUser<T>(requestParameters: CreateUserRequest, requestConfi
 
 /**
  */
-function createUserViewRaw<T>(requestParameters: CreateUserViewRequest, requestConfig: runtime.TypedQueryConfig<T, Array<UserDefinedView>> = {}): QueryConfig<T> {
+function createUserViewRaw<T>(requestParameters: CreateUserViewRequest, requestConfig: runtime.TypedQueryConfig<T, void> = {}): QueryConfig<T> {
     let queryParameters = null;
 
 
@@ -134,7 +134,6 @@ function createUserViewRaw<T>(requestParameters: CreateUserViewRequest, requestC
 
     const { transform: requestTransform } = requestConfig;
     if (requestTransform) {
-        config.transform = (body: ResponseBody, text: ResponseBody) => requestTransform(body.map(UserDefinedViewFromJSON), text);
     }
 
     return config;
@@ -142,7 +141,7 @@ function createUserViewRaw<T>(requestParameters: CreateUserViewRequest, requestC
 
 /**
 */
-export function createUserView<T>(requestParameters: CreateUserViewRequest, requestConfig?: runtime.TypedQueryConfig<T, Array<UserDefinedView>>): QueryConfig<T> {
+export function createUserView<T>(requestParameters: CreateUserViewRequest, requestConfig?: runtime.TypedQueryConfig<T, void>): QueryConfig<T> {
     return createUserViewRaw(requestParameters, requestConfig);
 }
 

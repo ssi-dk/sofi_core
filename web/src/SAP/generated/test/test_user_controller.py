@@ -60,7 +60,6 @@ class TestUserController(BaseTestCase):
   }
 }
         headers = { 
-            'Accept': 'application/json',
             'Content-Type': 'application/json',
         }
         response = self.client.open(

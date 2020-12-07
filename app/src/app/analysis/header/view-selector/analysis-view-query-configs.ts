@@ -4,13 +4,13 @@ import {
   createUserView,
 } from "sap-client";
 import { getUrl } from "service";
-import { QueryConfig } from "redux-query";
 
 type UserDefinedViews = {
   userViews: UserDefinedView[];
 };
 
-const setupBase = (base: QueryConfig<UserDefinedViews>) => {
+export const requestUserViews = () => {
+  const base = getUserViews<UserDefinedViews>();
   base.url = getUrl(base.url);
   base.transform = (response: UserDefinedView[]) => ({
     userViews: response,
@@ -19,15 +19,13 @@ const setupBase = (base: QueryConfig<UserDefinedViews>) => {
     userViews: (_, newValue) => newValue
   }
   return base;
-}
-
-export const requestUserViews = () => {
-  const base = getUserViews<UserDefinedViews>();
-  return setupBase(base);
 };
 
 export const addUserViewMutation = (view: UserDefinedView) => {
-  console.log(view);
   const base = createUserView<UserDefinedViews>({ userDefinedView: view });
-  return setupBase(base);
+  base.url = getUrl(base.url);
+  base.update = {
+    userViews: (oldViews, _) => [...oldViews, view]
+  }
+  return base;
 }

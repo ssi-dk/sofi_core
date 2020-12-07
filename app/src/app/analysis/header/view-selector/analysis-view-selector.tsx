@@ -3,7 +3,7 @@ import Select from "react-select";
 import { RootState } from 'app/root-reducer';
 import { selectTheme } from "app/app.styles";
 import { UserDefinedView } from "sap-client";
-import { QueryConfigFactory, useMutation, useRequest } from "redux-query-react";
+import { useMutation, useRequest } from "redux-query-react";
 import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { requestUserViews, addUserViewMutation } from "./analysis-view-query-configs";
@@ -23,7 +23,7 @@ export default function AnalysisViewSelector() {
 
   const dispatch = useDispatch();
   const userViews = useSelector<RootState>((s) => {
-    return Object.values(s.entities.userViews ?? {})
+    return Object.values(s.entities?.userViews ?? {})
   }) as UserDefinedView[];
   const view = useSelector<RootState>((s) => s.view.view) as UserDefinedView;
   const viewReq = React.useMemo(
@@ -52,7 +52,7 @@ export default function AnalysisViewSelector() {
     options={isFinished ? buildOptions(userViews) : []}
     defaultValue={({label: view.name, value: view})}
     theme={selectTheme} 
-    isLoading={isPending} 
+    isLoading={isPending || queryState.isPending}
     onChange={viewSelectUpdate}
   />;
 }
