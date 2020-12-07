@@ -32,7 +32,7 @@ export default function AnalysisViewSelector() {
     }), []
   );
   const [{ isPending, isFinished }] = useRequest(viewReq);
-  const [queryState, addView] = useMutation(v => addUserViewMutation(v));
+  const [queryState, addView] = useMutation((v: UserDefinedView) => addUserViewMutation(v));
 
   const viewSelectUpdate = (event) => {
     const { value } = event;
@@ -41,8 +41,7 @@ export default function AnalysisViewSelector() {
       if (viewName) {
         const tableState = spyDataTable()
         const newView = mapTableStateToView(viewName, tableState);
-        // TODO: Probably don't cast to never?
-        addView(newView as never).then(_ => dispatch(setView(newView)));
+        addView(newView).then(_ => dispatch(setView(newView)));
       }
     } else {
       dispatch(setView(value))

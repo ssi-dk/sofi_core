@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using System.Threading.Tasks;
 using DG.SAP.TBRIntegration.Models;
 using DG.SAP.TBRIntegration.Repositories;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -14,16 +11,16 @@ namespace DG.SAP.TBRIntegration.Controllers
     [Route("api/[controller]")]
     [ApiController]
     public class IsolateController : ControllerBase
-    {   
-        private IIsolateRepository isolateRepository;
+    {
+        private readonly IIsolateRepository _isolateRepository;
 
         public IsolateController(IIsolateRepository isolateRepository)
         {
-            this.isolateRepository = isolateRepository;
+            _isolateRepository = isolateRepository;
         }
 
         /// <summary>
-        /// Get meta data for a specific isolate.
+        ///     Get meta data for a specific isolate.
         /// </summary>
         // GET api/<IsolateController>/5
         [HttpGet("{isolateId}")]
@@ -31,17 +28,19 @@ namespace DG.SAP.TBRIntegration.Controllers
         [Produces("application/json", "application/problem+json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public ActionResult<Isolate> GetMetaData(string isolateId)
+        public async Task<ActionResult<Isolate>> GetMetaData(string isolateId)
         {
-            var isolate =  isolateRepository.GetIsolate(isolateId);
-            if(isolate == null)
+            var isolate = await _isolateRepository.GetIsolate(isolateId);
+            if (isolate == null)
+            {
                 return NotFound();
+            }
 
-            return isolate;
+            return Ok(isolate);
         }
 
         /// <summary>
-        /// Update analysis approvals for a given isolate.
+        ///     Update analysis approvals for a given isolate.
         /// </summary>
         // PUT api/<IsolateController>/
         [HttpPut]
@@ -49,9 +48,9 @@ namespace DG.SAP.TBRIntegration.Controllers
         [Produces("application/json", "application/problem+json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public ActionResult<bool> ApproveAnalysisValues([FromBody] Approval approval)
+        public async Task<ActionResult<bool>> ApproveAnalysisValues([FromBody] IsolateUpdate isolateUpdate)
         {
-            return isolateRepository.Approve(approval);
+            return await _isolateRepository.UpdateIsolate(isolateUpdate);
         }
     }
 }

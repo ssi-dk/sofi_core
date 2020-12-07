@@ -1,18 +1,23 @@
 import { configureStore, Action, getDefaultMiddleware } from "@reduxjs/toolkit";
 import { ThunkAction } from "redux-thunk";
 import { queryMiddleware } from "redux-query";
+import { routerMiddleware } from "connected-react-router";
 import superagentInterface from "redux-query-interface-superagent";
-import rootReducer, { RootState } from "./root-reducer";
+import { createBrowserHistory } from "history";
+import createRootReducer, { RootState } from "./root-reducer";
 
 // selectors
 export const getQueries = (state: RootState) => state.queries;
 export const getEntities = (state: RootState) => state.entities;
 
+export const history = createBrowserHistory();
+
 const store = configureStore({
-  reducer: rootReducer,
+  reducer: createRootReducer(history),
   middleware: [
     ...getDefaultMiddleware({ serializableCheck: false }),
     queryMiddleware(superagentInterface, getQueries, getEntities),
+    routerMiddleware(history)
   ],
 });
 

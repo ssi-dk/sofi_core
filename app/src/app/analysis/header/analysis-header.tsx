@@ -4,18 +4,24 @@ import AnalysisSearch from "./search/analysis-search";
 import AnalysisViewSelector from "./view-selector/analysis-view-selector";
 
 type AnalysisHeaderProps = {
-  sidebarWidth: string;
+  sidebarWidth?: string;
+  hideSearch?: boolean;
+  hideSelector?: boolean;
 };
 
-export default function AnalysisHeader({ sidebarWidth }: AnalysisHeaderProps) {
+export default function AnalysisHeader({
+  sidebarWidth,
+  hideSearch,
+  hideSelector,
+}: AnalysisHeaderProps) {
   return (
     <Flex align="center">
-      <Box minW={sidebarWidth} flexShrink={0}>
+      <Box minW={sidebarWidth || "300px"} flexShrink={0}>
         <Heading>SAP</Heading>
       </Box>
-      <AnalysisSearch />
+      {hideSearch || <AnalysisSearch />}
       <Box minW="250px" ml="10">
-        <AnalysisViewSelector />
+        {hideSelector || <AnalysisViewSelector />}
       </Box>
     </Flex>
   );
