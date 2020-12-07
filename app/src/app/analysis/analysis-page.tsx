@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { Box, Flex, Button, useToast } from "@chakra-ui/react";
 import { CheckIcon, DragHandleIcon, NotAllowedIcon } from "@chakra-ui/icons";
 import { Column } from "react-table";
-import { AnalysisResult } from "sap-client";
-import { useRequest, useRequests } from "redux-query-react";
+import { AnalysisResult, ApprovalRequest } from "sap-client";
+import { useMutation, useRequest, useRequests } from "redux-query-react";
 import { useDispatch, useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { RootState } from "app/root-reducer";
@@ -17,6 +17,10 @@ import {
 import AnalysisHeader from "./header/analysis-header";
 import AnalysisSidebar from "./sidebar/analysis-sidebar";
 import { setSelection } from "./analysis-selection-configs";
+import {
+  rejectApproval,
+  sendApproval,
+} from "./analysis-approval-configs";
 
 export default function AnalysisPage() {
   const { t } = useTranslation();
@@ -102,29 +106,78 @@ export default function AnalysisPage() {
     [columnConfigs]
   );
 
-  const approveSelection = React.useCallback(() => {
-    toast({
-      title: t("Approval submitted"),
-      description: `${data.filter((x) => selection[x.isolate_id]).length} ${t(
-        "records"
-      )} ${t("have been submitted for approval.")}`,
-      status: "info",
-      duration: null,
-      isClosable: true,
-    });
-  }, [selection, toast, data, t]);
+  const [
+    { isPending: pendingApproval, status: approvalStatus },
+    doApproval,
+  ] = useMutation((payload: ApprovalRequest) => sendApproval(payload));
+  const [
+    { isPending: pendingRejection, status: rejectionStatus },
+    doRejection,
+  ] = useMutation((payload: string) => rejectApproval({ id: payload }));
+  const [needsNotify, setNeedsNotify] = useState(false);
 
-  const rejectSelection = React.useCallback(() => {
-    toast({
-      title: t("Rejection submitted"),
-      description: `${data.filter((x) => selection[x.isolate_id]).length} ${t(
-        "records"
-      )} ${t("have been rejected.")}`,
-      status: "info",
-      duration: null,
-      isClosable: true,
-    });
-  }, [selection, toast, data, t]);
+  const approveSelection = React.useCallback(() => {
+    setNeedsNotify(true);
+    doApproval({ matrix: selection as any });
+  }, [selection, doApproval, setNeedsNotify]);
+
+  const rejectSelection = React.useCallback(
+    (id: string) => {
+      setNeedsNotify(true);
+      doRejection(id);
+    },
+    [doRejection, setNeedsNotify]
+  );
+
+  // Display approval toasts
+  React.useMemo(() => {
+    if (
+      needsNotify &&
+      approvalStatus >= 200 &&
+      approvalStatus < 300 &&
+      !pendingApproval
+    ) {
+      toast({
+        title: t("Approval submitted"),
+        description: `${data.filter((x) => selection[x.isolate_id]).length} ${t(
+          "records"
+        )} ${t("have been submitted for approval.")}`,
+        status: "info",
+        duration: null,
+        isClosable: true,
+      });
+      setNeedsNotify(false);
+    }
+  }, [t, approvalStatus, data, selection, toast, needsNotify, pendingApproval]);
+
+  // Display rejection toasts
+  React.useMemo(() => {
+    if (
+      needsNotify &&
+      rejectionStatus >= 200 &&
+      rejectionStatus < 300 &&
+      !pendingRejection
+    ) {
+      toast({
+        title: t("Rejection submitted"),
+        description: `${data.filter((x) => selection[x.isolate_id]).length} ${t(
+          "records"
+        )} ${t("have been rejected.")}`,
+        status: "info",
+        duration: null,
+        isClosable: true,
+      });
+      setNeedsNotify(false);
+    }
+  }, [
+    t,
+    rejectionStatus,
+    data,
+    selection,
+    toast,
+    needsNotify,
+    pendingRejection,
+  ]);
 
   const sidebarWidth = "300px";
   if (!columnLoadState.isFinished) {
@@ -163,7 +216,7 @@ export default function AnalysisPage() {
               leftIcon={<NotAllowedIcon />}
               margin="4px"
               disabled={!pageState.isNarrowed}
-              onClick={rejectSelection}
+              onClick={() => rejectSelection("2")}
             >
               {t("Reject")}
             </Button>
