@@ -41,4 +41,4 @@ const SelectionCheckBox = forwardRef(
   }
 );
 
-export default SelectionCheckBox;
+export default React.memo(SelectionCheckBox);

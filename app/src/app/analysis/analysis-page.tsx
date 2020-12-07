@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { Box, Button, Flex, useToast } from "@chakra-ui/react";
+import { Box, Flex, Button, useToast } from "@chakra-ui/react";
+import { CheckIcon, DragHandleIcon, NotAllowedIcon } from "@chakra-ui/icons";
 import { Column } from "react-table";
 import { AnalysisResult, UserDefinedView } from "sap-client";
 import { useRequest, useRequests } from "redux-query-react";
@@ -8,12 +9,17 @@ import { useTranslation } from "react-i18next";
 import { RootState } from "app/root-reducer";
 import DataTable from "./data-table/data-table";
 import { approvedCell, selectedCell } from "./data-table/data-table.styles";
-import { requestPageOfAnalysis, requestColumns, ColumnSlice } from "./analysis-query-configs";
+import {
+  requestPageOfAnalysis,
+  requestColumns,
+  ColumnSlice,
+} from "./analysis-query-configs";
 import AnalysisHeader from "./header/analysis-header";
 import AnalysisSidebar from "./sidebar/analysis-sidebar";
 import { setSelection } from "./analysis-selection-configs";
 
 export default function AnalysisPage() {
+  const { t } = useTranslation();
   const reqs = React.useMemo(
     () =>
       Array.from(Array(5).keys()).map((i) => ({
@@ -39,10 +45,10 @@ export default function AnalysisPage() {
         (k) =>
           ({
             accessor: k,
-            Header: k,
+            Header: t(k),
           } as Column<AnalysisResult>)
       ),
-    [columnConfigs]
+    [columnConfigs, t]
   );
 
   const [pageState, setPageState] = useState({ isNarrowed: false });
@@ -52,15 +58,50 @@ export default function AnalysisPage() {
   const view = useSelector<RootState>((s) => s.view.view) as UserDefinedView;
 
   const toast = useToast();
-  const { t } = useTranslation();
 
-  const canSelectColumn = React.useCallback((columnName: string) => {
-    return columnConfigs[columnName]?.approvable;
-  }, [columnConfigs]);
+  const canSelectColumn = React.useCallback(
+    (columnName: string) => {
+      return columnConfigs[columnName]?.approvable;
+    },
+    [columnConfigs]
+  );
 
-  const canEditColumn = React.useCallback((columnName: string) => {
-    return columnConfigs[columnName]?.editable;
-  }, [columnConfigs]);
+  const approvableColumns = React.useMemo(
+    () =>
+      Object.values(columnConfigs || {})
+        .map((c) => c?.approves_with)
+        .reduce((a, b) => a.concat(b), [])
+        .concat(
+          Object.values(columnConfigs || {})
+            .filter((c) => c?.approvable)
+            .map((c) => c?.field_name)
+        ),
+    [columnConfigs]
+  );
+
+  const canApproveColumn = React.useCallback(
+    (columnName: string) => {
+      return approvableColumns.indexOf(columnName) >= 0;
+    },
+    [approvableColumns]
+  );
+
+  const canEditColumn = React.useCallback(
+    (columnName: string) => {
+      return columnConfigs[columnName]?.editable;
+    },
+    [columnConfigs]
+  );
+
+  const getDependentColumns = React.useCallback(
+    (columnName: keyof AnalysisResult) => {
+      return (
+        columnConfigs[columnName]?.approves_with ??
+        ([] as Array<keyof AnalysisResult>)
+      );
+    },
+    [columnConfigs]
+  );
 
   const approveSelection = React.useCallback(() => {
     toast({
@@ -74,9 +115,21 @@ export default function AnalysisPage() {
     });
   }, [selection, toast, data, t]);
 
+  const rejectSelection = React.useCallback(() => {
+    toast({
+      title: t("Rejection submitted"),
+      description: `${data.filter((x) => selection[x.isolate_id]).length} ${t(
+        "records"
+      )} ${t("have been rejected.")}`,
+      status: "info",
+      duration: null,
+      isClosable: true,
+    });
+  }, [selection, toast, data, t]);
+
   const sidebarWidth = "300px";
   if (!columnLoadState.isFinished) {
-    return (<div>Loading</div>);
+    return <div>Loading</div>;
   }
   return (
     <Box w="100%">
@@ -88,6 +141,7 @@ export default function AnalysisPage() {
         <Box borderWidth="1px" rounded="md" overflowX="auto">
           <Box margin="4px">
             <Button
+              leftIcon={<DragHandleIcon />}
               margin="4px"
               onClick={() =>
                 setPageState({
@@ -99,17 +153,28 @@ export default function AnalysisPage() {
               {pageState.isNarrowed ? t("Cancel") : t("Select")}
             </Button>
             <Button
+              leftIcon={<CheckIcon />}
               margin="4px"
               disabled={!pageState.isNarrowed}
               onClick={approveSelection}
             >
               {t("Approve")}
             </Button>
+            <Button
+              leftIcon={<NotAllowedIcon />}
+              margin="4px"
+              disabled={!pageState.isNarrowed}
+              onClick={rejectSelection}
+            >
+              {t("Reject")}
+            </Button>
           </Box>
           <DataTable<AnalysisResult>
             columns={columns.filter(x => view.columns.length === 0 || view.columns.includes(x.Header as string)) /* todo: filter on permission level */}
             canSelectColumn={canSelectColumn}
             canEditColumn={canEditColumn}
+            canApproveColumn={canApproveColumn}
+            getDependentColumns={getDependentColumns}
             data={
               pageState.isNarrowed
                 ? data.filter((x) => selection[x.isolate_id])

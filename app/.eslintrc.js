@@ -29,6 +29,7 @@ module.exports = {
     project: './tsconfig.json',
   },
   rules: {
+    'global-require': 'warn',
     'no-cond-assign': 'off',
     'linebreak-style': 'off',
     'no-nested-ternary': 'off',
@@ -38,6 +39,7 @@ module.exports = {
     "react/prop-types": "off",
     "@typescript-eslint/ban-types": "warn",
     "@typescript-eslint/explicit-module-boundary-types": "off",
+    "@typescript-eslint/no-var-requires": "warn",
     "import/prefer-default-export": "warn",
     "react/destructuring-assignment": "warn",
     "no-param-reassign": "off",

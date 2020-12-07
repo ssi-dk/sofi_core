@@ -1,4 +1,3 @@
-export * from './Analysis';
 export * from './AnalysisResult';
 export * from './AnalysisResultAllOf';
 export * from './Approval';

@@ -12,7 +12,7 @@ import {
   useColumnOrder,
   IdType,
 } from "react-table";
-import { FixedSizeGrid, FixedSizeList } from "react-window";
+import { FixedSizeList } from "react-window";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { jsx, SerializedStyles } from "@emotion/react";
 import scrollbarWidth from "app/analysis/data-table/scrollbar-width-calculator";
@@ -24,6 +24,7 @@ import dtStyle, {
 import { IndexableOf, NotEmpty } from "utils";
 import SelectionCheckBox from "./selection-check-box";
 import { ColumnConfigWidget } from "./column-config-widget";
+import { exportDataTable } from './table-spy';
 
 export type DataTableSelection<T extends NotEmpty> = {
   [K in IndexableOf<T>]: { [k in IndexableOf<T>]: boolean };
@@ -34,7 +35,9 @@ type DataTableProps<T extends NotEmpty> = {
   data: T[];
   primaryKey: keyof T;
   canSelectColumn: (columnName: string) => boolean;
+  canApproveColumn: (columnName: string) => boolean;
   canEditColumn: (columnName: string) => boolean;
+  getDependentColumns: (columnName: keyof T) => Array<keyof T>;
   selectionStyle: SerializedStyles;
   onSelect: (sel: DataTableSelection<T>) => void;
 };
@@ -42,14 +45,25 @@ type DataTableProps<T extends NotEmpty> = {
 function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
   const defaultColumn = React.useMemo(
     () => ({
-      width: 129,
+      width: 140,
     }),
     []
   );
+  const noop = React.useCallback(() => {}, []);
 
   const scrollBarSize = React.useMemo(() => scrollbarWidth(), []);
 
-  const { columns, data, primaryKey, onSelect, selectionStyle } = props;
+  const {
+    columns,
+    data,
+    primaryKey,
+    onSelect,
+    selectionStyle,
+    canEditColumn,
+    canSelectColumn,
+    canApproveColumn,
+    getDependentColumns,
+  } = props;
   const [selection, setSelection] = React.useState({} as DataTableSelection<T>);
 
   const isInSelection = React.useCallback(
@@ -77,13 +91,17 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
         ...selection,
         [row]: { ...(selection[row] || {}), [col]: !isInSelection(cell) },
       };
+      getDependentColumns(col).forEach((v) => {
+        incSel[row][v as string] = !(selection[row] && selection[row][col]);
+      });
       setSelection(incSel);
       onSelect(incSel);
     },
-    [onSelect, isInSelection, selection, primaryKey]
+    [onSelect, isInSelection, selection, primaryKey, getDependentColumns]
   );
 
   const {
+    state,
     getTableProps,
     getTableBodyProps,
     headerGroups,
@@ -103,6 +121,9 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
     useColumnOrder,
     useSortBy
   );
+
+  // Make data table configuration externally visible
+  exportDataTable(state);
 
   const currentColOrder = React.useRef<Array<IdType<T>>>();
 
@@ -140,7 +161,6 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
 
   const calcColSelectionState = React.useCallback(
     (col: Column<T>) => {
-      // TODO: Check if column is approvable and return visible: false if it isn't
       const c = Object.values(selection).filter((x) => x[col.id] === true);
       if (c.length === 0) return { checked: false, indeterminate: false };
       if (c.length === rows.length)
@@ -156,13 +176,14 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
       const id = row.original[primaryKey];
       const cols = columns
         .filter((x) => typeof x.accessor === "string")
+        .filter((x) => canApproveColumn(x.accessor as string))
         .map((x) => ({ [x.accessor as string]: !checked }))
-        .reduce((acc, val) => ({ ...acc, ...val }));
+        .reduce((acc, val) => ({ ...acc, ...val }), []);
       const incSel = { ...selection, [id]: { ...cols } };
       setSelection(incSel);
       onSelect(incSel);
     },
-    [onSelect, selection, primaryKey, columns, calcRowSelectionState]
+    [onSelect, selection, primaryKey, columns, calcRowSelectionState, canApproveColumn]
   );
 
   const onSelectCol = React.useCallback(
@@ -177,10 +198,24 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
         }))
         .reduce((acc, val) => ({ ...acc, ...val }));
       const incSel = { ...selection, ...sel };
+      getDependentColumns(col.id).forEach((c) => {
+        rows
+          .map((r) => r.original[primaryKey])
+          .forEach((r: string) => {
+            incSel[r][c as string] = !(selection[r] && selection[r][c]);
+          });
+      });
       setSelection(incSel);
       onSelect(incSel);
     },
-    [selection, primaryKey, rows, calcColSelectionState, onSelect]
+    [
+      selection,
+      primaryKey,
+      rows,
+      calcColSelectionState,
+      onSelect,
+      getDependentColumns,
+    ]
   );
 
   const onSelectAllRows = React.useCallback(() => {
@@ -208,7 +243,6 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
             style,
           })}
         >
-
           <SelectionCheckBox
             onClick={(e) => {
               onSelectRow(row);
@@ -222,8 +256,16 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
             <div
               role="cell"
               css={getSelectionStyle(cell)}
-              onClick={() => onSelectCell(cell)}
-              onKeyDown={() => onSelectCell(cell)}
+              onClick={
+                canSelectColumn(cell.column.id)
+                  ? () => onSelectCell(cell)
+                  : noop
+              }
+              onKeyDown={
+                canSelectColumn(cell.column.id)
+                  ? () => onSelectCell(cell)
+                  : noop
+              }
               key={cell.getCellProps().key}
               {...cell.getCellProps()}
             >
@@ -236,10 +278,12 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
     [
       prepareRow,
       rows,
+      canSelectColumn,
       getSelectionStyle,
       onSelectCell,
       onSelectRow,
       calcRowSelectionState,
+      noop,
     ]
   );
 
@@ -247,14 +291,14 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
   return (
     <div css={dtStyle}>
       <div role="table" {...getTableProps()} className="tableWrap">
-          <ColumnConfigWidget>
-            {allColumns.map((column) => (
-              <div key={column.id} style={{ marginTop: "5px" }}>
-                <input type="checkbox" {...column.getToggleHiddenProps()} />{" "}
-                {column.id}
-              </div>
-            ))}
-          </ColumnConfigWidget>
+        <ColumnConfigWidget>
+          {allColumns.map((column) => (
+            <div key={column.id} style={{ marginTop: "5px" }}>
+              <input type="checkbox" {...column.getToggleHiddenProps()} />{" "}
+              {column.id}
+            </div>
+          ))}
+        </ColumnConfigWidget>
         <div role="rowgroup">
           {headerGroups.map((headerGroup) => (
             <DragDropContext
@@ -319,14 +363,16 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
                                     provided.draggableProps.style
                                   )}
                                 >
-                                  <SelectionCheckBox
-                                    onClick={(e) => {
-                                      onSelectCol(column);
-                                      e.stopPropagation();
-                                    }}
-                                    css={headerButton}
-                                    {...calcColSelectionState(column)}
-                                  />
+                                  {canSelectColumn(column.id) && (
+                                    <SelectionCheckBox
+                                      onClick={(e) => {
+                                        onSelectCol(column);
+                                        e.stopPropagation();
+                                      }}
+                                      css={headerButton}
+                                      {...calcColSelectionState(column)}
+                                    />
+                                  )}
                                   <span css={headerName}>
                                     {column.render("Header")}
                                   </span>
@@ -388,5 +434,4 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
   );
 }
 
-
-export default DataTable;
+export default React.memo(DataTable) as typeof DataTable;
