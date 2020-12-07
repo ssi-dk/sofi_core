@@ -38,24 +38,25 @@ class TestUserController(BaseTestCase):
         
         """
         user_defined_view = {
+  "hiddenColumns" : [ "hiddenColumns", "hiddenColumns" ],
+  "columnOrder" : [ "columnOrder", "columnOrder" ],
   "name" : "name",
-  "tableState" : {
-    "hiddenColumns" : [ "hiddenColumns", "hiddenColumns" ],
-    "columnOrder" : [ "columnOrder", "columnOrder" ],
-    "sortBy" : [ {
-      "id" : "id",
-      "desc" : true
+  "sortBy" : [ {
+    "id" : "id",
+    "desc" : true
+  }, {
+    "id" : "id",
+    "desc" : true
+  } ],
+  "columnResizing" : {
+    "columnWidth" : 6,
+    "columnWidths" : [ {
+      "width" : 0,
+      "columnName" : "columnName"
     }, {
-      "id" : "id",
-      "desc" : true
-    } ],
-    "columnResizing" : {
-      "headerIdWidths" : [ [ "", "" ], [ "", "" ] ],
-      "isResizingColumn" : true,
-      "columnWidth" : 0,
-      "columnWidths" : "{}",
-      "startX" : ""
-    }
+      "width" : 0,
+      "columnName" : "columnName"
+    } ]
   }
 }
         headers = { 

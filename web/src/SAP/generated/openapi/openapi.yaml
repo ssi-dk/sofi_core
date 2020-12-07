@@ -194,33 +194,7 @@ paths:
         "200":
           content:
             application/json:
-              examples:
-                example-1:
-                  value:
-                  - name: View 1
-                    columns:
-                    - isolate_id
-                    - sequence_id
-                    - institution
-                    - project_number
-                    - project_title
-                    - sampling_date
-                    - received_date
-                    - run_id
-                    - name
-                    - cpr
-                    - gender
-                    - age
-                  - name: View 2
-                    columns:
-                    - isolate_id
-                    - sequence_id
-                    - institution
-                    - run_id
-                    - name
-                    - cpr
-                    - gender
-                    - age
+              examples: {}
               schema:
                 items:
                   $ref: '#/components/schemas/UserDefinedView'
@@ -241,40 +215,7 @@ paths:
         "204":
           content:
             application/json:
-              examples:
-                example-1:
-                  value:
-                  - name: View 1
-                    columns:
-                    - isolate_id
-                    - sequence_id
-                    - institution
-                    - project_number
-                    - project_title
-                    - sampling_date
-                    - received_date
-                    - run_id
-                    - name
-                    - cpr
-                    - gender
-                    - age
-                  - name: View 2
-                    columns:
-                    - isolate_id
-                    - sequence_id
-                    - institution
-                    - run_id
-                    - name
-                    - cpr
-                    - gender
-                    - age
-                  - name: New view
-                    columns:
-                    - isolate_id
-                    - name
-                    - cpr
-                    - gender
-                    - age
+              examples: {}
               schema:
                 items:
                   $ref: '#/components/schemas/UserDefinedView'
@@ -523,35 +464,60 @@ components:
       type: object
     UserDefinedView:
       example:
+        hiddenColumns:
+        - hiddenColumns
+        - hiddenColumns
+        columnOrder:
+        - columnOrder
+        - columnOrder
         name: name
-        tableState:
-          hiddenColumns:
-          - hiddenColumns
-          - hiddenColumns
-          columnOrder:
-          - columnOrder
-          - columnOrder
-          sortBy:
-          - id: id
-            desc: true
-          - id: id
-            desc: true
-          columnResizing:
-            headerIdWidths:
-            - - ""
-              - ""
-            - - ""
-              - ""
-            isResizingColumn: true
-            columnWidth: 0
-            columnWidths: '{}'
-            startX: ""
+        sortBy:
+        - id: id
+          desc: true
+        - id: id
+          desc: true
+        columnResizing:
+          columnWidth: 6
+          columnWidths:
+          - width: 0
+            columnName: columnName
+          - width: 0
+            columnName: columnName
       properties:
         name:
           type: string
-        tableState:
-          $ref: '#/components/schemas/UserDefinedView_tableState'
+        hiddenColumns:
+          items:
+            type: string
+          type: array
+        columnResizing:
+          $ref: '#/components/schemas/UserDefinedView_columnResizing'
+        sortBy:
+          items:
+            $ref: '#/components/schemas/UserDefinedView_sortBy'
+          type: array
+        columnOrder:
+          items:
+            type: string
+          type: array
       type: object
+      x-examples:
+        example-1:
+          name: string
+          tableState:
+            hiddenColumns:
+            - string
+            columnResizing:
+              columnWidths:
+              - columnName: string
+                width: 0
+              columnWidth: 0
+              startX: 0
+            sortBy:
+            - desc: true
+              id: string
+            columnOrder:
+            - string
     ApprovalRequest:
       example:
         matrix:
@@ -683,32 +649,31 @@ components:
       - $ref: '#/components/schemas/LimsSpecificMetadata'
       - $ref: '#/components/schemas/TbrSpecificMetadata'
       - $ref: '#/components/schemas/AnalysisResult_allOf'
-    UserDefinedView_tableState_columnResizing:
+    UserDefinedView_columnResizing_columnWidths:
       example:
-        headerIdWidths:
-        - - ""
-          - ""
-        - - ""
-          - ""
-        isResizingColumn: true
-        columnWidth: 0
-        columnWidths: '{}'
-        startX: ""
+        width: 0
+        columnName: columnName
+      properties:
+        columnName:
+          type: string
+        width:
+          type: integer
+    UserDefinedView_columnResizing:
+      example:
+        columnWidth: 6
+        columnWidths:
+        - width: 0
+          columnName: columnName
+        - width: 0
+          columnName: columnName
       properties:
         columnWidths:
-          type: object
+          items:
+            $ref: '#/components/schemas/UserDefinedView_columnResizing_columnWidths'
+          type: array
         columnWidth:
           type: integer
-        headerIdWidths:
-          items:
-            items: {}
-            type: array
-          type: array
-        isResizingColumn:
-          type: boolean
-        startX:
-          type: "null"
-    UserDefinedView_tableState_sortBy:
+    UserDefinedView_sortBy:
       example:
         id: id
         desc: true
@@ -717,44 +682,6 @@ components:
           type: boolean
         id:
           type: string
-    UserDefinedView_tableState:
-      example:
-        hiddenColumns:
-        - hiddenColumns
-        - hiddenColumns
-        columnOrder:
-        - columnOrder
-        - columnOrder
-        sortBy:
-        - id: id
-          desc: true
-        - id: id
-          desc: true
-        columnResizing:
-          headerIdWidths:
-          - - ""
-            - ""
-          - - ""
-            - ""
-          isResizingColumn: true
-          columnWidth: 0
-          columnWidths: '{}'
-          startX: ""
-      properties:
-        hiddenColumns:
-          items:
-            type: string
-          type: array
-        columnResizing:
-          $ref: '#/components/schemas/UserDefinedView_tableState_columnResizing'
-        sortBy:
-          items:
-            $ref: '#/components/schemas/UserDefinedView_tableState_sortBy'
-          type: array
-        columnOrder:
-          items:
-            type: string
-          type: array
     Approval_allOf:
       properties:
         id:

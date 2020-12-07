@@ -20,6 +20,6 @@ from .tbr_metadata import TbrMetadata
 from .tbr_specific_metadata import TbrSpecificMetadata
 from .user import User
 from .user_defined_view import UserDefinedView
-from .user_defined_view_table_state import UserDefinedViewTableState
-from .user_defined_view_table_state_column_resizing import UserDefinedViewTableStateColumnResizing
-from .user_defined_view_table_state_sort_by import UserDefinedViewTableStateSortBy
+from .user_defined_view_column_resizing import UserDefinedViewColumnResizing
+from .user_defined_view_column_resizing_column_widths import UserDefinedViewColumnResizingColumnWidths
+from .user_defined_view_sort_by import UserDefinedViewSortBy

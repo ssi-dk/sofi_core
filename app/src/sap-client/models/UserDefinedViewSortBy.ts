@@ -15,31 +15,31 @@ import { exists, mapValues } from '../runtime';
 /**
  * 
  * @export
- * @interface UserDefinedViewTableStateSortBy
+ * @interface UserDefinedViewSortBy
  */
-export interface UserDefinedViewTableStateSortBy  {
+export interface UserDefinedViewSortBy  {
     /**
      * 
      * @type {boolean}
-     * @memberof UserDefinedViewTableStateSortBy
+     * @memberof UserDefinedViewSortBy
      */
     desc?: boolean;
     /**
      * 
      * @type {string}
-     * @memberof UserDefinedViewTableStateSortBy
+     * @memberof UserDefinedViewSortBy
      */
     id?: string;
 }
 
-export function UserDefinedViewTableStateSortByFromJSON(json: any): UserDefinedViewTableStateSortBy {
+export function UserDefinedViewSortByFromJSON(json: any): UserDefinedViewSortBy {
     return {
         'desc': !exists(json, 'desc') ? undefined : json['desc'],
         'id': !exists(json, 'id') ? undefined : json['id'],
     };
 }
 
-export function UserDefinedViewTableStateSortByToJSON(value?: UserDefinedViewTableStateSortBy): any {
+export function UserDefinedViewSortByToJSON(value?: UserDefinedViewSortBy): any {
     if (value === undefined) {
         return undefined;
     }

@@ -13,9 +13,12 @@
 
 import { exists, mapValues } from '../runtime';
 import {
-    UserDefinedViewTableState,
-    UserDefinedViewTableStateFromJSON,
-    UserDefinedViewTableStateToJSON,
+    UserDefinedViewColumnResizing,
+    UserDefinedViewColumnResizingFromJSON,
+    UserDefinedViewColumnResizingToJSON,
+    UserDefinedViewSortBy,
+    UserDefinedViewSortByFromJSON,
+    UserDefinedViewSortByToJSON,
 } from './';
 
 /**
@@ -32,16 +35,37 @@ export interface UserDefinedView  {
     name?: string;
     /**
      * 
-     * @type {UserDefinedViewTableState}
+     * @type {Array<string>}
      * @memberof UserDefinedView
      */
-    tableState?: UserDefinedViewTableState;
+    hiddenColumns?: Array<string>;
+    /**
+     * 
+     * @type {UserDefinedViewColumnResizing}
+     * @memberof UserDefinedView
+     */
+    columnResizing?: UserDefinedViewColumnResizing;
+    /**
+     * 
+     * @type {Array<UserDefinedViewSortBy>}
+     * @memberof UserDefinedView
+     */
+    sortBy?: Array<UserDefinedViewSortBy>;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof UserDefinedView
+     */
+    columnOrder?: Array<string>;
 }
 
 export function UserDefinedViewFromJSON(json: any): UserDefinedView {
     return {
         'name': !exists(json, 'name') ? undefined : json['name'],
-        'tableState': !exists(json, 'tableState') ? undefined : UserDefinedViewTableStateFromJSON(json['tableState']),
+        'hiddenColumns': !exists(json, 'hiddenColumns') ? undefined : json['hiddenColumns'],
+        'columnResizing': !exists(json, 'columnResizing') ? undefined : UserDefinedViewColumnResizingFromJSON(json['columnResizing']),
+        'sortBy': !exists(json, 'sortBy') ? undefined : (json['sortBy'] as Array<any>).map(UserDefinedViewSortByFromJSON),
+        'columnOrder': !exists(json, 'columnOrder') ? undefined : json['columnOrder'],
     };
 }
 
@@ -51,7 +75,10 @@ export function UserDefinedViewToJSON(value?: UserDefinedView): any {
     }
     return {
         'name': value.name,
-        'tableState': UserDefinedViewTableStateToJSON(value.tableState),
+        'hiddenColumns': value.hiddenColumns,
+        'columnResizing': UserDefinedViewColumnResizingToJSON(value.columnResizing),
+        'sortBy': value.sortBy === undefined ? undefined : (value.sortBy as Array<any>).map(UserDefinedViewSortByToJSON),
+        'columnOrder': value.columnOrder,
     };
 }
 

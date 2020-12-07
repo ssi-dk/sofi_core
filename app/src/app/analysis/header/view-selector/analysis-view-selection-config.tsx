@@ -2,8 +2,7 @@ import { createAction, createReducer } from "@reduxjs/toolkit";
 import { UserDefinedView } from 'sap-client';
 
 const defaultView: UserDefinedView = {
-    name: "Default",
-    tableState: {}
+    name: "Default"
 }
 
 export const defaultViews = [defaultView];

@@ -2,14 +2,14 @@ import React from "react";
 import Select from "react-select";
 import { RootState } from 'app/root-reducer';
 import { selectTheme } from "app/app.styles";
-import { UserDefinedView, UserDefinedViewTableState } from "sap-client";
-import { useRequest } from 'redux-query-react';
+import { UserDefinedView } from "sap-client";
+import { QueryConfigFactory, useMutation, useRequest } from "redux-query-react";
 import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
-import { requestAsync } from 'redux-query';
-import { requestUserViews, addUserView } from './analysis-view-query-configs';
+import { requestUserViews, addUserViewMutation } from "./analysis-view-query-configs";
 import { defaultViews, setView } from './analysis-view-selection-config';
 import { spyDataTable } from "../../data-table/table-spy";
+import { mapTableStateToView } from "./table-state-view-mapper";
 
 export default function AnalysisViewSelector() {
   const { t } = useTranslation();
@@ -32,16 +32,17 @@ export default function AnalysisViewSelector() {
     }), []
   );
   const [{ isPending, isFinished }] = useRequest(viewReq);
-  
+  const [queryState, addView] = useMutation(v => addUserViewMutation(v));
+
   const viewSelectUpdate = (event) => {
     const { value } = event;
     if (value === addViewValue) {
       const viewName = prompt("View name");
       if (viewName) {
         const tableState = spyDataTable()
-        const newView = { name: viewName, tableState: tableState as UserDefinedViewTableState };
-        dispatch(requestAsync(addUserView(newView)));
-        dispatch(setView(newView));
+        const newView = mapTableStateToView(viewName, tableState);
+        // TODO: Probably don't cast to never?
+        addView(newView as never).then(_ => dispatch(setView(newView)));
       }
     } else {
       dispatch(setView(value))
