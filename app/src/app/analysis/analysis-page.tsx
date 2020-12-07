@@ -170,7 +170,7 @@ export default function AnalysisPage() {
             </Button>
           </Box>
           <DataTable<AnalysisResult>
-            columns={columns.filter(x => view.columns.length === 0 || view.columns.includes(x.Header as string)) /* todo: filter on permission level */}
+            columns={columns /* todo: filter on permission level */}
             canSelectColumn={canSelectColumn}
             canEditColumn={canEditColumn}
             canApproveColumn={canApproveColumn}
@@ -183,6 +183,7 @@ export default function AnalysisPage() {
             primaryKey="isolate_id"
             selectionStyle={pageState.isNarrowed ? approvedCell : selectedCell}
             onSelect={(sel) => dispatch(setSelection(sel))}
+            view={view}
           />
           {isPending && `${t("Fetching...")} ${data.length}`}
           {isFinished &&

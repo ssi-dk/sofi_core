@@ -194,6 +194,33 @@ paths:
         "200":
           content:
             application/json:
+              examples:
+                example-1:
+                  value:
+                  - name: View 1
+                    columns:
+                    - isolate_id
+                    - sequence_id
+                    - institution
+                    - project_number
+                    - project_title
+                    - sampling_date
+                    - received_date
+                    - run_id
+                    - name
+                    - cpr
+                    - gender
+                    - age
+                  - name: View 2
+                    columns:
+                    - isolate_id
+                    - sequence_id
+                    - institution
+                    - run_id
+                    - name
+                    - cpr
+                    - gender
+                    - age
               schema:
                 items:
                   $ref: '#/components/schemas/UserDefinedView'
@@ -207,10 +234,51 @@ paths:
       requestBody:
         content:
           application/json:
+            examples: {}
             schema:
               $ref: '#/components/schemas/UserDefinedView'
       responses:
         "204":
+          content:
+            application/json:
+              examples:
+                example-1:
+                  value:
+                  - name: View 1
+                    columns:
+                    - isolate_id
+                    - sequence_id
+                    - institution
+                    - project_number
+                    - project_title
+                    - sampling_date
+                    - received_date
+                    - run_id
+                    - name
+                    - cpr
+                    - gender
+                    - age
+                  - name: View 2
+                    columns:
+                    - isolate_id
+                    - sequence_id
+                    - institution
+                    - run_id
+                    - name
+                    - cpr
+                    - gender
+                    - age
+                  - name: New view
+                    columns:
+                    - isolate_id
+                    - name
+                    - cpr
+                    - gender
+                    - age
+              schema:
+                items:
+                  $ref: '#/components/schemas/UserDefinedView'
+                type: array
           description: User-defined view created.
       tags:
       - user

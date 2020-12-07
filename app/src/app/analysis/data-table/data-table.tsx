@@ -25,6 +25,7 @@ import { IndexableOf, NotEmpty } from "utils";
 import SelectionCheckBox from "./selection-check-box";
 import { ColumnConfigWidget } from "./column-config-widget";
 import { exportDataTable } from './table-spy';
+import { UserDefinedView } from "../../../sap-client/models";
 
 export type DataTableSelection<T extends NotEmpty> = {
   [K in IndexableOf<T>]: { [k in IndexableOf<T>]: boolean };
@@ -40,6 +41,7 @@ type DataTableProps<T extends NotEmpty> = {
   getDependentColumns: (columnName: keyof T) => Array<keyof T>;
   selectionStyle: SerializedStyles;
   onSelect: (sel: DataTableSelection<T>) => void;
+  view: UserDefinedView;
 };
 
 function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
