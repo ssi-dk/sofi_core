@@ -18,8 +18,8 @@ import AnalysisHeader from "./header/analysis-header";
 import AnalysisSidebar from "./sidebar/analysis-sidebar";
 import { setSelection } from "./analysis-selection-configs";
 import {
-  rejectApproval,
   sendApproval,
+  sendRejection,
 } from "./analysis-approval-configs";
 
 export default function AnalysisPage() {
@@ -113,20 +113,20 @@ export default function AnalysisPage() {
   const [
     { isPending: pendingRejection, status: rejectionStatus },
     doRejection,
-  ] = useMutation((payload: string) => rejectApproval({ id: payload }));
-  const [needsNotify, setNeedsNotify] = useState(false);
+  ] = useMutation((payload: ApprovalRequest) => sendRejection(payload));
+
+  const [needsNotify, setNeedsNotify] = useState(true);
 
   const approveSelection = React.useCallback(() => {
     setNeedsNotify(true);
     doApproval({ matrix: selection as any });
   }, [selection, doApproval, setNeedsNotify]);
 
-  const rejectSelection = React.useCallback(
-    (id: string) => {
+  const rejectSelection = React.useCallback(() => {
       setNeedsNotify(true);
-      doRejection(id);
+      doRejection({ matrix: selection as any});
     },
-    [doRejection, setNeedsNotify]
+    [selection, doRejection, setNeedsNotify]
   );
 
   // Display approval toasts
@@ -216,7 +216,7 @@ export default function AnalysisPage() {
               leftIcon={<NotAllowedIcon />}
               margin="4px"
               disabled={!pageState.isNarrowed}
-              onClick={() => rejectSelection("2")}
+              onClick={rejectSelection}
             >
               {t("Reject")}
             </Button>
