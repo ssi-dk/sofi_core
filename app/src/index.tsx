@@ -3,16 +3,19 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
 import { Provider as ReduxQueryProvider } from "redux-query-react";
+import { ConnectedRouter } from "connected-react-router";
 
-import store, { getQueries } from "app/store";
+import store, { getQueries, history } from "app/store";
 
 function render() {
   const App = require("./app/app").default;
   ReactDOM.render(
     <Provider store={store}>
-      <ReduxQueryProvider queriesSelector={getQueries}>
-        <App />
-      </ReduxQueryProvider>
+      <ConnectedRouter history={history}>
+        <ReduxQueryProvider queriesSelector={getQueries}>
+          <App />
+        </ReduxQueryProvider>
+      </ConnectedRouter>
     </Provider>,
     document.getElementById("root")
   );
