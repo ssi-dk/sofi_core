@@ -93,6 +93,8 @@ paths:
                       sapresponse:
                         succcess: true
                     message: Action UpdateIsolate executed successfully
+        '409':
+          description: Conflict - Isolate is not in OPEN state
       requestBody:
         content:
           application/json:
@@ -209,14 +211,88 @@ paths:
         - connections
 components:
   schemas:
+    FieldStatus:
+      type: string
+      description: Indicates whether or not an analyst has approved the field
+      enum: ["released", "not-released"]
+
+    DataFieldName:
+      type: string
+      enum: 
+        - "Species"
+        - "Subspecies"
+        - "Serotype"
+        - "ST"
+        - "Pathotype"
+        - "Adhæsionsgener"
+        - "Toxingener"
+        - "virulensgener"
+        - "AMRgener"
+        - "ResFinder version"
+        - "dato sekvensanalyse"
+        - "RunId"
+        - "sekvensID"
+        - "amr_ami"
+        - "amr_amp"
+        - "amr_azi"
+        - "amr_fep"
+        - "amr_fot"
+        - "amr_f_c"
+        - "amr_fox"
+        - "amr_taz"
+        - "amr_t_c"
+        - "amr_chl"
+        - "amr_cip"
+        - "amr_cli"
+        - "amr_col"
+        - "amr_dap"
+        - "amr_etp"
+        - "amr_ery"
+        - "amr_fus"
+        - "amr_gen"
+        - "amr_imi"
+        - "amr_kan"
+        - "amr_lzd"
+        - "amr_mero"
+        - "amr_mup"
+        - "amr_nal"
+        - "amr_pen"
+        - "amr_syn"
+        - "amr_rif"
+        - "amr_str"
+        - "amr_sul"
+        - "amr_tei"
+        - "amr_trm"
+        - "amr_tet"
+        - "amr_tia"
+        - "amr_tgc"
+        - "amr_tmp"
+        - "amr_van"
+
+    MetadataFieldName:
+      type: string
+      enum: 
+        - "Projekt ID"
+        - "projekttitel"
+        - "Udtag. Dato"
+        - "Modtaget"
+        - "CHR-nr."
+        - "Aut. Nummer"
+        - "Produkttype"
+        - "Produktbeskrivelse"
+        - "Oprindelse land"
+        - "dyreart"
+        - "Formål"
     DataEntry:
       title: DataEntry
       type: object
       properties:
         fieldName:
-          type: string
+          $ref: "#/components/schemas/DataFieldName"
         fieldValue:
           type: string
+        status:
+          $ref: "#/components/schemas/FieldStatus"
       x-examples:
         example:
           fieldName: species
@@ -227,7 +303,7 @@ components:
       type: object
       properties:
         metaFieldName:
-          type: string
+          $ref: "#/components/schemas/MetadataFieldName"
         metaFieldValue:
           type: string
       x-examples:
