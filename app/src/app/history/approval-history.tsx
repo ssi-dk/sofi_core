@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { NavLink } from "react-router-dom";
 import {
   Box,
   Flex,
@@ -9,10 +10,8 @@ import {
   Grid,
 } from "@chakra-ui/react";
 import {
-  CheckIcon,
+  ArrowBackIcon,
   DeleteIcon,
-  DragHandleIcon,
-  NotAllowedIcon,
 } from "@chakra-ui/icons";
 import { Approval } from "sap-client";
 import { useMutation, useRequest } from "redux-query-react";
@@ -74,15 +73,30 @@ export default function ApprovalHistory() {
       <AnalysisHeader hideSearch hideSelector />
       <Flex mt={5}>
         <Box minW="300px" pr={5} />
-        <Box borderWidth="1px" rounded="md" overflowX="auto" width="80%">
-          <Heading margin="20px">{`${t("My approval history")}`}</Heading>
+        <Box borderWidth="1px" rounded="md" overflowX="auto" width="80%" padding="20px">
+          <Flex padding="20px" alignItems="center" gap={6} justifyContent="space-between">
+            <Heading>{`${t("My approval history")}`}</Heading>
+            <NavLink to="/">
+              <Button leftIcon={<ArrowBackIcon />}>{t("Back")}</Button>
+            </NavLink>
+          </Flex>
           <Box margin="4px" />
+          <Grid padding="20px" templateColumns="repeat(5, 1fr)" gap={6}>
+            <Heading size="md">Id</Heading>
+            <Heading size="md">{t("Time")}</Heading>
+            <Heading size="md">{t("Approved by")}</Heading>
+            <Heading size="md">{t("Status")}</Heading>
+          </Grid>
           {approvalHistory &&
             approvalHistory.map((h) => {
               return (
                 <Grid padding="20px" templateColumns="repeat(5, 1fr)" gap={6}>
-                  <Text width="100%">{h.id}</Text>
-                  <Text>{h.timestamp}</Text>
+                  <Text>{h.id}</Text>
+                  <Text>{`${new Date(
+                    h.timestamp
+                  ).toLocaleDateString()} ${new Date(
+                    h.timestamp
+                  ).toLocaleTimeString()}`}</Text>
                   <Text>{h.approver}</Text>
                   <Text>{h.status}</Text>
                   <Button

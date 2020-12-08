@@ -28,6 +28,11 @@ const resources = {
       "Save current view": "Gem nuværende view",
       "Predefined views": "Prædefinerede views",
       "My views": "Mine views",
+      Time: "tid",
+      "Approved by": "Godkendt af",
+      "Revoke approval": "Tilbagekalde godkendelse",
+      "My approval history": "Mine godkendelse historik",
+      approvals: "godkendelser"
     },
   },
 };
