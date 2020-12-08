@@ -15,7 +15,7 @@ export default function App() {
       <Box p={6}>
         <Switch>
           <Route exact path="/approval-history" render={() => <ApprovalHistory />} />
-          <Route render={() => <AnalysisPage />} />
+          <Route path="/" render={() => <AnalysisPage />} />
         </Switch>
       </Box>
     </ChakraProvider>

@@ -1,6 +1,12 @@
 import React, { useState } from "react";
+import { NavLink } from "react-router-dom";
 import { Box, Flex, Button, useToast } from "@chakra-ui/react";
-import { CheckIcon, DragHandleIcon, NotAllowedIcon } from "@chakra-ui/icons";
+import {
+  CalendarIcon,
+  CheckIcon,
+  DragHandleIcon,
+  NotAllowedIcon,
+} from "@chakra-ui/icons";
 import { Column } from "react-table";
 import { AnalysisResult, UserDefinedView, ApprovalRequest } from "sap-client";
 import { useMutation, useRequest, useRequests } from "redux-query-react";
@@ -17,10 +23,7 @@ import {
 import AnalysisHeader from "./header/analysis-header";
 import AnalysisSidebar from "./sidebar/analysis-sidebar";
 import { setSelection } from "./analysis-selection-configs";
-import {
-  sendApproval,
-  sendRejection,
-} from "./analysis-approval-configs";
+import { sendApproval, sendRejection } from "./analysis-approval-configs";
 
 export default function AnalysisPage() {
   const { t } = useTranslation();
@@ -124,11 +127,9 @@ export default function AnalysisPage() {
   }, [selection, doApproval, setNeedsNotify]);
 
   const rejectSelection = React.useCallback(() => {
-      setNeedsNotify(true);
-      doRejection({ matrix: selection as any});
-    },
-    [selection, doRejection, setNeedsNotify]
-  );
+    setNeedsNotify(true);
+    doRejection({ matrix: selection as any });
+  }, [selection, doRejection, setNeedsNotify]);
 
   // Display approval toasts
   React.useMemo(() => {
@@ -187,7 +188,14 @@ export default function AnalysisPage() {
   return (
     <Box w="100%">
       <AnalysisHeader sidebarWidth={sidebarWidth} />
-      <Flex mt={5}>
+      <Flex justifyContent="flex-end" mt={2}>
+        <NavLink to="/approval-history">
+          <Button leftIcon={<CalendarIcon />}>
+            {t("My approval history")}
+          </Button>
+        </NavLink>
+      </Flex>
+      <Flex mt={2}>
         <Box minW={sidebarWidth} pr={5}>
           <AnalysisSidebar />
         </Box>
