@@ -40,9 +40,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PageOfAnalysis'
+
   /analysis/columns:
     get:
-      description: 'Get column metadata, scoped to authenticated user'
+      description: Get column metadata, scoped to authenticated user
       operationId: get_columns
       x-openapi-router-controller: web.src.SAP.generated.controllers.analysis_controller
       tags:
@@ -56,6 +57,7 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Column'
+
   /approvals:
     get:
       description: Retrieve list of approvals for authenticated user
@@ -86,11 +88,12 @@ paths:
               $ref: '#/components/schemas/ApprovalRequest'
       responses:
         '201':
-          description: Approval accepted
+          description: Approval accepted 
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Approval'
+
   '/approvals/{id}':
     delete:
       description: Cancel a pending approval
@@ -109,6 +112,7 @@ paths:
       responses:
         '204':
           description: Approval cancelled successfully.
+      
   /user:
     post:
       description: This can only be done by the logged in user.
@@ -139,8 +143,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/UserDefinedView'
-              examples: {}
+                  $ref: "#/components/schemas/UserDefinedView"
           description: Return user-defined view collection for the authenticated user
       tags:
         - user
@@ -148,18 +151,17 @@ paths:
     post:
       operationId: create_user_view
       requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UserDefinedView'
-            examples: {}
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserDefinedView"
       responses:
         '204':
-          description: No Content
+          description: "User-defined view created."
       tags:
         - user
       x-openapi-router-controller: web.src.SAP.generated.controllers.user_controller
-  '/user/views/{name}':
+  /user/views/{name}:
     delete:
       description: Cancel a pending approval
       operationId: delete_view
@@ -177,6 +179,9 @@ paths:
       responses:
         '204':
           description: View deleted successfully.
+
+
+
   /user/login:
     get:
       operationId: login_user
@@ -317,56 +322,8 @@ components:
   schemas:
     Organization:
       type: string
-      enum:
-        - SSI
-        - FVST
-    Analysis:
-      required:
-        - analysisId
-        - isolateId
-        - testTimestamp
-        - dateReceived
-        - approved
-      properties:
-        analysisId:
-          type: string
-          format: uuid
-        isolateId:
-          type: string
-          example: 1231_14_XDR
-          pattern: '^\d{4}_\d{2}_[A-Z0-9]{3}$'
-        testTimestamp:
-          type: string
-          format: date-time
-        dateReceived:
-          type: string
-          format: date
-        resfinderVersion:
-          type: string
-          example: 1.99
-          pattern: ^\d*\.\d*$
-        serumType:
-          type: string
-          example: XXXYYAAA
-          pattern: '^[A-Z]{8}$'
-        agent:
-          type: string
-          enum:
-            - e.coli
-            - salmonella
-        species:
-          type: string
-          enum:
-            - rat
-            - human
-            - pig
-            - dog
-        organization:
-          $ref: '#/components/schemas/Organization'
-        project:
-          type: string
-        approved:
-          type: boolean
+      enum: [SSI, FVST]
+
     PageOfAnalysis:
       required:
         - pagingToken
@@ -394,7 +351,7 @@ components:
         organizations:
           type: array
           items:
-            $ref: '#/components/schemas/Organization'
+            $ref: "#/components/schemas/Organization"
         field_name:
           type: string
         approves_with:
@@ -434,24 +391,6 @@ components:
       type: object
     UserDefinedView:
       type: object
-      x-examples:
-        example-1:
-          name: string
-          tableState:
-            hiddenColumns:
-              - string
-            columnResizing:
-              columnWidths:
-                - columnName: string
-                  width: 0
-              columnWidth: 0
-              isResizingColumn: null
-              startX: 0
-            sortBy:
-              - desc: true
-                id: string
-            columnOrder:
-              - string
       properties:
         name:
           type: string
@@ -492,7 +431,8 @@ components:
         - matrix
       properties:
         matrix:
-          $ref: '#/components/schemas/ApprovalMatrix'
+          $ref: "#/components/schemas/ApprovalMatrix"
+
     Approval:
       allOf:
         - $ref: '#/components/schemas/ApprovalRequest'
@@ -507,22 +447,19 @@ components:
               format: date-time
             status:
               type: string
-              enum:
-                - pending
-                - cancelled
-                - submitted
+              enum: [pending, cancelled, submitted]
+
     ApprovalMatrix:
       type: object
       additionalProperties:
         type: object
         additionalProperties:
           type: boolean
+    
     Resistance:
       type: string
-      enum:
-        - Sensitiv
-        - Resistent
-        - Ukendt
+      enum: ["Sensitiv", "Resistent", "Ukendt"]
+
     BaseMetadata:
       required:
         - isolate_id
@@ -541,7 +478,7 @@ components:
         sequence_filename:
           type: string
         institution:
-          $ref: '#/components/schemas/Organization'
+          $ref: "#/components/schemas/Organization"
         project_number:
           type: number
         project_title:
@@ -564,6 +501,7 @@ components:
           type: string
         epi_export:
           type: string
+
     TbrSpecificMetadata:
       type: object
       required:
@@ -592,10 +530,12 @@ components:
           type: string
         region:
           type: string
+
     TbrMetadata:
       allOf:
         - $ref: '#/components/schemas/BaseMetadata'
         - $ref: '#/components/schemas/TbrSpecificMetadata'
+
     LimsSpecificMetadata:
       type: object
       properties:
@@ -617,6 +557,7 @@ components:
       allOf:
         - $ref: '#/components/schemas/BaseMetadata'
         - $ref: '#/components/schemas/LimsSpecificMetadata'
+
     AnalysisResult:
       allOf:
         - $ref: '#/components/schemas/BaseMetadata'
@@ -641,10 +582,7 @@ components:
               type: number
             QC_final:
               type: string
-              enum:
-                - A
-                - B
-                - C
+              enum: ["A", "B", "C"]
             subspecies:
               type: string
             species_final:
@@ -667,80 +605,81 @@ components:
               type: string
             resistance_genes:
               type: string
-            AMR_profile:
+            amr_profile:
               type: string
-            AMR_ami:
-              $ref: '#/components/schemas/Resistance'
-            AMR_amp:
-              $ref: '#/components/schemas/Resistance'
-            AMR_azi:
-              $ref: '#/components/schemas/Resistance'
-            AMR_fep:
-              $ref: '#/components/schemas/Resistance'
-            AMR_fot:
-              $ref: '#/components/schemas/Resistance'
-            AMR_f_c:
-              $ref: '#/components/schemas/Resistance'
-            AMR_fox:
-              $ref: '#/components/schemas/Resistance'
-            AMR_taz:
-              $ref: '#/components/schemas/Resistance'
-            AMR_t_c:
-              $ref: '#/components/schemas/Resistance'
-            AMR_chl:
-              $ref: '#/components/schemas/Resistance'
-            AMR_cip:
-              $ref: '#/components/schemas/Resistance'
-            AMR_cli:
-              $ref: '#/components/schemas/Resistance'
-            AMR_col:
-              $ref: '#/components/schemas/Resistance'
-            AMR_dap:
-              $ref: '#/components/schemas/Resistance'
-            AMR_etp:
-              $ref: '#/components/schemas/Resistance'
-            AMR_ery:
-              $ref: '#/components/schemas/Resistance'
-            AMR_fus:
-              $ref: '#/components/schemas/Resistance'
-            AMR_gen:
-              $ref: '#/components/schemas/Resistance'
-            AMR_imi:
-              $ref: '#/components/schemas/Resistance'
-            AMR_kan:
-              $ref: '#/components/schemas/Resistance'
-            AMR_lzd:
-              $ref: '#/components/schemas/Resistance'
-            AMR_mero:
-              $ref: '#/components/schemas/Resistance'
-            AMR_mup:
-              $ref: '#/components/schemas/Resistance'
-            AMR_nal:
-              $ref: '#/components/schemas/Resistance'
-            AMR_pen:
-              $ref: '#/components/schemas/Resistance'
-            AMR_syn:
-              $ref: '#/components/schemas/Resistance'
-            AMR_rif:
-              $ref: '#/components/schemas/Resistance'
-            AMR_str:
-              $ref: '#/components/schemas/Resistance'
-            AMR_sul:
-              $ref: '#/components/schemas/Resistance'
-            AMR_tei:
-              $ref: '#/components/schemas/Resistance'
-            AMR_trm:
-              $ref: '#/components/schemas/Resistance'
-            AMR_tet:
-              $ref: '#/components/schemas/Resistance'
-            AMR_tia:
-              $ref: '#/components/schemas/Resistance'
-            AMR_tgc:
-              $ref: '#/components/schemas/Resistance'
-            AMR_tmp:
-              $ref: '#/components/schemas/Resistance'
-            AMR_van:
-              $ref: '#/components/schemas/Resistance'
+            amr_ami:
+              $ref: "#/components/schemas/Resistance"
+            amr_amp:
+              $ref: "#/components/schemas/Resistance"
+            amr_azi:
+              $ref: "#/components/schemas/Resistance"
+            amr_fep:
+              $ref: "#/components/schemas/Resistance"
+            amr_fot:
+              $ref: "#/components/schemas/Resistance"
+            amr_f_c:
+              $ref: "#/components/schemas/Resistance"
+            amr_fox:
+              $ref: "#/components/schemas/Resistance"
+            amr_taz:
+              $ref: "#/components/schemas/Resistance"
+            amr_t_c:
+              $ref: "#/components/schemas/Resistance"
+            amr_chl:
+              $ref: "#/components/schemas/Resistance"
+            amr_cip:
+              $ref: "#/components/schemas/Resistance"
+            amr_cli:
+              $ref: "#/components/schemas/Resistance"
+            amr_col:
+              $ref: "#/components/schemas/Resistance"
+            amr_dap:
+              $ref: "#/components/schemas/Resistance"
+            amr_etp:
+              $ref: "#/components/schemas/Resistance"
+            amr_ery:
+              $ref: "#/components/schemas/Resistance"
+            amr_fus:
+              $ref: "#/components/schemas/Resistance"
+            amr_gen:
+              $ref: "#/components/schemas/Resistance"
+            amr_imi:
+              $ref: "#/components/schemas/Resistance"
+            amr_kan:
+              $ref: "#/components/schemas/Resistance"
+            amr_lzd:
+              $ref: "#/components/schemas/Resistance"
+            amr_mero:
+              $ref: "#/components/schemas/Resistance"
+            amr_mup:
+              $ref: "#/components/schemas/Resistance"
+            amr_nal:
+              $ref: "#/components/schemas/Resistance"
+            amr_pen:
+              $ref: "#/components/schemas/Resistance"
+            amr_syn:
+              $ref: "#/components/schemas/Resistance"
+            amr_rif:
+              $ref: "#/components/schemas/Resistance"
+            amr_str:
+              $ref: "#/components/schemas/Resistance"
+            amr_sul:
+              $ref: "#/components/schemas/Resistance"
+            amr_tei:
+              $ref: "#/components/schemas/Resistance"
+            amr_trm:
+              $ref: "#/components/schemas/Resistance"
+            amr_tet:
+              $ref: "#/components/schemas/Resistance"
+            amr_tia:
+              $ref: "#/components/schemas/Resistance"
+            amr_tgc:
+              $ref: "#/components/schemas/Resistance"
+            amr_tmp:
+              $ref: "#/components/schemas/Resistance"
+            amr_van:
+              $ref: "#/components/schemas/Resistance"
+
   securitySchemes:
     SAP_auth:
       scheme: bearer

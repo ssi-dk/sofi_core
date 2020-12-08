@@ -3,7 +3,6 @@
 # flake8: noqa
 from __future__ import absolute_import
 # import models into model package
-from .analysis import Analysis
 from .analysis_result import AnalysisResult
 from .analysis_result_all_of import AnalysisResultAllOf
 from .approval import Approval
