@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Box, Flex, Button, useToast } from "@chakra-ui/react";
 import { CheckIcon, DragHandleIcon, NotAllowedIcon } from "@chakra-ui/icons";
 import { Column } from "react-table";
-import { AnalysisResult, ApprovalRequest } from "sap-client";
+import { AnalysisResult, UserDefinedView, ApprovalRequest } from "sap-client";
 import { useMutation, useRequest, useRequests } from "redux-query-react";
 import { useDispatch, useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
@@ -59,6 +59,7 @@ export default function AnalysisPage() {
 
   const dispatch = useDispatch();
   const selection = useSelector<RootState>((s) => s.selection.selection);
+  const view = useSelector<RootState>((s) => s.view.view) as UserDefinedView;
 
   const toast = useToast();
 
@@ -235,6 +236,7 @@ export default function AnalysisPage() {
             primaryKey="isolate_id"
             selectionStyle={pageState.isNarrowed ? approvedCell : selectedCell}
             onSelect={(sel) => dispatch(setSelection(sel))}
+            view={view}
           />
           {isPending && `${t("Fetching...")} ${data.length}`}
           {isFinished &&

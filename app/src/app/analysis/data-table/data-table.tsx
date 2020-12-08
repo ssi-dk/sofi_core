@@ -25,6 +25,7 @@ import { IndexableOf, NotEmpty } from "utils";
 import SelectionCheckBox from "./selection-check-box";
 import { ColumnConfigWidget } from "./column-config-widget";
 import { exportDataTable } from './table-spy';
+import { UserDefinedView } from "../../../sap-client/models";
 
 export type DataTableSelection<T extends NotEmpty> = {
   [K in IndexableOf<T>]: { [k in IndexableOf<T>]: boolean };
@@ -40,6 +41,7 @@ type DataTableProps<T extends NotEmpty> = {
   getDependentColumns: (columnName: keyof T) => Array<keyof T>;
   selectionStyle: SerializedStyles;
   onSelect: (sel: DataTableSelection<T>) => void;
+  view: UserDefinedView;
 };
 
 function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
@@ -63,6 +65,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
     canSelectColumn,
     canApproveColumn,
     getDependentColumns,
+    view
   } = props;
   const [selection, setSelection] = React.useState({} as DataTableSelection<T>);
 
@@ -121,6 +124,33 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
     useColumnOrder,
     useSortBy
   );
+
+  const [shouldUpdate, setShouldUpdate] = React.useState(true);
+  React.useEffect(() => {
+    const columnWidths = {};
+    if (shouldUpdate) {
+      setShouldUpdate(false);
+      view.columnResizing?.columnWidths.forEach(x => {
+        columnWidths[x.columnName] = x.width
+      });
+      state.hiddenColumns = [...(view.hiddenColumns || [])];
+      state.columnOrder = [...(view.columnOrder || [])];
+      state.columnResizing = {
+        columnWidth: view.columnResizing?.columnWidth,
+        columnWidths,
+        headerIdWidths: undefined
+      };
+      state.sortBy = view.sortBy?.map(x => ({
+        id: x.id,
+        desc: x.desc
+      })) || []
+      exportDataTable(state);
+    }
+  }, [view, state, shouldUpdate, setShouldUpdate]);
+
+  React.useEffect(() => {
+    setShouldUpdate(true);
+  }, [view, setShouldUpdate])
 
   // Make data table configuration externally visible
   exportDataTable(state);
@@ -286,7 +316,6 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
       noop,
     ]
   );
-
   // Render the UI for your table
   return (
     <div css={dtStyle}>

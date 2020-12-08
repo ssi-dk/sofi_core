@@ -408,14 +408,39 @@ components:
       type: object
     UserDefinedView:
       example:
-        columns:
-        - columns
-        - columns
+        hiddenColumns:
+        - hiddenColumns
+        - hiddenColumns
+        columnOrder:
+        - columnOrder
+        - columnOrder
         name: name
+        sortBy:
+        - id: id
+          desc: true
+        - id: id
+          desc: true
+        columnResizing:
+          columnWidth: 6
+          columnWidths:
+          - width: 0
+            columnName: columnName
+          - width: 0
+            columnName: columnName
       properties:
         name:
           type: string
-        columns:
+        hiddenColumns:
+          items:
+            type: string
+          type: array
+        columnResizing:
+          $ref: '#/components/schemas/UserDefinedView_columnResizing'
+        sortBy:
+          items:
+            $ref: '#/components/schemas/UserDefinedView_sortBy'
+          type: array
+        columnOrder:
           items:
             type: string
           type: array
@@ -551,6 +576,39 @@ components:
       - $ref: '#/components/schemas/LimsSpecificMetadata'
       - $ref: '#/components/schemas/TbrSpecificMetadata'
       - $ref: '#/components/schemas/AnalysisResult_allOf'
+    UserDefinedView_columnResizing_columnWidths:
+      example:
+        width: 0
+        columnName: columnName
+      properties:
+        columnName:
+          type: string
+        width:
+          type: integer
+    UserDefinedView_columnResizing:
+      example:
+        columnWidth: 6
+        columnWidths:
+        - width: 0
+          columnName: columnName
+        - width: 0
+          columnName: columnName
+      properties:
+        columnWidths:
+          items:
+            $ref: '#/components/schemas/UserDefinedView_columnResizing_columnWidths'
+          type: array
+        columnWidth:
+          type: integer
+    UserDefinedView_sortBy:
+      example:
+        id: id
+        desc: true
+      properties:
+        desc:
+          type: boolean
+        id:
+          type: string
     Approval_allOf:
       properties:
         id:

@@ -38,8 +38,26 @@ class TestUserController(BaseTestCase):
         
         """
         user_defined_view = {
-  "columns" : [ "columns", "columns" ],
-  "name" : "name"
+  "hiddenColumns" : [ "hiddenColumns", "hiddenColumns" ],
+  "columnOrder" : [ "columnOrder", "columnOrder" ],
+  "name" : "name",
+  "sortBy" : [ {
+    "id" : "id",
+    "desc" : true
+  }, {
+    "id" : "id",
+    "desc" : true
+  } ],
+  "columnResizing" : {
+    "columnWidth" : 6,
+    "columnWidths" : [ {
+      "width" : 0,
+      "columnName" : "columnName"
+    }, {
+      "width" : 0,
+      "columnName" : "columnName"
+    } ]
+  }
 }
         headers = { 
             'Content-Type': 'application/json',

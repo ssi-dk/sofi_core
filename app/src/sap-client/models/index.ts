@@ -14,3 +14,6 @@ export * from './TbrMetadata';
 export * from './TbrSpecificMetadata';
 export * from './User';
 export * from './UserDefinedView';
+export * from './UserDefinedViewColumnResizing';
+export * from './UserDefinedViewColumnResizingColumnWidths';
+export * from './UserDefinedViewSortBy';
