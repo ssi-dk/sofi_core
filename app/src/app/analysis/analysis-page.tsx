@@ -74,15 +74,19 @@ export default function AnalysisPage() {
   );
 
   const approvableColumns = React.useMemo(
-    () =>
-      Object.values(columnConfigs || {})
-        .map((c) => c?.approves_with)
-        .reduce((a, b) => a.concat(b), [])
-        .concat(
-          Object.values(columnConfigs || {})
-            .filter((c) => c?.approvable)
-            .map((c) => c?.field_name)
-        ),
+    () => [
+      ...new Set(
+        Object.values(columnConfigs || {})
+          .map((c) => c?.approves_with)
+          .reduce((a, b) => a.concat(b), [])
+          .concat(
+            Object.values(columnConfigs || {})
+              .filter((c) => c?.approvable)
+              .map((c) => c?.field_name)
+          )
+          .filter((x) => x !== undefined)
+      ),
+    ],
     [columnConfigs]
   );
 
@@ -235,6 +239,7 @@ export default function AnalysisPage() {
             canSelectColumn={canSelectColumn}
             canEditColumn={canEditColumn}
             canApproveColumn={canApproveColumn}
+            approvableColumns={approvableColumns}
             getDependentColumns={getDependentColumns}
             data={
               pageState.isNarrowed

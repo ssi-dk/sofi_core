@@ -17,7 +17,7 @@ class AnalysisResultAllOf(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, id=None, qc_provided_species=None, qc_genome1x=None, qc_genome10x=None, qc_gsize_diff1x10=None, qc_avg_coverage=None, qc_final=None, subspecies=None, species_final=None, st=None, pathotype=None, pathotype_final=None, serotype=None, serotype_final=None, adhesion=None, toxins=None, fu_dnr=None, resistance_genes=None, amr_profile=None, amr_ami=None, amr_amp=None, amr_azi=None, amr_fep=None, amr_fot=None, amr_f_c=None, amr_fox=None, amr_taz=None, amr_t_c=None, amr_chl=None, amr_cip=None, amr_cli=None, amr_col=None, amr_dap=None, amr_etp=None, amr_ery=None, amr_fus=None, amr_gen=None, amr_imi=None, amr_kan=None, amr_lzd=None, amr_mero=None, amr_mup=None, amr_nal=None, amr_pen=None, amr_syn=None, amr_rif=None, amr_str=None, amr_sul=None, amr_tei=None, amr_trm=None, amr_tet=None, amr_tia=None, amr_tgc=None, amr_tmp=None, amr_van=None):  # noqa: E501
+    def __init__(self, id=None, qc_provided_species=None, qc_genome1x=None, qc_genome10x=None, qc_gsize_diff1x10=None, qc_avg_coverage=None, qc_final=None, subspecies=None, species_final=None, st=None, pathotype=None, pathotype_final=None, serotype=None, serotype_final=None, adhesion=None, toxins=None, resistance_genes=None, amr_profile=None, amr_ami=None, amr_amp=None, amr_azi=None, amr_fep=None, amr_fot=None, amr_f_c=None, amr_fox=None, amr_taz=None, amr_t_c=None, amr_chl=None, amr_cip=None, amr_cli=None, amr_col=None, amr_dap=None, amr_etp=None, amr_ery=None, amr_fus=None, amr_gen=None, amr_imi=None, amr_kan=None, amr_lzd=None, amr_mero=None, amr_mup=None, amr_nal=None, amr_pen=None, amr_syn=None, amr_rif=None, amr_str=None, amr_sul=None, amr_tei=None, amr_trm=None, amr_tet=None, amr_tia=None, amr_tgc=None, amr_tmp=None, amr_van=None):  # noqa: E501
         """AnalysisResultAllOf - a model defined in OpenAPI
 
         :param id: The id of this AnalysisResultAllOf.  # noqa: E501
@@ -52,8 +52,6 @@ class AnalysisResultAllOf(Model):
         :type adhesion: str
         :param toxins: The toxins of this AnalysisResultAllOf.  # noqa: E501
         :type toxins: str
-        :param fu_dnr: The fu_dnr of this AnalysisResultAllOf.  # noqa: E501
-        :type fu_dnr: str
         :param resistance_genes: The resistance_genes of this AnalysisResultAllOf.  # noqa: E501
         :type resistance_genes: str
         :param amr_profile: The amr_profile of this AnalysisResultAllOf.  # noqa: E501
@@ -148,7 +146,6 @@ class AnalysisResultAllOf(Model):
             'serotype_final': str,
             'adhesion': str,
             'toxins': str,
-            'fu_dnr': str,
             'resistance_genes': str,
             'amr_profile': str,
             'amr_ami': Resistance,
@@ -206,7 +203,6 @@ class AnalysisResultAllOf(Model):
             'serotype_final': 'serotype_final',
             'adhesion': 'adhesion',
             'toxins': 'toxins',
-            'fu_dnr': 'FUDnr',
             'resistance_genes': 'resistance_genes',
             'amr_profile': 'amr_profile',
             'amr_ami': 'amr_ami',
@@ -263,7 +259,6 @@ class AnalysisResultAllOf(Model):
         self._serotype_final = serotype_final
         self._adhesion = adhesion
         self._toxins = toxins
-        self._fu_dnr = fu_dnr
         self._resistance_genes = resistance_genes
         self._amr_profile = amr_profile
         self._amr_ami = amr_ami
@@ -657,27 +652,6 @@ class AnalysisResultAllOf(Model):
         """
 
         self._toxins = toxins
-
-    @property
-    def fu_dnr(self):
-        """Gets the fu_dnr of this AnalysisResultAllOf.
-
-
-        :return: The fu_dnr of this AnalysisResultAllOf.
-        :rtype: str
-        """
-        return self._fu_dnr
-
-    @fu_dnr.setter
-    def fu_dnr(self, fu_dnr):
-        """Sets the fu_dnr of this AnalysisResultAllOf.
-
-
-        :param fu_dnr: The fu_dnr of this AnalysisResultAllOf.
-        :type fu_dnr: str
-        """
-
-        self._fu_dnr = fu_dnr
 
     @property
     def resistance_genes(self):

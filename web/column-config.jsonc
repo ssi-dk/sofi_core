@@ -79,6 +79,6 @@
     "field_name": "cluster_id",
     "approvable": true,
     "organization": ["FVST", "SSI"],
-    "approves_with": ["FUDnr"]
+    "approves_with": ["fud_number"]
   }
 ]

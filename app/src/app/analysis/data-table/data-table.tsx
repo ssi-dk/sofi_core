@@ -40,6 +40,7 @@ type DataTableProps<T extends NotEmpty> = {
   canEditColumn: (columnName: string) => boolean;
   getDependentColumns: (columnName: keyof T) => Array<keyof T>;
   selectionStyle: SerializedStyles;
+  approvableColumns: string[],
   onSelect: (sel: DataTableSelection<T>) => void;
   view: UserDefinedView;
 };
@@ -62,6 +63,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
     onSelect,
     selectionStyle,
     canEditColumn,
+    approvableColumns,
     canSelectColumn,
     canApproveColumn,
     getDependentColumns,
@@ -158,9 +160,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
   const currentColOrder = React.useRef<Array<IdType<T>>>();
 
   const calcTableSelectionState = React.useCallback(() => {
-    // TODO: Probably have to filter out 'unapprovable' columns when we know what those are
-    const columnCount = columns.filter((x) => typeof x.accessor === "string")
-      .length;
+    const columnCount = approvableColumns.length;
     const count = Object.values(selection).reduce(
       (acc: number, val) =>
         acc + Object.values(val).reduce((a, v) => (v ? a + 1 : a), 0),
@@ -170,23 +170,23 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
     if (count === columnCount * rows.length)
       return { checked: true, indeterminate: false };
     return { indeterminate: true, checked: false };
-  }, [selection, rows, columns]);
+  }, [selection, rows, approvableColumns]);
 
   const calcRowSelectionState = React.useCallback(
     (row: Row<T>) => {
       const r = selection[row.original[primaryKey]] || {};
-      // TODO: Probably have to filter out 'unapprovable' columns when we know what those are
-      const columnCount = columns.filter((x) => typeof x.accessor === "string")
-        .length;
       const count = Object.values(r).reduce(
         (acc: number, val) => (val ? acc + 1 : acc),
         0
       );
       if (count === 0) return { checked: false, indeterminate: false };
-      if (count === columnCount) return { checked: true, indeterminate: false };
+      console.log(approvableColumns.sort());
+      console.log(Object.keys(r).sort());
+      console.log(count);
+      if (count === approvableColumns.length) return { checked: true, indeterminate: false };
       return { indeterminate: true, checked: false };
     },
-    [selection, primaryKey, columns]
+    [selection, primaryKey, approvableColumns]
   );
 
   const calcColSelectionState = React.useCallback(
@@ -203,6 +203,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
   const onSelectRow = React.useCallback(
     (row: Row<T>) => {
       const { checked } = calcRowSelectionState(row);
+      console.log(checked)
       const id = row.original[primaryKey];
       const cols = columns
         .filter((x) => typeof x.accessor === "string")
@@ -250,9 +251,8 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
 
   const onSelectAllRows = React.useCallback(() => {
     const { checked } = calcTableSelectionState();
-    const allCols = columns
-      .filter((x) => typeof x.accessor === "string")
-      .map((x) => ({ [x.accessor as string]: !checked }))
+    const allCols = approvableColumns
+      .map((x) => ({ [x]: !checked }))
       .reduce((acc, val) => ({ ...acc, ...val }));
     const sel = rows
       .map((r) => ({ [r.original[primaryKey]]: allCols }))
@@ -260,7 +260,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
     const incSel = { ...selection, ...sel };
     setSelection(incSel);
     onSelect(incSel);
-  }, [selection, primaryKey, rows, columns, calcTableSelectionState, onSelect]);
+  }, [selection, primaryKey, rows, approvableColumns, calcTableSelectionState, onSelect]);
 
   const RenderRow = React.useCallback(
     ({ index, style }) => {
