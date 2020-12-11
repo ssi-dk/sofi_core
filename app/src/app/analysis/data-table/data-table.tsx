@@ -10,15 +10,14 @@ import {
   Row,
   useSortBy,
   useColumnOrder,
-  IdType,
+  TableState,
 } from "react-table";
-import { FixedSizeList } from "react-window";
+import { FixedSizeList, VariableSizeGrid } from "react-window";
 import { jsx, SerializedStyles } from "@emotion/react";
 import scrollbarWidth from "app/analysis/data-table/scrollbar-width-calculator";
 import dtStyle from "app/analysis/data-table/data-table.styles";
 import { IndexableOf, NotEmpty } from "utils";
 import SelectionCheckBox from "./selection-check-box";
-import { ColumnConfigWidget } from "./column-config-widget";
 import DataTableHeader from "./data-table-header";
 import { exportDataTable } from "./table-spy";
 import { UserDefinedView } from "../../../sap-client/models";
@@ -115,6 +114,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
     {
       columns,
       data: data ?? [],
+      useControlledState: React.useCallback((s) => ({...s, ...view as TableState<T>}), [view]),
       defaultColumn,
     },
     useBlockLayout,
@@ -123,42 +123,11 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
     useSortBy
   );
 
-  const [shouldUpdate, setShouldUpdate] = React.useState(true);
-  React.useEffect(() => {
-    const columnWidths = {};
-    if (shouldUpdate) {
-      setShouldUpdate(false);
-      view.columnResizing?.columnWidths.forEach((x) => {
-        columnWidths[x.columnName] = x.width;
-      });
-      state.hiddenColumns = [...(view.hiddenColumns || [])];
-      state.columnOrder = [...(view.columnOrder || [])];
-      state.columnResizing = {
-        columnWidth: view.columnResizing?.columnWidth,
-        columnWidths,
-        headerIdWidths: undefined,
-      };
-      state.sortBy =
-        view.sortBy?.map((x) => ({
-          id: x.id,
-          desc: x.desc,
-        })) || [];
-      exportDataTable(state);
-    }
-  }, [view, state, shouldUpdate, setShouldUpdate]);
-
-  React.useEffect(() => {
-    setShouldUpdate(true);
-  }, [view, setShouldUpdate]);
+  const { columnResizing, columnOrder, hiddenColumns, sortBy } = state;
 
   // Make data table configuration externally visible
   exportDataTable(state);
 
-  const currentColOrder = React.useRef<Array<IdType<T>>>();
-
-  const columnIds = React.useMemo(() => allColumns.map((o) => o.id), [
-    allColumns,
-  ]);
 
   const calcTableSelectionState = React.useCallback(() => {
     const columnCount = approvableColumns.length;
@@ -181,9 +150,6 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
         0
       );
       if (count === 0) return { checked: false, indeterminate: false };
-      console.log(approvableColumns.sort());
-      console.log(Object.keys(r).sort());
-      console.log(count);
       if (count === approvableColumns.length)
         return { checked: true, indeterminate: false };
       return { indeterminate: true, checked: false };
@@ -205,7 +171,6 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
   const onSelectRow = React.useCallback(
     (row: Row<T>) => {
       const { checked } = calcRowSelectionState(row);
-      console.log(checked);
       const id = row.original[primaryKey];
       const cols = columns
         .filter((x) => typeof x.accessor === "string")
@@ -336,20 +301,15 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
   return (
     <div css={dtStyle}>
       <div role="table" {...getTableProps()} className="tableWrap">
-        <ColumnConfigWidget>
-          {allColumns.map((column) => (
-            <div key={column.id} style={{ marginTop: "5px" }}>
-              <input type="checkbox" {...column.getToggleHiddenProps()} />{" "}
-              {column.id}
-            </div>
-          ))}
-        </ColumnConfigWidget>
         <div role="rowgroup">
           {headerGroups.map((headerGroup) => (
             <DataTableHeader<T>
+              columnOrder={columnOrder}
+              columnResizing={columnResizing}
+              sortBy={sortBy}
+              hiddenColumns={hiddenColumns}
               headerGroup={headerGroup}
-              columnIds={columnIds}
-              currentColOrder={currentColOrder}
+              allColumns={allColumns}
               onSelectAllRows={onSelectAllRows}
               onSelectCol={onSelectCol}
               canSelectColumn={canSelectColumn}

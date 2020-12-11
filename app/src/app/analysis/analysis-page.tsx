@@ -23,7 +23,16 @@ import {
 import AnalysisHeader from "./header/analysis-header";
 import AnalysisSidebar from "./sidebar/analysis-sidebar";
 import { setSelection } from "./analysis-selection-configs";
+<<<<<<< HEAD
 import { sendApproval, sendRejection } from "./analysis-approval-configs";
+=======
+import {
+  sendApproval,
+  sendRejection,
+} from "./analysis-approval-configs";
+import { ColumnConfigWidget } from './data-table/column-config-widget';
+import { toggleColumnVisibility } from './header/view-selector/analysis-view-selection-config';
+>>>>>>> d501c42... Implement controlled column headers
 
 export default function AnalysisPage() {
   const { t } = useTranslation();
@@ -63,6 +72,9 @@ export default function AnalysisPage() {
   const dispatch = useDispatch();
   const selection = useSelector<RootState>((s) => s.selection.selection);
   const view = useSelector<RootState>((s) => s.view.view) as UserDefinedView;
+
+  const toggleColumn = React.useCallback((id) => () => dispatch(toggleColumnVisibility(id)), [dispatch]);
+  const checkColumnIsVisible = React.useCallback((id) => view.hiddenColumns.indexOf(id) < 0, [view]);
 
   const toast = useToast();
 
@@ -233,6 +245,22 @@ export default function AnalysisPage() {
             >
               {t("Reject")}
             </Button>
+
+            <ColumnConfigWidget>
+              {columns.map((column) => (
+                <div
+                  key={column.accessor as string}
+                  style={{ marginTop: "5px" }}
+                >
+                  <input
+                    type="checkbox"
+                    checked={checkColumnIsVisible(column.accessor as string)}
+                    onClick={toggleColumn(column.accessor)}
+                  />{" "}
+                  {column.accessor as string}
+                </div>
+              ))}
+            </ColumnConfigWidget>
           </Box>
           <DataTable<AnalysisResult>
             columns={columns /* todo: filter on permission level */}

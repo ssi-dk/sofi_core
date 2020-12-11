@@ -2,7 +2,7 @@
 /** @jsx jsx */
 import React from "react";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
-import { Column, HeaderGroup, IdType } from 'react-table';
+import { Column, ColumnInstance, HeaderGroup, IdType, SortingRule, TableState } from 'react-table';
 import { jsx } from "@emotion/react";
 import {
   getColumnStyle,
@@ -10,12 +10,16 @@ import {
   headerName,
 } from "app/analysis/data-table/data-table.styles";
 import { NotEmpty } from "utils";
+import { UserDefinedViewColumnResizing } from 'sap-client';
 import SelectionCheckBox from "./selection-check-box";
 
 type DataTableHeaderProps<T extends NotEmpty> = {
+  hiddenColumns: IdType<T>[];
+  sortBy: SortingRule<T>[];
+  columnResizing: UserDefinedViewColumnResizing;
+  columnOrder: IdType<T>[];
   headerGroup: HeaderGroup<T>;
-  currentColOrder: React.MutableRefObject<IdType<T>[]>;
-  columnIds: string[];
+  allColumns: ColumnInstance<T>[],
   setColumnOrder: (updater: IdType<T>[] | ((columnOrder: IdType<T>[]) => IdType<T>[])) => void;
   calcColSelectionState: (column: Column<T>) => { checked: boolean, indeterminate: boolean, visible?: boolean };
   calcTableSelectionState: () => { checked: boolean, indeterminate: boolean, visible?: boolean };
@@ -26,7 +30,20 @@ type DataTableHeaderProps<T extends NotEmpty> = {
 
 function DataTableHeader<T extends NotEmpty>(props: DataTableHeaderProps<T>) {
 
-  const { columnIds, currentColOrder, headerGroup, setColumnOrder, calcColSelectionState, canSelectColumn, onSelectCol, onSelectAllRows, calcTableSelectionState } = props;
+  const {
+    columnOrder,
+    columnResizing,
+    hiddenColumns,
+    sortBy,
+    allColumns,
+    headerGroup,
+    setColumnOrder,
+    calcColSelectionState,
+    canSelectColumn,
+    onSelectCol,
+    onSelectAllRows,
+    calcTableSelectionState,
+  } = props;
 
   const noop = React.useCallback(() => {}, []);
 
@@ -34,6 +51,12 @@ function DataTableHeader<T extends NotEmpty>(props: DataTableHeaderProps<T>) {
     e.preventDefault();
     e.stopPropagation();
   }, []);
+
+  const columnIds = React.useMemo(() => allColumns.map((o) => o.id), [
+    allColumns,
+  ]);
+
+  const currentColOrder = React.useRef<Array<IdType<T>>>();
 
   const onDragStart = React.useCallback(() => {currentColOrder.current = columnIds}, [columnIds, currentColOrder]);
 
