@@ -38,7 +38,7 @@ export default function AnalysisPage() {
   const { t } = useTranslation();
   const reqs = React.useMemo(
     () =>
-      Array.from(Array(5).keys()).map((i) => ({
+      Array.from(Array(10).keys()).map((i) => ({
         ...requestPageOfAnalysis({ pageSize: 1000 }),
         queryKey: `${i}`,
       })),

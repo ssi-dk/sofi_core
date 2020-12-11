@@ -11,7 +11,7 @@ import { defaultViews, setView } from './analysis-view-selection-config';
 import { spyDataTable } from "../../data-table/table-spy";
 import { mapTableStateToView } from "./table-state-view-mapper";
 
-export default function AnalysisViewSelector() {
+function AnalysisViewSelector() {
   const { t } = useTranslation();
   const addViewValue = "AddView";
 
@@ -56,3 +56,5 @@ export default function AnalysisViewSelector() {
     onChange={viewSelectUpdate}
   />;
 }
+
+export default React.memo(AnalysisViewSelector);

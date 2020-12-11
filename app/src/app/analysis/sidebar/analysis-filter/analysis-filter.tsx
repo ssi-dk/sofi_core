@@ -23,7 +23,7 @@ const rfvOptions = [
   { value: "v3", label: "View 3" },
 ];
 
-export default function AnalysisFilter() {
+function AnalysisFilter() {
   const { t } = useTranslation();
   return (
     <FilterBox title="Analysis filter">
@@ -36,3 +36,5 @@ export default function AnalysisFilter() {
     </FilterBox>
   );
 }
+
+export default React.memo(AnalysisFilter);

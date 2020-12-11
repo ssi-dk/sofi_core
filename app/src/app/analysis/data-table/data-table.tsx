@@ -322,7 +322,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
 
         <div role="rowgroup" {...getTableBodyProps()}>
           <FixedSizeList
-            height={600}
+            height={950}
             itemCount={rows.length}
             itemSize={50}
             width={totalColumnsWidth + scrollBarSize}
