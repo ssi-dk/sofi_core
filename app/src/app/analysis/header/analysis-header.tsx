@@ -9,7 +9,7 @@ type AnalysisHeaderProps = {
   hideSelector?: boolean;
 };
 
-export default function AnalysisHeader({
+function AnalysisHeader({
   sidebarWidth,
   hideSearch,
   hideSelector,
@@ -26,3 +26,5 @@ export default function AnalysisHeader({
     </Flex>
   );
 }
+
+export default React.memo(AnalysisHeader);

@@ -137,6 +137,15 @@ export default function AnalysisPage() {
 
   const [needsNotify, setNeedsNotify] = useState(true);
 
+  const onNarrowHandler = React.useCallback(
+    () =>
+      setPageState({
+        ...pageState,
+        isNarrowed: !pageState.isNarrowed,
+      }),
+    [setPageState, pageState]
+  );
+
   const approveSelection = React.useCallback(() => {
     setNeedsNotify(true);
     doApproval({ matrix: selection as any });
@@ -220,12 +229,7 @@ export default function AnalysisPage() {
             <Button
               leftIcon={<DragHandleIcon />}
               margin="4px"
-              onClick={() =>
-                setPageState({
-                  ...pageState,
-                  isNarrowed: !pageState.isNarrowed,
-                })
-              }
+              onClick={onNarrowHandler}
             >
               {pageState.isNarrowed ? t("Cancel") : t("Select")}
             </Button>

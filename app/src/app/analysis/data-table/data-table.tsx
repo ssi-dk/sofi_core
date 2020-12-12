@@ -243,6 +243,24 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
     onSelect,
   ]);
 
+  const RenderCell = React.useCallback((cell) => (
+    // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
+    <div
+      role="cell"
+      css={getSelectionStyle(cell)}
+      onClick={
+        canSelectColumn(cell.column.id) ? () => onSelectCell(cell) : noop
+      }
+      onKeyDown={
+        canSelectColumn(cell.column.id) ? () => onSelectCell(cell) : noop
+      }
+      key={cell.getCellProps().key}
+      {...cell.getCellProps()}
+    >
+      {cell.render("Cell")}
+    </div>
+  ), [getSelectionStyle, canSelectColumn, onSelectCell, noop]);
+
   const RenderRow = React.useCallback(
     ({ index, style }) => {
       const row = rows[index];
@@ -262,39 +280,16 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
             }}
             {...calcRowSelectionState(row)}
           />
-          {row.cells.map((cell) => (
-            // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
-            <div
-              role="cell"
-              css={getSelectionStyle(cell)}
-              onClick={
-                canSelectColumn(cell.column.id)
-                  ? () => onSelectCell(cell)
-                  : noop
-              }
-              onKeyDown={
-                canSelectColumn(cell.column.id)
-                  ? () => onSelectCell(cell)
-                  : noop
-              }
-              key={cell.getCellProps().key}
-              {...cell.getCellProps()}
-            >
-              {cell.render("Cell")}
-            </div>
-          ))}
+          {row.cells.map(RenderCell)}
         </div>
       );
     },
     [
       prepareRow,
       rows,
-      canSelectColumn,
-      getSelectionStyle,
-      onSelectCell,
       onSelectRow,
       calcRowSelectionState,
-      noop,
+      RenderCell
     ]
   );
   // Render the UI for your table
