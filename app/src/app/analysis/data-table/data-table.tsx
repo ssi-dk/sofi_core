@@ -13,19 +13,18 @@ import {
   TableState,
   IdType,
 } from "react-table";
-import { VariableSizeGrid } from 'react-window';
-import AutoSizer from 'react-virtualized-auto-sizer';
-import { jsx, SerializedStyles } from "@emotion/react";
+import { VariableSizeGrid } from "react-window";
+import AutoSizer from "react-virtualized-auto-sizer";
+import { jsx } from "@emotion/react";
 import { DragDropContext, DropResult } from "react-beautiful-dnd";
-import scrollbarWidth from "app/analysis/data-table/scrollbar-width-calculator";
 import dtStyle from "app/analysis/data-table/data-table.styles";
 import { IndexableOf, NotEmpty } from "utils";
 import SelectionCheckBox from "./selection-check-box";
-import DataTableHeader from "./data-table-header";
 import { exportDataTable } from "./table-spy";
 import { UserDefinedView } from "../../../sap-client/models";
 import { StickyVariableSizeGrid } from "./sticky-variable-size-grid";
 import DataTableColumnHeader from "./data-table-column-header";
+import "./data-table-cell-styles.css";
 
 export type DataTableSelection<T extends NotEmpty> = {
   [K in IndexableOf<T>]: { [k in IndexableOf<T>]: boolean };
@@ -39,14 +38,13 @@ type DataTableProps<T extends NotEmpty> = {
   canApproveColumn: (columnName: string) => boolean;
   canEditColumn: (columnName: string) => boolean;
   getDependentColumns: (columnName: keyof T) => Array<keyof T>;
-  selectionStyle: SerializedStyles;
+  selectionClassName: string;
   approvableColumns: string[];
   onSelect: (sel: DataTableSelection<T>) => void;
   view: UserDefinedView;
 };
 
 function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
-
   const datagridRef = React.useRef<VariableSizeGrid>(null);
 
   const defaultColumn = React.useMemo(
@@ -57,14 +55,12 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
   );
   const noop = React.useCallback(() => {}, []);
 
-  const scrollBarSize = React.useMemo(() => scrollbarWidth(), []);
-
   const {
     columns,
     data,
     primaryKey,
     onSelect,
-    selectionStyle,
+    selectionClassName,
     canEditColumn,
     approvableColumns,
     canSelectColumn,
@@ -75,37 +71,30 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
   const [selection, setSelection] = React.useState({} as DataTableSelection<T>);
 
   const isInSelection = React.useCallback(
-    (cell: Cell<T, T>) => {
-      const row = cell.row.original[primaryKey];
-      const col = cell.column.id as IndexableOf<T>;
-      return selection[row] && selection[row][col];
+    (rowId, columnId) => {
+      return selection[rowId] && selection[rowId][columnId];
     },
-    [selection, primaryKey]
-  );
-
-  const getSelectionStyle = React.useCallback(
-    (cell: Cell<T, T>) => {
-      return isInSelection(cell) ? selectionStyle : [];
-    },
-    [isInSelection, selectionStyle]
+    [selection]
   );
 
   const onSelectCell = React.useCallback(
-    (cell: Cell<T, T>) => {
-      if (cell.column.id === "selection") return; // cannot select the selection checkbox
-      const row = cell.row.original[primaryKey];
-      const col = cell.column.id as IndexableOf<T>;
+    (rowId, columnId) => {
       const incSel = {
         ...selection,
-        [row]: { ...(selection[row] || {}), [col]: !isInSelection(cell) },
+        [rowId]: {
+          ...(selection[rowId] || {}),
+          [columnId]: !isInSelection(rowId, columnId),
+        },
       };
-      getDependentColumns(col).forEach((v) => {
-        incSel[row][v as string] = !(selection[row] && selection[row][col]);
+      getDependentColumns(columnId).forEach((v) => {
+        incSel[rowId][v as string] = !(
+          selection[rowId] && selection[rowId][columnId]
+        );
       });
       setSelection(incSel);
       onSelect(incSel);
     },
-    [onSelect, isInSelection, selection, primaryKey, getDependentColumns]
+    [onSelect, isInSelection, selection, getDependentColumns]
   );
 
   const {
@@ -202,16 +191,17 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
     ]
   );
 
-  const onColumnResize = React.useCallback((colIndex: number) => {
-    if (datagridRef?.current?.resetAfterColumnIndex)
-    {
-      datagridRef.current.resetAfterColumnIndex(colIndex);
-    }
-  }, [datagridRef])
+  const onColumnResize = React.useCallback(
+    (colIndex: number) => {
+      if (datagridRef?.current?.resetAfterColumnIndex) {
+        datagridRef.current.resetAfterColumnIndex(colIndex);
+      }
+    },
+    [datagridRef]
+  );
 
   const onSelectCol = React.useCallback(
     (col: Column<T>) => {
-      onColumnResize(0);
       const { checked } = calcColSelectionState(col);
       const sel = rows
         .map((r) => ({
@@ -231,6 +221,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
       });
       setSelection(incSel);
       onSelect(incSel);
+      onColumnResize(0);
     },
     [
       selection,
@@ -239,7 +230,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
       calcColSelectionState,
       onSelect,
       getDependentColumns,
-      onColumnResize
+      onColumnResize,
     ]
   );
 
@@ -263,29 +254,16 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
     onSelect,
   ]);
 
-  const RenderCell = React.useCallback(
-    (cell) => (
-      // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
-      <div
-        role="cell"
-        css={getSelectionStyle(cell)}
-        onClick={
-          canSelectColumn(cell.column.id) ? () => onSelectCell(cell) : noop
-        }
-        onKeyDown={
-          canSelectColumn(cell.column.id) ? () => onSelectCell(cell) : noop
-        }
-        key={cell.getCellProps().key}
-        {...cell.getCellProps()}
-      >
-        {cell.render("Cell")}
-      </div>
-    ),
-    [getSelectionStyle, canSelectColumn, onSelectCell, noop]
+  const rowClickHandler = React.useCallback(
+    (row) => (e) => {
+      onSelectRow(row);
+      e.preventDefault();
+      e.stopPropagation();
+    },
+    [onSelectRow]
   );
 
-  
-  const RenderCell2 = React.useCallback(
+  const RenderCell = React.useCallback(
     ({ columnIndex, rowIndex, style }) => {
       // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
       if (rowIndex === 0) {
@@ -304,65 +282,55 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
           </div>
         );
       }
-      const rowId = rows[rowIndex - 1].id;
+      const rowId = rows[rowIndex - 1].original[primaryKey];
       const columnId = visibleColumns[columnIndex].id;
+      const className = columnIndex === 0 ? "stickyCell" :
+                            isInSelection(rowId, columnId) ? selectionClassName  : "cell";
       return (
         <div
           role="cell"
           style={style}
-          //      css={getSelectionStyle(cell)}
-          //      onClick={
-          //        canSelectColumn(cell.column.id) ? () => onSelectCell(cell) : noop
-          //      }
-          //      onKeyDown={
-          //        canSelectColumn(cell.column.id) ? () => onSelectCell(cell) : noop
-          //      }
-          //      key={cell.getCellProps().key}
-          //      {...cell.getCellProps()}
+          className={className}
+          onClick={
+            canSelectColumn(columnId)
+              ? () => onSelectCell(rowId, columnId)
+              : noop
+          }
+          onKeyDown={
+            canSelectColumn(columnId)
+              ? () => onSelectCell(rowId, columnId)
+              : noop
+          }
+          key={columnIndex}
         >
           <div>
+            {columnIndex === 0 && (
+              <SelectionCheckBox
+                onClick={rowClickHandler(rows[rowIndex - 1])}
+                {...calcRowSelectionState(rows[rowIndex - 1])}
+              />
+            )}
             {`${rows[rowIndex - 1].original[columnId]}`}
           </div>
         </div>
       );
     },
-    [rows, visibleColumns, calcColSelectionState, canSelectColumn, onSelectCol, onColumnResize]
-  );
-
-  /*
-
-  const RenderRow = React.useCallback(
-    ({ index, style }) => {
-      const row = rows[index];
-      prepareRow(row);
-      return (
-        <div
-          role="row"
-          {...row.getRowProps({
-            style,
-          })}
-        >
-          <SelectionCheckBox
-            onClick={(e) => {
-              onSelectRow(row);
-              e.preventDefault();
-              e.stopPropagation();
-            }}
-            {...calcRowSelectionState(row)}
-          />
-          {row.cells.map(RenderCell)}
-        </div>
-      );
-    },
     [
-      prepareRow,
       rows,
-      onSelectRow,
+      selectionClassName,
+      visibleColumns,
+      primaryKey,
+      calcColSelectionState,
       calcRowSelectionState,
-      RenderCell
+      canSelectColumn,
+      onSelectCol,
+      onColumnResize,
+      noop,
+      onSelectCell,
+      rowClickHandler,
+      isInSelection
     ]
   );
-  */
 
   const columnIds = React.useMemo(() => allColumns.map((o) => o.id), [
     allColumns,
@@ -399,16 +367,13 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
     [currentColOrder, setColumnOrder, datagridRef]
   );
 
-  const itemData = React.useMemo(
-    () => {
-      return {
-        headers: visibleColumns,
-        rows: [...[{}], ...rows],
-        prepareRow,
-      };
-    },
-    [visibleColumns, rows, prepareRow]
-  );
+  const itemData = React.useMemo(() => {
+    return {
+      headers: visibleColumns,
+      rows: [...[{}], ...rows],
+      prepareRow,
+    };
+  }, [visibleColumns, rows, prepareRow]);
 
   const getColumnWidth = React.useCallback(
     (colIndex) => {
@@ -424,33 +389,30 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
   // Render the UI for your table
   return (
     <AutoSizer>
-    {({ height, width }) => (
-    <div css={dtStyle}>
-      <div role="table" {...getTableProps()} className="tableWrap">
-        <DragDropContext
-          onDragStart={onDragStart}
-          onDragEnd={onDragEnd}
-        >
-          <div role="rowgroup" {...getTableBodyProps()}>
-            <StickyVariableSizeGrid
-              itemData={itemData}
-              rowCount={itemData.rows.length}
-              height={height}
-              gridRef={datagridRef}
-              rowHeight={() => 50}
-              estimatedRowHeight={50}
-              overscanColumnCount={0}
-              columnWidth={getColumnWidth}
-              estimatedColumnWidth={defaultColumn.width}
-              width={width}
-              columnCount={visibleColumns.length}
-            >
-              {RenderCell2}
-            </StickyVariableSizeGrid>
+      {({ height, width }) => (
+        <div css={dtStyle}>
+          <div role="table" {...getTableProps()} className="tableWrap">
+            <DragDropContext onDragStart={onDragStart} onDragEnd={onDragEnd}>
+              <div role="rowgroup" {...getTableBodyProps()}>
+                <StickyVariableSizeGrid
+                  itemData={itemData}
+                  rowCount={itemData.rows.length}
+                  height={height}
+                  gridRef={datagridRef}
+                  rowHeight={() => 50}
+                  estimatedRowHeight={50}
+                  columnWidth={getColumnWidth}
+                  estimatedColumnWidth={defaultColumn.width}
+                  width={width}
+                  columnCount={visibleColumns.length}
+                >
+                  {RenderCell}
+                </StickyVariableSizeGrid>
+              </div>
+            </DragDropContext>
           </div>
-        </DragDropContext>
-      </div>
-    </div>)}
+        </div>
+      )}
     </AutoSizer>
   );
 }

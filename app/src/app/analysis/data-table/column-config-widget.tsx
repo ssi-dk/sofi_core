@@ -40,15 +40,17 @@ export const ColumnConfigWidget: React.FC = ({ children }) => {
             icon={<SettingsIcon />}
           />
         </PopoverTrigger>
-        <PopoverContent p={5}>
-          <PopoverArrow />
-          <PopoverCloseButton />
-          <Heading size="sm">Visible columns</Heading>
-          <Divider />
-          <Box maxHeight="90vh" overflowY="auto">
-            <Form>{children}</Form>
-          </Box>
-        </PopoverContent>
+        {isOpen && (
+          <PopoverContent p={5}>
+            <PopoverArrow />
+            <PopoverCloseButton />
+            <Heading size="sm">Visible columns</Heading>
+            <Divider />
+            <Box maxHeight="90vh" overflowY="auto">
+              <Form>{children}</Form>
+            </Box>
+          </PopoverContent>
+        )}
       </Popover>
     </React.Fragment>
   );

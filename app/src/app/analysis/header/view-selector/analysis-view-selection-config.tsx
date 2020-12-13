@@ -35,7 +35,7 @@ export const viewReducer = createReducer(initialState, (builder) => {
     .addCase(toggleColumnVisibility, (state, action) => {
       const idx = state.view.hiddenColumns.indexOf(action.payload);
       if (idx > -1) {
-        state.view.hiddenColumns = state.view.hiddenColumns.splice(idx, 1)
+        state.view.hiddenColumns = state.view.hiddenColumns.splice(idx + 1, 1)
       } else {
         state.view.hiddenColumns.push(action.payload)
       }

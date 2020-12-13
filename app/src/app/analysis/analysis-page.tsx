@@ -14,7 +14,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { RootState } from "app/root-reducer";
 import DataTable from "./data-table/data-table";
-import { approvedCell, selectedCell } from "./data-table/data-table.styles";
 import {
   requestPageOfAnalysis,
   requestColumns,
@@ -282,24 +281,24 @@ export default function AnalysisPage() {
                   : data
               }
               primaryKey="isolate_id"
-              selectionStyle={
-                pageState.isNarrowed ? approvedCell : selectedCell
+              selectionClassName={
+                pageState.isNarrowed ? "approvingCell" : "selectedCell"
               }
               onSelect={(sel) => dispatch(setSelection(sel))}
               view={view}
             />
           </Box>
-            <Box height="20px">
-              {isPending && `${t("Fetching...")} ${data.length}`}
-              {isFinished &&
-                !pageState.isNarrowed &&
-                `${t("Found")} ${data.length} ${t("records")}.`}
-              {isFinished &&
-                pageState.isNarrowed &&
-                `${t("Staging")} ${
-                  data.filter((x) => selection[x.isolate_id]).length
-                } ${t("records")}.`}
-            </Box>
+          <Box height="20px">
+            {isPending && `${t("Fetching...")} ${data.length}`}
+            {isFinished &&
+              !pageState.isNarrowed &&
+              `${t("Found")} ${data.length} ${t("records")}.`}
+            {isFinished &&
+              pageState.isNarrowed &&
+              `${t("Staging")} ${
+                data.filter((x) => selection[x.isolate_id]).length
+              } ${t("records")}.`}
+          </Box>
         </Box>
       </Flex>
     </Box>
