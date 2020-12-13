@@ -16,12 +16,25 @@ export const getColumnStyle = (
     // prevent react-beautiful-dnd from blowing columns all over the place
     ...(!isDragging && { transform: "translate(0,0) !important" }),
     ...(!isDropAnimating && { transitionDuration: "0.001s" }),
+    ...(isDragging && { transform: "translate(0, 0) !important"}),
     textAlign: "left",
     textOverflow: "ellipsis",
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
   });
+
+  export const headerDragClone = css({
+    fontWeight: "bold",
+    backgroundColor: theme.colors.gray[50],
+    height: "50px",
+    width: "149px",
+    textAlign: "center",
+    border: theme.borders["1px"],
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between"
+  })
 
 export const headerButton = css({
   flex: "0 0 16px",
@@ -38,7 +51,7 @@ export const headerName = css({
 });
 
 export const cell = css({
-  margin: "2px",
+  backgroundColor: theme.colors.white,
   width: "1%",
   padding: "0.8rem",
   overflow: "hidden",
@@ -76,7 +89,6 @@ export default css({
   ".tableWrap": {
     display: "block",
     width: "100%",
-    overflowY: "hidden",
   },
   "div[role=table]": {
     borderSpacing: 0,

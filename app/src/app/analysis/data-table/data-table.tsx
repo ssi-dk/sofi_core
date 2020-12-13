@@ -11,9 +11,11 @@ import {
   useSortBy,
   useColumnOrder,
   TableState,
+  IdType,
 } from "react-table";
-import { FixedSizeList, VariableSizeGrid } from "react-window";
+import { VariableSizeGrid } from 'react-window';
 import { jsx, SerializedStyles } from "@emotion/react";
+import { DragDropContext, DropResult } from "react-beautiful-dnd";
 import scrollbarWidth from "app/analysis/data-table/scrollbar-width-calculator";
 import dtStyle from "app/analysis/data-table/data-table.styles";
 import { IndexableOf, NotEmpty } from "utils";
@@ -21,6 +23,8 @@ import SelectionCheckBox from "./selection-check-box";
 import DataTableHeader from "./data-table-header";
 import { exportDataTable } from "./table-spy";
 import { UserDefinedView } from "../../../sap-client/models";
+import { StickyVariableSizeGrid } from "./sticky-variable-size-grid";
+import DataTableColumnHeader from "./data-table-column-header";
 
 export type DataTableSelection<T extends NotEmpty> = {
   [K in IndexableOf<T>]: { [k in IndexableOf<T>]: boolean };
@@ -41,6 +45,9 @@ type DataTableProps<T extends NotEmpty> = {
 };
 
 function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
+
+  const datagridRef = React.useRef<VariableSizeGrid>(null);
+
   const defaultColumn = React.useMemo(
     () => ({
       width: 140,
@@ -105,6 +112,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
     getTableProps,
     getTableBodyProps,
     headerGroups,
+    visibleColumns,
     rows,
     totalColumnsWidth,
     prepareRow,
@@ -114,7 +122,10 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
     {
       columns,
       data: data ?? [],
-      useControlledState: React.useCallback((s) => ({...s, ...view as TableState<T>}), [view]),
+      useControlledState: React.useCallback(
+        (s) => ({ ...s, ...(view as TableState<T>) }),
+        [view]
+      ),
       defaultColumn,
     },
     useBlockLayout,
@@ -127,7 +138,6 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
 
   // Make data table configuration externally visible
   exportDataTable(state);
-
 
   const calcTableSelectionState = React.useCallback(() => {
     const columnCount = approvableColumns.length;
@@ -191,8 +201,16 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
     ]
   );
 
+  const onColumnResize = React.useCallback((colIndex: number) => {
+    if (datagridRef?.current?.resetAfterColumnIndex)
+    {
+      datagridRef.current.resetAfterColumnIndex(colIndex);
+    }
+  }, [datagridRef])
+
   const onSelectCol = React.useCallback(
     (col: Column<T>) => {
+      onColumnResize(0);
       const { checked } = calcColSelectionState(col);
       const sel = rows
         .map((r) => ({
@@ -220,6 +238,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
       calcColSelectionState,
       onSelect,
       getDependentColumns,
+      onColumnResize
     ]
   );
 
@@ -243,23 +262,73 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
     onSelect,
   ]);
 
-  const RenderCell = React.useCallback((cell) => (
-    // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
-    <div
-      role="cell"
-      css={getSelectionStyle(cell)}
-      onClick={
-        canSelectColumn(cell.column.id) ? () => onSelectCell(cell) : noop
+  const RenderCell = React.useCallback(
+    (cell) => (
+      // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
+      <div
+        role="cell"
+        css={getSelectionStyle(cell)}
+        onClick={
+          canSelectColumn(cell.column.id) ? () => onSelectCell(cell) : noop
+        }
+        onKeyDown={
+          canSelectColumn(cell.column.id) ? () => onSelectCell(cell) : noop
+        }
+        key={cell.getCellProps().key}
+        {...cell.getCellProps()}
+      >
+        {cell.render("Cell")}
+      </div>
+    ),
+    [getSelectionStyle, canSelectColumn, onSelectCell, noop]
+  );
+
+  
+  const RenderCell2 = React.useCallback(
+    ({ columnIndex, rowIndex, style }) => {
+      // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
+      if (rowIndex === 0) {
+        // we are the header 'row'
+        const col = visibleColumns[columnIndex];
+        return (
+          <div style={style}>
+            <DataTableColumnHeader<T>
+              column={col as any}
+              columnIndex={columnIndex}
+              calcColSelectionState={calcColSelectionState}
+              canSelectColumn={canSelectColumn}
+              onSelectCol={onSelectCol}
+              onResize={onColumnResize}
+            />
+          </div>
+        );
       }
-      onKeyDown={
-        canSelectColumn(cell.column.id) ? () => onSelectCell(cell) : noop
-      }
-      key={cell.getCellProps().key}
-      {...cell.getCellProps()}
-    >
-      {cell.render("Cell")}
-    </div>
-  ), [getSelectionStyle, canSelectColumn, onSelectCell, noop]);
+      const rowId = rows[rowIndex - 1].id;
+      const columnId = visibleColumns[columnIndex].id;
+      return (
+        <div
+          role="cell"
+          style={style}
+          //      css={getSelectionStyle(cell)}
+          //      onClick={
+          //        canSelectColumn(cell.column.id) ? () => onSelectCell(cell) : noop
+          //      }
+          //      onKeyDown={
+          //        canSelectColumn(cell.column.id) ? () => onSelectCell(cell) : noop
+          //      }
+          //      key={cell.getCellProps().key}
+          //      {...cell.getCellProps()}
+        >
+          <div>
+            {`${rows[rowIndex - 1].original[columnId]}`}
+          </div>
+        </div>
+      );
+    },
+    [rows, visibleColumns, calcColSelectionState, canSelectColumn, onSelectCol, onColumnResize]
+  );
+
+  /*
 
   const RenderRow = React.useCallback(
     ({ index, style }) => {
@@ -292,39 +361,91 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
       RenderCell
     ]
   );
+  */
+
+  const columnIds = React.useMemo(() => allColumns.map((o) => o.id), [
+    allColumns,
+  ]);
+
+  const currentColOrder = React.useRef<Array<IdType<T>>>();
+
+  const onDragStart = React.useCallback(() => {
+    currentColOrder.current = columnIds;
+  }, [columnIds, currentColOrder]);
+
+  const onDragEnd = React.useCallback(
+    (dragUpdateObj: DropResult) => {
+      if (!dragUpdateObj.destination) {
+        return;
+      }
+
+      const order = [...currentColOrder.current];
+      const sIndex = dragUpdateObj.source.index;
+      const dIndex =
+        dragUpdateObj.destination && dragUpdateObj.destination.index;
+
+      if (typeof sIndex === "number" && typeof dIndex === "number") {
+        order.splice(sIndex, 1);
+        order.splice(dIndex, 0, dragUpdateObj.draggableId);
+        datagridRef.current.resetAfterIndices({
+          columnIndex: dIndex < sIndex ? dIndex : sIndex,
+          rowIndex: 1,
+          shouldForceUpdate: false,
+        });
+        setColumnOrder(order);
+      }
+    },
+    [currentColOrder, setColumnOrder, datagridRef]
+  );
+
+  const itemData = React.useMemo(
+    () => {
+      return {
+        headers: visibleColumns,
+        rows: [...[{}], ...rows],
+        prepareRow,
+      };
+    },
+    [visibleColumns, rows, prepareRow]
+  );
+
+  const getColumnWidth = React.useCallback(
+    (colIndex) => {
+      const col = visibleColumns[colIndex];
+      if (!columnResizing.columnWidths[col.id]) {
+        return defaultColumn.width;
+      }
+      return columnResizing.columnWidths[col.id];
+    },
+    [columnResizing, defaultColumn.width, visibleColumns]
+  );
+
   // Render the UI for your table
   return (
     <div css={dtStyle}>
       <div role="table" {...getTableProps()} className="tableWrap">
-        <div role="rowgroup">
-          {headerGroups.map((headerGroup) => (
-            <DataTableHeader<T>
-              columnOrder={columnOrder}
-              columnResizing={columnResizing}
-              sortBy={sortBy}
-              hiddenColumns={hiddenColumns}
-              headerGroup={headerGroup}
-              allColumns={allColumns}
-              onSelectAllRows={onSelectAllRows}
-              onSelectCol={onSelectCol}
-              canSelectColumn={canSelectColumn}
-              setColumnOrder={setColumnOrder}
-              calcColSelectionState={calcColSelectionState}
-              calcTableSelectionState={calcTableSelectionState}
-            />
-          ))}
-        </div>
-
-        <div role="rowgroup" {...getTableBodyProps()}>
-          <FixedSizeList
-            height={950}
-            itemCount={rows.length}
-            itemSize={50}
-            width={totalColumnsWidth + scrollBarSize}
-          >
-            {RenderRow}
-          </FixedSizeList>
-        </div>
+        <DragDropContext
+          onDragStart={onDragStart}
+          onDragEnd={onDragEnd}
+        >
+          <div role="rowgroup" {...getTableBodyProps()}>
+            <StickyVariableSizeGrid
+              itemData={itemData}
+              rowCount={itemData.rows.length}
+              height={950}
+              gridRef={datagridRef}
+              rowHeight={() => 50}
+              estimatedRowHeight={50}
+              overscanColumnCount={0}
+              columnWidth={getColumnWidth}
+              estimatedColumnWidth={defaultColumn.width}
+              width={1500}
+              columnCount={visibleColumns.length}
+            >
+              {RenderCell2}
+            </StickyVariableSizeGrid>
+          </div>
+        </DragDropContext>
       </div>
     </div>
   );
