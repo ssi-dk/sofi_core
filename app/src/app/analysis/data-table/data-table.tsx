@@ -14,6 +14,7 @@ import {
   IdType,
 } from "react-table";
 import { VariableSizeGrid } from 'react-window';
+import AutoSizer from 'react-virtualized-auto-sizer';
 import { jsx, SerializedStyles } from "@emotion/react";
 import { DragDropContext, DropResult } from "react-beautiful-dnd";
 import scrollbarWidth from "app/analysis/data-table/scrollbar-width-calculator";
@@ -422,6 +423,8 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
 
   // Render the UI for your table
   return (
+    <AutoSizer>
+    {({ height, width }) => (
     <div css={dtStyle}>
       <div role="table" {...getTableProps()} className="tableWrap">
         <DragDropContext
@@ -432,14 +435,14 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
             <StickyVariableSizeGrid
               itemData={itemData}
               rowCount={itemData.rows.length}
-              height={950}
+              height={height}
               gridRef={datagridRef}
               rowHeight={() => 50}
               estimatedRowHeight={50}
               overscanColumnCount={0}
               columnWidth={getColumnWidth}
               estimatedColumnWidth={defaultColumn.width}
-              width={1500}
+              width={width}
               columnCount={visibleColumns.length}
             >
               {RenderCell2}
@@ -447,7 +450,8 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
           </div>
         </DragDropContext>
       </div>
-    </div>
+    </div>)}
+    </AutoSizer>
   );
 }
 
