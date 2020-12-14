@@ -125,12 +125,6 @@ export interface AnalysisResultAllOf  {
      * @type {string}
      * @memberof AnalysisResultAllOf
      */
-    FUDnr?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof AnalysisResultAllOf
-     */
     resistance_genes?: string;
     /**
      * 
@@ -374,7 +368,6 @@ export function AnalysisResultAllOfFromJSON(json: any): AnalysisResultAllOf {
         'serotype_final': !exists(json, 'serotype_final') ? undefined : json['serotype_final'],
         'adhesion': !exists(json, 'adhesion') ? undefined : json['adhesion'],
         'toxins': !exists(json, 'toxins') ? undefined : json['toxins'],
-        'FUDnr': !exists(json, 'FUDnr') ? undefined : json['FUDnr'],
         'resistance_genes': !exists(json, 'resistance_genes') ? undefined : json['resistance_genes'],
         'amr_profile': !exists(json, 'amr_profile') ? undefined : json['amr_profile'],
         'amr_ami': !exists(json, 'amr_ami') ? undefined : ResistanceFromJSON(json['amr_ami']),
@@ -437,7 +430,6 @@ export function AnalysisResultAllOfToJSON(value?: AnalysisResultAllOf): any {
         'serotype_final': value.serotype_final,
         'adhesion': value.adhesion,
         'toxins': value.toxins,
-        'FUDnr': value.FUDnr,
         'resistance_genes': value.resistance_genes,
         'amr_profile': value.amr_profile,
         'amr_ami': ResistanceToJSON(value.amr_ami),

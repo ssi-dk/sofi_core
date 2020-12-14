@@ -662,8 +662,6 @@ components:
           type: string
         toxins:
           type: string
-        FUDnr:
-          type: string
         resistance_genes:
           type: string
         amr_profile:

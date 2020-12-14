@@ -29,6 +29,7 @@ module.exports = {
     project: './tsconfig.json',
   },
   rules: {
+    'spaced-comment': 'warn',
     'global-require': 'warn',
     'no-cond-assign': 'off',
     'linebreak-style': 'off',

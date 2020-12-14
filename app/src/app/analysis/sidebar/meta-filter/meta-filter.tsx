@@ -26,7 +26,7 @@ const rfvOptions = [
   { value: "v3", label: "View 3" },
 ];
 
-export default function MetaFilter() {
+function MetaFilter() {
   const { t } = useTranslation();
   const ExampleCustomInput = ({ value, onClick }) => (
     <Button
@@ -86,3 +86,5 @@ export default function MetaFilter() {
     </FilterBox>
   );
 }
+
+export default React.memo(MetaFilter);

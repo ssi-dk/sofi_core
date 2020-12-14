@@ -14,7 +14,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { RootState } from "app/root-reducer";
 import DataTable from "./data-table/data-table";
-import { approvedCell, selectedCell } from "./data-table/data-table.styles";
 import {
   requestPageOfAnalysis,
   requestColumns,
@@ -23,13 +22,18 @@ import {
 import AnalysisHeader from "./header/analysis-header";
 import AnalysisSidebar from "./sidebar/analysis-sidebar";
 import { setSelection } from "./analysis-selection-configs";
-import { sendApproval, sendRejection } from "./analysis-approval-configs";
+import {
+  sendApproval,
+  sendRejection,
+} from "./analysis-approval-configs";
+import { ColumnConfigWidget } from './data-table/column-config-widget';
+import { toggleColumnVisibility } from './header/view-selector/analysis-view-selection-config';
 
 export default function AnalysisPage() {
   const { t } = useTranslation();
   const reqs = React.useMemo(
     () =>
-      Array.from(Array(5).keys()).map((i) => ({
+      Array.from(Array(10).keys()).map((i) => ({
         ...requestPageOfAnalysis({ pageSize: 1000 }),
         queryKey: `${i}`,
       })),
@@ -64,6 +68,15 @@ export default function AnalysisPage() {
   const selection = useSelector<RootState>((s) => s.selection.selection);
   const view = useSelector<RootState>((s) => s.view.view) as UserDefinedView;
 
+  const toggleColumn = React.useCallback(
+    (id) => () => dispatch(toggleColumnVisibility(id)),
+    [dispatch]
+  );
+  const checkColumnIsVisible = React.useCallback(
+    (id) => view.hiddenColumns.indexOf(id) < 0,
+    [view]
+  );
+
   const toast = useToast();
 
   const canSelectColumn = React.useCallback(
@@ -74,15 +87,19 @@ export default function AnalysisPage() {
   );
 
   const approvableColumns = React.useMemo(
-    () =>
-      Object.values(columnConfigs || {})
-        .map((c) => c?.approves_with)
-        .reduce((a, b) => a.concat(b), [])
-        .concat(
-          Object.values(columnConfigs || {})
-            .filter((c) => c?.approvable)
-            .map((c) => c?.field_name)
-        ),
+    () => [
+      ...new Set(
+        Object.values(columnConfigs || {})
+          .map((c) => c?.approves_with)
+          .reduce((a, b) => a.concat(b), [])
+          .concat(
+            Object.values(columnConfigs || {})
+              .filter((c) => c?.approvable)
+              .map((c) => c?.field_name)
+          )
+          .filter((x) => x !== undefined)
+      ),
+    ],
     [columnConfigs]
   );
 
@@ -120,6 +137,15 @@ export default function AnalysisPage() {
   ] = useMutation((payload: ApprovalRequest) => sendRejection(payload));
 
   const [needsNotify, setNeedsNotify] = useState(true);
+
+  const onNarrowHandler = React.useCallback(
+    () =>
+      setPageState({
+        ...pageState,
+        isNarrowed: !pageState.isNarrowed,
+      }),
+    [setPageState, pageState]
+  );
 
   const approveSelection = React.useCallback(() => {
     setNeedsNotify(true);
@@ -186,7 +212,7 @@ export default function AnalysisPage() {
     return <div>Loading</div>;
   }
   return (
-    <Box w="100%">
+    <Box>
       <AnalysisHeader sidebarWidth={sidebarWidth} />
       <Flex justifyContent="flex-end" mt={2}>
         <NavLink to="/approval-history">
@@ -195,21 +221,16 @@ export default function AnalysisPage() {
           </Button>
         </NavLink>
       </Flex>
-      <Flex mt={2}>
+      <Flex mt={5} flexGrow={1}>
         <Box minW={sidebarWidth} pr={5}>
           <AnalysisSidebar />
         </Box>
-        <Box borderWidth="1px" rounded="md" overflowX="auto">
+        <Box borderWidth="1px" rounded="md" flexGrow={1} minHeight="80vh">
           <Box margin="4px">
             <Button
               leftIcon={<DragHandleIcon />}
               margin="4px"
-              onClick={() =>
-                setPageState({
-                  ...pageState,
-                  isNarrowed: !pageState.isNarrowed,
-                })
-              }
+              onClick={onNarrowHandler}
             >
               {pageState.isNarrowed ? t("Cancel") : t("Select")}
             </Button>
@@ -229,32 +250,55 @@ export default function AnalysisPage() {
             >
               {t("Reject")}
             </Button>
+
+            <ColumnConfigWidget>
+              {columns.map((column) => (
+                <div
+                  key={column.accessor as string}
+                  style={{ marginTop: "5px" }}
+                >
+                  <input
+                    type="checkbox"
+                    checked={checkColumnIsVisible(column.accessor as string)}
+                    onClick={toggleColumn(column.accessor)}
+                  />{" "}
+                  {column.accessor as string}
+                </div>
+              ))}
+            </ColumnConfigWidget>
           </Box>
-          <DataTable<AnalysisResult>
-            columns={columns /* todo: filter on permission level */}
-            canSelectColumn={canSelectColumn}
-            canEditColumn={canEditColumn}
-            canApproveColumn={canApproveColumn}
-            getDependentColumns={getDependentColumns}
-            data={
-              pageState.isNarrowed
-                ? data.filter((x) => selection[x.isolate_id])
-                : data
-            }
-            primaryKey="isolate_id"
-            selectionStyle={pageState.isNarrowed ? approvedCell : selectedCell}
-            onSelect={(sel) => dispatch(setSelection(sel))}
-            view={view}
-          />
-          {isPending && `${t("Fetching...")} ${data.length}`}
-          {isFinished &&
-            !pageState.isNarrowed &&
-            `${t("Found")} ${data.length} ${t("records")}.`}
-          {isFinished &&
-            pageState.isNarrowed &&
-            `${t("Staging")} ${
-              data.filter((x) => selection[x.isolate_id]).length
-            } ${t("records")}.`}
+          <Box minHeight="100%" minWidth="100%">
+            <DataTable<AnalysisResult>
+              columns={columns /* todo: filter on permission level */}
+              canSelectColumn={canSelectColumn}
+              canEditColumn={canEditColumn}
+              canApproveColumn={canApproveColumn}
+              approvableColumns={approvableColumns}
+              getDependentColumns={getDependentColumns}
+              data={
+                pageState.isNarrowed
+                  ? data.filter((x) => selection[x.isolate_id])
+                  : data
+              }
+              primaryKey="isolate_id"
+              selectionClassName={
+                pageState.isNarrowed ? "approvingCell" : "selectedCell"
+              }
+              onSelect={(sel) => dispatch(setSelection(sel))}
+              view={view}
+            />
+          </Box>
+          <Box height="20px">
+            {isPending && `${t("Fetching...")} ${data.length}`}
+            {isFinished &&
+              !pageState.isNarrowed &&
+              `${t("Found")} ${data.length} ${t("records")}.`}
+            {isFinished &&
+              pageState.isNarrowed &&
+              `${t("Staging")} ${
+                data.filter((x) => selection[x.isolate_id]).length
+              } ${t("records")}.`}
+          </Box>
         </Box>
       </Flex>
     </Box>

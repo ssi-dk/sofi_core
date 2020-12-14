@@ -6,7 +6,7 @@ type FilterBoxProps = {
   children: JSX.Element | JSX.Element[];
 };
 
-export default function FilterBox({ title, children }: FilterBoxProps) {
+function FilterBox({ title, children }: FilterBoxProps) {
   return (
     <Box borderWidth="1px" rounded="md" minH={200} p={2}>
       <Heading as="h5" size="sm" mb={3}>
@@ -16,3 +16,5 @@ export default function FilterBox({ title, children }: FilterBoxProps) {
     </Box>
   );
 }
+
+export default React.memo(FilterBox);

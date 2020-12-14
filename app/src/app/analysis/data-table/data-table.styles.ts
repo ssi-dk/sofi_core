@@ -1,4 +1,4 @@
-import { css, keyframes } from "@emotion/react";
+import { css } from "@emotion/react";
 import theme from "app/app.theme";
 import {
   DraggableStateSnapshot,
@@ -16,12 +16,26 @@ export const getColumnStyle = (
     // prevent react-beautiful-dnd from blowing columns all over the place
     ...(!isDragging && { transform: "translate(0,0) !important" }),
     ...(!isDropAnimating && { transitionDuration: "0.001s" }),
+    ...(isDragging && { transform: "translate(0, 0) !important"}),
     textAlign: "left",
     textOverflow: "ellipsis",
+    position: "sticky",
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
   });
+
+  export const headerDragClone = css({
+    fontWeight: "bold",
+    backgroundColor: theme.colors.gray[50],
+    height: "50px",
+    width: "149px",
+    textAlign: "center",
+    border: theme.borders["1px"],
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between"
+  })
 
 export const headerButton = css({
   flex: "0 0 16px",
@@ -38,7 +52,6 @@ export const headerName = css({
 });
 
 export const cell = css({
-  margin: "2px",
   width: "1%",
   padding: "0.8rem",
   overflow: "hidden",
@@ -49,34 +62,12 @@ export const cell = css({
   ":last-child": {},
 });
 
-const ants = keyframes`to { background-position: 100% 100% }`;
-
-export const selectedCell = css({
-  border: "1px solid transparent",
-  margin: "2px",
-  background: `linear-gradient(white, white) padding-box,
-     repeating-linear-gradient(-45deg, black 0, black 25%, transparent 0, transparent 50%) 0 / .6em .6em`,
-  animation: `${ants} 10s linear infinite`,
-  fontWeight: "bold",
-  maxWidth: "20em",
-  borderBottom: "1px solid transparent",
-});
-
-export const approvedCell = css({
-  border: "1px solid transparent",
-  margin: "2px",
-  fontWeight: "bold",
-  maxWidth: "20em",
-  backgroundColor: theme.colors.yellow[200],
-});
-
 export default css({
   display: "block",
   maxWidth: "100%",
   ".tableWrap": {
     display: "block",
     width: "100%",
-    overflowY: "hidden",
   },
   "div[role=table]": {
     borderSpacing: 0,
@@ -104,12 +95,12 @@ export default css({
   }),
   "[role=columnheader]": css(
     {
+      backgroundColor: theme.colors.white,
       display: "flex",
       alignItems: "center",
       fontWeight: "bold",
       borderBottom: theme.borders["2px"],
       userSelect: "none",
-      width: "1%",
       /* But "collapsed" cells should be as small as possible */
       "&.collapse": {
         width: "0.0000000001%",

@@ -1,0 +1,40 @@
+.approvingCell,.cell,.stickyCell{
+    width: 1%;
+    padding: 0.8rem;
+    overflow: hidden;
+    white-space: nowrap;
+    font-size: 15px;
+    text-align: left;
+    text-overflow: ellipsis;
+}
+
+.cell {
+    background-color: #fff;
+    border-left: 1px dashed rgba(0,0,0,0.1);
+}
+
+.stickyCell{
+    border-right: 2px solid rgba(0,0,0,0.05);
+    border-bottom: 2px solid rgba(0,0,0,0.05);
+    background-color: #fff;
+    font-weight: bold;
+/*    filter: drop-shadow(2px 0px 1px rgba(0,0,0,0.5))*/
+}
+
+.approvingCell{
+    border: 1px solid transparent;
+    font-weight: bold;
+    background-color: #faf089;
+}
+@keyframes ants{
+    to{
+        background-position:100% 100%
+    }
+}
+.selectedCell{
+    border: 1px solid transparent;
+    margin: 0px;
+    background:linear-gradient(#fff,#fff) padding-box,repeating-linear-gradient(-45deg,#000,#000 25%,transparent 0,transparent 50%) 0/.6em .6em;
+    animation: ants 10s linear infinite;
+    font-weight: bold;
+}
