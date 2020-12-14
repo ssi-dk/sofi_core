@@ -225,7 +225,7 @@ export default function AnalysisPage() {
         <Box minW={sidebarWidth} pr={5}>
           <AnalysisSidebar />
         </Box>
-        <Box borderWidth="1px" rounded="md" flexGrow={1} minHeight="80vh">
+        <Box borderWidth="1px" rounded="md" flexGrow={1} minHeight="100%">
           <Box margin="4px">
             <Button
               leftIcon={<DragHandleIcon />}
