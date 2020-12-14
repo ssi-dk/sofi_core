@@ -24,8 +24,14 @@ export const reset = css({
 
 export const globalCss = css({
   body: {
+    margin: 0,
+    padding: 0,
     backgroundColor: apptheme.colors.white,
     overflowX: "hidden",
+  },
+  "#root": {
+    margin: 0,
+    padding: 0,
   },
   // ".react-datepicker-wrapper": {
   //   border: "1px solid #e2e8f0",

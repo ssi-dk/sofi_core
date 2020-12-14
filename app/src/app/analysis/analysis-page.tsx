@@ -22,12 +22,9 @@ import {
 import AnalysisHeader from "./header/analysis-header";
 import AnalysisSidebar from "./sidebar/analysis-sidebar";
 import { setSelection } from "./analysis-selection-configs";
-import {
-  sendApproval,
-  sendRejection,
-} from "./analysis-approval-configs";
-import { ColumnConfigWidget } from './data-table/column-config-widget';
-import { toggleColumnVisibility } from './header/view-selector/analysis-view-selection-config';
+import { sendApproval, sendRejection } from "./analysis-approval-configs";
+import { ColumnConfigWidget } from "./data-table/column-config-widget";
+import { toggleColumnVisibility } from "./header/view-selector/analysis-view-selection-config";
 
 export default function AnalysisPage() {
   const { t } = useTranslation();
@@ -212,95 +209,104 @@ export default function AnalysisPage() {
     return <div>Loading</div>;
   }
   return (
-    <Box>
-      <AnalysisHeader sidebarWidth={sidebarWidth} />
-      <Flex justifyContent="flex-end" mt={2}>
-        <NavLink to="/approval-history">
-          <Button leftIcon={<CalendarIcon />}>
-            {t("My approval history")}
-          </Button>
-        </NavLink>
-      </Flex>
-      <Flex mt={5} flexGrow={1}>
+    <Box
+      display="grid"
+      gridTemplateRows="5% 5% minmax(0, 80%) 10%"
+      gridTemplateColumns="300px auto"
+      padding="8"
+      height="100vh"
+      gridGap="2"
+    >
+      <Box role="heading" gridColumn="1 / 4">
+        <AnalysisHeader sidebarWidth={sidebarWidth} />
+      </Box>
+      <Box role="navigation" gridColumn="1 / 4">
+        <Flex justifyContent="flex-end">
+          <NavLink to="/approval-history">
+            <Button leftIcon={<CalendarIcon />}>
+              {t("My approval history")}
+            </Button>
+          </NavLink>
+        </Flex>
+      </Box>
+      <Box role="form" gridColumn="1 / 2">
         <Box minW={sidebarWidth} pr={5}>
           <AnalysisSidebar />
         </Box>
-        <Box borderWidth="1px" rounded="md" flexGrow={1} minHeight="100%">
-          <Box margin="4px">
-            <Button
-              leftIcon={<DragHandleIcon />}
-              margin="4px"
-              onClick={onNarrowHandler}
-            >
-              {pageState.isNarrowed ? t("Cancel") : t("Select")}
-            </Button>
-            <Button
-              leftIcon={<CheckIcon />}
-              margin="4px"
-              disabled={!pageState.isNarrowed}
-              onClick={approveSelection}
-            >
-              {t("Approve")}
-            </Button>
-            <Button
-              leftIcon={<NotAllowedIcon />}
-              margin="4px"
-              disabled={!pageState.isNarrowed}
-              onClick={rejectSelection}
-            >
-              {t("Reject")}
-            </Button>
+      </Box>
+      <Box role="main" gridColumn="2 / 4" borderWidth="1px" rounded="md">
+        <Box m={2}>
+          <Button
+            leftIcon={<DragHandleIcon />}
+            margin="4px"
+            onClick={onNarrowHandler}
+          >
+            {pageState.isNarrowed ? t("Cancel") : t("Select")}
+          </Button>
+          <Button
+            leftIcon={<CheckIcon />}
+            margin="4px"
+            disabled={!pageState.isNarrowed}
+            onClick={approveSelection}
+          >
+            {t("Approve")}
+          </Button>
+          <Button
+            leftIcon={<NotAllowedIcon />}
+            margin="4px"
+            disabled={!pageState.isNarrowed}
+            onClick={rejectSelection}
+          >
+            {t("Reject")}
+          </Button>
 
-            <ColumnConfigWidget>
-              {columns.map((column) => (
-                <div
-                  key={column.accessor as string}
-                  style={{ marginTop: "5px" }}
-                >
-                  <input
-                    type="checkbox"
-                    checked={checkColumnIsVisible(column.accessor as string)}
-                    onClick={toggleColumn(column.accessor)}
-                  />{" "}
-                  {column.accessor as string}
-                </div>
-              ))}
-            </ColumnConfigWidget>
-          </Box>
-          <Box minHeight="100%" minWidth="100%">
-            <DataTable<AnalysisResult>
-              columns={columns /* todo: filter on permission level */}
-              canSelectColumn={canSelectColumn}
-              canEditColumn={canEditColumn}
-              canApproveColumn={canApproveColumn}
-              approvableColumns={approvableColumns}
-              getDependentColumns={getDependentColumns}
-              data={
-                pageState.isNarrowed
-                  ? data.filter((x) => selection[x.isolate_id])
-                  : data
-              }
-              primaryKey="isolate_id"
-              selectionClassName={
-                pageState.isNarrowed ? "approvingCell" : "selectedCell"
-              }
-              onSelect={(sel) => dispatch(setSelection(sel))}
-              view={view}
-            />
-          </Box>
-          <Box height="20px">
-            {isPending && `${t("Fetching...")} ${data.length}`}
-            {isFinished &&
-              !pageState.isNarrowed &&
-              `${t("Found")} ${data.length} ${t("records")}.`}
-            {isFinished &&
-              pageState.isNarrowed &&
-              `${t("Staging")} ${
-                data.filter((x) => selection[x.isolate_id]).length
-              } ${t("records")}.`}
-          </Box>
+          <ColumnConfigWidget>
+            {columns.map((column) => (
+              <div key={column.accessor as string} style={{ marginTop: "5px" }}>
+                <input
+                  type="checkbox"
+                  checked={checkColumnIsVisible(column.accessor as string)}
+                  onClick={toggleColumn(column.accessor)}
+                />{" "}
+                {column.accessor as string}
+              </div>
+            ))}
+          </ColumnConfigWidget>
         </Box>
-      </Flex>
+
+        <Box height="100%">
+          <DataTable<AnalysisResult>
+            columns={columns /* todo: filter on permission level */}
+            canSelectColumn={canSelectColumn}
+            canEditColumn={canEditColumn}
+            canApproveColumn={canApproveColumn}
+            approvableColumns={approvableColumns}
+            getDependentColumns={getDependentColumns}
+            data={
+              pageState.isNarrowed
+                ? data.filter((x) => selection[x.isolate_id])
+                : data
+            }
+            primaryKey="isolate_id"
+            selectionClassName={
+              pageState.isNarrowed ? "approvingCell" : "selectedCell"
+            }
+            onSelect={(sel) => dispatch(setSelection(sel))}
+            view={view}
+          />
+        </Box>
+        <Box role="status" gridColumn="2 / 4">
+          {isPending && `${t("Fetching...")} ${data.length}`}
+          {isFinished &&
+            !pageState.isNarrowed &&
+            `${t("Found")} ${data.length} ${t("records")}.`}
+          {isFinished &&
+            pageState.isNarrowed &&
+            `${t("Staging")} ${
+              data.filter((x) => selection[x.isolate_id]).length
+            } ${t("records")}.`}
+        </Box>
+      </Box>
     </Box>
   );
 }
