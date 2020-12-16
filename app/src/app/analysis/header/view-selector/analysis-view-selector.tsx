@@ -54,7 +54,7 @@ const AnalysisViewSelector = () => {
   const defaultValue= React.useMemo(() => ({label: view.name, value: view}), [view]);
 
   return <Select 
-    options={isFinished ? buildOptions(userViews) : []}
+    options={isFinished ? buildOptions(userViews) : [] as any[]}
     defaultValue={defaultValue}
     theme={selectTheme} 
     isLoading={isPending || queryState.isPending}

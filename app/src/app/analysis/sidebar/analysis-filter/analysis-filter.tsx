@@ -4,7 +4,7 @@ import { AnalysisResult } from 'sap-client';
 import { Text } from "@chakra-ui/react";
 import { selectTheme } from "app/app.styles";
 import { useTranslation } from "react-i18next";
-import { NotEmpty, PropFilter } from "utils";
+import { PropFilter } from "utils";
 import FilterBox from "../filter-box";
 
 type AnalysisFilterProps = {
@@ -48,7 +48,6 @@ function AnalysisFilter(props: AnalysisFilterProps) {
       };
       const resolvedState = {...state, [field]: [...value?.values() || []].map(x => x.value)};
       setState(resolvedState);
-      console.log(resolvedState)
       onFilterChange(resolvedState as any);
     };
   }, [setState, onFilterChange, state]);

@@ -17,7 +17,6 @@ const resources = {
       "have been rejected.": "er blevet afvist.",
       MetadataFilter: "Metadata filter",
       AnalysisFilter: "Analyse filter",
-      Prøvetagningsdato: "Prøvetagningsdato",
       Organisation: "Organisation",
       Projekt: "Projekt",
       Modtagedato: "Modtagedato",
@@ -32,7 +31,8 @@ const resources = {
       "Approved by": "Godkendt af",
       "Revoke approval": "Tilbagekalde godkendelse",
       "My approval history": "Mine godkendelse historik",
-      approvals: "godkendelser"
+      approvals: "godkendelser",
+      sampling_date: "Prøvetagningsdato"
     },
   },
 };

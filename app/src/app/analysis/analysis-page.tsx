@@ -13,7 +13,7 @@ import { useMutation, useRequest, useRequests } from "redux-query-react";
 import { useDispatch, useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { RootState } from "app/root-reducer";
-import { predicateBuilder, PropFilter } from 'utils';
+import { predicateBuilder, PropFilter, RangeFilter } from 'utils';
 import DataTable from "./data-table/data-table";
 import {
   requestPageOfAnalysis,
@@ -77,7 +77,6 @@ export default function AnalysisPage() {
     [view]
   );
 
-
   const canSelectColumn = React.useCallback(
     (columnName: string) => {
       return columnConfigs[columnName]?.approvable;
@@ -86,19 +85,21 @@ export default function AnalysisPage() {
   );
 
 
-  const [ propFilterPredicate,  setPropFilterPredicate ] = React.useState(() => (_: AnalysisResult) => true);
-  const [ rangeFilterPredicate,  setRangeFilterPredicate ] = React.useState(() => (_: AnalysisResult) => true);
+  const [ propFilters,  setPropFilters] = React.useState({} as PropFilter<AnalysisResult>);
+  const [ rangeFilters,  setRangeFilters ] = React.useState({} as RangeFilter<AnalysisResult>);
 
   const onPropFilterChange = React.useCallback((p: PropFilter<AnalysisResult>) => {
-    setPropFilterPredicate(() => predicateBuilder(p));
-  }, [setPropFilterPredicate]);
+    setPropFilters({...propFilters, ...p});
+  }, [propFilters, setPropFilters]);
 
+  /*
   const onRangeFilterChange = React.useCallback((p: PropFilter<AnalysisResult>) => {
-    setRangeFilterPredicate(() => predicateBuilder(p));
-  }, [setRangeFilterPredicate]);
+    setRangeFilters();
+  }, [rangeFilters, setRangeFilters]);
+  */
 
   //const composedFilter = React.useMemo(() => compose(propFilterPredicate, rangeFilterPredicate), [propFilterPredicate, rangeFilterPredicate]);
-  const composedFilter = React.useCallback((a) => propFilterPredicate(a), [propFilterPredicate]);
+  const composedFilter = React.useCallback((a) => predicateBuilder(propFilters)(a), [propFilters]);
 
   const filteredData = React.useMemo(() => data.filter(composedFilter), [composedFilter, data]);
 
