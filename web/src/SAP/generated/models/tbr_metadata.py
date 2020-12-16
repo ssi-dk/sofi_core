@@ -21,7 +21,7 @@ class TbrMetadata(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, isolate_id=None, sequence_id=None, sequence_filename=None, institution=None, project_number=None, project_title=None, sampling_date=None, received_date=None, run_id=None, public=None, provided_species=None, primary_isolate=None, fud_number=None, cluster_id=None, epi_export=None, cpr=None, gender=None, name=None, age=None, travel=None, travel_country=None, run_date=None, kma_received_date=None, kma=None, region=None):  # noqa: E501
+    def __init__(self, isolate_id=None, sequence_id=None, sequence_filename=None, institution=None, project_number=None, project_title=None, sampling_date=None, received_date=None, run_id=None, public=None, provided_species=None, primary_isolate=None, fud_number=None, cluster_id=None, epi_export=None, resfinder_version=None, cpr=None, gender=None, name=None, age=None, travel=None, travel_country=None, run_date=None, kma_received_date=None, kma=None, region=None):  # noqa: E501
         """TbrMetadata - a model defined in OpenAPI
 
         :param isolate_id: The isolate_id of this TbrMetadata.  # noqa: E501
@@ -54,6 +54,8 @@ class TbrMetadata(Model):
         :type cluster_id: str
         :param epi_export: The epi_export of this TbrMetadata.  # noqa: E501
         :type epi_export: str
+        :param resfinder_version: The resfinder_version of this TbrMetadata.  # noqa: E501
+        :type resfinder_version: str
         :param cpr: The cpr of this TbrMetadata.  # noqa: E501
         :type cpr: str
         :param gender: The gender of this TbrMetadata.  # noqa: E501
@@ -91,6 +93,7 @@ class TbrMetadata(Model):
             'fud_number': str,
             'cluster_id': str,
             'epi_export': str,
+            'resfinder_version': str,
             'cpr': str,
             'gender': str,
             'name': str,
@@ -119,6 +122,7 @@ class TbrMetadata(Model):
             'fud_number': 'fud_number',
             'cluster_id': 'cluster_id',
             'epi_export': 'epi_export',
+            'resfinder_version': 'resfinder_version',
             'cpr': 'cpr',
             'gender': 'gender',
             'name': 'name',
@@ -146,6 +150,7 @@ class TbrMetadata(Model):
         self._fud_number = fud_number
         self._cluster_id = cluster_id
         self._epi_export = epi_export
+        self._resfinder_version = resfinder_version
         self._cpr = cpr
         self._gender = gender
         self._name = name
@@ -498,6 +503,29 @@ class TbrMetadata(Model):
         """
 
         self._epi_export = epi_export
+
+    @property
+    def resfinder_version(self):
+        """Gets the resfinder_version of this TbrMetadata.
+
+
+        :return: The resfinder_version of this TbrMetadata.
+        :rtype: str
+        """
+        return self._resfinder_version
+
+    @resfinder_version.setter
+    def resfinder_version(self, resfinder_version):
+        """Sets the resfinder_version of this TbrMetadata.
+
+
+        :param resfinder_version: The resfinder_version of this TbrMetadata.
+        :type resfinder_version: str
+        """
+        if resfinder_version is None:
+            raise ValueError("Invalid value for `resfinder_version`, must not be `None`")  # noqa: E501
+
+        self._resfinder_version = resfinder_version
 
     @property
     def cpr(self):

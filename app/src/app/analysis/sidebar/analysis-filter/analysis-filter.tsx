@@ -1,38 +1,66 @@
 import React from "react";
-import Select from "react-select";
-import { selectTheme } from "app/app.styles";
+import Select, { ActionMeta, OptionTypeBase, ValueType } from "react-select";
+import { AnalysisResult } from 'sap-client';
 import { Text } from "@chakra-ui/react";
+import { selectTheme } from "app/app.styles";
 import { useTranslation } from "react-i18next";
+import { NotEmpty, PropFilter } from "utils";
 import FilterBox from "../filter-box";
 
-const agensOptions = [
-  { value: "v1", label: "View 1" },
-  { value: "v2", label: "View 2" },
-  { value: "v3", label: "View 3" },
-];
+type AnalysisFilterProps = {
+  agents: string[];
+  serotypes: string[];
+  resfinderVersions: string[];
+  onFilterChange: (resultingFilter: PropFilter<AnalysisResult>) => void;
+};
 
-const serotypOptions = [
-  { value: "v1", label: "View 1" },
-  { value: "v2", label: "View 2" },
-  { value: "v3", label: "View 3" },
-];
+function AnalysisFilter(props: AnalysisFilterProps) {
+  const { agents, serotypes, resfinderVersions, onFilterChange } = props;
 
-const rfvOptions = [
-  { value: "v1", label: "View 1" },
-  { value: "v2", label: "View 2" },
-  { value: "v3", label: "View 3" },
-];
+  const agentOptions = React.useMemo(
+    () => agents.map((x) => ({ value: x, label: x })),
+    [agents]
+  );
+  const serotypeOptions = React.useMemo(
+    () => serotypes.map((x) => ({ value: x, label: x })),
+    [serotypes]
+  );
+  const rfvOptions = React.useMemo(
+    () => resfinderVersions.map((x) => ({ value: x, label: x })),
+    [resfinderVersions]
+  );
 
-function AnalysisFilter() {
   const { t } = useTranslation();
+  const [state, setState] = React.useState({} as {[K in keyof AnalysisResult]: ValueType<OptionTypeBase, true>});
+
+  const onChangeBuilder: (
+    field: keyof AnalysisResult 
+  ) => (
+    val: ValueType<OptionTypeBase, true>,
+    action: ActionMeta<OptionTypeBase>
+  ) => void = React.useCallback((field) => {
+    return (value, { action, removedValue }) => {
+      switch (action) {
+        case "clear":
+          value = [];
+          break;
+        default: break;
+      };
+      const resolvedState = {...state, [field]: [...value?.values() || []].map(x => x.value)};
+      setState(resolvedState);
+      console.log(resolvedState)
+      onFilterChange(resolvedState as any);
+    };
+  }, [setState, onFilterChange, state]);
+
   return (
     <FilterBox title="Analysis filter">
       <Text>{t("Agens")}</Text>
-      <Select options={agensOptions} isMulti theme={selectTheme} />
+      <Select options={agentOptions} isMulti theme={selectTheme} onChange={onChangeBuilder("provided_species")} />
       <Text mt={2}>{t("Serotyp")}</Text>
-      <Select options={serotypOptions} isMulti theme={selectTheme} />
+      <Select options={serotypeOptions} isMulti theme={selectTheme} onChange={onChangeBuilder("serotype")} />
       <Text mt={2}>{t("ResfinderVersion")}</Text>
-      <Select options={rfvOptions} isMulti theme={selectTheme} />
+      <Select options={rfvOptions} isMulti theme={selectTheme} onChange={onChangeBuilder("resfinder_version")} />
     </FilterBox>
   );
 }

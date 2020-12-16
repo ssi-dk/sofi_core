@@ -21,7 +21,7 @@ class LimsMetadata(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, isolate_id=None, sequence_id=None, sequence_filename=None, institution=None, project_number=None, project_title=None, sampling_date=None, received_date=None, run_id=None, public=None, provided_species=None, primary_isolate=None, fud_number=None, cluster_id=None, epi_export=None, chr_number=None, aut_number=None, product_type=None, product=None, origin_country=None, animal_species=None, sample_info=None):  # noqa: E501
+    def __init__(self, isolate_id=None, sequence_id=None, sequence_filename=None, institution=None, project_number=None, project_title=None, sampling_date=None, received_date=None, run_id=None, public=None, provided_species=None, primary_isolate=None, fud_number=None, cluster_id=None, epi_export=None, resfinder_version=None, chr_number=None, aut_number=None, product_type=None, product=None, origin_country=None, animal_species=None, sample_info=None):  # noqa: E501
         """LimsMetadata - a model defined in OpenAPI
 
         :param isolate_id: The isolate_id of this LimsMetadata.  # noqa: E501
@@ -54,6 +54,8 @@ class LimsMetadata(Model):
         :type cluster_id: str
         :param epi_export: The epi_export of this LimsMetadata.  # noqa: E501
         :type epi_export: str
+        :param resfinder_version: The resfinder_version of this LimsMetadata.  # noqa: E501
+        :type resfinder_version: str
         :param chr_number: The chr_number of this LimsMetadata.  # noqa: E501
         :type chr_number: float
         :param aut_number: The aut_number of this LimsMetadata.  # noqa: E501
@@ -85,6 +87,7 @@ class LimsMetadata(Model):
             'fud_number': str,
             'cluster_id': str,
             'epi_export': str,
+            'resfinder_version': str,
             'chr_number': float,
             'aut_number': str,
             'product_type': str,
@@ -110,6 +113,7 @@ class LimsMetadata(Model):
             'fud_number': 'fud_number',
             'cluster_id': 'cluster_id',
             'epi_export': 'epi_export',
+            'resfinder_version': 'resfinder_version',
             'chr_number': 'chr_number',
             'aut_number': 'aut_number',
             'product_type': 'product_type',
@@ -134,6 +138,7 @@ class LimsMetadata(Model):
         self._fud_number = fud_number
         self._cluster_id = cluster_id
         self._epi_export = epi_export
+        self._resfinder_version = resfinder_version
         self._chr_number = chr_number
         self._aut_number = aut_number
         self._product_type = product_type
@@ -483,6 +488,29 @@ class LimsMetadata(Model):
         """
 
         self._epi_export = epi_export
+
+    @property
+    def resfinder_version(self):
+        """Gets the resfinder_version of this LimsMetadata.
+
+
+        :return: The resfinder_version of this LimsMetadata.
+        :rtype: str
+        """
+        return self._resfinder_version
+
+    @resfinder_version.setter
+    def resfinder_version(self, resfinder_version):
+        """Sets the resfinder_version of this LimsMetadata.
+
+
+        :param resfinder_version: The resfinder_version of this LimsMetadata.
+        :type resfinder_version: str
+        """
+        if resfinder_version is None:
+            raise ValueError("Invalid value for `resfinder_version`, must not be `None`")  # noqa: E501
+
+        self._resfinder_version = resfinder_version
 
     @property
     def chr_number(self):

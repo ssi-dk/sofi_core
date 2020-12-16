@@ -508,12 +508,15 @@ components:
           type: string
         epi_export:
           type: string
+        resfinder_version:
+          type: string
       required:
       - institution
       - isolate_id
       - primary_isolate
       - provided_species
       - received_date
+      - resfinder_version
       - run_id
       - sequence_filename
       - sequence_id

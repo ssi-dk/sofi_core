@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 export type StringOrNumber = string | number;
 
 export type NotEmpty = {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [K in StringOrNumber]: any;
 };
 
@@ -9,6 +10,16 @@ export type IndexableOf<T extends NotEmpty> = keyof Pick<
   T,
   { [K in keyof T]: T[K] extends string | number ? K : never }[keyof T]
 >;
+
+export type PropFilter<T extends NotEmpty> = {
+  [k in IndexableOf<T>]: string[];
+};
+
+export type RangeFilter<T extends NotEmpty> = {
+  [k in IndexableOf<T>]: {min: T[k], max: T[k]};
+};
+
+export type FilterPredicate<T extends NotEmpty> = (x: T) => boolean;
 
 /**
  * transforms:
@@ -31,4 +42,14 @@ export function arrayToNormalizedHashmap<
     cpy[item[keyField]] = item;
     return cpy;
   }, {} as { [k in T[K]]: T });
+}
+
+export function predicateBuilder<T extends NotEmpty>(
+  propFilters: PropFilter<T>
+) {
+  const preds = Object.keys(propFilters).map((k) => (t: T) =>
+    (t !== null && t !== undefined && propFilters[k].indexOf(t[k]) >= 0) ||
+    propFilters[k].length === 0
+  );
+  return (t: T) => preds.every((p) => p(t));
 }

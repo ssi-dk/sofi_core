@@ -27,7 +27,7 @@ class AnalysisResult(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, isolate_id=None, sequence_id=None, sequence_filename=None, institution=None, project_number=None, project_title=None, sampling_date=None, received_date=None, run_id=None, public=None, provided_species=None, primary_isolate=None, fud_number=None, cluster_id=None, epi_export=None, chr_number=None, aut_number=None, product_type=None, product=None, origin_country=None, animal_species=None, sample_info=None, cpr=None, gender=None, name=None, age=None, travel=None, travel_country=None, run_date=None, kma_received_date=None, kma=None, region=None, id=None, qc_provided_species=None, qc_genome1x=None, qc_genome10x=None, qc_gsize_diff1x10=None, qc_avg_coverage=None, qc_final=None, subspecies=None, species_final=None, st=None, pathotype=None, pathotype_final=None, serotype=None, serotype_final=None, adhesion=None, toxins=None, resistance_genes=None, amr_profile=None, amr_ami=None, amr_amp=None, amr_azi=None, amr_fep=None, amr_fot=None, amr_f_c=None, amr_fox=None, amr_taz=None, amr_t_c=None, amr_chl=None, amr_cip=None, amr_cli=None, amr_col=None, amr_dap=None, amr_etp=None, amr_ery=None, amr_fus=None, amr_gen=None, amr_imi=None, amr_kan=None, amr_lzd=None, amr_mero=None, amr_mup=None, amr_nal=None, amr_pen=None, amr_syn=None, amr_rif=None, amr_str=None, amr_sul=None, amr_tei=None, amr_trm=None, amr_tet=None, amr_tia=None, amr_tgc=None, amr_tmp=None, amr_van=None):  # noqa: E501
+    def __init__(self, isolate_id=None, sequence_id=None, sequence_filename=None, institution=None, project_number=None, project_title=None, sampling_date=None, received_date=None, run_id=None, public=None, provided_species=None, primary_isolate=None, fud_number=None, cluster_id=None, epi_export=None, resfinder_version=None, chr_number=None, aut_number=None, product_type=None, product=None, origin_country=None, animal_species=None, sample_info=None, cpr=None, gender=None, name=None, age=None, travel=None, travel_country=None, run_date=None, kma_received_date=None, kma=None, region=None, id=None, qc_provided_species=None, qc_genome1x=None, qc_genome10x=None, qc_gsize_diff1x10=None, qc_avg_coverage=None, qc_final=None, subspecies=None, species_final=None, st=None, pathotype=None, pathotype_final=None, serotype=None, serotype_final=None, adhesion=None, toxins=None, resistance_genes=None, amr_profile=None, amr_ami=None, amr_amp=None, amr_azi=None, amr_fep=None, amr_fot=None, amr_f_c=None, amr_fox=None, amr_taz=None, amr_t_c=None, amr_chl=None, amr_cip=None, amr_cli=None, amr_col=None, amr_dap=None, amr_etp=None, amr_ery=None, amr_fus=None, amr_gen=None, amr_imi=None, amr_kan=None, amr_lzd=None, amr_mero=None, amr_mup=None, amr_nal=None, amr_pen=None, amr_syn=None, amr_rif=None, amr_str=None, amr_sul=None, amr_tei=None, amr_trm=None, amr_tet=None, amr_tia=None, amr_tgc=None, amr_tmp=None, amr_van=None):  # noqa: E501
         """AnalysisResult - a model defined in OpenAPI
 
         :param isolate_id: The isolate_id of this AnalysisResult.  # noqa: E501
@@ -60,6 +60,8 @@ class AnalysisResult(Model):
         :type cluster_id: str
         :param epi_export: The epi_export of this AnalysisResult.  # noqa: E501
         :type epi_export: str
+        :param resfinder_version: The resfinder_version of this AnalysisResult.  # noqa: E501
+        :type resfinder_version: str
         :param chr_number: The chr_number of this AnalysisResult.  # noqa: E501
         :type chr_number: float
         :param aut_number: The aut_number of this AnalysisResult.  # noqa: E501
@@ -219,6 +221,7 @@ class AnalysisResult(Model):
             'fud_number': str,
             'cluster_id': str,
             'epi_export': str,
+            'resfinder_version': str,
             'chr_number': float,
             'aut_number': str,
             'product_type': str,
@@ -308,6 +311,7 @@ class AnalysisResult(Model):
             'fud_number': 'fud_number',
             'cluster_id': 'cluster_id',
             'epi_export': 'epi_export',
+            'resfinder_version': 'resfinder_version',
             'chr_number': 'chr_number',
             'aut_number': 'aut_number',
             'product_type': 'product_type',
@@ -396,6 +400,7 @@ class AnalysisResult(Model):
         self._fud_number = fud_number
         self._cluster_id = cluster_id
         self._epi_export = epi_export
+        self._resfinder_version = resfinder_version
         self._chr_number = chr_number
         self._aut_number = aut_number
         self._product_type = product_type
@@ -809,6 +814,29 @@ class AnalysisResult(Model):
         """
 
         self._epi_export = epi_export
+
+    @property
+    def resfinder_version(self):
+        """Gets the resfinder_version of this AnalysisResult.
+
+
+        :return: The resfinder_version of this AnalysisResult.
+        :rtype: str
+        """
+        return self._resfinder_version
+
+    @resfinder_version.setter
+    def resfinder_version(self, resfinder_version):
+        """Sets the resfinder_version of this AnalysisResult.
+
+
+        :param resfinder_version: The resfinder_version of this AnalysisResult.
+        :type resfinder_version: str
+        """
+        if resfinder_version is None:
+            raise ValueError("Invalid value for `resfinder_version`, must not be `None`")  # noqa: E501
+
+        self._resfinder_version = resfinder_version
 
     @property
     def chr_number(self):

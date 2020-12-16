@@ -470,6 +470,7 @@ components:
         - run_id
         - provided_species
         - primary_isolate
+        - resfinder_version
       properties:
         isolate_id:
           type: string
@@ -500,6 +501,8 @@ components:
         cluster_id:
           type: string
         epi_export:
+          type: string
+        resfinder_version:
           type: string
 
     TbrSpecificMetadata:

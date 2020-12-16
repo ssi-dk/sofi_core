@@ -114,6 +114,12 @@ export interface BaseMetadata  {
      * @memberof BaseMetadata
      */
     epi_export?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof BaseMetadata
+     */
+    resfinder_version: string;
 }
 
 export function BaseMetadataFromJSON(json: any): BaseMetadata {
@@ -133,6 +139,7 @@ export function BaseMetadataFromJSON(json: any): BaseMetadata {
         'fud_number': !exists(json, 'fud_number') ? undefined : json['fud_number'],
         'cluster_id': !exists(json, 'cluster_id') ? undefined : json['cluster_id'],
         'epi_export': !exists(json, 'epi_export') ? undefined : json['epi_export'],
+        'resfinder_version': json['resfinder_version'],
     };
 }
 
@@ -156,6 +163,7 @@ export function BaseMetadataToJSON(value?: BaseMetadata): any {
         'fud_number': value.fud_number,
         'cluster_id': value.cluster_id,
         'epi_export': value.epi_export,
+        'resfinder_version': value.resfinder_version,
     };
 }
 

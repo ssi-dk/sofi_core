@@ -17,7 +17,7 @@ class BaseMetadata(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, isolate_id=None, sequence_id=None, sequence_filename=None, institution=None, project_number=None, project_title=None, sampling_date=None, received_date=None, run_id=None, public=None, provided_species=None, primary_isolate=None, fud_number=None, cluster_id=None, epi_export=None):  # noqa: E501
+    def __init__(self, isolate_id=None, sequence_id=None, sequence_filename=None, institution=None, project_number=None, project_title=None, sampling_date=None, received_date=None, run_id=None, public=None, provided_species=None, primary_isolate=None, fud_number=None, cluster_id=None, epi_export=None, resfinder_version=None):  # noqa: E501
         """BaseMetadata - a model defined in OpenAPI
 
         :param isolate_id: The isolate_id of this BaseMetadata.  # noqa: E501
@@ -50,6 +50,8 @@ class BaseMetadata(Model):
         :type cluster_id: str
         :param epi_export: The epi_export of this BaseMetadata.  # noqa: E501
         :type epi_export: str
+        :param resfinder_version: The resfinder_version of this BaseMetadata.  # noqa: E501
+        :type resfinder_version: str
         """
         self.openapi_types = {
             'isolate_id': str,
@@ -66,7 +68,8 @@ class BaseMetadata(Model):
             'primary_isolate': str,
             'fud_number': str,
             'cluster_id': str,
-            'epi_export': str
+            'epi_export': str,
+            'resfinder_version': str
         }
 
         self.attribute_map = {
@@ -84,7 +87,8 @@ class BaseMetadata(Model):
             'primary_isolate': 'primary_isolate',
             'fud_number': 'fud_number',
             'cluster_id': 'cluster_id',
-            'epi_export': 'epi_export'
+            'epi_export': 'epi_export',
+            'resfinder_version': 'resfinder_version'
         }
 
         self._isolate_id = isolate_id
@@ -102,6 +106,7 @@ class BaseMetadata(Model):
         self._fud_number = fud_number
         self._cluster_id = cluster_id
         self._epi_export = epi_export
+        self._resfinder_version = resfinder_version
 
     @classmethod
     def from_dict(cls, dikt) -> 'BaseMetadata':
@@ -444,3 +449,26 @@ class BaseMetadata(Model):
         """
 
         self._epi_export = epi_export
+
+    @property
+    def resfinder_version(self):
+        """Gets the resfinder_version of this BaseMetadata.
+
+
+        :return: The resfinder_version of this BaseMetadata.
+        :rtype: str
+        """
+        return self._resfinder_version
+
+    @resfinder_version.setter
+    def resfinder_version(self, resfinder_version):
+        """Sets the resfinder_version of this BaseMetadata.
+
+
+        :param resfinder_version: The resfinder_version of this BaseMetadata.
+        :type resfinder_version: str
+        """
+        if resfinder_version is None:
+            raise ValueError("Invalid value for `resfinder_version`, must not be `None`")  # noqa: E501
+
+        self._resfinder_version = resfinder_version

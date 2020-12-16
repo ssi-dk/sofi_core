@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { NavLink } from "react-router-dom";
 import { Box, Flex, Button, useToast } from "@chakra-ui/react";
+import { NavLink } from 'react-router-dom';
 import {
   CalendarIcon,
   CheckIcon,
@@ -13,6 +13,7 @@ import { useMutation, useRequest, useRequests } from "redux-query-react";
 import { useDispatch, useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { RootState } from "app/root-reducer";
+import { predicateBuilder, PropFilter } from 'utils';
 import DataTable from "./data-table/data-table";
 import {
   requestPageOfAnalysis,
@@ -28,6 +29,9 @@ import { toggleColumnVisibility } from "./header/view-selector/analysis-view-sel
 
 export default function AnalysisPage() {
   const { t } = useTranslation();
+  const toast = useToast();
+  const dispatch = useDispatch();
+
   const reqs = React.useMemo(
     () =>
       Array.from(Array(10).keys()).map((i) => ({
@@ -61,7 +65,6 @@ export default function AnalysisPage() {
 
   const [pageState, setPageState] = useState({ isNarrowed: false });
 
-  const dispatch = useDispatch();
   const selection = useSelector<RootState>((s) => s.selection.selection);
   const view = useSelector<RootState>((s) => s.view.view) as UserDefinedView;
 
@@ -74,7 +77,6 @@ export default function AnalysisPage() {
     [view]
   );
 
-  const toast = useToast();
 
   const canSelectColumn = React.useCallback(
     (columnName: string) => {
@@ -82,6 +84,23 @@ export default function AnalysisPage() {
     },
     [columnConfigs]
   );
+
+
+  const [ propFilterPredicate,  setPropFilterPredicate ] = React.useState(() => (_: AnalysisResult) => true);
+  const [ rangeFilterPredicate,  setRangeFilterPredicate ] = React.useState(() => (_: AnalysisResult) => true);
+
+  const onPropFilterChange = React.useCallback((p: PropFilter<AnalysisResult>) => {
+    setPropFilterPredicate(() => predicateBuilder(p));
+  }, [setPropFilterPredicate]);
+
+  const onRangeFilterChange = React.useCallback((p: PropFilter<AnalysisResult>) => {
+    setRangeFilterPredicate(() => predicateBuilder(p));
+  }, [setRangeFilterPredicate]);
+
+  //const composedFilter = React.useMemo(() => compose(propFilterPredicate, rangeFilterPredicate), [propFilterPredicate, rangeFilterPredicate]);
+  const composedFilter = React.useCallback((a) => propFilterPredicate(a), [propFilterPredicate]);
+
+  const filteredData = React.useMemo(() => data.filter(composedFilter), [composedFilter, data]);
 
   const approvableColumns = React.useMemo(
     () => [
@@ -231,7 +250,10 @@ export default function AnalysisPage() {
       </Box>
       <Box role="form" gridColumn="1 / 2">
         <Box minW={sidebarWidth} pr={5}>
-          <AnalysisSidebar />
+          <AnalysisSidebar
+            data={filteredData}
+            onPropFilterChange={onPropFilterChange}
+          />
         </Box>
       </Box>
       <Box role="main" gridColumn="2 / 4" borderWidth="1px" rounded="md">
@@ -284,8 +306,8 @@ export default function AnalysisPage() {
             getDependentColumns={getDependentColumns}
             data={
               pageState.isNarrowed
-                ? data.filter((x) => selection[x.isolate_id])
-                : data
+                ? filteredData.filter((x) => selection[x.isolate_id])
+                : filteredData
             }
             primaryKey="isolate_id"
             selectionClassName={
@@ -299,11 +321,11 @@ export default function AnalysisPage() {
           {isPending && `${t("Fetching...")} ${data.length}`}
           {isFinished &&
             !pageState.isNarrowed &&
-            `${t("Found")} ${data.length} ${t("records")}.`}
+            `${t("Found")} ${filteredData.length} ${t("records")}.`}
           {isFinished &&
             pageState.isNarrowed &&
             `${t("Staging")} ${
-              data.filter((x) => selection[x.isolate_id]).length
+              filteredData.filter((x) => selection[x.isolate_id]).length
             } ${t("records")}.`}
         </Box>
       </Box>
