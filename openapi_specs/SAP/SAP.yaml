@@ -41,6 +41,41 @@ paths:
               schema:
                 $ref: '#/components/schemas/PageOfAnalysis'
 
+    post:
+      description: Search all analysis by given query
+      operationId: search_analysis
+      x-openapi-router-controller: web.src.SAP.generated.controllers.analysis_controller
+      tags:
+        - analysis
+      parameters:
+        - name: paging_token
+          in: query
+          description: opaque token to supply to get the next page of isolates
+          required: false
+          schema:
+            type: string
+            format: byte
+            nullable: true
+        - name: page_size
+          in: query
+          required: false
+          schema:
+            type: number
+            default: 100
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AnalysisQuery'
+      responses:
+        '200':
+          description: Page of isolates
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageOfAnalysis'
+
+
   /analysis/columns:
     get:
       description: Get column metadata, scoped to authenticated user
@@ -121,6 +156,7 @@ paths:
         content:
           '*/*':
             schema:
+              type: object
               $ref: '#/components/schemas/User'
         description: Created user object
         required: true
@@ -340,6 +376,14 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/AnalysisResult'
+
+    AnalysisQuery:
+      properties:
+        filters:
+          type: object
+          additionalProperties:
+            type: string
+
     Column:
       properties:
         approvable:

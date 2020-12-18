@@ -1,6 +1,6 @@
 import React from "react";
 import { Global } from "@emotion/react";
-import { ChakraProvider, Box } from "@chakra-ui/react";
+import { ChakraProvider } from "@chakra-ui/react";
 import { Switch, Route } from "react-router";
 import appTheme from "app/app.theme";
 import { globalCss } from "./app.styles";

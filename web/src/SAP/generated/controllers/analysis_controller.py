@@ -1,6 +1,7 @@
 import connexion
 import six
 
+from web.src.SAP.generated.models.analysis_query import AnalysisQuery  # noqa: E501
 from web.src.SAP.generated.models.column import Column  # noqa: E501
 from web.src.SAP.generated.models.page_of_analysis import PageOfAnalysis  # noqa: E501
 from .. import util
@@ -31,3 +32,22 @@ def get_columns():  # noqa: E501
     :rtype: List[Column]
     """
     return AnalysisController.get_columns()
+
+
+def search_analysis(paging_token=None, page_size=None, analysis_query=None):  # noqa: E501
+    """search_analysis
+
+    Search all analysis by given query # noqa: E501
+
+    :param paging_token: opaque token to supply to get the next page of isolates
+    :type paging_token: str
+    :param page_size: 
+    :type page_size: 
+    :param analysis_query: 
+    :type analysis_query: dict | bytes
+
+    :rtype: PageOfAnalysis
+    """
+    if connexion.request.is_json:
+        analysis_query = AnalysisQuery.from_dict(connexion.request.get_json())  # noqa: E501
+    return AnalysisController.search_analysis(paging_token, page_size, analysis_query)

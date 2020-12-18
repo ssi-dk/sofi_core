@@ -6,7 +6,7 @@ import './date-picker.css';
 
 interface Props {
   isClearable?: boolean;
-  onChange: (date: Date) => any;
+  onChange: (date: Date) => void;
   selectedDate: Date | undefined;
   showPopperArrow?: boolean;
 }

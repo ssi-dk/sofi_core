@@ -169,11 +169,13 @@ export default function AnalysisPage() {
 
   const approveSelection = React.useCallback(() => {
     setNeedsNotify(true);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     doApproval({ matrix: selection as any });
   }, [selection, doApproval, setNeedsNotify]);
 
   const rejectSelection = React.useCallback(() => {
     setNeedsNotify(true);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     doRejection({ matrix: selection as any });
   }, [selection, doRejection, setNeedsNotify]);
 

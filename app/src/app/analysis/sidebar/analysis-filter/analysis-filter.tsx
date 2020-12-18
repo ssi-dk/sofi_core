@@ -39,7 +39,7 @@ function AnalysisFilter(props: AnalysisFilterProps) {
     val: ValueType<OptionTypeBase, true>,
     action: ActionMeta<OptionTypeBase>
   ) => void = React.useCallback((field) => {
-    return (value, { action, removedValue }) => {
+    return (value, { action }) => {
       switch (action) {
         case "clear":
           value = [];

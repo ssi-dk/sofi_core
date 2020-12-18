@@ -26,6 +26,7 @@ const AnalysisViewSelector = () => {
     (s) => {
       return Object.values(s.entities?.userViews ?? {});
     },
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (a: any, b: any) => a.entities?.userViews === b.entities?.userViews // prevents unnecessary re-renders
   ) as UserDefinedView[];
   const view = useSelector<RootState>((s) => s.view.view) as UserDefinedView;
