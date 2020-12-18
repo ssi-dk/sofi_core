@@ -56,16 +56,16 @@ export interface TbrSpecificMetadata  {
     travel_country?: string;
     /**
      * 
-     * @type {string}
+     * @type {Date}
      * @memberof TbrSpecificMetadata
      */
-    run_date: string;
+    run_date: Date;
     /**
      * 
-     * @type {string}
+     * @type {Date}
      * @memberof TbrSpecificMetadata
      */
-    kma_received_date?: string;
+    kma_received_date?: Date;
     /**
      * 
      * @type {string}
@@ -88,8 +88,8 @@ export function TbrSpecificMetadataFromJSON(json: any): TbrSpecificMetadata {
         'age': !exists(json, 'age') ? undefined : json['age'],
         'travel': !exists(json, 'travel') ? undefined : json['travel'],
         'travel_country': !exists(json, 'travel_country') ? undefined : json['travel_country'],
-        'run_date': json['run_date'],
-        'kma_received_date': !exists(json, 'kma_received_date') ? undefined : json['kma_received_date'],
+        'run_date': new Date(json['run_date']),
+        'kma_received_date': !exists(json, 'kma_received_date') ? undefined : new Date(json['kma_received_date']),
         'kma': !exists(json, 'kma') ? undefined : json['kma'],
         'region': !exists(json, 'region') ? undefined : json['region'],
     };
@@ -106,8 +106,8 @@ export function TbrSpecificMetadataToJSON(value?: TbrSpecificMetadata): any {
         'age': value.age,
         'travel': value.travel,
         'travel_country': value.travel_country,
-        'run_date': value.run_date,
-        'kma_received_date': value.kma_received_date,
+        'run_date': value.run_date.toISOString(),
+        'kma_received_date': value.kma_received_date === undefined ? undefined : value.kma_received_date.toISOString(),
         'kma': value.kma,
         'region': value.region,
     };

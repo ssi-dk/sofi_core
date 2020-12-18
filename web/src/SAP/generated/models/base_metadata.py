@@ -33,9 +33,9 @@ class BaseMetadata(Model):
         :param project_title: The project_title of this BaseMetadata.  # noqa: E501
         :type project_title: str
         :param sampling_date: The sampling_date of this BaseMetadata.  # noqa: E501
-        :type sampling_date: str
+        :type sampling_date: datetime
         :param received_date: The received_date of this BaseMetadata.  # noqa: E501
-        :type received_date: str
+        :type received_date: datetime
         :param run_id: The run_id of this BaseMetadata.  # noqa: E501
         :type run_id: str
         :param public: The public of this BaseMetadata.  # noqa: E501
@@ -60,8 +60,8 @@ class BaseMetadata(Model):
             'institution': Organization,
             'project_number': float,
             'project_title': str,
-            'sampling_date': str,
-            'received_date': str,
+            'sampling_date': datetime,
+            'received_date': datetime,
             'run_id': str,
             'public': str,
             'provided_species': str,
@@ -259,7 +259,7 @@ class BaseMetadata(Model):
 
 
         :return: The sampling_date of this BaseMetadata.
-        :rtype: str
+        :rtype: datetime
         """
         return self._sampling_date
 
@@ -269,7 +269,7 @@ class BaseMetadata(Model):
 
 
         :param sampling_date: The sampling_date of this BaseMetadata.
-        :type sampling_date: str
+        :type sampling_date: datetime
         """
 
         self._sampling_date = sampling_date
@@ -280,7 +280,7 @@ class BaseMetadata(Model):
 
 
         :return: The received_date of this BaseMetadata.
-        :rtype: str
+        :rtype: datetime
         """
         return self._received_date
 
@@ -290,7 +290,7 @@ class BaseMetadata(Model):
 
 
         :param received_date: The received_date of this BaseMetadata.
-        :type received_date: str
+        :type received_date: datetime
         """
         if received_date is None:
             raise ValueError("Invalid value for `received_date`, must not be `None`")  # noqa: E501

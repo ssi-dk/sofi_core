@@ -485,8 +485,10 @@ components:
         project_title:
           type: string
         sampling_date:
+          format: date-time
           type: string
         received_date:
+          format: date-time
           type: string
         run_id:
           type: string
@@ -526,8 +528,10 @@ components:
         travel_country:
           type: string
         run_date:
+          format: date-time
           type: string
         kma_received_date:
+          format: date-time
           type: string
         kma:
           type: string

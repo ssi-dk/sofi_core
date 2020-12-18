@@ -11,13 +11,13 @@ export type IndexableOf<T extends NotEmpty> = keyof Pick<
   { [K in keyof T]: T[K] extends string | number ? K : never }[keyof T]
 >;
 
-export type PropFilter<T extends NotEmpty> = {
+export type PropFilter<T extends NotEmpty> = Partial<{
   [k in IndexableOf<T>]: string[];
-};
+}>;
 
-export type RangeFilter<T extends NotEmpty> = {
-  [k in IndexableOf<T>]: {min: T[k], max: T[k]};
-};
+export type RangeFilter<T extends NotEmpty> = Partial<{
+  [k in keyof T]: {min: T[k], max: T[k]};
+}>;
 
 export type FilterPredicate<T extends NotEmpty> = (x: T) => boolean;
 
@@ -45,11 +45,16 @@ export function arrayToNormalizedHashmap<
 }
 
 export function predicateBuilder<T extends NotEmpty>(
-  propFilters: PropFilter<T>
+  propFilters: PropFilter<T>,
+  rangeFilters: RangeFilter<T>
 ) {
-  const preds = Object.keys(propFilters).map((k) => (t: T) =>
-    (t !== null && t !== undefined && propFilters[k].indexOf(t[k]) >= 0) ||
-    propFilters[k].length === 0
+  const notEmpty = (t: T) => t !== null && t !== undefined;
+  const ppreds = Object.keys(propFilters).map((k) => (t: T) =>
+    propFilters[k].indexOf(t[k]) >= 0 || propFilters[k].length === 0
   );
-  return (t: T) => preds.every((p) => p(t));
+  const rpreds = Object.keys(rangeFilters).map((k) => (t: T) =>
+    rangeFilters[k].min <= t[k] && rangeFilters[k].max >= t[k]
+  );
+  return (t: T) =>
+    notEmpty(t) && ppreds.every((p) => p(t)) && rpreds.every((p) => p(t));
 }

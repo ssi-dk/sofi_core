@@ -31,9 +31,9 @@ class TbrSpecificMetadata(Model):
         :param travel_country: The travel_country of this TbrSpecificMetadata.  # noqa: E501
         :type travel_country: str
         :param run_date: The run_date of this TbrSpecificMetadata.  # noqa: E501
-        :type run_date: str
+        :type run_date: datetime
         :param kma_received_date: The kma_received_date of this TbrSpecificMetadata.  # noqa: E501
-        :type kma_received_date: str
+        :type kma_received_date: datetime
         :param kma: The kma of this TbrSpecificMetadata.  # noqa: E501
         :type kma: str
         :param region: The region of this TbrSpecificMetadata.  # noqa: E501
@@ -46,8 +46,8 @@ class TbrSpecificMetadata(Model):
             'age': float,
             'travel': str,
             'travel_country': str,
-            'run_date': str,
-            'kma_received_date': str,
+            'run_date': datetime,
+            'kma_received_date': datetime,
             'kma': str,
             'region': str
         }
@@ -225,7 +225,7 @@ class TbrSpecificMetadata(Model):
 
 
         :return: The run_date of this TbrSpecificMetadata.
-        :rtype: str
+        :rtype: datetime
         """
         return self._run_date
 
@@ -235,7 +235,7 @@ class TbrSpecificMetadata(Model):
 
 
         :param run_date: The run_date of this TbrSpecificMetadata.
-        :type run_date: str
+        :type run_date: datetime
         """
         if run_date is None:
             raise ValueError("Invalid value for `run_date`, must not be `None`")  # noqa: E501
@@ -248,7 +248,7 @@ class TbrSpecificMetadata(Model):
 
 
         :return: The kma_received_date of this TbrSpecificMetadata.
-        :rtype: str
+        :rtype: datetime
         """
         return self._kma_received_date
 
@@ -258,7 +258,7 @@ class TbrSpecificMetadata(Model):
 
 
         :param kma_received_date: The kma_received_date of this TbrSpecificMetadata.
-        :type kma_received_date: str
+        :type kma_received_date: datetime
         """
 
         self._kma_received_date = kma_received_date

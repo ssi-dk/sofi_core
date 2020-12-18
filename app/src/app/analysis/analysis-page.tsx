@@ -88,18 +88,21 @@ export default function AnalysisPage() {
   const [ propFilters,  setPropFilters] = React.useState({} as PropFilter<AnalysisResult>);
   const [ rangeFilters,  setRangeFilters ] = React.useState({} as RangeFilter<AnalysisResult>);
 
-  const onPropFilterChange = React.useCallback((p: PropFilter<AnalysisResult>) => {
-    setPropFilters({...propFilters, ...p});
-  }, [propFilters, setPropFilters]);
+  const onPropFilterChange = React.useCallback(
+    (p: PropFilter<AnalysisResult>) => {
+      setPropFilters({ ...propFilters, ...p });
+    },
+    [propFilters, setPropFilters]
+  );
 
-  /*
-  const onRangeFilterChange = React.useCallback((p: PropFilter<AnalysisResult>) => {
-    setRangeFilters();
-  }, [rangeFilters, setRangeFilters]);
-  */
+  const onRangeFilterChange = React.useCallback(
+    (p: RangeFilter<AnalysisResult>) => {
+      setRangeFilters({ ...rangeFilters, ...p });
+    },
+    [rangeFilters, setRangeFilters]
+  );
 
-  //const composedFilter = React.useMemo(() => compose(propFilterPredicate, rangeFilterPredicate), [propFilterPredicate, rangeFilterPredicate]);
-  const composedFilter = React.useCallback((a) => predicateBuilder(propFilters)(a), [propFilters]);
+  const composedFilter = React.useCallback((a) => predicateBuilder(propFilters, rangeFilters)(a), [propFilters, rangeFilters]);
 
   const filteredData = React.useMemo(() => data.filter(composedFilter), [composedFilter, data]);
 
@@ -254,6 +257,7 @@ export default function AnalysisPage() {
           <AnalysisSidebar
             data={filteredData}
             onPropFilterChange={onPropFilterChange}
+            onRangeFilterChange={onRangeFilterChange}
           />
         </Box>
       </Box>

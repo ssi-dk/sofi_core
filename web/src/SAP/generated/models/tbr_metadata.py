@@ -37,9 +37,9 @@ class TbrMetadata(Model):
         :param project_title: The project_title of this TbrMetadata.  # noqa: E501
         :type project_title: str
         :param sampling_date: The sampling_date of this TbrMetadata.  # noqa: E501
-        :type sampling_date: str
+        :type sampling_date: datetime
         :param received_date: The received_date of this TbrMetadata.  # noqa: E501
-        :type received_date: str
+        :type received_date: datetime
         :param run_id: The run_id of this TbrMetadata.  # noqa: E501
         :type run_id: str
         :param public: The public of this TbrMetadata.  # noqa: E501
@@ -69,9 +69,9 @@ class TbrMetadata(Model):
         :param travel_country: The travel_country of this TbrMetadata.  # noqa: E501
         :type travel_country: str
         :param run_date: The run_date of this TbrMetadata.  # noqa: E501
-        :type run_date: str
+        :type run_date: datetime
         :param kma_received_date: The kma_received_date of this TbrMetadata.  # noqa: E501
-        :type kma_received_date: str
+        :type kma_received_date: datetime
         :param kma: The kma of this TbrMetadata.  # noqa: E501
         :type kma: str
         :param region: The region of this TbrMetadata.  # noqa: E501
@@ -84,8 +84,8 @@ class TbrMetadata(Model):
             'institution': Organization,
             'project_number': float,
             'project_title': str,
-            'sampling_date': str,
-            'received_date': str,
+            'sampling_date': datetime,
+            'received_date': datetime,
             'run_id': str,
             'public': str,
             'provided_species': str,
@@ -100,8 +100,8 @@ class TbrMetadata(Model):
             'age': float,
             'travel': str,
             'travel_country': str,
-            'run_date': str,
-            'kma_received_date': str,
+            'run_date': datetime,
+            'kma_received_date': datetime,
             'kma': str,
             'region': str
         }
@@ -313,7 +313,7 @@ class TbrMetadata(Model):
 
 
         :return: The sampling_date of this TbrMetadata.
-        :rtype: str
+        :rtype: datetime
         """
         return self._sampling_date
 
@@ -323,7 +323,7 @@ class TbrMetadata(Model):
 
 
         :param sampling_date: The sampling_date of this TbrMetadata.
-        :type sampling_date: str
+        :type sampling_date: datetime
         """
 
         self._sampling_date = sampling_date
@@ -334,7 +334,7 @@ class TbrMetadata(Model):
 
 
         :return: The received_date of this TbrMetadata.
-        :rtype: str
+        :rtype: datetime
         """
         return self._received_date
 
@@ -344,7 +344,7 @@ class TbrMetadata(Model):
 
 
         :param received_date: The received_date of this TbrMetadata.
-        :type received_date: str
+        :type received_date: datetime
         """
         if received_date is None:
             raise ValueError("Invalid value for `received_date`, must not be `None`")  # noqa: E501
@@ -665,7 +665,7 @@ class TbrMetadata(Model):
 
 
         :return: The run_date of this TbrMetadata.
-        :rtype: str
+        :rtype: datetime
         """
         return self._run_date
 
@@ -675,7 +675,7 @@ class TbrMetadata(Model):
 
 
         :param run_date: The run_date of this TbrMetadata.
-        :type run_date: str
+        :type run_date: datetime
         """
         if run_date is None:
             raise ValueError("Invalid value for `run_date`, must not be `None`")  # noqa: E501
@@ -688,7 +688,7 @@ class TbrMetadata(Model):
 
 
         :return: The kma_received_date of this TbrMetadata.
-        :rtype: str
+        :rtype: datetime
         """
         return self._kma_received_date
 
@@ -698,7 +698,7 @@ class TbrMetadata(Model):
 
 
         :param kma_received_date: The kma_received_date of this TbrMetadata.
-        :type kma_received_date: str
+        :type kma_received_date: datetime
         """
 
         self._kma_received_date = kma_received_date

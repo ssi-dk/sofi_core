@@ -5,6 +5,7 @@ import {
   GetAnalysisRequest,
   PageOfAnalysis,
   AnalysisResult,
+  AnalysisResultFromJSON,
 } from "sap-client";
 import { getUrl } from "service";
 import { arrayToNormalizedHashmap } from "utils";
@@ -32,7 +33,7 @@ export const requestPageOfAnalysis = (params: GetAnalysisRequest) => {
     analysisTotalCount: response.totalCount,
     analysisPagingToken: response.pagingToken,
     analysis: response.items
-      ? arrayToNormalizedHashmap(response.items, "isolate_id")
+      ? arrayToNormalizedHashmap(response.items.map((a) => AnalysisResultFromJSON(a)), "isolate_id")
       : {},
   });
   // define the update strategy for our state

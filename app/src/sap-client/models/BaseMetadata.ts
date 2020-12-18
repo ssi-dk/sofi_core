@@ -62,16 +62,16 @@ export interface BaseMetadata  {
     project_title?: string;
     /**
      * 
-     * @type {string}
+     * @type {Date}
      * @memberof BaseMetadata
      */
-    sampling_date?: string;
+    sampling_date?: Date;
     /**
      * 
-     * @type {string}
+     * @type {Date}
      * @memberof BaseMetadata
      */
-    received_date: string;
+    received_date: Date;
     /**
      * 
      * @type {string}
@@ -130,8 +130,8 @@ export function BaseMetadataFromJSON(json: any): BaseMetadata {
         'institution': OrganizationFromJSON(json['institution']),
         'project_number': !exists(json, 'project_number') ? undefined : json['project_number'],
         'project_title': !exists(json, 'project_title') ? undefined : json['project_title'],
-        'sampling_date': !exists(json, 'sampling_date') ? undefined : json['sampling_date'],
-        'received_date': json['received_date'],
+        'sampling_date': !exists(json, 'sampling_date') ? undefined : new Date(json['sampling_date']),
+        'received_date': new Date(json['received_date']),
         'run_id': json['run_id'],
         '_public': !exists(json, 'public') ? undefined : json['public'],
         'provided_species': json['provided_species'],
@@ -154,8 +154,8 @@ export function BaseMetadataToJSON(value?: BaseMetadata): any {
         'institution': OrganizationToJSON(value.institution),
         'project_number': value.project_number,
         'project_title': value.project_title,
-        'sampling_date': value.sampling_date,
-        'received_date': value.received_date,
+        'sampling_date': value.sampling_date === undefined ? undefined : value.sampling_date.toISOString(),
+        'received_date': value.received_date.toISOString(),
         'run_id': value.run_id,
         'public': value._public,
         'provided_species': value.provided_species,
