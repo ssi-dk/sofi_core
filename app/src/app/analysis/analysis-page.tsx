@@ -8,9 +8,10 @@ import {
   NotAllowedIcon,
 } from "@chakra-ui/icons";
 import { Column } from "react-table";
-import { AnalysisResult, UserDefinedView, ApprovalRequest } from "sap-client";
+import { AnalysisResult, UserDefinedView, ApprovalRequest, AnalysisQuery } from "sap-client";
 import { useMutation, useRequest, useRequests } from "redux-query-react";
 import { useDispatch, useSelector } from "react-redux";
+import { requestAsync } from 'redux-query';
 import { useTranslation } from "react-i18next";
 import { RootState } from "app/root-reducer";
 import { predicateBuilder, PropFilter, RangeFilter } from 'utils';
@@ -19,6 +20,7 @@ import {
   requestPageOfAnalysis,
   requestColumns,
   ColumnSlice,
+  searchPageOfAnalysis,
 } from "./analysis-query-configs";
 import AnalysisHeader from "./header/analysis-header";
 import AnalysisSidebar from "./sidebar/analysis-sidebar";
@@ -68,6 +70,19 @@ export default function AnalysisPage() {
   const selection = useSelector<RootState>((s) => s.selection.selection);
   const view = useSelector<RootState>((s) => s.view.view) as UserDefinedView;
 
+  const onSearch = React.useCallback(
+    (q: AnalysisQuery) => {
+      dispatch({ type: "RESET/Analysis" });
+      dispatch(
+        requestAsync({
+          ...searchPageOfAnalysis({ analysisQuery: q }),
+          queryKey: JSON.stringify(q),
+        })
+      );
+    },
+    [dispatch]
+  );
+
   const toggleColumn = React.useCallback(
     (id) => () => dispatch(toggleColumnVisibility(id)),
     [dispatch]
@@ -83,7 +98,6 @@ export default function AnalysisPage() {
     },
     [columnConfigs]
   );
-
 
   const [ propFilters,  setPropFilters] = React.useState({} as PropFilter<AnalysisResult>);
   const [ rangeFilters,  setRangeFilters ] = React.useState({} as RangeFilter<AnalysisResult>);
@@ -243,7 +257,7 @@ export default function AnalysisPage() {
       gridGap="2"
     >
       <Box role="heading" gridColumn="1 / 4">
-        <AnalysisHeader sidebarWidth={sidebarWidth} />
+        <AnalysisHeader sidebarWidth={sidebarWidth} onSearch={onSearch} />
       </Box>
       <Box role="navigation" gridColumn="1 / 4">
         <Flex justifyContent="flex-end">
