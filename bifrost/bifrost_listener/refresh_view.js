@@ -12,8 +12,28 @@ refreshSAPAnalysisResults = function () {
         "QC_Avg_coverage": "$properties.stamper.summary.test__denovo_assembly__genome_average_coverage.value"
       }
     },
-    { $merge: { into: "sap_analysis_results" } } //, whenMatched: "replace" } }
+    { $merge: { into: "sap_analysis_results", whenMatched: "replace" } }
   ]);
+  /*
+  db.lims_metadata.aggregate([
+    {
+      $project: {
+        "_id": false,
+        "_exclude": false 
+      }
+    },
+    { $merge: { into: "sap_analysis_results", on: "isolate_id", whenMatched: "replace" } }
+  ]);
+  db.tbr_metadata.aggregate([
+    {
+      $project: {
+        "_id": false,
+        "_exclude": false 
+      }
+    },
+    { $merge: { into: "sap_analysis_results", on: "isolate_id", whenMatched: "replace" } }
+  ]);
+  */
 };
 
 refreshSAPAnalysisResults();

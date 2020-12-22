@@ -6,7 +6,6 @@ import {
   useBlockLayout,
   Column,
   useResizeColumns,
-  Cell,
   Row,
   useSortBy,
   useColumnOrder,
@@ -101,10 +100,8 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
     state,
     getTableProps,
     getTableBodyProps,
-    headerGroups,
     visibleColumns,
     rows,
-    totalColumnsWidth,
     prepareRow,
     allColumns,
     setColumnOrder,
@@ -124,7 +121,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
     useSortBy
   );
 
-  const { columnResizing, columnOrder, hiddenColumns, sortBy } = state;
+  const { columnResizing } = state;
 
   // Make data table configuration externally visible
   exportDataTable(state);
@@ -272,7 +269,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
         return (
           <div style={style}>
             <DataTableColumnHeader<T>
-              column={col as any}
+              column={col}
               columnIndex={columnIndex}
               calcColSelectionState={calcColSelectionState}
               canSelectColumn={canSelectColumn}

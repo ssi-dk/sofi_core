@@ -18,6 +18,9 @@ import {
     ApprovalRequest,
     ApprovalRequestFromJSON,
     ApprovalRequestToJSON,
+    ApprovalStatus,
+    ApprovalStatusFromJSON,
+    ApprovalStatusToJSON,
 } from './';
 
 /**

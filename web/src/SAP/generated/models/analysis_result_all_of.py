@@ -17,11 +17,13 @@ class AnalysisResultAllOf(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, id=None, qc_provided_species=None, qc_genome1x=None, qc_genome10x=None, qc_gsize_diff1x10=None, qc_avg_coverage=None, qc_final=None, subspecies=None, species_final=None, st=None, pathotype=None, pathotype_final=None, serotype=None, serotype_final=None, adhesion=None, toxins=None, resistance_genes=None, amr_profile=None, amr_ami=None, amr_amp=None, amr_azi=None, amr_fep=None, amr_fot=None, amr_f_c=None, amr_fox=None, amr_taz=None, amr_t_c=None, amr_chl=None, amr_cip=None, amr_cli=None, amr_col=None, amr_dap=None, amr_etp=None, amr_ery=None, amr_fus=None, amr_gen=None, amr_imi=None, amr_kan=None, amr_lzd=None, amr_mero=None, amr_mup=None, amr_nal=None, amr_pen=None, amr_syn=None, amr_rif=None, amr_str=None, amr_sul=None, amr_tei=None, amr_trm=None, amr_tet=None, amr_tia=None, amr_tgc=None, amr_tmp=None, amr_van=None):  # noqa: E501
+    def __init__(self, id=None, resfinder_version=None, qc_provided_species=None, qc_genome1x=None, qc_genome10x=None, qc_gsize_diff1x10=None, qc_avg_coverage=None, qc_final=None, subspecies=None, species_final=None, st=None, pathotype=None, pathotype_final=None, serotype=None, serotype_final=None, adhesion=None, toxins=None, resistance_genes=None, amr_profile=None, amr_ami=None, amr_amp=None, amr_azi=None, amr_fep=None, amr_fot=None, amr_f_c=None, amr_fox=None, amr_taz=None, amr_t_c=None, amr_chl=None, amr_cip=None, amr_cli=None, amr_col=None, amr_dap=None, amr_etp=None, amr_ery=None, amr_fus=None, amr_gen=None, amr_imi=None, amr_kan=None, amr_lzd=None, amr_mero=None, amr_mup=None, amr_nal=None, amr_pen=None, amr_syn=None, amr_rif=None, amr_str=None, amr_sul=None, amr_tei=None, amr_trm=None, amr_tet=None, amr_tia=None, amr_tgc=None, amr_tmp=None, amr_van=None):  # noqa: E501
         """AnalysisResultAllOf - a model defined in OpenAPI
 
         :param id: The id of this AnalysisResultAllOf.  # noqa: E501
         :type id: str
+        :param resfinder_version: The resfinder_version of this AnalysisResultAllOf.  # noqa: E501
+        :type resfinder_version: str
         :param qc_provided_species: The qc_provided_species of this AnalysisResultAllOf.  # noqa: E501
         :type qc_provided_species: float
         :param qc_genome1x: The qc_genome1x of this AnalysisResultAllOf.  # noqa: E501
@@ -131,6 +133,7 @@ class AnalysisResultAllOf(Model):
         """
         self.openapi_types = {
             'id': str,
+            'resfinder_version': str,
             'qc_provided_species': float,
             'qc_genome1x': float,
             'qc_genome10x': float,
@@ -188,6 +191,7 @@ class AnalysisResultAllOf(Model):
 
         self.attribute_map = {
             'id': '_id',
+            'resfinder_version': 'resfinder_version',
             'qc_provided_species': 'QC_provided_species',
             'qc_genome1x': 'QC_genome1x',
             'qc_genome10x': 'QC_genome10x',
@@ -244,6 +248,7 @@ class AnalysisResultAllOf(Model):
         }
 
         self._id = id
+        self._resfinder_version = resfinder_version
         self._qc_provided_species = qc_provided_species
         self._qc_genome1x = qc_genome1x
         self._qc_genome10x = qc_genome10x
@@ -331,6 +336,27 @@ class AnalysisResultAllOf(Model):
             raise ValueError("Invalid value for `id`, must not be `None`")  # noqa: E501
 
         self._id = id
+
+    @property
+    def resfinder_version(self):
+        """Gets the resfinder_version of this AnalysisResultAllOf.
+
+
+        :return: The resfinder_version of this AnalysisResultAllOf.
+        :rtype: str
+        """
+        return self._resfinder_version
+
+    @resfinder_version.setter
+    def resfinder_version(self, resfinder_version):
+        """Sets the resfinder_version of this AnalysisResultAllOf.
+
+
+        :param resfinder_version: The resfinder_version of this AnalysisResultAllOf.
+        :type resfinder_version: str
+        """
+
+        self._resfinder_version = resfinder_version
 
     @property
     def qc_provided_species(self):

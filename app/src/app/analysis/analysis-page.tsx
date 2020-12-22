@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { NavLink } from "react-router-dom";
 import { Box, Flex, Button, useToast } from "@chakra-ui/react";
+import { NavLink } from 'react-router-dom';
 import {
   CalendarIcon,
   CheckIcon,
@@ -8,16 +8,19 @@ import {
   NotAllowedIcon,
 } from "@chakra-ui/icons";
 import { Column } from "react-table";
-import { AnalysisResult, UserDefinedView, ApprovalRequest } from "sap-client";
-import { useMutation, useRequest, useRequests } from "redux-query-react";
+import { AnalysisResult, UserDefinedView, ApprovalRequest, AnalysisQuery } from "sap-client";
+import { useMutation, useRequest } from "redux-query-react";
 import { useDispatch, useSelector } from "react-redux";
+import { requestAsync } from 'redux-query';
 import { useTranslation } from "react-i18next";
 import { RootState } from "app/root-reducer";
+import { predicateBuilder, PropFilter, RangeFilter } from 'utils';
 import DataTable from "./data-table/data-table";
 import {
   requestPageOfAnalysis,
   requestColumns,
   ColumnSlice,
+  searchPageOfAnalysis,
 } from "./analysis-query-configs";
 import AnalysisHeader from "./header/analysis-header";
 import AnalysisSidebar from "./sidebar/analysis-sidebar";
@@ -28,16 +31,11 @@ import { toggleColumnVisibility } from "./header/view-selector/analysis-view-sel
 
 export default function AnalysisPage() {
   const { t } = useTranslation();
-  const reqs = React.useMemo(
-    () =>
-      Array.from(Array(10).keys()).map((i) => ({
-        ...requestPageOfAnalysis({ pageSize: 1000 }),
-        queryKey: `${i}`,
-      })),
-    []
-  );
+  const toast = useToast();
+  const dispatch = useDispatch();
+
   const [columnLoadState] = useRequest(requestColumns());
-  const [{ isPending, isFinished }] = useRequests(reqs);
+  const [{ isPending, isFinished }] = useRequest({...requestPageOfAnalysis({ pageSize: 100 })});
   // TODO: Figure out how to make this strongly typed
   const data = useSelector<RootState>((s) =>
     Object.values(s.entities.analysis ?? {})
@@ -61,9 +59,22 @@ export default function AnalysisPage() {
 
   const [pageState, setPageState] = useState({ isNarrowed: false });
 
-  const dispatch = useDispatch();
   const selection = useSelector<RootState>((s) => s.selection.selection);
   const view = useSelector<RootState>((s) => s.view.view) as UserDefinedView;
+
+  const onSearch = React.useCallback(
+    (q: AnalysisQuery) => {
+      console.log(q)
+      dispatch({ type: "RESET/Analysis" });
+      dispatch(
+        requestAsync({
+          ...searchPageOfAnalysis({ query: {...q, page_size: 100 }}),
+          queryKey: JSON.stringify(q),
+        })
+      );
+    },
+    [dispatch]
+  );
 
   const toggleColumn = React.useCallback(
     (id) => () => dispatch(toggleColumnVisibility(id)),
@@ -74,14 +85,33 @@ export default function AnalysisPage() {
     [view]
   );
 
-  const toast = useToast();
-
   const canSelectColumn = React.useCallback(
     (columnName: string) => {
       return columnConfigs[columnName]?.approvable;
     },
     [columnConfigs]
   );
+
+  const [ propFilters,  setPropFilters] = React.useState({} as PropFilter<AnalysisResult>);
+  const [ rangeFilters,  setRangeFilters ] = React.useState({} as RangeFilter<AnalysisResult>);
+
+  const onPropFilterChange = React.useCallback(
+    (p: PropFilter<AnalysisResult>) => {
+      setPropFilters({ ...propFilters, ...p });
+    },
+    [propFilters, setPropFilters]
+  );
+
+  const onRangeFilterChange = React.useCallback(
+    (p: RangeFilter<AnalysisResult>) => {
+      setRangeFilters({ ...rangeFilters, ...p });
+    },
+    [rangeFilters, setRangeFilters]
+  );
+
+  const composedFilter = React.useCallback((a) => predicateBuilder(propFilters, rangeFilters)(a), [propFilters, rangeFilters]);
+
+  const filteredData = React.useMemo(() => data.filter(composedFilter), [composedFilter, data]);
 
   const approvableColumns = React.useMemo(
     () => [
@@ -146,11 +176,13 @@ export default function AnalysisPage() {
 
   const approveSelection = React.useCallback(() => {
     setNeedsNotify(true);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     doApproval({ matrix: selection as any });
   }, [selection, doApproval, setNeedsNotify]);
 
   const rejectSelection = React.useCallback(() => {
     setNeedsNotify(true);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     doRejection({ matrix: selection as any });
   }, [selection, doRejection, setNeedsNotify]);
 
@@ -218,7 +250,7 @@ export default function AnalysisPage() {
       gridGap="2"
     >
       <Box role="heading" gridColumn="1 / 4">
-        <AnalysisHeader sidebarWidth={sidebarWidth} />
+        <AnalysisHeader sidebarWidth={sidebarWidth} onSearch={onSearch} />
       </Box>
       <Box role="navigation" gridColumn="1 / 4">
         <Flex justifyContent="flex-end">
@@ -231,7 +263,11 @@ export default function AnalysisPage() {
       </Box>
       <Box role="form" gridColumn="1 / 2">
         <Box minW={sidebarWidth} pr={5}>
-          <AnalysisSidebar />
+          <AnalysisSidebar
+            data={filteredData}
+            onPropFilterChange={onPropFilterChange}
+            onRangeFilterChange={onRangeFilterChange}
+          />
         </Box>
       </Box>
       <Box role="main" gridColumn="2 / 4" borderWidth="1px" rounded="md">
@@ -284,8 +320,8 @@ export default function AnalysisPage() {
             getDependentColumns={getDependentColumns}
             data={
               pageState.isNarrowed
-                ? data.filter((x) => selection[x.isolate_id])
-                : data
+                ? filteredData.filter((x) => selection[x.isolate_id])
+                : filteredData
             }
             primaryKey="isolate_id"
             selectionClassName={
@@ -299,11 +335,11 @@ export default function AnalysisPage() {
           {isPending && `${t("Fetching...")} ${data.length}`}
           {isFinished &&
             !pageState.isNarrowed &&
-            `${t("Found")} ${data.length} ${t("records")}.`}
+            `${t("Found")} ${filteredData.length} ${t("records")}.`}
           {isFinished &&
             pageState.isNarrowed &&
             `${t("Staging")} ${
-              data.filter((x) => selection[x.isolate_id]).length
+              filteredData.filter((x) => selection[x.isolate_id]).length
             } ${t("records")}.`}
         </Box>
       </Box>

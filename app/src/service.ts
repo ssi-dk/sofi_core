@@ -1,2 +1,2 @@
 export const getUrl = (path: string) =>
-  `${window.location.protocol}//${window.location.host}/mock/sap${path}`;
+  `${window.location.protocol}//${window.location.host}/api${path}`;

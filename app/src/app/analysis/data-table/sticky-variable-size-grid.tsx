@@ -1,4 +1,4 @@
-import React, { Ref } from "react";
+import React from "react";
 import {
   VariableSizeGrid as Grid,
   VariableSizeGrid,
@@ -147,6 +147,7 @@ function useInnerElementType(Cell, columnWidth, rowHeight) {
         }
 
         return (
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           <div ref={ref as any} {...props}>
             {children}
           </div>
@@ -156,19 +157,22 @@ function useInnerElementType(Cell, columnWidth, rowHeight) {
   );
 }
 
-type StickyVariableSizeGridProps = VariableSizeGridProps & { gridRef: React.Ref<VariableSizeGrid> }
+type StickyVariableSizeGridProps = VariableSizeGridProps & {
+  gridRef: React.Ref<VariableSizeGrid>;
+};
 
 export const StickyVariableSizeGrid: React.FC<StickyVariableSizeGridProps> = (
   props: StickyVariableSizeGridProps
 ) => {
+  const { gridRef, children, columnWidth, rowHeight } = props;
   return (
     <Grid
       {...props}
-      ref={props.gridRef}
+      ref={gridRef}
       innerElementType={useInnerElementType(
-        props.children,
-        props.columnWidth,
-        props.rowHeight
+        children,
+        columnWidth,
+        rowHeight
       )}
     />
   );

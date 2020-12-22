@@ -35,7 +35,7 @@ class TestApprovalController(BaseTestCase):
         body = {
   "matrix" : {
     "key" : {
-      "key" : true
+      "key" : "matrix"
     }
   }
 }

@@ -3,8 +3,6 @@
 import React from "react";
 import {
   Draggable,
-  DraggableProvided,
-  DraggableStateSnapshot,
   Droppable,
   DroppableProvided,
 } from "react-beautiful-dnd";
@@ -114,26 +112,6 @@ function DataTableColumnHeader<T extends NotEmpty>(
     ]
   );
 
-  const renderColumn = React.useCallback(
-    () => (
-      <Draggable
-        key={column.id}
-        draggableId={column.id}
-        index={columnIndex}
-        isDragDisabled={false}
-      >
-        {(provided, snapshot) => (
-          <ColumnHeader
-            provided={provided}
-            snapshot={snapshot}
-            innerRef={provided.innerRef}
-          />
-        )}
-      </Draggable>
-    ),
-    [column, columnIndex, ColumnHeader]
-  );
-
   function HeaderClone({ provided, style }) {
     return (
       <div
@@ -147,11 +125,6 @@ function DataTableColumnHeader<T extends NotEmpty>(
     );
   }
 
-  // do not re-render the Draggable if it has not changed
-  const InnerSleeve = React.memo(() => {
-    return renderColumn();
-  });
-
   return (
     <Droppable
       droppableId={column.id}
@@ -159,7 +132,7 @@ function DataTableColumnHeader<T extends NotEmpty>(
       mode="virtual"
       renderClone={(provided, style) => (
         <HeaderClone provided={provided} style={style} />
-      )} //(<Item provided={provided} isDragging={snapshot.isDragging} col={column} style={{}} />)}
+      )}
     >
       {(providedDroppable: DroppableProvided) => (
         <div

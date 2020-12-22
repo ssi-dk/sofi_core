@@ -40,7 +40,7 @@ export const viewReducer = createReducer(initialState, (builder) => {
         state.view.hiddenColumns.push(action.payload);
       }
     })
-    .addCase(setView, (state, action: any) => {
+    .addCase(setView, (state, action: {type: string, payload: UserDefinedView}) => {
       state.view = { ...action.payload };
     })
     .addCase(setDefaultView, (state) => {

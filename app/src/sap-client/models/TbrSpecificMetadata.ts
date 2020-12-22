@@ -56,16 +56,16 @@ export interface TbrSpecificMetadata  {
     travel_country?: string;
     /**
      * 
-     * @type {string}
+     * @type {Date}
      * @memberof TbrSpecificMetadata
      */
-    run_date: string;
+    run_date: Date;
     /**
      * 
-     * @type {string}
+     * @type {Date}
      * @memberof TbrSpecificMetadata
      */
-    kma_received_date?: string;
+    kma_received_date?: Date;
     /**
      * 
      * @type {string}
@@ -78,6 +78,24 @@ export interface TbrSpecificMetadata  {
      * @memberof TbrSpecificMetadata
      */
     region?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof TbrSpecificMetadata
+     */
+    fud_number?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof TbrSpecificMetadata
+     */
+    cluster_id?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof TbrSpecificMetadata
+     */
+    epi_export?: string;
 }
 
 export function TbrSpecificMetadataFromJSON(json: any): TbrSpecificMetadata {
@@ -88,10 +106,13 @@ export function TbrSpecificMetadataFromJSON(json: any): TbrSpecificMetadata {
         'age': !exists(json, 'age') ? undefined : json['age'],
         'travel': !exists(json, 'travel') ? undefined : json['travel'],
         'travel_country': !exists(json, 'travel_country') ? undefined : json['travel_country'],
-        'run_date': json['run_date'],
-        'kma_received_date': !exists(json, 'kma_received_date') ? undefined : json['kma_received_date'],
+        'run_date': new Date(json['run_date']),
+        'kma_received_date': !exists(json, 'kma_received_date') ? undefined : new Date(json['kma_received_date']),
         'kma': !exists(json, 'kma') ? undefined : json['kma'],
         'region': !exists(json, 'region') ? undefined : json['region'],
+        'fud_number': !exists(json, 'fud_number') ? undefined : json['fud_number'],
+        'cluster_id': !exists(json, 'cluster_id') ? undefined : json['cluster_id'],
+        'epi_export': !exists(json, 'epi_export') ? undefined : json['epi_export'],
     };
 }
 
@@ -106,10 +127,13 @@ export function TbrSpecificMetadataToJSON(value?: TbrSpecificMetadata): any {
         'age': value.age,
         'travel': value.travel,
         'travel_country': value.travel_country,
-        'run_date': value.run_date,
-        'kma_received_date': value.kma_received_date,
+        'run_date': value.run_date.toISOString(),
+        'kma_received_date': value.kma_received_date === undefined ? undefined : value.kma_received_date.toISOString(),
         'kma': value.kma,
         'region': value.region,
+        'fud_number': value.fud_number,
+        'cluster_id': value.cluster_id,
+        'epi_export': value.epi_export,
     };
 }
 

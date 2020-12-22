@@ -25,7 +25,7 @@ export const addUserViewMutation = (view: UserDefinedView) => {
   const base = createUserView<UserDefinedViews>({ userDefinedView: view });
   base.url = getUrl(base.url);
   base.update = {
-    userViews: (oldViews, _) => [...oldViews, view]
+    userViews: (oldViews) => [...oldViews, view]
   }
   return base;
 }

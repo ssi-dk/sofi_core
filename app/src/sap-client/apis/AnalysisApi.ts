@@ -16,6 +16,9 @@ import { HttpMethods, QueryConfig, ResponseBody, ResponseText } from 'redux-quer
 import * as runtime from '../runtime';
 
 import {
+    AnalysisQuery,
+    AnalysisQueryFromJSON,
+    AnalysisQueryToJSON,
     Column,
     ColumnFromJSON,
     ColumnToJSON,
@@ -27,6 +30,10 @@ import {
 export interface GetAnalysisRequest {
     pagingToken?: string;
     pageSize?: number;
+}
+
+export interface SearchAnalysisRequest {
+    query?: AnalysisQuery;
 }
 
 
@@ -123,5 +130,49 @@ function getColumnsRaw<T>( requestConfig: runtime.TypedQueryConfig<T, Array<Colu
 */
 export function getColumns<T>( requestConfig?: runtime.TypedQueryConfig<T, Array<Column>>): QueryConfig<T> {
     return getColumnsRaw( requestConfig);
+}
+
+/**
+ * Search all analysis by given query
+ */
+function searchAnalysisRaw<T>(requestParameters: SearchAnalysisRequest, requestConfig: runtime.TypedQueryConfig<T, PageOfAnalysis> = {}): QueryConfig<T> {
+    let queryParameters = null;
+
+
+    const headerParameters = {};
+
+    headerParameters['Content-Type'] = 'application/json';
+
+
+    const { meta = {} } = requestConfig;
+
+    const config: QueryConfig<T> = {
+        url: `/analysis`,
+        meta,
+        update: requestConfig.update,
+        queryKey: requestConfig.queryKey,
+        optimisticUpdate: requestConfig.optimisticUpdate,
+        force: requestConfig.force,
+        rollback: requestConfig.rollback,
+        options: {
+            method: 'POST',
+            headers: headerParameters,
+        },
+        body: queryParameters || AnalysisQueryToJSON(requestParameters.query),
+    };
+
+    const { transform: requestTransform } = requestConfig;
+    if (requestTransform) {
+        config.transform = (body: ResponseBody, text: ResponseBody) => requestTransform(PageOfAnalysisFromJSON(body), text);
+    }
+
+    return config;
+}
+
+/**
+* Search all analysis by given query
+*/
+export function searchAnalysis<T>(requestParameters: SearchAnalysisRequest, requestConfig?: runtime.TypedQueryConfig<T, PageOfAnalysis>): QueryConfig<T> {
+    return searchAnalysisRaw(requestParameters, requestConfig);
 }
 

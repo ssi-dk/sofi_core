@@ -17,7 +17,7 @@ class BaseMetadata(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, isolate_id=None, sequence_id=None, sequence_filename=None, institution=None, project_number=None, project_title=None, sampling_date=None, received_date=None, run_id=None, public=None, provided_species=None, primary_isolate=None, fud_number=None, cluster_id=None, epi_export=None):  # noqa: E501
+    def __init__(self, isolate_id=None, sequence_id=None, sequence_filename=None, institution=None, project_number=None, project_title=None, sampling_date=None, received_date=None, run_id=None, public=None, provided_species=None, primary_isolate=None):  # noqa: E501
         """BaseMetadata - a model defined in OpenAPI
 
         :param isolate_id: The isolate_id of this BaseMetadata.  # noqa: E501
@@ -33,9 +33,9 @@ class BaseMetadata(Model):
         :param project_title: The project_title of this BaseMetadata.  # noqa: E501
         :type project_title: str
         :param sampling_date: The sampling_date of this BaseMetadata.  # noqa: E501
-        :type sampling_date: str
+        :type sampling_date: datetime
         :param received_date: The received_date of this BaseMetadata.  # noqa: E501
-        :type received_date: str
+        :type received_date: datetime
         :param run_id: The run_id of this BaseMetadata.  # noqa: E501
         :type run_id: str
         :param public: The public of this BaseMetadata.  # noqa: E501
@@ -43,13 +43,7 @@ class BaseMetadata(Model):
         :param provided_species: The provided_species of this BaseMetadata.  # noqa: E501
         :type provided_species: str
         :param primary_isolate: The primary_isolate of this BaseMetadata.  # noqa: E501
-        :type primary_isolate: str
-        :param fud_number: The fud_number of this BaseMetadata.  # noqa: E501
-        :type fud_number: str
-        :param cluster_id: The cluster_id of this BaseMetadata.  # noqa: E501
-        :type cluster_id: str
-        :param epi_export: The epi_export of this BaseMetadata.  # noqa: E501
-        :type epi_export: str
+        :type primary_isolate: bool
         """
         self.openapi_types = {
             'isolate_id': str,
@@ -58,15 +52,12 @@ class BaseMetadata(Model):
             'institution': Organization,
             'project_number': float,
             'project_title': str,
-            'sampling_date': str,
-            'received_date': str,
+            'sampling_date': datetime,
+            'received_date': datetime,
             'run_id': str,
             'public': str,
             'provided_species': str,
-            'primary_isolate': str,
-            'fud_number': str,
-            'cluster_id': str,
-            'epi_export': str
+            'primary_isolate': bool
         }
 
         self.attribute_map = {
@@ -81,10 +72,7 @@ class BaseMetadata(Model):
             'run_id': 'run_id',
             'public': 'public',
             'provided_species': 'provided_species',
-            'primary_isolate': 'primary_isolate',
-            'fud_number': 'fud_number',
-            'cluster_id': 'cluster_id',
-            'epi_export': 'epi_export'
+            'primary_isolate': 'primary_isolate'
         }
 
         self._isolate_id = isolate_id
@@ -99,9 +87,6 @@ class BaseMetadata(Model):
         self._public = public
         self._provided_species = provided_species
         self._primary_isolate = primary_isolate
-        self._fud_number = fud_number
-        self._cluster_id = cluster_id
-        self._epi_export = epi_export
 
     @classmethod
     def from_dict(cls, dikt) -> 'BaseMetadata':
@@ -254,7 +239,7 @@ class BaseMetadata(Model):
 
 
         :return: The sampling_date of this BaseMetadata.
-        :rtype: str
+        :rtype: datetime
         """
         return self._sampling_date
 
@@ -264,7 +249,7 @@ class BaseMetadata(Model):
 
 
         :param sampling_date: The sampling_date of this BaseMetadata.
-        :type sampling_date: str
+        :type sampling_date: datetime
         """
 
         self._sampling_date = sampling_date
@@ -275,7 +260,7 @@ class BaseMetadata(Model):
 
 
         :return: The received_date of this BaseMetadata.
-        :rtype: str
+        :rtype: datetime
         """
         return self._received_date
 
@@ -285,7 +270,7 @@ class BaseMetadata(Model):
 
 
         :param received_date: The received_date of this BaseMetadata.
-        :type received_date: str
+        :type received_date: datetime
         """
         if received_date is None:
             raise ValueError("Invalid value for `received_date`, must not be `None`")  # noqa: E501
@@ -365,7 +350,7 @@ class BaseMetadata(Model):
 
 
         :return: The primary_isolate of this BaseMetadata.
-        :rtype: str
+        :rtype: bool
         """
         return self._primary_isolate
 
@@ -375,72 +360,9 @@ class BaseMetadata(Model):
 
 
         :param primary_isolate: The primary_isolate of this BaseMetadata.
-        :type primary_isolate: str
+        :type primary_isolate: bool
         """
         if primary_isolate is None:
             raise ValueError("Invalid value for `primary_isolate`, must not be `None`")  # noqa: E501
 
         self._primary_isolate = primary_isolate
-
-    @property
-    def fud_number(self):
-        """Gets the fud_number of this BaseMetadata.
-
-
-        :return: The fud_number of this BaseMetadata.
-        :rtype: str
-        """
-        return self._fud_number
-
-    @fud_number.setter
-    def fud_number(self, fud_number):
-        """Sets the fud_number of this BaseMetadata.
-
-
-        :param fud_number: The fud_number of this BaseMetadata.
-        :type fud_number: str
-        """
-
-        self._fud_number = fud_number
-
-    @property
-    def cluster_id(self):
-        """Gets the cluster_id of this BaseMetadata.
-
-
-        :return: The cluster_id of this BaseMetadata.
-        :rtype: str
-        """
-        return self._cluster_id
-
-    @cluster_id.setter
-    def cluster_id(self, cluster_id):
-        """Sets the cluster_id of this BaseMetadata.
-
-
-        :param cluster_id: The cluster_id of this BaseMetadata.
-        :type cluster_id: str
-        """
-
-        self._cluster_id = cluster_id
-
-    @property
-    def epi_export(self):
-        """Gets the epi_export of this BaseMetadata.
-
-
-        :return: The epi_export of this BaseMetadata.
-        :rtype: str
-        """
-        return self._epi_export
-
-    @epi_export.setter
-    def epi_export(self, epi_export):
-        """Sets the epi_export of this BaseMetadata.
-
-
-        :param epi_export: The epi_export of this BaseMetadata.
-        :type epi_export: str
-        """
-
-        self._epi_export = epi_export

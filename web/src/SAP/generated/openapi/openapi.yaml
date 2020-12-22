@@ -44,6 +44,25 @@ paths:
       tags:
       - analysis
       x-openapi-router-controller: web.src.SAP.generated.controllers.analysis_controller
+    post:
+      description: Search all analysis by given query
+      operationId: search_analysis
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AnalysisQuery'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageOfAnalysis'
+          description: Page of isolates
+      tags:
+      - analysis
+      x-openapi-router-controller: web.src.SAP.generated.controllers.analysis_controller
+      x-codegen-request-body-name: query
   /analysis/columns:
     get:
       description: Get column metadata, scoped to authenticated user
@@ -326,26 +345,56 @@ components:
       type: string
     PageOfAnalysis:
       example:
-        pagingToken: pagingToken
-        totalCount: 0.8008281904610115
+        paging_token: paging_token
+        approval_matrix:
+          key:
+            key: approval_matrix
+        total_count: 0
         items:
         - null
         - null
       properties:
-        pagingToken:
+        paging_token:
           nullable: true
           pattern: ^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$
           type: string
-        totalCount:
-          type: number
+        total_count:
+          type: integer
         items:
           items:
             $ref: '#/components/schemas/AnalysisResult'
           type: array
+        approval_matrix:
+          additionalProperties:
+            additionalProperties:
+              $ref: '#/components/schemas/ApprovalStatus'
+            type: object
+          type: object
       required:
+      - approval_matrix
       - items
-      - pagingToken
-      - totalCount
+      - paging_token
+      - total_count
+    AnalysisQuery:
+      example:
+        paging_token: paging_token
+        filters:
+          key: filters
+        page_size: 0
+      properties:
+        paging_token:
+          description: opaque token to supply to get the next page of isolates
+          format: byte
+          nullable: true
+          type: string
+        page_size:
+          default: 100
+          nullable: true
+          type: integer
+        filters:
+          additionalProperties:
+            type: string
+          type: object
     Column:
       example:
         pii: true
@@ -449,12 +498,12 @@ components:
       example:
         matrix:
           key:
-            key: true
+            key: matrix
       properties:
         matrix:
           additionalProperties:
             additionalProperties:
-              type: boolean
+              $ref: '#/components/schemas/ApprovalStatus'
             type: object
           type: object
       required:
@@ -464,10 +513,16 @@ components:
       allOf:
       - $ref: '#/components/schemas/ApprovalRequest'
       - $ref: '#/components/schemas/Approval_allOf'
+    ApprovalStatus:
+      enum:
+      - pending
+      - rejected
+      - approved
+      type: string
     ApprovalMatrix:
       additionalProperties:
         additionalProperties:
-          type: boolean
+          $ref: '#/components/schemas/ApprovalStatus'
         type: object
       type: object
     Resistance:
@@ -491,8 +546,10 @@ components:
         project_title:
           type: string
         sampling_date:
+          format: date-time
           type: string
         received_date:
+          format: date-time
           type: string
         run_id:
           type: string
@@ -501,13 +558,7 @@ components:
         provided_species:
           type: string
         primary_isolate:
-          type: string
-        fud_number:
-          type: string
-        cluster_id:
-          type: string
-        epi_export:
-          type: string
+          type: boolean
       required:
       - institution
       - isolate_id
@@ -535,12 +586,20 @@ components:
         travel_country:
           type: string
         run_date:
+          format: date-time
           type: string
         kma_received_date:
+          format: date-time
           type: string
         kma:
           type: string
         region:
+          type: string
+        fud_number:
+          type: string
+        cluster_id:
+          type: string
+        epi_export:
           type: string
       required:
       - run_date
@@ -627,6 +686,9 @@ components:
     AnalysisResult_allOf:
       properties:
         _id:
+          format: uuid
+          type: string
+        resfinder_version:
           type: string
         QC_provided_species:
           type: number

@@ -1,88 +1,171 @@
+/* eslint-disable react/prefer-stateless-function */
 import React, { useState } from "react";
-import { Text, Button, SimpleGrid } from "@chakra-ui/react";
-import Select from "react-select";
+import { Text, Flex } from "@chakra-ui/react";
+import Select, { ActionMeta, OptionTypeBase, ValueType } from "react-select";
 import { selectTheme } from "app/app.styles";
-import DatePicker from "react-datepicker";
-
 import { useTranslation } from "react-i18next";
+import { AnalysisResult } from "sap-client";
+import { PropFilter, RangeFilter } from "utils";
 import FilterBox from "../filter-box";
-import "react-datepicker/dist/react-datepicker.css";
+import DatePicker from "./date-picker";
 
-const agensOptions = [
-  { value: "v1", label: "View 1" },
-  { value: "v2", label: "View 2" },
-  { value: "v3", label: "View 3" },
-];
+type MetaFilterProps = {
+  organisations: string[];
+  projects: string[];
+  species: string[];
+  onPropFilterChange: (resultingFilter: PropFilter<AnalysisResult>) => void;
+  onRangeFilterChange: (resultingFilter: RangeFilter<AnalysisResult>) => void;
+};
 
-const serotypOptions = [
-  { value: "v1", label: "View 1" },
-  { value: "v2", label: "View 2" },
-  { value: "v3", label: "View 3" },
-];
+function MetaFilter(props: MetaFilterProps) {
+  const {
+    organisations,
+    projects,
+    species,
+    onPropFilterChange,
+    onRangeFilterChange,
+  } = props;
 
-const rfvOptions = [
-  { value: "v1", label: "View 1" },
-  { value: "v2", label: "View 2" },
-  { value: "v3", label: "View 3" },
-];
-
-function MetaFilter() {
   const { t } = useTranslation();
-  const ExampleCustomInput = ({ value, onClick }) => (
-    <Button
-      onClick={onClick}
-      variant="outline"
-      pl={4}
-      pr={8}
-      backgroundColor="#fff"
-      fontWeight={500}
-    >
-      {value}
-    </Button>
+
+  const [receivedStartDate, setReceivedStartDate] = useState(null as Date);
+  const [receivedEndDate, setReceivedEndDate] = useState(null as Date);
+  const [sampledStartDate, setSampledStartDate] = useState(null as Date);
+  const [sampledEndDate, setSampledEndDate] = useState(null as Date);
+
+  const [propFilterState, setPropFilterState] = React.useState(
+    {} as { [K in keyof AnalysisResult]: ValueType<OptionTypeBase, true> }
   );
-  const [startDate, setStartDate] = useState(new Date());
+  const [rangeFilterState, setRangeFilterState] = React.useState(
+    {} as {
+      [K in keyof AnalysisResult]: {
+        min: AnalysisResult[K];
+        max: AnalysisResult[K];
+      };
+    }
+  );
+
+  // eslint-disable-next-line
+  type RangeEnd = keyof RangeFilter<any>[0];
+
+  const onDateChange = React.useCallback(
+    (
+      field: keyof AnalysisResult,
+      end: RangeEnd,
+      cb: React.Dispatch<React.SetStateAction<Date>>
+    ) => (d: Date) => {
+      cb(d);
+      const opposite = end === "min" ? "max" : "min";
+      const minDate = new Date(0);
+      const maxDate = new Date(new Date().getTime() + 24 * 60 * 60 * 1000); // tomorrow
+      const oppositeValue =
+        opposite === "min"
+          ? rangeFilterState[field]?.min ?? minDate
+          : rangeFilterState[field]?.max ?? maxDate;
+      const val = d !== null ? d : end === "min" ? minDate : maxDate;
+      const resolvedState = {
+        ...rangeFilterState,
+        [field]: { [end]: val, [opposite]: oppositeValue },
+      };
+      setRangeFilterState(resolvedState);
+      onRangeFilterChange(resolvedState);
+    },
+    [rangeFilterState, setRangeFilterState, onRangeFilterChange]
+  );
+
+  const organisationOptions = React.useMemo(
+    () => organisations.map((x) => ({ value: x, label: x })),
+    [organisations]
+  );
+  const projectOptions = React.useMemo(
+    () => projects.map((x) => ({ value: x, label: x })),
+    [projects]
+  );
+  const speciesOptions = React.useMemo(
+    () => species.map((x) => ({ value: x, label: x })),
+    [species]
+  );
+
+  const onChangeBuilder: (
+    field: keyof AnalysisResult
+  ) => (
+    val: ValueType<OptionTypeBase, true>,
+    action: ActionMeta<OptionTypeBase>
+  ) => void = React.useCallback(
+    (field) => {
+      return (value, { action }) => {
+        switch (action) {
+          case "clear":
+            value = [];
+            break;
+          default:
+            break;
+        }
+        const resolvedState = {
+          ...propFilterState,
+          [field]: [...(value?.values() || [])].map((x) => x.value),
+        };
+        setPropFilterState(resolvedState);
+        // eslint-disable-next-line
+        onPropFilterChange(resolvedState as any);
+      };
+    },
+    [setPropFilterState, onPropFilterChange, propFilterState]
+  );
+
   return (
     <FilterBox title="Metadata filter">
-      <Text>Prøvetagningsdato</Text>
-      <SimpleGrid columns={2}>
+      <Text>{t("sampling_date")}</Text>
+      <Flex>
         <DatePicker
-          selected={startDate}
+          selectedDate={sampledStartDate}
           isClearable
-          onChange={(c) => setStartDate(c as Date)}
-          placeholderText="-"
-          customInput={<ExampleCustomInput value="" onClick={() => {}} />}
+          onChange={onDateChange("sampling_date", "min", setSampledStartDate)}
+          placeholderText={t("From")}
         />
         <DatePicker
-          selected={startDate}
+          selectedDate={sampledEndDate}
           isClearable
-          onChange={(c) => setStartDate(c as Date)}
-          placeholderText="-"
-          customInput={<ExampleCustomInput value="" onClick={() => {}} />}
+          onChange={onDateChange("sampling_date", "max", setSampledEndDate)}
+          placeholderText={t("To")}
         />
-      </SimpleGrid>
+      </Flex>
       <Text mt={2}>{t("Organisation")}</Text>
-      <Select options={agensOptions} isMulti theme={selectTheme} />
+      <Select
+        options={organisationOptions}
+        isMulti
+        theme={selectTheme}
+        onChange={onChangeBuilder("institution")}
+      />
       <Text mt={2}>{t("Projekt")}</Text>
-      <Select options={serotypOptions} isMulti theme={selectTheme} />
+      <Select
+        options={projectOptions}
+        isMulti
+        theme={selectTheme}
+        onChange={onChangeBuilder("project_title")}
+      />
       <Text mt={2}>{t("Modtagedato")}</Text>
-      <SimpleGrid columns={2}>
+      <Flex>
         <DatePicker
-          selected={startDate}
+          selectedDate={receivedStartDate}
           isClearable
-          onChange={(c) => setStartDate(c as Date)}
-          placeholderText="-"
-          customInput={<ExampleCustomInput value="" onClick={() => {}} />}
+          onChange={onDateChange("received_date", "min", setReceivedStartDate)}
+          placeholderText={t("From")}
         />
         <DatePicker
-          selected={startDate}
+          selectedDate={receivedEndDate}
           isClearable
-          onChange={(c) => setStartDate(c as Date)}
-          placeholderText="-"
-          customInput={<ExampleCustomInput value="" onClick={() => {}} />}
+          onChange={onDateChange("received_date", "max", setReceivedEndDate)}
+          placeholderText={t("To")}
         />
-      </SimpleGrid>
+      </Flex>
       <Text mt={2}>{t("Dyreart")}</Text>
-      <Select options={rfvOptions} isMulti theme={selectTheme} />
+      <Select
+        options={speciesOptions}
+        isMulti
+        theme={selectTheme}
+        onChange={onChangeBuilder("provided_species")}
+      />
     </FilterBox>
   );
 }

@@ -32,6 +32,12 @@ export interface AnalysisResultAllOf  {
     _id: string;
     /**
      * 
+     * @type {string}
+     * @memberof AnalysisResultAllOf
+     */
+    resfinder_version?: string;
+    /**
+     * 
      * @type {number}
      * @memberof AnalysisResultAllOf
      */
@@ -353,6 +359,7 @@ export interface AnalysisResultAllOf  {
 export function AnalysisResultAllOfFromJSON(json: any): AnalysisResultAllOf {
     return {
         '_id': json['_id'],
+        'resfinder_version': !exists(json, 'resfinder_version') ? undefined : json['resfinder_version'],
         'QC_provided_species': !exists(json, 'QC_provided_species') ? undefined : json['QC_provided_species'],
         'QC_genome1x': !exists(json, 'QC_genome1x') ? undefined : json['QC_genome1x'],
         'QC_genome10x': !exists(json, 'QC_genome10x') ? undefined : json['QC_genome10x'],
@@ -415,6 +422,7 @@ export function AnalysisResultAllOfToJSON(value?: AnalysisResultAllOf): any {
     }
     return {
         '_id': value._id,
+        'resfinder_version': value.resfinder_version,
         'QC_provided_species': value.QC_provided_species,
         'QC_genome1x': value.QC_genome1x,
         'QC_genome10x': value.QC_genome10x,

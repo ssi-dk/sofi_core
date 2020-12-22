@@ -4,6 +4,8 @@ import { initReactI18next } from "react-i18next";
 const resources = {
   da: {
     translation: {
+      From: "Fra",
+      To: "Til",
       Select: "Tilvælg",
       Cancel: "Annullér",
       Found: "Fundet",
@@ -17,7 +19,6 @@ const resources = {
       "have been rejected.": "er blevet afvist.",
       MetadataFilter: "Metadata filter",
       AnalysisFilter: "Analyse filter",
-      Prøvetagningsdato: "Prøvetagningsdato",
       Organisation: "Organisation",
       Projekt: "Projekt",
       Modtagedato: "Modtagedato",
@@ -32,7 +33,8 @@ const resources = {
       "Approved by": "Godkendt af",
       "Revoke approval": "Tilbagekalde godkendelse",
       "My approval history": "Mine godkendelse historik",
-      approvals: "godkendelser"
+      approvals: "godkendelser",
+      sampling_date: "Prøvetagningsdato"
     },
   },
 };
@@ -46,7 +48,7 @@ i18n
     keySeparator: false, // we do not use keys in form messages.welcome
 
     interpolation: {
-      escapeValue: false, // react already safes from xss
+      escapeValue: false, // react already safe from xss
     },
   });
 

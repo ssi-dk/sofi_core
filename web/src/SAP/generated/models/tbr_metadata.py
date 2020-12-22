@@ -21,7 +21,7 @@ class TbrMetadata(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, isolate_id=None, sequence_id=None, sequence_filename=None, institution=None, project_number=None, project_title=None, sampling_date=None, received_date=None, run_id=None, public=None, provided_species=None, primary_isolate=None, fud_number=None, cluster_id=None, epi_export=None, cpr=None, gender=None, name=None, age=None, travel=None, travel_country=None, run_date=None, kma_received_date=None, kma=None, region=None):  # noqa: E501
+    def __init__(self, isolate_id=None, sequence_id=None, sequence_filename=None, institution=None, project_number=None, project_title=None, sampling_date=None, received_date=None, run_id=None, public=None, provided_species=None, primary_isolate=None, cpr=None, gender=None, name=None, age=None, travel=None, travel_country=None, run_date=None, kma_received_date=None, kma=None, region=None, fud_number=None, cluster_id=None, epi_export=None):  # noqa: E501
         """TbrMetadata - a model defined in OpenAPI
 
         :param isolate_id: The isolate_id of this TbrMetadata.  # noqa: E501
@@ -37,9 +37,9 @@ class TbrMetadata(Model):
         :param project_title: The project_title of this TbrMetadata.  # noqa: E501
         :type project_title: str
         :param sampling_date: The sampling_date of this TbrMetadata.  # noqa: E501
-        :type sampling_date: str
+        :type sampling_date: datetime
         :param received_date: The received_date of this TbrMetadata.  # noqa: E501
-        :type received_date: str
+        :type received_date: datetime
         :param run_id: The run_id of this TbrMetadata.  # noqa: E501
         :type run_id: str
         :param public: The public of this TbrMetadata.  # noqa: E501
@@ -47,13 +47,7 @@ class TbrMetadata(Model):
         :param provided_species: The provided_species of this TbrMetadata.  # noqa: E501
         :type provided_species: str
         :param primary_isolate: The primary_isolate of this TbrMetadata.  # noqa: E501
-        :type primary_isolate: str
-        :param fud_number: The fud_number of this TbrMetadata.  # noqa: E501
-        :type fud_number: str
-        :param cluster_id: The cluster_id of this TbrMetadata.  # noqa: E501
-        :type cluster_id: str
-        :param epi_export: The epi_export of this TbrMetadata.  # noqa: E501
-        :type epi_export: str
+        :type primary_isolate: bool
         :param cpr: The cpr of this TbrMetadata.  # noqa: E501
         :type cpr: str
         :param gender: The gender of this TbrMetadata.  # noqa: E501
@@ -67,13 +61,19 @@ class TbrMetadata(Model):
         :param travel_country: The travel_country of this TbrMetadata.  # noqa: E501
         :type travel_country: str
         :param run_date: The run_date of this TbrMetadata.  # noqa: E501
-        :type run_date: str
+        :type run_date: datetime
         :param kma_received_date: The kma_received_date of this TbrMetadata.  # noqa: E501
-        :type kma_received_date: str
+        :type kma_received_date: datetime
         :param kma: The kma of this TbrMetadata.  # noqa: E501
         :type kma: str
         :param region: The region of this TbrMetadata.  # noqa: E501
         :type region: str
+        :param fud_number: The fud_number of this TbrMetadata.  # noqa: E501
+        :type fud_number: str
+        :param cluster_id: The cluster_id of this TbrMetadata.  # noqa: E501
+        :type cluster_id: str
+        :param epi_export: The epi_export of this TbrMetadata.  # noqa: E501
+        :type epi_export: str
         """
         self.openapi_types = {
             'isolate_id': str,
@@ -82,25 +82,25 @@ class TbrMetadata(Model):
             'institution': Organization,
             'project_number': float,
             'project_title': str,
-            'sampling_date': str,
-            'received_date': str,
+            'sampling_date': datetime,
+            'received_date': datetime,
             'run_id': str,
             'public': str,
             'provided_species': str,
-            'primary_isolate': str,
-            'fud_number': str,
-            'cluster_id': str,
-            'epi_export': str,
+            'primary_isolate': bool,
             'cpr': str,
             'gender': str,
             'name': str,
             'age': float,
             'travel': str,
             'travel_country': str,
-            'run_date': str,
-            'kma_received_date': str,
+            'run_date': datetime,
+            'kma_received_date': datetime,
             'kma': str,
-            'region': str
+            'region': str,
+            'fud_number': str,
+            'cluster_id': str,
+            'epi_export': str
         }
 
         self.attribute_map = {
@@ -116,9 +116,6 @@ class TbrMetadata(Model):
             'public': 'public',
             'provided_species': 'provided_species',
             'primary_isolate': 'primary_isolate',
-            'fud_number': 'fud_number',
-            'cluster_id': 'cluster_id',
-            'epi_export': 'epi_export',
             'cpr': 'cpr',
             'gender': 'gender',
             'name': 'name',
@@ -128,7 +125,10 @@ class TbrMetadata(Model):
             'run_date': 'run_date',
             'kma_received_date': 'kma_received_date',
             'kma': 'kma',
-            'region': 'region'
+            'region': 'region',
+            'fud_number': 'fud_number',
+            'cluster_id': 'cluster_id',
+            'epi_export': 'epi_export'
         }
 
         self._isolate_id = isolate_id
@@ -143,9 +143,6 @@ class TbrMetadata(Model):
         self._public = public
         self._provided_species = provided_species
         self._primary_isolate = primary_isolate
-        self._fud_number = fud_number
-        self._cluster_id = cluster_id
-        self._epi_export = epi_export
         self._cpr = cpr
         self._gender = gender
         self._name = name
@@ -156,6 +153,9 @@ class TbrMetadata(Model):
         self._kma_received_date = kma_received_date
         self._kma = kma
         self._region = region
+        self._fud_number = fud_number
+        self._cluster_id = cluster_id
+        self._epi_export = epi_export
 
     @classmethod
     def from_dict(cls, dikt) -> 'TbrMetadata':
@@ -308,7 +308,7 @@ class TbrMetadata(Model):
 
 
         :return: The sampling_date of this TbrMetadata.
-        :rtype: str
+        :rtype: datetime
         """
         return self._sampling_date
 
@@ -318,7 +318,7 @@ class TbrMetadata(Model):
 
 
         :param sampling_date: The sampling_date of this TbrMetadata.
-        :type sampling_date: str
+        :type sampling_date: datetime
         """
 
         self._sampling_date = sampling_date
@@ -329,7 +329,7 @@ class TbrMetadata(Model):
 
 
         :return: The received_date of this TbrMetadata.
-        :rtype: str
+        :rtype: datetime
         """
         return self._received_date
 
@@ -339,7 +339,7 @@ class TbrMetadata(Model):
 
 
         :param received_date: The received_date of this TbrMetadata.
-        :type received_date: str
+        :type received_date: datetime
         """
         if received_date is None:
             raise ValueError("Invalid value for `received_date`, must not be `None`")  # noqa: E501
@@ -419,7 +419,7 @@ class TbrMetadata(Model):
 
 
         :return: The primary_isolate of this TbrMetadata.
-        :rtype: str
+        :rtype: bool
         """
         return self._primary_isolate
 
@@ -429,75 +429,12 @@ class TbrMetadata(Model):
 
 
         :param primary_isolate: The primary_isolate of this TbrMetadata.
-        :type primary_isolate: str
+        :type primary_isolate: bool
         """
         if primary_isolate is None:
             raise ValueError("Invalid value for `primary_isolate`, must not be `None`")  # noqa: E501
 
         self._primary_isolate = primary_isolate
-
-    @property
-    def fud_number(self):
-        """Gets the fud_number of this TbrMetadata.
-
-
-        :return: The fud_number of this TbrMetadata.
-        :rtype: str
-        """
-        return self._fud_number
-
-    @fud_number.setter
-    def fud_number(self, fud_number):
-        """Sets the fud_number of this TbrMetadata.
-
-
-        :param fud_number: The fud_number of this TbrMetadata.
-        :type fud_number: str
-        """
-
-        self._fud_number = fud_number
-
-    @property
-    def cluster_id(self):
-        """Gets the cluster_id of this TbrMetadata.
-
-
-        :return: The cluster_id of this TbrMetadata.
-        :rtype: str
-        """
-        return self._cluster_id
-
-    @cluster_id.setter
-    def cluster_id(self, cluster_id):
-        """Sets the cluster_id of this TbrMetadata.
-
-
-        :param cluster_id: The cluster_id of this TbrMetadata.
-        :type cluster_id: str
-        """
-
-        self._cluster_id = cluster_id
-
-    @property
-    def epi_export(self):
-        """Gets the epi_export of this TbrMetadata.
-
-
-        :return: The epi_export of this TbrMetadata.
-        :rtype: str
-        """
-        return self._epi_export
-
-    @epi_export.setter
-    def epi_export(self, epi_export):
-        """Sets the epi_export of this TbrMetadata.
-
-
-        :param epi_export: The epi_export of this TbrMetadata.
-        :type epi_export: str
-        """
-
-        self._epi_export = epi_export
 
     @property
     def cpr(self):
@@ -637,7 +574,7 @@ class TbrMetadata(Model):
 
 
         :return: The run_date of this TbrMetadata.
-        :rtype: str
+        :rtype: datetime
         """
         return self._run_date
 
@@ -647,7 +584,7 @@ class TbrMetadata(Model):
 
 
         :param run_date: The run_date of this TbrMetadata.
-        :type run_date: str
+        :type run_date: datetime
         """
         if run_date is None:
             raise ValueError("Invalid value for `run_date`, must not be `None`")  # noqa: E501
@@ -660,7 +597,7 @@ class TbrMetadata(Model):
 
 
         :return: The kma_received_date of this TbrMetadata.
-        :rtype: str
+        :rtype: datetime
         """
         return self._kma_received_date
 
@@ -670,7 +607,7 @@ class TbrMetadata(Model):
 
 
         :param kma_received_date: The kma_received_date of this TbrMetadata.
-        :type kma_received_date: str
+        :type kma_received_date: datetime
         """
 
         self._kma_received_date = kma_received_date
@@ -716,3 +653,66 @@ class TbrMetadata(Model):
         """
 
         self._region = region
+
+    @property
+    def fud_number(self):
+        """Gets the fud_number of this TbrMetadata.
+
+
+        :return: The fud_number of this TbrMetadata.
+        :rtype: str
+        """
+        return self._fud_number
+
+    @fud_number.setter
+    def fud_number(self, fud_number):
+        """Sets the fud_number of this TbrMetadata.
+
+
+        :param fud_number: The fud_number of this TbrMetadata.
+        :type fud_number: str
+        """
+
+        self._fud_number = fud_number
+
+    @property
+    def cluster_id(self):
+        """Gets the cluster_id of this TbrMetadata.
+
+
+        :return: The cluster_id of this TbrMetadata.
+        :rtype: str
+        """
+        return self._cluster_id
+
+    @cluster_id.setter
+    def cluster_id(self, cluster_id):
+        """Sets the cluster_id of this TbrMetadata.
+
+
+        :param cluster_id: The cluster_id of this TbrMetadata.
+        :type cluster_id: str
+        """
+
+        self._cluster_id = cluster_id
+
+    @property
+    def epi_export(self):
+        """Gets the epi_export of this TbrMetadata.
+
+
+        :return: The epi_export of this TbrMetadata.
+        :rtype: str
+        """
+        return self._epi_export
+
+    @epi_export.setter
+    def epi_export(self, epi_export):
+        """Sets the epi_export of this TbrMetadata.
+
+
+        :param epi_export: The epi_export of this TbrMetadata.
+        :type epi_export: str
+        """
+
+        self._epi_export = epi_export
