@@ -92,34 +92,10 @@ export interface BaseMetadata  {
     provided_species: string;
     /**
      * 
-     * @type {string}
+     * @type {boolean}
      * @memberof BaseMetadata
      */
-    primary_isolate: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof BaseMetadata
-     */
-    fud_number?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof BaseMetadata
-     */
-    cluster_id?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof BaseMetadata
-     */
-    epi_export?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof BaseMetadata
-     */
-    resfinder_version: string;
+    primary_isolate: boolean;
 }
 
 export function BaseMetadataFromJSON(json: any): BaseMetadata {
@@ -136,10 +112,6 @@ export function BaseMetadataFromJSON(json: any): BaseMetadata {
         '_public': !exists(json, 'public') ? undefined : json['public'],
         'provided_species': json['provided_species'],
         'primary_isolate': json['primary_isolate'],
-        'fud_number': !exists(json, 'fud_number') ? undefined : json['fud_number'],
-        'cluster_id': !exists(json, 'cluster_id') ? undefined : json['cluster_id'],
-        'epi_export': !exists(json, 'epi_export') ? undefined : json['epi_export'],
-        'resfinder_version': json['resfinder_version'],
     };
 }
 
@@ -160,10 +132,6 @@ export function BaseMetadataToJSON(value?: BaseMetadata): any {
         'public': value._public,
         'provided_species': value.provided_species,
         'primary_isolate': value.primary_isolate,
-        'fud_number': value.fud_number,
-        'cluster_id': value.cluster_id,
-        'epi_export': value.epi_export,
-        'resfinder_version': value.resfinder_version,
     };
 }
 

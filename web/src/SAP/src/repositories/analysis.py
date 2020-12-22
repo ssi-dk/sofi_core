@@ -13,4 +13,4 @@ def get_all_analysis():
     mydb = conn["bifrost_test"]
     samples = mydb["sap_analysis_results"]
 
-    return list(map(remove_id, samples.find().limit(10)))
+    return list(map(remove_id, samples.find({})))

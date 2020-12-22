@@ -15,7 +15,7 @@ class TbrSpecificMetadata(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, cpr=None, gender=None, name=None, age=None, travel=None, travel_country=None, run_date=None, kma_received_date=None, kma=None, region=None):  # noqa: E501
+    def __init__(self, cpr=None, gender=None, name=None, age=None, travel=None, travel_country=None, run_date=None, kma_received_date=None, kma=None, region=None, fud_number=None, cluster_id=None, epi_export=None):  # noqa: E501
         """TbrSpecificMetadata - a model defined in OpenAPI
 
         :param cpr: The cpr of this TbrSpecificMetadata.  # noqa: E501
@@ -38,6 +38,12 @@ class TbrSpecificMetadata(Model):
         :type kma: str
         :param region: The region of this TbrSpecificMetadata.  # noqa: E501
         :type region: str
+        :param fud_number: The fud_number of this TbrSpecificMetadata.  # noqa: E501
+        :type fud_number: str
+        :param cluster_id: The cluster_id of this TbrSpecificMetadata.  # noqa: E501
+        :type cluster_id: str
+        :param epi_export: The epi_export of this TbrSpecificMetadata.  # noqa: E501
+        :type epi_export: str
         """
         self.openapi_types = {
             'cpr': str,
@@ -49,7 +55,10 @@ class TbrSpecificMetadata(Model):
             'run_date': datetime,
             'kma_received_date': datetime,
             'kma': str,
-            'region': str
+            'region': str,
+            'fud_number': str,
+            'cluster_id': str,
+            'epi_export': str
         }
 
         self.attribute_map = {
@@ -62,7 +71,10 @@ class TbrSpecificMetadata(Model):
             'run_date': 'run_date',
             'kma_received_date': 'kma_received_date',
             'kma': 'kma',
-            'region': 'region'
+            'region': 'region',
+            'fud_number': 'fud_number',
+            'cluster_id': 'cluster_id',
+            'epi_export': 'epi_export'
         }
 
         self._cpr = cpr
@@ -75,6 +87,9 @@ class TbrSpecificMetadata(Model):
         self._kma_received_date = kma_received_date
         self._kma = kma
         self._region = region
+        self._fud_number = fud_number
+        self._cluster_id = cluster_id
+        self._epi_export = epi_export
 
     @classmethod
     def from_dict(cls, dikt) -> 'TbrSpecificMetadata':
@@ -304,3 +319,66 @@ class TbrSpecificMetadata(Model):
         """
 
         self._region = region
+
+    @property
+    def fud_number(self):
+        """Gets the fud_number of this TbrSpecificMetadata.
+
+
+        :return: The fud_number of this TbrSpecificMetadata.
+        :rtype: str
+        """
+        return self._fud_number
+
+    @fud_number.setter
+    def fud_number(self, fud_number):
+        """Sets the fud_number of this TbrSpecificMetadata.
+
+
+        :param fud_number: The fud_number of this TbrSpecificMetadata.
+        :type fud_number: str
+        """
+
+        self._fud_number = fud_number
+
+    @property
+    def cluster_id(self):
+        """Gets the cluster_id of this TbrSpecificMetadata.
+
+
+        :return: The cluster_id of this TbrSpecificMetadata.
+        :rtype: str
+        """
+        return self._cluster_id
+
+    @cluster_id.setter
+    def cluster_id(self, cluster_id):
+        """Sets the cluster_id of this TbrSpecificMetadata.
+
+
+        :param cluster_id: The cluster_id of this TbrSpecificMetadata.
+        :type cluster_id: str
+        """
+
+        self._cluster_id = cluster_id
+
+    @property
+    def epi_export(self):
+        """Gets the epi_export of this TbrSpecificMetadata.
+
+
+        :return: The epi_export of this TbrSpecificMetadata.
+        :rtype: str
+        """
+        return self._epi_export
+
+    @epi_export.setter
+    def epi_export(self, epi_export):
+        """Sets the epi_export of this TbrSpecificMetadata.
+
+
+        :param epi_export: The epi_export of this TbrSpecificMetadata.
+        :type epi_export: str
+        """
+
+        self._epi_export = epi_export

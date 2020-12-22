@@ -4,6 +4,7 @@ export * from './AnalysisResultAllOf';
 export * from './Approval';
 export * from './ApprovalAllOf';
 export * from './ApprovalRequest';
+export * from './ApprovalStatus';
 export * from './BaseMetadata';
 export * from './Column';
 export * from './LimsMetadata';

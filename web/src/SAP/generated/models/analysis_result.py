@@ -27,7 +27,7 @@ class AnalysisResult(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, isolate_id=None, sequence_id=None, sequence_filename=None, institution=None, project_number=None, project_title=None, sampling_date=None, received_date=None, run_id=None, public=None, provided_species=None, primary_isolate=None, fud_number=None, cluster_id=None, epi_export=None, resfinder_version=None, chr_number=None, aut_number=None, product_type=None, product=None, origin_country=None, animal_species=None, sample_info=None, cpr=None, gender=None, name=None, age=None, travel=None, travel_country=None, run_date=None, kma_received_date=None, kma=None, region=None, id=None, qc_provided_species=None, qc_genome1x=None, qc_genome10x=None, qc_gsize_diff1x10=None, qc_avg_coverage=None, qc_final=None, subspecies=None, species_final=None, st=None, pathotype=None, pathotype_final=None, serotype=None, serotype_final=None, adhesion=None, toxins=None, resistance_genes=None, amr_profile=None, amr_ami=None, amr_amp=None, amr_azi=None, amr_fep=None, amr_fot=None, amr_f_c=None, amr_fox=None, amr_taz=None, amr_t_c=None, amr_chl=None, amr_cip=None, amr_cli=None, amr_col=None, amr_dap=None, amr_etp=None, amr_ery=None, amr_fus=None, amr_gen=None, amr_imi=None, amr_kan=None, amr_lzd=None, amr_mero=None, amr_mup=None, amr_nal=None, amr_pen=None, amr_syn=None, amr_rif=None, amr_str=None, amr_sul=None, amr_tei=None, amr_trm=None, amr_tet=None, amr_tia=None, amr_tgc=None, amr_tmp=None, amr_van=None):  # noqa: E501
+    def __init__(self, isolate_id=None, sequence_id=None, sequence_filename=None, institution=None, project_number=None, project_title=None, sampling_date=None, received_date=None, run_id=None, public=None, provided_species=None, primary_isolate=None, chr_number=None, aut_number=None, product_type=None, product=None, origin_country=None, animal_species=None, sample_info=None, cpr=None, gender=None, name=None, age=None, travel=None, travel_country=None, run_date=None, kma_received_date=None, kma=None, region=None, fud_number=None, cluster_id=None, epi_export=None, id=None, resfinder_version=None, qc_provided_species=None, qc_genome1x=None, qc_genome10x=None, qc_gsize_diff1x10=None, qc_avg_coverage=None, qc_final=None, subspecies=None, species_final=None, st=None, pathotype=None, pathotype_final=None, serotype=None, serotype_final=None, adhesion=None, toxins=None, resistance_genes=None, amr_profile=None, amr_ami=None, amr_amp=None, amr_azi=None, amr_fep=None, amr_fot=None, amr_f_c=None, amr_fox=None, amr_taz=None, amr_t_c=None, amr_chl=None, amr_cip=None, amr_cli=None, amr_col=None, amr_dap=None, amr_etp=None, amr_ery=None, amr_fus=None, amr_gen=None, amr_imi=None, amr_kan=None, amr_lzd=None, amr_mero=None, amr_mup=None, amr_nal=None, amr_pen=None, amr_syn=None, amr_rif=None, amr_str=None, amr_sul=None, amr_tei=None, amr_trm=None, amr_tet=None, amr_tia=None, amr_tgc=None, amr_tmp=None, amr_van=None):  # noqa: E501
         """AnalysisResult - a model defined in OpenAPI
 
         :param isolate_id: The isolate_id of this AnalysisResult.  # noqa: E501
@@ -53,15 +53,7 @@ class AnalysisResult(Model):
         :param provided_species: The provided_species of this AnalysisResult.  # noqa: E501
         :type provided_species: str
         :param primary_isolate: The primary_isolate of this AnalysisResult.  # noqa: E501
-        :type primary_isolate: str
-        :param fud_number: The fud_number of this AnalysisResult.  # noqa: E501
-        :type fud_number: str
-        :param cluster_id: The cluster_id of this AnalysisResult.  # noqa: E501
-        :type cluster_id: str
-        :param epi_export: The epi_export of this AnalysisResult.  # noqa: E501
-        :type epi_export: str
-        :param resfinder_version: The resfinder_version of this AnalysisResult.  # noqa: E501
-        :type resfinder_version: str
+        :type primary_isolate: bool
         :param chr_number: The chr_number of this AnalysisResult.  # noqa: E501
         :type chr_number: float
         :param aut_number: The aut_number of this AnalysisResult.  # noqa: E501
@@ -96,8 +88,16 @@ class AnalysisResult(Model):
         :type kma: str
         :param region: The region of this AnalysisResult.  # noqa: E501
         :type region: str
+        :param fud_number: The fud_number of this AnalysisResult.  # noqa: E501
+        :type fud_number: str
+        :param cluster_id: The cluster_id of this AnalysisResult.  # noqa: E501
+        :type cluster_id: str
+        :param epi_export: The epi_export of this AnalysisResult.  # noqa: E501
+        :type epi_export: str
         :param id: The id of this AnalysisResult.  # noqa: E501
         :type id: str
+        :param resfinder_version: The resfinder_version of this AnalysisResult.  # noqa: E501
+        :type resfinder_version: str
         :param qc_provided_species: The qc_provided_species of this AnalysisResult.  # noqa: E501
         :type qc_provided_species: float
         :param qc_genome1x: The qc_genome1x of this AnalysisResult.  # noqa: E501
@@ -217,11 +217,7 @@ class AnalysisResult(Model):
             'run_id': str,
             'public': str,
             'provided_species': str,
-            'primary_isolate': str,
-            'fud_number': str,
-            'cluster_id': str,
-            'epi_export': str,
-            'resfinder_version': str,
+            'primary_isolate': bool,
             'chr_number': float,
             'aut_number': str,
             'product_type': str,
@@ -239,7 +235,11 @@ class AnalysisResult(Model):
             'kma_received_date': datetime,
             'kma': str,
             'region': str,
+            'fud_number': str,
+            'cluster_id': str,
+            'epi_export': str,
             'id': str,
+            'resfinder_version': str,
             'qc_provided_species': float,
             'qc_genome1x': float,
             'qc_genome10x': float,
@@ -308,10 +308,6 @@ class AnalysisResult(Model):
             'public': 'public',
             'provided_species': 'provided_species',
             'primary_isolate': 'primary_isolate',
-            'fud_number': 'fud_number',
-            'cluster_id': 'cluster_id',
-            'epi_export': 'epi_export',
-            'resfinder_version': 'resfinder_version',
             'chr_number': 'chr_number',
             'aut_number': 'aut_number',
             'product_type': 'product_type',
@@ -329,7 +325,11 @@ class AnalysisResult(Model):
             'kma_received_date': 'kma_received_date',
             'kma': 'kma',
             'region': 'region',
+            'fud_number': 'fud_number',
+            'cluster_id': 'cluster_id',
+            'epi_export': 'epi_export',
             'id': '_id',
+            'resfinder_version': 'resfinder_version',
             'qc_provided_species': 'QC_provided_species',
             'qc_genome1x': 'QC_genome1x',
             'qc_genome10x': 'QC_genome10x',
@@ -397,10 +397,6 @@ class AnalysisResult(Model):
         self._public = public
         self._provided_species = provided_species
         self._primary_isolate = primary_isolate
-        self._fud_number = fud_number
-        self._cluster_id = cluster_id
-        self._epi_export = epi_export
-        self._resfinder_version = resfinder_version
         self._chr_number = chr_number
         self._aut_number = aut_number
         self._product_type = product_type
@@ -418,7 +414,11 @@ class AnalysisResult(Model):
         self._kma_received_date = kma_received_date
         self._kma = kma
         self._region = region
+        self._fud_number = fud_number
+        self._cluster_id = cluster_id
+        self._epi_export = epi_export
         self._id = id
+        self._resfinder_version = resfinder_version
         self._qc_provided_species = qc_provided_species
         self._qc_genome1x = qc_genome1x
         self._qc_genome10x = qc_genome10x
@@ -735,7 +735,7 @@ class AnalysisResult(Model):
 
 
         :return: The primary_isolate of this AnalysisResult.
-        :rtype: str
+        :rtype: bool
         """
         return self._primary_isolate
 
@@ -745,98 +745,12 @@ class AnalysisResult(Model):
 
 
         :param primary_isolate: The primary_isolate of this AnalysisResult.
-        :type primary_isolate: str
+        :type primary_isolate: bool
         """
         if primary_isolate is None:
             raise ValueError("Invalid value for `primary_isolate`, must not be `None`")  # noqa: E501
 
         self._primary_isolate = primary_isolate
-
-    @property
-    def fud_number(self):
-        """Gets the fud_number of this AnalysisResult.
-
-
-        :return: The fud_number of this AnalysisResult.
-        :rtype: str
-        """
-        return self._fud_number
-
-    @fud_number.setter
-    def fud_number(self, fud_number):
-        """Sets the fud_number of this AnalysisResult.
-
-
-        :param fud_number: The fud_number of this AnalysisResult.
-        :type fud_number: str
-        """
-
-        self._fud_number = fud_number
-
-    @property
-    def cluster_id(self):
-        """Gets the cluster_id of this AnalysisResult.
-
-
-        :return: The cluster_id of this AnalysisResult.
-        :rtype: str
-        """
-        return self._cluster_id
-
-    @cluster_id.setter
-    def cluster_id(self, cluster_id):
-        """Sets the cluster_id of this AnalysisResult.
-
-
-        :param cluster_id: The cluster_id of this AnalysisResult.
-        :type cluster_id: str
-        """
-
-        self._cluster_id = cluster_id
-
-    @property
-    def epi_export(self):
-        """Gets the epi_export of this AnalysisResult.
-
-
-        :return: The epi_export of this AnalysisResult.
-        :rtype: str
-        """
-        return self._epi_export
-
-    @epi_export.setter
-    def epi_export(self, epi_export):
-        """Sets the epi_export of this AnalysisResult.
-
-
-        :param epi_export: The epi_export of this AnalysisResult.
-        :type epi_export: str
-        """
-
-        self._epi_export = epi_export
-
-    @property
-    def resfinder_version(self):
-        """Gets the resfinder_version of this AnalysisResult.
-
-
-        :return: The resfinder_version of this AnalysisResult.
-        :rtype: str
-        """
-        return self._resfinder_version
-
-    @resfinder_version.setter
-    def resfinder_version(self, resfinder_version):
-        """Sets the resfinder_version of this AnalysisResult.
-
-
-        :param resfinder_version: The resfinder_version of this AnalysisResult.
-        :type resfinder_version: str
-        """
-        if resfinder_version is None:
-            raise ValueError("Invalid value for `resfinder_version`, must not be `None`")  # noqa: E501
-
-        self._resfinder_version = resfinder_version
 
     @property
     def chr_number(self):
@@ -1204,6 +1118,69 @@ class AnalysisResult(Model):
         self._region = region
 
     @property
+    def fud_number(self):
+        """Gets the fud_number of this AnalysisResult.
+
+
+        :return: The fud_number of this AnalysisResult.
+        :rtype: str
+        """
+        return self._fud_number
+
+    @fud_number.setter
+    def fud_number(self, fud_number):
+        """Sets the fud_number of this AnalysisResult.
+
+
+        :param fud_number: The fud_number of this AnalysisResult.
+        :type fud_number: str
+        """
+
+        self._fud_number = fud_number
+
+    @property
+    def cluster_id(self):
+        """Gets the cluster_id of this AnalysisResult.
+
+
+        :return: The cluster_id of this AnalysisResult.
+        :rtype: str
+        """
+        return self._cluster_id
+
+    @cluster_id.setter
+    def cluster_id(self, cluster_id):
+        """Sets the cluster_id of this AnalysisResult.
+
+
+        :param cluster_id: The cluster_id of this AnalysisResult.
+        :type cluster_id: str
+        """
+
+        self._cluster_id = cluster_id
+
+    @property
+    def epi_export(self):
+        """Gets the epi_export of this AnalysisResult.
+
+
+        :return: The epi_export of this AnalysisResult.
+        :rtype: str
+        """
+        return self._epi_export
+
+    @epi_export.setter
+    def epi_export(self, epi_export):
+        """Sets the epi_export of this AnalysisResult.
+
+
+        :param epi_export: The epi_export of this AnalysisResult.
+        :type epi_export: str
+        """
+
+        self._epi_export = epi_export
+
+    @property
     def id(self):
         """Gets the id of this AnalysisResult.
 
@@ -1225,6 +1202,27 @@ class AnalysisResult(Model):
             raise ValueError("Invalid value for `id`, must not be `None`")  # noqa: E501
 
         self._id = id
+
+    @property
+    def resfinder_version(self):
+        """Gets the resfinder_version of this AnalysisResult.
+
+
+        :return: The resfinder_version of this AnalysisResult.
+        :rtype: str
+        """
+        return self._resfinder_version
+
+    @resfinder_version.setter
+    def resfinder_version(self, resfinder_version):
+        """Sets the resfinder_version of this AnalysisResult.
+
+
+        :param resfinder_version: The resfinder_version of this AnalysisResult.
+        :type resfinder_version: str
+        """
+
+        self._resfinder_version = resfinder_version
 
     @property
     def qc_provided_species(self):

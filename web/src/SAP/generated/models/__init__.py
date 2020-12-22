@@ -9,6 +9,7 @@ from .analysis_result_all_of import AnalysisResultAllOf
 from .approval import Approval
 from .approval_all_of import ApprovalAllOf
 from .approval_request import ApprovalRequest
+from .approval_status import ApprovalStatus
 from .base_metadata import BaseMetadata
 from .column import Column
 from .lims_metadata import LimsMetadata

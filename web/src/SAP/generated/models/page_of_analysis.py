@@ -7,10 +7,12 @@ from typing import List, Dict  # noqa: F401
 
 from .base_model_ import Model
 from web.src.SAP.generated.models.analysis_result import AnalysisResult
+from web.src.SAP.generated.models.approval_status import ApprovalStatus
 import re
 from .. import util
 
 from web.src.SAP.generated.models.analysis_result import AnalysisResult  # noqa: E501
+from web.src.SAP.generated.models.approval_status import ApprovalStatus  # noqa: E501
 import re  # noqa: E501
 
 class PageOfAnalysis(Model):
@@ -19,7 +21,7 @@ class PageOfAnalysis(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, paging_token=None, total_count=None, items=None):  # noqa: E501
+    def __init__(self, paging_token=None, total_count=None, items=None, approval_matrix=None):  # noqa: E501
         """PageOfAnalysis - a model defined in OpenAPI
 
         :param paging_token: The paging_token of this PageOfAnalysis.  # noqa: E501
@@ -28,22 +30,27 @@ class PageOfAnalysis(Model):
         :type total_count: float
         :param items: The items of this PageOfAnalysis.  # noqa: E501
         :type items: List[AnalysisResult]
+        :param approval_matrix: The approval_matrix of this PageOfAnalysis.  # noqa: E501
+        :type approval_matrix: Dict[str, Dict[str, ApprovalStatus]]
         """
         self.openapi_types = {
             'paging_token': str,
             'total_count': float,
-            'items': List[AnalysisResult]
+            'items': List[AnalysisResult],
+            'approval_matrix': Dict[str, Dict[str, ApprovalStatus]]
         }
 
         self.attribute_map = {
-            'paging_token': 'pagingToken',
-            'total_count': 'totalCount',
-            'items': 'items'
+            'paging_token': 'paging_token',
+            'total_count': 'total_count',
+            'items': 'items',
+            'approval_matrix': 'approval_matrix'
         }
 
         self._paging_token = paging_token
         self._total_count = total_count
         self._items = items
+        self._approval_matrix = approval_matrix
 
     @classmethod
     def from_dict(cls, dikt) -> 'PageOfAnalysis':
@@ -126,3 +133,26 @@ class PageOfAnalysis(Model):
             raise ValueError("Invalid value for `items`, must not be `None`")  # noqa: E501
 
         self._items = items
+
+    @property
+    def approval_matrix(self):
+        """Gets the approval_matrix of this PageOfAnalysis.
+
+
+        :return: The approval_matrix of this PageOfAnalysis.
+        :rtype: Dict[str, Dict[str, ApprovalStatus]]
+        """
+        return self._approval_matrix
+
+    @approval_matrix.setter
+    def approval_matrix(self, approval_matrix):
+        """Sets the approval_matrix of this PageOfAnalysis.
+
+
+        :param approval_matrix: The approval_matrix of this PageOfAnalysis.
+        :type approval_matrix: Dict[str, Dict[str, ApprovalStatus]]
+        """
+        if approval_matrix is None:
+            raise ValueError("Invalid value for `approval_matrix`, must not be `None`")  # noqa: E501
+
+        self._approval_matrix = approval_matrix

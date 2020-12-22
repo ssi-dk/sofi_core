@@ -362,20 +362,24 @@ components:
 
     PageOfAnalysis:
       required:
-        - pagingToken
-        - totalCount
+        - paging_token
+        - total_count
         - items
+        - approval_matrix
       properties:
-        pagingToken:
+        paging_token:
           type: string
           nullable: true
           pattern: '^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$'
-        totalCount:
+        total_count:
           type: number
         items:
           type: array
           items:
             $ref: '#/components/schemas/AnalysisResult'
+        approval_matrix:
+          $ref: '#/components/schemas/ApprovalMatrix'
+
 
     AnalysisQuery:
       properties:
@@ -493,12 +497,17 @@ components:
               type: string
               enum: [pending, cancelled, submitted]
 
+    ApprovalStatus:
+      type: string
+      enum: [pending, rejected, approved]
+
     ApprovalMatrix:
       type: object
       additionalProperties:
         type: object
         additionalProperties:
-          type: boolean
+          type: string
+          $ref: "#/components/schemas/ApprovalStatus"
     
     Resistance:
       type: string
@@ -514,7 +523,6 @@ components:
         - run_id
         - provided_species
         - primary_isolate
-        - resfinder_version
       properties:
         isolate_id:
           type: string
@@ -541,15 +549,8 @@ components:
         provided_species:
           type: string
         primary_isolate:
-          type: string
-        fud_number:
-          type: string
-        cluster_id:
-          type: string
-        epi_export:
-          type: string
-        resfinder_version:
-          type: string
+          type: boolean
+
 
     TbrSpecificMetadata:
       type: object
@@ -581,6 +582,12 @@ components:
           type: string
         region:
           type: string
+        fud_number:
+          type: string
+        cluster_id:
+          type: string
+        epi_export:
+          type: string
 
     TbrMetadata:
       allOf:
@@ -604,6 +611,7 @@ components:
           type: string
         sample_info:
           type: string
+
     LimsMetadata:
       allOf:
         - $ref: '#/components/schemas/BaseMetadata'
@@ -620,6 +628,9 @@ components:
             - isolate_id
           properties:
             _id:
+              type: string
+              format: uuid
+            resfinder_version:
               type: string
             QC_provided_species:
               type: number

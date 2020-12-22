@@ -12,6 +12,12 @@
  */
 
 import { exists, mapValues } from '../runtime';
+import {
+    ApprovalStatus,
+    ApprovalStatusFromJSON,
+    ApprovalStatusToJSON,
+} from './';
+
 /**
  * 
  * @export
@@ -20,10 +26,10 @@ import { exists, mapValues } from '../runtime';
 export interface ApprovalRequest  {
     /**
      * 
-     * @type {{ [key: string]: { [key: string]: boolean; }; }}
+     * @type {{ [key: string]: { [key: string]: ApprovalStatus; }; }}
      * @memberof ApprovalRequest
      */
-    matrix: { [key: string]: { [key: string]: boolean; }; };
+    matrix: { [key: string]: { [key: string]: ApprovalStatus; }; };
 }
 
 export function ApprovalRequestFromJSON(json: any): ApprovalRequest {

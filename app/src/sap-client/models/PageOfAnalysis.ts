@@ -16,6 +16,9 @@ import {
     AnalysisResult,
     AnalysisResultFromJSON,
     AnalysisResultToJSON,
+    ApprovalStatus,
+    ApprovalStatusFromJSON,
+    ApprovalStatusToJSON,
 } from './';
 
 /**
@@ -29,26 +32,33 @@ export interface PageOfAnalysis  {
      * @type {string}
      * @memberof PageOfAnalysis
      */
-    pagingToken: string;
+    paging_token: string;
     /**
      * 
      * @type {number}
      * @memberof PageOfAnalysis
      */
-    totalCount: number;
+    total_count: number;
     /**
      * 
      * @type {Array<AnalysisResult>}
      * @memberof PageOfAnalysis
      */
     items: Array<AnalysisResult>;
+    /**
+     * 
+     * @type {{ [key: string]: { [key: string]: ApprovalStatus; }; }}
+     * @memberof PageOfAnalysis
+     */
+    approval_matrix: { [key: string]: { [key: string]: ApprovalStatus; }; };
 }
 
 export function PageOfAnalysisFromJSON(json: any): PageOfAnalysis {
     return {
-        'pagingToken': json['pagingToken'],
-        'totalCount': json['totalCount'],
+        'paging_token': json['paging_token'],
+        'total_count': json['total_count'],
         'items': (json['items'] as Array<any>).map(AnalysisResultFromJSON),
+        'approval_matrix': json['approval_matrix'],
     };
 }
 
@@ -57,9 +67,10 @@ export function PageOfAnalysisToJSON(value?: PageOfAnalysis): any {
         return undefined;
     }
     return {
-        'pagingToken': value.pagingToken,
-        'totalCount': value.totalCount,
+        'paging_token': value.paging_token,
+        'total_count': value.total_count,
         'items': (value.items as Array<any>).map(AnalysisResultToJSON),
+        'approval_matrix': value.approval_matrix,
     };
 }
 

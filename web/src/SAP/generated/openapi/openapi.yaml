@@ -363,26 +363,36 @@ components:
       type: string
     PageOfAnalysis:
       example:
-        pagingToken: pagingToken
-        totalCount: 0.8008281904610115
+        paging_token: paging_token
+        approval_matrix:
+          key:
+            key: approval_matrix
+        total_count: 0.8008281904610115
         items:
         - null
         - null
       properties:
-        pagingToken:
+        paging_token:
           nullable: true
           pattern: ^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$
           type: string
-        totalCount:
+        total_count:
           type: number
         items:
           items:
             $ref: '#/components/schemas/AnalysisResult'
           type: array
+        approval_matrix:
+          additionalProperties:
+            additionalProperties:
+              $ref: '#/components/schemas/ApprovalStatus'
+            type: object
+          type: object
       required:
+      - approval_matrix
       - items
-      - pagingToken
-      - totalCount
+      - paging_token
+      - total_count
     AnalysisQuery:
       example:
         filters:
@@ -495,12 +505,12 @@ components:
       example:
         matrix:
           key:
-            key: true
+            key: matrix
       properties:
         matrix:
           additionalProperties:
             additionalProperties:
-              type: boolean
+              $ref: '#/components/schemas/ApprovalStatus'
             type: object
           type: object
       required:
@@ -510,10 +520,16 @@ components:
       allOf:
       - $ref: '#/components/schemas/ApprovalRequest'
       - $ref: '#/components/schemas/Approval_allOf'
+    ApprovalStatus:
+      enum:
+      - pending
+      - rejected
+      - approved
+      type: string
     ApprovalMatrix:
       additionalProperties:
         additionalProperties:
-          type: boolean
+          $ref: '#/components/schemas/ApprovalStatus'
         type: object
       type: object
     Resistance:
@@ -549,22 +565,13 @@ components:
         provided_species:
           type: string
         primary_isolate:
-          type: string
-        fud_number:
-          type: string
-        cluster_id:
-          type: string
-        epi_export:
-          type: string
-        resfinder_version:
-          type: string
+          type: boolean
       required:
       - institution
       - isolate_id
       - primary_isolate
       - provided_species
       - received_date
-      - resfinder_version
       - run_id
       - sequence_filename
       - sequence_id
@@ -594,6 +601,12 @@ components:
         kma:
           type: string
         region:
+          type: string
+        fud_number:
+          type: string
+        cluster_id:
+          type: string
+        epi_export:
           type: string
       required:
       - run_date
@@ -680,6 +693,9 @@ components:
     AnalysisResult_allOf:
       properties:
         _id:
+          format: uuid
+          type: string
+        resfinder_version:
           type: string
         QC_provided_species:
           type: number

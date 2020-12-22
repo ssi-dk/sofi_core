@@ -21,7 +21,7 @@ class LimsMetadata(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, isolate_id=None, sequence_id=None, sequence_filename=None, institution=None, project_number=None, project_title=None, sampling_date=None, received_date=None, run_id=None, public=None, provided_species=None, primary_isolate=None, fud_number=None, cluster_id=None, epi_export=None, resfinder_version=None, chr_number=None, aut_number=None, product_type=None, product=None, origin_country=None, animal_species=None, sample_info=None):  # noqa: E501
+    def __init__(self, isolate_id=None, sequence_id=None, sequence_filename=None, institution=None, project_number=None, project_title=None, sampling_date=None, received_date=None, run_id=None, public=None, provided_species=None, primary_isolate=None, chr_number=None, aut_number=None, product_type=None, product=None, origin_country=None, animal_species=None, sample_info=None):  # noqa: E501
         """LimsMetadata - a model defined in OpenAPI
 
         :param isolate_id: The isolate_id of this LimsMetadata.  # noqa: E501
@@ -47,15 +47,7 @@ class LimsMetadata(Model):
         :param provided_species: The provided_species of this LimsMetadata.  # noqa: E501
         :type provided_species: str
         :param primary_isolate: The primary_isolate of this LimsMetadata.  # noqa: E501
-        :type primary_isolate: str
-        :param fud_number: The fud_number of this LimsMetadata.  # noqa: E501
-        :type fud_number: str
-        :param cluster_id: The cluster_id of this LimsMetadata.  # noqa: E501
-        :type cluster_id: str
-        :param epi_export: The epi_export of this LimsMetadata.  # noqa: E501
-        :type epi_export: str
-        :param resfinder_version: The resfinder_version of this LimsMetadata.  # noqa: E501
-        :type resfinder_version: str
+        :type primary_isolate: bool
         :param chr_number: The chr_number of this LimsMetadata.  # noqa: E501
         :type chr_number: float
         :param aut_number: The aut_number of this LimsMetadata.  # noqa: E501
@@ -83,11 +75,7 @@ class LimsMetadata(Model):
             'run_id': str,
             'public': str,
             'provided_species': str,
-            'primary_isolate': str,
-            'fud_number': str,
-            'cluster_id': str,
-            'epi_export': str,
-            'resfinder_version': str,
+            'primary_isolate': bool,
             'chr_number': float,
             'aut_number': str,
             'product_type': str,
@@ -110,10 +98,6 @@ class LimsMetadata(Model):
             'public': 'public',
             'provided_species': 'provided_species',
             'primary_isolate': 'primary_isolate',
-            'fud_number': 'fud_number',
-            'cluster_id': 'cluster_id',
-            'epi_export': 'epi_export',
-            'resfinder_version': 'resfinder_version',
             'chr_number': 'chr_number',
             'aut_number': 'aut_number',
             'product_type': 'product_type',
@@ -135,10 +119,6 @@ class LimsMetadata(Model):
         self._public = public
         self._provided_species = provided_species
         self._primary_isolate = primary_isolate
-        self._fud_number = fud_number
-        self._cluster_id = cluster_id
-        self._epi_export = epi_export
-        self._resfinder_version = resfinder_version
         self._chr_number = chr_number
         self._aut_number = aut_number
         self._product_type = product_type
@@ -409,7 +389,7 @@ class LimsMetadata(Model):
 
 
         :return: The primary_isolate of this LimsMetadata.
-        :rtype: str
+        :rtype: bool
         """
         return self._primary_isolate
 
@@ -419,98 +399,12 @@ class LimsMetadata(Model):
 
 
         :param primary_isolate: The primary_isolate of this LimsMetadata.
-        :type primary_isolate: str
+        :type primary_isolate: bool
         """
         if primary_isolate is None:
             raise ValueError("Invalid value for `primary_isolate`, must not be `None`")  # noqa: E501
 
         self._primary_isolate = primary_isolate
-
-    @property
-    def fud_number(self):
-        """Gets the fud_number of this LimsMetadata.
-
-
-        :return: The fud_number of this LimsMetadata.
-        :rtype: str
-        """
-        return self._fud_number
-
-    @fud_number.setter
-    def fud_number(self, fud_number):
-        """Sets the fud_number of this LimsMetadata.
-
-
-        :param fud_number: The fud_number of this LimsMetadata.
-        :type fud_number: str
-        """
-
-        self._fud_number = fud_number
-
-    @property
-    def cluster_id(self):
-        """Gets the cluster_id of this LimsMetadata.
-
-
-        :return: The cluster_id of this LimsMetadata.
-        :rtype: str
-        """
-        return self._cluster_id
-
-    @cluster_id.setter
-    def cluster_id(self, cluster_id):
-        """Sets the cluster_id of this LimsMetadata.
-
-
-        :param cluster_id: The cluster_id of this LimsMetadata.
-        :type cluster_id: str
-        """
-
-        self._cluster_id = cluster_id
-
-    @property
-    def epi_export(self):
-        """Gets the epi_export of this LimsMetadata.
-
-
-        :return: The epi_export of this LimsMetadata.
-        :rtype: str
-        """
-        return self._epi_export
-
-    @epi_export.setter
-    def epi_export(self, epi_export):
-        """Sets the epi_export of this LimsMetadata.
-
-
-        :param epi_export: The epi_export of this LimsMetadata.
-        :type epi_export: str
-        """
-
-        self._epi_export = epi_export
-
-    @property
-    def resfinder_version(self):
-        """Gets the resfinder_version of this LimsMetadata.
-
-
-        :return: The resfinder_version of this LimsMetadata.
-        :rtype: str
-        """
-        return self._resfinder_version
-
-    @resfinder_version.setter
-    def resfinder_version(self, resfinder_version):
-        """Sets the resfinder_version of this LimsMetadata.
-
-
-        :param resfinder_version: The resfinder_version of this LimsMetadata.
-        :type resfinder_version: str
-        """
-        if resfinder_version is None:
-            raise ValueError("Invalid value for `resfinder_version`, must not be `None`")  # noqa: E501
-
-        self._resfinder_version = resfinder_version
 
     @property
     def chr_number(self):

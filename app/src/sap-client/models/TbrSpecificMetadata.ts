@@ -78,6 +78,24 @@ export interface TbrSpecificMetadata  {
      * @memberof TbrSpecificMetadata
      */
     region?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof TbrSpecificMetadata
+     */
+    fud_number?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof TbrSpecificMetadata
+     */
+    cluster_id?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof TbrSpecificMetadata
+     */
+    epi_export?: string;
 }
 
 export function TbrSpecificMetadataFromJSON(json: any): TbrSpecificMetadata {
@@ -92,6 +110,9 @@ export function TbrSpecificMetadataFromJSON(json: any): TbrSpecificMetadata {
         'kma_received_date': !exists(json, 'kma_received_date') ? undefined : new Date(json['kma_received_date']),
         'kma': !exists(json, 'kma') ? undefined : json['kma'],
         'region': !exists(json, 'region') ? undefined : json['region'],
+        'fud_number': !exists(json, 'fud_number') ? undefined : json['fud_number'],
+        'cluster_id': !exists(json, 'cluster_id') ? undefined : json['cluster_id'],
+        'epi_export': !exists(json, 'epi_export') ? undefined : json['epi_export'],
     };
 }
 
@@ -110,6 +131,9 @@ export function TbrSpecificMetadataToJSON(value?: TbrSpecificMetadata): any {
         'kma_received_date': value.kma_received_date === undefined ? undefined : value.kma_received_date.toISOString(),
         'kma': value.kma,
         'region': value.region,
+        'fud_number': value.fud_number,
+        'cluster_id': value.cluster_id,
+        'epi_export': value.epi_export,
     };
 }
 

@@ -2,8 +2,9 @@ import logging
 import pymongo
 import subprocess
 
-client = pymongo.MongoClient('localhost')
+logging.info("bifrost_listener starting up")
 
+client = pymongo.MongoClient('bifrost_db')
 
 pipeline = [{"$match": {"operationType": {"$in": ["replace", "update"]},
                         "fullDocument.status": "Success"}}]
@@ -13,12 +14,13 @@ resume_token = None
 def watch_loop():
     with client["bifrost_test"]["sample_components"].watch(pipeline, **options) as stream:
         for insert_change in stream:
+            logging.info(insert_change)
             print(insert_change)
 # TODO: change hardcoded connection info, make sure the command execution is safe
-            subprocess.call(['mongo', 'bifrost_test', 'refresh_view.js'])
+            subprocess.call(['mongo', 'bifrost_test', '/app/refresh_view.js'])
             resume_token = stream.resume_token
 
-
+logging.info("bifrost_listener initialized")
 while(True):
     try:
         watch_loop()
