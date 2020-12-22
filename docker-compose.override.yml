@@ -20,8 +20,8 @@ services:
     container_name: bifrost_listener
     user: ${CURRENT_UID}
     environment:
-    # don't litter host with pyc files; we always want latest state from file
       - PYTHONDONTWRITEBYTECODE=1
+      - PYTHONUNBUFFERED=0
     depends_on:
       - "bifrost_db"
 

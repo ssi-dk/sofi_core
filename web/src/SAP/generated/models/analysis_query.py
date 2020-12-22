@@ -15,20 +15,30 @@ class AnalysisQuery(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, filters=None):  # noqa: E501
+    def __init__(self, paging_token=None, page_size=100, filters=None):  # noqa: E501
         """AnalysisQuery - a model defined in OpenAPI
 
+        :param paging_token: The paging_token of this AnalysisQuery.  # noqa: E501
+        :type paging_token: bytearray
+        :param page_size: The page_size of this AnalysisQuery.  # noqa: E501
+        :type page_size: int
         :param filters: The filters of this AnalysisQuery.  # noqa: E501
         :type filters: Dict[str, str]
         """
         self.openapi_types = {
+            'paging_token': bytearray,
+            'page_size': int,
             'filters': Dict[str, str]
         }
 
         self.attribute_map = {
+            'paging_token': 'paging_token',
+            'page_size': 'page_size',
             'filters': 'filters'
         }
 
+        self._paging_token = paging_token
+        self._page_size = page_size
         self._filters = filters
 
     @classmethod
@@ -41,6 +51,50 @@ class AnalysisQuery(Model):
         :rtype: AnalysisQuery
         """
         return util.deserialize_model(dikt, cls)
+
+    @property
+    def paging_token(self):
+        """Gets the paging_token of this AnalysisQuery.
+
+        opaque token to supply to get the next page of isolates  # noqa: E501
+
+        :return: The paging_token of this AnalysisQuery.
+        :rtype: bytearray
+        """
+        return self._paging_token
+
+    @paging_token.setter
+    def paging_token(self, paging_token):
+        """Sets the paging_token of this AnalysisQuery.
+
+        opaque token to supply to get the next page of isolates  # noqa: E501
+
+        :param paging_token: The paging_token of this AnalysisQuery.
+        :type paging_token: bytearray
+        """
+
+        self._paging_token = paging_token
+
+    @property
+    def page_size(self):
+        """Gets the page_size of this AnalysisQuery.
+
+
+        :return: The page_size of this AnalysisQuery.
+        :rtype: int
+        """
+        return self._page_size
+
+    @page_size.setter
+    def page_size(self, page_size):
+        """Sets the page_size of this AnalysisQuery.
+
+
+        :param page_size: The page_size of this AnalysisQuery.
+        :type page_size: int
+        """
+
+        self._page_size = page_size
 
     @property
     def filters(self):

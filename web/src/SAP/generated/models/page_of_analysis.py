@@ -27,7 +27,7 @@ class PageOfAnalysis(Model):
         :param paging_token: The paging_token of this PageOfAnalysis.  # noqa: E501
         :type paging_token: str
         :param total_count: The total_count of this PageOfAnalysis.  # noqa: E501
-        :type total_count: float
+        :type total_count: int
         :param items: The items of this PageOfAnalysis.  # noqa: E501
         :type items: List[AnalysisResult]
         :param approval_matrix: The approval_matrix of this PageOfAnalysis.  # noqa: E501
@@ -35,7 +35,7 @@ class PageOfAnalysis(Model):
         """
         self.openapi_types = {
             'paging_token': str,
-            'total_count': float,
+            'total_count': int,
             'items': List[AnalysisResult],
             'approval_matrix': Dict[str, Dict[str, ApprovalStatus]]
         }
@@ -94,7 +94,7 @@ class PageOfAnalysis(Model):
 
 
         :return: The total_count of this PageOfAnalysis.
-        :rtype: float
+        :rtype: int
         """
         return self._total_count
 
@@ -104,7 +104,7 @@ class PageOfAnalysis(Model):
 
 
         :param total_count: The total_count of this PageOfAnalysis.
-        :type total_count: float
+        :type total_count: int
         """
         if total_count is None:
             raise ValueError("Invalid value for `total_count`, must not be `None`")  # noqa: E501

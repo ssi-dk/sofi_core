@@ -19,6 +19,18 @@ import { exists, mapValues } from '../runtime';
  */
 export interface AnalysisQuery  {
     /**
+     * opaque token to supply to get the next page of isolates
+     * @type {string}
+     * @memberof AnalysisQuery
+     */
+    paging_token?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof AnalysisQuery
+     */
+    page_size?: number;
+    /**
      * 
      * @type {{ [key: string]: string; }}
      * @memberof AnalysisQuery
@@ -28,6 +40,8 @@ export interface AnalysisQuery  {
 
 export function AnalysisQueryFromJSON(json: any): AnalysisQuery {
     return {
+        'paging_token': !exists(json, 'paging_token') ? undefined : json['paging_token'],
+        'page_size': !exists(json, 'page_size') ? undefined : json['page_size'],
         'filters': !exists(json, 'filters') ? undefined : json['filters'],
     };
 }
@@ -37,6 +51,8 @@ export function AnalysisQueryToJSON(value?: AnalysisQuery): any {
         return undefined;
     }
     return {
+        'paging_token': value.paging_token,
+        'page_size': value.page_size,
         'filters': value.filters,
     };
 }

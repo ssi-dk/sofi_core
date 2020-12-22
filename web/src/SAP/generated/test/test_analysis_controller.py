@@ -52,13 +52,13 @@ class TestAnalysisController(BaseTestCase):
 
         
         """
-        analysis_query = {
+        query = {
+  "paging_token" : "paging_token",
   "filters" : {
     "key" : "filters"
-  }
+  },
+  "page_size" : 0
 }
-        query_string = [('paging_token', None),
-                        ('page_size', 100)]
         headers = { 
             'Accept': 'application/json',
             'Content-Type': 'application/json',
@@ -67,9 +67,8 @@ class TestAnalysisController(BaseTestCase):
             '/api/analysis',
             method='POST',
             headers=headers,
-            data=json.dumps(analysis_query),
-            content_type='application/json',
-            query_string=query_string)
+            data=json.dumps(query),
+            content_type='application/json')
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
 

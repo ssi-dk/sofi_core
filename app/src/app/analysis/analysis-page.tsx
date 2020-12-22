@@ -9,7 +9,7 @@ import {
 } from "@chakra-ui/icons";
 import { Column } from "react-table";
 import { AnalysisResult, UserDefinedView, ApprovalRequest, AnalysisQuery } from "sap-client";
-import { useMutation, useRequest, useRequests } from "redux-query-react";
+import { useMutation, useRequest } from "redux-query-react";
 import { useDispatch, useSelector } from "react-redux";
 import { requestAsync } from 'redux-query';
 import { useTranslation } from "react-i18next";
@@ -34,16 +34,8 @@ export default function AnalysisPage() {
   const toast = useToast();
   const dispatch = useDispatch();
 
-  const reqs = React.useMemo(
-    () =>
-      Array.from(Array(10).keys()).map((i) => ({
-        ...requestPageOfAnalysis({ pageSize: 1000 }),
-        queryKey: `${i}`,
-      })),
-    []
-  );
   const [columnLoadState] = useRequest(requestColumns());
-  const [{ isPending, isFinished }] = useRequests(reqs);
+  const [{ isPending, isFinished }] = useRequest({...requestPageOfAnalysis({ pageSize: 100 })});
   // TODO: Figure out how to make this strongly typed
   const data = useSelector<RootState>((s) =>
     Object.values(s.entities.analysis ?? {})
@@ -72,10 +64,11 @@ export default function AnalysisPage() {
 
   const onSearch = React.useCallback(
     (q: AnalysisQuery) => {
+      console.log(q)
       dispatch({ type: "RESET/Analysis" });
       dispatch(
         requestAsync({
-          ...searchPageOfAnalysis({ analysisQuery: q }),
+          ...searchPageOfAnalysis({ query: {...q, page_size: 100 }}),
           queryKey: JSON.stringify(q),
         })
       );

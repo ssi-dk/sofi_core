@@ -14,10 +14,12 @@ refreshSAPAnalysisResults = function () {
     },
     { $merge: { into: "sap_analysis_results", whenMatched: "replace" } }
   ]);
+  /*
   db.lims_metadata.aggregate([
     {
       $project: {
-        "_id": 0
+        "_id": false,
+        "_exclude": false 
       }
     },
     { $merge: { into: "sap_analysis_results", on: "isolate_id", whenMatched: "replace" } }
@@ -25,11 +27,13 @@ refreshSAPAnalysisResults = function () {
   db.tbr_metadata.aggregate([
     {
       $project: {
-        "_id": 0
+        "_id": false,
+        "_exclude": false 
       }
     },
     { $merge: { into: "sap_analysis_results", on: "isolate_id", whenMatched: "replace" } }
   ]);
+  */
 };
 
 refreshSAPAnalysisResults();

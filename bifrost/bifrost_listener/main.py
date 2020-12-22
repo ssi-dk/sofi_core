@@ -1,6 +1,9 @@
+import sys
 import logging
 import pymongo
 import subprocess
+
+logging.basicConfig(format='%(name)s - %(levelname)s - %(message)s', stream=sys.stdout, level=logging.DEBUG)
 
 logging.info("bifrost_listener starting up")
 

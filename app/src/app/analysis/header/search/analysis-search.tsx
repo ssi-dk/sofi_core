@@ -23,7 +23,7 @@ const AnalysisSearch = (props: AnalysisSearchProps) => {
   const onInput = React.useCallback((e) => setInput(e.target.value), [
     setInput,
   ]);
-  const submitQuery = React.useCallback(() => onSubmit(parseQuery(input)), [
+  const submitQuery = React.useCallback(() => onSubmit({filters: parseQuery(input)}), [
     onSubmit,
     input,
   ]);

@@ -33,9 +33,7 @@ export interface GetAnalysisRequest {
 }
 
 export interface SearchAnalysisRequest {
-    pagingToken?: string;
-    pageSize?: number;
-    analysisQuery?: AnalysisQuery;
+    query?: AnalysisQuery;
 }
 
 
@@ -140,17 +138,6 @@ export function getColumns<T>( requestConfig?: runtime.TypedQueryConfig<T, Array
 function searchAnalysisRaw<T>(requestParameters: SearchAnalysisRequest, requestConfig: runtime.TypedQueryConfig<T, PageOfAnalysis> = {}): QueryConfig<T> {
     let queryParameters = null;
 
-    queryParameters = {};
-
-
-    if (requestParameters.pagingToken !== undefined) {
-        queryParameters['paging_token'] = requestParameters.pagingToken;
-    }
-
-
-    if (requestParameters.pageSize !== undefined) {
-        queryParameters['page_size'] = requestParameters.pageSize;
-    }
 
     const headerParameters = {};
 
@@ -171,7 +158,7 @@ function searchAnalysisRaw<T>(requestParameters: SearchAnalysisRequest, requestC
             method: 'POST',
             headers: headerParameters,
         },
-        body: queryParameters || AnalysisQueryToJSON(requestParameters.analysisQuery),
+        body: queryParameters || AnalysisQueryToJSON(requestParameters.query),
     };
 
     const { transform: requestTransform } = requestConfig;
