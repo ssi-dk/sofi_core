@@ -12,6 +12,7 @@ import { AnalysisResult, UserDefinedView, ApprovalRequest, AnalysisQuery } from 
 import { useMutation, useRequest } from "redux-query-react";
 import { useDispatch, useSelector } from "react-redux";
 import { requestAsync } from 'redux-query';
+import camelCaseKeys from "camelcase-keys";
 import { useTranslation } from "react-i18next";
 import { RootState } from "app/root-reducer";
 import { predicateBuilder, PropFilter, RangeFilter } from 'utils';
@@ -81,7 +82,7 @@ export default function AnalysisPage() {
     [dispatch]
   );
   const checkColumnIsVisible = React.useCallback(
-    (id) => view.hiddenColumns.indexOf(id) < 0,
+    (id) => view.hidden_columns.indexOf(id) < 0,
     [view]
   );
 
@@ -236,10 +237,13 @@ export default function AnalysisPage() {
     pendingRejection,
   ]);
 
+  const safeView = React.useMemo(() => camelCaseKeys(view, {deep: true}), [view]);
   const sidebarWidth = "300px";
   if (!columnLoadState.isFinished) {
     return <div>Loading</div>;
   }
+
+  console.log(safeView);
   return (
     <Box
       display="grid"
@@ -328,7 +332,7 @@ export default function AnalysisPage() {
               pageState.isNarrowed ? "approvingCell" : "selectedCell"
             }
             onSelect={(sel) => dispatch(setSelection(sel))}
-            view={view}
+            view={safeView}
           />
         </Box>
         <Box role="status" gridColumn="2 / 4">

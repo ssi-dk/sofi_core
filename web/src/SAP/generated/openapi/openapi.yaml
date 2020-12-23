@@ -183,7 +183,7 @@ paths:
       operationId: delete_view
       parameters:
       - description: Name of view to delete
-        explode: true
+        explode: false
         in: path
         name: name
         required: true
@@ -286,39 +286,39 @@ components:
           type: array
     UserDefinedView:
       example:
-        hiddenColumns:
-        - hiddenColumns
-        - hiddenColumns
-        columnOrder:
-        - columnOrder
-        - columnOrder
+        column_resizing:
+          column_width: 6
+          column_widths:
+          - width: 0
+            columnName: columnName
+          - width: 0
+            columnName: columnName
+        hidden_columns:
+        - hidden_columns
+        - hidden_columns
         name: name
-        sortBy:
+        sort_by:
         - id: id
           desc: true
         - id: id
           desc: true
-        columnResizing:
-          columnWidth: 6
-          columnWidths:
-          - width: 0
-            columnName: columnName
-          - width: 0
-            columnName: columnName
+        column_order:
+        - column_order
+        - column_order
       properties:
         name:
           type: string
-        hiddenColumns:
+        hidden_columns:
           items:
             type: string
           type: array
-        columnResizing:
-          $ref: '#/components/schemas/UserDefinedView_columnResizing'
-        sortBy:
+        column_resizing:
+          $ref: '#/components/schemas/UserDefinedView_column_resizing'
+        sort_by:
           items:
-            $ref: '#/components/schemas/UserDefinedView_sortBy'
+            $ref: '#/components/schemas/UserDefinedView_sort_by'
           type: array
-        columnOrder:
+        column_order:
           items:
             type: string
           type: array
@@ -477,7 +477,7 @@ components:
       - $ref: '#/components/schemas/LimsSpecificMetadata'
       - $ref: '#/components/schemas/TbrSpecificMetadata'
       - $ref: '#/components/schemas/AnalysisResult_allOf'
-    UserDefinedView_columnResizing_columnWidths:
+    UserDefinedView_column_resizing_column_widths:
       example:
         width: 0
         columnName: columnName
@@ -486,22 +486,22 @@ components:
           type: string
         width:
           type: integer
-    UserDefinedView_columnResizing:
+    UserDefinedView_column_resizing:
       example:
-        columnWidth: 6
-        columnWidths:
+        column_width: 6
+        column_widths:
         - width: 0
           columnName: columnName
         - width: 0
           columnName: columnName
       properties:
-        columnWidths:
+        column_widths:
           items:
-            $ref: '#/components/schemas/UserDefinedView_columnResizing_columnWidths'
+            $ref: '#/components/schemas/UserDefinedView_column_resizing_column_widths'
           type: array
-        columnWidth:
+        column_width:
           type: integer
-    UserDefinedView_sortBy:
+    UserDefinedView_sort_by:
       example:
         id: id
         desc: true

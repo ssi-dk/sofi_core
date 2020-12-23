@@ -1,31 +1,21 @@
-def create_user(body):  # noqa: E501
-    return "created"
+from flask import abort
+from flask.json import jsonify
+from web.src.SAP.generated.models import UserDefinedView
+from ..repositories.views import get_views, remove_view, create_view
 
+def get_user_views():
+    # TODO: figure out real username from claim
+    username = "demo"
+    return jsonify(get_views(username))
 
-def delete_user(username):  # noqa: E501
-    return "deleted"
+def create_user_view(body: UserDefinedView):
+    # TODO: figure out real username from claim
+    username = "demo"
+    res = create_view(username, body)
+    return jsonify(body) if res.inserted_id != None else abort(400)
 
-
-def get_user_by_name(username):  # noqa: E501
-    return username
-
-
-def login_user(username, password):  # noqa: E501
-    return "not logged in"
-
-
-def logout_user():  # noqa: E501
-    return "logged out"
-
-
-def update_user(username, body):  # noqa: E501
-    return "updated"
-
-def get_user_views(): # noqa: E501
-    return []
-
-def create_user_view(body): # noqa: E501
-    return 
-
-def delete_view(): # noqa: E501
-    return
+def delete_view(name: str):
+    # TODO: figure out real username from claim
+    username = "demo"
+    res = remove_view(username, name)
+    return None if res.deleted_count > 0 else abort(404)

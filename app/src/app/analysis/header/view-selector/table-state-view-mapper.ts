@@ -3,15 +3,15 @@ import { UserDefinedView } from "../../../../sap-client/models";
 export const mapTableStateToView = (name: string, tableState): UserDefinedView => {
   return {
     name,
-    sortBy: tableState.sortBy,
-    hiddenColumns: tableState.hiddenColumns,
-    columnResizing: {
+    sort_by: tableState.sortBy,
+    hidden_columns: tableState.hiddenColumns,
+    column_resizing: {
       ...tableState.columnResizing,
-      columnWidths: Object.keys(tableState.columnResizing.columnWidths).map(k => ({
-        columnName: k,
+      column_widths: Object.keys(tableState.columnResizing.columnWidths).map(k => ({
+        column_name: k,
         width: tableState.columnResizing.columnWidths[k]
       }))
     },
-    columnOrder: tableState.columnOrder
+    column_order: tableState.columnOrder
   };
 }

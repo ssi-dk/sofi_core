@@ -194,7 +194,6 @@ paths:
           schema:
             type: string
           description: Name of view to delete
-          explode: true
       responses:
         '204':
           description: View deleted successfully.
@@ -266,14 +265,14 @@ components:
       properties:
         name:
           type: string
-        hiddenColumns:
+        hidden_columns:
           type: array
           items:
             type: string
-        columnResizing:
+        column_resizing:
           type: object
           properties:
-            columnWidths:
+            column_widths:
               type: array
               items:
                 type: object
@@ -282,9 +281,9 @@ components:
                     type: string
                   width:
                     type: integer
-            columnWidth:
+            column_width:
               type: integer
-        sortBy:
+        sort_by:
           type: array
           items:
             type: object
@@ -293,7 +292,7 @@ components:
                 type: boolean
               id:
                 type: string
-        columnOrder:
+        column_order:
           type: array
           items:
             type: string
