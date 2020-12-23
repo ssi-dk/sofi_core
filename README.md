@@ -1,5 +1,17 @@
 # Initial setup 
-Install the provided pre-commit hooks to get project-wide autoformatting and
+
+## Pre-requisites
+
+In order to build and run locally, you will need the following utilities:
+
+* bash
+* make
+* pip3
+* yarn
+* docker
+* docker-compose
+
+Install the provided pre-commit hooks to get project-wide autoformatting and 
 linting.
 
 ```shell
@@ -8,9 +20,14 @@ pre-commit install
 ```
 
 # Running
+To run locally using `docker-compose`, execute:
+
+```shell
+make run
 ```
-docker compose up --build
-```
+
+This will launch all containers with locally mounted files, enabling automatic code reload, 
+as well as hot-module-reload (HMR) in the browser.
 
 ## Local dev running
 Create virtual env, install dependencies
@@ -39,3 +56,19 @@ Default user
 username: test
 password: test
 from seed_data project
+
+# Generating simulated data
+When running locally, the bifrost db gets pre-seeded with the contents of the `.jsonl` files inside `initdb.d`.
+
+These `.jsonl` files can be regenerated based on the latest specification running:
+
+```shell
+rm bifrost/bifrost_db/initdb.d/generated.jsonl
+./generate_dummy_data.sh
+```
+
+The seeding only occurs when the database is first created, so to force the change to take effect, run:
+
+```shell
+make clean && make run
+```
