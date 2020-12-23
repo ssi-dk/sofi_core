@@ -1,9 +1,6 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
 import React from "react";
 import { Input, IconButton } from "@chakra-ui/react";
 import { SearchIcon } from "@chakra-ui/icons";
-import { jsx } from "@emotion/react";
 import { AnalysisQuery } from 'sap-client';
 
 type AnalysisSearchProps = {

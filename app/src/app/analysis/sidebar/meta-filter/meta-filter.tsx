@@ -1,4 +1,3 @@
-/* eslint-disable react/prefer-stateless-function */
 import React, { useState } from "react";
 import { Text, Flex } from "@chakra-ui/react";
 import Select, { ActionMeta, OptionTypeBase, ValueType } from "react-select";

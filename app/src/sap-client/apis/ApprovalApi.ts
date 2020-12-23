@@ -14,7 +14,6 @@
 
 import { HttpMethods, QueryConfig, ResponseBody, ResponseText } from 'redux-query';
 import * as runtime from '../runtime';
-
 import {
     Approval,
     ApprovalFromJSON,
@@ -44,13 +43,13 @@ function cancelApprovalRaw<T>(requestParameters: CancelApprovalRequest, requestC
     let queryParameters = null;
 
 
-    const headerParameters = {};
+    const headerParameters : runtime.HttpHeaders = {};
 
 
     const { meta = {} } = requestConfig;
 
     const config: QueryConfig<T> = {
-        url: `/approvals/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters.id))),
+        url: `${runtime.Configuration.basePath}/approvals/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters.id))),
         meta,
         update: requestConfig.update,
         queryKey: requestConfig.queryKey,
@@ -85,7 +84,7 @@ function createApprovalRaw<T>(requestParameters: CreateApprovalRequest, requestC
     let queryParameters = null;
 
 
-    const headerParameters = {};
+    const headerParameters : runtime.HttpHeaders = {};
 
     headerParameters['Content-Type'] = 'application/json';
 
@@ -93,7 +92,7 @@ function createApprovalRaw<T>(requestParameters: CreateApprovalRequest, requestC
     const { meta = {} } = requestConfig;
 
     const config: QueryConfig<T> = {
-        url: `/approvals`,
+        url: `${runtime.Configuration.basePath}/approvals`,
         meta,
         update: requestConfig.update,
         queryKey: requestConfig.queryKey,
@@ -129,13 +128,13 @@ function getApprovalsRaw<T>( requestConfig: runtime.TypedQueryConfig<T, Array<Ap
     let queryParameters = null;
 
 
-    const headerParameters = {};
+    const headerParameters : runtime.HttpHeaders = {};
 
 
     const { meta = {} } = requestConfig;
 
     const config: QueryConfig<T> = {
-        url: `/approvals`,
+        url: `${runtime.Configuration.basePath}/approvals`,
         meta,
         update: requestConfig.update,
         queryKey: requestConfig.queryKey,

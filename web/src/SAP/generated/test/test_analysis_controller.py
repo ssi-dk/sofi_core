@@ -72,6 +72,24 @@ class TestAnalysisController(BaseTestCase):
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
 
+    def test_submit_changes(self):
+        """Test case for submit_changes
+
+        
+        """
+        body = None
+        headers = { 
+            'Content-Type': 'application/json',
+        }
+        response = self.client.open(
+            '/api/analysis/changes',
+            method='POST',
+            headers=headers,
+            data=json.dumps(body),
+            content_type='application/json')
+        self.assert200(response,
+                       'Response body is : ' + response.data.decode('utf-8'))
+
 
 if __name__ == '__main__':
     unittest.main()

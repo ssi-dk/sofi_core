@@ -11,7 +11,7 @@ mkfile_dir := $(subst /Makefile,,$(mkfile_path))
 all: clean build
 
 clean:
-	rm -rf ${mkfile_dir}/bifrost/bifrost_db/data/db/
+	rm -rf ${mkfile_dir}/bifrost/bifrost_db/data/db/*
 	rm -rf ${mkfile_dir}/web/src/SAP/generated/
 	rm -rf ${mkfile_dir}/sap_tbr_integration/DG.SAP.TBRIntegration/bin/
 	rm -rf ${mkfile_dir}/sap_tbr_integration/DG.SAP.TBRIntegration/obj/
@@ -23,7 +23,7 @@ ${mkfile_dir}/app/src/sap-client : ${mkfile_dir}/openapi_specs/SAP/SAP.yaml
 	rm -rf "${mkfile_dir}/app/sap-client/dist"
 	docker run --rm -v "${mkfile_dir}:/mnt" \
 		--user ${mkfile_user} \
-		"openapitools/openapi-generator:cli-v4.3.0" \
+		"openapitools/openapi-generator:cli-v5.0.0" \
 		generate \
 		-i "/mnt/openapi_specs/SAP/SAP.yaml" \
 		--additional-properties=modelPropertyNaming=original,enumPropertyNaming=original \
@@ -36,7 +36,7 @@ ${mkfile_dir}/web/src/SAP/generated : ${mkfile_dir}/openapi_specs/SAP/SAP.yaml
 	# Generate flask api
 	docker run --rm -v "${mkfile_dir}:/mnt" \
 		--user ${mkfile_user} \
-		"openapitools/openapi-generator:cli-v4.3.0" \
+		"openapitools/openapi-generator:cli-v4.3.1" \
 		generate \
 		-i "/mnt/openapi_specs/SAP/SAP.yaml" \
 		-g python-flask \
@@ -49,7 +49,10 @@ ${mkfile_dir}/web/src/SAP/generated : ${mkfile_dir}/openapi_specs/SAP/SAP.yaml
 ${mkfile_dir}/web/src/services/lims/openapi : ${mkfile_dir}/openapi_specs/lims.v1.yaml
 	# Generate LIMS client for flask api
 	rm -rf ${mkfile_dir}/web/src/services/lims/openapi
-	docker run --rm --user ${mkfile_user} -v "${mkfile_dir}:/local" openapitools/openapi-generator-cli generate \
+	docker run --rm -v "${mkfile_dir}:/local" \
+		--user ${mkfile_user} \
+		"openapitools/openapi-generator:cli-v5.0.0" \
+		generate \
 		-i /local/openapi_specs/lims.v1.yaml \
 		-g python \
 		-o /local \
@@ -59,7 +62,7 @@ ${mkfile_dir}/web/src/services/lims/openapi : ${mkfile_dir}/openapi_specs/lims.v
 		--global-property modelTests=false,modelDocs=false
 
 ${mkfile_dir}/app/node_modules/ : ${mkfile_dir}/app/package.json
-	pushd {mkfile_dir}/app && yarn install
+	pushd ${mkfile_dir}/app && yarn install
 
 build: ${mkfile_dir}/app/src/sap-client ${mkfile_dir}/web/src/SAP/generated ${mkfile_dir}/web/src/services/lims/openapi
 	CURRENT_UID=${mkfile_user} docker-compose build --no-cache
