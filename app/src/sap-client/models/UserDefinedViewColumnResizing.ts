@@ -29,19 +29,19 @@ export interface UserDefinedViewColumnResizing  {
      * @type {Array<UserDefinedViewColumnResizingColumnWidths>}
      * @memberof UserDefinedViewColumnResizing
      */
-    columnWidths?: Array<UserDefinedViewColumnResizingColumnWidths>;
+    column_widths?: Array<UserDefinedViewColumnResizingColumnWidths>;
     /**
      * 
      * @type {number}
      * @memberof UserDefinedViewColumnResizing
      */
-    columnWidth?: number;
+    column_width?: number;
 }
 
 export function UserDefinedViewColumnResizingFromJSON(json: any): UserDefinedViewColumnResizing {
     return {
-        'columnWidths': !exists(json, 'columnWidths') ? undefined : (json['columnWidths'] as Array<any>).map(UserDefinedViewColumnResizingColumnWidthsFromJSON),
-        'columnWidth': !exists(json, 'columnWidth') ? undefined : json['columnWidth'],
+        'column_widths': !exists(json, 'column_widths') ? undefined : (json['column_widths'] as Array<any>).map(UserDefinedViewColumnResizingColumnWidthsFromJSON),
+        'column_width': !exists(json, 'column_width') ? undefined : json['column_width'],
     };
 }
 
@@ -50,8 +50,8 @@ export function UserDefinedViewColumnResizingToJSON(value?: UserDefinedViewColum
         return undefined;
     }
     return {
-        'columnWidths': value.columnWidths === undefined ? undefined : (value.columnWidths as Array<any>).map(UserDefinedViewColumnResizingColumnWidthsToJSON),
-        'columnWidth': value.columnWidth,
+        'column_widths': value.column_widths === undefined ? undefined : (value.column_widths as Array<any>).map(UserDefinedViewColumnResizingColumnWidthsToJSON),
+        'column_width': value.column_width,
     };
 }
 

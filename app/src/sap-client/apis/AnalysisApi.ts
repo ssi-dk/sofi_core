@@ -14,7 +14,6 @@
 
 import { HttpMethods, QueryConfig, ResponseBody, ResponseText } from 'redux-query';
 import * as runtime from '../runtime';
-
 import {
     AnalysisQuery,
     AnalysisQueryFromJSON,
@@ -36,6 +35,10 @@ export interface SearchAnalysisRequest {
     query?: AnalysisQuery;
 }
 
+export interface SubmitChangesRequest {
+    body?: { [key: string]: { [key: string]: string; }; };
+}
+
 
 /**
  * Page through all the analysis in the system (WIP)
@@ -55,13 +58,13 @@ function getAnalysisRaw<T>(requestParameters: GetAnalysisRequest, requestConfig:
         queryParameters['page_size'] = requestParameters.pageSize;
     }
 
-    const headerParameters = {};
+    const headerParameters : runtime.HttpHeaders = {};
 
 
     const { meta = {} } = requestConfig;
 
     const config: QueryConfig<T> = {
-        url: `/analysis`,
+        url: `${runtime.Configuration.basePath}/analysis`,
         meta,
         update: requestConfig.update,
         queryKey: requestConfig.queryKey,
@@ -97,13 +100,13 @@ function getColumnsRaw<T>( requestConfig: runtime.TypedQueryConfig<T, Array<Colu
     let queryParameters = null;
 
 
-    const headerParameters = {};
+    const headerParameters : runtime.HttpHeaders = {};
 
 
     const { meta = {} } = requestConfig;
 
     const config: QueryConfig<T> = {
-        url: `/analysis/columns`,
+        url: `${runtime.Configuration.basePath}/analysis/columns`,
         meta,
         update: requestConfig.update,
         queryKey: requestConfig.queryKey,
@@ -139,7 +142,7 @@ function searchAnalysisRaw<T>(requestParameters: SearchAnalysisRequest, requestC
     let queryParameters = null;
 
 
-    const headerParameters = {};
+    const headerParameters : runtime.HttpHeaders = {};
 
     headerParameters['Content-Type'] = 'application/json';
 
@@ -147,7 +150,7 @@ function searchAnalysisRaw<T>(requestParameters: SearchAnalysisRequest, requestC
     const { meta = {} } = requestConfig;
 
     const config: QueryConfig<T> = {
-        url: `/analysis`,
+        url: `${runtime.Configuration.basePath}/analysis`,
         meta,
         update: requestConfig.update,
         queryKey: requestConfig.queryKey,
@@ -174,5 +177,48 @@ function searchAnalysisRaw<T>(requestParameters: SearchAnalysisRequest, requestC
 */
 export function searchAnalysis<T>(requestParameters: SearchAnalysisRequest, requestConfig?: runtime.TypedQueryConfig<T, PageOfAnalysis>): QueryConfig<T> {
     return searchAnalysisRaw(requestParameters, requestConfig);
+}
+
+/**
+ * Submit a batch of analysis data changes
+ */
+function submitChangesRaw<T>(requestParameters: SubmitChangesRequest, requestConfig: runtime.TypedQueryConfig<T, void> = {}): QueryConfig<T> {
+    let queryParameters = null;
+
+
+    const headerParameters : runtime.HttpHeaders = {};
+
+    headerParameters['Content-Type'] = 'application/json';
+
+
+    const { meta = {} } = requestConfig;
+
+    const config: QueryConfig<T> = {
+        url: `${runtime.Configuration.basePath}/analysis/changes`,
+        meta,
+        update: requestConfig.update,
+        queryKey: requestConfig.queryKey,
+        optimisticUpdate: requestConfig.optimisticUpdate,
+        force: requestConfig.force,
+        rollback: requestConfig.rollback,
+        options: {
+            method: 'POST',
+            headers: headerParameters,
+        },
+        body: queryParameters || requestParameters.body,
+    };
+
+    const { transform: requestTransform } = requestConfig;
+    if (requestTransform) {
+    }
+
+    return config;
+}
+
+/**
+* Submit a batch of analysis data changes
+*/
+export function submitChanges<T>(requestParameters: SubmitChangesRequest, requestConfig?: runtime.TypedQueryConfig<T, void>): QueryConfig<T> {
+    return submitChangesRaw(requestParameters, requestConfig);
 }
 

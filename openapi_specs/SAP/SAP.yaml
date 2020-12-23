@@ -10,6 +10,7 @@ tags:
     name: user
   - description: Operations for isolates
     name: analysis
+
 paths:
   /analysis:
     get:
@@ -79,6 +80,23 @@ paths:
                 items:
                   $ref: '#/components/schemas/Column'
 
+  /analysis/changes:
+    post:
+      description: Submit a batch of analysis data changes
+      operationId: submit_changes
+      tags:
+        - analysis
+      x-openapi-router-controller: web.src.SAP.generated.controllers.analysis_controller
+      x-codegen-request-body-name: body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AnalysisChange'
+      responses:
+        '204':
+          description: Changes accepted 
+
   /approvals:
     get:
       description: Retrieve list of approvals for authenticated user
@@ -134,27 +152,6 @@ paths:
         '204':
           description: Approval cancelled successfully.
       
-  /user:
-    post:
-      description: This can only be done by the logged in user.
-      operationId: create_user
-      requestBody:
-        content:
-          '*/*':
-            schema:
-              type: object
-              $ref: '#/components/schemas/User'
-        description: Created user object
-        required: true
-      responses:
-        default:
-          content: {}
-          description: successful operation
-      summary: Create user
-      tags:
-        - user
-      x-codegen-request-body-name: body
-      x-openapi-router-controller: web.src.SAP.generated.controllers.user_controller
   /user/views:
     get:
       operationId: get_user_views
@@ -185,7 +182,7 @@ paths:
       x-openapi-router-controller: web.src.SAP.generated.controllers.user_controller
   /user/views/{name}:
     delete:
-      description: Cancel a pending approval
+      description: Delete an existing view
       operationId: delete_view
       tags:
         - user
@@ -197,149 +194,11 @@ paths:
           schema:
             type: string
           description: Name of view to delete
-          explode: true
       responses:
         '204':
           description: View deleted successfully.
 
 
-
-  /user/login:
-    get:
-      operationId: login_user
-      parameters:
-        - description: The user name for login
-          explode: true
-          in: query
-          name: username
-          required: true
-          schema:
-            type: string
-          style: form
-        - description: The password for login in clear text
-          explode: true
-          in: query
-          name: password
-          required: true
-          schema:
-            type: string
-          style: form
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: string
-          description: successful operation
-          headers:
-            X-Expires-After:
-              description: date in UTC when token expires
-              explode: false
-              schema:
-                format: date-time
-                type: string
-              style: simple
-        '400':
-          content: {}
-          description: Invalid username/password supplied
-      summary: Logs user into the system
-      tags:
-        - user
-      x-openapi-router-controller: web.src.SAP.generated.controllers.user_controller
-  /user/logout:
-    get:
-      operationId: logout_user
-      responses:
-        default:
-          content: {}
-          description: successful operation
-      summary: Logs out current logged in user session
-      tags:
-        - user
-      x-openapi-router-controller: web.src.SAP.generated.controllers.user_controller
-  '/user/{username}':
-    delete:
-      description: This can only be done by the logged in user.
-      operationId: delete_user
-      parameters:
-        - description: The name that needs to be deleted
-          explode: false
-          in: path
-          name: username
-          required: true
-          schema:
-            type: string
-          style: simple
-      responses:
-        '400':
-          content: {}
-          description: Invalid username supplied
-        '404':
-          content: {}
-          description: User not found
-      summary: Delete user
-      tags:
-        - user
-      x-openapi-router-controller: web.src.SAP.generated.controllers.user_controller
-    get:
-      operationId: get_user_by_name
-      parameters:
-        - description: 'The name that needs to be fetched. Use user1 for testing. '
-          explode: false
-          in: path
-          name: username
-          required: true
-          schema:
-            type: string
-          style: simple
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/User'
-          description: successful operation
-        '400':
-          content: {}
-          description: Invalid username supplied
-        '404':
-          content: {}
-          description: User not found
-      summary: Get user by user name
-      tags:
-        - user
-      x-openapi-router-controller: web.src.SAP.generated.controllers.user_controller
-    put:
-      description: This can only be done by the logged in user.
-      operationId: update_user
-      parameters:
-        - description: name that need to be updated
-          explode: false
-          in: path
-          name: username
-          required: true
-          schema:
-            type: string
-          style: simple
-      requestBody:
-        content:
-          '*/*':
-            schema:
-              $ref: '#/components/schemas/User'
-        description: Updated user object
-        required: true
-      responses:
-        '400':
-          content: {}
-          description: Invalid user supplied
-        '404':
-          content: {}
-          description: User not found
-      summary: Updated user
-      tags:
-        - user
-      x-codegen-request-body-name: body
-      x-openapi-router-controller: web.src.SAP.generated.controllers.user_controller
 components:
   schemas:
     Organization:
@@ -400,50 +259,20 @@ components:
           type: array
           items:
             type: string
-    User:
-      example:
-        firstName: firstName
-        lastName: lastName
-        password: password
-        userStatus: 6
-        phone: phone
-        id: 0
-        email: email
-        username: username
-      properties:
-        id:
-          format: int64
-          type: integer
-        username:
-          type: string
-        firstName:
-          type: string
-        lastName:
-          type: string
-        email:
-          type: string
-        password:
-          type: string
-        phone:
-          type: string
-        userStatus:
-          description: User Status
-          format: int32
-          type: integer
-      type: object
+
     UserDefinedView:
       type: object
       properties:
         name:
           type: string
-        hiddenColumns:
+        hidden_columns:
           type: array
           items:
             type: string
-        columnResizing:
+        column_resizing:
           type: object
           properties:
-            columnWidths:
+            column_widths:
               type: array
               items:
                 type: object
@@ -452,9 +281,9 @@ components:
                     type: string
                   width:
                     type: integer
-            columnWidth:
+            column_width:
               type: integer
-        sortBy:
+        sort_by:
           type: array
           items:
             type: object
@@ -463,7 +292,7 @@ components:
                 type: boolean
               id:
                 type: string
-        columnOrder:
+        column_order:
           type: array
           items:
             type: string
@@ -502,6 +331,13 @@ components:
         additionalProperties:
           type: string
           $ref: "#/components/schemas/ApprovalStatus"
+
+    AnalysisChange:
+      type: object
+      additionalProperties:
+        type: object
+        additionalProperties:
+          type: string
     
     Resistance:
       type: string
@@ -553,6 +389,7 @@ components:
       properties:
         cpr:
           type: string
+          pattern: ^(?:(?:31(?:0[13578]|1[02])|(?:30|29)(?:0[13-9]|1[0-2])|(?:0[1-9]|1[0-9]|2[0-8])(?:0[1-9]|1[0-2]))[0-9]{2}\s?-?\s?[0-9]|290200\s-?\s[4-9]|2902(?:(?!00)[02468][048]|[13579][26])\s?-?\s?[0-3])[0-9]{3}|000000\s?-?\s?0000$ 
         gender:
           type: string
           enum:
@@ -560,12 +397,16 @@ components:
             - K
         name:
           type: string
+          x-faker: name.findName
         age:
-          type: number
+          type: integer
+          minimum: 0
+          maximum: 128
         travel:
           type: string
         travel_country:
           type: string
+          x-faker: address.country
         run_date:
           format: date-time
           type: string
@@ -592,7 +433,8 @@ components:
       type: object
       properties:
         chr_number:
-          type: number
+          type: string
+          pattern: \d{5,6}
         aut_number:
           type: string
         product_type:
@@ -601,6 +443,7 @@ components:
           type: string
         origin_country:
           type: string
+          x-faker: address.country
         animal_species:
           type: string
         sample_info:
@@ -626,6 +469,7 @@ components:
               format: uuid
             resfinder_version:
               type: string
+              pattern: ^([0-9]+)\.([0-9]+)\.([0-9]+)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+[0-9A-Za-z-]+)?$ 
             QC_provided_species:
               type: number
             QC_genome1x:

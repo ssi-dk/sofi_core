@@ -47,3 +47,16 @@ def search_analysis(query=None):  # noqa: E501
     if connexion.request.is_json:
         query = AnalysisQuery.from_dict(connexion.request.get_json())  # noqa: E501
     return AnalysisController.search_analysis(query)
+
+
+def submit_changes(body=None):  # noqa: E501
+    """submit_changes
+
+    Submit a batch of analysis data changes # noqa: E501
+
+    :param body: 
+    :type body: Dict[str, ]
+
+    :rtype: None
+    """
+    return AnalysisController.submit_changes(body)

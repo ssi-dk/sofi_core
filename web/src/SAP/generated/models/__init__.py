@@ -19,7 +19,6 @@ from .page_of_analysis import PageOfAnalysis
 from .resistance import Resistance
 from .tbr_metadata import TbrMetadata
 from .tbr_specific_metadata import TbrSpecificMetadata
-from .user import User
 from .user_defined_view import UserDefinedView
 from .user_defined_view_column_resizing import UserDefinedViewColumnResizing
 from .user_defined_view_column_resizing_column_widths import UserDefinedViewColumnResizingColumnWidths

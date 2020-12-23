@@ -4,6 +4,7 @@ services:
     environment:
     # don't litter host with pyc files; we always want latest state from file
       - PYTHONDONTWRITEBYTECODE=1
+    user: ${CURRENT_UID}
     volumes:
     # Change path before : to point to local web.
       - ./web:/app/web:ro
@@ -29,6 +30,7 @@ services:
     build:
       context: ./app
       dockerfile: Dockerfile.dev
+    user: ${CURRENT_UID}
     ports:
       - "3000:3000"
     environment:

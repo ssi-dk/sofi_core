@@ -38,34 +38,34 @@ export interface UserDefinedView  {
      * @type {Array<string>}
      * @memberof UserDefinedView
      */
-    hiddenColumns?: Array<string>;
+    hidden_columns?: Array<string>;
     /**
      * 
      * @type {UserDefinedViewColumnResizing}
      * @memberof UserDefinedView
      */
-    columnResizing?: UserDefinedViewColumnResizing;
+    column_resizing?: UserDefinedViewColumnResizing;
     /**
      * 
      * @type {Array<UserDefinedViewSortBy>}
      * @memberof UserDefinedView
      */
-    sortBy?: Array<UserDefinedViewSortBy>;
+    sort_by?: Array<UserDefinedViewSortBy>;
     /**
      * 
      * @type {Array<string>}
      * @memberof UserDefinedView
      */
-    columnOrder?: Array<string>;
+    column_order?: Array<string>;
 }
 
 export function UserDefinedViewFromJSON(json: any): UserDefinedView {
     return {
         'name': !exists(json, 'name') ? undefined : json['name'],
-        'hiddenColumns': !exists(json, 'hiddenColumns') ? undefined : json['hiddenColumns'],
-        'columnResizing': !exists(json, 'columnResizing') ? undefined : UserDefinedViewColumnResizingFromJSON(json['columnResizing']),
-        'sortBy': !exists(json, 'sortBy') ? undefined : (json['sortBy'] as Array<any>).map(UserDefinedViewSortByFromJSON),
-        'columnOrder': !exists(json, 'columnOrder') ? undefined : json['columnOrder'],
+        'hidden_columns': !exists(json, 'hidden_columns') ? undefined : json['hidden_columns'],
+        'column_resizing': !exists(json, 'column_resizing') ? undefined : UserDefinedViewColumnResizingFromJSON(json['column_resizing']),
+        'sort_by': !exists(json, 'sort_by') ? undefined : (json['sort_by'] as Array<any>).map(UserDefinedViewSortByFromJSON),
+        'column_order': !exists(json, 'column_order') ? undefined : json['column_order'],
     };
 }
 
@@ -75,10 +75,10 @@ export function UserDefinedViewToJSON(value?: UserDefinedView): any {
     }
     return {
         'name': value.name,
-        'hiddenColumns': value.hiddenColumns,
-        'columnResizing': UserDefinedViewColumnResizingToJSON(value.columnResizing),
-        'sortBy': value.sortBy === undefined ? undefined : (value.sortBy as Array<any>).map(UserDefinedViewSortByToJSON),
-        'columnOrder': value.columnOrder,
+        'hidden_columns': value.hidden_columns,
+        'column_resizing': UserDefinedViewColumnResizingToJSON(value.column_resizing),
+        'sort_by': value.sort_by === undefined ? undefined : (value.sort_by as Array<any>).map(UserDefinedViewSortByToJSON),
+        'column_order': value.column_order,
     };
 }
 

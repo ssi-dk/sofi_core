@@ -38,6 +38,9 @@ def search_analysis(query):
     response = {"items": items, "paging_token": new_token, "total_count": count, "approval_matrix": {}}
     return jsonify(response)
 
+def submit_changes(body):
+    return None
+
 def gen_default_column(field_name):
     return Column(approvable=False,
                   editable=False,

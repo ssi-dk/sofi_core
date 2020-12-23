@@ -20,10 +20,10 @@ import { exists, mapValues } from '../runtime';
 export interface LimsSpecificMetadata  {
     /**
      * 
-     * @type {number}
+     * @type {string}
      * @memberof LimsSpecificMetadata
      */
-    chr_number?: number;
+    chr_number?: string;
     /**
      * 
      * @type {string}

@@ -63,6 +63,22 @@ paths:
       - analysis
       x-openapi-router-controller: web.src.SAP.generated.controllers.analysis_controller
       x-codegen-request-body-name: query
+  /analysis/changes:
+    post:
+      description: Submit a batch of analysis data changes
+      operationId: submit_changes
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AnalysisChange'
+      responses:
+        "204":
+          description: Changes accepted
+      tags:
+      - analysis
+      x-openapi-router-controller: web.src.SAP.generated.controllers.analysis_controller
+      x-codegen-request-body-name: body
   /analysis/columns:
     get:
       description: Get column metadata, scoped to authenticated user
@@ -133,79 +149,6 @@ paths:
       tags:
       - approval
       x-openapi-router-controller: web.src.SAP.generated.controllers.approval_controller
-  /user:
-    post:
-      description: This can only be done by the logged in user.
-      operationId: create_user
-      requestBody:
-        content:
-          '*/*':
-            schema:
-              $ref: '#/components/schemas/User'
-        description: Created user object
-        required: true
-      responses:
-        default:
-          content: {}
-          description: successful operation
-      summary: Create user
-      tags:
-      - user
-      x-codegen-request-body-name: body
-      x-openapi-router-controller: web.src.SAP.generated.controllers.user_controller
-  /user/login:
-    get:
-      operationId: login_user
-      parameters:
-      - description: The user name for login
-        explode: true
-        in: query
-        name: username
-        required: true
-        schema:
-          type: string
-        style: form
-      - description: The password for login in clear text
-        explode: true
-        in: query
-        name: password
-        required: true
-        schema:
-          type: string
-        style: form
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                type: string
-          description: successful operation
-          headers:
-            X-Expires-After:
-              description: date in UTC when token expires
-              explode: false
-              schema:
-                format: date-time
-                type: string
-              style: simple
-        "400":
-          content: {}
-          description: Invalid username/password supplied
-      summary: Logs user into the system
-      tags:
-      - user
-      x-openapi-router-controller: web.src.SAP.generated.controllers.user_controller
-  /user/logout:
-    get:
-      operationId: logout_user
-      responses:
-        default:
-          content: {}
-          description: successful operation
-      summary: Logs out current logged in user session
-      tags:
-      - user
-      x-openapi-router-controller: web.src.SAP.generated.controllers.user_controller
   /user/views:
     get:
       operationId: get_user_views
@@ -236,11 +179,11 @@ paths:
       x-openapi-router-controller: web.src.SAP.generated.controllers.user_controller
   /user/views/{name}:
     delete:
-      description: Cancel a pending approval
+      description: Delete an existing view
       operationId: delete_view
       parameters:
       - description: Name of view to delete
-        explode: true
+        explode: false
         in: path
         name: name
         required: true
@@ -252,89 +195,6 @@ paths:
           description: View deleted successfully.
       tags:
       - user
-      x-openapi-router-controller: web.src.SAP.generated.controllers.user_controller
-  /user/{username}:
-    delete:
-      description: This can only be done by the logged in user.
-      operationId: delete_user
-      parameters:
-      - description: The name that needs to be deleted
-        explode: false
-        in: path
-        name: username
-        required: true
-        schema:
-          type: string
-        style: simple
-      responses:
-        "400":
-          content: {}
-          description: Invalid username supplied
-        "404":
-          content: {}
-          description: User not found
-      summary: Delete user
-      tags:
-      - user
-      x-openapi-router-controller: web.src.SAP.generated.controllers.user_controller
-    get:
-      operationId: get_user_by_name
-      parameters:
-      - description: 'The name that needs to be fetched. Use user1 for testing. '
-        explode: false
-        in: path
-        name: username
-        required: true
-        schema:
-          type: string
-        style: simple
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/User'
-          description: successful operation
-        "400":
-          content: {}
-          description: Invalid username supplied
-        "404":
-          content: {}
-          description: User not found
-      summary: Get user by user name
-      tags:
-      - user
-      x-openapi-router-controller: web.src.SAP.generated.controllers.user_controller
-    put:
-      description: This can only be done by the logged in user.
-      operationId: update_user
-      parameters:
-      - description: name that need to be updated
-        explode: false
-        in: path
-        name: username
-        required: true
-        schema:
-          type: string
-        style: simple
-      requestBody:
-        content:
-          '*/*':
-            schema:
-              $ref: '#/components/schemas/User'
-        description: Updated user object
-        required: true
-      responses:
-        "400":
-          content: {}
-          description: Invalid user supplied
-        "404":
-          content: {}
-          description: User not found
-      summary: Updated user
-      tags:
-      - user
-      x-codegen-request-body-name: body
       x-openapi-router-controller: web.src.SAP.generated.controllers.user_controller
 components:
   schemas:
@@ -424,72 +284,41 @@ components:
           items:
             type: string
           type: array
-    User:
-      example:
-        firstName: firstName
-        lastName: lastName
-        password: password
-        userStatus: 6
-        phone: phone
-        id: 0
-        email: email
-        username: username
-      properties:
-        id:
-          format: int64
-          type: integer
-        username:
-          type: string
-        firstName:
-          type: string
-        lastName:
-          type: string
-        email:
-          type: string
-        password:
-          type: string
-        phone:
-          type: string
-        userStatus:
-          description: User Status
-          format: int32
-          type: integer
-      type: object
     UserDefinedView:
       example:
-        hiddenColumns:
-        - hiddenColumns
-        - hiddenColumns
-        columnOrder:
-        - columnOrder
-        - columnOrder
+        column_resizing:
+          column_width: 6
+          column_widths:
+          - width: 0
+            columnName: columnName
+          - width: 0
+            columnName: columnName
+        hidden_columns:
+        - hidden_columns
+        - hidden_columns
         name: name
-        sortBy:
+        sort_by:
         - id: id
           desc: true
         - id: id
           desc: true
-        columnResizing:
-          columnWidth: 6
-          columnWidths:
-          - width: 0
-            columnName: columnName
-          - width: 0
-            columnName: columnName
+        column_order:
+        - column_order
+        - column_order
       properties:
         name:
           type: string
-        hiddenColumns:
+        hidden_columns:
           items:
             type: string
           type: array
-        columnResizing:
-          $ref: '#/components/schemas/UserDefinedView_columnResizing'
-        sortBy:
+        column_resizing:
+          $ref: '#/components/schemas/UserDefinedView_column_resizing'
+        sort_by:
           items:
-            $ref: '#/components/schemas/UserDefinedView_sortBy'
+            $ref: '#/components/schemas/UserDefinedView_sort_by'
           type: array
-        columnOrder:
+        column_order:
           items:
             type: string
           type: array
@@ -523,6 +352,12 @@ components:
       additionalProperties:
         additionalProperties:
           $ref: '#/components/schemas/ApprovalStatus'
+        type: object
+      type: object
+    AnalysisChange:
+      additionalProperties:
+        additionalProperties:
+          type: string
         type: object
       type: object
     Resistance:
@@ -571,6 +406,7 @@ components:
     TbrSpecificMetadata:
       properties:
         cpr:
+          pattern: ^(?:(?:31(?:0[13578]|1[02])|(?:30|29)(?:0[13-9]|1[0-2])|(?:0[1-9]|1[0-9]|2[0-8])(?:0[1-9]|1[0-2]))[0-9]{2}\s?-?\s?[0-9]|290200\s-?\s[4-9]|2902(?:(?!00)[02468][048]|[13579][26])\s?-?\s?[0-3])[0-9]{3}|000000\s?-?\s?0000$
           type: string
         gender:
           enum:
@@ -579,12 +415,16 @@ components:
           type: string
         name:
           type: string
+          x-faker: name.findName
         age:
-          type: number
+          maximum: 128
+          minimum: 0
+          type: integer
         travel:
           type: string
         travel_country:
           type: string
+          x-faker: address.country
         run_date:
           format: date-time
           type: string
@@ -611,7 +451,8 @@ components:
     LimsSpecificMetadata:
       properties:
         chr_number:
-          type: number
+          pattern: \d{5,6}
+          type: string
         aut_number:
           type: string
         product_type:
@@ -620,6 +461,7 @@ components:
           type: string
         origin_country:
           type: string
+          x-faker: address.country
         animal_species:
           type: string
         sample_info:
@@ -635,7 +477,7 @@ components:
       - $ref: '#/components/schemas/LimsSpecificMetadata'
       - $ref: '#/components/schemas/TbrSpecificMetadata'
       - $ref: '#/components/schemas/AnalysisResult_allOf'
-    UserDefinedView_columnResizing_columnWidths:
+    UserDefinedView_column_resizing_column_widths:
       example:
         width: 0
         columnName: columnName
@@ -644,22 +486,22 @@ components:
           type: string
         width:
           type: integer
-    UserDefinedView_columnResizing:
+    UserDefinedView_column_resizing:
       example:
-        columnWidth: 6
-        columnWidths:
+        column_width: 6
+        column_widths:
         - width: 0
           columnName: columnName
         - width: 0
           columnName: columnName
       properties:
-        columnWidths:
+        column_widths:
           items:
-            $ref: '#/components/schemas/UserDefinedView_columnResizing_columnWidths'
+            $ref: '#/components/schemas/UserDefinedView_column_resizing_column_widths'
           type: array
-        columnWidth:
+        column_width:
           type: integer
-    UserDefinedView_sortBy:
+    UserDefinedView_sort_by:
       example:
         id: id
         desc: true
@@ -689,6 +531,7 @@ components:
           format: uuid
           type: string
         resfinder_version:
+          pattern: ^([0-9]+)\.([0-9]+)\.([0-9]+)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+[0-9A-Za-z-]+)?$
           type: string
         QC_provided_species:
           type: number

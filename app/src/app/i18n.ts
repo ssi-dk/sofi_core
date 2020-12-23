@@ -27,6 +27,7 @@ const resources = {
       Serotyp: "Serotyp",
       ResfinderVersion: "Resfinder version",
       "Save current view": "Gem nuværende view",
+      "Delete current view": "Slet nuværende view",
       "Predefined views": "Prædefinerede views",
       "My views": "Mine views",
       Time: "tid",

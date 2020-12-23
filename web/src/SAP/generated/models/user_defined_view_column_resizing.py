@@ -31,8 +31,8 @@ class UserDefinedViewColumnResizing(Model):
         }
 
         self.attribute_map = {
-            'column_widths': 'columnWidths',
-            'column_width': 'columnWidth'
+            'column_widths': 'column_widths',
+            'column_width': 'column_width'
         }
 
         self._column_widths = column_widths
@@ -44,7 +44,7 @@ class UserDefinedViewColumnResizing(Model):
 
         :param dikt: A dict.
         :type: dict
-        :return: The UserDefinedView_columnResizing of this UserDefinedViewColumnResizing.  # noqa: E501
+        :return: The UserDefinedView_column_resizing of this UserDefinedViewColumnResizing.  # noqa: E501
         :rtype: UserDefinedViewColumnResizing
         """
         return util.deserialize_model(dikt, cls)

@@ -43,10 +43,10 @@ class UserDefinedView(Model):
 
         self.attribute_map = {
             'name': 'name',
-            'hidden_columns': 'hiddenColumns',
-            'column_resizing': 'columnResizing',
-            'sort_by': 'sortBy',
-            'column_order': 'columnOrder'
+            'hidden_columns': 'hidden_columns',
+            'column_resizing': 'column_resizing',
+            'sort_by': 'sort_by',
+            'column_order': 'column_order'
         }
 
         self._name = name

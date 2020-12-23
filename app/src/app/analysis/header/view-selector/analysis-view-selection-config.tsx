@@ -3,9 +3,9 @@ import { UserDefinedView } from "sap-client";
 
 const defaultView: UserDefinedView = {
   name: "Default",
-  hiddenColumns: [],
-  columnOrder: [],
-  sortBy: [],
+  hidden_columns: [],
+  column_order: [],
+  sort_by: [],
 };
 
 export const defaultViews = [defaultView];
@@ -24,20 +24,20 @@ export const setDefaultView = createAction("view/defaultView");
 
 const initialState: SelectedViewState = {
   view: {
-    hiddenColumns: [],
+    hidden_columns: [],
   },
 };
 
 export const viewReducer = createReducer(initialState, (builder) => {
   builder
     .addCase(toggleColumnVisibility, (state, action) => {
-      const idx = state.view.hiddenColumns.indexOf(action.payload);
+      const idx = state.view.hidden_columns.indexOf(action.payload);
       if (idx > -1) {
-        state.view.hiddenColumns = state.view.hiddenColumns.filter(
+        state.view.hidden_columns = state.view.hidden_columns.filter(
           (x) => x !== action.payload
         );
       } else {
-        state.view.hiddenColumns.push(action.payload);
+        state.view.hidden_columns.push(action.payload);
       }
     })
     .addCase(setView, (state, action: {type: string, payload: UserDefinedView}) => {

@@ -6,7 +6,7 @@ import { UserDefinedView } from "sap-client";
 import { useMutation, useRequest } from "redux-query-react";
 import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
-import { requestUserViews, addUserViewMutation } from "./analysis-view-query-configs";
+import { requestUserViews, addUserViewMutation, deleteUserViewMutation } from "./analysis-view-query-configs";
 import { defaultViews, setView } from './analysis-view-selection-config';
 import { spyDataTable } from "../../data-table/table-spy";
 import { mapTableStateToView } from "./table-state-view-mapper";
@@ -14,9 +14,11 @@ import { mapTableStateToView } from "./table-state-view-mapper";
 const AnalysisViewSelector = () => {
   const { t } = useTranslation();
   const addViewValue = "AddView";
+  const deleteViewValue = "DeleteView";
 
   const buildOptions = React.useCallback((options: UserDefinedView[]) => [
-    { label: t("Save current view"), value: addViewValue },
+    { label: `-- ${t("Save current view")}`, value: addViewValue },
+    { label: `-- ${t("Delete current view")}`, value: deleteViewValue },
     { label: t("Predefined views"), options: defaultViews.map(x => ({ label: x.name, value: x })) },
     { label: t("My views"), options: options.map(x => ({ label: x.name, value: x })) },
   ], [t]);
@@ -37,20 +39,32 @@ const AnalysisViewSelector = () => {
   );
   const [{ isPending, isFinished }] = useRequest(viewReq);
   const [queryState, addView] = useMutation((v: UserDefinedView) => addUserViewMutation(v));
+  const deleteView = useMutation((v: UserDefinedView) => deleteUserViewMutation(v))[1];
 
-  const viewSelectUpdate = React.useCallback((event) => {
-    const { value } = event;
-    if (value === addViewValue) {
-      const viewName = prompt("View name");
-      if (viewName) {
-        const tableState = spyDataTable()
-        const newView = mapTableStateToView(viewName, tableState);
-        addView(newView).then(() => dispatch(setView(newView)));
+  const viewSelectUpdate = React.useCallback(
+    (event) => {
+      const { value } = event;
+      if (value === addViewValue) {
+        const viewName = prompt("View name");
+        if (viewName) {
+          const tableState = spyDataTable();
+          const newView = mapTableStateToView(viewName, tableState);
+          addView(newView).then(() => dispatch(setView(newView)));
+        }
+      } else if (value === deleteViewValue) {
+        // eslint-disable-next-line
+        const doIt = confirm(
+          t("Are you sure you want to delete the currently selected view?")
+        );
+        if (doIt) {
+          deleteView(view);
+        }
+      } else {
+        dispatch(setView(value));
       }
-    } else {
-      dispatch(setView(value))
-    }
-  }, [dispatch, addView]);
+    },
+    [dispatch, addView, deleteView, t, view]
+  );
 
   const defaultValue= React.useMemo(() => ({label: view.name, value: view}), [view]);
 
