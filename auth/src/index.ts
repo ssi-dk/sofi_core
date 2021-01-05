@@ -118,11 +118,11 @@ if (process.env.NODE_ENV === 'stub') {
       oidc: stubs.login.methods.oidc.config,
     })
   })
-  app.get('/auth/settings', (_: Request, res: Response) => {
+  app.get('/settings', (_: Request, res: Response) => {
     res.render('settings', stubs.settings)
   })
-  app.get('/auth/error', (_: Request, res: Response) => res.render('error'))
-  app.get('/auth/hydra/consent', (_: Request, res: Response) => {
+  app.get('/error', (_: Request, res: Response) => res.render('error'))
+  app.get('/hydra/consent', (_: Request, res: Response) => {
     res.render('consent', {
       csrfToken: 'no CSRF!',
       challenge: 'challenge',
@@ -135,10 +135,10 @@ if (process.env.NODE_ENV === 'stub') {
   app.get('/', protect, dashboard)
   app.get('/auth/registration', authHandler('registration'))
   app.get('/auth/login', authHandler('login'))
-  app.get('/auth/error', errorHandler)
-  app.get('/auth/settings', protect, settingsHandler)
-  app.get('/auth/verify', verifyHandler)
-  app.get('/auth/recovery', recoveryHandler)
+  app.get('/error', errorHandler)
+  app.get('/settings', protect, settingsHandler)
+  app.get('/verify', verifyHandler)
+  app.get('/recovery', recoveryHandler)
 
   if (Boolean(config.hydra.admin)) {
     app.get('/auth/hydra/login', hydraLogin)
@@ -159,8 +159,8 @@ if (process.env.NODE_ENV === 'stub') {
   }
 }
 
-app.get('/auth/health', (_: Request, res: Response) => res.send('ok'))
-app.get('/auth/debug', debug)
+app.get('/health', (_: Request, res: Response) => res.send('ok'))
+app.get('/debug', debug)
 
 if (config.securityMode === SECURITY_MODE_STANDALONE) {
   // If this security mode is enabled, we redirect all requests matching `/self-service` to ORY Kratos
@@ -177,7 +177,7 @@ if (config.securityMode === SECURITY_MODE_STANDALONE) {
 }
 
 app.get('*', (_: Request, res: Response) => {
-  res.redirect(config.baseUrl)
+  res.redirect(config.baseUrl + "/me")
 })
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {

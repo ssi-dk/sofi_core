@@ -1,10 +1,11 @@
 :80, :443 {
-    
+
     route /api/* {
         reverse_proxy sap_api:6000
     }
 
-    route /auth/* {
+    route /ory/* {
+        uri strip_prefix /ory
         reverse_proxy kratos-selfservice-ui-node:3000
     }
 

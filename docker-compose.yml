@@ -70,12 +70,13 @@ services:
       serve all --dangerous-force-http
     restart: on-failure # TODO figure out why we need this (incorporate health check into hydra migrate command?)
     environment:
+      - STRATEGIES_ACCESS_TOKEN=jwt
       - LOG_LEAK_SENSITIVE_VALUES=true
       - URLS_SELF_ISSUER=http://127.0.0.1:4444
       - URLS_SELF_PUBLIC=http://127.0.0.1:4444
-      - URLS_CONSENT=http://127.0.0.1:3000/auth/hydra/consent
-      - URLS_LOGIN=http://127.0.0.1:3000/auth/hydra/login
-      - URLS_LOGOUT=http://127.0.0.1:3000/logout
+      - URLS_CONSENT=http://localhost:8080/ory/auth/hydra/consent
+      - URLS_LOGIN=http://localhost:8080/ory/auth/hydra/login
+      - URLS_LOGOUT=http://localhost:8080/ory/logout
       - SECRETS_SYSTEM=youReallyNeedToChangeThis
       - OIDC_SUBJECT_IDENTIFIERS_SUPPORTED_TYPES=public,pairwise
       - OIDC_SUBJECT_IDENTIFIERS_PAIRWISE_SALT=youReallyNeedToChangeThis
@@ -90,6 +91,7 @@ services:
       - KRATOS_PUBLIC_URL=http://kratos:4433/
       - KRATOS_ADMIN_URL=http://kratos:4434/
       - SECURITY_MODE=standalone
+      - BASE_URL=/ory/
     ports:
       - "3000:3000"
 
@@ -121,6 +123,14 @@ services:
     restart: unless-stopped
     environment:
       - DSN=sqlite:///var/lib/sqlite/db.sqlite?_fk=true
+      - SERVE_PUBLIC_BASE_URL=http://localhost:8080/.ory/kratos/public/
+      - SELFSERVICE_DEFAULT_BROWSER_RETURN_URL=http://localhost:8080/ory/
+      - SELFSERVICE_FLOWS_SETTINGS_UI_URL=http://localhost:8080/ory/settings
+      - SELFSERVICE_FLOWS_VERIFICATION_UI_URL=http://localhost:8080/ory/verification
+      - SELFSERVICE_FLOWS_RECOVERY_UI_URL=http://localhost:8080/ory/recovery
+      - SELFSERVICE_FLOWS_LOGOUT_UI_URL=http://localhost:8080/ory/logout
+      - SELFSERVICE_FLOWS_LOGIN_UI_URL=http://localhost:8080/ory/auth/login
+      - SELFSERVICE_FLOWS_REGISTRATION_UI_URL=http://localhost:8080/ory/auth/registration
     command:
       serve -c /etc/config/kratos/.kratos.yml --dev
     volumes:
