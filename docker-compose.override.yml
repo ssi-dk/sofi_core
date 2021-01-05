@@ -32,7 +32,7 @@ services:
       dockerfile: Dockerfile.dev
     user: ${CURRENT_UID}
     ports:
-      - "3000:3000"
+      - "3333:3333"
     environment:
       - NODE_ENV=development
     volumes:
