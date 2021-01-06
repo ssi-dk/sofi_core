@@ -177,7 +177,7 @@ if (config.securityMode === SECURITY_MODE_STANDALONE) {
 }
 
 app.get('*', (_: Request, res: Response) => {
-  res.redirect(config.baseUrl + "/me")
+  res.redirect(config.baseUrl + "/")
 })
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {

@@ -25,16 +25,21 @@ selfservice:
       enabled: true
 
   flows:
+    error:
+      ui_url: http://127.0.0.1:3000/error
+
     settings:
       ui_url: http://127.0.0.1:3000/settings
 
     verification:
-      ui_url: http://127.0.0.1:3000/verification
-      enabled: false
+      ui_url: http://127.0.0.1:3000/verify
+      enabled: true
+      after:
+        default_browser_return_url: http://127.0.0.1:3000/
 
     recovery:
       ui_url: http://127.0.0.1:3000/recovery
-      enabled: false
+      enabled: true
 
     logout:
       after:

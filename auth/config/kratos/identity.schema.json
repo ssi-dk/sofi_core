@@ -4,7 +4,7 @@
   "title": "Person",
   "type": "object",
   "properties": {
-    "traits":{
+    "traits": {
       "type": "object",
       "properties": {
         "email": {
@@ -17,6 +17,12 @@
               "password": {
                 "identifier": true
               }
+            },
+            "verification": {
+              "via": "email"
+            },
+            "recovery": {
+              "via": "email"
             }
           }
         },
@@ -25,9 +31,7 @@
           "title": "Organization"
         }
       },
-      "required": [
-        "email"
-      ]
+      "required": ["email"]
     }
   },
   "additionalProperties": false

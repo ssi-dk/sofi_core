@@ -92,6 +92,7 @@ services:
       - KRATOS_ADMIN_URL=http://kratos:4434/
       - SECURITY_MODE=standalone
       - BASE_URL=/ory/
+      - PROJECT_NAME=SAP
     ports:
       - "3000:3000"
 
@@ -126,11 +127,13 @@ services:
       - SERVE_PUBLIC_BASE_URL=http://localhost:8080/.ory/kratos/public/
       - SELFSERVICE_DEFAULT_BROWSER_RETURN_URL=http://localhost:8080/ory/
       - SELFSERVICE_FLOWS_SETTINGS_UI_URL=http://localhost:8080/ory/settings
-      - SELFSERVICE_FLOWS_VERIFICATION_UI_URL=http://localhost:8080/ory/verification
+      - SELFSERVICE_FLOWS_VERIFICATION_UI_URL=http://localhost:8080/ory/verify
+      - SELFSERVICE_FLOWS_VERIFICATION_AFTER_DEFAULT_BROWSER_RETURN_URL=http://localhost:8080/ory/
       - SELFSERVICE_FLOWS_RECOVERY_UI_URL=http://localhost:8080/ory/recovery
       - SELFSERVICE_FLOWS_LOGOUT_UI_URL=http://localhost:8080/ory/logout
       - SELFSERVICE_FLOWS_LOGIN_UI_URL=http://localhost:8080/ory/auth/login
       - SELFSERVICE_FLOWS_REGISTRATION_UI_URL=http://localhost:8080/ory/auth/registration
+      - SELFSERVICE_FLOWS_ERROR_UI_URL=http://localhost:8080/ory/error
     command:
       serve -c /etc/config/kratos/.kratos.yml --dev
     volumes:
