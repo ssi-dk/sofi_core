@@ -32,7 +32,7 @@ services:
       dockerfile: Dockerfile.dev
     user: ${CURRENT_UID}
     ports:
-      - "3000:3000"
+      - "3333:3333"
     environment:
       - NODE_ENV=development
     volumes:
@@ -90,3 +90,14 @@ services:
       test: "test $$(echo \"rs.initiate{ _id: 'rs0', version: 1, members: [{ _id: 0, host : 'bifrost_db:27017' }]}).ok || rs.status().ok\" | mongo --quiet) -eq 1"
       interval: 60s
       start_period: 15s
+
+  # Allows for testing email-based self-service flows in kratos (forgot password, account verification, etc)
+  mailslurper:
+    image: oryd/mailslurper:latest-smtps
+    ports:
+      - "4436:4436"
+      - "4437:4437"
+
+  kratos:
+    environment:
+      - COURIER_SMTP_CONNECTION_URI=smtps://test:test@mailslurper:1025/?skip_ssl_verify=true

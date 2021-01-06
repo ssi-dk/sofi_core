@@ -13,9 +13,10 @@ services:
     build:
       context: ./app
     expose:
-      - 3000
+      - 3333
     environment:
       - NODE_ENV=production
+      - PORT=3333
     depends_on:
       - "sap_api"
 
@@ -30,7 +31,121 @@ services:
       - "-config"
       - "/etc/Caddyfile"
     depends_on:
-      -  "sap_api"
-      -  "sap_app"
+      - "sap_api"
+      - "sap_app"
+      - "kratos-selfservice-ui-node"
     volumes:
         - ./Caddyfile:/etc/Caddyfile
+
+  postgresd:
+    image: postgres:9.6
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=pguser
+      - POSTGRES_PASSWORD=secret
+      - POSTGRES_MULTIPLE_DATABASES=kratos,hydra
+    volumes:
+      - ./auth/config/pg-init:/docker-entrypoint-initdb.d
+
+  hydra-migrate:
+    image: oryd/hydra:v1.6.0-alpine
+    depends_on:
+      - postgresd
+    environment:
+      - DSN=postgres://pguser:secret@postgresd:5432/hydra?sslmode=disable
+    command:
+      migrate sql -e --yes
+    restart: on-failure
+
+  hydra:
+    image: oryd/hydra:v1.6.0-alpine
+    depends_on:
+      - hydra-migrate
+    ports:
+      - "4444:4444" # Public port
+      - "4445:4445" # Admin port
+      - "5555:5555" # Port for hydra token user
+    command:
+      serve all --dangerous-force-http
+    restart: on-failure # TODO figure out why we need this (incorporate health check into hydra migrate command?)
+    environment:
+      - STRATEGIES_ACCESS_TOKEN=jwt
+      - LOG_LEAK_SENSITIVE_VALUES=true
+      - URLS_SELF_ISSUER=http://127.0.0.1:4444
+      - URLS_SELF_PUBLIC=http://127.0.0.1:4444
+      - URLS_CONSENT=http://localhost:8080/ory/auth/hydra/consent
+      - URLS_LOGIN=http://localhost:8080/ory/auth/hydra/login
+      - URLS_LOGOUT=http://localhost:8080/ory/logout
+      - SECRETS_SYSTEM=youReallyNeedToChangeThis
+      - OIDC_SUBJECT_IDENTIFIERS_SUPPORTED_TYPES=public,pairwise
+      - OIDC_SUBJECT_IDENTIFIERS_PAIRWISE_SALT=youReallyNeedToChangeThis
+      - DSN=postgres://pguser:secret@postgresd:5432/hydra?sslmode=disable
+
+  kratos-selfservice-ui-node:
+    build:
+      context: ./auth
+      dockerfile: Dockerfile
+    environment:
+      - HYDRA_ADMIN_URL=http://hydra:4445
+      - KRATOS_PUBLIC_URL=http://kratos:4433/
+      - KRATOS_ADMIN_URL=http://kratos:4434/
+      - SECURITY_MODE=standalone
+      - BASE_URL=/ory/
+      - PROJECT_NAME=SAP
+    ports:
+      - "3000:3000"
+
+  kratos-migrate:
+    image: oryd/kratos:v0.4.6-sqlite
+    environment:
+      - DSN=sqlite:///var/lib/sqlite/db.sqlite?_fk=true&mode=rwc
+    volumes:
+      -
+        type: volume
+        source: kratos-sqlite
+        target: /var/lib/sqlite
+        read_only: false
+      -
+        type: bind
+        source: ./auth/config/kratos
+        target: /etc/config/kratos
+    command:
+      -c /etc/config/kratos/.kratos.yml migrate sql -e --yes
+    restart: on-failure
+
+  kratos:
+    depends_on:
+      - kratos-migrate
+    image: oryd/kratos:v0.4.6-sqlite
+    ports:
+      - "4433:4433" # public
+      - "4434:4434" # admin
+    restart: unless-stopped
+    environment:
+      - DSN=sqlite:///var/lib/sqlite/db.sqlite?_fk=true
+      - SERVE_PUBLIC_BASE_URL=http://localhost:8080/.ory/kratos/public/
+      - SELFSERVICE_DEFAULT_BROWSER_RETURN_URL=http://localhost:8080/ory/
+      - SELFSERVICE_FLOWS_SETTINGS_UI_URL=http://localhost:8080/ory/settings
+      - SELFSERVICE_FLOWS_VERIFICATION_UI_URL=http://localhost:8080/ory/verify
+      - SELFSERVICE_FLOWS_VERIFICATION_AFTER_DEFAULT_BROWSER_RETURN_URL=http://localhost:8080/ory/
+      - SELFSERVICE_FLOWS_RECOVERY_UI_URL=http://localhost:8080/ory/recovery
+      - SELFSERVICE_FLOWS_LOGOUT_UI_URL=http://localhost:8080/ory/logout
+      - SELFSERVICE_FLOWS_LOGIN_UI_URL=http://localhost:8080/ory/auth/login
+      - SELFSERVICE_FLOWS_REGISTRATION_UI_URL=http://localhost:8080/ory/auth/registration
+      - SELFSERVICE_FLOWS_ERROR_UI_URL=http://localhost:8080/ory/error
+    command:
+      serve -c /etc/config/kratos/.kratos.yml --dev
+    volumes:
+      -
+        type: volume
+        source: kratos-sqlite
+        target: /var/lib/sqlite
+        read_only: false
+      -
+        type: bind
+        source: ./auth/config/kratos
+        target: /etc/config/kratos
+
+volumes:
+  kratos-sqlite:

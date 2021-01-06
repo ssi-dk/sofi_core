@@ -1,0 +1,75 @@
+serve:
+  public:
+    base_url: http://127.0.0.1:3000/.ory/kratos/public/
+  admin:
+    base_url: http://kratos:4434/
+
+selfservice:
+  default_browser_return_url: http://127.0.0.1:3000/
+  whitelisted_return_urls:
+    - http://127.0.0.1:3000/
+    - http://127.0.0.1:3000/oryx/
+    - http://127.0.0.1:3000/auth/hydra/login
+    - http://localhost:8080/
+    - http://localhost:8080/oryx/
+    - http://localhost:8080/auth/hydra/login
+    - http://localhost/
+    - http://localhost/oryx/
+    - http://localhost/auth/hydra/login
+    - https://localhost/
+    - https://localhost/oryx/
+    - https://localhost/auth/hydra/login
+
+  strategies:
+    password:
+      enabled: true
+
+  flows:
+    error:
+      ui_url: http://127.0.0.1:3000/error
+
+    settings:
+      ui_url: http://127.0.0.1:3000/settings
+
+    verification:
+      ui_url: http://127.0.0.1:3000/verify
+      enabled: true
+      after:
+        default_browser_return_url: http://127.0.0.1:3000/
+
+    recovery:
+      ui_url: http://127.0.0.1:3000/recovery
+      enabled: true
+
+    logout:
+      after:
+        default_browser_return_url: http://127.0.0.1:3000/login
+
+    login:
+      ui_url: http://127.0.0.1:3000/login
+
+    registration:
+      ui_url: http://127.0.0.1:3000/registration
+      after:
+        password:
+          hooks:
+            -
+              hook: session
+
+log:
+  level: debug
+
+hashers:
+  argon2:
+    parallelism: 1
+    memory: 131072
+    iterations: 2
+    salt_length: 16
+    key_length: 16
+
+identity:
+  default_schema_url: file:///etc/config/kratos/identity.schema.json
+
+courier:
+  smtp:
+    connection_uri: smtps://test:test@mailslurper:1025/?skip_ssl_verify=true
