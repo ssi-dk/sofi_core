@@ -41,6 +41,7 @@ type DataTableProps<T extends NotEmpty> = {
   approvableColumns: string[];
   onSelect: (sel: DataTableSelection<T>) => void;
   view: UserDefinedView;
+  getCellStyle: (rowId: string, columnId: string) => string;
 };
 
 function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
@@ -65,6 +66,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
     canSelectColumn,
     canApproveColumn,
     getDependentColumns,
+    getCellStyle,
     view,
   } = props;
   const [selection, setSelection] = React.useState({} as DataTableSelection<T>);
@@ -282,7 +284,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
       const rowId = rows[rowIndex - 1].original[primaryKey];
       const columnId = visibleColumns[columnIndex].id;
       const className = columnIndex === 0 ? "stickyCell" :
-                            isInSelection(rowId, columnId) ? selectionClassName  : "cell";
+                            isInSelection(rowId, columnId) ? selectionClassName : getCellStyle(rowId, columnId);
       return (
         <div
           role="cell"
@@ -325,7 +327,8 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
       noop,
       onSelectCell,
       rowClickHandler,
-      isInSelection
+      isInSelection,
+      getCellStyle
     ]
   );
 

@@ -133,7 +133,22 @@ paths:
               schema:
                 $ref: '#/components/schemas/Approval'
 
-  '/approvals/{id}':
+  /approvals/matrix:
+    get:
+      description: Get the entire approval matrix for all analysis
+      operationId: full_approval_matrix
+      tags:
+        - approval
+      x-openapi-router-controller: web.src.SAP.generated.controllers.approval_controller
+      responses:
+        '200':
+          description: Approval matrix 
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApprovalMatrix"
+
+  '/approvals/{approval_id}':
     delete:
       description: Cancel a pending approval
       operationId: cancel_approval
@@ -141,7 +156,7 @@ paths:
         - approval
       x-openapi-router-controller: web.src.SAP.generated.controllers.approval_controller
       parameters:
-        - name: id
+        - name: approval_id
           in: path
           required: true
           schema:

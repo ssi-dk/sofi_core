@@ -26,6 +26,17 @@
     font-weight: bold;
     background-color: #faf089;
 }
+
+.unapprovedCell{
+    border: 1px solid transparent;
+    background-color: #90cdf4;
+}
+
+.rejectedCell{
+    border: 1px solid transparent;
+    background-color: #FEB2B2;
+}
+
 @keyframes ants{
     to{
         background-position:100% 100%
