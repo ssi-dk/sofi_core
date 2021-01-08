@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Box, Flex, Button, useToast } from "@chakra-ui/react";
+import { Box, Flex, Button, useToast, Editable, EditablePreview, EditableInput } from "@chakra-ui/react";
 import { NavLink } from 'react-router-dom';
 import {
   CalendarIcon,
@@ -29,6 +29,7 @@ import { setSelection } from "./analysis-selection-configs";
 import { fetchApprovalMatrix, sendApproval, sendRejection } from "./analysis-approval-configs";
 import { ColumnConfigWidget } from "./data-table/column-config-widget";
 import { toggleColumnVisibility } from "./header/view-selector/analysis-view-selection-config";
+import Species from "../data/species.json";
 
 export default function AnalysisPage() {
   const { t } = useTranslation();
@@ -251,6 +252,33 @@ export default function AnalysisPage() {
     return "unapprovedCell";
   }, [approvals, canApproveColumn]);
 
+  const speciesOptions = React.useMemo(() => Species.map(x => ({label: x, value: x})), []);
+
+  const renderCellControl = React.useCallback(
+    (rowId: string, columnId: string, value: any) => {
+      let v = `${value}`;
+      if (columnId.endsWith("date")) {
+        v = value.toISOString();
+      }
+      /*
+      if (columnId === "species_final") {
+        return (
+          <AutoComplete items={speciesOptions} placeholder={v} label=""/>
+        );
+      }*/
+      if (columnConfigs[columnId].editable) {
+        return (
+          <Editable defaultValue={v}>
+            <EditablePreview />
+            <EditableInput />
+          </Editable>
+        );
+      }
+      return <div>{`${v}`}</div>;
+    },
+    [columnConfigs]
+  );
+
   const safeView = React.useMemo(() => camelCaseKeys(view, {deep: true}), [view]);
   const sidebarWidth = "300px";
   if (!columnLoadState.isFinished) {
@@ -341,6 +369,7 @@ export default function AnalysisPage() {
                 ? filteredData.filter((x) => selection[x.isolate_id])
                 : filteredData
             }
+            renderCellControl={renderCellControl}
             primaryKey="isolate_id"
             selectionClassName={
               pageState.isNarrowed ? "approvingCell" : "selectedCell"
