@@ -33,7 +33,7 @@ const resources = {
       Time: "tid",
       "Approved by": "Godkendt af",
       "Revoke approval": "Tilbagekalde godkendelse",
-      "My approval history": "Mine godkendelse historik",
+      "My approval history": "Min godkendelseshistorik",
       approvals: "godkendelser",
       sampling_date: "Prøvetagningsdato"
     },
