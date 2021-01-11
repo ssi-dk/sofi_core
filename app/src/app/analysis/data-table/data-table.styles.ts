@@ -85,7 +85,6 @@ export default css({
     width: "100%",
   },
   "div[role=separator]": css({
-    borderLeft: theme.borders["2px"],
     position: "absolute",
     display: "inline-block",
     right: 0,
@@ -100,6 +99,7 @@ export default css({
       alignItems: "center",
       fontWeight: "bold",
       borderBottom: theme.borders["2px"],
+      borderRight: theme.borders["2px"],
       userSelect: "none",
       /* But "collapsed" cells should be as small as possible */
       "&.collapse": {

@@ -24,7 +24,7 @@ import {
 } from '../models';
 
 export interface CancelApprovalRequest {
-    id: string;
+    approvalId: string;
 }
 
 export interface CreateApprovalRequest {
@@ -36,8 +36,8 @@ export interface CreateApprovalRequest {
  * Cancel a pending approval
  */
 function cancelApprovalRaw<T>(requestParameters: CancelApprovalRequest, requestConfig: runtime.TypedQueryConfig<T, void> = {}): QueryConfig<T> {
-    if (requestParameters.id === null || requestParameters.id === undefined) {
-        throw new runtime.RequiredError('id','Required parameter requestParameters.id was null or undefined when calling cancelApproval.');
+    if (requestParameters.approvalId === null || requestParameters.approvalId === undefined) {
+        throw new runtime.RequiredError('approvalId','Required parameter requestParameters.approvalId was null or undefined when calling cancelApproval.');
     }
 
     let queryParameters = null;
@@ -49,7 +49,7 @@ function cancelApprovalRaw<T>(requestParameters: CancelApprovalRequest, requestC
     const { meta = {} } = requestConfig;
 
     const config: QueryConfig<T> = {
-        url: `${runtime.Configuration.basePath}/approvals/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters.id))),
+        url: `${runtime.Configuration.basePath}/approvals/{approval_id}`.replace(`{${"approval_id"}}`, encodeURIComponent(String(requestParameters.approvalId))),
         meta,
         update: requestConfig.update,
         queryKey: requestConfig.queryKey,
@@ -119,6 +119,47 @@ function createApprovalRaw<T>(requestParameters: CreateApprovalRequest, requestC
 */
 export function createApproval<T>(requestParameters: CreateApprovalRequest, requestConfig?: runtime.TypedQueryConfig<T, Approval>): QueryConfig<T> {
     return createApprovalRaw(requestParameters, requestConfig);
+}
+
+/**
+ * Get the entire approval matrix for all analysis
+ */
+function fullApprovalMatrixRaw<T>( requestConfig: runtime.TypedQueryConfig<T, { [key: string]: { [key: string]: ApprovalStatus; }; }> = {}): QueryConfig<T> {
+    let queryParameters = null;
+
+
+    const headerParameters : runtime.HttpHeaders = {};
+
+
+    const { meta = {} } = requestConfig;
+
+    const config: QueryConfig<T> = {
+        url: `${runtime.Configuration.basePath}/approvals/matrix`,
+        meta,
+        update: requestConfig.update,
+        queryKey: requestConfig.queryKey,
+        optimisticUpdate: requestConfig.optimisticUpdate,
+        force: requestConfig.force,
+        rollback: requestConfig.rollback,
+        options: {
+            method: 'GET',
+            headers: headerParameters,
+        },
+        body: queryParameters,
+    };
+
+    const { transform: requestTransform } = requestConfig;
+    if (requestTransform) {
+    }
+
+    return config;
+}
+
+/**
+* Get the entire approval matrix for all analysis
+*/
+export function fullApprovalMatrix<T>( requestConfig?: runtime.TypedQueryConfig<T, { [key: string]: { [key: string]: ApprovalStatus; }; }>): QueryConfig<T> {
+    return fullApprovalMatrixRaw( requestConfig);
 }
 
 /**

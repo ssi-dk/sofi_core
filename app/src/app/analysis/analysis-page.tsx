@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Box, Flex, Button, useToast } from "@chakra-ui/react";
+import { Box, Flex, Button, useToast, Editable, EditablePreview, EditableInput } from "@chakra-ui/react";
 import { NavLink } from 'react-router-dom';
 import {
   CalendarIcon,
@@ -8,7 +8,7 @@ import {
   NotAllowedIcon,
 } from "@chakra-ui/icons";
 import { Column } from "react-table";
-import { AnalysisResult, UserDefinedView, ApprovalRequest, AnalysisQuery } from "sap-client";
+import { AnalysisResult, UserDefinedView, ApprovalRequest, AnalysisQuery, ApprovalStatus } from "sap-client";
 import { useMutation, useRequest } from "redux-query-react";
 import { useDispatch, useSelector } from "react-redux";
 import { requestAsync } from 'redux-query';
@@ -26,9 +26,10 @@ import {
 import AnalysisHeader from "./header/analysis-header";
 import AnalysisSidebar from "./sidebar/analysis-sidebar";
 import { setSelection } from "./analysis-selection-configs";
-import { sendApproval, sendRejection } from "./analysis-approval-configs";
+import { fetchApprovalMatrix, sendApproval, sendRejection } from "./analysis-approval-configs";
 import { ColumnConfigWidget } from "./data-table/column-config-widget";
 import { toggleColumnVisibility } from "./header/view-selector/analysis-view-selection-config";
+import Species from "../data/species.json";
 
 export default function AnalysisPage() {
   const { t } = useTranslation();
@@ -37,6 +38,7 @@ export default function AnalysisPage() {
 
   const [columnLoadState] = useRequest(requestColumns());
   const [{ isPending, isFinished }] = useRequest({...requestPageOfAnalysis({ pageSize: 100 })});
+  useRequest({...fetchApprovalMatrix()});
   // TODO: Figure out how to make this strongly typed
   const data = useSelector<RootState>((s) =>
     Object.values(s.entities.analysis ?? {})
@@ -61,11 +63,11 @@ export default function AnalysisPage() {
   const [pageState, setPageState] = useState({ isNarrowed: false });
 
   const selection = useSelector<RootState>((s) => s.selection.selection);
+  const approvals = useSelector<RootState>((s) => s.entities.approvalMatrix);
   const view = useSelector<RootState>((s) => s.view.view) as UserDefinedView;
 
   const onSearch = React.useCallback(
     (q: AnalysisQuery) => {
-      console.log(q)
       dispatch({ type: "RESET/Analysis" });
       dispatch(
         requestAsync({
@@ -237,13 +239,52 @@ export default function AnalysisPage() {
     pendingRejection,
   ]);
 
+  const getCellStyle = React.useCallback((rowId: string, columnId: string) => {
+    if (!canApproveColumn(columnId)) {
+      return "cell";
+    }
+    if (approvals && approvals[rowId] && approvals[rowId][columnId] === ApprovalStatus.approved) {
+      return "cell";
+    }
+    if (approvals && approvals[rowId] && approvals[rowId][columnId] === ApprovalStatus.rejected) {
+      return "rejectedCell";
+    }
+    return "unapprovedCell";
+  }, [approvals, canApproveColumn]);
+
+  const speciesOptions = React.useMemo(() => Species.map(x => ({label: x, value: x})), []);
+
+  const renderCellControl = React.useCallback(
+    (rowId: string, columnId: string, value: any) => {
+      let v = `${value}`;
+      if (columnId.endsWith("date")) {
+        v = value.toISOString();
+      }
+      /*
+      if (columnId === "species_final") {
+        return (
+          <AutoComplete items={speciesOptions} placeholder={v} label=""/>
+        );
+      }*/
+      if (columnConfigs[columnId].editable) {
+        return (
+          <Editable defaultValue={v}>
+            <EditablePreview />
+            <EditableInput />
+          </Editable>
+        );
+      }
+      return <div>{`${v}`}</div>;
+    },
+    [columnConfigs]
+  );
+
   const safeView = React.useMemo(() => camelCaseKeys(view, {deep: true}), [view]);
   const sidebarWidth = "300px";
   if (!columnLoadState.isFinished) {
     return <div>Loading</div>;
   }
 
-  console.log(safeView);
   return (
     <Box
       display="grid"
@@ -322,11 +363,13 @@ export default function AnalysisPage() {
             canApproveColumn={canApproveColumn}
             approvableColumns={approvableColumns}
             getDependentColumns={getDependentColumns}
+            getCellStyle={getCellStyle}
             data={
               pageState.isNarrowed
                 ? filteredData.filter((x) => selection[x.isolate_id])
                 : filteredData
             }
+            renderCellControl={renderCellControl}
             primaryKey="isolate_id"
             selectionClassName={
               pageState.isNarrowed ? "approvingCell" : "selectedCell"

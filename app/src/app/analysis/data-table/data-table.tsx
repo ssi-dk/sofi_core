@@ -16,6 +16,7 @@ import { VariableSizeGrid } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
 import { jsx } from "@emotion/react";
 import { DragDropContext, DropResult } from "react-beautiful-dnd";
+import { Flex } from "@chakra-ui/react";
 import dtStyle from "app/analysis/data-table/data-table.styles";
 import { IndexableOf, NotEmpty } from "utils";
 import SelectionCheckBox from "./selection-check-box";
@@ -41,6 +42,8 @@ type DataTableProps<T extends NotEmpty> = {
   approvableColumns: string[];
   onSelect: (sel: DataTableSelection<T>) => void;
   view: UserDefinedView;
+  getCellStyle: (rowId: string, columnId: string) => string;
+  renderCellControl: (rowId: string, columnId: string, value: string) => JSX.Element;
 };
 
 function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
@@ -65,6 +68,8 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
     canSelectColumn,
     canApproveColumn,
     getDependentColumns,
+    getCellStyle,
+    renderCellControl,
     view,
   } = props;
   const [selection, setSelection] = React.useState({} as DataTableSelection<T>);
@@ -282,8 +287,10 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
       const rowId = rows[rowIndex - 1].original[primaryKey];
       const columnId = visibleColumns[columnIndex].id;
       const className = columnIndex === 0 ? "stickyCell" :
-                            isInSelection(rowId, columnId) ? selectionClassName  : "cell";
+                            isInSelection(rowId, columnId) ? selectionClassName : getCellStyle(rowId, columnId);
+
       return (
+        // eslint-disable-next-line jsx-a11y/click-events-have-key-events
         <div
           role="cell"
           style={style}
@@ -293,22 +300,17 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
               ? () => onSelectCell(rowId, columnId)
               : noop
           }
-          onKeyDown={
-            canSelectColumn(columnId)
-              ? () => onSelectCell(rowId, columnId)
-              : noop
-          }
           key={columnIndex}
         >
-          <div>
+          <Flex>
             {columnIndex === 0 && (
               <SelectionCheckBox
                 onClick={rowClickHandler(rows[rowIndex - 1])}
                 {...calcRowSelectionState(rows[rowIndex - 1])}
               />
             )}
-            {`${rows[rowIndex - 1].original[columnId]}`}
-          </div>
+            {renderCellControl(rowId, columnId, rows[rowIndex - 1].original[columnId])}
+          </Flex>
         </div>
       );
     },
@@ -325,7 +327,9 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
       noop,
       onSelectCell,
       rowClickHandler,
-      isInSelection
+      isInSelection,
+      getCellStyle,
+      renderCellControl
     ]
   );
 

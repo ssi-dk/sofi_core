@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
+import ScrollbarSize from "react-scrollbar-size";
 import {
   VariableSizeGrid as Grid,
   VariableSizeGrid,
@@ -35,7 +36,7 @@ function getShownIndicies(children) {
   };
 }
 
-function useInnerElementType(Cell, columnWidth, rowHeight) {
+function useInnerElementType(Cell, columnWidth, rowHeight, scrollbarWidth) {
   return React.useMemo(
     () =>
       React.forwardRef((props, ref) => {
@@ -84,7 +85,7 @@ function useInnerElementType(Cell, columnWidth, rowHeight) {
               height: rowHeight(0),
               position: "sticky",
               top: 0,
-              left: 0,
+              left: `-${scrollbarWidth}px`,
               zIndex: 4,
             },
           })
@@ -127,7 +128,7 @@ function useInnerElementType(Cell, columnWidth, rowHeight) {
           const width = columnWidth(columnIndex);
           const height = rowHeight(rowIndex);
 
-          const marginTop = i === 1 ? sumRowsHeights(rowIndex) : undefined;
+          const marginTop = i === 1 ? sumRowsHeights(rowIndex) - scrollbarWidth : undefined;
 
           children.push(
             React.createElement(Cell, {
@@ -139,7 +140,7 @@ function useInnerElementType(Cell, columnWidth, rowHeight) {
                 width,
                 height,
                 position: "sticky",
-                left: 0,
+                left: 0 - scrollbarWidth,
                 zIndex: 2,
               },
             })
@@ -153,7 +154,7 @@ function useInnerElementType(Cell, columnWidth, rowHeight) {
           </div>
         );
       }),
-    [Cell, columnWidth, rowHeight]
+    [Cell, columnWidth, rowHeight, scrollbarWidth]
   );
 }
 
@@ -165,15 +166,22 @@ export const StickyVariableSizeGrid: React.FC<StickyVariableSizeGridProps> = (
   props: StickyVariableSizeGridProps
 ) => {
   const { gridRef, children, columnWidth, rowHeight } = props;
+  const [currentScrollbarWidth, setScrollbarWidth] = useState(0);
+
+  const scrollbarSizeChange = ({ height, width }) => {
+    if (width !== currentScrollbarWidth) {
+      setScrollbarWidth(width);
+    }
+  };
+
   return (
-    <Grid
-      {...props}
-      ref={gridRef}
-      innerElementType={useInnerElementType(
-        children,
-        columnWidth,
-        rowHeight
-      )}
-    />
+    <React.Fragment>
+      <ScrollbarSize onChange={scrollbarSizeChange} />
+      <Grid
+        {...props}
+        ref={gridRef}
+        innerElementType={useInnerElementType(children, columnWidth, rowHeight, currentScrollbarWidth)}
+      />
+    </React.Fragment>
   );
 };

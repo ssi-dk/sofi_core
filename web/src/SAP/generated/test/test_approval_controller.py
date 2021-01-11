@@ -21,7 +21,7 @@ class TestApprovalController(BaseTestCase):
         headers = { 
         }
         response = self.client.open(
-            '/api/approvals/{id}'.format(id='id_example'),
+            '/api/approvals/{approval_id}'.format(approval_id='approval_id_example'),
             method='DELETE',
             headers=headers)
         self.assert200(response,
@@ -49,6 +49,21 @@ class TestApprovalController(BaseTestCase):
             headers=headers,
             data=json.dumps(body),
             content_type='application/json')
+        self.assert200(response,
+                       'Response body is : ' + response.data.decode('utf-8'))
+
+    def test_full_approval_matrix(self):
+        """Test case for full_approval_matrix
+
+        
+        """
+        headers = { 
+            'Accept': 'application/json',
+        }
+        response = self.client.open(
+            '/api/approvals/matrix',
+            method='GET',
+            headers=headers)
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
 

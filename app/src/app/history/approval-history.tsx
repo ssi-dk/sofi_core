@@ -13,7 +13,7 @@ import {
   ArrowBackIcon,
   DeleteIcon,
 } from "@chakra-ui/icons";
-import { Approval } from "sap-client";
+import { Approval, ApprovalAllOfStatusEnum } from "sap-client";
 import { useMutation, useRequest } from "redux-query-react";
 import { useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
@@ -36,7 +36,7 @@ export default function ApprovalHistory() {
   const toast = useToast();
 
   const [revocationLoadState, doRevoke] = useMutation((id: string) =>
-    revokeApproval({ id })
+    revokeApproval({ approvalId: id })
   );
 
   const [needsNotify, setNeedsNotify] = useState(true);
@@ -99,12 +99,14 @@ export default function ApprovalHistory() {
                   ).toLocaleTimeString()}`}</Text>
                   <Text>{h.approver}</Text>
                   <Text>{h.status}</Text>
-                  <Button
-                    leftIcon={<DeleteIcon />}
-                    onClick={() => revokeItem(h.id)}
-                  >
-                    {`${t("Revoke approval")}`}
-                  </Button>
+                  {h.status === ApprovalAllOfStatusEnum.submitted && (
+                    <Button
+                      leftIcon={<DeleteIcon />}
+                      onClick={() => revokeItem(h.id)}
+                    >
+                      {`${t("Revoke approval")}`}
+                    </Button>
+                  )}
                 </Grid>
               );
             })}

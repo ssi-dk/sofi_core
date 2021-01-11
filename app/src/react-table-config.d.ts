@@ -127,3 +127,4 @@ declare module "react-table" {
       UseRowSelectRowProps<D>,
       UseRowStateRowProps<D> {}
 }
+

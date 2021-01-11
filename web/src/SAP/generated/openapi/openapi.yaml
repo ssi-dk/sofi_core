@@ -130,7 +130,21 @@ paths:
       - approval
       x-openapi-router-controller: web.src.SAP.generated.controllers.approval_controller
       x-codegen-request-body-name: body
-  /approvals/{id}:
+  /approvals/matrix:
+    get:
+      description: Get the entire approval matrix for all analysis
+      operationId: full_approval_matrix
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApprovalMatrix'
+          description: Approval matrix
+      tags:
+      - approval
+      x-openapi-router-controller: web.src.SAP.generated.controllers.approval_controller
+  /approvals/{approval_id}:
     delete:
       description: Cancel a pending approval
       operationId: cancel_approval
@@ -138,7 +152,7 @@ paths:
       - description: Id of approval to cancel
         explode: true
         in: path
-        name: id
+        name: approval_id
         required: true
         schema:
           type: string

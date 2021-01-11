@@ -7,17 +7,17 @@ from .. import util
 from ...src.controllers import ApprovalController
 
 
-def cancel_approval(id):  # noqa: E501
+def cancel_approval(approval_id):  # noqa: E501
     """cancel_approval
 
     Cancel a pending approval # noqa: E501
 
-    :param id: Id of approval to cancel
-    :type id: str
+    :param approval_id: Id of approval to cancel
+    :type approval_id: str
 
     :rtype: None
     """
-    return ApprovalController.cancel_approval(id)
+    return ApprovalController.cancel_approval(approval_id)
 
 
 def create_approval(body=None):  # noqa: E501
@@ -33,6 +33,17 @@ def create_approval(body=None):  # noqa: E501
     if connexion.request.is_json:
         body = ApprovalRequest.from_dict(connexion.request.get_json())  # noqa: E501
     return ApprovalController.create_approval(body)
+
+
+def full_approval_matrix():  # noqa: E501
+    """full_approval_matrix
+
+    Get the entire approval matrix for all analysis # noqa: E501
+
+
+    :rtype: Dict[str, Dict[str, ApprovalStatus]]
+    """
+    return ApprovalController.full_approval_matrix()
 
 
 def get_approvals():  # noqa: E501
