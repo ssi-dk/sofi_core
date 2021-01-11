@@ -23,7 +23,7 @@ def main():
     db.create_collection(COLLECTION_NAME, capped=True, size=256000000, max=50000)
 
     threads = []
-    for i in xrange(NUM_THREADS):
+    for i in range(NUM_THREADS):
         t = TBRBroker(i)
         threads.append(t)
     for t in threads:
