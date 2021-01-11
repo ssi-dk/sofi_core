@@ -20,20 +20,22 @@ class TBRBroker(threading.Thread):
         while not self._stop.isSet():
             try:
                 record = cursor.next()
+                logging.info(f'Thread {self.num} trying to DB lock {record['_id']}...')
                 try:
                     self.col.update({'_id': record['_id'], 'status': 'waiting'},
                                   {'$set': {'status': 'processing'}})
                 except OperationFailure:
                     # Update failed.
+                    logging.error(f'DB level lock failed for thread {self.num} continuing...')
                     continue
                 self.handle_request(record)
                 record['status'] = 'done'
                 self.col.save(record)
                 # or delete
             except StopIteration:
-                print(self.num, 'waiting')
+                logging.error(f'Thread {self.num} received StopIteration exception, restarting loop...')
             else:
-                print(self.num, 'sub', record)
+                pass
 
     def handle_request(self, req):
-        print(req)
+        logging.info(req)

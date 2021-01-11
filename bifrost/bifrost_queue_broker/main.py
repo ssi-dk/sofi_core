@@ -1,30 +1,29 @@
+import logging
 import pymongo
 import threading
 from tbr_broker import TBRBroker
 
-"""
-class Publisher(object):
+logging.basicConfig(format='%(name)s - %(levelname)s - %(message)s', stream=sys.stdout, level=logging.DEBUG)
 
-    def __init__(self):
-        super(Publisher, self).__init__()
-        self.conn = pymongo.MongoClient()
-        self.db = self.conn[DB_NAME]
-        self.col = self.db[COLLECTION_NAME]
 
-    def insert(self, data):
-        print self.col.insert({
-            'item': data,
-        })
+
+""" Insert example
+def insert(self, data):
+    print self.col.insert({
+        'item': data,
+    })
 """
 
 def main():
+    NUM_THREADS = 1
+    logging.info(f"Broker queue listener starting up {NUM_THREADS} threads")
     conn = pymongo.MongoClient()
     db = conn[DB_NAME]
     db.drop_collection(COLLECTION_NAME)
     db.create_collection(COLLECTION_NAME, capped=True, size=256000000, max=50000)
 
     threads = []
-    for i in xrange(1):
+    for i in xrange(NUM_THREADS):
         t = TBRBroker(i)
         threads.append(t)
     for t in threads:
@@ -34,6 +33,7 @@ def main():
     for t in threads:
         t.join()
 
+    logging.info("All threads exited.")
 
 if __name__ == '__main__':
     main()
