@@ -20,6 +20,27 @@ services:
     depends_on:
       - "sap_api"
 
+  sap_broker_queue:
+    build:
+      context: ./bifrost/bifrost_queue_broker
+      dockerfile: Dockerfile
+    container_name: bifrost_queue_broker
+    user: ${CURRENT_UID}
+    environment:
+      - PYTHONDONTWRITEBYTECODE=1
+      - PYTHONUNBUFFERED=0
+
+  bifrost_listener:
+    build:
+      context: ./bifrost/bifrost_listener
+      dockerfile: Dockerfile
+    container_name: bifrost_listener
+    user: ${CURRENT_UID}
+    environment:
+      - PYTHONDONTWRITEBYTECODE=1
+      - PYTHONUNBUFFERED=0
+
+
   proxy:
     image: caddy:2.2.0-alpine
     ports:

@@ -14,15 +14,11 @@ services:
       - "bifrost_db"
     command: ["/bin/sh", "-c", "/app/start.sh"]
 
+  sap_broker_queue:
+    depends_on:
+      - "bifrost_db"
+
   bifrost_listener:
-    build:
-      context: ./bifrost/bifrost_listener
-      dockerfile: Dockerfile
-    container_name: bifrost_listener
-    user: ${CURRENT_UID}
-    environment:
-      - PYTHONDONTWRITEBYTECODE=1
-      - PYTHONUNBUFFERED=0
     depends_on:
       - "bifrost_db"
 
