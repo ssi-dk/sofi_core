@@ -1,41 +1,17 @@
-import pymongo
-from pymongo import CursorType
-import threading
+import sys
+import logging
+from broker import Broker
+from queue_status import ProcessingStatus 
 
-class TBRBroker(threading.Thread):
 
-    def __init__(self, num, db_name, collection_name):
-        super(TBRBroker, self).__init__()
-        self.conn = pymongo.MongoClient()
-        self.db = self.conn[db_name]
-        self.col = self.db[collection_name]
-        self._stop = threading.Event()
-        self.num = num
 
-    def stop(self):
-        self._stop.set()
+class TBRBroker(Broker):
 
-    def run(self):
-        cursor = self.col.find({'status': 'waiting'}, cursor_type=CursorType.TAILABLE_AWAIT)
-        while not self._stop.isSet():
-            try:
-                record = cursor.next()
-                logging.info(f'Thread {self.num} trying to DB lock {record['_id']}...')
-                try:
-                    self.col.update({'_id': record['_id'], 'status': 'waiting'},
-                                  {'$set': {'status': 'processing'}})
-                except OperationFailure:
-                    # Update failed.
-                    logging.error(f'DB level lock failed for thread {self.num} continuing...')
-                    continue
-                self.handle_request(record)
-                record['status'] = 'done'
-                self.col.save(record)
-                # or delete
-            except StopIteration:
-                logging.error(f'Thread {self.num} received StopIteration exception, restarting loop...')
-            else:
-                pass
+    def __init__(self, db_name, collection_name):
+        self.broker_name = "TBR Broker"
+        self.find_matcher = {'status': ProcessingStatus.WAITING.value}
+        super(TBRBroker, self).__init__(db_name, collection_name, self.broker_name, self.find_matcher, TBRBroker.handle_tbr_request)
 
-    def handle_request(self, req):
-        logging.info(req)
+    # This function gets called with the body of every TBR request from the queue.
+    def handle_tbr_request(request):
+        logging.info(request)
