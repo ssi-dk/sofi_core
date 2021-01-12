@@ -8,11 +8,9 @@ from .queue_status import ProcessingStatus
 
 
 class Broker(threading.Thread):
-    def __init__(self, db_name, collection_name, name, matcher, callback):
+    def __init__(self, collection, name, matcher, callback):
         super(Broker, self).__init__()
-        self.conn = pymongo.MongoClient()
-        self.db = self.conn[db_name]
-        self.col = self.db[collection_name]
+        self.col = collection
         self._stop = threading.Event()
         self.broker_name = name
         self.listener_match = matcher

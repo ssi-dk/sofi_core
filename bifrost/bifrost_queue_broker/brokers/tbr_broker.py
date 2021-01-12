@@ -5,12 +5,11 @@ from .queue_status import ProcessingStatus
 
 
 class TBRBroker(Broker):
-    def __init__(self, db_name, collection_name):
+    def __init__(self, collection):
         self.broker_name = "TBR Broker"
         self.find_matcher = {"status": ProcessingStatus.WAITING.value, "service": "TBR"}
         super(TBRBroker, self).__init__(
-            db_name,
-            collection_name,
+            collection,
             self.broker_name,
             self.find_matcher,
             TBRBroker.handle_tbr_request,
