@@ -82,5 +82,5 @@ ${mkfile_dir}/app/node_modules/ : ${mkfile_dir}/app/package.json
 build: ${mkfile_dir}/app/src/sap-client ${mkfile_dir}/web/src/SAP/generated ${mkfile_dir}/web/src/services/lims/openapi
 	CURRENT_UID=${mkfile_user} docker-compose build --no-cache
 
-run: ${mkfile_dir}/app/src/sap-client ${mkfile_dir}/web/src/SAP/generated ${mkfile_dir}/web/src/services/lims/openapi ${mkfile_dir}/app/node_modules/
+run: ${mkfile_dir}/app/src/sap-client ${mkfile_dir}/web/src/SAP/generated ${mkfile_dir}/web/src/services/lims/openapi ${mkfile_dir}/app/node_modules/ ${mkfile_dir}/bifrost/bifrost_queue_broker/tbr_client
 	CURRENT_UID=${mkfile_user} docker-compose up --build
