@@ -1,27 +1,26 @@
-import sys
+import sys, os
 import logging
 import pymongo
 import threading
-from tbr_broker import TBRBroker
+from brokers.tbr_broker import TBRBroker
+from brokers.lims_broker import LIMSBroker
 
-logging.basicConfig(format='%(name)s - %(levelname)s - %(message)s', stream=sys.stdout, level=logging.DEBUG)
+LOGLEVEL = os.environ.get("LOGLEVEL", "DEBUG").upper()
 
+logging.basicConfig(
+    format="%(name)s - %(levelname)s - %(message)s", stream=sys.stdout, level=LOGLEVEL
+)
 
-
-""" Insert example
-def insert(self, data):
-    print self.col.insert({
-        'item': data,
-    })
-"""
 
 def create_collection_if_not_exists(db_name, collection_name):
     conn = pymongo.MongoClient()
     db = conn[db_name]
-    #db.drop_collection(collection_name)
+    # db.drop_collection(collection_name)
     cols = db.list_collection_names()
     if collection_name not in cols:
-        db.create_collection(COLLECTION_NAME, capped=True, size=256000000, max=50000)
+        db.create_collection(collection_name, capped=True, size=256000000, max=50000)
+        # Insert dummy item to prevent stalling in brokers.
+        db[collection_name].insert({})
 
 
 def main():
@@ -29,9 +28,9 @@ def main():
     COLLECTION_NAME = "queue"
     create_collection_if_not_exists(DB_NAME, COLLECTION_NAME)
     logging.info(f"Broker queue listener starting up.")
-    
+
     # What brokers to start up as seperate threads.
-    brokers = [TBRBroker]
+    brokers = [TBRBroker, LIMSBroker]
 
     threads = []
     for broker in brokers:
@@ -47,5 +46,6 @@ def main():
 
     logging.info("All threads exited.")
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()

@@ -2,19 +2,19 @@ import sys
 import logging
 import time
 import pymongo
-from queue_status import ProcessingStatus 
-from pymongo import CursorType
 import threading
+from pymongo import CursorType
+from .queue_status import ProcessingStatus
 
 
 class Broker(threading.Thread):
-    def __init__(self, db_name, collection_name, identifier, matcher, callback):
+    def __init__(self, db_name, collection_name, name, matcher, callback):
         super(Broker, self).__init__()
         self.conn = pymongo.MongoClient()
         self.db = self.conn[db_name]
         self.col = self.db[collection_name]
         self._stop = threading.Event()
-        self.broker_identifier = identifier
+        self.broker_name = name
         self.listener_match = matcher
         self.request_callback = callback
 
@@ -22,26 +22,34 @@ class Broker(threading.Thread):
         self._stop.set()
 
     def run(self):
-        logging.info(f"Started {self.broker_identifier} thread.")
-        cursor = self.col.find(self.listener_match, cursor_type=CursorType.TAILABLE_AWAIT)
+        logging.info(f"Started {self.broker_name} thread.")
+        cursor = self.col.find(
+            self.listener_match, cursor_type=CursorType.TAILABLE_AWAIT
+        )
         while not self._stop.isSet():
             try:
                 record = cursor.next()
-                logging.info(f"{self.broker_identifier} trying to DB lock {record['_id']}")
+                logging.info(f"{self.broker_name} trying to DB lock {record['_id']}")
                 try:
                     # We cannot change size of documents in capped collections
                     # so the "locking" should be the same length in both get and update.
-                    self.col.update({'_id': record['_id'], 'status': ProcessingStatus.WAITING.value},
-                                  {'$set': {'status': ProcessingStatus.PROCESSING.value}})
+                    self.col.update(
+                        {
+                            "_id": record["_id"],
+                            "status": ProcessingStatus.WAITING.value,
+                        },
+                        {"$set": {"status": ProcessingStatus.PROCESSING.value}},
+                    )
                 except pymongo.errors.OperationFailure as e:
                     # Update failed.
-                    logging.error(f"DB level lock failed for {self.broker_identifier}, {e}")
+                    logging.error(f"DB level lock failed for {self.broker_name}, {e}")
                     continue
 
                 self.request_callback(record)
-                record['status'] = ProcessingStatus.DONE.value
+                record["status"] = ProcessingStatus.DONE.value
                 self.col.save(record)
             except StopIteration:
+                logging.debug(f"{self.broker_name} received StopIteration.")
                 time.sleep(1)
             else:
                 pass
