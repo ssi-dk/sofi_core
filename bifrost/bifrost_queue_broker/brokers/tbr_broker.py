@@ -2,7 +2,14 @@ import sys
 import logging
 from .broker import Broker
 from .queue_status import ProcessingStatus
+from api_clients.tbr_client.api import isolate_api
+from api_clients.tbr_client.model.approval import Approval
+from api_clients.tbr_client.model.isolate import Isolate
+from api_clients.tbr_client.model.problem_details import ProblemDetails
 
+configuration = api_clients.tbr_client.Configuration(
+    host = "http://localhost"
+)
 
 class TBRBroker(Broker):
     def __init__(self, collection):
@@ -18,3 +25,14 @@ class TBRBroker(Broker):
     # This function gets called with the body of every TBR request from the queue.
     def handle_tbr_request(request):
         logging.info(request)
+        with api_clients.tbr_client.ApiClient(configuration) as api_client:
+            # Create an instance of the API class
+            api_instance = isolate_api.IsolateApi(api_client)
+            isolate_id = "isolateId_example" # str, none_type | 
+
+            try:
+                api_response = api_instance.api_isolate_isolate_id_get(isolate_id)
+                pprint(api_response)
+            except api_clients.tbr_client.ApiException as e:
+                print("Exception when calling IsolateApi->api_isolate_isolate_id_get: %s\n" % e)
+
