@@ -6,9 +6,7 @@ from brokers.tbr_broker import TBRBroker
 from brokers.lims_broker import LIMSBroker
 
 
-def create_collection_if_not_exists(host, port, db_name, collection_name):
-    conn = pymongo.MongoClient(host, port)
-    db = conn[db_name]
+def create_collection_if_not_exists(db, collection_name):
     # db.drop_collection(collection_name)
     cols = db.list_collection_names()
     if collection_name not in cols:
@@ -24,8 +22,9 @@ def main():
     PORT = int(os.environ.get("MONGO_PORT", 27017))
     DB_NAME = os.environ.get("MONGO_DB", "bifrost_test")
     COLLECTION_NAME = os.environ.get("MONGO_QUEUE_COLLECTION", "sap_broker_queue")
-
-    collection = create_collection_if_not_exists(HOST, PORT, DB_NAME, COLLECTION_NAME)
+    
+    db = pymongo.MongoClient(HOST, PORT)[DB_NAME]
+    collection = create_collection_if_not_exists(db, COLLECTION_NAME)
     logging.info(f"Broker queue listener starting up.")
 
     # What brokers to start up as seperate threads.
@@ -33,7 +32,7 @@ def main():
 
     threads = []
     for broker in brokers:
-        t = broker(collection)
+        t = broker(db, collection)
         t.setDaemon(True)
         threads.append(t)
 

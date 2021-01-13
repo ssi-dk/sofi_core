@@ -61,11 +61,26 @@ ${mkfile_dir}/web/src/services/lims/openapi : ${mkfile_dir}/openapi_specs/lims.v
 		--global-property apiTests=false,apiDocs=false \
 		--global-property modelTests=false,modelDocs=false
 
+${mkfile_dir}/bifrost/bifrost_queue_broker/api_clients/tbr_client : ${mkfile_dir}/openapi_specs/tbr.v1.yaml
+	# Generate TBR client for broker
+	rm -rf ${mkfile_dir}/bifrost/bifrost_queue_broker/api_clients/tbr_client
+	docker run --rm -v "${mkfile_dir}:/local" \
+		--user ${mkfile_user} \
+		"openapitools/openapi-generator:cli-v5.0.0" \
+		generate \
+		-i /local/openapi_specs/tbr.v1.yaml \
+		-g python \
+		-o /local/bifrost/bifrost_queue_broker \
+		--additional-properties packageName=api_clients.tbr_client \
+		--additional-properties generateSourceCodeOnly=true \
+		--global-property apiTests=false,apiDocs=false \
+		--global-property modelTests=false,modelDocs=false
+
 ${mkfile_dir}/app/node_modules/ : ${mkfile_dir}/app/package.json
 	pushd ${mkfile_dir}/app && yarn install
 
 build: ${mkfile_dir}/app/src/sap-client ${mkfile_dir}/web/src/SAP/generated ${mkfile_dir}/web/src/services/lims/openapi
 	CURRENT_UID=${mkfile_user} docker-compose build --no-cache
 
-run: ${mkfile_dir}/app/src/sap-client ${mkfile_dir}/web/src/SAP/generated ${mkfile_dir}/web/src/services/lims/openapi ${mkfile_dir}/app/node_modules/
+run: ${mkfile_dir}/app/src/sap-client ${mkfile_dir}/web/src/SAP/generated ${mkfile_dir}/web/src/services/lims/openapi ${mkfile_dir}/app/node_modules/ ${mkfile_dir}/bifrost/bifrost_queue_broker/api_clients/tbr_client
 	CURRENT_UID=${mkfile_user} docker-compose up --build
