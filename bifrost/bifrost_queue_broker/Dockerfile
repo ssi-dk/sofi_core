@@ -17,4 +17,12 @@ ENV LOGLEVEL="INFO"
 
 CMD [ "python", "-u", "/app/main.py" ]
 
+FROM base AS testing
+COPY ["test-requirements.txt", "/app/"]
+COPY tests/ /app/tests
+WORKDIR /app/
+RUN pip install -r test-requirements.txt
+LABEL test=true
+RUN pytest tests --junitxml=junit.xml; exit 0
+
 FROM base AS final
