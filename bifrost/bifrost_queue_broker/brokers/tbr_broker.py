@@ -7,6 +7,7 @@ from .queue_status import ProcessingStatus
 # TBR API imports
 import time
 import api_clients.tbr_client
+from pymongo.collection import ReturnDocument
 from pprint import pprint
 from api_clients.tbr_client.api import isolate_api
 from api_clients.tbr_client.model.isolate import Isolate
@@ -19,10 +20,12 @@ tbr_configuration = api_clients.tbr_client.Configuration(host=tbr_api_url)
 
 
 class TBRBroker(Broker):
-    def __init__(self, collection):
+    def __init__(self, db, collection):
         self.broker_name = "TBR Broker"
         self.find_matcher = {"status": ProcessingStatus.WAITING.value, "service": "TBR"}
+        self.db = db
         super(TBRBroker, self).__init__(
+            self.db,
             collection,
             self.broker_name,
             self.find_matcher,
@@ -45,10 +48,20 @@ class TBRBroker(Broker):
         with api_clients.tbr_client.ApiClient(tbr_configuration) as api_client:
             api_instance = isolate_api.IsolateApi(api_client)
             try:
-                api_response = api_instance.api_isolate_isolate_id_get(
-                    isolate_id, async_req=True
+                api_response = api_instance.api_isolate_isolate_id_get(isolate_id)
+                values = {
+                    k: v for k, v in api_response.to_dict().items() if v is not None
+                }
+                if "isolate_id" in values:
+                    del values["isolate_id"]
+
+                # TODO: make sure this hardocded collection name is correct, or take form env variables.
+                result = self.db["sap_analysis_results"].find_one_and_update(
+                    filter={"isolate_id": isolate_id},
+                    update={"$set": values},
+                    return_document=ReturnDocument.AFTER,
                 )
-                logging.info(api_response)
+                logging.info(result)
             except Exception as e:
                 logging.error(
                     f"Exception on isolate {isolate_id} IsolateApi->api_isolate_isolate_id_get: {e}\n"
@@ -63,9 +76,7 @@ class TBRBroker(Broker):
             with api_clients.tbr_client.ApiClient(tbr_configuration) as api_client:
                 api_instance = isolate_api.IsolateApi(api_client)
                 try:
-                    api_response = api_instance.api_isolate_put(
-                        isolate_update=body, async_req=True
-                    )
+                    api_response = api_instance.api_isolate_put(isolate_update=body)
                     logging.info(api_response)
                 except Exception as e:
                     logging.info(

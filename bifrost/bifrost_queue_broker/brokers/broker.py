@@ -14,8 +14,9 @@ class BrokerError(Exception):
 
 
 class Broker(threading.Thread):
-    def __init__(self, collection, name, matcher, callback):
+    def __init__(self, db, collection, name, matcher, callback):
         super(Broker, self).__init__()
+        self.db = db
         self.col = collection
         self._stop = threading.Event()
         self.broker_name = name
