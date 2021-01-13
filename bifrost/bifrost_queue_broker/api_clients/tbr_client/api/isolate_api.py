@@ -1,5 +1,5 @@
 """
-    TBR-SAP
+    SAP TBR Integration
 
     TBR integration for SAP  # noqa: E501
 
@@ -21,8 +21,8 @@ from api_clients.tbr_client.model_utils import (  # noqa: F401
     none_type,
     validate_and_convert_types
 )
-from api_clients.tbr_client.model.approval import Approval
 from api_clients.tbr_client.model.isolate import Isolate
+from api_clients.tbr_client.model.isolate_update import IsolateUpdate
 from api_clients.tbr_client.model.problem_details import ProblemDetails
 
 
@@ -170,7 +170,7 @@ class IsolateApi(object):
 
 
             Keyword Args:
-                approval (Approval): [optional]
+                isolate_update (IsolateUpdate): [optional]
                 _return_http_data_only (bool): response data without head status
                     code and headers. Default is True.
                 _preload_content (bool): if False, the urllib3.HTTPResponse object
@@ -228,7 +228,7 @@ class IsolateApi(object):
             },
             params_map={
                 'all': [
-                    'approval',
+                    'isolate_update',
                 ],
                 'required': [],
                 'nullable': [
@@ -244,13 +244,13 @@ class IsolateApi(object):
                 'allowed_values': {
                 },
                 'openapi_types': {
-                    'approval':
-                        (Approval,),
+                    'isolate_update':
+                        (IsolateUpdate,),
                 },
                 'attribute_map': {
                 },
                 'location_map': {
-                    'approval': 'body',
+                    'isolate_update': 'body',
                 },
                 'collection_format_map': {
                 }

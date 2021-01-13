@@ -31,8 +31,8 @@ import time
 import api_clients.tbr_client
 from pprint import pprint
 from api_clients.tbr_client.api import isolate_api
-from api_clients.tbr_client.model.approval import Approval
 from api_clients.tbr_client.model.isolate import Isolate
+from api_clients.tbr_client.model.isolate_update import IsolateUpdate
 from api_clients.tbr_client.model.problem_details import ProblemDetails
 # Defining the host is optional and defaults to http://localhost
 # See configuration.py for a list of all supported configuration parameters.
@@ -67,9 +67,8 @@ Class | Method | HTTP request | Description
 
 ## Documentation For Models
 
- - [Approval](api_clients/tbr_client/docs/Approval.md)
- - [FieldApproval](api_clients/tbr_client/docs/FieldApproval.md)
  - [Isolate](api_clients/tbr_client/docs/Isolate.md)
+ - [IsolateUpdate](api_clients/tbr_client/docs/IsolateUpdate.md)
  - [ProblemDetails](api_clients/tbr_client/docs/ProblemDetails.md)
 
 

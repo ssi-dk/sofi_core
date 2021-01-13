@@ -9,7 +9,6 @@
 # import sys
 # sys.setrecursionlimit(n)
 
-from api_clients.tbr_client.model.approval import Approval
-from api_clients.tbr_client.model.field_approval import FieldApproval
 from api_clients.tbr_client.model.isolate import Isolate
+from api_clients.tbr_client.model.isolate_update import IsolateUpdate
 from api_clients.tbr_client.model.problem_details import ProblemDetails

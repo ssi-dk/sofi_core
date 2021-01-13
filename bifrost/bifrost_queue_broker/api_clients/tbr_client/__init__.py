@@ -1,7 +1,7 @@
 # flake8: noqa
 
 """
-    TBR-SAP
+    SAP TBR Integration
 
     TBR integration for SAP  # noqa: E501
 
