@@ -7,6 +7,12 @@ from pymongo import CursorType
 from .queue_status import ProcessingStatus
 
 
+class BrokerError(Exception):
+    """Thrown when a broker encounters an error."""
+
+    pass
+
+
 class Broker(threading.Thread):
     def __init__(self, collection, name, matcher, callback):
         super(Broker, self).__init__()
@@ -42,12 +48,22 @@ class Broker(threading.Thread):
                     # Update failed.
                     logging.error(f"DB level lock failed for {self.broker_name}, {e}")
                     continue
+                try:
+                    self.request_callback(record)
+                    self.mark_done(record)
+                except BrokerError:
+                    self.mark_error(record)
 
-                self.request_callback(record)
-                record["status"] = ProcessingStatus.DONE.value
-                self.col.save(record)
             except StopIteration:
                 logging.debug(f"{self.broker_name} received StopIteration.")
                 time.sleep(1)
             else:
                 pass
+
+    def mark_done(self, record):
+        record["status"] = ProcessingStatus.DONE.value
+        self.col.save(record)
+
+    def mark_error(self, record):
+        record["status"] = ProcessingStatus.ERROR.value
+        self.col.save(record)

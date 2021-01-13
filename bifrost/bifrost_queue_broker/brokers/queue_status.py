@@ -5,3 +5,4 @@ class ProcessingStatus(Enum):
     WAITING = 1
     PROCESSING = 2
     DONE = 3
+    ERROR = 4
