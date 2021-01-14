@@ -8,7 +8,7 @@ variables:
 steps:
 - script: docker build -f Dockerfile -t $(imageName) .
   displayName: 'Docker build and test'
-  workingDirectory: app
+  workingDirectory: bifrost/bifrost_queue_broker
 
 - script: |
     export id=$(docker images --filter "label=test=true" -q | head -1)
