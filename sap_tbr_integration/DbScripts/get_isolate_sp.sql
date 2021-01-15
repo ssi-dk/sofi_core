@@ -73,7 +73,9 @@ AS
         isolater.Dato_godkendt_QC DateApprovedQC,
         isolater.Dato_godkendt_ST DateApprovedST,
         isolater.Dato_godkendt_toxin DateApprovedToxin,
-        isolater.Dato_godkendt_cluster DateApprovedCluster
+        isolater.Dato_godkendt_cluster DateApprovedCluster,
+        CAST((SELECT MAX(RowVer)
+        FROM (VALUES (isolater.RowVer),(genores.RowVer),(base.RowVer),(bakterier.RowVer),(ekstra.RowVer),(kma.RowVer),(regioner.RowVer)) AS Allrowversions(RowVer)) AS BIGINT) RowVer
     FROM FVST_DTU.vw_Isolater_SAP isolater 
     LEFT JOIN FVST_DTU.vw_GenoRes_SAP genores ON isolater.Isolatnr = genores.isolatnr
 	LEFT JOIN FVST_DTU.vw_Basis_SAP base

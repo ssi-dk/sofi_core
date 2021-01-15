@@ -59,6 +59,8 @@ services:
   
   tbr_integration:
     build: ./sap_tbr_integration
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
     ports:
       - '5000:80'
       - '5001:443'
