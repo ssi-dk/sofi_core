@@ -4,7 +4,7 @@ import pymongo
 import threading
 from brokers.tbr_broker import TBRBroker
 from brokers.lims_broker import LIMSBroker
-
+from brokers.tbr_pulling_broker import TBRPullingBroker
 
 def create_collection_if_not_exists(db, collection_name):
     # db.drop_collection(collection_name)
@@ -28,7 +28,7 @@ def main():
     logging.info(f"Broker queue listener starting up.")
 
     # What brokers to start up as seperate threads.
-    brokers = [TBRBroker, LIMSBroker]
+    brokers = [TBRBroker, TBRPullingBroker, LIMSBroker]
 
     threads = []
     for broker in brokers:
