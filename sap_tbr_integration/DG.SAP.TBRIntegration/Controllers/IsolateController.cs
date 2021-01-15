@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using DG.SAP.TBRIntegration.Models;
 using DG.SAP.TBRIntegration.Repositories;
 using Microsoft.AspNetCore.Http;
@@ -52,5 +53,20 @@ namespace DG.SAP.TBRIntegration.Controllers
         {
             return await _isolateRepository.UpdateIsolate(isolateUpdate);
         }
+
+        /// <summary>
+        ///     Get list of changed isolate metadata.
+        /// </summary>
+        // POST api/<IsolateController>/ChangedIsolates
+        [HttpPost]
+        [Consumes("application/json")]
+        [Produces("application/json", "application/problem+json")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<IList<RowVersion>>> GetChangedIsolates([FromBody] IList<RowVersion> isolates)
+        {
+            return Ok(await _isolateRepository.GetChangedIsolates(isolates));
+        }
+
     }
 }

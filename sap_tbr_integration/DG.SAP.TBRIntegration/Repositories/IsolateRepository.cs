@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
@@ -58,5 +59,26 @@ namespace DG.SAP.TBRIntegration.Repositories
             );
             return isolate.SingleOrDefault();
         }
-    }
+
+        public async Task<IList<RowVersion>> GetChangedIsolates(IList<RowVersion> isolates)
+        {
+            var dt = new DataTable();
+            dt.Columns.Add("IsolateId");
+            dt.Columns.Add("EntryRowVer");
+            
+            foreach (var isolate in isolates)
+            {
+                dt.Rows.Add(isolate.IsolateId, isolate.EntryRowVer);
+            }
+
+            await using var connection = new SqlConnection(_connectionString);
+            var changes = await connection.QueryAsync<RowVersion>(
+                "FVST_DTU.Get_Isolate_RowVersions",
+                new { List = dt.AsTableValuedParameter("FVST_DTU.IsolateList") },
+                commandType: CommandType.StoredProcedure
+
+            );
+            return changes.ToList();
+        }
+  }
 }

@@ -76,5 +76,7 @@ namespace DG.SAP.TBRIntegration.Models
         public DateTime? DateApprovedST { get; set; }
         public DateTime? DateApprovedToxin { get; set; }
         public DateTime? DateApprovedCluster { get; set; }
+
+        public long RowVer { get; set; }
     }
 }

@@ -62,6 +62,40 @@ paths:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/ProblemDetails'
+    post:
+      tags:
+        - Isolate
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/RowVersion'
+              nullable: true
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RowVersion'
+            application/problem+json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RowVersion'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
 components:
   schemas:
     Isolate:
@@ -282,6 +316,9 @@ components:
           type: string
           format: date-time
           nullable: true
+        rowVer:
+          type: integer
+          format: int64
       additionalProperties: false
     ProblemDetails:
       type: object
@@ -480,4 +517,14 @@ components:
           type: string
           format: date-time
           nullable: true
+      additionalProperties: false
+    RowVersion:
+      type: object
+      properties:
+        isolateId:
+          type: string
+          nullable: true
+        rowVer:
+          type: integer
+          format: int64
       additionalProperties: false
