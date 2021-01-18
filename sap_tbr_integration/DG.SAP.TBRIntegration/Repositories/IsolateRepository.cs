@@ -53,14 +53,14 @@ namespace DG.SAP.TBRIntegration.Repositories
         {
             await using var connection = new SqlConnection(_connectionString);
             var isolate = await connection.QueryAsync<Isolate>(
-                "FVST_DTU.GetIsolate", 
+                "FVST_DTU.Get_Isolate", 
                 new {Isolatnr = isolateId},
                 commandType: CommandType.StoredProcedure
             );
             return isolate.SingleOrDefault();
         }
 
-        public async Task<IList<RowVersion>> GetChangedIsolates(IList<RowVersion> isolates)
+        public async Task<IList<RowVersion>> GetChangedIsolateIds(IList<RowVersion> isolates)
         {
             var dt = new DataTable();
             dt.Columns.Add("IsolateId");
@@ -74,11 +74,31 @@ namespace DG.SAP.TBRIntegration.Repositories
             await using var connection = new SqlConnection(_connectionString);
             var changes = await connection.QueryAsync<RowVersion>(
                 "FVST_DTU.Get_Isolate_RowVersions",
+                new { List = dt.AsTableValuedParameter("FVST_DTU.IsolateRowVer_List") },
+                commandType: CommandType.StoredProcedure
+
+            );
+            return changes.ToList();
+        }
+        public async Task<IList<Isolate>> GetChangedIsolates(IList<RowVersion> isolates)
+        {
+            var dt = new DataTable();
+            dt.Columns.Add("IsolateId");
+            
+            foreach (var isolate in isolates)
+            {
+                dt.Rows.Add(isolate.IsolateId);
+            }
+
+            await using var connection = new SqlConnection(_connectionString);
+            var changes = await connection.QueryAsync<Isolate>(
+                "FVST_DTU.Get_Many_Isolates",
                 new { List = dt.AsTableValuedParameter("FVST_DTU.IsolateList") },
                 commandType: CommandType.StoredProcedure
 
             );
             return changes.ToList();
+
         }
   }
 }

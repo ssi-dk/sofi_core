@@ -13,6 +13,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using DG.SAP.TBRIntegration.Repositories;
+using DG.SAP.TBRIntegration.Services;
 
 namespace DG.SAP.TBRIntegration
 {
@@ -41,6 +42,7 @@ namespace DG.SAP.TBRIntegration
             });
 
             LoadDependencies(services);
+            services.AddTransient<IIsolateChangeService, IsolateChangeService>();
         }
 
         private void LoadDependencies(IServiceCollection services)

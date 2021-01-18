@@ -47,13 +47,18 @@ configuration = api_clients.tbr_client.Configuration(
 with api_clients.tbr_client.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = isolate_api.IsolateApi(api_client)
-    isolate_id = "isolateId_example" # str, none_type | 
+    row_version = [
+        RowVersion(
+            isolate_id="isolate_id_example",
+            entry_row_ver=1,
+        ),
+    ] # [RowVersion], none_type |  (optional)
 
     try:
-        api_response = api_instance.api_isolate_isolate_id_get(isolate_id)
+        api_response = api_instance.api_isolate_changed_isolates_post(row_version=row_version)
         pprint(api_response)
     except api_clients.tbr_client.ApiException as e:
-        print("Exception when calling IsolateApi->api_isolate_isolate_id_get: %s\n" % e)
+        print("Exception when calling IsolateApi->api_isolate_changed_isolates_post: %s\n" % e)
 ```
 
 ## Documentation for API Endpoints
@@ -62,8 +67,8 @@ All URIs are relative to *http://localhost*
 
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
+*IsolateApi* | [**api_isolate_changed_isolates_post**](api_clients/tbr_client/docs/IsolateApi.md#api_isolate_changed_isolates_post) | **POST** /api/Isolate/ChangedIsolates | 
 *IsolateApi* | [**api_isolate_isolate_id_get**](api_clients/tbr_client/docs/IsolateApi.md#api_isolate_isolate_id_get) | **GET** /api/Isolate/{isolateId} | 
-*IsolateApi* | [**api_isolate_post**](api_clients/tbr_client/docs/IsolateApi.md#api_isolate_post) | **POST** /api/Isolate | 
 *IsolateApi* | [**api_isolate_put**](api_clients/tbr_client/docs/IsolateApi.md#api_isolate_put) | **PUT** /api/Isolate | 
 
 

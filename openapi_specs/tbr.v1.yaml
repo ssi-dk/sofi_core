@@ -62,6 +62,7 @@ paths:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/ProblemDetails'
+  /api/Isolate/ChangedIsolates:
     post:
       tags:
         - Isolate
@@ -81,12 +82,12 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/RowVersion'
+                  $ref: '#/components/schemas/Isolate'
             application/problem+json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/RowVersion'
+                  $ref: '#/components/schemas/Isolate'
         '404':
           description: Not Found
           content:
@@ -524,7 +525,7 @@ components:
         isolateId:
           type: string
           nullable: true
-        rowVer:
+        entryRowVer:
           type: integer
           format: int64
       additionalProperties: false

@@ -75,7 +75,7 @@ class RowVersion(ModelNormal):
         """
         return {
             'isolate_id': (str, none_type,),  # noqa: E501
-            'row_ver': (int,),  # noqa: E501
+            'entry_row_ver': (int,),  # noqa: E501
         }
 
     @cached_property
@@ -85,7 +85,7 @@ class RowVersion(ModelNormal):
 
     attribute_map = {
         'isolate_id': 'isolateId',  # noqa: E501
-        'row_ver': 'rowVer',  # noqa: E501
+        'entry_row_ver': 'entryRowVer',  # noqa: E501
     }
 
     _composed_schemas = {}
@@ -135,7 +135,7 @@ class RowVersion(ModelNormal):
                                 through its discriminator because we passed in
                                 _visited_composed_classes = (Animal,)
             isolate_id (str, none_type): [optional]  # noqa: E501
-            row_ver (int): [optional]  # noqa: E501
+            entry_row_ver (int): [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)

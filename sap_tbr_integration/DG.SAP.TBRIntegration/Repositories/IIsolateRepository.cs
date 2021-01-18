@@ -8,6 +8,7 @@ namespace DG.SAP.TBRIntegration.Repositories
     {
         Task<bool> UpdateIsolate(IsolateUpdate isolate);
         Task<Isolate> GetIsolate(string isolateId);
-        Task<IList<RowVersion>> GetChangedIsolates(IList<RowVersion> isolates);
+        Task<IList<RowVersion>> GetChangedIsolateIds(IList<RowVersion> isolates);
+        Task<IList<Isolate>> GetChangedIsolates(IList<RowVersion> isolates);
     }
 }

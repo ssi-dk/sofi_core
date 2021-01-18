@@ -754,10 +754,10 @@ class Endpoint(object):
         Example:
 
         api_instance = IsolateApi()
-        api_instance.api_isolate_isolate_id_get  # this is an instance of the class Endpoint
-        api_instance.api_isolate_isolate_id_get()  # this invokes api_instance.api_isolate_isolate_id_get.__call__()
+        api_instance.api_isolate_changed_isolates_post  # this is an instance of the class Endpoint
+        api_instance.api_isolate_changed_isolates_post()  # this invokes api_instance.api_isolate_changed_isolates_post.__call__()
         which then invokes the callable functions stored in that endpoint at
-        api_instance.api_isolate_isolate_id_get.callable or self.callable in this class
+        api_instance.api_isolate_changed_isolates_post.callable or self.callable in this class
 
         """
         return self.callable(self, *args, **kwargs)

@@ -3,12 +3,7 @@ GO
 
 DROP VIEW IF EXISTS FVST_DTU.iw_Isolate_RowVersions
 DROP PROCEDURE IF EXISTS FVST_DTU.Get_Isolate_RowVersions;
-DROP TYPE IF EXISTS FVST_DTU.IsolateList;
-
-CREATE TYPE FVST_DTU.IsolateList
-AS TABLE (IsolateId nvarchar(14), EntryRowVer BIGINT );
 GO
-
 
 CREATE VIEW FVST_DTU.iw_Isolate_RowVersions
 AS
@@ -30,7 +25,7 @@ GO
 
 
 CREATE PROCEDURE FVST_DTU.Get_Isolate_RowVersions 
-  @List AS FVST_DTU.IsolateList READONLY
+  @List AS FVST_DTU.IsolateRowVer_List READONLY
 AS
   SELECT isolate.IsolateId, isolate.EntryRowVer FROM FVST_DTU.iw_Isolate_RowVersions isolate
 	INNER JOIN @List ids on ids.IsolateId = isolate.IsolateId
@@ -38,7 +33,7 @@ AS
 GO
 
 -- CREATE PROCEDURE FVST_DTU.Get_Isolate_RowVersions 
---   @List AS FVST_DTU.IsolateList READONLY
+--   @List AS FVST_DTU.IsolateRowVer_List READONLY
 -- AS
 --   SELECT 
 --     distinct isolater.Isolatnr IsolateId, 

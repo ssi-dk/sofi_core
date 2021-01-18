@@ -2,28 +2,44 @@
 USE [IB_Tarmbakdata]
 GO
 
-CREATE PROCEDURE FVST_DTU.GetIsolate @Isolatnr nvarchar(14)
-AS
+DROP TYPE IF EXISTS FVST_DTU.IsolateRowVer_List;
+DROP TYPE IF EXISTS FVST_DTU.Isolate_List;
+DROP VIEW IF EXISTS FVST_DTU.iw_Isolates;
+DROP PROCEDURE IF EXISTS FVST_DTU.Get_Isolate;
+DROP PROCEDURE IF EXISTS FVST_DTU.Get_Many_Isolates;
+GO
+
+
+CREATE TYPE FVST_DTU.IsolateRowVer_List
+AS TABLE (IsolateId nvarchar(14), EntryRowVer BIGINT);
+GO
+
+CREATE TYPE FVST_DTU.Isolate_List
+AS TABLE (IsolateId nvarchar(14));
+GO
+
+CREATE VIEW FVST_DTU.iw_Isolates
+AS 
     SELECT 
-    	isolater.RunID RunId,
-    	isolater.Isolatnr IsolateId, 
-    	isolater.provdato TestDate, 
-    	isolater.SSIdato SsiDate,
-    	isolater.cprnr CprNr,
-    	isolater.navn Name,
-    	isolater.PrimaryIsolate PrimaryIsolate,
-    	isolater.KMAdato KmaDate,
-    	kma.kmanavn KmaName,
-    	base.kon Gender,
-    	base.alder Age,
-    	base.Rejse Travel,
-    	lande.landnavn TravelCountry,
+        isolater.RunID RunId,
+        isolater.Isolatnr IsolateId, 
+        isolater.provdato TestDate, 
+        isolater.SSIdato SsiDate,
+        isolater.cprnr CprNr,
+        isolater.navn Name,
+        isolater.PrimaryIsolate PrimaryIsolate,
+        isolater.KMAdato KmaDate,
+        kma.kmanavn KmaName,
+        base.kon Gender,
+        base.alder Age,
+        base.Rejse Travel,
+        lande.landnavn TravelCountry,
         regioner.Regionsnavn Region,
         -- Below are values for which SAP is the MASTER
-    	isolater.Serotype Serotype,
-    	isolater.ST ST,
-    	isolater.FUDNR FudNr,
-    	isolater.ClusterID ClusterId,
+        isolater.Serotype Serotype,
+        isolater.ST ST,
+        isolater.FUDNR FudNr,
+        isolater.ClusterID ClusterId,
         isolater.Species Species,
         isolater.Subspecies Subspecies,
         isolater.pathotype Pathotype,
@@ -78,14 +94,26 @@ AS
         FROM (VALUES (isolater.RowVer),(genores.RowVer),(base.RowVer),(bakterier.RowVer),(ekstra.RowVer),(kma.RowVer),(regioner.RowVer)) AS Allrowversions(RowVer)) AS BIGINT) RowVer
     FROM FVST_DTU.vw_Isolater_SAP isolater 
     LEFT JOIN FVST_DTU.vw_GenoRes_SAP genores ON isolater.Isolatnr = genores.isolatnr
-	LEFT JOIN FVST_DTU.vw_Basis_SAP base
-		LEFT JOIN FVST_DTU.vw_Lande_SAP lande ON base.udland = lande.isokode
-		LEFT JOIN FVST_DTU.vw_Baktnavn_SAP bakterier ON base.baktid = bakterier.baktid
-		LEFT JOIN FVST_DTU.vw_Basis_Ekstra_SAP ekstra
-			LEFT JOIN FVST_DTU.vw_KMA_SAP kma ON ekstra.kmacode = kma.kmanr
---              INNER JOIN FVST_DTU.vw_KMA_LAB_SAP kma_lab ON ekstra.SenderCode = kma_lab.SenderCode
+    LEFT JOIN FVST_DTU.vw_Basis_SAP base
+        LEFT JOIN FVST_DTU.vw_Lande_SAP lande ON base.udland = lande.isokode
+        LEFT JOIN FVST_DTU.vw_Baktnavn_SAP bakterier ON base.baktid = bakterier.baktid
+        LEFT JOIN FVST_DTU.vw_Basis_Ekstra_SAP ekstra
+            LEFT JOIN FVST_DTU.vw_KMA_SAP kma ON ekstra.kmacode = kma.kmanr
+    --              INNER JOIN FVST_DTU.vw_KMA_LAB_SAP kma_lab ON ekstra.SenderCode = kma_lab.SenderCode
                 INNER JOIN FVST_DTU.vw_Region_SAP regioner ON ekstra.region = regioner.RegionEnr
-			ON base.provnr = ekstra.provnr
-		ON isolater.CaseProvnr = base.provnr
-    WHERE genores.isolatnr = @Isolatnr
+            ON base.provnr = ekstra.provnr
+        ON isolater.CaseProvnr = base.provnr
+GO
+
+CREATE PROCEDURE FVST_DTU.Get_Isolate @Isolatnr nvarchar(14)
+AS
+    SELECT * FROM FVST_DTU.iw_Isolates isolates
+    WHERE @Isolatnr = isolates.IsolateId
+GO
+
+CREATE PROCEDURE FVST_DTU.Get_Many_Isolates 
+  @List AS FVST_DTU.Isolate_List READONLY
+AS
+  SELECT * FROM FVST_DTU.iw_Isolates isolates
+	INNER JOIN @List ids on ids.IsolateId = isolates.IsolateId
 GO
