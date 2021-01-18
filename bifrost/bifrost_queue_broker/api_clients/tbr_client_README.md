@@ -50,7 +50,7 @@ with api_clients.tbr_client.ApiClient(configuration) as api_client:
     row_version = [
         RowVersion(
             isolate_id="isolate_id_example",
-            entry_row_ver=1,
+            row_ver=1,
         ),
     ] # [RowVersion], none_type |  (optional)
 

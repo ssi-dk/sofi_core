@@ -10,7 +10,7 @@ AS
   SELECT 
     isolater.Isolatnr IsolateId, 
     CAST((SELECT MAX(RowVer)
-    FROM (VALUES (isolater.RowVer),(genores.RowVer),(base.RowVer),(bakterier.RowVer),(ekstra.RowVer),(kma.RowVer),(regioner.RowVer)) AS Allrowversions(RowVer)) AS BIGINT) EntryRowVer
+    FROM (VALUES (isolater.RowVer),(genores.RowVer),(base.RowVer),(bakterier.RowVer),(ekstra.RowVer),(kma.RowVer),(regioner.RowVer)) AS Allrowversions(RowVer)) AS BIGINT) RowVer
   FROM dbo.tbl_Isolater_SAP isolater 
   LEFT JOIN dbo.tbl_GenoRes genores ON isolater.Isolatnr = genores.isolatnr
   LEFT JOIN dbo.tbl_Basis_SAP base
@@ -27,9 +27,9 @@ GO
 CREATE PROCEDURE FVST_DTU.Get_Isolate_RowVersions 
   @List AS FVST_DTU.IsolateRowVer_List READONLY
 AS
-  SELECT isolate.IsolateId, isolate.EntryRowVer FROM FVST_DTU.iw_Isolate_RowVersions isolate
+  SELECT isolate.IsolateId, isolate.RowVer FROM FVST_DTU.iw_Isolate_RowVersions isolate
 	INNER JOIN @List ids on ids.IsolateId = isolate.IsolateId
-  WHERE ids.EntryRowVer != isolate.EntryRowVer
+  WHERE ids.RowVer != isolate.RowVer
 GO
 
 -- CREATE PROCEDURE FVST_DTU.Get_Isolate_RowVersions 
@@ -38,7 +38,7 @@ GO
 --   SELECT 
 --     distinct isolater.Isolatnr IsolateId, 
 --     CAST((SELECT MAX(RowVer)
---     FROM (VALUES (isolater.RowVer),(genores.RowVer),(base.RowVer),(bakterier.RowVer),(ekstra.RowVer),(kma.RowVer),(regioner.RowVer)) AS Allrowversions(RowVer)) AS BIGINT) EntryRowVer
+--     FROM (VALUES (isolater.RowVer),(genores.RowVer),(base.RowVer),(bakterier.RowVer),(ekstra.RowVer),(kma.RowVer),(regioner.RowVer)) AS Allrowversions(RowVer)) AS BIGINT) RowVer
 --   FROM dbo.tbl_Isolater_SAP isolater 
 --   INNER JOIN @List ids on IsolateId = ids.IsolateId
 --   LEFT JOIN dbo.tbl_GenoRes genores ON isolater.Isolatnr = genores.isolatnr
@@ -50,7 +50,7 @@ GO
 --         INNER JOIN dbo.tbl_Region regioner ON ekstra.region = regioner.RegionEnr
 --       ON base.provnr = ekstra.provnr
 --     ON isolater.CaseProvnr = base.provnr
---  	WHERE ids.EntryRowVer != EntryRowVer
+--  	WHERE ids.RowVer != RowVer
 -- GO
 
 -- IF OBJECT_ID ('FVST_DTU.iw_Isolate_RowVersions', 'view') IS NOT NULL

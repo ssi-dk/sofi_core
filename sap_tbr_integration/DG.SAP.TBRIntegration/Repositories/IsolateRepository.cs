@@ -68,7 +68,7 @@ namespace DG.SAP.TBRIntegration.Repositories
             
             foreach (var isolate in isolates)
             {
-                dt.Rows.Add(isolate.IsolateId, isolate.EntryRowVer);
+                dt.Rows.Add(isolate.IsolateId, isolate.RowVer);
             }
 
             await using var connection = new SqlConnection(_connectionString);
@@ -93,7 +93,7 @@ namespace DG.SAP.TBRIntegration.Repositories
             await using var connection = new SqlConnection(_connectionString);
             var changes = await connection.QueryAsync<Isolate>(
                 "FVST_DTU.Get_Many_Isolates",
-                new { List = dt.AsTableValuedParameter("FVST_DTU.IsolateList") },
+                new { List = dt.AsTableValuedParameter("FVST_DTU.Isolate_List") },
                 commandType: CommandType.StoredProcedure
 
             );

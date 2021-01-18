@@ -8,6 +8,6 @@ namespace DG.SAP.TBRIntegration.Models
     public class RowVersion
     {
         public string IsolateId { get; set; }
-        public long EntryRowVer { get; set; }
+        public long RowVer { get; set; }
     }
 }

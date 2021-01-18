@@ -11,7 +11,7 @@ GO
 
 
 CREATE TYPE FVST_DTU.IsolateRowVer_List
-AS TABLE (IsolateId nvarchar(14), EntryRowVer BIGINT);
+AS TABLE (IsolateId nvarchar(14), RowVer BIGINT);
 GO
 
 CREATE TYPE FVST_DTU.Isolate_List

@@ -55,11 +55,13 @@ class TBRPullingBroker(threading.Thread):
             api_instance = IsolateApi(api_client)
             try:
                 print(element_batch)
-                api_response = api_instance.api_isolate_post(row_version=element_batch)
+                row_ver_elems = [RowVersion(**x) for x in element_batch]
+                
+                api_response = api_instance.api_isolate_changed_isolates_post(row_version=row_ver_elems)
                 logging.info(api_response)
             except Exception as e:
                 logging.error(
-                    f"Exception on check for isolate updates IsolateApi->api_isolate_post: {e}\n"
+                    f"Exception on check for isolate updates IsolateApi->api_isolate_changed_isolates_post: {e}\n"
                 )
 
 def yield_chunks(cursor, chunk_size):

@@ -525,7 +525,7 @@ components:
         isolateId:
           type: string
           nullable: true
-        entryRowVer:
+        rowVer:
           type: integer
           format: int64
       additionalProperties: false
