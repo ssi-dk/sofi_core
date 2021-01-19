@@ -5,7 +5,7 @@ from .queue_status import ProcessingStatus
 
 
 class LIMSBroker(Broker):
-    def __init__(self, db, collection):
+    def __init__(self, collection_name, db):
         self.broker_name = "LIMS Broker"
         self.find_matcher = {
             "status": ProcessingStatus.WAITING.value,
@@ -13,7 +13,7 @@ class LIMSBroker(Broker):
         }
         super(LIMSBroker, self).__init__(
             db,
-            collection,
+            db[collection_name],
             self.broker_name,
             self.find_matcher,
             self.handle_lims_request,

@@ -11,6 +11,8 @@ ENV MONGO_HOST="bifrost_db"
 ENV MONGO_PORT="27017"
 ENV MONGO_DB="bifrost_test"
 ENV MONGO_QUEUE_COLLECTION="sap_broker_queue"
+ENV MONGO_TBR_METADATA_COLLECTION="sap_tbr_metadata"
+ENV MONGO_LIMS_METADATA_COLLECTION="sap_lims_metadata"
 env TBR_API_URL="https://tbr_integration"
 
 ENV LOGLEVEL="INFO"

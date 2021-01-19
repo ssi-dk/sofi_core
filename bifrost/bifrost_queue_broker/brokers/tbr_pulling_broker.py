@@ -23,11 +23,12 @@ tbr_configuration = api_clients.tbr_client.Configuration(host=tbr_api_url)
 
 
 class TBRPullingBroker(threading.Thread):
-    def __init__(self, data_lock, db, _col):
+    def __init__(self, data_lock, tbr_col_name, analysis_view_col_name, db):
         super(TBRPullingBroker, self).__init__()
         self.data_lock = data_lock
         self.db = db
-        self.col = db["sap_analysis_results"]
+        self.analysis_col = db[analysis_view_col_name]
+        self.metadata_col = db[tbr_col_name]
         self.stop = threading.Event()
         self.broker_name = "TBR Pulling broker"
 
@@ -50,42 +51,52 @@ class TBRPullingBroker(threading.Thread):
 
     def run_sync_job(self):
         batch_size = 200
-        cursor = self.col.find(
-            projection={
-                "_id": True,
-                "isolate_id": True,
-                "row_ver": {"$ifNull": ["$row_ver", 0]},
+        fetch_pipeline = [
+            {"$group": {"_id": "$_id", "isolate_id": {"$first": "$isolate_id"}}},
+            {
+                "$lookup": {
+                    "from": "sap_tbr_metadata",
+                    "localField": "isolate_id",
+                    "foreignField": "isolate_id",
+                    "as": "metadata",
+                }
             },
-            batch_size=batch_size,
+            {"$unwind": {"path": "$metadata"}},
+            {
+                "$project": {
+                    "_id": False,
+                    "isolate_id": "$metadata.isolate_id",
+                    "row_ver": {"$ifNull": ["$metadata.row_ver", 0]},
+                }
+            },
+        ]
+
+        cursor = self.analysis_col.aggregate(
+            fetch_pipeline,
+            batchSize=batch_size,
         )
 
         update_count = 0
 
         for batch in yield_chunks(cursor, batch_size):
-            update_count += self.get_isolates_to_update(batch)
+            update_count += self.update_isolate_metadata(batch)
 
-        logging.info(
-            f"Updated {update_count} isolates with data from TBR."
-        )
+        logging.info(f"Updated {update_count} isolates with data from TBR.")
 
-    def get_isolates_to_update(self, element_batch):
+    def update_isolate_metadata(self, element_batch):
         with ApiClient(tbr_configuration) as api_client:
             api_instance = IsolateApi(api_client)
             try:
-                row_ver_elems = [
-                    RowVersion(isolate_id=x["isolate_id"], row_ver=x["row_ver"])
-                    for x in element_batch
-                ]
+                row_ver_elems = [RowVersion(**element) for element in element_batch]
 
                 updated_isolates = api_instance.api_isolate_changed_isolates_post(
                     row_version=row_ver_elems
                 )
-                bulk_update_queries = add_mongo_document_id(
-                    updated_isolates, element_batch
-                )
+                bulk_update_queries = add_mongo_document_id(updated_isolates)
+
                 update_count = 0
                 if len(bulk_update_queries) > 0:
-                    bulk_result = self.col.bulk_write(
+                    bulk_result = self.metadata_col.bulk_write(
                         bulk_update_queries, ordered=False
                     )
                     update_count = bulk_result.modified_count
@@ -113,18 +124,14 @@ def yield_chunks(cursor, chunk_size):
     yield chunk
 
 
-def add_mongo_document_id(updated_isolates, element_batch):
-    # First we turn the element batch list into a dict with isolate_id as key
-    hashed_element_batch = {item["isolate_id"]: item for item in element_batch}
+def add_mongo_document_id(updated_isolates):
     result = []
     # And find the equivalent document id for each isolate
     for isolate in updated_isolates:
-        values = {k: v for k, v in isolate.to_dict().items() if v is not None}
+        values = isolate.to_dict()
         update_query = pymongo.UpdateOne(
-            {"_id": hashed_element_batch[values["isolate_id"]]["_id"]},
-            {"$set": values},
+            {"isolate_id": values["isolate_id"]}, {"$set": values}, upsert=True
         )
         result.append(update_query)
 
-    # del updated_isolates
     return result
