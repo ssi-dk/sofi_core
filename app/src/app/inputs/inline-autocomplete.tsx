@@ -26,19 +26,31 @@ export type InlineAutoCompleteProps = {
 };
 
 const styles: Partial<Styles> = {
-  option: (provided, state) => ({
+  option: (provided) => ({
     ...provided,
     borderBottom: "1px dotted black",
     padding: 1,
   }),
+  input: () => ({
+    border: 0,
+    padding: 0,
+    margin: 0
+  }),
+  container: () => ({
+    border: 0,
+    padding: 0,
+    margin: 0
+  }),
   control: () => ({
-    // none of react-select's styles are passed to <Control />
     width: 200,
     height: 24,
     border: 0,
     padding: 0,
     margin: 0
   }),
+  valueContainer: () => ({
+    padding: 0
+  }), 
   dropdownIndicator: () => ({
     display: "none",
     height: 0,
@@ -50,8 +62,9 @@ const styles: Partial<Styles> = {
   singleValue: (provided, state) => {
     const opacity = state.isDisabled ? 0.5 : 1;
     const transition = "opacity 300ms";
+    const margin = 0; 
 
-    return { ...provided, opacity, transition };
+    return { ...provided, opacity, transition, margin };
   },
   menuPortal: (base) => ({ ...base, zIndex: 9999 }),
 };
@@ -66,6 +79,11 @@ export default (props: InlineAutoCompleteProps) => {
   const enterHandler = React.useCallback(
     (event: React.KeyboardEvent<HTMLDivElement>) =>
       event.key === "Enter" && toggleEdit(),
+    [toggleEdit]
+  );
+  const escapeHandler = React.useCallback(
+    (event: React.KeyboardEvent<HTMLElement>) =>
+      event.key === "Escape" && toggleEdit(),
     [toggleEdit]
   );
   const submitChange = React.useCallback(
@@ -99,9 +117,11 @@ export default (props: InlineAutoCompleteProps) => {
           isClearable={false}
           isLoading={isLoading}
           defaultValue={{ label: defaultValue, value: defaultValue }}
+          onKeyDown={escapeHandler}
           options={options}
           onChange={submitChange}
           autoFocus
+          onMenuClose={toggleEdit}
           menuPortalTarget={document.body}
           menuShouldScrollIntoView={false}
         />
