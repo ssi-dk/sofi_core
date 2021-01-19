@@ -33,5 +33,16 @@ namespace DG.SAP.TBRIntegration.Repositories
         {
             return Task.FromResult(_isolates.FirstOrDefault(i => i.IsolateId == isolateId));
         }
-    }
+
+        public Task<IList<RowVersion>> GetChangedIsolateIds(IList<RowVersion> isolates)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IList<Isolate>> GetChangedIsolates(IList<RowVersion> isolates)
+        {
+            throw new NotImplementedException();
+        }
+
+  }
 }

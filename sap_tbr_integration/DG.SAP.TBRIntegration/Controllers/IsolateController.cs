@@ -1,6 +1,8 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using DG.SAP.TBRIntegration.Models;
 using DG.SAP.TBRIntegration.Repositories;
+using DG.SAP.TBRIntegration.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,10 +15,12 @@ namespace DG.SAP.TBRIntegration.Controllers
     public class IsolateController : ControllerBase
     {
         private readonly IIsolateRepository _isolateRepository;
+        private readonly IIsolateChangeService _isolateChangeService;
 
-        public IsolateController(IIsolateRepository isolateRepository)
+        public IsolateController(IIsolateRepository isolateRepository, IIsolateChangeService isolateChangeService)
         {
             _isolateRepository = isolateRepository;
+            _isolateChangeService = isolateChangeService;
         }
 
         /// <summary>
@@ -52,5 +56,20 @@ namespace DG.SAP.TBRIntegration.Controllers
         {
             return await _isolateRepository.UpdateIsolate(isolateUpdate);
         }
+
+        /// <summary>
+        ///     Get list of changed isolate metadata filtered by a list of ids.
+        /// </summary>
+        // POST api/<IsolateController>/ChangedIsolates
+        [HttpPost("ChangedIsolates")]
+        [Consumes("application/json")]
+        [Produces("application/json", "application/problem+json")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<IList<Isolate>>> GetChangedIsolates([FromBody] IList<RowVersion> isolates)
+        {
+            return Ok(await _isolateChangeService.GetChangedIsolates(isolates));
+        }
+
     }
 }

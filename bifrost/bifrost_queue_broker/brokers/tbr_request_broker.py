@@ -19,12 +19,14 @@ tbr_api_url = os.environ.get("TBR_API_URL", "http://localhost:5000")
 tbr_configuration = api_clients.tbr_client.Configuration(host=tbr_api_url)
 
 
-class TBRBroker(Broker):
-    def __init__(self, db, collection):
+class TBRRequestBroker(Broker):
+    def __init__(self, data_lock, db, collection):
+        self.data_lock = data_lock
         self.broker_name = "TBR Broker"
         self.find_matcher = {"status": ProcessingStatus.WAITING.value, "service": "TBR"}
         self.db = db
-        super(TBRBroker, self).__init__(
+
+        super(TBRRequestBroker, self).__init__(
             self.db,
             collection,
             self.broker_name,
@@ -36,11 +38,17 @@ class TBRBroker(Broker):
     def handle_tbr_request(self, request):
         logging.info(request)
 
-        if "isolate_id" in request and "request_type" in request:
-            if request["request_type"] == "get":
-                self.get_isolate_data(request)
-            elif request["request_type"] == "approve":
-                self.approve_fields(request)
+        self.data_lock.acquire()
+        try:
+            if "isolate_id" in request and "request_type" in request:
+                if request["request_type"] == "get":
+                    self.get_isolate_data(request)
+                elif request["request_type"] == "approve":
+                    self.approve_fields(request)
+        except:
+            raise
+        finally:
+            self.data_lock.release()
 
     def get_isolate_data(self, request):
         isolate_id = request["isolate_id"]

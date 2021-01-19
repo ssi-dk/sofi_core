@@ -34,6 +34,7 @@ from api_clients.tbr_client.api import isolate_api
 from api_clients.tbr_client.model.isolate import Isolate
 from api_clients.tbr_client.model.isolate_update import IsolateUpdate
 from api_clients.tbr_client.model.problem_details import ProblemDetails
+from api_clients.tbr_client.model.row_version import RowVersion
 # Defining the host is optional and defaults to http://localhost
 # See configuration.py for a list of all supported configuration parameters.
 configuration = api_clients.tbr_client.Configuration(
@@ -46,13 +47,18 @@ configuration = api_clients.tbr_client.Configuration(
 with api_clients.tbr_client.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = isolate_api.IsolateApi(api_client)
-    isolate_id = "isolateId_example" # str, none_type | 
+    row_version = [
+        RowVersion(
+            isolate_id="isolate_id_example",
+            row_ver=1,
+        ),
+    ] # [RowVersion], none_type |  (optional)
 
     try:
-        api_response = api_instance.api_isolate_isolate_id_get(isolate_id)
+        api_response = api_instance.api_isolate_changed_isolates_post(row_version=row_version)
         pprint(api_response)
     except api_clients.tbr_client.ApiException as e:
-        print("Exception when calling IsolateApi->api_isolate_isolate_id_get: %s\n" % e)
+        print("Exception when calling IsolateApi->api_isolate_changed_isolates_post: %s\n" % e)
 ```
 
 ## Documentation for API Endpoints
@@ -61,6 +67,7 @@ All URIs are relative to *http://localhost*
 
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
+*IsolateApi* | [**api_isolate_changed_isolates_post**](api_clients/tbr_client/docs/IsolateApi.md#api_isolate_changed_isolates_post) | **POST** /api/Isolate/ChangedIsolates | 
 *IsolateApi* | [**api_isolate_isolate_id_get**](api_clients/tbr_client/docs/IsolateApi.md#api_isolate_isolate_id_get) | **GET** /api/Isolate/{isolateId} | 
 *IsolateApi* | [**api_isolate_put**](api_clients/tbr_client/docs/IsolateApi.md#api_isolate_put) | **PUT** /api/Isolate | 
 
@@ -70,6 +77,7 @@ Class | Method | HTTP request | Description
  - [Isolate](api_clients/tbr_client/docs/Isolate.md)
  - [IsolateUpdate](api_clients/tbr_client/docs/IsolateUpdate.md)
  - [ProblemDetails](api_clients/tbr_client/docs/ProblemDetails.md)
+ - [RowVersion](api_clients/tbr_client/docs/RowVersion.md)
 
 
 ## Documentation For Authorization

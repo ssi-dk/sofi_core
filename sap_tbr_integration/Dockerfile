@@ -6,6 +6,7 @@ EXPOSE 80
 EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS build
+ENV ASPNETCORE_ENVIRONMENT Production
 WORKDIR /src
 COPY ["DG.SAP.TBRIntegration/DG.SAP.TBRIntegration.csproj", "DG.SAP.TBRIntegration/"]
 RUN dotnet restore "DG.SAP.TBRIntegration/DG.SAP.TBRIntegration.csproj"

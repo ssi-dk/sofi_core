@@ -12,3 +12,4 @@
 from api_clients.tbr_client.model.isolate import Isolate
 from api_clients.tbr_client.model.isolate_update import IsolateUpdate
 from api_clients.tbr_client.model.problem_details import ProblemDetails
+from api_clients.tbr_client.model.row_version import RowVersion
