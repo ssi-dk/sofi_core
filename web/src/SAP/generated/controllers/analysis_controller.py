@@ -57,6 +57,6 @@ def submit_changes(body=None):  # noqa: E501
     :param body: 
     :type body: Dict[str, ]
 
-    :rtype: None
+    :rtype: Dict[str, Dict[str, str]]
     """
     return AnalysisController.submit_changes(body)

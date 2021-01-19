@@ -5,7 +5,7 @@ import json
 import commentjson
 from bson.json_util import dumps
 from flask.json import jsonify
-from ..repositories.analysis import get_analysis_page, get_analysis_count
+from ..repositories.analysis import get_analysis_page, get_analysis_count, update_analysis, get_single_analysis
 from web.src.SAP.generated.models import AnalysisResult
 from web.src.SAP.generated.models import Column
 
@@ -21,6 +21,7 @@ def render_paging_token(page_size, query, offset):
     return str(base64.b64encode(json.dumps(body).encode('utf8')), encoding="utf8")
 
 def get_analysis(paging_token, page_size):
+    # TODO: filter on user claims
     default_token = { "page_size": page_size or 100, "offset": 0}
     token = parse_paging_token(paging_token) or default_token
     items = get_analysis_page({}, token['page_size'], token['offset'])
@@ -30,6 +31,7 @@ def get_analysis(paging_token, page_size):
     return jsonify(response)
 
 def search_analysis(query):
+    # TODO: filter on user claims
     default_token = { "page_size": query.page_size or 100, "offset": 0, "query": query.filters}
     token = parse_paging_token(query.paging_token) or default_token
     items = get_analysis_page(token['query'], token['page_size'], token['offset'])
@@ -39,7 +41,13 @@ def search_analysis(query):
     return jsonify(response)
 
 def submit_changes(body):
-    return None
+    updates = map(lambda x: x, body.keys())
+    # TODO: Verify user is allowed to modify these keys
+    update_analysis(body)
+    res = dict()
+    for u in updates:
+        res[u] = get_single_analysis(u)
+    return jsonify(res)
 
 def gen_default_column(field_name):
     return Column(approvable=False,

@@ -400,10 +400,12 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
                   rowCount={itemData.rows.length}
                   height={height}
                   gridRef={datagridRef}
-                  rowHeight={() => 50}
-                  estimatedRowHeight={50}
+                  rowHeight={() => 35}
+                  estimatedRowHeight={35}
                   columnWidth={getColumnWidth}
                   estimatedColumnWidth={defaultColumn.width}
+                  overscanRowCount={5}
+                  overscanColumnCount={2}
                   width={width}
                   columnCount={visibleColumns.length}
                 >

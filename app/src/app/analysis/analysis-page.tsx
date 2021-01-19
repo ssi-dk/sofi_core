@@ -8,12 +8,13 @@ import {
   NotAllowedIcon,
 } from "@chakra-ui/icons";
 import { Column } from "react-table";
-import { AnalysisResult, UserDefinedView, ApprovalRequest, AnalysisQuery, ApprovalStatus } from "sap-client";
+import { AnalysisResult, UserDefinedView, ApprovalRequest, AnalysisQuery, ApprovalStatus, SubmitChangesRequest } from "sap-client";
 import { useMutation, useRequest } from "redux-query-react";
 import { useDispatch, useSelector } from "react-redux";
 import { requestAsync } from 'redux-query';
 import camelCaseKeys from "camelcase-keys";
 import { useTranslation } from "react-i18next";
+import { OptionTypeBase } from "react-select";
 import { RootState } from "app/root-reducer";
 import { predicateBuilder, PropFilter, RangeFilter } from 'utils';
 import DataTable from "./data-table/data-table";
@@ -22,6 +23,7 @@ import {
   requestColumns,
   ColumnSlice,
   searchPageOfAnalysis,
+  updateAnalysis,
 } from "./analysis-query-configs";
 import AnalysisHeader from "./header/analysis-header";
 import AnalysisSidebar from "./sidebar/analysis-sidebar";
@@ -29,6 +31,7 @@ import { setSelection } from "./analysis-selection-configs";
 import { fetchApprovalMatrix, sendApproval, sendRejection } from "./analysis-approval-configs";
 import { ColumnConfigWidget } from "./data-table/column-config-widget";
 import { toggleColumnVisibility } from "./header/view-selector/analysis-view-selection-config";
+import InlineAutoComplete from "../inputs/inline-autocomplete";
 import Species from "../data/species.json";
 
 export default function AnalysisPage() {
@@ -61,6 +64,22 @@ export default function AnalysisPage() {
   );
 
   const [pageState, setPageState] = useState({ isNarrowed: false });
+
+  const [
+    { isPending: pendingUpdate, status: updateStatus },
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    _submitChange,
+  ] = useMutation((payload: {[K: string]: { [K: string]: string}}) => updateAnalysis(payload));
+
+  const [lastUpdatedRow, setLastUpdatedRow] = React.useState(null);
+
+  const submitChange = React.useCallback(
+    (payload: {[K: string]: { [K: string]: string}}) => {
+      setLastUpdatedRow(Object.keys(payload)[0]);
+      _submitChange(payload);
+    },
+    [_submitChange, setLastUpdatedRow]
+  ); 
 
   const selection = useSelector<RootState>((s) => s.selection.selection);
   const approvals = useSelector<RootState>((s) => s.entities.approvalMatrix);
@@ -254,18 +273,33 @@ export default function AnalysisPage() {
 
   const speciesOptions = React.useMemo(() => Species.map(x => ({label: x, value: x})), []);
 
+  const rowUpdating = React.useCallback(
+    (id) => {
+      return id === lastUpdatedRow && pendingUpdate;
+    },
+    [lastUpdatedRow, pendingUpdate]
+  );
+
+  const onAutocompleteEdit = React.useCallback((rowId: string, field: string) => (val: string | OptionTypeBase) => {
+    submitChange({ [rowId]: { [field]: (val as any).value } });
+  }, [submitChange]);
+
   const renderCellControl = React.useCallback(
     (rowId: string, columnId: string, value: any) => {
       let v = `${value}`;
       if (columnId.endsWith("date")) {
         v = value.toISOString();
       }
-      /*
       if (columnId === "species_final") {
         return (
-          <AutoComplete items={speciesOptions} placeholder={v} label=""/>
+          <InlineAutoComplete
+            options={speciesOptions}
+            onChange={onAutocompleteEdit(rowId, columnId)}
+            defaultValue={v}
+            isLoading={rowUpdating(rowId)}
+          />
         );
-      }*/
+      }
       if (columnConfigs[columnId].editable) {
         return (
           <Editable defaultValue={v}>
@@ -276,7 +310,7 @@ export default function AnalysisPage() {
       }
       return <div>{`${v}`}</div>;
     },
-    [columnConfigs]
+    [columnConfigs, speciesOptions, onAutocompleteEdit, rowUpdating]
   );
 
   const safeView = React.useMemo(() => camelCaseKeys(view, {deep: true}), [view]);

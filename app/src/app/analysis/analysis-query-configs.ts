@@ -1,3 +1,5 @@
+import cloneDeep from "lodash.clonedeep";
+import merge from "lodash.merge";
 import {
   Column,
   getColumns,
@@ -8,10 +10,13 @@ import {
   AnalysisResultFromJSON,
   SearchAnalysisRequest,
   searchAnalysis,
+  submitChanges,
   ApprovalStatus,
+  SubmitChangesRequest,
 } from "sap-client";
 import { getUrl } from "service";
 import { arrayToNormalizedHashmap } from "utils";
+
 
 export type AnalysisSlice = {
   analysisTotalCount: number;
@@ -100,6 +105,18 @@ export const requestColumns = () => {
   // define the update strategy for our state
   base.update = {
     columns: (_, newValue) => newValue,
+  };
+  return base;
+};
+
+type SubmitChangesBody = { [K: string]: { [K: string]: string } }; 
+
+export const updateAnalysis = (change: SubmitChangesBody) => {
+  const base = submitChanges<AnalysisSlice>({body: change}); 
+  base.url = getUrl(base.url);
+  base.transform = (response: AnalysisSlice) => ({analysis: response }) as any;
+  base.update = {
+    analysis: (oldValue, newValue) => { return merge({}, cloneDeep(oldValue), (newValue)) }
   };
   return base;
 };

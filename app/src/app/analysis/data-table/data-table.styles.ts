@@ -28,7 +28,7 @@ export const getColumnStyle = (
   export const headerDragClone = css({
     fontWeight: "bold",
     backgroundColor: theme.colors.gray[50],
-    height: "50px",
+    height: "35px",
     width: "149px",
     textAlign: "center",
     border: theme.borders["1px"],
@@ -53,7 +53,6 @@ export const headerName = css({
 
 export const cell = css({
   width: "1%",
-  padding: "0.8rem",
   overflow: "hidden",
   whiteSpace: "nowrap",
   fontSize: "15px",
@@ -100,6 +99,7 @@ export default css({
       fontWeight: "bold",
       borderBottom: theme.borders["2px"],
       borderRight: theme.borders["2px"],
+      height: "100%",
       userSelect: "none",
       /* But "collapsed" cells should be as small as possible */
       "&.collapse": {
