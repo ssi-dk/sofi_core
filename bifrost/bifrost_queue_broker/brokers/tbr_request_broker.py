@@ -20,15 +20,16 @@ tbr_configuration = api_clients.tbr_client.Configuration(host=tbr_api_url)
 
 
 class TBRRequestBroker(Broker):
-    def __init__(self, data_lock, db, collection):
+    def __init__(self, data_lock, queue_col_name, tbr_col_name, db):
         self.data_lock = data_lock
         self.broker_name = "TBR Broker"
         self.find_matcher = {"status": ProcessingStatus.WAITING.value, "service": "TBR"}
         self.db = db
+        self.tbr_col = self.db[tbr_col_name]
 
         super(TBRRequestBroker, self).__init__(
             self.db,
-            collection,
+            self.db[queue_col_name],
             self.broker_name,
             self.find_matcher,
             self.handle_tbr_request,
@@ -41,8 +42,9 @@ class TBRRequestBroker(Broker):
         self.data_lock.acquire()
         try:
             if "isolate_id" in request and "request_type" in request:
-                if request["request_type"] == "get":
-                    self.get_isolate_data(request)
+                # TODO: Typed request types, and general annotations everywhere..   
+                if request["request_type"] == "fetch":
+                    self.fetch_and_update_isolate_metadata(request)
                 elif request["request_type"] == "approve":
                     self.approve_fields(request)
         except:
@@ -50,24 +52,23 @@ class TBRRequestBroker(Broker):
         finally:
             self.data_lock.release()
 
-    def get_isolate_data(self, request):
+    def fetch_and_update_isolate_metadata(self, request):
         isolate_id = request["isolate_id"]
 
         with api_clients.tbr_client.ApiClient(tbr_configuration) as api_client:
             api_instance = isolate_api.IsolateApi(api_client)
             try:
                 api_response = api_instance.api_isolate_isolate_id_get(isolate_id)
-                values = {
-                    k: v for k, v in api_response.to_dict().items() if v is not None
-                }
+                values = api_response.to_dict()
                 if "isolate_id" in values:
                     del values["isolate_id"]
 
                 # TODO: make sure this hardocded collection name is correct, or take form env variables.
-                result = self.db["sap_analysis_results"].find_one_and_update(
+                result = self.tbr_col.find_one_and_update(
                     filter={"isolate_id": isolate_id},
                     update={"$set": values},
                     return_document=ReturnDocument.AFTER,
+                    upsert=True
                 )
                 logging.info(result)
             except Exception as e:
