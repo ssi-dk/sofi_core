@@ -182,7 +182,7 @@ export function searchAnalysis<T>(requestParameters: SearchAnalysisRequest, requ
 /**
  * Submit a batch of analysis data changes
  */
-function submitChangesRaw<T>(requestParameters: SubmitChangesRequest, requestConfig: runtime.TypedQueryConfig<T, void> = {}): QueryConfig<T> {
+function submitChangesRaw<T>(requestParameters: SubmitChangesRequest, requestConfig: runtime.TypedQueryConfig<T, { [key: string]: { [key: string]: string; }; }> = {}): QueryConfig<T> {
     let queryParameters = null;
 
 
@@ -218,7 +218,7 @@ function submitChangesRaw<T>(requestParameters: SubmitChangesRequest, requestCon
 /**
 * Submit a batch of analysis data changes
 */
-export function submitChanges<T>(requestParameters: SubmitChangesRequest, requestConfig?: runtime.TypedQueryConfig<T, void>): QueryConfig<T> {
+export function submitChanges<T>(requestParameters: SubmitChangesRequest, requestConfig?: runtime.TypedQueryConfig<T, { [key: string]: { [key: string]: string; }; }>): QueryConfig<T> {
     return submitChangesRaw(requestParameters, requestConfig);
 }
 

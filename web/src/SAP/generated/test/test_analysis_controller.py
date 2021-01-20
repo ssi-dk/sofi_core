@@ -79,6 +79,7 @@ class TestAnalysisController(BaseTestCase):
         """
         body = None
         headers = { 
+            'Accept': 'application/json',
             'Content-Type': 'application/json',
         }
         response = self.client.open(
