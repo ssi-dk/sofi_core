@@ -61,6 +61,7 @@ services:
     build: ./sap_tbr_integration
     environment:
       ASPNETCORE_ENVIRONMENT: Development
+      TBR_API_URL: https://sap_tbr_integration_1
     ports:
       - '5000:80'
       - '5001:443'

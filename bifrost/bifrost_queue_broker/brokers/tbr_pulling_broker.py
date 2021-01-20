@@ -61,12 +61,12 @@ class TBRPullingBroker(threading.Thread):
                     "as": "metadata",
                 }
             },
-            {"$unwind": {"path": "$metadata"}},
+            #{"$unwind": {"path": "$metadata", "preserveNullAndEmptyArrays": True}},
             {
                 "$project": {
                     "_id": False,
-                    "isolate_id": "$metadata.isolate_id",
-                    "row_ver": {"$ifNull": ["$metadata.row_ver", 0]},
+                    "isolate_id": "$isolate_id",
+                    "row_ver": {"$ifNull": [{"$arrayElemAt": [ "$metadata.row_ver", 0]}, 0]},
                 }
             },
         ]
