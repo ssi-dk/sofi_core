@@ -41,20 +41,27 @@ const redirectToLogin = (req: Request, res: Response, next: NextFunction) => {
       return
     }
 
+    const host = req.headers.host
+    const base = `${host}${config.baseUrl}`
     logger.debug('Return to: ', {
       url: req.url,
-      base: config.baseUrl,
-      prot: `${req.protocol}://${req.headers.host}`,
+      base: base,
+      prot: `${req.protocol}`,
     })
-    const baseUrl = config.baseUrl || `${req.protocol}://${req.headers.host}`
-    const returnTo = new URL(req.url, baseUrl)
+    const returnTo = new URL(`${config.baseUrl}${req.url}`, `${req.protocol}://${base}`)
     returnTo.searchParams.set('hydra_login_state', state)
     logger.debug(`returnTo: "${returnTo.toString()}"`, returnTo)
 
+    logger.debug('Performing redirect', {
+      kratosBrowser: config.kratos.browser,
+      url: '/self-service/browser/flows/login',
+      host: base
+    });
+
     const redirectTo = new URL(
-      config.kratos.browser + '/self-service/browser/flows/login',
-      baseUrl
-    )
+      `${config.kratos.browser}/self-service/browser/flows/login`,
+      `${req.protocol}://${host}`
+    );
     redirectTo.searchParams.set('refresh', 'true')
     redirectTo.searchParams.set('return_to', returnTo.toString())
 

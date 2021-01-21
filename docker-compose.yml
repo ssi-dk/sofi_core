@@ -86,10 +86,13 @@ services:
       - "4444:4444" # Public port
       - "4445:4445" # Admin port
       - "5555:5555" # Port for hydra token user
+    expose:
+      - 5555
     command:
       serve all --dangerous-force-http
     restart: on-failure # TODO figure out why we need this (incorporate health check into hydra migrate command?)
     environment:
+      - OAUTH2_EXPOSE_INTERNAL_ERRORS=true
       - STRATEGIES_ACCESS_TOKEN=jwt
       - LOG_LEAK_SENSITIVE_VALUES=${LOG_LEAK_SENSITIVE_VALUES}
       - URLS_SELF_ISSUER=http://127.0.0.1:4444
@@ -101,6 +104,11 @@ services:
       - OIDC_SUBJECT_IDENTIFIERS_SUPPORTED_TYPES=public,pairwise
       - OIDC_SUBJECT_IDENTIFIERS_PAIRWISE_SALT=${OIDC_SUBJECT_IDENTIFIERS_PAIRWISE_SALT}
       - DSN=postgres://${PG_USER}:${PG_SECRET}@postgresd:5432/hydra?sslmode=${SSL_MODE}
+    volumes:
+      -
+        type: bind
+        source: ./auth/config/hydra
+        target: /home/ory
 
   kratos-selfservice-ui-node:
     build:

@@ -1,0 +1,10 @@
+serve:
+  cookies:
+    same_site_mode: Lax
+
+urls:
+  self:
+    issuer: http://127.0.0.1:4444
+  consent: http://127.0.0.1:8080/consent
+  login: http://127.0.0.1:8080/login
+  logout: http://127.0.0.1:8080/logout

@@ -9,6 +9,16 @@
         reverse_proxy kratos-selfservice-ui-node:3000
     }
 
+    route /ory/.ory {
+        uri strip_prefix /ory
+        reverse_proxy kratos-selfservice-ui-node:3000
+    }
+
+    route /.hydra/* {
+        uri strip_prefix /.hydra
+        reverse_proxy hydra:4444
+    }
+
     route /.ory/* {
         reverse_proxy kratos-selfservice-ui-node:3000
     }

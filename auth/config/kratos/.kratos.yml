@@ -13,6 +13,9 @@ selfservice:
     - http://192.168.122.1:3000/
     - http://192.168.122.1:3000/oryx/
     - http://192.168.122.1:3000/auth/hydra/login
+    - http://127.0.0.1:8080/
+    - http://127.0.0.1:8080/oryx/
+    - http://127.0.0.1:8080/auth/hydra/login
     - http://localhost:8080/
     - http://localhost:8080/oryx/
     - http://localhost:8080/auth/hydra/login
