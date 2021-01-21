@@ -95,6 +95,23 @@ services:
     volumes:
         - ./auth/pg:/var/lib/postgresql/data/
 
+  hydra:
+    environment:
+      SOFI_CLIENT_ID: ${SOFI_CLIENT_ID}
+      SOFI_SCHEME: ${SOFI_SCHEME}
+      SOFI_HOSTNAME: ${SOFI_HOSTNAME}
+      SOFI_PORT: ${SOFI_PORT}
+    healthcheck:
+      # Ensure our public client application is created
+      test: "/healthcheck-runner.sh"
+      interval: 3600s
+      start_period: 60s
+      retries: 3
+    volumes:
+      - ./auth/config/hydra/healthcheck-runner.sh:/healthcheck-runner.sh:ro
+      - ./auth/config/hydra/healthcheck.sh:/healthcheck.sh:ro
+      - ./auth/config/hydra/init.sh:/init.sh:ro
+
   # Allows for testing email-based self-service flows in kratos (forgot password, account verification, etc)
   mailslurper:
     image: oryd/mailslurper:latest-smtps

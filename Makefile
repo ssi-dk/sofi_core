@@ -1,3 +1,5 @@
+
+
 SHELL := /bin/bash
 
 mkfile_u := $(shell id -u)
@@ -24,7 +26,7 @@ ifneq ("$(wildcard $(${mkfile_dir}/.env.local))","")
 else
 	# no .env found, generating ...
 	cp ${mkfile_dir}/.env.local.example ${mkfile_dir}/.env
-	cat ${mkfile_dir}/.env.local
+	cat ${mkfile_dir}/.env
 	echo ""
 endif
 
