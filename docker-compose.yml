@@ -59,6 +59,7 @@ services:
 
   postgresd:
     image: postgres:9.6
+    user: ${CURRENT_UID}
     ports:
       - "5432:5432"
     environment:
@@ -66,7 +67,7 @@ services:
       - POSTGRES_PASSWORD=${PG_SECRET}
       - POSTGRES_MULTIPLE_DATABASES=kratos,hydra
     volumes:
-      - ./auth/config/pg-init:/docker-entrypoint-initdb.d
+      - ./auth/pg/pg-init:/docker-entrypoint-initdb.d
 
   hydra-migrate:
     image: oryd/hydra:v1.6.0-alpine
@@ -125,15 +126,10 @@ services:
       - "3000:3000"
 
   kratos-migrate:
-    image: oryd/kratos:v0.4.6-sqlite
+    image: oryd/kratos:v0.4.6
     environment:
-      - DSN=sqlite:///var/lib/sqlite/db.sqlite?_fk=true&mode=rwc
+      - DSN=postgres://${PG_USER}:${PG_SECRET}@postgresd:5432/kratos?sslmode=${SSL_MODE}&max_conns=20&max_idle_conns=4
     volumes:
-      -
-        type: volume
-        source: kratos-sqlite
-        target: /var/lib/sqlite
-        read_only: false
       -
         type: bind
         source: ./auth/config/kratos
@@ -145,13 +141,13 @@ services:
   kratos:
     depends_on:
       - kratos-migrate
-    image: oryd/kratos:v0.4.6-sqlite
+    image: oryd/kratos:v0.4.6
     ports:
       - "4433:4433" # public
       - "4434:4434" # admin
     restart: unless-stopped
     environment:
-      - DSN=sqlite:///var/lib/sqlite/db.sqlite?_fk=true
+      - DSN=postgres://${PG_USER}:${PG_SECRET}@postgresd:5432/kratos?sslmode=${SSL_MODE}&max_conns=20&max_idle_conns=4
       - SERVE_PUBLIC_BASE_URL=${SOFI_SCHEME}://${SOFI_HOSTNAME}:${SOFI_PORT}/.ory/kratos/public/
       - SELFSERVICE_DEFAULT_BROWSER_RETURN_URL=${SOFI_SCHEME}://${SOFI_HOSTNAME}:${SOFI_PORT}/ory/
       - SELFSERVICE_FLOWS_SETTINGS_UI_URL=${SOFI_SCHEME}://${SOFI_HOSTNAME}:${SOFI_PORT}/ory/settings
@@ -167,14 +163,6 @@ services:
       serve -c /etc/config/kratos/.kratos.yml --dev
     volumes:
       -
-        type: volume
-        source: kratos-sqlite
-        target: /var/lib/sqlite
-        read_only: false
-      -
         type: bind
         source: ./auth/config/kratos
         target: /etc/config/kratos
-
-volumes:
-  kratos-sqlite:

@@ -12,6 +12,7 @@ all: clean build
 
 clean:
 	rm -rf ${mkfile_dir}/bifrost/bifrost_db/data/db/*
+	rm -rf ${mkfile_dir}/auth/pg/pgdata/*
 	rm -rf ${mkfile_dir}/web/src/SAP/generated/
 	rm -rf ${mkfile_dir}/sap_tbr_integration/DG.SAP.TBRIntegration/bin/
 	rm -rf ${mkfile_dir}/sap_tbr_integration/DG.SAP.TBRIntegration/obj/

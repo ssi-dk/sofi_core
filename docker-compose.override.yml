@@ -89,6 +89,12 @@ services:
       interval: 60s
       start_period: 15s
 
+  postgresd:
+    environment:
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+        - ./auth/pg:/var/lib/postgresql/data/
+
   # Allows for testing email-based self-service flows in kratos (forgot password, account verification, etc)
   mailslurper:
     image: oryd/mailslurper:latest-smtps
