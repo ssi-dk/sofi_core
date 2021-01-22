@@ -20,7 +20,7 @@ function AnalysisHeader({
   return (
     <Flex align="center">
       <Box minW={sidebarWidth || "300px"} flexShrink={0}>
-        <Heading>SAP</Heading>
+        <Heading>SOFI</Heading>
       </Box>
       {hideSearch || <AnalysisSearch onSubmit={onSearch} />}
       <Box minW="250px" ml="10">

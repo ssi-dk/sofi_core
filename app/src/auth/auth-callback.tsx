@@ -8,7 +8,7 @@ import {
   AuthorizationNotifier,
   FetchRequestor,
 } from "@openid/appauth";
-import { Environment } from "auth/environment";
+import { Environment, setAccessToken, setRefreshToken } from "auth/environment";
 import { useToast } from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
 import { Loading } from "loading";
@@ -22,7 +22,6 @@ export const Callback = (props: {
   const { t } = useTranslation();
 
   const [authError, setAuthError] = useState(null);
-  const [code, setCode] = useState(null);
 
   const callbackHandler = async () => {
     const tokenHandler = new BaseTokenRequestHandler(new FetchRequestor());
@@ -36,12 +35,6 @@ export const Callback = (props: {
     authorizationHandler.setAuthorizationNotifier(notifier);
     notifier.setAuthorizationListener(async (request, response, error) => {
       try {
-        console.log(
-          "Authorization request complete ",
-          request,
-          response,
-          error
-        );
         if (response) {
           let extras = null;
           if (request && request.internal) {
@@ -66,9 +59,8 @@ export const Callback = (props: {
             config,
             tokenRequest
           );
-          localStorage.setItem("access_token", tokenResp.accessToken);
-          localStorage.setItem("id_token", tokenResp.idToken);
-          localStorage.setItem("refresh_token", tokenResp.refreshToken);
+          setAccessToken(tokenResp.idToken);
+          setRefreshToken(tokenResp.refreshToken);
           const profile = await fetch(
             `${Environment.openIdConnectUrl}${Environment.userInfoEndpoint}`,
             {
@@ -88,15 +80,15 @@ export const Callback = (props: {
     });
 
     const params = new URLSearchParams(props.location.search);
-    const c = params.get("code"); 
-    setCode(c);
+    const code = params.get("code"); 
 
-    if (!c) {
+    if (!code) {
       setAuthError("Unable to get authorization code");
       return;
     }
 
     authorizationHandler.completeAuthorizationRequestIfPossible();
+
     if (authError) {
       console.error(authError);
       toast({

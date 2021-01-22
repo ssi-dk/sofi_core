@@ -8,9 +8,9 @@ import {
 import { useToast } from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
 import { Loading } from "loading";
-import { Environment } from "./environment";
+import { Environment, getAccessToken } from "./environment";
 
-export const Authorize = (props) => {
+export const Authorize = (props: { children: React.ReactNode; }) => {
 
   const toast = useToast();
   const { t } = useTranslation();
@@ -49,7 +49,7 @@ export const Authorize = (props) => {
   };
 
   const isLoggedIn = () => {
-    return window.localStorage.getItem("id_token");
+    return getAccessToken();
   };
 
   if (isLoggedIn()) {

@@ -5,6 +5,7 @@ import { routerMiddleware } from "connected-react-router";
 import superagentInterface from "redux-query-interface-superagent";
 import { createBrowserHistory } from "history";
 import createRootReducer, { RootState } from "./root-reducer";
+import { jwtMiddleware } from "middleware/jwt-middleware";
 
 // selectors
 export const getQueries = (state: RootState) => state.queries;
@@ -16,6 +17,7 @@ const store = configureStore({
   reducer: createRootReducer(history),
   middleware: [
     ...getDefaultMiddleware({ serializableCheck: false }),
+    jwtMiddleware,
     queryMiddleware(superagentInterface, getQueries, getEntities),
     routerMiddleware(history)
   ],

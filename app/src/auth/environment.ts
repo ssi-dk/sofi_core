@@ -11,3 +11,22 @@ export const Environment = {
   crypto: new DefaultCrypto(),
   queryStringUtils: new NoHashQueryStringUtils()
 };
+
+const AccessTokenKey = "id_token";
+const RefreshTokenKey = "id_token";
+
+export const getAccessToken = () => {
+  return localStorage.getItem(AccessTokenKey);
+}
+
+export const getRefreshToken = () => {
+  return localStorage.getItem(RefreshTokenKey);
+}
+
+export const setAccessToken = (token: string) => {
+  localStorage.setItem(AccessTokenKey, token);
+}
+
+export const setRefreshToken = (token: string) => {
+  localStorage.setItem(RefreshTokenKey, token);
+}
