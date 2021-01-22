@@ -4,7 +4,6 @@ import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
 import { Provider as ReduxQueryProvider } from "redux-query-react";
 import { ConnectedRouter } from "connected-react-router";
-
 import store, { getQueries, history } from "app/store";
 
 function render() {
