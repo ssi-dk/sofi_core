@@ -1,6 +1,21 @@
 serve:
   cookies:
     same_site_mode: Lax
+  public:
+    cors:
+      enabled: true
+      allowed_origins:
+        - '*'
+      allowed_methods:
+        - POST
+        - GET
+        - PUT
+        - PATCH
+        - DELETE
+      allowed_headers:
+        - Authorization
+      exposed_headers:
+        - Content-Type
 
 urls:
   self:

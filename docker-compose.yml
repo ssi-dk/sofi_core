@@ -105,11 +105,12 @@ services:
       - OIDC_SUBJECT_IDENTIFIERS_SUPPORTED_TYPES=public,pairwise
       - OIDC_SUBJECT_IDENTIFIERS_PAIRWISE_SALT=${OIDC_SUBJECT_IDENTIFIERS_PAIRWISE_SALT}
       - DSN=postgres://${PG_USER}:${PG_SECRET}@postgresd:5432/hydra?sslmode=${SSL_MODE}
+      - SQA_OPT_OUT=true
     volumes:
       -
         type: bind
-        source: ./auth/config/hydra
-        target: /home/ory
+        source: ./auth/config/hydra/
+        target: /home/ory/
 
   kratos-selfservice-ui-node:
     build:
@@ -159,6 +160,7 @@ services:
       - SELFSERVICE_FLOWS_REGISTRATION_UI_URL=${SOFI_SCHEME}://${SOFI_HOSTNAME}:${SOFI_PORT}/ory/auth/registration
       - SELFSERVICE_FLOWS_ERROR_UI_URL=${SOFI_SCHEME}://${SOFI_HOSTNAME}:${SOFI_PORT}/ory/error
       - COURIER_SMTP_CONNECTION_URI=${COURIER_SMTP_CONNECTION_URI}
+      - SQA_OPT_OUT=true
     command:
       serve -c /etc/config/kratos/.kratos.yml --dev
     volumes:

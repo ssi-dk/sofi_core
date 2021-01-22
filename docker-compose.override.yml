@@ -104,8 +104,8 @@ services:
     healthcheck:
       # Ensure our public client application is created
       test: "/healthcheck-runner.sh"
-      interval: 3600s
-      start_period: 60s
+      interval: 60s
+      start_period: 30s
       retries: 3
     volumes:
       - ./auth/config/hydra/healthcheck-runner.sh:/healthcheck-runner.sh:ro

@@ -109,6 +109,7 @@ export const hydraLogin = (req: Request, res: Response, next: NextFunction) => {
         // (e.g. your arch-enemy logging in...)
         const acceptLoginRequest = new AcceptLoginRequest()
         acceptLoginRequest.subject = String(body.subject)
+        acceptLoginRequest.context = body;
 
         logger.debug(
           'Accepting ORY Hydra Login Request because skip is true',
@@ -162,6 +163,7 @@ export const hydraLogin = (req: Request, res: Response, next: NextFunction) => {
             // they are dynamic. They would be part of the PublicAPI. That's not true
             // for identity.addresses So let's get it via the AdmninAPI
             const subject = body.identity.id
+            logger.debug("Forwarding kratos user to hydra", body)
 
             // User is authenticated, accept the LoginRequest and tell Hydra
             let acceptLoginRequest: AcceptLoginRequest = new AcceptLoginRequest()
@@ -200,6 +202,7 @@ const createHydraSession = (
     // This data will be available in the ID token.
     // Most services need email-addresses, so let's include that.
     idToken: {
+      ...context.identity.traits, // dump all traits into id token
       email: verifiableAddresses[0].value as Object, // FIXME Small typescript workaround caused by a bug in Go-swagger
     },
   }
@@ -226,6 +229,7 @@ export const hydraGetConsent = (
       // If a user has granted this application the requested scope, hydra will tell us to not show the UI.
       if (body.skip) {
         // You can apply logic here, for example grant another scope, or do whatever...
+        logger.debug("handling consent request", body)
 
         // Now it's time to grant the consent request. You could also deny the request if something went terribly wrong
         const acceptConsentRequest = new AcceptConsentRequest()
@@ -320,7 +324,7 @@ export const hydraPostConsent = (
       acceptConsentRequest.remember = Boolean(req.body.remember)
 
       // When this "remember" sesion expires, in seconds. Set this to 0 so it will never expire.
-      acceptConsentRequest.rememberFor = 3600
+      acceptConsentRequest.rememberFor = 0
 
       // The session allows us to set session data for id and access tokens. Let's add the email if it is included.
       acceptConsentRequest.session = createHydraSession(
