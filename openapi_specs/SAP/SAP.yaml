@@ -10,6 +10,8 @@ tags:
     name: user
   - description: Operations for isolates
     name: analysis
+security:
+  - jwt: []
 
 paths:
   /analysis:
@@ -598,7 +600,8 @@ components:
               $ref: "#/components/schemas/Resistance"
 
   securitySchemes:
-    SAP_auth:
-      scheme: bearer
+    jwt:
       type: http
-      x-bearerInfoFunc: openapi_server.controllers.security_controller_.info_from_SAP_auth
+      scheme: bearer
+      bearerFormat: JWT
+      x-bearerInfoFunc: web.src.SAP.generated.controllers.security_controller_.info_from_jwt

@@ -63,6 +63,7 @@ function getAnalysisRaw<T>(requestParameters: GetAnalysisRequest, requestConfig:
 
     const { meta = {} } = requestConfig;
 
+    meta.authType = ['bearer'];
     const config: QueryConfig<T> = {
         url: `${runtime.Configuration.basePath}/analysis`,
         meta,
@@ -105,6 +106,7 @@ function getColumnsRaw<T>( requestConfig: runtime.TypedQueryConfig<T, Array<Colu
 
     const { meta = {} } = requestConfig;
 
+    meta.authType = ['bearer'];
     const config: QueryConfig<T> = {
         url: `${runtime.Configuration.basePath}/analysis/columns`,
         meta,
@@ -149,6 +151,7 @@ function searchAnalysisRaw<T>(requestParameters: SearchAnalysisRequest, requestC
 
     const { meta = {} } = requestConfig;
 
+    meta.authType = ['bearer'];
     const config: QueryConfig<T> = {
         url: `${runtime.Configuration.basePath}/analysis`,
         meta,
@@ -193,6 +196,7 @@ function submitChangesRaw<T>(requestParameters: SubmitChangesRequest, requestCon
 
     const { meta = {} } = requestConfig;
 
+    meta.authType = ['bearer'];
     const config: QueryConfig<T> = {
         url: `${runtime.Configuration.basePath}/analysis/changes`,
         meta,

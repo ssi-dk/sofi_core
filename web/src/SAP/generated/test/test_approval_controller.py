@@ -19,6 +19,7 @@ class TestApprovalController(BaseTestCase):
         
         """
         headers = { 
+            'Authorization': 'Bearer special-key',
         }
         response = self.client.open(
             '/api/approvals/{approval_id}'.format(approval_id='approval_id_example'),
@@ -42,6 +43,7 @@ class TestApprovalController(BaseTestCase):
         headers = { 
             'Accept': 'application/json',
             'Content-Type': 'application/json',
+            'Authorization': 'Bearer special-key',
         }
         response = self.client.open(
             '/api/approvals',
@@ -59,6 +61,7 @@ class TestApprovalController(BaseTestCase):
         """
         headers = { 
             'Accept': 'application/json',
+            'Authorization': 'Bearer special-key',
         }
         response = self.client.open(
             '/api/approvals/matrix',
@@ -74,6 +77,7 @@ class TestApprovalController(BaseTestCase):
         """
         headers = { 
             'Accept': 'application/json',
+            'Authorization': 'Bearer special-key',
         }
         response = self.client.open(
             '/api/approvals',

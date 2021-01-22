@@ -7,12 +7,12 @@ import datetime
 import uuid
 import logging
 
-def get_approvals():
+def get_approvals(user, token_info):
     # TODO: figure out real username from claim
     username = "demo"
     return jsonify(find_approvals(username))
 
-def create_approval(body: ApprovalRequest):
+def create_approval(user, token_info, body: ApprovalRequest):
     # TODO: figure out real username from claim
     username = "demo"
     appr = Approval()
@@ -25,13 +25,13 @@ def create_approval(body: ApprovalRequest):
     # TODO: update LIMS/TBR
     return jsonify(appr.to_dict()) if res != None else abort(400)
 
-def cancel_approval(approval_id: str):
+def cancel_approval(user, token_info, approval_id: str):
     # TODO: figure out real username from claim
     username = "demo"
     res = revoke_approval(username, approval_id)
     return None if res.modified_count > 0 else abort(404)
 
-def full_approval_matrix():
+def full_approval_matrix(user, token_info):
     approvals = find_all_active_approvals() 
     matrix = {}
     for a in approvals:

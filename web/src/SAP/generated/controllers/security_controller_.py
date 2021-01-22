@@ -1,7 +1,8 @@
 from typing import List
+import flask_jwt_extended
 
 
-def info_from_SAP_auth(token):
+def info_from_jwt(token):
     """
     Check and retrieve authentication information from custom bearer token.
     Returned value will be passed in 'token_info' parameter of your operation function, if there is one.
@@ -12,6 +13,9 @@ def info_from_SAP_auth(token):
     :return: Decoded token information or None if token is invalid
     :rtype: dict | None
     """
-    return {'uid': 'user_id'}
+    if token:
+        return flask_jwt_extended.decode_token(token)
+
+    return None
 
 

@@ -23,6 +23,7 @@ class TestAnalysisController(BaseTestCase):
                         ('page_size', 100)]
         headers = { 
             'Accept': 'application/json',
+            'Authorization': 'Bearer special-key',
         }
         response = self.client.open(
             '/api/analysis',
@@ -39,6 +40,7 @@ class TestAnalysisController(BaseTestCase):
         """
         headers = { 
             'Accept': 'application/json',
+            'Authorization': 'Bearer special-key',
         }
         response = self.client.open(
             '/api/analysis/columns',
@@ -62,6 +64,7 @@ class TestAnalysisController(BaseTestCase):
         headers = { 
             'Accept': 'application/json',
             'Content-Type': 'application/json',
+            'Authorization': 'Bearer special-key',
         }
         response = self.client.open(
             '/api/analysis',
@@ -81,6 +84,7 @@ class TestAnalysisController(BaseTestCase):
         headers = { 
             'Accept': 'application/json',
             'Content-Type': 'application/json',
+            'Authorization': 'Bearer special-key',
         }
         response = self.client.open(
             '/api/analysis/changes',

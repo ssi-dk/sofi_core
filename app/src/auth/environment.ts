@@ -5,7 +5,7 @@ export const Environment = {
   openIdConnectUrl: `${window.location.protocol}//${window.location.host}/.hydra`,
   clientId: "SOFI_APP",
   redirectUri: `${window.location.protocol}//${window.location.host}/callback`,
-  scope: "openid offline offline_access email profile",
+  scope: "openid offline email profile",
   userInfoEndpoint: "/userinfo",
   storageBackend: new LocalStorageBackend(),
   crypto: new DefaultCrypto(),
@@ -13,7 +13,7 @@ export const Environment = {
 };
 
 const AccessTokenKey = "id_token";
-const RefreshTokenKey = "id_token";
+const RefreshTokenKey = "refresh_token";
 
 export const getAccessToken = () => {
   return localStorage.getItem(AccessTokenKey);

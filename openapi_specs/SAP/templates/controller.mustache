@@ -8,8 +8,7 @@ from ...src.controllers import {{classname}}
 {{#operations}}
 {{#operation}}
 
-
-def {{operationId}}({{#allParams}}{{paramName}}{{^required}}=None{{/required}}{{#hasMore}}, {{/hasMore}}{{/allParams}}):  # noqa: E501
+def {{operationId}}(user, token_info{{#allParams}}, {{paramName}}{{^required}}=None{{/required}}{{/allParams}}):  # noqa: E501
     """{{#summary}}{{.}}{{/summary}}{{^summary}}{{operationId}}{{/summary}}
 
     {{#notes}}{{.}}{{/notes}} # noqa: E501
@@ -108,6 +107,6 @@ def {{operationId}}({{#allParams}}{{paramName}}{{^required}}=None{{/required}}{{
             {{/items}}
         {{/isMapContainer}}
     {{/allParams}}
-    return {{classname}}.{{operationId}}({{#allParams}}{{paramName}}{{#hasMore}}, {{/hasMore}}{{/allParams}})
+    return {{classname}}.{{operationId}}(user, token_info{{#allParams}}, {{paramName}}{{/allParams}})
 {{/operation}}
 {{/operations}}

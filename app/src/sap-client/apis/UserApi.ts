@@ -42,6 +42,7 @@ function createUserViewRaw<T>(requestParameters: CreateUserViewRequest, requestC
 
     const { meta = {} } = requestConfig;
 
+    meta.authType = ['bearer'];
     const config: QueryConfig<T> = {
         url: `${runtime.Configuration.basePath}/user/views`,
         meta,
@@ -86,6 +87,7 @@ function deleteViewRaw<T>(requestParameters: DeleteViewRequest, requestConfig: r
 
     const { meta = {} } = requestConfig;
 
+    meta.authType = ['bearer'];
     const config: QueryConfig<T> = {
         url: `${runtime.Configuration.basePath}/user/views/{name}`.replace(`{${"name"}}`, encodeURIComponent(String(requestParameters.name))),
         meta,
@@ -126,6 +128,7 @@ function getUserViewsRaw<T>( requestConfig: runtime.TypedQueryConfig<T, Array<Us
 
     const { meta = {} } = requestConfig;
 
+    meta.authType = ['bearer'];
     const config: QueryConfig<T> = {
         url: `${runtime.Configuration.basePath}/user/views`,
         meta,

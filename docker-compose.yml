@@ -6,8 +6,12 @@ services:
       target: final
     expose:
       - 6000
+    depends_on:
+      - "hydra"
     environment:
       - APP_MODULE=wsgi:app
+      - IDP=http://hydra:4444
+      - SOFI_CLIENT_ID=${SOFI_CLIENT_ID}
 
   sap_app:
     build:
