@@ -81,7 +81,7 @@ class TBRPullingBroker(threading.Thread):
         for batch in yield_chunks(cursor, batch_size):
             update_count += self.update_isolate_metadata(batch)
 
-        logging.info(f"Updated {update_count} isolates with data from TBR.")
+        logging.info(f"Added/Updated {update_count} isolates with data from TBR.")
 
     def update_isolate_metadata(self, element_batch):
         with ApiClient(tbr_configuration) as api_client:
@@ -99,7 +99,7 @@ class TBRPullingBroker(threading.Thread):
                     bulk_result = self.metadata_col.bulk_write(
                         bulk_update_queries, ordered=False
                     )
-                    update_count = bulk_result.modified_count
+                    update_count = bulk_result.upserted_count + bulk_result.modified_count
 
                 return update_count
 
