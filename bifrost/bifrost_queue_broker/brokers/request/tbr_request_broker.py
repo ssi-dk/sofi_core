@@ -1,8 +1,8 @@
 # Broker imports
 import sys, os
 import logging
-from .broker import Broker, BrokerError
-from .queue_status import ProcessingStatus
+from ..shared import BrokerError, ProcessingStatus
+from .request_broker import RequestBroker
 
 # TBR API imports
 import time
@@ -19,7 +19,7 @@ tbr_api_url = os.environ.get("TBR_API_URL", "http://localhost:5000")
 tbr_configuration = api_clients.tbr_client.Configuration(host=tbr_api_url)
 
 
-class TBRRequestBroker(Broker):
+class TBRRequestBroker(RequestBroker):
     def __init__(self, data_lock, queue_col_name, tbr_col_name, db):
         self.data_lock = data_lock
         self.broker_name = "TBR Broker"
@@ -42,7 +42,7 @@ class TBRRequestBroker(Broker):
         self.data_lock.acquire()
         try:
             if "isolate_id" in request and "request_type" in request:
-                # TODO: Typed request types, and general annotations everywhere..   
+                # TODO: Typed request types, and general annotations everywhere..
                 if request["request_type"] == "fetch":
                     self.fetch_and_update_isolate_metadata(request)
                 elif request["request_type"] == "approve":
@@ -68,7 +68,7 @@ class TBRRequestBroker(Broker):
                     filter={"isolate_id": isolate_id},
                     update={"$set": values},
                     return_document=ReturnDocument.AFTER,
-                    upsert=True
+                    upsert=True,
                 )
                 logging.info(result)
             except Exception as e:

@@ -4,18 +4,12 @@ import time
 import pymongo
 import threading
 from pymongo import CursorType
-from .queue_status import ProcessingStatus
+from ..shared import ProcessingStatus
 
 
-class BrokerError(Exception):
-    """Thrown when a broker encounters an error."""
-
-    pass
-
-
-class Broker(threading.Thread):
+class RequestBroker(threading.Thread):
     def __init__(self, db, collection, name, matcher, callback):
-        super(Broker, self).__init__()
+        super(RequestBroker, self).__init__()
         self.db = db
         self.col = collection
         self._stop = threading.Event()

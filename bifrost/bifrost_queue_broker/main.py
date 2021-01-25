@@ -3,9 +3,12 @@ import logging
 import pymongo
 import threading
 from functools import partial
-from brokers.tbr_request_broker import TBRRequestBroker
-from brokers.tbr_pulling_broker import TBRPullingBroker
-from brokers.lims_broker import LIMSBroker
+from brokers.request.tbr_request_broker import TBRRequestBroker
+from brokers.pulling.tbr_pulling_broker import TBRPullingBroker
+
+from brokers.request.lims_request_broker import LIMSRequestBroker
+from brokers.pulling.lims_pulling_broker import LIMSPullingBroker
+
 
 def create_collections_if_not_exist(db, queue_col_name, metadata_col_names):
     # db.drop_collection(collection_name)
@@ -24,29 +27,44 @@ def main():
     HOST = os.environ.get("MONGO_HOST", "bifrost_db")
     PORT = int(os.environ.get("MONGO_PORT", 27017))
     DB_NAME = os.environ.get("MONGO_DB", "bifrost_test")
-    TBR_COLLECTION_NAME = os.environ.get("MONGO_TBR_METADATA_COLLECTION", "sap_tbr_metadata")
-    LIMS_COLLECTION_NAME = os.environ.get("MONGO_LIMS_METADATA_COLLECTION", "sap_lims_metadata")
-    ANALYSIS_COLLECTION_NAME = os.environ.get("MONGO_ANALYSIS_VIEW_COLLECTION", "sap_analysis_results")
+    TBR_COLLECTION_NAME = os.environ.get(
+        "MONGO_TBR_METADATA_COLLECTION", "sap_tbr_metadata"
+    )
+    LIMS_COLLECTION_NAME = os.environ.get(
+        "MONGO_LIMS_METADATA_COLLECTION", "sap_lims_metadata"
+    )
+    ANALYSIS_COLLECTION_NAME = os.environ.get(
+        "MONGO_ANALYSIS_VIEW_COLLECTION", "sap_analysis_results"
+    )
 
     QUEUE_COLLECTION_NAME = os.environ.get("MONGO_QUEUE_COLLECTION", "sap_broker_queue")
 
-    
     db = pymongo.MongoClient(HOST, PORT)[DB_NAME]
-    create_collections_if_not_exist(db, QUEUE_COLLECTION_NAME, [TBR_COLLECTION_NAME, LIMS_COLLECTION_NAME, ANALYSIS_COLLECTION_NAME])
+    create_collections_if_not_exist(
+        db,
+        QUEUE_COLLECTION_NAME,
+        [TBR_COLLECTION_NAME, LIMS_COLLECTION_NAME, ANALYSIS_COLLECTION_NAME],
+    )
     logging.info(f"Broker queue listener starting up.")
 
     TBR_data_lock = threading.Lock()
+    LIMS_data_lock = threading.Lock()
 
-    
     # Some of the brokers take different arguments other than the db and collection. Partially apply these.
-    tbr_requests = partial(TBRRequestBroker, TBR_data_lock, QUEUE_COLLECTION_NAME, TBR_COLLECTION_NAME)
-    tbr_puller = partial(TBRPullingBroker, TBR_data_lock, TBR_COLLECTION_NAME, ANALYSIS_COLLECTION_NAME)
-    
-    lims_requests = partial(LIMSBroker, QUEUE_COLLECTION_NAME)
-    #lims_puller = partial(LIMSBroker, LIMS_COLLECTION_NAME, ANALYSIS_COLLECTION_NAME)
+    tbr_requests = partial(
+        TBRRequestBroker, TBR_data_lock, QUEUE_COLLECTION_NAME, TBR_COLLECTION_NAME
+    )
+    tbr_puller = partial(
+        TBRPullingBroker, TBR_data_lock, TBR_COLLECTION_NAME, ANALYSIS_COLLECTION_NAME
+    )
+
+    lims_requests = partial(LIMSRequestBroker, LIMS_data_lock,  QUEUE_COLLECTION_NAME, LIMS_COLLECTION_NAME)
+    lims_puller = partial(
+        LIMSPullingBroker, LIMS_data_lock, LIMS_COLLECTION_NAME, ANALYSIS_COLLECTION_NAME
+    )
 
     # Which brokers to start up as seperate threads.
-    brokers = [tbr_requests, tbr_puller, lims_requests]
+    brokers = [tbr_requests, tbr_puller, lims_requests, lims_puller]
 
     threads = []
     for broker in brokers:

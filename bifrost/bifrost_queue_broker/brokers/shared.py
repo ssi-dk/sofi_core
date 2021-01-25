@@ -6,3 +6,9 @@ class ProcessingStatus(Enum):
     PROCESSING = 2
     DONE = 3
     ERROR = 4
+
+
+class BrokerError(Exception):
+    """Thrown when a broker encounters an error."""
+
+    pass

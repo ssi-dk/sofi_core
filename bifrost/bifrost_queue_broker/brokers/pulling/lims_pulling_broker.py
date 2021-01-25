@@ -4,33 +4,26 @@ import time
 import pymongo
 import threading
 from pymongo import CursorType
-from .queue_status import ProcessingStatus
-from .broker import BrokerError
+from ..shared import BrokerError
 
-# TBR API imports
+# LIMS API imports
 import time
-import api_clients.tbr_client
-from pymongo.collection import ReturnDocument
-from pprint import pprint
-from api_clients.tbr_client.api.isolate_api import ApiClient, IsolateApi
-from api_clients.tbr_client.model.isolate import Isolate
-from api_clients.tbr_client.model.row_version import RowVersion
 
 
-tbr_api_url = os.environ.get("TBR_API_URL", "http://localhost:5000")
+# lims_api_url = os.environ.get("LIMS_API_URL", "http://localhost:5000")
 
-tbr_configuration = api_clients.tbr_client.Configuration(host=tbr_api_url)
+# lims_configuration = api_clients.lims_client.Configuration(host=lims_api_url)
 
 
-class TBRPullingBroker(threading.Thread):
-    def __init__(self, data_lock, tbr_col_name, analysis_view_col_name, db):
-        super(TBRPullingBroker, self).__init__()
+class LIMSPullingBroker(threading.Thread):
+    def __init__(self, data_lock, lims_col_name, analysis_view_col_name, db):
+        super(LIMSPullingBroker, self).__init__()
         self.data_lock = data_lock
         self.db = db
         self.analysis_col = db[analysis_view_col_name]
-        self.metadata_col = db[tbr_col_name]
+        self.metadata_col = db[lims_col_name]
         self.stop = threading.Event()
-        self.broker_name = "TBR Pulling broker"
+        self.broker_name = "LIMS Pulling broker"
 
     def stop(self):
         self.stop.set()
@@ -55,18 +48,20 @@ class TBRPullingBroker(threading.Thread):
             {"$group": {"_id": "$_id", "isolate_id": {"$first": "$isolate_id"}}},
             {
                 "$lookup": {
-                    "from": "sap_tbr_metadata",
+                    "from": "sap_lims_metadata",
                     "localField": "isolate_id",
                     "foreignField": "isolate_id",
                     "as": "metadata",
                 }
             },
-            #{"$unwind": {"path": "$metadata", "preserveNullAndEmptyArrays": True}},
+            # {"$unwind": {"path": "$metadata", "preserveNullAndEmptyArrays": True}},
             {
                 "$project": {
                     "_id": False,
                     "isolate_id": "$isolate_id",
-                    "row_ver": {"$ifNull": [{"$arrayElemAt": [ "$metadata.row_ver", 0]}, 0]},
+                    "row_ver": {
+                        "$ifNull": [{"$arrayElemAt": ["$metadata.row_ver", 0]}, 0]
+                    },
                 }
             },
         ]
@@ -81,32 +76,10 @@ class TBRPullingBroker(threading.Thread):
         for batch in yield_chunks(cursor, batch_size):
             update_count += self.update_isolate_metadata(batch)
 
-        logging.info(f"Added/Updated {update_count} isolates with data from TBR.")
+        logging.info(f"Added/Updated {update_count} isolates with data from LIMS.")
 
     def update_isolate_metadata(self, element_batch):
-        with ApiClient(tbr_configuration) as api_client:
-            api_instance = IsolateApi(api_client)
-            try:
-                row_ver_elems = [RowVersion(**element) for element in element_batch]
-
-                updated_isolates = api_instance.api_isolate_changed_isolates_post(
-                    row_version=row_ver_elems
-                )
-                bulk_update_queries = add_mongo_document_id(updated_isolates)
-
-                update_count = 0
-                if len(bulk_update_queries) > 0:
-                    bulk_result = self.metadata_col.bulk_write(
-                        bulk_update_queries, ordered=False
-                    )
-                    update_count = bulk_result.upserted_count + bulk_result.modified_count
-
-                return update_count
-
-            except Exception as e:
-                logging.error(
-                    f"Exception on check for isolate updates IsolateApi->api_isolate_changed_isolates_post: {e}\n"
-                )
+        return len(element_batch)
 
 
 def yield_chunks(cursor, chunk_size):
