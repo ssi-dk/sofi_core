@@ -10,7 +10,7 @@ services:
       - "hydra"
     environment:
       - APP_MODULE=wsgi:app
-      - IDP=http://hydra:4444
+      - IDP=${SOFI_SCHEME}://${SOFI_HOSTNAME}:${SOFI_PORT}
       - SOFI_CLIENT_ID=${SOFI_CLIENT_ID}
 
   sap_app:
@@ -74,7 +74,7 @@ services:
       - ./auth/pg/pg-init:/docker-entrypoint-initdb.d
 
   hydra-migrate:
-    image: oryd/hydra:v1.6.0-alpine
+    image: oryd/hydra:v1.9.0-alpine
     depends_on:
       - postgresd
     environment:
@@ -84,7 +84,7 @@ services:
     restart: on-failure
 
   hydra:
-    image: oryd/hydra:v1.6.0-alpine
+    image: oryd/hydra:v1.9.0-alpine
     depends_on:
       - hydra-migrate
     ports:
@@ -94,17 +94,22 @@ services:
     expose:
       - 5555
     command:
-      serve all --dangerous-force-http
+      serve all --dangerous-force-http --dangerous-allow-insecure-redirect-urls http://192.168.122.1:8080/callback
     restart: on-failure # TODO figure out why we need this (incorporate health check into hydra migrate command?)
     environment:
       - OAUTH2_EXPOSE_INTERNAL_ERRORS=true
       - STRATEGIES_ACCESS_TOKEN=jwt
       - LOG_LEAK_SENSITIVE_VALUES=${LOG_LEAK_SENSITIVE_VALUES}
-      - URLS_SELF_ISSUER=http://127.0.0.1:4444
-      - URLS_SELF_PUBLIC=http://127.0.0.1:4444
-      - URLS_CONSENT=${SOFI_SCHEME}://${SOFI_HOSTNAME}:${SOFI_PORT}/ory/auth/hydra/consent
-      - URLS_LOGIN=${SOFI_SCHEME}://${SOFI_HOSTNAME}:${SOFI_PORT}/ory/auth/hydra/login
-      - URLS_LOGOUT=${SOFI_SCHEME}://${SOFI_HOSTNAME}:${SOFI_PORT}/ory/logout
+      - WEBFINGER_OIDC_DISCOVERY_AUTH_URL=${SOFI_SCHEME}://${SOFI_HOSTNAME}:${SOFI_PORT}/oauth2/auth
+      - WEBFINGER_OIDC_DISCOVERY_TOKEN_URL=${SOFI_SCHEME}://${SOFI_HOSTNAME}:${SOFI_PORT}/oauth2/token
+      - WEBFINGER_OIDC_DISCOVERY_JWKS_URL=${SOFI_SCHEME}://${SOFI_HOSTNAME}:${SOFI_PORT}/.well-known/jwks.json
+      - WEBFINGER_OIDC_DISCOVERY_USERINFO_URL=${SOFI_SCHEME}://${SOFI_HOSTNAME}:${SOFI_PORT}/.well-known/userinfo
+#      - SERVE_PUBLIC_HOST=${SOFI_HOSTNAME}
+      - URLS_SELF_ISSUER=${SOFI_SCHEME}://${SOFI_HOSTNAME}:${SOFI_PORT}
+      - URLS_SELF_PUBLIC=${SOFI_SCHEME}://${SOFI_HOSTNAME}:${SOFI_PORT}
+      - URLS_CONSENT=${SOFI_SCHEME}://${SOFI_HOSTNAME}:${SOFI_PORT}/ss/auth/hydra/consent
+      - URLS_LOGIN=${SOFI_SCHEME}://${SOFI_HOSTNAME}:${SOFI_PORT}/ss/auth/hydra/login
+      - URLS_LOGOUT=${SOFI_SCHEME}://${SOFI_HOSTNAME}:${SOFI_PORT}/ss/logout
       - SECRETS_SYSTEM=${SECRETS_SYSTEM}
       - OIDC_SUBJECT_IDENTIFIERS_SUPPORTED_TYPES=public,pairwise
       - OIDC_SUBJECT_IDENTIFIERS_PAIRWISE_SALT=${OIDC_SUBJECT_IDENTIFIERS_PAIRWISE_SALT}
@@ -122,16 +127,18 @@ services:
       dockerfile: Dockerfile
     environment:
       - HYDRA_ADMIN_URL=http://hydra:4445
+      - HYDRA_BROWSER_URL=${SOFI_SCHEME}://${SOFI_HOSTNAME}:${SOFI_PORT}
+      - KRATOS_BROWSER_URL=${SOFI_SCHEME}://${SOFI_HOSTNAME}:${SOFI_PORT}/.ory/kratos/public
       - KRATOS_PUBLIC_URL=http://kratos:4433/
       - KRATOS_ADMIN_URL=http://kratos:4434/
       - SECURITY_MODE=standalone
-      - BASE_URL=/ory/
       - PROJECT_NAME=SOFI
+      - BASE_URL=/ss/
     ports:
       - "3000:3000"
 
   kratos-migrate:
-    image: oryd/kratos:v0.4.6
+    image: oryd/kratos:v0.5.5-alpha.1
     environment:
       - DSN=postgres://${PG_USER}:${PG_SECRET}@postgresd:5432/kratos?sslmode=${SSL_MODE}&max_conns=20&max_idle_conns=4
     volumes:
@@ -146,7 +153,7 @@ services:
   kratos:
     depends_on:
       - kratos-migrate
-    image: oryd/kratos:v0.4.6
+    image: oryd/kratos:v0.5.5-alpha.1
     ports:
       - "4433:4433" # public
       - "4434:4434" # admin
@@ -154,15 +161,15 @@ services:
     environment:
       - DSN=postgres://${PG_USER}:${PG_SECRET}@postgresd:5432/kratos?sslmode=${SSL_MODE}&max_conns=20&max_idle_conns=4
       - SERVE_PUBLIC_BASE_URL=${SOFI_SCHEME}://${SOFI_HOSTNAME}:${SOFI_PORT}/.ory/kratos/public/
-      - SELFSERVICE_DEFAULT_BROWSER_RETURN_URL=${SOFI_SCHEME}://${SOFI_HOSTNAME}:${SOFI_PORT}/ory/
-      - SELFSERVICE_FLOWS_SETTINGS_UI_URL=${SOFI_SCHEME}://${SOFI_HOSTNAME}:${SOFI_PORT}/ory/settings
-      - SELFSERVICE_FLOWS_VERIFICATION_UI_URL=${SOFI_SCHEME}://${SOFI_HOSTNAME}:${SOFI_PORT}/ory/verify
-      - SELFSERVICE_FLOWS_VERIFICATION_AFTER_DEFAULT_BROWSER_RETURN_URL=${SOFI_SCHEME}://${SOFI_HOSTNAME}:${SOFI_PORT}/ory/
-      - SELFSERVICE_FLOWS_RECOVERY_UI_URL=${SOFI_SCHEME}://${SOFI_HOSTNAME}:${SOFI_PORT}/ory/recovery
-      - SELFSERVICE_FLOWS_LOGOUT_UI_URL=${SOFI_SCHEME}://${SOFI_HOSTNAME}:${SOFI_PORT}/ory/logout
-      - SELFSERVICE_FLOWS_LOGIN_UI_URL=${SOFI_SCHEME}://${SOFI_HOSTNAME}:${SOFI_PORT}/ory/auth/login
-      - SELFSERVICE_FLOWS_REGISTRATION_UI_URL=${SOFI_SCHEME}://${SOFI_HOSTNAME}:${SOFI_PORT}/ory/auth/registration
-      - SELFSERVICE_FLOWS_ERROR_UI_URL=${SOFI_SCHEME}://${SOFI_HOSTNAME}:${SOFI_PORT}/ory/error
+      - SELFSERVICE_DEFAULT_BROWSER_RETURN_URL=${SOFI_SCHEME}://${SOFI_HOSTNAME}:${SOFI_PORT}
+      - SELFSERVICE_FLOWS_SETTINGS_UI_URL=${SOFI_SCHEME}://${SOFI_HOSTNAME}:${SOFI_PORT}/ss/settings
+      - SELFSERVICE_FLOWS_VERIFICATION_UI_URL=${SOFI_SCHEME}://${SOFI_HOSTNAME}:${SOFI_PORT}/ss/verify
+      - SELFSERVICE_FLOWS_VERIFICATION_AFTER_DEFAULT_BROWSER_RETURN_URL=${SOFI_SCHEME}://${SOFI_HOSTNAME}:${SOFI_PORT}
+      - SELFSERVICE_FLOWS_RECOVERY_UI_URL=${SOFI_SCHEME}://${SOFI_HOSTNAME}:${SOFI_PORT}/ss/recovery
+      - SELFSERVICE_FLOWS_LOGOUT_UI_URL=${SOFI_SCHEME}://${SOFI_HOSTNAME}:${SOFI_PORT}/ss/logout
+      - SELFSERVICE_FLOWS_LOGIN_UI_URL=${SOFI_SCHEME}://${SOFI_HOSTNAME}:${SOFI_PORT}/ss/auth/login
+      - SELFSERVICE_FLOWS_REGISTRATION_UI_URL=${SOFI_SCHEME}://${SOFI_HOSTNAME}:${SOFI_PORT}/ss/auth/registration
+      - SELFSERVICE_FLOWS_ERROR_UI_URL=${SOFI_SCHEME}://${SOFI_HOSTNAME}:${SOFI_PORT}/ss/error
       - COURIER_SMTP_CONNECTION_URI=${COURIER_SMTP_CONNECTION_URI}
       - SQA_OPT_OUT=true
     command:

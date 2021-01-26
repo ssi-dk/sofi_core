@@ -104,13 +104,21 @@ services:
     healthcheck:
       # Ensure our public client application is created
       test: "/healthcheck-runner.sh"
-      interval: 60s
+      interval: 30s 
       start_period: 30s
-      retries: 3
+      retries: 10
     volumes:
       - ./auth/config/hydra/healthcheck-runner.sh:/healthcheck-runner.sh:ro
       - ./auth/config/hydra/healthcheck.sh:/healthcheck.sh:ro
       - ./auth/config/hydra/init.sh:/init.sh:ro
+
+  kratos-init-sidecar:
+    image: busybox
+    depends_on:
+      - kratos-migrate
+    command: ["sh","-c","/init.sh"]
+    volumes:
+      - ./auth/config/kratos/sidecar/init.sh:/init.sh:ro
 
   # Allows for testing email-based self-service flows in kratos (forgot password, account verification, etc)
   mailslurper:

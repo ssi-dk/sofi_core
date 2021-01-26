@@ -8,25 +8,25 @@ selfservice:
   default_browser_return_url: http://127.0.0.1:3000/
   whitelisted_return_urls:
     - http://127.0.0.1:3000/
-    - http://127.0.0.1:3000/oryx/
     - http://127.0.0.1:3000/auth/hydra/login
+    - http://127.0.0.1:3000/ss/auth/hydra/login
     - http://192.168.122.1:3000/
-    - http://192.168.122.1:3000/oryx/
     - http://192.168.122.1:3000/auth/hydra/login
+    - http://192.168.122.1:8080/ss/auth/hydra/login
     - http://127.0.0.1:8080/
-    - http://127.0.0.1:8080/oryx/
     - http://127.0.0.1:8080/auth/hydra/login
+    - http://127.0.0.1:8080/ss/auth/hydra/login
     - http://localhost:8080/
-    - http://localhost:8080/oryx/
     - http://localhost:8080/auth/hydra/login
+    - http://localhost:8080/ss/auth/hydra/login
     - http://localhost/
-    - http://localhost/oryx/
     - http://localhost/auth/hydra/login
+    - http://localhost/ss/auth/hydra/login
     - https://localhost/
-    - https://localhost/oryx/
     - https://localhost/auth/hydra/login
+    - https://localhost/ss/auth/hydra/login
 
-  strategies:
+  methods:
     password:
       enabled: true
 

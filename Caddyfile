@@ -4,23 +4,22 @@
         reverse_proxy sap_api:6000
     }
 
-    route /ory/* {
-        uri strip_prefix /ory
+    route /.ory/kratos/public/* {
+        uri strip_prefix /.ory/kratos/public
+        reverse_proxy kratos:4433
+    }
+
+    route /ss/* {
+        uri strip_prefix /ss
         reverse_proxy kratos-selfservice-ui-node:3000
     }
 
-    route /ory/.ory {
-        uri strip_prefix /ory
-        reverse_proxy kratos-selfservice-ui-node:3000
-    }
-
-    route /.hydra/* {
-        uri strip_prefix /.hydra
+    route /oauth2/* {
         reverse_proxy hydra:4444
     }
 
-    route /.ory/* {
-        reverse_proxy kratos-selfservice-ui-node:3000
+    route /.well-known/* {
+        reverse_proxy hydra:4444
     }
 
     route /mock/* {

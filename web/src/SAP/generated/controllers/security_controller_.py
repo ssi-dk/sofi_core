@@ -1,5 +1,5 @@
 from typing import List
-import flask_jwt_extended
+from flask_jwt_extended import decode_token
 
 
 def info_from_jwt(token):
@@ -14,7 +14,7 @@ def info_from_jwt(token):
     :rtype: dict | None
     """
     if token:
-        return flask_jwt_extended.decode_token(token)
+        return decode_token(token)
 
     return None
 

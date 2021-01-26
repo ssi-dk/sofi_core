@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
+import { Configuration, PublicApi } from '@ory/kratos-client';
+
 import config from '../config';
-import { AdminApi, Configuration } from '@ory/kratos-client';
 import { isString, methodConfig, redirectOnSoftError } from '../helpers';
 
 // Variable config has keys:
@@ -18,34 +19,44 @@ import { isString, methodConfig, redirectOnSoftError } from '../helpers';
 //   public: 'https://ory-kratos-public.example-org.vpc',
 // },
 
-const kratos = new AdminApi(new Configuration({ basePath: config.kratos.admin }));
+// Uses the ORY Kratos NodeJS SDK - for more SDKs check:
+//
+//  https://www.ory.sh/kratos/docs/sdk/index
+const kratos = new PublicApi(new Configuration({ basePath: config.kratos.public }));
 
-const settingsHandler = (req: Request, res: Response, next: NextFunction) => {
+// A simple express handler that shows the login / registration screen.
+// Argument "type" can either be "login" or "registration" and will
+// fetch the form data from ORY Kratos's Public API.
+export default (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   const flow = req.query.flow;
-  // The flow ID is used to identify the account settings flow and
+
+  // The flow is used to identify the login and registration flow and
   // return data like the csrf_token and so on.
   if (!flow || !isString(flow)) {
-    console.log('No flow found in URL, initializing flow.');
-    res.redirect(`${config.kratos.browser}/self-service/settings/browser`);
+    console.log('No flow ID found in URL, initializing registration flow.');
+    res.redirect(
+      `${config.kratos.browser}/self-service/registration/browser`,
+    );
     return;
   }
 
-  kratos
-    .getSelfServiceSettingsFlow(flow)
+  kratos.getSelfServiceRegistrationFlow(flow)
     .then(({ status, data: flow }) => {
       if (status !== 200) {
         return Promise.reject(flow);
       }
 
       // Render the data using a view (e.g. Jade Template):
-      res.render('settings', {
+      res.render('registration', {
         ...flow,
-        password: methodConfig(flow, 'password'),
-        profile: methodConfig(flow, 'profile'),
         oidc: methodConfig(flow, 'oidc'),
+        password: methodConfig(flow, 'password')
       });
     })
-    .catch(redirectOnSoftError(res, next, '/self-service/settings/browser'));
-};
-
-export default settingsHandler;
+    // Handle errors using ExpressJS' next functionality:
+    .catch(redirectOnSoftError(res, next, '/self-service/registration/browser'));
+}
