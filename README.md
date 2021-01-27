@@ -29,9 +29,17 @@ make run
 This will launch all containers with locally mounted files, enabling automatic code reload, 
 as well as hot-module-reload (HMR) in the browser.
 
-By default, services will be available on `http://localhost:8080`.
+By default, services will be available on `http://sofi.localhost`.
 This can be changed by modifying the generated `.env` file.
 The relevant env variables are `SOFI_SCHEME`, `SOFI_HOSTNAME`, and `SOFI_PORT`.
+
+Make sure to edit your `/etc/hosts` file (`    c:\windows\system32\drivers\etc\hosts` on Windows) and include the line:
+
+```
+127.0.0.1	sofi.localhost
+```
+
+Setting `SOFI_HOSTNAME` to `localhost` or `127.0.0.1` is not currently supported.
 
 When running in the dev environment, a default user account is created,
  which you can use for signing into the application.
