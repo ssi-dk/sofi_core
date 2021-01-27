@@ -29,6 +29,16 @@ make run
 This will launch all containers with locally mounted files, enabling automatic code reload, 
 as well as hot-module-reload (HMR) in the browser.
 
+By default, services will be available on `http://localhost:8080`.
+This can be changed by modifying the generated `.env` file.
+The relevant env variables are `SOFI_SCHEME`, `SOFI_HOSTNAME`, and `SOFI_PORT`.
+
+When running in the dev environment, a default user account is created,
+ which you can use for signing into the application.
+
+Username: `user@fvst.dk`
+Password: `delegate21`
+
 ## Local dev running
 Create virtual env, install dependencies
 ```shell

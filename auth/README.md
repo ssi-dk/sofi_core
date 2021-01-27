@@ -1,4 +1,4 @@
-# kratos-selfservice-ui-node
+# ORY Kratos ExpressJS Self-Service UI Reference
 
 [![CircleCI](https://circleci.com/gh/ory/kratos-selfservice-ui-node.svg?style=badge)](https://circleci.com/gh/ory/kratos-selfservice-ui-node)
 
@@ -30,39 +30,35 @@ This application can be configured using two environment variables:
 - `BASE_URL` (optional): The base url of this app. If served e.g. behind a proxy or via
   GitHub pages this would be the path, e.g. `https://mywebsite.com/kratos-selfservice-ui-node/`.
   **Must be absolute!**
-- `COOKIE_SECRET` (optional): This secret is used to encrypt cookies which are used as part of the ORY Hydra
-   integration.
 - `TLS_CERT_PATH` (optional): Path to certificate file. Should be set up together with `TLS_KEY_PATH` to enable HTTPS.
 - `TLS_KEY_PATH` (optional): Path to key file Should be set up together with `TLS_CERT_PATH` to enable HTTPS.
-
-  If you want to also use hydra and connect an app via OAuth2, set these env-variables:
-  - `HYDRA_ADMIN_URL` should point to hydra's admin port including scheme (e.g. https://hydra.example.com:445)
-  
-  If you want to test hydra without the use of kratos for user-management, rather have a look at the [hydra-login-consent-node][https://github.com/ory/hydra-login-consent-node].
 
 ### Network Setup
 
 This application works in two set ups:
 
-- Standalone with ORY Kratos (plus optionally ORY Hydra)
+- Standalone
 - With the ORY Oathkeeper Reverse Proxy
 
-#### Standalone using cookies
+#### Standalone
 
-This mode adds a route to the app which proxies all traffic flowing to `/.ory/kratos/public/*`
-to ORY Kratos' Public API. That way, this app and ORY Kratos share the same domain
-and port which makes cookies work.
+This is the easiest mode as it requires no additional set up. This app runs on port `:4455`
+and ORY Kratos on the specified `KRATOS_ADMIN_URL`, `KRATOS_PUBLIC_URL` URLs.
+
+This mode relies on the browser's ability to send cookies regardless of the port. Cookies set for
+`127.0.0.1:4433` will thus also be sent when requesting `127.0.0.1:4455`. For environments
+where applications run on separate subdomains, check out [Multi-Domain Cookies](https://www.ory.sh/kratos/docs/guides/multi-domain-cookies)
 
 To authenticate incoming requests, this app uses ORY Kratos' `whoami` API to check
 whether the session is valid or not.
 
-To enable this mode, set the environment variable `SECURITY_MODE=cookie`.
+To enable this mode, set the environment variable `SECURITY_MODE=cookie` or leave it empty.
 
 ### With Oathkeeper using JSON Web Tokens (JWT)
 
 This mode requires ORY Oathkeeper to route all incoming traffic to either ORY Kratos
 or this app. It is expected that no browser traffic can reach this app or ORY Kratos
-directly.
+directly. To check out the full guide, head over to [Zero Trust with IAP Proxy](https://www.ory.sh/kratos/docs/guides/zero-trust-iap-proxy-identity-access-proxy).
 
 This app then expects ORY Oathkeeper to use the `id_token` mutator which is a
 JSON Web Token this app validates in order to figure out if a request is authorized (logged in)
@@ -96,6 +92,7 @@ running. This is what that would look like:
 ```shell script
 # start the quickstart using docker compose as explained in the tutorial: https://www.ory.sh/kratos/docs/quickstart/
 export SECURITY_MODE=cookie
+export KRATOS_BROWSER_URL=http://127.0.0.1:4433/
 export KRATOS_PUBLIC_URL=http://127.0.0.1:4433/
 export KRATOS_ADMIN_URL=http://127.0.0.1:4434/
 export PORT=4455
@@ -106,7 +103,7 @@ export PORT=4455
 # 
 # Next you need to kill the docker container that runs this app in order to free the ports:
 #
-#   docker kill kratos_oathkeeper_1
+#   docker kill kratos_kratos-selfservice-ui-node_1
 
 npm start
 ```

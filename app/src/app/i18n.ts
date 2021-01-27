@@ -35,7 +35,9 @@ const resources = {
       "Revoke approval": "Tilbagekalde godkendelse",
       "My approval history": "Min godkendelseshistorik",
       approvals: "godkendelser",
-      sampling_date: "Prøvetagningsdato"
+      sampling_date: "Prøvetagningsdato",
+      "Sign in failed": "Kunne ikke log på",
+      "Error message:": "Fejlbesked:"
     },
   },
 };

@@ -5,8 +5,7 @@ from web.src.SAP.generated.models.user_defined_view import UserDefinedView  # no
 from .. import util
 from ...src.controllers import UserController
 
-
-def create_user_view(user_defined_view=None):  # noqa: E501
+def create_user_view(user, token_info, user_defined_view=None):  # noqa: E501
     """create_user_view
 
      # noqa: E501
@@ -18,10 +17,9 @@ def create_user_view(user_defined_view=None):  # noqa: E501
     """
     if connexion.request.is_json:
         user_defined_view = UserDefinedView.from_dict(connexion.request.get_json())  # noqa: E501
-    return UserController.create_user_view(user_defined_view)
+    return UserController.create_user_view(user, token_info, user_defined_view)
 
-
-def delete_view(name):  # noqa: E501
+def delete_view(user, token_info, name):  # noqa: E501
     """delete_view
 
     Delete an existing view # noqa: E501
@@ -31,10 +29,9 @@ def delete_view(name):  # noqa: E501
 
     :rtype: None
     """
-    return UserController.delete_view(name)
+    return UserController.delete_view(user, token_info, name)
 
-
-def get_user_views():  # noqa: E501
+def get_user_views(user, token_info):  # noqa: E501
     """get_user_views
 
      # noqa: E501
@@ -42,4 +39,4 @@ def get_user_views():  # noqa: E501
 
     :rtype: List[UserDefinedView]
     """
-    return UserController.get_user_views()
+    return UserController.get_user_views(user, token_info)

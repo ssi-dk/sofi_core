@@ -26,9 +26,9 @@
             }
           }
         },
-        "organization": {
+        "institution": {
           "type": "string",
-          "title": "Organization"
+          "title": "Institution"
         }
       },
       "required": ["email"]

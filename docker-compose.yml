@@ -6,8 +6,12 @@ services:
       target: final
     expose:
       - 6000
+    depends_on:
+      - "hydra"
     environment:
       - APP_MODULE=wsgi:app
+      - IDP=${SOFI_SCHEME}://${SOFI_HOSTNAME}:${SOFI_PORT}
+      - SOFI_CLIENT_ID=${SOFI_CLIENT_ID}
 
   sap_app:
     build:
@@ -40,7 +44,6 @@ services:
       - PYTHONDONTWRITEBYTECODE=1
       - PYTHONUNBUFFERED=0
 
-
   proxy:
     image: caddy:2.2.0-alpine
     ports:
@@ -60,48 +63,63 @@ services:
 
   postgresd:
     image: postgres:9.6
+    user: ${CURRENT_UID}
     ports:
       - "5432:5432"
     environment:
-      - POSTGRES_USER=pguser
-      - POSTGRES_PASSWORD=secret
+      - POSTGRES_USER=${PG_USER}
+      - POSTGRES_PASSWORD=${PG_SECRET}
       - POSTGRES_MULTIPLE_DATABASES=kratos,hydra
     volumes:
-      - ./auth/config/pg-init:/docker-entrypoint-initdb.d
+      - ./auth/pg/pg-init:/docker-entrypoint-initdb.d
 
   hydra-migrate:
-    image: oryd/hydra:v1.6.0-alpine
+    image: oryd/hydra:v1.9.0-alpine
     depends_on:
       - postgresd
     environment:
-      - DSN=postgres://pguser:secret@postgresd:5432/hydra?sslmode=disable
+      - DSN=postgres://${PG_USER}:${PG_SECRET}@postgresd:5432/hydra?sslmode=${SSL_MODE}
     command:
       migrate sql -e --yes
     restart: on-failure
 
   hydra:
-    image: oryd/hydra:v1.6.0-alpine
+    image: oryd/hydra:v1.9.0-alpine
     depends_on:
       - hydra-migrate
     ports:
       - "4444:4444" # Public port
       - "4445:4445" # Admin port
       - "5555:5555" # Port for hydra token user
+    expose:
+      - 5555
     command:
-      serve all --dangerous-force-http
+      serve all --dangerous-force-http --dangerous-allow-insecure-redirect-urls http://192.168.122.1:8080/callback
     restart: on-failure # TODO figure out why we need this (incorporate health check into hydra migrate command?)
     environment:
+      - OAUTH2_EXPOSE_INTERNAL_ERRORS=true
       - STRATEGIES_ACCESS_TOKEN=jwt
-      - LOG_LEAK_SENSITIVE_VALUES=true
-      - URLS_SELF_ISSUER=http://127.0.0.1:4444
-      - URLS_SELF_PUBLIC=http://127.0.0.1:4444
-      - URLS_CONSENT=http://localhost:8080/ory/auth/hydra/consent
-      - URLS_LOGIN=http://localhost:8080/ory/auth/hydra/login
-      - URLS_LOGOUT=http://localhost:8080/ory/logout
-      - SECRETS_SYSTEM=youReallyNeedToChangeThis
+      - LOG_LEAK_SENSITIVE_VALUES=${LOG_LEAK_SENSITIVE_VALUES}
+      - WEBFINGER_OIDC_DISCOVERY_AUTH_URL=${SOFI_SCHEME}://${SOFI_HOSTNAME}:${SOFI_PORT}/oauth2/auth
+      - WEBFINGER_OIDC_DISCOVERY_TOKEN_URL=${SOFI_SCHEME}://${SOFI_HOSTNAME}:${SOFI_PORT}/oauth2/token
+      - WEBFINGER_OIDC_DISCOVERY_JWKS_URL=${SOFI_SCHEME}://${SOFI_HOSTNAME}:${SOFI_PORT}/.well-known/jwks.json
+      - WEBFINGER_OIDC_DISCOVERY_USERINFO_URL=${SOFI_SCHEME}://${SOFI_HOSTNAME}:${SOFI_PORT}/.well-known/userinfo
+#      - SERVE_PUBLIC_HOST=${SOFI_HOSTNAME}
+      - URLS_SELF_ISSUER=${SOFI_SCHEME}://${SOFI_HOSTNAME}:${SOFI_PORT}
+      - URLS_SELF_PUBLIC=${SOFI_SCHEME}://${SOFI_HOSTNAME}:${SOFI_PORT}
+      - URLS_CONSENT=${SOFI_SCHEME}://${SOFI_HOSTNAME}:${SOFI_PORT}/ss/auth/hydra/consent
+      - URLS_LOGIN=${SOFI_SCHEME}://${SOFI_HOSTNAME}:${SOFI_PORT}/ss/auth/hydra/login
+      - URLS_LOGOUT=${SOFI_SCHEME}://${SOFI_HOSTNAME}:${SOFI_PORT}/ss/logout
+      - SECRETS_SYSTEM=${SECRETS_SYSTEM}
       - OIDC_SUBJECT_IDENTIFIERS_SUPPORTED_TYPES=public,pairwise
-      - OIDC_SUBJECT_IDENTIFIERS_PAIRWISE_SALT=youReallyNeedToChangeThis
-      - DSN=postgres://pguser:secret@postgresd:5432/hydra?sslmode=disable
+      - OIDC_SUBJECT_IDENTIFIERS_PAIRWISE_SALT=${OIDC_SUBJECT_IDENTIFIERS_PAIRWISE_SALT}
+      - DSN=postgres://${PG_USER}:${PG_SECRET}@postgresd:5432/hydra?sslmode=${SSL_MODE}
+      - SQA_OPT_OUT=true
+    volumes:
+      -
+        type: bind
+        source: ./auth/config/hydra/
+        target: /home/ory/
 
   kratos-selfservice-ui-node:
     build:
@@ -109,24 +127,21 @@ services:
       dockerfile: Dockerfile
     environment:
       - HYDRA_ADMIN_URL=http://hydra:4445
+      - HYDRA_BROWSER_URL=${SOFI_SCHEME}://${SOFI_HOSTNAME}:${SOFI_PORT}
+      - KRATOS_BROWSER_URL=${SOFI_SCHEME}://${SOFI_HOSTNAME}:${SOFI_PORT}/.ory/kratos/public
       - KRATOS_PUBLIC_URL=http://kratos:4433/
       - KRATOS_ADMIN_URL=http://kratos:4434/
       - SECURITY_MODE=standalone
-      - BASE_URL=/ory/
-      - PROJECT_NAME=SAP
+      - PROJECT_NAME=SOFI
+      - BASE_URL=/ss/
     ports:
       - "3000:3000"
 
   kratos-migrate:
-    image: oryd/kratos:v0.4.6-sqlite
+    image: oryd/kratos:v0.5.5-alpha.1
     environment:
-      - DSN=sqlite:///var/lib/sqlite/db.sqlite?_fk=true&mode=rwc
+      - DSN=postgres://${PG_USER}:${PG_SECRET}@postgresd:5432/kratos?sslmode=${SSL_MODE}&max_conns=20&max_idle_conns=4
     volumes:
-      -
-        type: volume
-        source: kratos-sqlite
-        target: /var/lib/sqlite
-        read_only: false
       -
         type: bind
         source: ./auth/config/kratos
@@ -138,35 +153,29 @@ services:
   kratos:
     depends_on:
       - kratos-migrate
-    image: oryd/kratos:v0.4.6-sqlite
+    image: oryd/kratos:v0.5.5-alpha.1
     ports:
       - "4433:4433" # public
       - "4434:4434" # admin
     restart: unless-stopped
     environment:
-      - DSN=sqlite:///var/lib/sqlite/db.sqlite?_fk=true
-      - SERVE_PUBLIC_BASE_URL=http://localhost:8080/.ory/kratos/public/
-      - SELFSERVICE_DEFAULT_BROWSER_RETURN_URL=http://localhost:8080/ory/
-      - SELFSERVICE_FLOWS_SETTINGS_UI_URL=http://localhost:8080/ory/settings
-      - SELFSERVICE_FLOWS_VERIFICATION_UI_URL=http://localhost:8080/ory/verify
-      - SELFSERVICE_FLOWS_VERIFICATION_AFTER_DEFAULT_BROWSER_RETURN_URL=http://localhost:8080/ory/
-      - SELFSERVICE_FLOWS_RECOVERY_UI_URL=http://localhost:8080/ory/recovery
-      - SELFSERVICE_FLOWS_LOGOUT_UI_URL=http://localhost:8080/ory/logout
-      - SELFSERVICE_FLOWS_LOGIN_UI_URL=http://localhost:8080/ory/auth/login
-      - SELFSERVICE_FLOWS_REGISTRATION_UI_URL=http://localhost:8080/ory/auth/registration
-      - SELFSERVICE_FLOWS_ERROR_UI_URL=http://localhost:8080/ory/error
+      - DSN=postgres://${PG_USER}:${PG_SECRET}@postgresd:5432/kratos?sslmode=${SSL_MODE}&max_conns=20&max_idle_conns=4
+      - SERVE_PUBLIC_BASE_URL=${SOFI_SCHEME}://${SOFI_HOSTNAME}:${SOFI_PORT}/.ory/kratos/public/
+      - SELFSERVICE_DEFAULT_BROWSER_RETURN_URL=${SOFI_SCHEME}://${SOFI_HOSTNAME}:${SOFI_PORT}
+      - SELFSERVICE_FLOWS_SETTINGS_UI_URL=${SOFI_SCHEME}://${SOFI_HOSTNAME}:${SOFI_PORT}/ss/settings
+      - SELFSERVICE_FLOWS_VERIFICATION_UI_URL=${SOFI_SCHEME}://${SOFI_HOSTNAME}:${SOFI_PORT}/ss/verify
+      - SELFSERVICE_FLOWS_VERIFICATION_AFTER_DEFAULT_BROWSER_RETURN_URL=${SOFI_SCHEME}://${SOFI_HOSTNAME}:${SOFI_PORT}
+      - SELFSERVICE_FLOWS_RECOVERY_UI_URL=${SOFI_SCHEME}://${SOFI_HOSTNAME}:${SOFI_PORT}/ss/recovery
+      - SELFSERVICE_FLOWS_LOGOUT_UI_URL=${SOFI_SCHEME}://${SOFI_HOSTNAME}:${SOFI_PORT}/ss/logout
+      - SELFSERVICE_FLOWS_LOGIN_UI_URL=${SOFI_SCHEME}://${SOFI_HOSTNAME}:${SOFI_PORT}/ss/auth/login
+      - SELFSERVICE_FLOWS_REGISTRATION_UI_URL=${SOFI_SCHEME}://${SOFI_HOSTNAME}:${SOFI_PORT}/ss/auth/registration
+      - SELFSERVICE_FLOWS_ERROR_UI_URL=${SOFI_SCHEME}://${SOFI_HOSTNAME}:${SOFI_PORT}/ss/error
+      - COURIER_SMTP_CONNECTION_URI=${COURIER_SMTP_CONNECTION_URI}
+      - SQA_OPT_OUT=true
     command:
       serve -c /etc/config/kratos/.kratos.yml --dev
     volumes:
       -
-        type: volume
-        source: kratos-sqlite
-        target: /var/lib/sqlite
-        read_only: false
-      -
         type: bind
         source: ./auth/config/kratos
         target: /etc/config/kratos
-
-volumes:
-  kratos-sqlite:

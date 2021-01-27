@@ -48,6 +48,7 @@ function cancelApprovalRaw<T>(requestParameters: CancelApprovalRequest, requestC
 
     const { meta = {} } = requestConfig;
 
+    meta.authType = ['bearer'];
     const config: QueryConfig<T> = {
         url: `${runtime.Configuration.basePath}/approvals/{approval_id}`.replace(`{${"approval_id"}}`, encodeURIComponent(String(requestParameters.approvalId))),
         meta,
@@ -91,6 +92,7 @@ function createApprovalRaw<T>(requestParameters: CreateApprovalRequest, requestC
 
     const { meta = {} } = requestConfig;
 
+    meta.authType = ['bearer'];
     const config: QueryConfig<T> = {
         url: `${runtime.Configuration.basePath}/approvals`,
         meta,
@@ -133,6 +135,7 @@ function fullApprovalMatrixRaw<T>( requestConfig: runtime.TypedQueryConfig<T, { 
 
     const { meta = {} } = requestConfig;
 
+    meta.authType = ['bearer'];
     const config: QueryConfig<T> = {
         url: `${runtime.Configuration.basePath}/approvals/matrix`,
         meta,
@@ -174,6 +177,7 @@ function getApprovalsRaw<T>( requestConfig: runtime.TypedQueryConfig<T, Array<Ap
 
     const { meta = {} } = requestConfig;
 
+    meta.authType = ['bearer'];
     const config: QueryConfig<T> = {
         url: `${runtime.Configuration.basePath}/approvals`,
         meta,

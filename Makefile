@@ -1,3 +1,5 @@
+
+
 SHELL := /bin/bash
 
 mkfile_u := $(shell id -u)
@@ -12,10 +14,21 @@ all: clean build
 
 clean:
 	rm -rf ${mkfile_dir}/bifrost/bifrost_db/data/db/*
+	rm -rf ${mkfile_dir}/auth/pg/pgdata/*
 	rm -rf ${mkfile_dir}/web/src/SAP/generated/
 	rm -rf ${mkfile_dir}/sap_tbr_integration/DG.SAP.TBRIntegration/bin/
 	rm -rf ${mkfile_dir}/sap_tbr_integration/DG.SAP.TBRIntegration/obj/
 	docker-compose rm -vf
+
+${mkfile_dir}/.env : ${mkfile_dir}/.env.local.example
+ifneq ("$(wildcard $(${mkfile_dir}/.env.local))","")
+	# existing .env found, not overwriting
+else
+	# no .env found, generating ...
+	cp ${mkfile_dir}/.env.local.example ${mkfile_dir}/.env
+	cat ${mkfile_dir}/.env
+	echo ""
+endif
 
 ${mkfile_dir}/app/src/sap-client : ${mkfile_dir}/openapi_specs/SAP/SAP.yaml
 	# Generate web app client
@@ -82,5 +95,5 @@ ${mkfile_dir}/app/node_modules/ : ${mkfile_dir}/app/package.json
 build: ${mkfile_dir}/app/src/sap-client ${mkfile_dir}/web/src/SAP/generated ${mkfile_dir}/web/src/services/lims/openapi
 	CURRENT_UID=${mkfile_user} docker-compose build --no-cache
 
-run: ${mkfile_dir}/app/src/sap-client ${mkfile_dir}/web/src/SAP/generated ${mkfile_dir}/web/src/services/lims/openapi ${mkfile_dir}/app/node_modules/ ${mkfile_dir}/bifrost/bifrost_queue_broker/api_clients/tbr_client
+run: ${mkfile_dir}/app/src/sap-client ${mkfile_dir}/web/src/SAP/generated ${mkfile_dir}/web/src/services/lims/openapi ${mkfile_dir}/app/node_modules/ ${mkfile_dir}/bifrost/bifrost_queue_broker/api_clients/tbr_client ${mkfile_dir}/.env
 	CURRENT_UID=${mkfile_user} docker-compose up --build

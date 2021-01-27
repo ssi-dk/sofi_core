@@ -6,8 +6,7 @@ from web.src.SAP.generated.models.approval_request import ApprovalRequest  # noq
 from .. import util
 from ...src.controllers import ApprovalController
 
-
-def cancel_approval(approval_id):  # noqa: E501
+def cancel_approval(user, token_info, approval_id):  # noqa: E501
     """cancel_approval
 
     Cancel a pending approval # noqa: E501
@@ -17,10 +16,9 @@ def cancel_approval(approval_id):  # noqa: E501
 
     :rtype: None
     """
-    return ApprovalController.cancel_approval(approval_id)
+    return ApprovalController.cancel_approval(user, token_info, approval_id)
 
-
-def create_approval(body=None):  # noqa: E501
+def create_approval(user, token_info, body=None):  # noqa: E501
     """create_approval
 
     Submit approval/rejection information # noqa: E501
@@ -32,10 +30,9 @@ def create_approval(body=None):  # noqa: E501
     """
     if connexion.request.is_json:
         body = ApprovalRequest.from_dict(connexion.request.get_json())  # noqa: E501
-    return ApprovalController.create_approval(body)
+    return ApprovalController.create_approval(user, token_info, body)
 
-
-def full_approval_matrix():  # noqa: E501
+def full_approval_matrix(user, token_info):  # noqa: E501
     """full_approval_matrix
 
     Get the entire approval matrix for all analysis # noqa: E501
@@ -43,10 +40,9 @@ def full_approval_matrix():  # noqa: E501
 
     :rtype: Dict[str, Dict[str, ApprovalStatus]]
     """
-    return ApprovalController.full_approval_matrix()
+    return ApprovalController.full_approval_matrix(user, token_info)
 
-
-def get_approvals():  # noqa: E501
+def get_approvals(user, token_info):  # noqa: E501
     """get_approvals
 
     Retrieve list of approvals for authenticated user # noqa: E501
@@ -54,4 +50,4 @@ def get_approvals():  # noqa: E501
 
     :rtype: List[Approval]
     """
-    return ApprovalController.get_approvals()
+    return ApprovalController.get_approvals(user, token_info)

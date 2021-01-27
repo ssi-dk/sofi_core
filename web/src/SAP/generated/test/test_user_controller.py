@@ -41,6 +41,7 @@ class TestUserController(BaseTestCase):
 }
         headers = { 
             'Content-Type': 'application/json',
+            'Authorization': 'Bearer special-key',
         }
         response = self.client.open(
             '/api/user/views',
@@ -57,6 +58,7 @@ class TestUserController(BaseTestCase):
         
         """
         headers = { 
+            'Authorization': 'Bearer special-key',
         }
         response = self.client.open(
             '/api/user/views/{name}'.format(name='name_example'),
@@ -72,6 +74,7 @@ class TestUserController(BaseTestCase):
         """
         headers = { 
             'Accept': 'application/json',
+            'Authorization': 'Bearer special-key',
         }
         response = self.client.open(
             '/api/user/views',

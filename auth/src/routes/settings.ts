@@ -1,46 +1,51 @@
-import { NextFunction, Request, Response } from 'express'
-import config, { logger } from '../config'
-import { CommonApi } from '@oryd/kratos-client'
-import { isString } from '../helpers'
+import { NextFunction, Request, Response } from 'express';
+import config from '../config';
+import { AdminApi, Configuration } from '@ory/kratos-client';
+import { isString, methodConfig, redirectOnSoftError } from '../helpers';
 
-const kratos = new CommonApi(config.kratos.admin)
+// Variable config has keys:
+// kratos: {
+//
+//   // The browser config key is used to redirect the user. It reflects where ORY Kratos' Public API
+//   // is accessible from. Here, we're assuming traffic going to `http://example.org/.ory/kratos/public/`
+//   // will be forwarded to ORY Kratos' Public API.
+//   browser: 'https://kratos.example.org',
+//
+//   // The location of the ORY Kratos Admin API
+//   admin: 'https://ory-kratos-admin.example-org.vpc',
+//
+//   // The location of the ORY Kratos Public API within the cluster
+//   public: 'https://ory-kratos-public.example-org.vpc',
+// },
+
+const kratos = new AdminApi(new Configuration({ basePath: config.kratos.admin }));
 
 const settingsHandler = (req: Request, res: Response, next: NextFunction) => {
-  const request = req.query.request
-  // The request is used to identify the account settings request and
+  const flow = req.query.flow;
+  // The flow ID is used to identify the account settings flow and
   // return data like the csrf_token and so on.
-  if (!request || !isString(request)) {
-    logger.info('No request found in URL, initializing settings flow.')
-    res.redirect(`${config.kratos.browser}/self-service/browser/flows/settings`)
-    return
+  if (!flow || !isString(flow)) {
+    console.log('No flow found in URL, initializing flow.');
+    res.redirect(`${config.kratos.browser}/self-service/settings/browser`);
+    return;
   }
 
   kratos
-    .getSelfServiceBrowserSettingsRequest(request)
-    .then(({ body, response }) => {
-      if (
-        response.statusCode == 404 ||
-        response.statusCode == 410 ||
-        response.statusCode == 403
-      ) {
-        res.redirect(
-          `${config.kratos.browser}/self-service/browser/flows/settings`
-        )
-        return
-      } else if (response.statusCode != 200) {
-        return Promise.reject(body)
+    .getSelfServiceSettingsFlow(flow)
+    .then(({ status, data: flow }) => {
+      if (status !== 200) {
+        return Promise.reject(flow);
       }
 
-      const methodConfig = (key: string) => body?.methods[key]?.config
-
+      // Render the data using a view (e.g. Jade Template):
       res.render('settings', {
-        ...body,
-        password: methodConfig('password'),
-        profile: methodConfig('profile'),
-        oidc: methodConfig('oidc'),
-      })
+        ...flow,
+        password: methodConfig(flow, 'password'),
+        profile: methodConfig(flow, 'profile'),
+        oidc: methodConfig(flow, 'oidc'),
+      });
     })
-    .catch(next)
-}
+    .catch(redirectOnSoftError(res, next, '/self-service/settings/browser'));
+};
 
-export default settingsHandler
+export default settingsHandler;

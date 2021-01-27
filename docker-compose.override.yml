@@ -90,13 +90,41 @@ services:
       interval: 60s
       start_period: 15s
 
+  postgresd:
+    environment:
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+        - ./auth/pg:/var/lib/postgresql/data/
+
+  hydra:
+    environment:
+      SOFI_CLIENT_ID: ${SOFI_CLIENT_ID}
+      SOFI_SCHEME: ${SOFI_SCHEME}
+      SOFI_HOSTNAME: ${SOFI_HOSTNAME}
+      SOFI_PORT: ${SOFI_PORT}
+    healthcheck:
+      # Ensure our public client application is created
+      test: "/healthcheck-runner.sh"
+      interval: 30s 
+      start_period: 30s
+      retries: 10
+    volumes:
+      - ./auth/config/hydra/healthcheck-runner.sh:/healthcheck-runner.sh:ro
+      - ./auth/config/hydra/healthcheck.sh:/healthcheck.sh:ro
+      - ./auth/config/hydra/init.sh:/init.sh:ro
+
+  kratos_init_sidecar:
+    build: ./auth/config
+    depends_on:
+      - kratos-migrate
+    command: ["sh","-c","/init-dev-users.sh"]
+    volumes:
+      - ./auth/config/kratos/sidecar/init-dev-users.sh:/init-dev-users.sh:ro
+    restart: on-failure
+
   # Allows for testing email-based self-service flows in kratos (forgot password, account verification, etc)
   mailslurper:
     image: oryd/mailslurper:latest-smtps
     ports:
       - "4436:4436"
       - "4437:4437"
-
-  kratos:
-    environment:
-      - COURIER_SMTP_CONNECTION_URI=smtps://test:test@mailslurper:1025/?skip_ssl_verify=true

@@ -7,8 +7,7 @@ from web.src.SAP.generated.models.page_of_analysis import PageOfAnalysis  # noqa
 from .. import util
 from ...src.controllers import AnalysisController
 
-
-def get_analysis(paging_token=None, page_size=None):  # noqa: E501
+def get_analysis(user, token_info, paging_token=None, page_size=None):  # noqa: E501
     """get_analysis
 
     Page through all the analysis in the system (WIP) # noqa: E501
@@ -20,10 +19,9 @@ def get_analysis(paging_token=None, page_size=None):  # noqa: E501
 
     :rtype: PageOfAnalysis
     """
-    return AnalysisController.get_analysis(paging_token, page_size)
+    return AnalysisController.get_analysis(user, token_info, paging_token, page_size)
 
-
-def get_columns():  # noqa: E501
+def get_columns(user, token_info):  # noqa: E501
     """get_columns
 
     Get column metadata, scoped to authenticated user # noqa: E501
@@ -31,10 +29,9 @@ def get_columns():  # noqa: E501
 
     :rtype: List[Column]
     """
-    return AnalysisController.get_columns()
+    return AnalysisController.get_columns(user, token_info)
 
-
-def search_analysis(query=None):  # noqa: E501
+def search_analysis(user, token_info, query=None):  # noqa: E501
     """search_analysis
 
     Search all analysis by given query # noqa: E501
@@ -46,10 +43,9 @@ def search_analysis(query=None):  # noqa: E501
     """
     if connexion.request.is_json:
         query = AnalysisQuery.from_dict(connexion.request.get_json())  # noqa: E501
-    return AnalysisController.search_analysis(query)
+    return AnalysisController.search_analysis(user, token_info, query)
 
-
-def submit_changes(body=None):  # noqa: E501
+def submit_changes(user, token_info, body=None):  # noqa: E501
     """submit_changes
 
     Submit a batch of analysis data changes # noqa: E501
@@ -59,4 +55,4 @@ def submit_changes(body=None):  # noqa: E501
 
     :rtype: Dict[str, Dict[str, str]]
     """
-    return AnalysisController.submit_changes(body)
+    return AnalysisController.submit_changes(user, token_info, body)

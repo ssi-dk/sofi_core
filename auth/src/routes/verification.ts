@@ -1,37 +1,33 @@
-import { NextFunction, Request, Response } from 'express'
-import config, { logger } from '../config'
-import { CommonApi } from '@oryd/kratos-client'
-import { IncomingMessage } from 'http'
-import { isString } from '../helpers'
+import { NextFunction, Request, Response } from 'express';
+import config from '../config';
+import { Configuration, PublicApi } from '@ory/kratos-client';
+import { isString, methodConfig, redirectOnSoftError } from '../helpers';
 
-const kratos = new CommonApi(config.kratos.admin)
+const kratos = new PublicApi(new Configuration({ basePath: config.kratos.public }));
 
 export default (req: Request, res: Response, next: NextFunction) => {
-  const request = req.query.request
+  const flow = req.query.flow;
 
-  // The request is used to identify the login and registration request and
+  // The flow is used to identify the account verification flow and
   // return data like the csrf_token and so on.
-  if (!request || !isString(request)) {
-    logger.info('No request found in URL, initializing verify flow.')
-    res.redirect(
-      `${config.kratos.browser}/self-service/browser/flows/verification/email`
-    )
-    return
+  if (!flow || !isString(flow)) {
+    console.log('No request found in URL, initializing verification flow.');
+    res.redirect(`${config.kratos.browser}/self-service/verification/browser`);
+    return;
   }
 
   kratos
-    .getSelfServiceVerificationRequest(request)
-    .then(({ body, response }: { response: IncomingMessage; body?: any }) => {
-      if (response.statusCode == 404) {
-        res.redirect(
-          `${config.kratos.browser}/self-service/browser/flows/verification/email`
-        )
-        return
-      } else if (response.statusCode != 200) {
-        return Promise.reject(body)
+    .getSelfServiceVerificationFlow(flow)
+    .then(({ status, data: flow }) => {
+     if (status != 200) {
+        return Promise.reject(flow);
       }
 
-      res.render('verification', body)
+      // Render the data using a view (e.g. Jade Template):
+      res.render('verification', {
+        ...flow,
+        link: methodConfig(flow, 'link'),
+      });
     })
-    .catch(next)
+    .catch(redirectOnSoftError(res, next, '/self-service/verification/browser'));
 }

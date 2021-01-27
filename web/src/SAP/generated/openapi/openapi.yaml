@@ -5,6 +5,8 @@ info:
   version: 0.1.0
 servers:
 - url: http://localhost:8080/api/
+security:
+- jwt: []
 tags:
 - description: Operations about user
   name: user
@@ -665,7 +667,8 @@ components:
       - _id
       - isolate_id
   securitySchemes:
-    SAP_auth:
+    jwt:
+      bearerFormat: JWT
       scheme: bearer
       type: http
-      x-bearerInfoFunc: openapi_server.controllers.security_controller_.info_from_SAP_auth
+      x-bearerInfoFunc: web.src.SAP.generated.controllers.security_controller_.info_from_jwt

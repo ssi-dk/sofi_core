@@ -13,7 +13,8 @@
     "typeRoots": [
       "./typings"
     ],
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "noImplicitAny": false
   },
   "exclude": ["contrib"]
 }
