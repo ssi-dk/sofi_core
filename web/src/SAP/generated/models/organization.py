@@ -20,6 +20,7 @@ class Organization(Model):
     """
     SSI = "SSI"
     FVST = "FVST"
+    OTHER = "Other"
     def __init__(self):  # noqa: E501
         """Organization - a model defined in OpenAPI
 

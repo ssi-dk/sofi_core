@@ -200,6 +200,7 @@ paths:
       tags:
       - gdpr
       x-openapi-router-controller: web.src.SAP.generated.controllers.gdpr_controller
+<<<<<<< HEAD
   /me:
     get:
       description: Describe the current user and their permissions
@@ -214,6 +215,35 @@ paths:
       tags:
       - user
       x-openapi-router-controller: web.src.SAP.generated.controllers.user_controller
+=======
+  /isolateupload:
+    post:
+      description: Manually upload isolate with metadata
+      operationId: isolate_upload
+      requestBody:
+        $ref: '#/components/requestBodies/inline_object'
+        content:
+          multipart/form-data:
+            encoding:
+              file:
+                contentType: application/gzip
+                style: form
+            schema:
+              properties:
+                metadata:
+                  type: string
+                file:
+                  format: binary
+                  type: string
+              type: object
+      responses:
+        "204":
+          description: Isolate uploaded successfully.
+      tags:
+      - upload
+      x-openapi-router-controller: web.src.SAP.generated.controllers.upload_controller
+      x-codegen-request-body-name: query
+>>>>>>> Preliminary upload setup
   /user/views:
     get:
       operationId: get_user_views
@@ -262,11 +292,18 @@ paths:
       - user
       x-openapi-router-controller: web.src.SAP.generated.controllers.user_controller
 components:
+  requestBodies:
+    inline_object:
+      content:
+        multipart/form-data:
+          schema:
+            $ref: '#/components/schemas/inline_object'
   schemas:
     Organization:
       enum:
       - SSI
       - FVST
+      - Other
       type: string
     PageOfAnalysis:
       example:
@@ -542,6 +579,7 @@ components:
       - $ref: '#/components/schemas/LimsSpecificMetadata'
       - $ref: '#/components/schemas/TbrSpecificMetadata'
       - $ref: '#/components/schemas/AnalysisResult_allOf'
+      type: object
     PersonalIdentifierType:
       enum:
       - CPR
@@ -598,6 +636,13 @@ components:
             $ref: '#/components/schemas/Permission'
           type: array
       type: object
+    inline_object:
+      properties:
+        metadata:
+          type: string
+        file:
+          format: binary
+          type: string
     UserDefinedView_column_resizing_column_widths:
       example:
         width: 0

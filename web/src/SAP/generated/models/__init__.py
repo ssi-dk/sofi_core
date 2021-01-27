@@ -13,6 +13,7 @@ from .approval_status import ApprovalStatus
 from .base_metadata import BaseMetadata
 from .column import Column
 from .data_clearance import DataClearance
+from .inline_object import InlineObject
 from .lims_metadata import LimsMetadata
 from .lims_specific_metadata import LimsSpecificMetadata
 from .organization import Organization

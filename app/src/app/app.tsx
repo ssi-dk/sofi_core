@@ -10,12 +10,21 @@ import "./i18n";
 import AnalysisPage from "./analysis/analysis-page";
 import GdprExtractPage from "./gdpr/gdpr-extract/gdpr-extract-page"
 import ApprovalHistory from "./approval-history/approval-history";
+import ManualUploadPage from "./manual-upload/manual-upload-page"
 
 export default function App() {
   return (
     <ChakraProvider theme={appTheme}>
       <Global styles={globalCss} />
         <Switch>
+          <Route
+            path="/manual-upload"
+            render={() => (
+              <Authorize>
+                <ManualUploadPage />
+              </Authorize>
+            )}
+          />
           <Route
             exact
             path="/approval-history"

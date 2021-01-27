@@ -260,14 +260,37 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PersonalData'
-
-
+  /isolateupload:
+    post:
+      description: Manually upload isolate with metadata
+      operationId: isolate_upload
+      x-openapi-router-controller: web.src.SAP.generated.controllers.upload_controller
+      x-codegen-request-body-name: query
+      tags:
+        - upload
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                metadata:
+                  type: string
+                file:
+                  type: string
+                  format: binary
+            encoding:
+              file:
+                contentType: application/gzip
+      responses:
+        '204':
+          description: Isolate uploaded successfully.
 
 components:
   schemas:
     Organization:
       type: string
-      enum: [SSI, FVST]
+      enum: [SSI, FVST, Other]
 
     PageOfAnalysis:
       required:
