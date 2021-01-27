@@ -112,13 +112,14 @@ services:
       - ./auth/config/hydra/healthcheck.sh:/healthcheck.sh:ro
       - ./auth/config/hydra/init.sh:/init.sh:ro
 
-  kratos-init-sidecar:
-    image: busybox
+  kratos_init_sidecar:
+    build: ./auth/config
     depends_on:
       - kratos-migrate
-    command: ["sh","-c","/init.sh"]
+    command: ["sh","-c","/init-dev-users.sh"]
     volumes:
-      - ./auth/config/kratos/sidecar/init.sh:/init.sh:ro
+      - ./auth/config/kratos/sidecar/init-dev-users.sh:/init-dev-users.sh:ro
+    restart: on-failure
 
   # Allows for testing email-based self-service flows in kratos (forgot password, account verification, etc)
   mailslurper:
