@@ -9,11 +9,15 @@ import {
 import axios from "axios";
 import { BaseMetadata } from "sap-client/models/BaseMetadata"
 import { Organization } from "sap-client/models/Organization";
-import { isolateUpload } from "sap-client/apis/UploadApi";
+import { isolateUpload, IsolateUploadRequest } from "sap-client/apis/UploadApi";
 import { getUrl } from "service";
+import { Loading } from "loading";
+import { useMutation } from "redux-query-react";
+import { uploadIsolateFile } from "./manual-upload-configs";
 
-const UploadForm = () => {
+export default function UploadForm() {
   const [selectedFile, setSelectedFile] = useState<any>(null);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const [state, setState] = React.useState({
     isolate_id: "",
@@ -30,6 +34,12 @@ const UploadForm = () => {
     primary_isolate: true
   } as BaseMetadata);
 
+  const [
+    qstate,
+    doUpload,
+  ] = useMutation((payload: IsolateUploadRequest) => uploadIsolateFile(payload));
+
+
   const changeState = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value, name } = e.target;
     console.log(state);
@@ -39,19 +49,15 @@ const UploadForm = () => {
     });
   };
 
-  const submitForm = (e: any) => {
+  const submitForm = (e) => {
     e.preventDefault();
-    const formData = new FormData();
-    formData.append("metadata", JSON.stringify(state));
-    formData.append("file", selectedFile);
-    
-    axios
-      .post(getUrl("/isolateupload"), formData)
-      .then((res) => {
-        console.log(res);
-        alert("File Upload success");
-      })
-      .catch((err) => alert("File Upload Error"));
+
+    setLoading(true);
+    doUpload({ metadata: JSON.stringify(state), file: selectedFile })
+      .catch((err) => console.log(err))
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   const TextInput = ({ label, name }: { label: string; name: string }) => {
@@ -75,7 +81,7 @@ const UploadForm = () => {
     );
   };
 
-  return (
+  return loading ? <Loading /> : (
     <form>
       <TextInput label="Isolate ID" name="isolate_id" />
       <TextInput label="Sequence ID" name="sequence_id" />
@@ -99,6 +105,4 @@ const UploadForm = () => {
     </form>
   );
 };
-
-export default UploadForm;
 

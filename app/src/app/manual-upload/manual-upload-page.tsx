@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Flex } from "@chakra-ui/react"
 import UploadForm from "./upload-form"
 
-const ManualUploadPage = () => {
+export default function ManualUploadPage() {
   return (
     <Flex
       direction="column"
@@ -14,7 +14,4 @@ const ManualUploadPage = () => {
       <UploadForm />
     </Flex>
   );
-};
-
-export default ManualUploadPage;
-
+}
