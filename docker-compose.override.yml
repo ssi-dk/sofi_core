@@ -4,6 +4,8 @@ services:
     environment:
     # don't litter host with pyc files; we always want latest state from file
       - PYTHONDONTWRITEBYTECODE=1
+      # Do not use this for production..
+      - SAP_BIFROST_ENCRYPTION_KEY='kkbcL/n0U5onerEv10+1/ORma34cdK3LF6/9NOVsC7sDO8/N0KHNwndxUqmFT7MCXaaOKttoqPlgWUrlq0dlWqf6EcwNRO21Gg1MCVl7cViVPhKmz5MeMjCtM4MMzC9h'
     user: ${CURRENT_UID}
     volumes:
     # Change path before : to point to local web.
