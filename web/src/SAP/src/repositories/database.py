@@ -12,7 +12,7 @@ hostname = "bifrost_db"
 rset = "rs0"
 dbname = "bifrost_test"
 SAP_BIFROST_ENCRYPTION_NAMESPACE = os.environ.get("SAP_BIFROST_ENCRYPTION_NAME", "encryption.__sap_pymongo.sap_pii")
-ENCRYPTION_DB, ENCRYPTION_COL, ENCRYPTION_KEY_NAME = os.environ.get("SAP_BIFROST_ENCRYPTION_NAME", "encryption.__sap_pymongo.sap_pii").split(".", 2)
+ENCRYPTION_DB, ENCRYPTION_COL, ENCRYPTION_KEY_NAME = SAP_BIFROST_ENCRYPTION_NAMESPACE.split(".", 2)
 
 
 # The MongoClient is thread safe and pooled, so no problem sharing it :)
@@ -20,7 +20,9 @@ def get_connection(with_enc=False):
     """
     Returns instance of global pooled connection.
     The connection instance has automatic decryption enabled.
-    If with_enc=True this returns a ClientEncryption used for encryption fields along the connection.
+    -> MongoClient
+    If with_enc=True this returns a ClientEncryption used for encryption fields along the connection
+    -> MonogClient, ClientEncryption
     """
     global CONNECTION
     global CLIENT_ENC
@@ -38,7 +40,6 @@ def get_connection(with_enc=False):
         kms_providers = {"local": {"key": local_master_key}}
         # The MongoDB namespace (db.collection) used to store
         # the encryption data keys.
-        key_vault_namespace = "encryption.__sap_pymongo"
         key_vault_db_name, key_vault_coll_name, key_name = ENCRYPTION_DB, ENCRYPTION_COL, ENCRYPTION_KEY_NAME
 
         # bypass_auto_encryption=True disable automatic encryption but keeps
