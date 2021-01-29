@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Flex } from "@chakra-ui/react"
+import { Spacer, Box, Flex, Heading } from "@chakra-ui/react"
 import UploadForm from "./upload-form"
 
 export default function ManualUploadPage() {
@@ -11,6 +11,12 @@ export default function ManualUploadPage() {
       m="0 auto"
 
     >
+      <Box minW="100%" flexShrink={0}>
+        <Heading>SOFI</Heading>
+      </Box>
+      
+      <Spacer />
+
       <UploadForm />
     </Flex>
   );
