@@ -4,6 +4,7 @@ COPY requirements.txt .
 RUN pip install -r requirements.txt
 
 COPY brokers/ /app/brokers/
+COPY common/ /app/common/
 COPY api_clients/ /app/api_clients/
 COPY main.py /app/
 
@@ -14,7 +15,7 @@ ENV MONGO_QUEUE_COLLECTION="sap_broker_queue"
 ENV MONGO_TBR_METADATA_COLLECTION="sap_tbr_metadata"
 ENV MONGO_LIMS_METADATA_COLLECTION="sap_lims_metadata"
 
-env TBR_API_URL="https://tbr_integration"
+env TBR_API_URL="https://sap_tbr_integration_1"
 env LIMS_API_URL="https://lims_integration"
 
 ENV LOGLEVEL="INFO"

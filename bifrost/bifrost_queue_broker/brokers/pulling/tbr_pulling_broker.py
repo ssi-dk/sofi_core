@@ -5,6 +5,7 @@ import pymongo
 import threading
 from pymongo import CursorType
 from ..shared import BrokerError
+from common.database import encrypt_dict, get_connection
 
 # TBR API imports
 import time
@@ -30,6 +31,8 @@ class TBRPullingBroker(threading.Thread):
         self.metadata_col = db[tbr_col_name]
         self.stop = threading.Event()
         self.broker_name = "TBR Pulling broker"
+        _, enc = get_connection(with_enc=True)
+        self.encryption_client = enc
 
     def stop(self):
         self.stop.set()
@@ -93,7 +96,7 @@ class TBRPullingBroker(threading.Thread):
                 updated_isolates = api_instance.api_isolate_changed_isolates_post(
                     row_version=row_ver_elems
                 )
-                bulk_update_queries = add_mongo_document_id(updated_isolates)
+                bulk_update_queries = self.add_mongo_document_id(updated_isolates)
 
                 update_count = 0
                 if len(bulk_update_queries) > 0:
@@ -108,8 +111,23 @@ class TBRPullingBroker(threading.Thread):
 
             except Exception as e:
                 logging.error(
-                    f"Exception on check for isolate updates IsolateApi->api_isolate_changed_isolates_post: {e}\n"
+                    f"Exception on check for isolate updates {self.broker_name}: {e}\n"
                 )
+
+    def add_mongo_document_id(self, updated_isolates):
+        result = []
+        # And find the equivalent document id for each isolate
+        for isolate in updated_isolates:
+            values = isolate.to_dict()
+            isolate_id = values["isolate_id"]
+            encrypt_dict(self.encryption_client, values, ["cpr_nr", "name", "gender", "age"])
+
+            update_query = pymongo.UpdateOne(
+                {"isolate_id": isolate_id}, {"$set": values}, upsert=True
+            )
+            result.append(update_query)
+
+        return result
 
 
 def yield_chunks(cursor, chunk_size):
@@ -127,14 +145,3 @@ def yield_chunks(cursor, chunk_size):
     yield chunk
 
 
-def add_mongo_document_id(updated_isolates):
-    result = []
-    # And find the equivalent document id for each isolate
-    for isolate in updated_isolates:
-        values = isolate.to_dict()
-        update_query = pymongo.UpdateOne(
-            {"isolate_id": values["isolate_id"]}, {"$set": values}, upsert=True
-        )
-        result.append(update_query)
-
-    return result

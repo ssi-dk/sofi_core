@@ -1,6 +1,9 @@
 import sys, os
 import logging
-import pymongo
+
+# import pymongo
+from common.database import get_connection, encrypt_dict, DB_NAME
+
 import threading
 from functools import partial
 from brokers.request.tbr_request_broker import TBRRequestBroker
@@ -24,9 +27,6 @@ def create_collections_if_not_exist(db, queue_col_name, metadata_col_names):
 
 
 def main():
-    HOST = os.environ.get("MONGO_HOST", "bifrost_db")
-    PORT = int(os.environ.get("MONGO_PORT", 27017))
-    DB_NAME = os.environ.get("MONGO_DB", "bifrost_test")
     TBR_COLLECTION_NAME = os.environ.get(
         "MONGO_TBR_METADATA_COLLECTION", "sap_tbr_metadata"
     )
@@ -36,10 +36,10 @@ def main():
     ANALYSIS_COLLECTION_NAME = os.environ.get(
         "MONGO_ANALYSIS_VIEW_COLLECTION", "sap_analysis_results"
     )
-
     QUEUE_COLLECTION_NAME = os.environ.get("MONGO_QUEUE_COLLECTION", "sap_broker_queue")
 
-    db = pymongo.MongoClient(HOST, PORT)[DB_NAME]
+    conn, enc = get_connection(with_enc=True)
+    db = conn[DB_NAME]
     create_collections_if_not_exist(
         db,
         QUEUE_COLLECTION_NAME,
@@ -58,9 +58,14 @@ def main():
         TBRPullingBroker, TBR_data_lock, TBR_COLLECTION_NAME, ANALYSIS_COLLECTION_NAME
     )
 
-    lims_requests = partial(LIMSRequestBroker, LIMS_data_lock,  QUEUE_COLLECTION_NAME, LIMS_COLLECTION_NAME)
+    lims_requests = partial(
+        LIMSRequestBroker, LIMS_data_lock, QUEUE_COLLECTION_NAME, LIMS_COLLECTION_NAME
+    )
     lims_puller = partial(
-        LIMSPullingBroker, LIMS_data_lock, LIMS_COLLECTION_NAME, ANALYSIS_COLLECTION_NAME
+        LIMSPullingBroker,
+        LIMS_data_lock,
+        LIMS_COLLECTION_NAME,
+        ANALYSIS_COLLECTION_NAME,
     )
 
     # Which brokers to start up as seperate threads.
