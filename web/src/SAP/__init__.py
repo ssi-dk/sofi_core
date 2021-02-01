@@ -1,6 +1,6 @@
 import connexion
 from .generated import encoder
-from .src.repositories.database import get_connection
+from .common.database import get_connection
 
 
 
