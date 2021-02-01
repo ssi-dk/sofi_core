@@ -287,7 +287,7 @@ export default function AnalysisPage() {
   const renderCellControl = React.useCallback(
     (rowId: string, columnId: string, value: any) => {
       let v = `${value}`;
-      if (columnId.endsWith("date")) {
+      if (columnId.endsWith("date") && value !== undefined && !Number.isNaN(value.getTime())) {
         v = value.toISOString();
       }
       if (columnId === "species_final") {
