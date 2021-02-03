@@ -122,6 +122,10 @@ services:
       - ./auth/config/kratos/sidecar/init-dev-users.sh:/init-dev-users.sh:ro
     restart: on-failure
 
+  kratos:
+    command:
+      serve -c /etc/config/kratos/.kratos.yml --dev
+
   # Allows for testing email-based self-service flows in kratos (forgot password, account verification, etc)
   mailslurper:
     image: oryd/mailslurper:latest-smtps

@@ -191,7 +191,7 @@ services:
       - COURIER_SMTP_CONNECTION_URI=${COURIER_SMTP_CONNECTION_URI}
       - SQA_OPT_OUT=true
     command:
-      serve -c /etc/config/kratos/.kratos.yml --dev
+      serve -c /etc/config/kratos/.kratos.yml
     volumes:
       -
         type: bind
