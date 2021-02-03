@@ -7,23 +7,32 @@ services:
       target: final
     expose:
       - 6000
+    ports:
+      - "6000:6000"
+    command: ["/bin/sh", "-c", "/app/start.sh"]
     depends_on:
       - "hydra"
+      - "bifrost_db"
     environment:
       - APP_MODULE=wsgi:app
-      - IDP=http://hydra:4444
+      - IDP=https://${SOFI_HOSTNAME}
       - SOFI_CLIENT_ID=${SOFI_CLIENT_ID}
+    volumes:
+      - ./.certs/sofi.local.crt:/usr/local/share/ca-certificates/sofi.local.crt:ro
 
   sap_app:
     build:
       context: ./app
     expose:
       - 3333
+    user: ${CURRENT_UID}
     environment:
       - NODE_ENV=production
       - PORT=3333
     depends_on:
       - "sap_api"
+    volumes:
+      - ./.certs/sofi.local.crt:/usr/local/share/ca-certificates/sofi.local.crt:ro
 
   sap_broker_queue:
     build:
@@ -46,12 +55,18 @@ services:
       - PYTHONUNBUFFERED=0
 
   proxy:
+    networks:
+      default:
+        aliases:
+          - ${SOFI_HOSTNAME}
     container_name: ${SOFI_HOSTNAME}
     hostname: ${SOFI_HOSTNAME}
     image: caddy:2.2.0-alpine
+    environment:
+      SOFI_HOSTNAME: ${SOFI_HOSTNAME}
+      SOFI_PORT: ${SOFI_PORT}
     ports:
-      - "8080:80"
-      - "8081:443"
+      - "${SOFI_PORT}:443"
     command:
       - "caddy"
       - "run"
@@ -60,9 +75,11 @@ services:
     depends_on:
       - "sap_api"
       - "sap_app"
-      - "kratos-selfservice-ui-node"
+      - "auth-selfservice-ui"
     volumes:
-        - ./Caddyfile:/etc/Caddyfile
+      - ./Caddyfile:/etc/Caddyfile:ro
+      - ./.certs/sofi.local.pem:/etc/sofi.pem:ro
+      - ./.certs/sofi.local.crt:/etc/sofi.crt:ro
 
   postgresd:
     image: postgres:9.6
@@ -88,6 +105,7 @@ services:
 
   hydra:
     image: oryd/hydra:v1.9.0-alpine
+    user: ${CURRENT_UID}
     depends_on:
       - hydra-migrate
     ports:
@@ -96,7 +114,7 @@ services:
     expose:
       - 4444
     command:
-      serve all --dangerous-force-http --sqa-opt-out
+      serve all --sqa-opt-out
     restart: on-failure
     environment:
       - STRATEGIES_ACCESS_TOKEN=jwt
@@ -105,32 +123,33 @@ services:
       - TTL_ACCESS_TOKEN=${TTL_ACCESS_TOKEN}
       - TTL_ID_TOKEN=${TTL_ACCESS_TOKEN}
       - TTL_REFRESH_TOKEN=${TTL_REFRESH_TOKEN}
-      - WEBFINGER_OIDC_DISCOVERY_AUTH_URL=${SOFI_SCHEME}://${SOFI_HOSTNAME}:${SOFI_PORT}/oauth2/auth
-      - WEBFINGER_OIDC_DISCOVERY_TOKEN_URL=${SOFI_SCHEME}://${SOFI_HOSTNAME}:${SOFI_PORT}/oauth2/token
-      - WEBFINGER_OIDC_DISCOVERY_JWKS_URL=${SOFI_SCHEME}://${SOFI_HOSTNAME}:${SOFI_PORT}/.well-known/jwks.json
-      - WEBFINGER_OIDC_DISCOVERY_USERINFO_URL=${SOFI_SCHEME}://${SOFI_HOSTNAME}:${SOFI_PORT}/.well-known/userinfo
-      - URLS_SELF_ISSUER=${SOFI_SCHEME}://${SOFI_HOSTNAME}:${SOFI_PORT}
-      - URLS_SELF_PUBLIC=${SOFI_SCHEME}://${SOFI_HOSTNAME}:${SOFI_PORT}
-      - URLS_CONSENT=${SOFI_SCHEME}://${SOFI_HOSTNAME}:${SOFI_PORT}/ss/auth/hydra/consent
-      - URLS_LOGIN=${SOFI_SCHEME}://${SOFI_HOSTNAME}:${SOFI_PORT}/ss/auth/hydra/login
-      - URLS_LOGOUT=${SOFI_SCHEME}://${SOFI_HOSTNAME}:${SOFI_PORT}/ss/logout
+      - WEBFINGER_OIDC_DISCOVERY_AUTH_URL=https://${SOFI_HOSTNAME}:${SOFI_PORT}/oauth2/auth
+      - WEBFINGER_OIDC_DISCOVERY_TOKEN_URL=https://${SOFI_HOSTNAME}:${SOFI_PORT}/oauth2/token
+      - WEBFINGER_OIDC_DISCOVERY_JWKS_URL=https://${SOFI_HOSTNAME}:${SOFI_PORT}/.well-known/jwks.json
+      - WEBFINGER_OIDC_DISCOVERY_USERINFO_URL=https://${SOFI_HOSTNAME}:${SOFI_PORT}/.well-known/userinfo
+      - URLS_SELF_ISSUER=https://${SOFI_HOSTNAME}:${SOFI_PORT}
+      - URLS_SELF_PUBLIC=https://${SOFI_HOSTNAME}:${SOFI_PORT}
+      - URLS_CONSENT=https://${SOFI_HOSTNAME}:${SOFI_PORT}/ss/auth/hydra/consent
+      - URLS_LOGIN=https://${SOFI_HOSTNAME}:${SOFI_PORT}/ss/auth/hydra/login
+      - URLS_LOGOUT=https://${SOFI_HOSTNAME}:${SOFI_PORT}/ss/logout
       - SECRETS_SYSTEM=${SECRETS_SYSTEM}
       - DSN=postgres://${PG_USER}:${PG_SECRET}@postgresd:5432/hydra?sslmode=${SSL_MODE}
       - SQA_OPT_OUT=true
+      - SERVE_TLS_ALLOW_TERMINATION_FROM=${SOFI_SUBNET},127.0.0.1/32
     volumes:
       -
         type: bind
         source: ./auth/config/hydra/
         target: /home/ory/
 
-  kratos-selfservice-ui-node:
+  auth-selfservice-ui:
     build:
       context: ./auth
       dockerfile: Dockerfile
     environment:
       - HYDRA_ADMIN_URL=http://hydra:4445
-      - HYDRA_BROWSER_URL=${SOFI_SCHEME}://${SOFI_HOSTNAME}:${SOFI_PORT}
-      - KRATOS_BROWSER_URL=${SOFI_SCHEME}://${SOFI_HOSTNAME}:${SOFI_PORT}/.ory/kratos/public
+      - HYDRA_BROWSER_URL=https://${SOFI_HOSTNAME}:${SOFI_PORT}
+      - KRATOS_BROWSER_URL=https://${SOFI_HOSTNAME}:${SOFI_PORT}/.ory/kratos/public
       - KRATOS_PUBLIC_URL=http://kratos:4433/
       - KRATOS_ADMIN_URL=http://kratos:4434/
       - SECURITY_MODE=standalone
@@ -162,17 +181,17 @@ services:
     restart: unless-stopped
     environment:
       - DSN=postgres://${PG_USER}:${PG_SECRET}@postgresd:5432/kratos?sslmode=${SSL_MODE}&max_conns=20&max_idle_conns=4
-      - SERVE_PUBLIC_BASE_URL=${SOFI_SCHEME}://${SOFI_HOSTNAME}:${SOFI_PORT}/.ory/kratos/public/
-      - SELFSERVICE_WHITELISTED_RETURN_URLS=${SOFI_SCHEME}://${SOFI_HOSTNAME}:${SOFI_PORT}/ss/auth/hydra/login
-      - SELFSERVICE_DEFAULT_BROWSER_RETURN_URL=${SOFI_SCHEME}://${SOFI_HOSTNAME}:${SOFI_PORT}
-      - SELFSERVICE_FLOWS_SETTINGS_UI_URL=${SOFI_SCHEME}://${SOFI_HOSTNAME}:${SOFI_PORT}/ss/settings
-      - SELFSERVICE_FLOWS_VERIFICATION_UI_URL=${SOFI_SCHEME}://${SOFI_HOSTNAME}:${SOFI_PORT}/ss/verify
-      - SELFSERVICE_FLOWS_VERIFICATION_AFTER_DEFAULT_BROWSER_RETURN_URL=${SOFI_SCHEME}://${SOFI_HOSTNAME}:${SOFI_PORT}
-      - SELFSERVICE_FLOWS_RECOVERY_UI_URL=${SOFI_SCHEME}://${SOFI_HOSTNAME}:${SOFI_PORT}/ss/recovery
-      - SELFSERVICE_FLOWS_LOGOUT_UI_URL=${SOFI_SCHEME}://${SOFI_HOSTNAME}:${SOFI_PORT}/ss/logout
-      - SELFSERVICE_FLOWS_LOGIN_UI_URL=${SOFI_SCHEME}://${SOFI_HOSTNAME}:${SOFI_PORT}/ss/auth/login
-      - SELFSERVICE_FLOWS_REGISTRATION_UI_URL=${SOFI_SCHEME}://${SOFI_HOSTNAME}:${SOFI_PORT}/ss/auth/registration
-      - SELFSERVICE_FLOWS_ERROR_UI_URL=${SOFI_SCHEME}://${SOFI_HOSTNAME}:${SOFI_PORT}/ss/error
+      - SERVE_PUBLIC_BASE_URL=https://${SOFI_HOSTNAME}:${SOFI_PORT}/.ory/kratos/public/
+      - SELFSERVICE_WHITELISTED_RETURN_URLS=https://${SOFI_HOSTNAME}:${SOFI_PORT}/ss/auth/hydra/login
+      - SELFSERVICE_DEFAULT_BROWSER_RETURN_URL=https://${SOFI_HOSTNAME}:${SOFI_PORT}
+      - SELFSERVICE_FLOWS_SETTINGS_UI_URL=https://${SOFI_HOSTNAME}:${SOFI_PORT}/ss/settings
+      - SELFSERVICE_FLOWS_VERIFICATION_UI_URL=https://${SOFI_HOSTNAME}:${SOFI_PORT}/ss/verify
+      - SELFSERVICE_FLOWS_VERIFICATION_AFTER_DEFAULT_BROWSER_RETURN_URL=https://${SOFI_HOSTNAME}:${SOFI_PORT}
+      - SELFSERVICE_FLOWS_RECOVERY_UI_URL=https://${SOFI_HOSTNAME}:${SOFI_PORT}/ss/recovery
+      - SELFSERVICE_FLOWS_LOGOUT_UI_URL=https://${SOFI_HOSTNAME}:${SOFI_PORT}/ss/logout
+      - SELFSERVICE_FLOWS_LOGIN_UI_URL=https://${SOFI_HOSTNAME}:${SOFI_PORT}/ss/auth/login
+      - SELFSERVICE_FLOWS_REGISTRATION_UI_URL=https://${SOFI_HOSTNAME}:${SOFI_PORT}/ss/auth/registration
+      - SELFSERVICE_FLOWS_ERROR_UI_URL=https://${SOFI_HOSTNAME}:${SOFI_PORT}/ss/error
       - COURIER_SMTP_CONNECTION_URI=${COURIER_SMTP_CONNECTION_URI}
       - SQA_OPT_OUT=true
     command:
@@ -182,3 +201,11 @@ services:
         type: bind
         source: ./auth/config/kratos
         target: /etc/config/kratos
+
+networks:
+  default:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+      - subnet: ${SOFI_SUBNET} 

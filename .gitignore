@@ -137,3 +137,5 @@ dmypy.json
 
 # openapi generator
 .openapi-generator
+
+.certs/*

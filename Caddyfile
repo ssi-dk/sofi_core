@@ -1,4 +1,9 @@
-:80, :443 {
+{
+    auto_https off
+}
+
+{$SOFI_HOSTNAME} {
+    tls /etc/sofi.crt /etc/sofi.pem
 
     route /api/* {
         reverse_proxy sap_api:6000
@@ -14,11 +19,19 @@
         reverse_proxy kratos-selfservice-ui-node:3000
     }
 
+    route /.ory/hydra/public/* {
+        uri strip_prefix /.ory/hydra/public
+        header X-Forwarded-Proto https
+        reverse_proxy hydra:4444
+    }
+
     route /oauth2/* {
+        header X-Forwarded-Proto https
         reverse_proxy hydra:4444
     }
 
     route /.well-known/* {
+        header X-Forwarded-Proto https
         reverse_proxy hydra:4444
     }
 
