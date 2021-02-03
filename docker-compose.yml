@@ -17,8 +17,6 @@ services:
       - APP_MODULE=wsgi:app
       - IDP=https://${SOFI_HOSTNAME}
       - SOFI_CLIENT_ID=${SOFI_CLIENT_ID}
-    volumes:
-      - ./.certs/sofi.local.crt:/usr/local/share/ca-certificates/sofi.local.crt:ro
 
   sap_app:
     build:
@@ -31,8 +29,6 @@ services:
       - PORT=3333
     depends_on:
       - "sap_api"
-    volumes:
-      - ./.certs/sofi.local.crt:/usr/local/share/ca-certificates/sofi.local.crt:ro
 
   sap_broker_queue:
     build:
@@ -78,8 +74,8 @@ services:
       - "auth-selfservice-ui"
     volumes:
       - ./Caddyfile:/etc/Caddyfile:ro
-      - ./.certs/sofi.local.pem:/etc/sofi.pem:ro
-      - ./.certs/sofi.local.crt:/etc/sofi.crt:ro
+      - ${TLS_KEY_PATH}:/etc/sofi.pem:ro
+      - ${TLS_CERT_PATH}:/etc/sofi.crt:ro
 
   postgresd:
     image: postgres:9.6

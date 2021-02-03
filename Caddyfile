@@ -16,7 +16,7 @@
 
     route /ss/* {
         uri strip_prefix /ss
-        reverse_proxy kratos-selfservice-ui-node:3000
+        reverse_proxy auth-selfservice-ui:3000
     }
 
     route /.ory/hydra/public/* {
