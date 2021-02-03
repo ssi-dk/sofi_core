@@ -28,15 +28,15 @@ def create_collections_if_not_exist(db, queue_col_name, metadata_col_names):
 
 def main():
     TBR_COLLECTION_NAME = os.environ.get(
-        "MONGO_TBR_METADATA_COLLECTION", "sap_tbr_metadata"
+        "BIFROST_MONGO_TBR_METADATA_COLLECTION", "sap_tbr_metadata"
     )
     LIMS_COLLECTION_NAME = os.environ.get(
-        "MONGO_LIMS_METADATA_COLLECTION", "sap_lims_metadata"
+        "BIFROST_MONGO_LIMS_METADATA_COLLECTION", "sap_lims_metadata"
     )
     ANALYSIS_COLLECTION_NAME = os.environ.get(
-        "MONGO_ANALYSIS_VIEW_COLLECTION", "sap_analysis_results"
+        "BIFROST_MONGO_ANALYSIS_VIEW_COLLECTION", "sap_analysis_results"
     )
-    QUEUE_COLLECTION_NAME = os.environ.get("MONGO_QUEUE_COLLECTION", "sap_broker_queue")
+    QUEUE_COLLECTION_NAME = os.environ.get("BIFROST_MONGO_QUEUE_COLLECTION", "sap_broker_queue")
 
     conn, enc = get_connection(with_enc=True)
     db = conn[DB_NAME]

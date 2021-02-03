@@ -8,16 +8,6 @@ COPY common/ /app/common/
 COPY api_clients/ /app/api_clients/
 COPY main.py /app/
 
-ENV MONGO_HOST="bifrost_db"
-ENV MONGO_PORT="27017"
-ENV MONGO_DB="bifrost_test"
-ENV MONGO_QUEUE_COLLECTION="sap_broker_queue"
-ENV MONGO_TBR_METADATA_COLLECTION="sap_tbr_metadata"
-ENV MONGO_LIMS_METADATA_COLLECTION="sap_lims_metadata"
-
-env TBR_API_URL="http://sap_tbr_integration_1"
-env LIMS_API_URL="http://lims_integration"
-
 ENV LOGLEVEL="INFO"
 
 CMD [ "python", "-u", "/app/main.py" ]

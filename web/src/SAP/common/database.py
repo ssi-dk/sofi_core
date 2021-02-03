@@ -17,13 +17,13 @@ ANALYSIS_COL_NAME = "sap_full_analysis"
 APPROVALS_COL_NAME = "sap_approvals"
 USERVIEWS_COL_NAME = "user_views"
 
-SAP_BIFROST_ENCRYPTION_NAMESPACE = os.environ.get(
-    "SAP_BIFROST_ENCRYPTION_NAME", "encryption.sap_pii"
+SOFI_BIFROST_ENCRYPTION_NAMESPACE = os.environ.get(
+    "SOFI_BIFROST_ENCRYPTION_NAME", "encryption.sap_pii"
 )
 (
     ENCRYPTION_DB,
     ENCRYPTION_KEY_NAME,
-) = SAP_BIFROST_ENCRYPTION_NAMESPACE.split(".", 1)
+) = SOFI_BIFROST_ENCRYPTION_NAMESPACE.split(".", 1)
 
 
 # The MongoClient is thread safe and pooled, so no problem sharing it :)
@@ -45,13 +45,13 @@ def get_connection(with_enc=False):
 
     else:
         # Key must be 96 bytes
-        local_master_key_raw = os.environ["SAP_BIFROST_ENCRYPTION_KEY"]
+        local_master_key_raw = os.environ["SOFI_BIFROST_ENCRYPTION_KEY"]
         local_master_key = binascii.a2b_base64(local_master_key_raw.encode())
 
         kms_providers = {"local": {"key": local_master_key}}
         # The MongoDB namespace (db.collection) used to store
         # the encryption data keys.
-        key_vault_namespace = SAP_BIFROST_ENCRYPTION_NAMESPACE
+        key_vault_namespace = SOFI_BIFROST_ENCRYPTION_NAMESPACE
         key_vault_db_name, key_name = (
             ENCRYPTION_DB,
             ENCRYPTION_KEY_NAME,
