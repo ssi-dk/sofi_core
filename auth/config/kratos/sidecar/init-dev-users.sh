@@ -18,5 +18,5 @@ echo $actionUrl
 
 # Complete Registration Flow with password method
 curl -k -i -H "Accept: application/json" -H "Content-Type: application/json" \
-     -d '{"traits.email": "user@fvst.dk", "password": "delegate21", "traits.institution": "FVST"}' \
+     -d '{"traits.email": "user@fvst.dk", "password": "delegate21", "traits.institution": "FVST", "traits.security-groups": "sofi.passive", "traits.sofi-data-clearance": "own-institution" }' \
      "$actionUrl"

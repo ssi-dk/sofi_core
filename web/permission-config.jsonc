@@ -1,0 +1,58 @@
+// Permission configuration
+//
+// This file defines the mapping for "security-groups" to permissions.
+// The available security groups are defined as traits in `auth/config/kratos/identity.schema.json`.
+//
+// The keys of this mapping must correspond to security groups defined in the identity.schema.json.
+//
+// Each key should be given a list of permissions that anyone with that role should hold.
+//
+// Permission descriptions:
+//
+// search            -- Kan søge isolater, metadata og analyseresultater frem  
+// export            -- Kan ekspotere data
+// approve           -- 1) Kan skrive i kolonnefelter, fx for serotype eller kommentarfelt
+//                      2) Kan kun godkende QC for sekvenser uploaded af deres institution
+//                      3) Kan godkende alle analyseresultater, som kan godkendes, for sekvenser uploaded af deres institution
+//                      4) Manuelt upload af sekvenser
+//                      5) Kan rette i impoteret metadata
+//                      6) Kan slette sekvensdata, der er uploadede af deres institution
+//                      7) Kan igangsætte ny analyse med opdaterede analyseværktøjer
+// phylogeny.read    -- Kan bruge sammenlignings værktøjerne, samt slette phylogeny data
+// phylogeny.write   -- Kan se sammenligningsanalyseresultater og træer, dog afhængig af datarettighed
+// permissions.write -- Kan oprette/inaktivere brugere og tilføje/fjerne privilegier til/fra brugere
+//
+// It is helpful when editing to change the file extension to .ts and uncomment the lines below:
+//
+//type Permission = "search" | "export" | "approve" | "phylogeny.read" | "phylogeny.write" | "permissions.write"
+//var typeCheckedPermissionConfig: { [K: string]: Permission[] }  =
+{
+    "sofi.passive": [
+        "search",
+        "phylogeny.read"
+    ],
+    "sofi.lab": [
+        "search",
+        "export"
+    ],
+    "sofi.lab-ac": [
+        "search",
+        "export",
+        "approve"
+    ],
+    "sofi.microbiologists": [
+        "search",
+        "export",
+        "approve",
+        "phylogeny.read",
+        "phylogeny.write"
+    ],
+    "sofi.administrators": [
+        "search",
+        "export",
+        "approve",
+        "phylogeny.read",
+        "phylogeny.write",
+        "permissions.write"
+    ]
+}
