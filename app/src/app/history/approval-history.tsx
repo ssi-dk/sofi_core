@@ -22,7 +22,7 @@ import {
   revokeApproval,
   fetchApprovals,
 } from "app/analysis/analysis-approval-configs";
-import AnalysisHeader from "app/analysis/header/analysis-header";
+import AnalysisHeader from "app/header/header";
 
 export default function ApprovalHistory() {
   const [historyLoadState] = useRequest(fetchApprovals());
@@ -70,7 +70,7 @@ export default function ApprovalHistory() {
 
   return (
     <Box w="100%">
-      <AnalysisHeader hideSearch hideSelector />
+      <AnalysisHeader />
       <Flex mt={5}>
         <Box minW="300px" pr={5} />
         <Box borderWidth="1px" rounded="md" overflowX="auto" width="80%" padding="20px">

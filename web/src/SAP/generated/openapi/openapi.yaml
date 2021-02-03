@@ -169,6 +169,37 @@ paths:
       tags:
       - approval
       x-openapi-router-controller: web.src.SAP.generated.controllers.approval_controller
+  /gdpr/extract:
+    get:
+      description: Extract all data given a personal identifier
+      operationId: extract_data_from_pi
+      parameters:
+      - description: Identifier type
+        explode: true
+        in: query
+        name: identifier_type
+        required: true
+        schema:
+          $ref: '#/components/schemas/PersonalIdentifierType'
+        style: form
+      - description: Personal identifier number.
+        explode: true
+        in: query
+        name: identifier
+        required: true
+        schema:
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PersonalData'
+          description: OK
+      tags:
+      - gdpr
+      x-openapi-router-controller: web.src.SAP.generated.controllers.gdpr_controller
   /user/views:
     get:
       operationId: get_user_views
@@ -497,6 +528,21 @@ components:
       - $ref: '#/components/schemas/LimsSpecificMetadata'
       - $ref: '#/components/schemas/TbrSpecificMetadata'
       - $ref: '#/components/schemas/AnalysisResult_allOf'
+    PersonalIdentifierType:
+      enum:
+      - CPR
+      - CVR
+      - CHR
+      type: string
+    PersonalData:
+      example:
+        data: data
+      properties:
+        data:
+          type: string
+      required:
+      - data
+      type: object
     UserDefinedView_column_resizing_column_widths:
       example:
         width: 0

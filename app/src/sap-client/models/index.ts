@@ -11,6 +11,8 @@ export * from './LimsMetadata';
 export * from './LimsSpecificMetadata';
 export * from './Organization';
 export * from './PageOfAnalysis';
+export * from './PersonalData';
+export * from './PersonalIdentifierType';
 export * from './Resistance';
 export * from './TbrMetadata';
 export * from './TbrSpecificMetadata';

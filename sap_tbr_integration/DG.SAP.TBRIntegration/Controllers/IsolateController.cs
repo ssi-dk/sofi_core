@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using DG.SAP.TBRIntegration.Models;
 using DG.SAP.TBRIntegration.Repositories;
@@ -34,6 +35,8 @@ namespace DG.SAP.TBRIntegration.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<Isolate>> GetMetaData(string isolateId)
         {
+            if(isolateId.Length > 14) return NotFound();
+
             var isolate = await _isolateRepository.GetIsolate(isolateId);
             if (isolate == null)
             {
@@ -68,7 +71,8 @@ namespace DG.SAP.TBRIntegration.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<IList<Isolate>>> GetChangedIsolates([FromBody] IList<RowVersion> isolates)
         {
-            return Ok(await _isolateChangeService.GetChangedIsolates(isolates));
+            var filtered = isolates.Where(x => x.IsolateId.Length <= 14).ToList();
+            return Ok(await _isolateChangeService.GetChangedIsolates(filtered));
         }
 
     }

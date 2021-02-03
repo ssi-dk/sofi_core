@@ -14,6 +14,7 @@ services:
   sap_broker_queue:
     depends_on:
       - "bifrost_db"
+      - "sap_api"
 
   bifrost_listener:
     depends_on:

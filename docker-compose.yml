@@ -17,6 +17,11 @@ services:
       - APP_MODULE=wsgi:app
       - IDP=https://${SOFI_HOSTNAME}
       - SOFI_CLIENT_ID=${SOFI_CLIENT_ID}
+      - BIFROST_MONGO_HOST=${BIFROST_MONGO_HOST}
+      - BIFROST_MONGO_PORT=${BIFROST_MONGO_PORT}
+      - BIFROST_MONGO_DB=${BIFROST_MONGO_DB}
+      - SOFI_BIFROST_ENCRYPTION_NAME=${SOFI_BIFROST_ENCRYPTION_NAME}
+      - SOFI_BIFROST_ENCRYPTION_KEY=${SOFI_BIFROST_ENCRYPTION_KEY}
 
   sap_app:
     build:
@@ -39,6 +44,17 @@ services:
     environment:
       - PYTHONDONTWRITEBYTECODE=1
       - PYTHONUNBUFFERED=0
+      - BIFROST_MONGO_HOST=${BIFROST_MONGO_HOST}
+      - BIFROST_MONGO_PORT=${BIFROST_MONGO_PORT}
+      - BIFROST_MONGO_DB=${BIFROST_MONGO_DB}
+      - BIFROST_MONGO_QUEUE_COLLECTION=sap_broker_queue
+      - BIFROST_MONGO_TBR_METADATA_COLLECTION=sap_tbr_metadata
+      - BIFROST_MONGO_LIMS_METADATA_COLLECTION=sap_lims_metadata
+      - BIFROST_MONGO_ANALYSIS_VIEW_COLLECTION=sap_analysis_results
+      - TBR_API_URL=http://sap_tbr_integration_1
+      - LIMS_API_URL=http://lims_integration
+      - SOFI_BIFROST_ENCRYPTION_NAME=${SOFI_BIFROST_ENCRYPTION_NAME}
+      - SOFI_BIFROST_ENCRYPTION_KEY=${SOFI_BIFROST_ENCRYPTION_KEY}
 
   bifrost_listener:
     build:
@@ -49,6 +65,9 @@ services:
     environment:
       - PYTHONDONTWRITEBYTECODE=1
       - PYTHONUNBUFFERED=0
+    restart: on-failure
+    depends_on:
+      - "sap_api"
 
   proxy:
     networks:
