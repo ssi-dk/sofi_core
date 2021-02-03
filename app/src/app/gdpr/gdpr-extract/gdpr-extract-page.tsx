@@ -9,16 +9,19 @@ import {
   Textarea,
   VStack,
   Spacer,
-  Flex
+  Flex,
+  Box,
 } from "@chakra-ui/react"
 import { jsx } from "@emotion/react"
-import { rightPane, dataView, inputForm } from "app/gdpr/gdpr-extract/gdpr-extract-styles"
+import { rightPane, inputForm } from "app/gdpr/gdpr-extract/gdpr-extract-styles"
 import { ExtractDataFromPiRequest, PersonalIdentifierType } from "sap-client";
 import { requestAsync } from "redux-query";
 import { useRequest } from "redux-query-react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "app/root-reducer";
 import { extractPersonalData } from "./gdpr-extracts-configs"
+import Header from "../../header/header";
+
 
 interface PersonalDataState {
   type?: PersonalIdentifierType;
@@ -81,33 +84,40 @@ const GdprExtractPage = () => {
       return <React.Fragment />
     }
 
-    return <div css={rightPane}><button type="button" onClick={donwloadFile}>Download output</button> <pre css={dataView}>{data}</pre></div>
+    return <div css={rightPane}><Button type="button" mb="2" onClick={donwloadFile}>Download output</Button> <pre>{data}</pre></div>
   }
 
   return (
-    <Flex
-      direction="row"
-      align="center"
-      maxW={{ xl: "1200px" }}
-      m="0 auto"
-      spacing="30px"
-      shrink={(0)}
+    <Box
+      display="grid"
+      gridTemplateRows="10% auto"
+      gridTemplateColumns="25% auto"
+      padding="8"
+      height="100vh"
+      gridGap="5"
     >
-      <VStack css={inputForm}>
-        <Select placeholder="Identifier type" onChange={typeChange}>
-          <option value={PersonalIdentifierType.CPR}>CPR</option>
-          <option value={PersonalIdentifierType.CVR}>CVR</option>
-          <option value={PersonalIdentifierType.CHR}>CHR</option>
-        </Select>
-        <Input placeholder="Identifier" onChange={idChange} />
-        <Button colorScheme="blue" onClick={fetchClick}>Fetch</Button>
-      </VStack>
-      <VStack flexGrow={(1)}>{loading
-        ? <div>Loading data...</div>
-        : preElementWithDownload()}
-      </VStack>
-
-    </Flex>
+      <Box role="heading" gridColumn="1 / 3">
+        <Header sidebarWidth="300px" />
+      </Box>
+      <Box gridColumn="1 / 2">
+        <VStack css={inputForm}>
+          <Select placeholder="Identifier type" onChange={typeChange}>
+            <option value={PersonalIdentifierType.CPR}>CPR</option>
+            <option value={PersonalIdentifierType.CVR}>CVR</option>
+            <option value={PersonalIdentifierType.CHR}>CHR</option>
+          </Select>
+          <Input placeholder="Identifier" onChange={idChange} />
+          <Button colorScheme="blue" onClick={fetchClick}>Fetch</Button>
+        </VStack>
+      </Box>
+      <Box gridColumn="2 / 2" overflowY="scroll">
+        <VStack>
+          {loading
+            ? <div>Loading data...</div>
+            : preElementWithDownload()}
+        </VStack>
+      </Box>
+    </Box>
   );
 };
 export default GdprExtractPage;
