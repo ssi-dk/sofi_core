@@ -8,11 +8,8 @@ services:
     volumes:
     # Change path before : to point to local web.
       - ./web:/app/web:ro
-    ports:
-      - "6000:6000"
     depends_on:
       - "bifrost_db"
-    command: ["/bin/sh", "-c", "/app/start.sh"]
 
   sap_broker_queue:
     depends_on:
@@ -99,7 +96,6 @@ services:
   hydra:
     environment:
       SOFI_CLIENT_ID: ${SOFI_CLIENT_ID}
-      SOFI_SCHEME: ${SOFI_SCHEME}
       SOFI_HOSTNAME: ${SOFI_HOSTNAME}
       SOFI_PORT: ${SOFI_PORT}
     healthcheck:
@@ -119,13 +115,16 @@ services:
     depends_on:
       - kratos-migrate
     environment:
-      SOFI_SCHEME: ${SOFI_SCHEME}
       SOFI_HOSTNAME: ${SOFI_HOSTNAME}
       SOFI_PORT: ${SOFI_PORT}
     command: ["sh","-c","/init-dev-users.sh"]
     volumes:
       - ./auth/config/kratos/sidecar/init-dev-users.sh:/init-dev-users.sh:ro
     restart: on-failure
+
+  kratos:
+    command:
+      serve -c /etc/config/kratos/.kratos.yml --dev
 
   # Allows for testing email-based self-service flows in kratos (forgot password, account verification, etc)
   mailslurper:

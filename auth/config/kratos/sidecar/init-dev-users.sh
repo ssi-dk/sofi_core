@@ -9,14 +9,14 @@ sleep 5s
 echo "Creating test user for dev environment"
 
 actionUrl=$(\
-  curl -s -X GET -H "Accept: application/json" \
-    "${SOFI_SCHEME}://${SOFI_HOSTNAME}:${SOFI_PORT}/.ory/kratos/public/self-service/registration/api" \
+  curl -k -s -X GET -H "Accept: application/json" \
+    "https://${SOFI_HOSTNAME}:${SOFI_PORT}/.ory/kratos/public/self-service/registration/api" \
     | jq -r '.methods.password.config.action'\
 )
 
 echo $actionUrl
 
 # Complete Registration Flow with password method
-curl -i -H "Accept: application/json" -H "Content-Type: application/json" \
+curl -k -i -H "Accept: application/json" -H "Content-Type: application/json" \
      -d '{"traits.email": "user@fvst.dk", "password": "delegate21", "traits.institution": "FVST"}' \
      "$actionUrl"

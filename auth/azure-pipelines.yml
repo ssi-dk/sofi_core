@@ -2,30 +2,13 @@ pool:
   vmImage: 'ubuntu-latest'
 
 variables:
-  imageName: '$(dockerId)/sap-web:$(Build.SourceBranchName)'
-  imageNameRelease: '$(dockerId)/sap-web:latest'
+  imageName: '$(dockerId)/auth-selfservice-ui:$(Build.SourceBranchName)'
+  imageNameRelease: '$(dockerId)/auth-selfservice-ui:latest'
 
 steps:
 - script: docker build -f Dockerfile -t $(imageName) .
   displayName: 'Docker build and test'
   workingDirectory: app
-
-- script: |
-    export id=$(docker images --filter "label=test=true" -q | head -1)
-    docker create --name testcontainer $id
-    docker cp testcontainer:/app/junit.xml ./junit.xml
-    docker rm testcontainer
-  displayName: 'Get test results'
-  condition: succeededOrFailed()
-
-- task: PublishTestResults@2
-  inputs:
-    testResultsFiles: '**/junit.xml' 
-    searchFolder: '$(System.DefaultWorkingDirectory)/'
-    publishRunAttachments: true
-    failTaskOnFailedTests: true
-  displayName: 'Publish test results'
-  condition: succeededOrFailed()
 
 - script: |
     docker login -u $(dockerId) -p $(dockerPass)

@@ -1,5 +1,7 @@
+import https from 'https';
 import * as ambient from 'express-session'
 import csurf from 'csurf';
+import axios from 'axios';
 import { NextFunction, Request, Response } from 'express'
 import config, { logger, SECURITY_MODE_STANDALONE } from '../config'
 import { PublicApi, Session } from '@ory/kratos-client'
@@ -8,13 +10,21 @@ import {
   AcceptConsentRequest,
   AcceptLoginRequest,
   RejectRequest,
-  ConsentRequestSession,
 } from '@ory/hydra-client'
 import { isString } from '../helpers'
 import crypto from 'crypto'
 
+// Have to set x-forwarded-proto to make hydra admin api accept us
+const instance = axios.create({
+  headers: {
+    common: {
+      'x-forwarded-proto': 'https'
+    }
+  },
+});
+
 // Client for interacting with Hydra's Admin API
-const hydraClient = new HydraAdminApi({basePath: config.hydra.admin})
+const hydraClient = new HydraAdminApi({basePath: config.hydra.admin}, undefined, instance)
 
 // Client for interacting with Kratos' Public and Admin API
 const kratosClient = new PublicApi({basePath: config.kratos.public})
@@ -49,9 +59,8 @@ const redirectToLogin = (req: Request, res: Response, next: NextFunction) => {
     logger.debug('Return to: ', {
       url: req.url,
       base: base,
-      prot: `${req.protocol}`,
     })
-    const returnTo = new URL(`${config.baseUrl.replace(/\/$/, "")}${req.url}`, `${req.protocol}://${base}`)
+    const returnTo = new URL(`${config.baseUrl.replace(/\/$/, "")}${req.url}`, `https://${base}`)
     returnTo.searchParams.set('hydra_login_state', state)
     logger.debug(`returnTo: "${returnTo.toString()}"`, returnTo)
 

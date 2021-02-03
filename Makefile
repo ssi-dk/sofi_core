@@ -1,5 +1,4 @@
 
-
 SHELL := /bin/bash
 
 mkfile_u := $(shell id -u)
@@ -21,14 +20,33 @@ clean:
 	docker-compose rm -vf
 
 ${mkfile_dir}/.env : ${mkfile_dir}/.env.local.example
-ifneq ("$(wildcard $(${mkfile_dir}/.env.local))","")
-	# existing .env found, not overwriting
-else
-	# no .env found, generating ...
-	cp ${mkfile_dir}/.env.local.example ${mkfile_dir}/.env
-	cat ${mkfile_dir}/.env
-	echo ""
-endif
+	if [ ! -f ${mkfile_dir}/.env ]; then \
+		echo "existing .env found, not overwriting" \
+	else \
+		echo "no .env found, generating ..."; \
+		cp ${mkfile_dir}/.env.local.example ${mkfile_dir}/.env; \
+		cat ${mkfile_dir}/.env; \
+		echo ""; \
+	fi
+
+${mkfile_dir}/.certs/sofi.local.crt : ${mkfile_dir}/.env
+	export $(grep -Ev '^#' ${mkfile_dir}/.env | xargs) && \
+	echo "Generating new dev certificates for ${SOFI_HOSTNAME} ..." && \
+	openssl genrsa -out ${mkfile_dir}/.certs/sofi.local.pem 4096 && \
+	openssl req -new \
+				-x509 \
+				-sha256 \
+				-key ${mkfile_dir}/.certs/sofi.local.pem \
+				-out ${mkfile_dir}/.certs/sofi.local.crt \
+				-days 365 \
+				-nodes \
+				-addext "subjectAltName = DNS:${SOFI_HOSTNAME}" \
+				-subj "/CN=${SOFI_HOSTNAME}"
+	# Attempting to trust the dev certificates on local machine ...
+	sudo ln -s "${mkfile_dir}/.certs/sofi.local.crt" /usr/local/share/ca-certificates/sofi.local.crt
+	sudo update-ca-certificates
+
+
 
 ${mkfile_dir}/app/src/sap-client : ${mkfile_dir}/openapi_specs/SAP/SAP.yaml
 	# Generate web app client
