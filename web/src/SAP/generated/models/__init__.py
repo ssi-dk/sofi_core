@@ -16,6 +16,8 @@ from .lims_metadata import LimsMetadata
 from .lims_specific_metadata import LimsSpecificMetadata
 from .organization import Organization
 from .page_of_analysis import PageOfAnalysis
+from .personal_data import PersonalData
+from .personal_identifier_type import PersonalIdentifierType
 from .resistance import Resistance
 from .tbr_metadata import TbrMetadata
 from .tbr_specific_metadata import TbrSpecificMetadata

@@ -218,6 +218,34 @@ paths:
       responses:
         '204':
           description: View deleted successfully.
+  /gdpr/extract:
+    get:
+      description: Extract all data given a personal identifier
+      operationId: extract_data_from_pi
+      tags:
+        - gdpr
+      x-openapi-router-controller: web.src.SAP.generated.controllers.gdpr_controller
+      parameters:
+        - in: query
+          name: identifier_type
+          schema:
+            $ref: '#/components/schemas/PersonalIdentifierType'
+          description: Identifier type
+          required: true
+        - in: query
+          name: identifier
+          schema:
+            type: string
+          description: Personal identifier number.
+          required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PersonalData'
+
 
 
 components:
@@ -598,6 +626,20 @@ components:
               $ref: "#/components/schemas/Resistance"
             amr_van:
               $ref: "#/components/schemas/Resistance"
+
+
+    PersonalIdentifierType:
+      type: string
+      enum: ["CPR", "CVR", "CHR"]
+
+    PersonalData:
+      required:
+        - data
+      type: object
+      properties:
+        data:
+          type: string
+
 
   securitySchemes:
     jwt:
