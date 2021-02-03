@@ -25,12 +25,14 @@ import {
   searchPageOfAnalysis,
   updateAnalysis,
 } from "./analysis-query-configs";
-import AnalysisHeader from "./header/analysis-header";
+import Header from "../header/header";
 import AnalysisSidebar from "./sidebar/analysis-sidebar";
+import AnalysisViewSelector from "./view-selector/analysis-view-selector";
+import AnalysisSearch from "./search/analysis-search";
 import { setSelection } from "./analysis-selection-configs";
 import { fetchApprovalMatrix, sendApproval, sendRejection } from "./analysis-approval-configs";
 import { ColumnConfigWidget } from "./data-table/column-config-widget";
-import { toggleColumnVisibility } from "./header/view-selector/analysis-view-selection-config";
+import { toggleColumnVisibility } from "./view-selector/analysis-view-selection-config";
 import InlineAutoComplete from "../inputs/inline-autocomplete";
 import Species from "../data/species.json";
 
@@ -327,12 +329,17 @@ export default function AnalysisPage() {
       padding="8"
       height="100vh"
       gridGap="2"
+      rowGap="5"
     >
       <Box role="heading" gridColumn="1 / 4">
-        <AnalysisHeader sidebarWidth={sidebarWidth} onSearch={onSearch} />
+        <Header sidebarWidth={sidebarWidth} />
       </Box>
-      <Box role="navigation" gridColumn="1 / 4">
+      <Box role="navigation" gridColumn="2 / 4" pb={5}>
         <Flex justifyContent="flex-end">
+          <AnalysisSearch onSubmit={onSearch} />
+          <Box minW="250px" ml="5" mr="5">
+            <AnalysisViewSelector />
+          </Box>
           <NavLink to="/approval-history">
             <Button leftIcon={<CalendarIcon />}>
               {t("My approval history")}

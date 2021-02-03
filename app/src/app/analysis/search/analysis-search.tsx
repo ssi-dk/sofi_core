@@ -40,7 +40,7 @@ const AnalysisSearch = (props: AnalysisSearchProps) => {
       <IconButton
         aria-label="Search database"
         icon={<SearchIcon />}
-        ml="4"
+        ml="1"
         onClick={submitQuery}
       />
     </React.Fragment>

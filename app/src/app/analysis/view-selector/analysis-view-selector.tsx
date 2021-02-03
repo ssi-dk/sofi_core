@@ -8,7 +8,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { requestUserViews, addUserViewMutation, deleteUserViewMutation } from "./analysis-view-query-configs";
 import { defaultViews, setView } from './analysis-view-selection-config';
-import { spyDataTable } from "../../data-table/table-spy";
+import { spyDataTable } from "../data-table/table-spy";
 import { mapTableStateToView } from "./table-state-view-mapper";
 
 const AnalysisViewSelector = () => {

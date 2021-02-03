@@ -1,4 +1,4 @@
-import { UserDefinedView } from "../../../../sap-client/models";
+import { UserDefinedView } from "../../../sap-client/models";
 
 export const mapTableStateToView = (name: string, tableState): UserDefinedView => {
   return {
