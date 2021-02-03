@@ -15,8 +15,8 @@ ENV MONGO_QUEUE_COLLECTION="sap_broker_queue"
 ENV MONGO_TBR_METADATA_COLLECTION="sap_tbr_metadata"
 ENV MONGO_LIMS_METADATA_COLLECTION="sap_lims_metadata"
 
-env TBR_API_URL="https://sap_tbr_integration_1"
-env LIMS_API_URL="https://lims_integration"
+env TBR_API_URL="http://sap_tbr_integration_1"
+env LIMS_API_URL="http://lims_integration"
 
 ENV LOGLEVEL="INFO"
 
