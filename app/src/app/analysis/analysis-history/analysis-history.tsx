@@ -15,6 +15,7 @@ import { RootState } from "app/root-reducer";
 import { useRequest } from "redux-query-react";
 import { Loading } from "loading"
 import { sequencesFromIsolateId, IsolateWithData } from "./analysis-history-configs";
+import AnalysisHistoryTable from "./analysis-history-table"
 
 const getAnalysisHistory = state => state.entities.analysisHistory;
 
@@ -29,35 +30,30 @@ const getAnalysisHistory = state => state.entities.analysisHistory;
   {} as IsolateWithData)
 };*/
 
-type AnalysisDetailsProps = {
+type AnalysisHistoryProps = {
   isolateId: string;
   isOpen: boolean;
   onClose: () => void;
 };
 
-const AnalysisDetails = (props: AnalysisDetailsProps) => {
+const AnalysisHistory = (props: AnalysisHistoryProps) => {
   const { t } = useTranslation();
   const { isolateId, isOpen, onClose } = props;
 
   const analysisHistory = useSelector(getAnalysisHistory) ?? {};
   const [{ isPending, status }, refresh] = useRequest(sequencesFromIsolateId(isolateId));
 
-  const renderIsolates = (sequences) => {
-    const sortedIds = Object.keys(sequences).sort()
-    return sortedIds.map(sequenceId => <React.Fragment key={sequenceId}>{sequenceId} has data: {JSON.stringify(analysisHistory[sequenceId])}</React.Fragment>)
-  }
-
   return (
     <React.Fragment>
       <Modal isOpen={isOpen} onClose={onClose} size="full">
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>{`${t("History for isolate")} ${isolateId}`}</ModalHeader>
+          <ModalHeader pl="7">{`${t("History for isolate")} ${isolateId}`}</ModalHeader>
           <ModalCloseButton />
-          <ModalBody>
+          <ModalBody px="7">
             {isPending 
             ? <Loading /> 
-            : renderIsolates(analysisHistory)}
+            : <AnalysisHistoryTable sequences={analysisHistory} />}
           </ModalBody>
 
           <ModalFooter>
@@ -72,4 +68,4 @@ const AnalysisDetails = (props: AnalysisDetailsProps) => {
   );
 };
 
-export default React.memo(AnalysisDetails);
+export default React.memo(AnalysisHistory);
