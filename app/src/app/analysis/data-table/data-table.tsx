@@ -312,7 +312,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
                   onClick={rowClickHandler(rows[rowIndex - 1])}
                   {...calcRowSelectionState(rows[rowIndex - 1])}
                 />
-                <IconButton onClick={() => onDetailsClick(rowId)} aria-label="Search database" size="0.75em" isRound icon={<ExternalLinkIcon />} ml="1"/>
+                <IconButton size="1em" variant="unstyled" onClick={() => onDetailsClick(rowId)} aria-label="Search database" icon={<ExternalLinkIcon marginTop="-0.5em"/>} ml="1"/>
               </React.Fragment>
             )}
             {renderCellControl(rowId, columnId, rows[rowIndex - 1].original[columnId])}
