@@ -12,6 +12,7 @@ def remove_id(item):
     return item
 
 
+# TODO: only select the latest document pr. isolate id.
 def get_analysis_page(query, page_size, offset):
     conn = get_connection()
     mydb = conn[DB_NAME]
