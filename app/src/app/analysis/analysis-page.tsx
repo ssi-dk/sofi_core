@@ -34,6 +34,7 @@ import { OptionTypeBase } from "react-select";
 import { RootState } from "app/root-reducer";
 import { predicateBuilder, PropFilter, RangeFilter } from "utils";
 import { IfPermission } from "auth/if-permission";
+import { Loading } from "loading";
 import DataTable from "./data-table/data-table";
 import {
   requestPageOfAnalysis,
@@ -392,7 +393,7 @@ export default function AnalysisPage() {
   ]);
   const sidebarWidth = "300px";
   if (!columnLoadState.isFinished) {
-    return <div>Loading</div>;
+    <Loading />
   }
 
   return (
@@ -485,7 +486,7 @@ export default function AnalysisPage() {
 
           <Box height="100%">
             <DataTable<AnalysisResult>
-              columns={columns /* todo: filter on permission level */}
+              columns={columns || []}
               canSelectColumn={canSelectColumn}
               canEditColumn={canEditColumn}
               canApproveColumn={canApproveColumn}
