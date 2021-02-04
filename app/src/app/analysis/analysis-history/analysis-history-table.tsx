@@ -52,7 +52,7 @@ type AnalysisHistoryTableProps = {
 const AnalysisHistoryTable = (props: AnalysisHistoryTableProps) => {
   const { t } = useTranslation();
   const { sequences } = props;
-  const sortedIds = Object.keys(sequences).sort();
+  const sortedIds = Object.keys(sequences).sort().reverse();
   return (
     <List spacing={3} fontSize="1.25em">
       {sortedIds.map(sequenceId =>
