@@ -9,8 +9,6 @@ with open(os.getcwd() + '/permission-config.jsonc') as js_file:
     PERMISSION_CONFIG = commentjson.loads(js_file.read())
 
 def user_has(permission, token_info):
-    app.logger.info(token_info)
-    app.logger.info(PERMISSION_CONFIG)
     for group in token_info['security-groups']:
         for perm in PERMISSION_CONFIG[group]:
             if perm == permission:
@@ -19,7 +17,7 @@ def user_has(permission, token_info):
 
 def assert_user_has(permission, token_info):
     if not user_has(permission, token_info):
-        raise Forbidden(f'You lack "{permission}" permission')
+        raise Forbidden(f'You lack -{permission}- permission')
 
 def authorized_columns(token_info):
     data_clearance = token_info['sofi-data-clearance']
@@ -36,7 +34,7 @@ def authorized_columns(token_info):
         # User has access to their institution's data, plus non-pii data of other institutions
         return list(map(
                    lambda c: c['field_name'],
-                   filter(lambda c: any(not c.pii or institution in c['organizations']),
+                   filter(lambda c: not c['pii'] or institution in c['organizations'],
                           cols)))
 
     if data_clearance == "all":
