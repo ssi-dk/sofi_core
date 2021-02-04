@@ -35,7 +35,7 @@ def personal_data_to_text(data):
 
 def extract_data_from_pi(user, token_info, identifier_type=None, identifier=None):
     # TODO: Is this the right claim?
-    assert_user_has("export", token_info)
+    assert_user_has("gdpr.manage", token_info)
     document = personal_data_from_identifier(identifier_type, identifier)
     res = personal_data_to_text(document)
     #print(identifier, identifier_type, document, file=sys.stderr)

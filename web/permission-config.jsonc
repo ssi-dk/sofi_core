@@ -21,10 +21,11 @@
 // phylogeny.read    -- Kan se sammenligningsanalyseresultater og træer, dog afhængig af datarettighed
 // phylogeny.write   -- Kan bruge sammenlignings værktøjerne, samt slette phylogeny data
 // permissions.write -- Kan oprette/inaktivere brugere og tilføje/fjerne privilegier til/fra brugere
+// gdpr.manage       -- Can access PII data for the purposes of responding to GDPR inqueries
 //
 // It is helpful when editing to change the file extension to .ts and uncomment the lines below:
 //
-//type Permission = "search" | "export" | "approve" | "phylogeny.read" | "phylogeny.write" | "permissions.write"
+//type Permission = "search" | "export" | "approve" | "phylogeny.read" | "phylogeny.write" | "permissions.write" | "gdpr.manage"
 //var typeCheckedPermissionConfig: { [K: string]: Permission[] }  =
 {
     "sofi.passive": [
@@ -53,6 +54,7 @@
         "approve",
         "phylogeny.read",
         "phylogeny.write",
-        "permissions.write"
+        "permissions.write",
+        "gdpr.manage"
     ]
 }
