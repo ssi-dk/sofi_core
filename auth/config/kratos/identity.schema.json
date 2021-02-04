@@ -29,6 +29,29 @@
         "institution": {
           "type": "string",
           "title": "Institution"
+        },
+        "security-groups": {
+          "type": "array",
+          "title": "Security Groups",
+          "items": {
+            "type": "string",
+            "enum": [
+              "sofi.passive",
+              "sofi.lab",
+              "sofi.lab-ac",
+              "sofi.microbiologists",
+              "sofi.administrators"
+            ]
+          }
+        },
+        "sofi-data-clearance": {
+          "type": "string",
+          "title": "Data Clearance",
+          "enum": [
+            "own-institution",
+            "cross-institution",
+            "all"
+          ]
         }
       },
       "required": ["email"]

@@ -631,7 +631,11 @@ components:
           type: string
         adhesion:
           type: string
+        adhesion_final:
+          type: string
         toxins:
+          type: string
+        toxins_final:
           type: string
         resistance_genes:
           type: string

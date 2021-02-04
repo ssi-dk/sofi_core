@@ -8,6 +8,8 @@ from flask.json import jsonify
 from ..repositories.analysis import get_analysis_page, get_analysis_count, update_analysis, get_single_analysis
 from web.src.SAP.generated.models import AnalysisResult
 from web.src.SAP.generated.models import Column
+from web.src.SAP.src.security.permission_check import user_has, assert_user_has, authorized_columns
+from web.src.SAP.src.config.column_config import columns
 
 def parse_paging_token(token):
     if token:
@@ -22,8 +24,6 @@ def render_paging_token(page_size, query, offset):
 
 def get_analysis(user, token_info, paging_token, page_size):
     # TODO: filter on user claims
-    app.logger.info(user)
-    app.logger.info(token_info)
     default_token = { "page_size": page_size or 100, "offset": 0}
     token = parse_paging_token(paging_token) or default_token
     items = get_analysis_page({}, token['page_size'], token['offset'])
@@ -33,9 +33,8 @@ def get_analysis(user, token_info, paging_token, page_size):
     return jsonify(response)
 
 def search_analysis(user, token_info, query):
+    assert_user_has("search", token_info)
     # TODO: filter on user claims
-    app.logger.info(user)
-    app.logger.info(token_info)
     default_token = { "page_size": query.page_size or 100, "offset": 0, "query": query.filters}
     token = parse_paging_token(query.paging_token) or default_token
     items = get_analysis_page(token['query'], token['page_size'], token['offset'])
@@ -45,6 +44,7 @@ def search_analysis(user, token_info, query):
     return jsonify(response)
 
 def submit_changes(user, token_info, body):
+    assert_user_has("approve", token_info)
     updates = map(lambda x: x, body.keys())
     # TODO: Verify user is allowed to modify these keys
     update_analysis(body)
@@ -53,27 +53,6 @@ def submit_changes(user, token_info, body):
         res[u] = get_single_analysis(u)
     return jsonify(res)
 
-def gen_default_column(field_name):
-    return Column(approvable=False,
-                  editable=False,
-                  pii=False,
-                  organizations=["FVST", "SSI"],
-                  field_name=field_name,
-                  approves_with=[])
-
 def get_columns(user, token_info):
-    app.logger.info(user)
-    app.logger.info(token_info)
-    analysis = AnalysisResult()
-    cols={}
-    # build up dictionary of default configs
-    for attr, _ in analysis.openapi_types.items():
-        cols.update({attr: gen_default_column(attr)})
-    # apply configuration file on top
-    with open(os.getcwd() + '/column-config.jsonc') as js_file:
-        config = commentjson.loads(js_file.read()) 
-        # TODO: trim column info to those columns user is authorized for
-        for c in config:
-            cols.update({c['field_name']: c})
-        return list(cols.values())
-
+    authorized = authorized_columns(token_info)
+    return jsonify(list(filter(lambda c: c['field_name'] in authorized, columns())))

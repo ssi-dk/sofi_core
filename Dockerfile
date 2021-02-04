@@ -7,6 +7,7 @@ COPY openapi_specs /app/openapi_specs/
 
 COPY ["web/main.py", "web/start.sh", "web/gunicorn_conf.py", "/app/"]
 COPY "web/column-config.jsonc" "/app/"
+COPY "web/permission-config.jsonc" "/app/"
 COPY web/src /app/web/src
 RUN chmod +x start.sh
 
