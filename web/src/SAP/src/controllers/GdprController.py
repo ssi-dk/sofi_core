@@ -3,6 +3,7 @@ from ..repositories.gdpr import personal_data_from_identifier
 from flask.json import dumps
 from io import StringIO
 import sys
+from web.src.SAP.src.security.permission_check import assert_user_has
 
 def json_line_generator(json_input, seperator=""):
     if isinstance(json_input, dict):
@@ -33,6 +34,8 @@ def personal_data_to_text(data):
 
 
 def extract_data_from_pi(user, token_info, identifier_type=None, identifier=None):
+    # TODO: Is this the right claim?
+    assert_user_has("export", token_info)
     document = personal_data_from_identifier(identifier_type, identifier)
     res = personal_data_to_text(document)
     #print(identifier, identifier_type, document, file=sys.stderr)

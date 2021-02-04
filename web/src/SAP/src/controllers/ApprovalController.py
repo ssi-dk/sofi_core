@@ -6,18 +6,16 @@ import json
 import datetime
 import uuid
 import logging
+from web.src.SAP.src.security.permission_check import assert_user_has
 
 def get_approvals(user, token_info):
-    # TODO: figure out real username from claim
-    username = "demo"
-    return jsonify(find_approvals(username))
+    return jsonify(find_approvals(user))
 
 def create_approval(user, token_info, body: ApprovalRequest):
-    # TODO: figure out real username from claim
-    username = "demo"
+    assert_user_has("approve", token_info)
     appr = Approval()
     appr.matrix = body.matrix
-    appr.approver = username
+    appr.approver = user
     appr.timestamp = datetime.datetime.now().isoformat()
     appr.status = "submitted" 
     appr.id = str(uuid.uuid4())
@@ -26,9 +24,8 @@ def create_approval(user, token_info, body: ApprovalRequest):
     return jsonify(appr.to_dict()) if res != None else abort(400)
 
 def cancel_approval(user, token_info, approval_id: str):
-    # TODO: figure out real username from claim
-    username = "demo"
-    res = revoke_approval(username, approval_id)
+    assert_user_has("approve", token_info)
+    res = revoke_approval(user, approval_id)
     return None if res.modified_count > 0 else abort(404)
 
 def full_approval_matrix(user, token_info):

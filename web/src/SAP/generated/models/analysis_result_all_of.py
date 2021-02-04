@@ -19,7 +19,7 @@ class AnalysisResultAllOf(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, id=None, resfinder_version=None, qc_provided_species=None, qc_genome1x=None, qc_genome10x=None, qc_gsize_diff1x10=None, qc_avg_coverage=None, qc_final=None, subspecies=None, species_final=None, st=None, pathotype=None, pathotype_final=None, serotype=None, serotype_final=None, adhesion=None, toxins=None, resistance_genes=None, amr_profile=None, amr_ami=None, amr_amp=None, amr_azi=None, amr_fep=None, amr_fot=None, amr_f_c=None, amr_fox=None, amr_taz=None, amr_t_c=None, amr_chl=None, amr_cip=None, amr_cli=None, amr_col=None, amr_dap=None, amr_etp=None, amr_ery=None, amr_fus=None, amr_gen=None, amr_imi=None, amr_kan=None, amr_lzd=None, amr_mero=None, amr_mup=None, amr_nal=None, amr_pen=None, amr_syn=None, amr_rif=None, amr_str=None, amr_sul=None, amr_tei=None, amr_trm=None, amr_tet=None, amr_tia=None, amr_tgc=None, amr_tmp=None, amr_van=None):  # noqa: E501
+    def __init__(self, id=None, resfinder_version=None, qc_provided_species=None, qc_genome1x=None, qc_genome10x=None, qc_gsize_diff1x10=None, qc_avg_coverage=None, qc_final=None, subspecies=None, species_final=None, st=None, pathotype=None, pathotype_final=None, serotype=None, serotype_final=None, adhesion=None, adhesion_final=None, toxins=None, toxins_final=None, resistance_genes=None, amr_profile=None, amr_ami=None, amr_amp=None, amr_azi=None, amr_fep=None, amr_fot=None, amr_f_c=None, amr_fox=None, amr_taz=None, amr_t_c=None, amr_chl=None, amr_cip=None, amr_cli=None, amr_col=None, amr_dap=None, amr_etp=None, amr_ery=None, amr_fus=None, amr_gen=None, amr_imi=None, amr_kan=None, amr_lzd=None, amr_mero=None, amr_mup=None, amr_nal=None, amr_pen=None, amr_syn=None, amr_rif=None, amr_str=None, amr_sul=None, amr_tei=None, amr_trm=None, amr_tet=None, amr_tia=None, amr_tgc=None, amr_tmp=None, amr_van=None):  # noqa: E501
         """AnalysisResultAllOf - a model defined in OpenAPI
 
         :param id: The id of this AnalysisResultAllOf.  # noqa: E501
@@ -54,8 +54,12 @@ class AnalysisResultAllOf(Model):
         :type serotype_final: str
         :param adhesion: The adhesion of this AnalysisResultAllOf.  # noqa: E501
         :type adhesion: str
+        :param adhesion_final: The adhesion_final of this AnalysisResultAllOf.  # noqa: E501
+        :type adhesion_final: str
         :param toxins: The toxins of this AnalysisResultAllOf.  # noqa: E501
         :type toxins: str
+        :param toxins_final: The toxins_final of this AnalysisResultAllOf.  # noqa: E501
+        :type toxins_final: str
         :param resistance_genes: The resistance_genes of this AnalysisResultAllOf.  # noqa: E501
         :type resistance_genes: str
         :param amr_profile: The amr_profile of this AnalysisResultAllOf.  # noqa: E501
@@ -150,7 +154,9 @@ class AnalysisResultAllOf(Model):
             'serotype': str,
             'serotype_final': str,
             'adhesion': str,
+            'adhesion_final': str,
             'toxins': str,
+            'toxins_final': str,
             'resistance_genes': str,
             'amr_profile': str,
             'amr_ami': Resistance,
@@ -208,7 +214,9 @@ class AnalysisResultAllOf(Model):
             'serotype': 'serotype',
             'serotype_final': 'serotype_final',
             'adhesion': 'adhesion',
+            'adhesion_final': 'adhesion_final',
             'toxins': 'toxins',
+            'toxins_final': 'toxins_final',
             'resistance_genes': 'resistance_genes',
             'amr_profile': 'amr_profile',
             'amr_ami': 'amr_ami',
@@ -265,7 +273,9 @@ class AnalysisResultAllOf(Model):
         self._serotype = serotype
         self._serotype_final = serotype_final
         self._adhesion = adhesion
+        self._adhesion_final = adhesion_final
         self._toxins = toxins
+        self._toxins_final = toxins_final
         self._resistance_genes = resistance_genes
         self._amr_profile = amr_profile
         self._amr_ami = amr_ami
@@ -663,6 +673,27 @@ class AnalysisResultAllOf(Model):
         self._adhesion = adhesion
 
     @property
+    def adhesion_final(self):
+        """Gets the adhesion_final of this AnalysisResultAllOf.
+
+
+        :return: The adhesion_final of this AnalysisResultAllOf.
+        :rtype: str
+        """
+        return self._adhesion_final
+
+    @adhesion_final.setter
+    def adhesion_final(self, adhesion_final):
+        """Sets the adhesion_final of this AnalysisResultAllOf.
+
+
+        :param adhesion_final: The adhesion_final of this AnalysisResultAllOf.
+        :type adhesion_final: str
+        """
+
+        self._adhesion_final = adhesion_final
+
+    @property
     def toxins(self):
         """Gets the toxins of this AnalysisResultAllOf.
 
@@ -682,6 +713,27 @@ class AnalysisResultAllOf(Model):
         """
 
         self._toxins = toxins
+
+    @property
+    def toxins_final(self):
+        """Gets the toxins_final of this AnalysisResultAllOf.
+
+
+        :return: The toxins_final of this AnalysisResultAllOf.
+        :rtype: str
+        """
+        return self._toxins_final
+
+    @toxins_final.setter
+    def toxins_final(self, toxins_final):
+        """Sets the toxins_final of this AnalysisResultAllOf.
+
+
+        :param toxins_final: The toxins_final of this AnalysisResultAllOf.
+        :type toxins_final: str
+        """
+
+        self._toxins_final = toxins_final
 
     @property
     def resistance_genes(self):

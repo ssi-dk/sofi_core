@@ -10,7 +10,7 @@
 //var typeCheckedColumnConfig: StrictColumn<AnalysisResult>[] =
 [
   {
-    "field_name": "QC_final",
+    "field_name": "qc_final",
     "approvesWith": [
       "species_final",
       "run_id"
@@ -19,10 +19,6 @@
   {
     "field_name": "st",
     "approvable": true,
-    "organization": [
-      "FVST",
-      "SSI"
-    ],
     "approves_with": [
       "st"
     ]
@@ -31,10 +27,6 @@
     "field_name": "serotype",
     "approvable": true,
     "editable": true,
-    "organization": [
-      "FVST",
-      "SSI"
-    ],
     "approves_with": [
       "serotype_final",
       "subspecies",
@@ -46,10 +38,6 @@
   {
     "field_name": "resistance_genes",
     "approvable": true,
-    "organization": [
-      "FVST",
-      "SSI"
-    ],
     "approves_with": [
       "amr_profile",
       "amr_ami",
@@ -93,10 +81,6 @@
   {
     "field_name": "cluster_id",
     "approvable": true,
-    "organization": [
-      "FVST",
-      "SSI"
-    ],
     "approves_with": [
       "fud_number"
     ]
@@ -110,7 +94,7 @@
     "editable": true
   },
   {
-    "field_name": "toxin_final",
+    "field_name": "toxins_final",
     "editable": true,
     "approvable": true,
     "approves_with": [
@@ -121,5 +105,47 @@
   {
     "field_name": "adhesion_final",
     "editable": true
+  },
+  {
+    "field_name": "cpr",
+    "pii": true,
+    "organizations": [
+      "SSI"
+    ]
+  },
+  {
+    "field_name": "gender",
+    "pii": true,
+    "organizations": [
+      "SSI"
+    ]
+  },
+  {
+    "field_name": "age",
+    "pii": true,
+    "organizations": [
+      "SSI"
+    ]
+  },
+  {
+    "field_name": "name",
+    "pii": true,
+    "organizations": [
+      "SSI"
+    ]
+  },
+  {
+    "field_name": "chr_number",
+    "pii": true,
+    "organizations": [
+      "FVST"
+    ]
+  },
+  {
+    "field_name": "aut_number",
+    "pii": true,
+    "organizations": [
+      "FVST"
+    ]
   }
 ]
