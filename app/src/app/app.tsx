@@ -9,7 +9,7 @@ import { globalCss } from "./app.styles";
 import "./i18n";
 import AnalysisPage from "./analysis/analysis-page";
 import GdprExtractPage from "./gdpr/gdpr-extract/gdpr-extract-page"
-import ApprovalHistory from "./history/approval-history";
+import ApprovalHistory from "./approval-history/approval-history";
 
 export default function App() {
   return (

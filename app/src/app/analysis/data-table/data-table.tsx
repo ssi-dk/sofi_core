@@ -16,7 +16,8 @@ import { VariableSizeGrid } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
 import { jsx } from "@emotion/react";
 import { DragDropContext, DropResult } from "react-beautiful-dnd";
-import { Flex } from "@chakra-ui/react";
+import { Flex, IconButton } from "@chakra-ui/react";
+import { ExternalLinkIcon } from '@chakra-ui/icons'
 import dtStyle from "app/analysis/data-table/data-table.styles";
 import { IndexableOf, NotEmpty } from "utils";
 import SelectionCheckBox from "./selection-check-box";
@@ -41,6 +42,7 @@ type DataTableProps<T extends NotEmpty> = {
   selectionClassName: string;
   approvableColumns: string[];
   onSelect: (sel: DataTableSelection<T>) => void;
+  onDetailsClick: (isolateId: string) => void;
   view: UserDefinedView;
   getCellStyle: (rowId: string, columnId: string) => string;
   renderCellControl: (rowId: string, columnId: string, value: string) => JSX.Element;
@@ -62,6 +64,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
     data,
     primaryKey,
     onSelect,
+    onDetailsClick,
     selectionClassName,
     canEditColumn,
     approvableColumns,
@@ -304,10 +307,13 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
         >
           <Flex>
             {columnIndex === 0 && (
-              <SelectionCheckBox
-                onClick={rowClickHandler(rows[rowIndex - 1])}
-                {...calcRowSelectionState(rows[rowIndex - 1])}
-              />
+              <React.Fragment>
+                <SelectionCheckBox
+                  onClick={rowClickHandler(rows[rowIndex - 1])}
+                  {...calcRowSelectionState(rows[rowIndex - 1])}
+                />
+                <IconButton onClick={() => onDetailsClick(rowId)} aria-label="Search database" size="0.75em" isRound icon={<ExternalLinkIcon />} ml="1"/>
+              </React.Fragment>
             )}
             {renderCellControl(rowId, columnId, rows[rowIndex - 1].original[columnId])}
           </Flex>
@@ -329,7 +335,8 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
       rowClickHandler,
       isInSelection,
       getCellStyle,
-      renderCellControl
+      onDetailsClick,
+      renderCellControl,
     ]
   );
 

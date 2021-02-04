@@ -37,7 +37,8 @@ const resources = {
       approvals: "godkendelser",
       sampling_date: "Prøvetagningsdato",
       "Sign in failed": "Kunne ikke log på",
-      "Error message:": "Fejlbesked:"
+      "Error message:": "Fejlbesked:",
+      "History for isolate": "Historik for isolat ID:"
     },
   },
 };
