@@ -1,5 +1,4 @@
 import { css } from "@emotion/react";
-import theme from "app/app.theme";
 
 export const inputForm = css({
   alignSelf: "flex-start",

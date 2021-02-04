@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Box, Flex, Button, useToast, Editable, EditablePreview, EditableInput } from "@chakra-ui/react";
+import { Box, Flex, Button, useToast, Editable, EditablePreview, EditableInput, useDisclosure } from "@chakra-ui/react";
 import { NavLink } from 'react-router-dom';
 import {
   CalendarIcon,
@@ -35,15 +35,19 @@ import { ColumnConfigWidget } from "./data-table/column-config-widget";
 import { toggleColumnVisibility } from "./view-selector/analysis-view-selection-config";
 import InlineAutoComplete from "../inputs/inline-autocomplete";
 import Species from "../data/species.json";
+import AnalysisDetails from "./analysis-history/analysis-history";
 
 export default function AnalysisPage() {
   const { t } = useTranslation();
   const toast = useToast();
   const dispatch = useDispatch();
 
+  const [moreInfoIsolate, setMoreInfoIsolate] = useState("");
+  const { isOpen: isMoreInfoModalOpen, onOpen: onMoreInfoModalOpen, onClose: onMoreInfoModalClose } = useDisclosure();
+
   const [columnLoadState] = useRequest(requestColumns());
-  const [{ isPending, isFinished }] = useRequest({...requestPageOfAnalysis({ pageSize: 100 })});
-  useRequest({...fetchApprovalMatrix()});
+  const [{ isPending, isFinished }] = useRequest({ ...requestPageOfAnalysis({ pageSize: 100 }) });
+  useRequest({ ...fetchApprovalMatrix() });
   // TODO: Figure out how to make this strongly typed
   const data = useSelector<RootState>((s) =>
     Object.values(s.entities.analysis ?? {})
@@ -57,10 +61,10 @@ export default function AnalysisPage() {
     () =>
       Object.keys(columnConfigs || []).map(
         (k) =>
-          ({
-            accessor: k,
-            Header: t(k),
-          } as Column<AnalysisResult>)
+        ({
+          accessor: k,
+          Header: t(k),
+        } as Column<AnalysisResult>)
       ),
     [columnConfigs, t]
   );
@@ -71,17 +75,17 @@ export default function AnalysisPage() {
     { isPending: pendingUpdate, status: updateStatus },
     // eslint-disable-next-line @typescript-eslint/naming-convention
     _submitChange,
-  ] = useMutation((payload: {[K: string]: { [K: string]: string}}) => updateAnalysis(payload));
+  ] = useMutation((payload: { [K: string]: { [K: string]: string } }) => updateAnalysis(payload));
 
   const [lastUpdatedRow, setLastUpdatedRow] = React.useState(null);
 
   const submitChange = React.useCallback(
-    (payload: {[K: string]: { [K: string]: string}}) => {
+    (payload: { [K: string]: { [K: string]: string } }) => {
       setLastUpdatedRow(Object.keys(payload)[0]);
       _submitChange(payload);
     },
     [_submitChange, setLastUpdatedRow]
-  ); 
+  );
 
   const selection = useSelector<RootState>((s) => s.selection.selection);
   const approvals = useSelector<RootState>((s) => s.entities.approvalMatrix);
@@ -92,7 +96,7 @@ export default function AnalysisPage() {
       dispatch({ type: "RESET/Analysis" });
       dispatch(
         requestAsync({
-          ...searchPageOfAnalysis({ query: {...q, page_size: 100 }}),
+          ...searchPageOfAnalysis({ query: { ...q, page_size: 100 } }),
           queryKey: JSON.stringify(q),
         })
       );
@@ -116,8 +120,8 @@ export default function AnalysisPage() {
     [columnConfigs]
   );
 
-  const [ propFilters,  setPropFilters] = React.useState({} as PropFilter<AnalysisResult>);
-  const [ rangeFilters,  setRangeFilters ] = React.useState({} as RangeFilter<AnalysisResult>);
+  const [propFilters, setPropFilters] = React.useState({} as PropFilter<AnalysisResult>);
+  const [rangeFilters, setRangeFilters] = React.useState({} as RangeFilter<AnalysisResult>);
 
   const onPropFilterChange = React.useCallback(
     (p: PropFilter<AnalysisResult>) => {
@@ -273,7 +277,7 @@ export default function AnalysisPage() {
     return "unapprovedCell";
   }, [approvals, canApproveColumn]);
 
-  const speciesOptions = React.useMemo(() => Species.map(x => ({label: x, value: x})), []);
+  const speciesOptions = React.useMemo(() => Species.map(x => ({ label: x, value: x })), []);
 
   const rowUpdating = React.useCallback(
     (id) => {
@@ -315,122 +319,130 @@ export default function AnalysisPage() {
     [columnConfigs, speciesOptions, onAutocompleteEdit, rowUpdating]
   );
 
-  const safeView = React.useMemo(() => camelCaseKeys(view, {deep: true}), [view]);
+  const openDetailsView = React.useCallback((primaryKey: any) => {
+    setMoreInfoIsolate(primaryKey);
+    onMoreInfoModalOpen();
+  }, [setMoreInfoIsolate, onMoreInfoModalOpen])
+
+  const safeView = React.useMemo(() => camelCaseKeys(view, { deep: true }), [view]);
   const sidebarWidth = "300px";
   if (!columnLoadState.isFinished) {
     return <div>Loading</div>;
   }
 
   return (
-    <Box
-      display="grid"
-      gridTemplateRows="5% 5% minmax(0, 80%) 10%"
-      gridTemplateColumns="300px auto"
-      padding="8"
-      height="100vh"
-      gridGap="2"
-      rowGap="5"
-    >
-      <Box role="heading" gridColumn="1 / 4">
-        <Header sidebarWidth={sidebarWidth} />
-      </Box>
-      <Box role="navigation" gridColumn="2 / 4" pb={5}>
-        <Flex justifyContent="flex-end">
-          <AnalysisSearch onSubmit={onSearch} />
-          <Box minW="250px" ml="5" mr="5">
-            <AnalysisViewSelector />
+    <React.Fragment>
+      <AnalysisDetails isolateId={moreInfoIsolate} isOpen={isMoreInfoModalOpen} onClose={onMoreInfoModalClose} />
+      <Box
+        display="grid"
+        gridTemplateRows="5% 5% minmax(0, 80%) 10%"
+        gridTemplateColumns="300px auto"
+        padding="8"
+        height="100vh"
+        gridGap="2"
+        rowgap="5"
+      >
+        <Box role="heading" gridColumn="1 / 4">
+          <Header sidebarWidth={sidebarWidth} />
+        </Box>
+        <Box role="navigation" gridColumn="2 / 4" pb={5}>
+          <Flex justifyContent="flex-end">
+            <AnalysisSearch onSubmit={onSearch} />
+            <Box minW="250px" ml="5" mr="5">
+              <AnalysisViewSelector />
+            </Box>
+            <NavLink to="/approval-history">
+              <Button leftIcon={<CalendarIcon />}>
+                {t("My approval history")}
+              </Button>
+            </NavLink>
+          </Flex>
+        </Box>
+        <Box role="form" gridColumn="1 / 2">
+          <Box minW={sidebarWidth} pr={5}>
+            <AnalysisSidebar
+              data={filteredData}
+              onPropFilterChange={onPropFilterChange}
+              onRangeFilterChange={onRangeFilterChange}
+            />
           </Box>
-          <NavLink to="/approval-history">
-            <Button leftIcon={<CalendarIcon />}>
-              {t("My approval history")}
+        </Box>
+        <Box role="main" gridColumn="2 / 4" borderWidth="1px" rounded="md">
+          <Box m={2}>
+            <Button
+              leftIcon={<DragHandleIcon />}
+              margin="4px"
+              onClick={onNarrowHandler}
+            >
+              {pageState.isNarrowed ? t("Cancel") : t("Select")}
             </Button>
-          </NavLink>
-        </Flex>
-      </Box>
-      <Box role="form" gridColumn="1 / 2">
-        <Box minW={sidebarWidth} pr={5}>
-          <AnalysisSidebar
-            data={filteredData}
-            onPropFilterChange={onPropFilterChange}
-            onRangeFilterChange={onRangeFilterChange}
-          />
-        </Box>
-      </Box>
-      <Box role="main" gridColumn="2 / 4" borderWidth="1px" rounded="md">
-        <Box m={2}>
-          <Button
-            leftIcon={<DragHandleIcon />}
-            margin="4px"
-            onClick={onNarrowHandler}
-          >
-            {pageState.isNarrowed ? t("Cancel") : t("Select")}
-          </Button>
-          <Button
-            leftIcon={<CheckIcon />}
-            margin="4px"
-            disabled={!pageState.isNarrowed}
-            onClick={approveSelection}
-          >
-            {t("Approve")}
-          </Button>
-          <Button
-            leftIcon={<NotAllowedIcon />}
-            margin="4px"
-            disabled={!pageState.isNarrowed}
-            onClick={rejectSelection}
-          >
-            {t("Reject")}
-          </Button>
+            <Button
+              leftIcon={<CheckIcon />}
+              margin="4px"
+              disabled={!pageState.isNarrowed}
+              onClick={approveSelection}
+            >
+              {t("Approve")}
+            </Button>
+            <Button
+              leftIcon={<NotAllowedIcon />}
+              margin="4px"
+              disabled={!pageState.isNarrowed}
+              onClick={rejectSelection}
+            >
+              {t("Reject")}
+            </Button>
 
-          <ColumnConfigWidget>
-            {columns.map((column) => (
-              <div key={column.accessor as string} style={{ marginTop: "5px" }}>
-                <input
-                  type="checkbox"
-                  checked={checkColumnIsVisible(column.accessor as string)}
-                  onClick={toggleColumn(column.accessor)}
-                />{" "}
-                {column.accessor as string}
-              </div>
-            ))}
-          </ColumnConfigWidget>
-        </Box>
+            <ColumnConfigWidget>
+              {columns.map((column) => (
+                <div key={column.accessor as string} style={{ marginTop: "5px" }}>
+                  <input
+                    type="checkbox"
+                    checked={checkColumnIsVisible(column.accessor as string)}
+                    onClick={toggleColumn(column.accessor)}
+                  />{" "}
+                  {column.accessor as string}
+                </div>
+              ))}
+            </ColumnConfigWidget>
+          </Box>
 
-        <Box height="100%">
-          <DataTable<AnalysisResult>
-            columns={columns /* todo: filter on permission level */}
-            canSelectColumn={canSelectColumn}
-            canEditColumn={canEditColumn}
-            canApproveColumn={canApproveColumn}
-            approvableColumns={approvableColumns}
-            getDependentColumns={getDependentColumns}
-            getCellStyle={getCellStyle}
-            data={
-              pageState.isNarrowed
-                ? filteredData.filter((x) => selection[x.isolate_id])
-                : filteredData
-            }
-            renderCellControl={renderCellControl}
-            primaryKey="isolate_id"
-            selectionClassName={
-              pageState.isNarrowed ? "approvingCell" : "selectedCell"
-            }
-            onSelect={(sel) => dispatch(setSelection(sel))}
-            view={safeView}
-          />
-        </Box>
-        <Box role="status" gridColumn="2 / 4">
-          {isPending && `${t("Fetching...")} ${data.length}`}
-          {isFinished &&
-            !pageState.isNarrowed &&
-            `${t("Found")} ${filteredData.length} ${t("records")}.`}
-          {isFinished &&
-            pageState.isNarrowed &&
-            `${t("Staging")} ${
-              filteredData.filter((x) => selection[x.isolate_id]).length
-            } ${t("records")}.`}
+          <Box height="100%">
+            <DataTable<AnalysisResult>
+              columns={columns /* todo: filter on permission level */}
+              canSelectColumn={canSelectColumn}
+              canEditColumn={canEditColumn}
+              canApproveColumn={canApproveColumn}
+              approvableColumns={approvableColumns}
+              getDependentColumns={getDependentColumns}
+              getCellStyle={getCellStyle}
+              data={
+                pageState.isNarrowed
+                  ? filteredData.filter((x) => selection[x.isolate_id])
+                  : filteredData
+              }
+              renderCellControl={renderCellControl}
+              primaryKey="isolate_id"
+              selectionClassName={
+                pageState.isNarrowed ? "approvingCell" : "selectedCell"
+              }
+              onSelect={(sel) => dispatch(setSelection(sel))}
+              onDetailsClick={openDetailsView}
+              view={safeView}
+            />
+          </Box>
+          <Box role="status" gridColumn="2 / 4">
+            {isPending && `${t("Fetching...")} ${data.length}`}
+            {isFinished &&
+              !pageState.isNarrowed &&
+              `${t("Found")} ${filteredData.length} ${t("records")}.`}
+            {isFinished &&
+              pageState.isNarrowed &&
+              `${t("Staging")} ${filteredData.filter((x) => selection[x.isolate_id]).length
+              } ${t("records")}.`}
+          </Box>
         </Box>
       </Box>
-    </Box>
+    </React.Fragment>
   );
 }
