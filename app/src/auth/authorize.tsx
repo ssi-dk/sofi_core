@@ -8,6 +8,8 @@ import {
 import { useToast } from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
 import { Loading } from "loading";
+import { requestUserInfo } from "app/user/user-query-configs";
+import { useRequest } from "redux-query-react";
 import { Environment, getAccessToken } from "./environment";
 
 export const Authorize = (props: { children: React.ReactNode; }) => {
@@ -52,10 +54,14 @@ export const Authorize = (props: { children: React.ReactNode; }) => {
     return getAccessToken();
   };
 
-  if (isLoggedIn()) {
+  const [{ isPending, isFinished }] = useRequest(requestUserInfo());
+  if (isLoggedIn() && isFinished) {
     return <React.Fragment>{props.children}</React.Fragment>;
   }
 
-  redirect();
+  if (!isLoggedIn()) {
+    redirect();
+  }
+
   return <Loading/>; 
 };

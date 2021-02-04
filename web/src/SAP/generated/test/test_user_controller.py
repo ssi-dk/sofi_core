@@ -6,6 +6,7 @@ from flask import json
 from six import BytesIO
 
 from web.src.SAP.generated.models.user_defined_view import UserDefinedView  # noqa: E501
+from web.src.SAP.generated.models.user_info import UserInfo  # noqa: E501
 from .test import BaseTestCase
 
 
@@ -78,6 +79,22 @@ class TestUserController(BaseTestCase):
         }
         response = self.client.open(
             '/api/user/views',
+            method='GET',
+            headers=headers)
+        self.assert200(response,
+                       'Response body is : ' + response.data.decode('utf-8'))
+
+    def test_who_am_i(self):
+        """Test case for who_am_i
+
+        
+        """
+        headers = { 
+            'Accept': 'application/json',
+            'Authorization': 'Bearer special-key',
+        }
+        response = self.client.open(
+            '/api/me',
             method='GET',
             headers=headers)
         self.assert200(response,

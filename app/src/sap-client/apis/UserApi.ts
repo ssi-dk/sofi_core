@@ -18,6 +18,9 @@ import {
     UserDefinedView,
     UserDefinedViewFromJSON,
     UserDefinedViewToJSON,
+    UserInfo,
+    UserInfoFromJSON,
+    UserInfoToJSON,
 } from '../models';
 
 export interface CreateUserViewRequest {
@@ -156,5 +159,48 @@ function getUserViewsRaw<T>( requestConfig: runtime.TypedQueryConfig<T, Array<Us
 */
 export function getUserViews<T>( requestConfig?: runtime.TypedQueryConfig<T, Array<UserDefinedView>>): QueryConfig<T> {
     return getUserViewsRaw( requestConfig);
+}
+
+/**
+ * Describe the current user and their permissions
+ */
+function whoAmIRaw<T>( requestConfig: runtime.TypedQueryConfig<T, UserInfo> = {}): QueryConfig<T> {
+    let queryParameters = null;
+
+
+    const headerParameters : runtime.HttpHeaders = {};
+
+
+    const { meta = {} } = requestConfig;
+
+    meta.authType = ['bearer'];
+    const config: QueryConfig<T> = {
+        url: `${runtime.Configuration.basePath}/me`,
+        meta,
+        update: requestConfig.update,
+        queryKey: requestConfig.queryKey,
+        optimisticUpdate: requestConfig.optimisticUpdate,
+        force: requestConfig.force,
+        rollback: requestConfig.rollback,
+        options: {
+            method: 'GET',
+            headers: headerParameters,
+        },
+        body: queryParameters,
+    };
+
+    const { transform: requestTransform } = requestConfig;
+    if (requestTransform) {
+        config.transform = (body: ResponseBody, text: ResponseBody) => requestTransform(UserInfoFromJSON(body), text);
+    }
+
+    return config;
+}
+
+/**
+* Describe the current user and their permissions
+*/
+export function whoAmI<T>( requestConfig?: runtime.TypedQueryConfig<T, UserInfo>): QueryConfig<T> {
+    return whoAmIRaw( requestConfig);
 }
 

@@ -200,6 +200,20 @@ paths:
       tags:
       - gdpr
       x-openapi-router-controller: web.src.SAP.generated.controllers.gdpr_controller
+  /me:
+    get:
+      description: Describe the current user and their permissions
+      operationId: who_am_i
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserInfo'
+          description: User info
+      tags:
+      - user
+      x-openapi-router-controller: web.src.SAP.generated.controllers.user_controller
   /user/views:
     get:
       operationId: get_user_views
@@ -542,6 +556,47 @@ components:
           type: string
       required:
       - data
+      type: object
+    DataClearance:
+      enum:
+      - own-institution
+      - cross-institution
+      - all
+      type: string
+    Permission:
+      enum:
+      - search
+      - export
+      - approve
+      - phylogeny.read
+      - phylogeny.write
+      - gdpr.manage
+      - permissions.write
+      type: string
+    UserInfo:
+      example:
+        permissions:
+        - null
+        - null
+        groups:
+        - groups
+        - groups
+        userId: userId
+      properties:
+        userId:
+          type: string
+        data_clearance:
+          $ref: '#/components/schemas/DataClearance'
+        institution:
+          $ref: '#/components/schemas/Organization'
+        groups:
+          items:
+            type: string
+          type: array
+        permissions:
+          items:
+            $ref: '#/components/schemas/Permission'
+          type: array
       type: object
     UserDefinedView_column_resizing_column_widths:
       example:

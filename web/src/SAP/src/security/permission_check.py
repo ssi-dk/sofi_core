@@ -8,6 +8,13 @@ PERMISSION_CONFIG = None
 with open(os.getcwd() + '/permission-config.jsonc') as js_file:
     PERMISSION_CONFIG = commentjson.loads(js_file.read())
 
+def list_permissions(token_info):
+    list = []
+    for group in token_info['security-groups']:
+        for perm in PERMISSION_CONFIG[group]:
+            list.append(perm)
+    return list
+
 def user_has(permission, token_info):
     for group in token_info['security-groups']:
         for perm in PERMISSION_CONFIG[group]:

@@ -12,6 +12,8 @@ import { Environment, setAccessToken, setRefreshToken } from "auth/environment";
 import { useToast } from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
 import { Loading } from "loading";
+import { requestUserInfo } from "app/user/user-query-configs";
+import { useRequest } from "redux-query-react";
 
 export const Callback = (props: {
   location: {
@@ -61,6 +63,7 @@ export const Callback = (props: {
           );
           setAccessToken(tokenResp.idToken);
           setRefreshToken(tokenResp.refreshToken);
+          
           const profile = await fetch(
             `${Environment.openIdConnectUrl}${Environment.userInfoEndpoint}`,
             {
@@ -69,7 +72,6 @@ export const Callback = (props: {
               },
             }
           );
-          console.log("userprofile", await profile.json());
           window.location.replace("/");
         } else {
           setAuthError(error);

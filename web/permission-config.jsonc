@@ -25,8 +25,9 @@
 //
 // It is helpful when editing to change the file extension to .ts and uncomment the lines below:
 //
-//type Permission = "search" | "export" | "approve" | "phylogeny.read" | "phylogeny.write" | "permissions.write" | "gdpr.manage"
-//var typeCheckedPermissionConfig: { [K: string]: Permission[] }  =
+//import { Permission } from '../app/src/sap-client/models/Permission';
+//type Permissions = `${Permission}`; // coerce enum into string union
+//var typeCheckedPermissionConfig: { [K: string]: Permissions[] }  =
 {
     "sofi.passive": [
         "search",

@@ -14,6 +14,21 @@ security:
   - jwt: []
 
 paths:
+  /me:
+    get:
+      description: Describe the current user and their permissions
+      operationId: who_am_i
+      x-openapi-router-controller: web.src.SAP.generated.controllers.user_controller
+      tags:
+        - user
+      responses:
+        '200':
+          description: User info
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserInfo'
+
   /analysis:
     get:
       description: Page through all the analysis in the system (WIP)
@@ -631,7 +646,6 @@ components:
             amr_van:
               $ref: "#/components/schemas/Resistance"
 
-
     PersonalIdentifierType:
       type: string
       enum: ["CPR", "CVR", "CHR"]
@@ -643,7 +657,32 @@ components:
       properties:
         data:
           type: string
+    
+    DataClearance:
+      type: string
+      enum: ["own-institution", "cross-institution", "all"]
 
+    Permission:
+      type: string
+      enum: ["search", "export", "approve", "phylogeny.read", "phylogeny.write", "gdpr.manage", "permissions.write"]
+
+    UserInfo:
+      type: object
+      properties:
+        userId:
+          type: string
+        data_clearance:
+          $ref: "#/components/schemas/DataClearance"
+        institution:
+          $ref:  "#/components/schemas/Organization"
+        groups:
+          type: array
+          items:
+            type: string
+        permissions:
+          type: array
+          items:
+            $ref: "#/components/schemas/Permission"
 
   securitySchemes:
     jwt:
