@@ -7,13 +7,14 @@ export type UserSlice = {
 
 // query config for retrieving user info
 export const requestUserInfo = () => {
-  // use generated api client as base
   const base = whoAmI<UserSlice>();
-  // template the full path for the url
+
   base.url = getUrl(base.url);
-  // define the update strategy for our state
+
+  base.transform = (response: UserInfo) => ({ user: response });
+
   base.update = {
-      user: (_, newValue) => newValue
+    user: (_, newValue) => newValue
   };
   return base;
 };

@@ -9,9 +9,7 @@ export const IfPermission = (props: {
 }) => {
   const { children, permission } = props;
 
-  const user = useSelector<RootState>((s) =>
-    Object.values(s.entities.user ?? {})
-  ) as UserInfo;
+  const user = useSelector<RootState>((s) => s.entities.user ?? {}) as UserInfo;
 
   const hasPermission = (perm: Permission) => {
     return user?.permissions?.indexOf(perm) > -1;

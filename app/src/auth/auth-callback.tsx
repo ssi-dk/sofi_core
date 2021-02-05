@@ -12,8 +12,6 @@ import { Environment, setAccessToken, setRefreshToken } from "auth/environment";
 import { useToast } from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
 import { Loading } from "loading";
-import { requestUserInfo } from "app/user/user-query-configs";
-import { useRequest } from "redux-query-react";
 
 export const Callback = (props: {
   location: {
