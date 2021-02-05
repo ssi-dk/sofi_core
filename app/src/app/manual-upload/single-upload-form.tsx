@@ -15,6 +15,10 @@ import { useMutation } from "redux-query-react";
 import { uploadIsolateFile } from "./manual-upload-configs";
 
 export default function SingleUploadForm() {
+  const [qstate, doUpload] = useMutation((payload: SingleUploadRequest) =>
+    uploadIsolateFile(payload)
+  );
+
   const [selectedFile, setSelectedFile] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -33,10 +37,6 @@ export default function SingleUploadForm() {
     primary_isolate: true,
   } as BaseMetadata);
 
-  const [qstate, doUpload] = useMutation((payload: SingleUploadRequest) =>
-    uploadIsolateFile(payload)
-  );
-
   const changeState = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value, name } = e.target;
     console.log(state);
@@ -46,16 +46,19 @@ export default function SingleUploadForm() {
     });
   };
 
-  const submitForm = (e) => {
-    e.preventDefault();
+  const submitForm = React.useCallback(
+    (e) => {
+      e.preventDefault();
 
-    setLoading(true);
-    doUpload({ metadata: state, file: selectedFile })
-      .catch((err) => console.log(err))
-      .finally(() => {
-        setLoading(false);
-      });
-  };
+      //setLoading(true);
+      doUpload({ metadata: state, file: selectedFile })/*
+        .catch((err) => console.log(err))
+        .finally(() => {
+          setLoading(false);
+        });*/
+    },
+    [selectedFile, state, doUpload]
+  );
 
   const TextInput = ({ label, name }: { label: string; name: string }) => {
     if (name.endsWith("date")) {
@@ -112,7 +115,7 @@ export default function SingleUploadForm() {
         }
       />
       <Button type="submit" onClick={submitForm}>
-        Submit
+        Upload
       </Button>
     </VStack>
   );
