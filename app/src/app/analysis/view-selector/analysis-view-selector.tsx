@@ -42,14 +42,15 @@ const AnalysisViewSelector = () => {
   const deleteView = useMutation((v: UserDefinedView) => deleteUserViewMutation(v))[1];
 
   const viewSelectUpdate = React.useCallback(
-    (event) => {
+    (async (event) => {
       const { value } = event;
       if (value === addViewValue) {
         const viewName = prompt("View name");
         if (viewName) {
           const tableState = spyDataTable();
           const newView = mapTableStateToView(viewName, tableState);
-          addView(newView).then(() => dispatch(setView(newView)));
+          await addView(newView);
+          dispatch(setView(newView));
         }
       } else if (value === deleteViewValue) {
         // eslint-disable-next-line
@@ -58,23 +59,25 @@ const AnalysisViewSelector = () => {
         );
         if (doIt) {
           deleteView(view);
+          dispatch(setView(defaultViews[0]));
         }
       } else {
         dispatch(setView(value));
       }
-    },
+    }),
     [dispatch, addView, deleteView, t, view]
   );
 
-  const defaultValue= React.useMemo(() => ({label: view.name, value: view}), [view]);
+  const value= React.useMemo(() => ({label: view.name, value: view}), [view]);
 
   return <Select 
     options={isFinished ? buildOptions(userViews) : [] as any[]}
-    defaultValue={defaultValue}
+    defaultValue={value}
+    value={value}
     theme={selectTheme} 
     isLoading={isPending || queryState.isPending}
     onChange={viewSelectUpdate}
   />;
 }
 
-export default React.memo(AnalysisViewSelector);
+export default AnalysisViewSelector;

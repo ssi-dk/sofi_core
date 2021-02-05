@@ -37,6 +37,7 @@
     "@welldone-software/why-did-you-render": "^6.0.0-rc.1",
     "axios": "^0.20.0",
     "camelcase-keys": "^6.2.2",
+    "clean-deep": "^3.4.0",
     "connected-react-router": "^6.8.0",
     "eslint": "^7.0.0",
     "eslint-config-airbnb": "18.2.0",

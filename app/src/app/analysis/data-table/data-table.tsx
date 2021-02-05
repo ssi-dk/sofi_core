@@ -1,6 +1,6 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import React from "react";
+import React, { useState } from "react";
 import {
   useTable,
   useBlockLayout,
@@ -18,8 +18,10 @@ import { jsx } from "@emotion/react";
 import { DragDropContext, DropResult } from "react-beautiful-dnd";
 import { Flex, IconButton } from "@chakra-ui/react";
 import { ExternalLinkIcon } from '@chakra-ui/icons'
+import cleandeep from 'clean-deep'
+import deepmerge from 'lodash.merge';
 import dtStyle from "app/analysis/data-table/data-table.styles";
-import { IndexableOf, NotEmpty } from "utils";
+import { IndexableOf, NotEmpty, removeEmpty } from "utils";
 import SelectionCheckBox from "./selection-check-box";
 import { exportDataTable } from "./table-spy";
 import { UserDefinedView } from "../../../sap-client/models";
@@ -84,6 +86,30 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
     [selection]
   );
 
+  const [lastView, setLastView] = useState(view);
+
+  const resolveViewState = React.useCallback(
+    (s: TableState<T>) => {
+      const nonEmptyState = cleandeep({...s});
+      // use view as base, then play any nonEmptyState on top of it
+      const merged: TableState<T> = {} as TableState<T>;
+      deepmerge(merged, view, nonEmptyState) as TableState<T>;
+      if (!merged?.sortBy) {
+        merged.sortBy = [];
+      }
+      if (!merged?.columnResizing) {
+        merged.columnResizing = JSON.parse(JSON.stringify(s.columnResizing));
+      }
+      // if the view changed, it overwrites whatever state we have
+      if (view !== lastView) {
+        deepmerge(merged, view) as TableState<T>;
+        setLastView(view);
+      }
+      return merged as TableState<T>;
+    },
+    [view, lastView, setLastView]
+  );
+
   const onSelectCell = React.useCallback(
     (rowId, columnId) => {
       const incSel = {
@@ -117,10 +143,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
     {
       columns,
       data: data ?? [],
-      useControlledState: React.useCallback(
-        (s) => ({ ...s, ...(view as TableState<T>) }),
-        [view]
-      ),
+      useControlledState: resolveViewState, 
       defaultColumn,
     },
     useBlockLayout,
