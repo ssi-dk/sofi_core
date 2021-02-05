@@ -260,10 +260,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PersonalData'
-  /isolateupload:
+  /upload/single_upload:
     post:
       description: Manually upload isolate with metadata
-      operationId: isolate_upload
+      operationId: single_upload
       x-openapi-router-controller: web.src.SAP.generated.controllers.upload_controller
       x-codegen-request-body-name: query
       tags:
@@ -272,16 +272,52 @@ paths:
         content:
           multipart/form-data:
             schema:
-              type: object
-              properties:
-                metadata:
-                  type: string
-                file:
-                  type: string
-                  format: binary
+              $ref: '#/components/schemas/SingleUploadRequest'
             encoding:
+              metadata:
+                contentType: application/json
               file:
                 contentType: application/gzip
+      responses:
+        '204':
+          description: Isolate uploaded successfully.
+  /upload/multi_upload:
+    post:
+      description: Manually upload multiple sequences with metadata
+      operationId: multi_upload
+      x-openapi-router-controller: web.src.SAP.generated.controllers.upload_controller
+      x-codegen-request-body-name: query
+      tags:
+        - upload
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/MultiUploadRequest'
+            encoding:
+              metadata_tsv:
+                contentType: text/tsv
+              files:
+                contentType: application/gzip
+      responses:
+        '204':
+          description: Isolate uploaded successfully.
+  /upload/bulk_metadata:
+    post:
+      description: Manually upload metadata for previously uploaded sequence files
+      operationId: bulk_metadata
+      x-openapi-router-controller: web.src.SAP.generated.controllers.upload_controller
+      x-codegen-request-body-name: query
+      tags:
+        - upload
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/BulkUploadRequest'
+            encoding:
+              metadata_tsv:
+                contentType: text/tsv
       responses:
         '204':
           description: Isolate uploaded successfully.
@@ -668,6 +704,38 @@ components:
               $ref: "#/components/schemas/Resistance"
             amr_van:
               $ref: "#/components/schemas/Resistance"
+
+    SingleUploadRequest:
+      type: object
+      required:
+        - metadata
+        - file
+      properties:
+        metadata:
+          $ref: '#/components/schemas/BaseMetadata'
+        file:
+          type: string
+          format: binary
+    MultiUploadRequest:
+      type: object
+      required:
+        - metadata_tsv
+        - files
+      properties:
+        metadata_tsv:
+          type: string
+        files:
+          type: array
+          items:
+            type: string
+            format: binary
+    BulkUploadRequest:
+      type: object
+      required:
+        - metadata_tsv
+      properties:
+        metadata_tsv:
+          type: string
 
     PersonalIdentifierType:
       type: string

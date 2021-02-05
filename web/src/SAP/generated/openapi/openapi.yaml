@@ -201,6 +201,7 @@ paths:
       - gdpr
       x-openapi-router-controller: web.src.SAP.generated.controllers.gdpr_controller
 <<<<<<< HEAD
+<<<<<<< HEAD
   /me:
     get:
       description: Describe the current user and their permissions
@@ -217,25 +218,67 @@ paths:
       x-openapi-router-controller: web.src.SAP.generated.controllers.user_controller
 =======
   /isolateupload:
+=======
+  /upload/bulk_metadata:
     post:
-      description: Manually upload isolate with metadata
-      operationId: isolate_upload
+      description: Manually upload metadata for previously uploaded sequence files
+      operationId: bulk_metadata
       requestBody:
-        $ref: '#/components/requestBodies/inline_object'
         content:
           multipart/form-data:
             encoding:
+              metadata_tsv:
+                contentType: text/tsv
+                style: form
+            schema:
+              $ref: '#/components/schemas/BulkUploadRequest'
+      responses:
+        "204":
+          description: Isolate uploaded successfully.
+      tags:
+      - upload
+      x-openapi-router-controller: web.src.SAP.generated.controllers.upload_controller
+      x-codegen-request-body-name: query
+  /upload/multi_upload:
+    post:
+      description: Manually upload multiple sequences with metadata
+      operationId: multi_upload
+      requestBody:
+        content:
+          multipart/form-data:
+            encoding:
+              metadata_tsv:
+                contentType: text/tsv
+                style: form
+              files:
+                contentType: application/gzip
+                style: form
+            schema:
+              $ref: '#/components/schemas/MultiUploadRequest'
+      responses:
+        "204":
+          description: Isolate uploaded successfully.
+      tags:
+      - upload
+      x-openapi-router-controller: web.src.SAP.generated.controllers.upload_controller
+      x-codegen-request-body-name: query
+  /upload/single_upload:
+>>>>>>> Prepare openapi spec for multiple forms of uploads
+    post:
+      description: Manually upload isolate with metadata
+      operationId: single_upload
+      requestBody:
+        content:
+          multipart/form-data:
+            encoding:
+              metadata:
+                contentType: application/json
+                style: form
               file:
                 contentType: application/gzip
                 style: form
             schema:
-              properties:
-                metadata:
-                  type: string
-                file:
-                  format: binary
-                  type: string
-              type: object
+              $ref: '#/components/schemas/SingleUploadRequest'
       responses:
         "204":
           description: Isolate uploaded successfully.
@@ -292,12 +335,6 @@ paths:
       - user
       x-openapi-router-controller: web.src.SAP.generated.controllers.user_controller
 components:
-  requestBodies:
-    inline_object:
-      content:
-        multipart/form-data:
-          schema:
-            $ref: '#/components/schemas/inline_object'
   schemas:
     Organization:
       enum:
@@ -579,6 +616,36 @@ components:
       - $ref: '#/components/schemas/LimsSpecificMetadata'
       - $ref: '#/components/schemas/TbrSpecificMetadata'
       - $ref: '#/components/schemas/AnalysisResult_allOf'
+    SingleUploadRequest:
+      properties:
+        metadata:
+          $ref: '#/components/schemas/BaseMetadata'
+        file:
+          format: binary
+          type: string
+      required:
+      - file
+      - metadata
+      type: object
+    MultiUploadRequest:
+      properties:
+        metadata_tsv:
+          type: string
+        files:
+          items:
+            format: binary
+            type: string
+          type: array
+      required:
+      - files
+      - metadata_tsv
+      type: object
+    BulkUploadRequest:
+      properties:
+        metadata_tsv:
+          type: string
+      required:
+      - metadata_tsv
       type: object
     PersonalIdentifierType:
       enum:

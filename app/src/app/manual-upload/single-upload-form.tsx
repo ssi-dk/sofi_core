@@ -9,7 +9,7 @@ import {
 } from "@chakra-ui/react";
 import { BaseMetadata } from "sap-client/models/BaseMetadata";
 import { Organization } from "sap-client/models/Organization";
-import { IsolateUploadRequest } from "sap-client/apis/UploadApi";
+import { SingleUploadRequest } from "sap-client/apis/UploadApi";
 import { Loading } from "loading";
 import { useMutation } from "redux-query-react";
 import { uploadIsolateFile } from "./manual-upload-configs";
@@ -33,7 +33,7 @@ export default function SingleUploadForm() {
     primary_isolate: true,
   } as BaseMetadata);
 
-  const [qstate, doUpload] = useMutation((payload: IsolateUploadRequest) =>
+  const [qstate, doUpload] = useMutation((payload: SingleUploadRequest) =>
     uploadIsolateFile(payload)
   );
 
@@ -50,7 +50,7 @@ export default function SingleUploadForm() {
     e.preventDefault();
 
     setLoading(true);
-    doUpload({ metadata: JSON.stringify(state), file: selectedFile })
+    doUpload({ metadata: state, file: selectedFile })
       .catch((err) => console.log(err))
       .finally(() => {
         setLoading(false);
