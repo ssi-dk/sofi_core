@@ -18,17 +18,16 @@ function AnalysisSidebar(props: AnalysisSidebarProps) {
     (items: string[]) => Array.from(new Set(items)).sort(),
     []
   );
-
-  const agents = React.useMemo(
-    () => sortUnique(data.map((x) => x.provided_species)),
+  const sts = React.useMemo(
+    () => sortUnique(data.map((x) => x.st)),
     [data, sortUnique]
   );
   const serotypes = React.useMemo(
-    () => sortUnique(data.map((x) => x.serotype)),
+    () => sortUnique(data.map((x) => x.serotype_final)),
     [data, sortUnique]
   );
-  const rfv = React.useMemo(
-    () => sortUnique(data.map((x) => x.resfinder_version)),
+  const speciesFinal = React.useMemo(
+    () => sortUnique(data.map((x) => x.species_final)),
     [data, sortUnique]
   );
   const organisations = React.useMemo(
@@ -39,8 +38,32 @@ function AnalysisSidebar(props: AnalysisSidebarProps) {
     () => sortUnique(data.map((x) => x.project_title)),
     [data, sortUnique]
   );
-  const species = React.useMemo(
+  const projectNrs = React.useMemo(
+    () => sortUnique(data.map((x) => x.project_title)),
+    [data, sortUnique]
+  );
+  const providedSpecies = React.useMemo(
     () => sortUnique(data.map((x) => x.provided_species)),
+    [data, sortUnique]
+  );
+  const runIds = React.useMemo(
+    () => sortUnique(data.map((x) => x.run_id)),
+    [data, sortUnique]
+  );
+  const cprs = React.useMemo(
+    () => sortUnique(data.map((x) => x.cpr)),
+    [data, sortUnique]
+  );
+  const isolateIds = React.useMemo(
+    () => sortUnique(data.map((x) => x.isolate_id)),
+    [data, sortUnique]
+  );
+  const fuds = React.useMemo(
+    () => sortUnique(data.map((x) => x.fud_number)),
+    [data, sortUnique]
+  );
+  const clusters = React.useMemo(
+    () => sortUnique(data.map((x) => x.cluster_id)),
     [data, sortUnique]
   );
 
@@ -49,15 +72,21 @@ function AnalysisSidebar(props: AnalysisSidebarProps) {
       <MetaFilter
         organisations={organisations}
         projects={projects}
-        species={species}
+        projectNrs={projectNrs}
+        dyreart={speciesFinal}
+        runIds={runIds}
+        cprs={cprs}
+        isolateIds={isolateIds}
+        fuds={fuds}
+        clusters={clusters}
         onPropFilterChange={onPropFilterChange}
         onRangeFilterChange={onRangeFilterChange}
       />
       <Box m={3} />
       <AnalysisFilter
-        agents={agents}
-        serotypes={serotypes}
-        resfinderVersions={rfv}
+        sts={sts}
+        serotypeFinals={serotypes}
+        providedSpecies={providedSpecies}
         onFilterChange={onPropFilterChange}
       />
     </>

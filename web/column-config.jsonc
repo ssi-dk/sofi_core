@@ -94,6 +94,10 @@
     "editable": true
   },
   {
+    "field_name": "serotype_final",
+    "editable": true
+  },
+  {
     "field_name": "toxins_final",
     "editable": true,
     "approvable": true,

@@ -1,13 +1,15 @@
 import { RootState } from "app/root-reducer";
 import React from "react";
 import { useSelector } from "react-redux";
-import { Permission, UserInfo } from "sap-client";
+import { DataClearance, Organization, Permission, UserInfo } from "sap-client";
 
 export const IfPermission = (props: {
   children: React.ReactNode;
-  permission: Permission;
+  permission?: Permission;
+  level?: DataClearance;
+  institution?: Organization;
 }) => {
-  const { children, permission } = props;
+  const { children, permission, level, institution } = props;
 
   const user = useSelector<RootState>((s) => s.entities.user ?? {}) as UserInfo;
 
@@ -15,7 +17,19 @@ export const IfPermission = (props: {
     return user?.permissions?.indexOf(perm) > -1;
   };
 
-  if (hasPermission(permission)) {
+  const hasLevel = (l: DataClearance) => {
+    return DataClearance[user?.data_clearance] >= DataClearance[l];
+  };
+
+  const hasInstitution = (inst: Organization) => {
+    return user?.institution === inst;
+  };
+
+  if (
+    hasPermission(permission) ||
+    hasLevel(level) ||
+    hasInstitution(institution)
+  ) {
     return <React.Fragment>{children}</React.Fragment>;
   }
 

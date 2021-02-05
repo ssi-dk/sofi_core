@@ -56,6 +56,7 @@ import { ColumnConfigWidget } from "./data-table/column-config-widget";
 import { toggleColumnVisibility } from "./view-selector/analysis-view-selection-config";
 import InlineAutoComplete from "../inputs/inline-autocomplete";
 import Species from "../data/species.json";
+import Serotypes from "../data/serotypes.json";
 import AnalysisDetails from "./analysis-history/analysis-history";
 
 export default function AnalysisPage() {
@@ -118,7 +119,9 @@ export default function AnalysisPage() {
 
   const selection = useSelector<RootState>((s) => s.selection.selection);
   const approvals = useSelector<RootState>((s) => s.entities.approvalMatrix);
-  const view = useSelector<RootState>((s) => s.view.view) as UserDefinedViewInternal;
+  const view = useSelector<RootState>(
+    (s) => s.view.view
+  ) as UserDefinedViewInternal;
 
   const onSearch = React.useCallback(
     (q: AnalysisQuery) => {
@@ -332,6 +335,11 @@ export default function AnalysisPage() {
     []
   );
 
+  const serotypeOptions = React.useMemo(
+    () => Serotypes.map((x) => ({ label: x, value: x })),
+    []
+  );
+
   const rowUpdating = React.useCallback(
     (id) => {
       return id === lastUpdatedRow && pendingUpdate;
@@ -366,6 +374,16 @@ export default function AnalysisPage() {
           />
         );
       }
+      if (columnId === "serotype_final") {
+        return (
+          <InlineAutoComplete
+            options={serotypeOptions}
+            onChange={onAutocompleteEdit(rowId, columnId)}
+            defaultValue={v}
+            isLoading={rowUpdating(rowId)}
+          />
+        );
+      }
       if (columnConfigs[columnId].editable) {
         return (
           <Editable defaultValue={v}>
@@ -376,7 +394,7 @@ export default function AnalysisPage() {
       }
       return <div>{`${v}`}</div>;
     },
-    [columnConfigs, speciesOptions, onAutocompleteEdit, rowUpdating]
+    [columnConfigs, speciesOptions, serotypeOptions, onAutocompleteEdit, rowUpdating]
   );
 
   const openDetailsView = React.useCallback(
@@ -389,7 +407,7 @@ export default function AnalysisPage() {
 
   const sidebarWidth = "300px";
   if (!columnLoadState.isFinished) {
-    <Loading />
+    <Loading />;
   }
 
   return (
@@ -411,6 +429,15 @@ export default function AnalysisPage() {
         <Box role="heading" gridColumn="1 / 4">
           <Header sidebarWidth={sidebarWidth} />
         </Box>
+        <Box role="form" gridColumn="1 / 2">
+          <Box minW={sidebarWidth} pr={5}>
+            <AnalysisSidebar
+              data={filteredData}
+              onPropFilterChange={onPropFilterChange}
+              onRangeFilterChange={onRangeFilterChange}
+            />
+          </Box>
+        </Box>
         <Box role="navigation" gridColumn="2 / 4" pb={5}>
           <Flex justifyContent="flex-end">
             <AnalysisSearch onSubmit={onSearch} />
@@ -425,15 +452,6 @@ export default function AnalysisPage() {
               </NavLink>
             </IfPermission>
           </Flex>
-        </Box>
-        <Box role="form" gridColumn="1 / 2">
-          <Box minW={sidebarWidth} pr={5}>
-            <AnalysisSidebar
-              data={filteredData}
-              onPropFilterChange={onPropFilterChange}
-              onRangeFilterChange={onRangeFilterChange}
-            />
-          </Box>
         </Box>
         <Box role="main" gridColumn="2 / 4" borderWidth="1px" rounded="md">
           <Box m={2}>

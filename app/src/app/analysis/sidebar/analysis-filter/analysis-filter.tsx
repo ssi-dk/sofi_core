@@ -8,26 +8,26 @@ import { PropFilter } from "utils";
 import FilterBox from "../filter-box";
 
 type AnalysisFilterProps = {
-  agents: string[];
-  serotypes: string[];
-  resfinderVersions: string[];
+  providedSpecies: string[];
+  serotypeFinals: string[];
+  sts: string[];
   onFilterChange: (resultingFilter: PropFilter<AnalysisResult>) => void;
 };
 
 function AnalysisFilter(props: AnalysisFilterProps) {
-  const { agents, serotypes, resfinderVersions, onFilterChange } = props;
+  const { providedSpecies, serotypeFinals, sts, onFilterChange } = props;
 
-  const agentOptions = React.useMemo(
-    () => agents.map((x) => ({ value: x, label: x })),
-    [agents]
+  const providedSpeciesOptions = React.useMemo(
+    () => providedSpecies.map((x) => ({ value: x, label: x })),
+    [providedSpecies]
   );
   const serotypeOptions = React.useMemo(
-    () => serotypes.map((x) => ({ value: x, label: x })),
-    [serotypes]
+    () => serotypeFinals.map((x) => ({ value: x, label: x })),
+    [serotypeFinals]
   );
-  const rfvOptions = React.useMemo(
-    () => resfinderVersions.map((x) => ({ value: x, label: x })),
-    [resfinderVersions]
+  const stOptions = React.useMemo(
+    () => sts.map((x) => ({ value: x, label: x })),
+    [sts]
   );
 
   const { t } = useTranslation();
@@ -54,12 +54,12 @@ function AnalysisFilter(props: AnalysisFilterProps) {
 
   return (
     <FilterBox title="Analysis filter">
-      <Text>{t("Agens")}</Text>
-      <Select options={agentOptions} isMulti theme={selectTheme} onChange={onChangeBuilder("provided_species")} />
-      <Text mt={2}>{t("Serotyp")}</Text>
-      <Select options={serotypeOptions} isMulti theme={selectTheme} onChange={onChangeBuilder("serotype")} />
-      <Text mt={2}>{t("ResfinderVersion")}</Text>
-      <Select options={rfvOptions} isMulti theme={selectTheme} onChange={onChangeBuilder("resfinder_version")} />
+      <Text>{t("provided_species")}</Text>
+      <Select options={providedSpeciesOptions} isMulti theme={selectTheme} onChange={onChangeBuilder("provided_species")} />
+      <Text mt={2}>{t("serotype_final")}</Text>
+      <Select options={serotypeOptions} isMulti theme={selectTheme} onChange={onChangeBuilder("serotype_final")} />
+      <Text mt={2}>{t("st")}</Text>
+      <Select options={stOptions} isMulti theme={selectTheme} onChange={onChangeBuilder("st")} />
     </FilterBox>
   );
 }
