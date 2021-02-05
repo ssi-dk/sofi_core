@@ -233,6 +233,7 @@ paths:
       responses:
         '204':
           description: View deleted successfully.
+
   /gdpr/extract:
     get:
       description: Extract all data given a personal identifier
@@ -260,6 +261,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PersonalData'
+
   /upload/single_upload:
     post:
       description: Manually upload isolate with metadata
@@ -716,6 +718,7 @@ components:
         file:
           type: string
           format: binary
+
     MultiUploadRequest:
       type: object
       required:
@@ -729,6 +732,7 @@ components:
           items:
             type: string
             format: binary
+
     BulkUploadRequest:
       type: object
       required:

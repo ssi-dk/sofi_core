@@ -200,8 +200,6 @@ paths:
       tags:
       - gdpr
       x-openapi-router-controller: web.src.SAP.generated.controllers.gdpr_controller
-<<<<<<< HEAD
-<<<<<<< HEAD
   /me:
     get:
       description: Describe the current user and their permissions
@@ -216,9 +214,6 @@ paths:
       tags:
       - user
       x-openapi-router-controller: web.src.SAP.generated.controllers.user_controller
-=======
-  /isolateupload:
-=======
   /upload/bulk_metadata:
     post:
       description: Manually upload metadata for previously uploaded sequence files
@@ -263,7 +258,6 @@ paths:
       x-openapi-router-controller: web.src.SAP.generated.controllers.upload_controller
       x-codegen-request-body-name: query
   /upload/single_upload:
->>>>>>> Prepare openapi spec for multiple forms of uploads
     post:
       description: Manually upload isolate with metadata
       operationId: single_upload
@@ -286,7 +280,6 @@ paths:
       - upload
       x-openapi-router-controller: web.src.SAP.generated.controllers.upload_controller
       x-codegen-request-body-name: query
->>>>>>> Preliminary upload setup
   /user/views:
     get:
       operationId: get_user_views
@@ -703,13 +696,6 @@ components:
             $ref: '#/components/schemas/Permission'
           type: array
       type: object
-    inline_object:
-      properties:
-        metadata:
-          type: string
-        file:
-          format: binary
-          type: string
     UserDefinedView_column_resizing_column_widths:
       example:
         width: 0
