@@ -18,7 +18,8 @@
  */
 export enum Organization {
     SSI = 'SSI',
-    FVST = 'FVST'
+    FVST = 'FVST',
+    Other = 'Other'
 }
 
 export function OrganizationFromJSON(json: any): Organization {

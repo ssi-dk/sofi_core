@@ -214,6 +214,72 @@ paths:
       tags:
       - user
       x-openapi-router-controller: web.src.SAP.generated.controllers.user_controller
+  /upload/bulk_metadata:
+    post:
+      description: Manually upload metadata for previously uploaded sequence files
+      operationId: bulk_metadata
+      requestBody:
+        content:
+          multipart/form-data:
+            encoding:
+              metadata_tsv:
+                contentType: text/tsv
+                style: form
+            schema:
+              $ref: '#/components/schemas/BulkUploadRequest'
+      responses:
+        "204":
+          description: Isolate uploaded successfully.
+      tags:
+      - upload
+      x-openapi-router-controller: web.src.SAP.generated.controllers.upload_controller
+      x-codegen-request-body-name: query
+  /upload/multi_upload:
+    post:
+      description: Manually upload multiple sequences with metadata
+      operationId: multi_upload
+      requestBody:
+        content:
+          multipart/form-data:
+            encoding:
+              metadata_tsv:
+                contentType: text/tsv
+                style: form
+              files:
+                contentType: application/gzip
+                style: form
+            schema:
+              $ref: '#/components/schemas/MultiUploadRequest'
+      responses:
+        "204":
+          description: Isolate uploaded successfully.
+      tags:
+      - upload
+      x-openapi-router-controller: web.src.SAP.generated.controllers.upload_controller
+      x-codegen-request-body-name: query
+  /upload/single_upload:
+    post:
+      description: Manually upload isolate with metadata
+      operationId: single_upload
+      requestBody:
+        content:
+          multipart/form-data:
+            encoding:
+              metadata:
+                contentType: application/json
+                style: form
+              file:
+                contentType: application/gzip
+                style: form
+            schema:
+              $ref: '#/components/schemas/SingleUploadRequest'
+      responses:
+        "204":
+          description: Isolate uploaded successfully.
+      tags:
+      - upload
+      x-openapi-router-controller: web.src.SAP.generated.controllers.upload_controller
+      x-codegen-request-body-name: query
   /user/views:
     get:
       operationId: get_user_views
@@ -267,6 +333,7 @@ components:
       enum:
       - SSI
       - FVST
+      - Other
       type: string
     PageOfAnalysis:
       example:
@@ -542,6 +609,37 @@ components:
       - $ref: '#/components/schemas/LimsSpecificMetadata'
       - $ref: '#/components/schemas/TbrSpecificMetadata'
       - $ref: '#/components/schemas/AnalysisResult_allOf'
+    SingleUploadRequest:
+      properties:
+        metadata:
+          $ref: '#/components/schemas/BaseMetadata'
+        file:
+          format: binary
+          type: string
+      required:
+      - file
+      - metadata
+      type: object
+    MultiUploadRequest:
+      properties:
+        metadata_tsv:
+          type: string
+        files:
+          items:
+            format: binary
+            type: string
+          type: array
+      required:
+      - files
+      - metadata_tsv
+      type: object
+    BulkUploadRequest:
+      properties:
+        metadata_tsv:
+          type: string
+      required:
+      - metadata_tsv
+      type: object
     PersonalIdentifierType:
       enum:
       - CPR

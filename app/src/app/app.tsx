@@ -8,46 +8,55 @@ import { Callback } from "auth/auth-callback";
 import { globalCss } from "./app.styles";
 import "./i18n";
 import AnalysisPage from "./analysis/analysis-page";
-import GdprExtractPage from "./gdpr/gdpr-extract/gdpr-extract-page"
+import GdprExtractPage from "./gdpr/gdpr-extract/gdpr-extract-page";
 import ApprovalHistory from "./approval-history/approval-history";
+import ManualUploadPage from "./manual-upload/manual-upload-page";
 
 export default function App() {
   return (
     <ChakraProvider theme={appTheme}>
       <Global styles={globalCss} />
-        <Switch>
-          <Route
-            exact
-            path="/approval-history"
-            render={() => (
-              <Authorize>
-                <ApprovalHistory />
-              </Authorize>
-            )}
-          />
-          <Route
-            exact
-            path="/gdpr/extract"
-            render={() => (
-              <Authorize>
-                <GdprExtractPage />
-              </Authorize>
-            )}
-          />
-          <Route
-            exact
-            path="/callback"
-            render={() => <Callback location={window.location} />}
-          />
-          <Route
-            path="/"
-            render={() => (
-              <Authorize>
-                <AnalysisPage />
-              </Authorize>
-            )}
-          />
-        </Switch>
+      <Switch>
+        <Route
+          path="/manual-upload"
+          render={() => (
+            <Authorize>
+              <ManualUploadPage />
+            </Authorize>
+          )}
+        />
+        <Route
+          exact
+          path="/approval-history"
+          render={() => (
+            <Authorize>
+              <ApprovalHistory />
+            </Authorize>
+          )}
+        />
+        <Route
+          exact
+          path="/gdpr/extract"
+          render={() => (
+            <Authorize>
+              <GdprExtractPage />
+            </Authorize>
+          )}
+        />
+        <Route
+          exact
+          path="/callback"
+          render={() => <Callback location={window.location} />}
+        />
+        <Route
+          path="/"
+          render={() => (
+            <Authorize>
+              <AnalysisPage />
+            </Authorize>
+          )}
+        />
+      </Switch>
     </ChakraProvider>
   );
 }
