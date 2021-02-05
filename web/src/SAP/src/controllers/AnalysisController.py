@@ -47,6 +47,7 @@ def submit_changes(user, token_info, body):
     assert_user_has("approve", token_info)
     updates = map(lambda x: x, body.keys())
     # TODO: Verify user is allowed to modify these keys
+    # TODO: Verify that none of these cells are already approved
     update_analysis(body)
     res = dict()
     for u in updates:

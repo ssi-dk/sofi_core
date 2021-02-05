@@ -333,8 +333,6 @@ export default function AnalysisPage() {
   const getStickyCellStyle = React.useCallback(
     (rowId: string) => {
       const approvedCells = Object.keys(approvals[rowId] || {}).length;
-      console.log(approvedCells);
-      console.log(approvableColumns.length)
       return approvableColumns.length - approvedCells >= 5
         ? "unapprovedCell stickyCell"
         : "stickyCell";
@@ -366,6 +364,13 @@ export default function AnalysisPage() {
     [submitChange]
   );
 
+  const onFreeTextEdit = React.useCallback(
+    (rowId: string, field: string) => (val: string) => {
+      submitChange({ [rowId]: { [field]: val } });
+    },
+    [submitChange]
+  );
+
   const renderCellControl = React.useCallback(
     (rowId: string, columnId: string, value: any) => {
       let v = `${value}`;
@@ -376,37 +381,51 @@ export default function AnalysisPage() {
       ) {
         v = value.toISOString();
       }
-      if (columnId === "species_final") {
-        return (
-          <InlineAutoComplete
-            options={speciesOptions}
-            onChange={onAutocompleteEdit(rowId, columnId)}
-            defaultValue={v}
-            isLoading={rowUpdating(rowId)}
-          />
-        );
-      }
-      if (columnId === "serotype_final") {
-        return (
-          <InlineAutoComplete
-            options={serotypeOptions}
-            onChange={onAutocompleteEdit(rowId, columnId)}
-            defaultValue={v}
-            isLoading={rowUpdating(rowId)}
-          />
-        );
-      }
-      if (columnConfigs[columnId].editable) {
-        return (
-          <Editable defaultValue={v}>
-            <EditablePreview />
-            <EditableInput />
-          </Editable>
-        );
+      // cannot edit cells that have already been approved
+      if (approvals?.[rowId]?.[columnId] !== ApprovalStatus.approved) {
+        if (columnId === "species_final") {
+          return (
+            <InlineAutoComplete
+              options={speciesOptions}
+              onChange={onAutocompleteEdit(rowId, columnId)}
+              defaultValue={v}
+              isLoading={rowUpdating(rowId)}
+            />
+          );
+        }
+        if (columnId === "serotype_final") {
+          return (
+            <InlineAutoComplete
+              options={serotypeOptions}
+              onChange={onAutocompleteEdit(rowId, columnId)}
+              defaultValue={v}
+              isLoading={rowUpdating(rowId)}
+            />
+          );
+        }
+        if (columnConfigs[columnId].editable) {
+          return (
+            <Editable
+              defaultValue={v}
+              onSubmit={onFreeTextEdit(rowId, columnId)}
+            >
+              <EditablePreview />
+              <EditableInput />
+            </Editable>
+          );
+        }
       }
       return <div>{`${v}`}</div>;
     },
-    [columnConfigs, speciesOptions, serotypeOptions, onAutocompleteEdit, rowUpdating]
+    [
+      columnConfigs,
+      speciesOptions,
+      serotypeOptions,
+      onAutocompleteEdit,
+      onFreeTextEdit,
+      rowUpdating,
+      approvals,
+    ]
   );
 
   const openDetailsView = React.useCallback(
