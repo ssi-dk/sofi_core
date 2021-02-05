@@ -274,6 +274,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
       if (rowIndex === 0) {
         // we are the header 'row'
         const col = visibleColumns[columnIndex];
+        if (!col) return <div />
         return (
           <div style={style}>
             <DataTableColumnHeader<T>
@@ -386,6 +387,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
   const getColumnWidth = React.useCallback(
     (colIndex) => {
       const col = visibleColumns[colIndex];
+      if (!col) return defaultColumn.width;
       if (!columnResizing.columnWidths[col.id]) {
         return defaultColumn.width;
       }

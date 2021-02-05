@@ -12,10 +12,12 @@ from .approval_request import ApprovalRequest
 from .approval_status import ApprovalStatus
 from .base_metadata import BaseMetadata
 from .column import Column
+from .data_clearance import DataClearance
 from .lims_metadata import LimsMetadata
 from .lims_specific_metadata import LimsSpecificMetadata
 from .organization import Organization
 from .page_of_analysis import PageOfAnalysis
+from .permission import Permission
 from .personal_data import PersonalData
 from .personal_identifier_type import PersonalIdentifierType
 from .resistance import Resistance
@@ -25,3 +27,4 @@ from .user_defined_view import UserDefinedView
 from .user_defined_view_column_resizing import UserDefinedViewColumnResizing
 from .user_defined_view_column_resizing_column_widths import UserDefinedViewColumnResizingColumnWidths
 from .user_defined_view_sort_by import UserDefinedViewSortBy
+from .user_info import UserInfo

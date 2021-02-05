@@ -38,7 +38,11 @@ const resources = {
       sampling_date: "Prøvetagningsdato",
       "Sign in failed": "Kunne ikke log på",
       "Error message:": "Fejlbesked:",
-      "History for isolate": "Historik for isolat ID:"
+      "History for isolate": "Historik for isolat ID:",
+      "Logout": "Log ud",
+      "Microbiologist": "Mikrobiolog",
+      "User": "Bruger",
+      "Level": "Niveau"
     },
   },
 };

@@ -59,7 +59,7 @@ function DataTableColumnHeader<T extends NotEmpty>(
           tabIndex={column.index}
           role="columnheader"
           ref={innerRef}
-          key={column.id}
+          key={column?.id}
           {...column.getHeaderProps(column.getSortByToggleProps())}
           onClick={noop} // Do not sort on header-click -- handled by button
           onKeyDown={noop}

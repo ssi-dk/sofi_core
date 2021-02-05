@@ -1,7 +1,17 @@
 from flask import abort
 from flask.json import jsonify
-from web.src.SAP.generated.models import UserDefinedView
+from web.src.SAP.generated.models import UserDefinedView, UserInfo
 from ..repositories.views import get_views, remove_view, create_view
+from web.src.SAP.src.security.permission_check import list_permissions
+
+def who_am_i(user, token_info):
+    return jsonify(UserInfo(
+        user_id=token_info["email"],
+        data_clearance=token_info["sofi-data-clearance"],
+        institution=token_info["institution"],
+        groups=token_info["security-groups"],
+        permissions=list_permissions(token_info)
+    ))
 
 def get_user_views(user, token_info):
     return jsonify(get_views(user))

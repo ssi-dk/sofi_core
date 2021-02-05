@@ -61,6 +61,7 @@ export const Callback = (props: {
           );
           setAccessToken(tokenResp.idToken);
           setRefreshToken(tokenResp.refreshToken);
+          
           const profile = await fetch(
             `${Environment.openIdConnectUrl}${Environment.userInfoEndpoint}`,
             {
@@ -69,7 +70,6 @@ export const Callback = (props: {
               },
             }
           );
-          console.log("userprofile", await profile.json());
           window.location.replace("/");
         } else {
           setAuthError(error);

@@ -1,6 +1,15 @@
 import React, { useState } from "react";
-import { Box, Flex, Button, useToast, Editable, EditablePreview, EditableInput, useDisclosure } from "@chakra-ui/react";
-import { NavLink } from 'react-router-dom';
+import {
+  Box,
+  Flex,
+  Button,
+  useToast,
+  Editable,
+  EditablePreview,
+  EditableInput,
+  useDisclosure,
+} from "@chakra-ui/react";
+import { NavLink } from "react-router-dom";
 import {
   CalendarIcon,
   CheckIcon,
@@ -8,15 +17,24 @@ import {
   NotAllowedIcon,
 } from "@chakra-ui/icons";
 import { Column } from "react-table";
-import { AnalysisResult, UserDefinedView, ApprovalRequest, AnalysisQuery, ApprovalStatus, SubmitChangesRequest } from "sap-client";
+import {
+  AnalysisResult,
+  UserDefinedView,
+  ApprovalRequest,
+  AnalysisQuery,
+  ApprovalStatus,
+  Permission,
+} from "sap-client";
 import { useMutation, useRequest } from "redux-query-react";
 import { useDispatch, useSelector } from "react-redux";
-import { requestAsync } from 'redux-query';
+import { requestAsync } from "redux-query";
 import camelCaseKeys from "camelcase-keys";
 import { useTranslation } from "react-i18next";
 import { OptionTypeBase } from "react-select";
 import { RootState } from "app/root-reducer";
-import { predicateBuilder, PropFilter, RangeFilter } from 'utils';
+import { predicateBuilder, PropFilter, RangeFilter } from "utils";
+import { IfPermission } from "auth/if-permission";
+import { Loading } from "loading";
 import DataTable from "./data-table/data-table";
 import {
   requestPageOfAnalysis,
@@ -30,7 +48,11 @@ import AnalysisSidebar from "./sidebar/analysis-sidebar";
 import AnalysisViewSelector from "./view-selector/analysis-view-selector";
 import AnalysisSearch from "./search/analysis-search";
 import { setSelection } from "./analysis-selection-configs";
-import { fetchApprovalMatrix, sendApproval, sendRejection } from "./analysis-approval-configs";
+import {
+  fetchApprovalMatrix,
+  sendApproval,
+  sendRejection,
+} from "./analysis-approval-configs";
 import { ColumnConfigWidget } from "./data-table/column-config-widget";
 import { toggleColumnVisibility } from "./view-selector/analysis-view-selection-config";
 import InlineAutoComplete from "../inputs/inline-autocomplete";
@@ -43,10 +65,16 @@ export default function AnalysisPage() {
   const dispatch = useDispatch();
 
   const [moreInfoIsolate, setMoreInfoIsolate] = useState("");
-  const { isOpen: isMoreInfoModalOpen, onOpen: onMoreInfoModalOpen, onClose: onMoreInfoModalClose } = useDisclosure();
+  const {
+    isOpen: isMoreInfoModalOpen,
+    onOpen: onMoreInfoModalOpen,
+    onClose: onMoreInfoModalClose,
+  } = useDisclosure();
 
   const [columnLoadState] = useRequest(requestColumns());
-  const [{ isPending, isFinished }] = useRequest({ ...requestPageOfAnalysis({ pageSize: 100 }) });
+  const [{ isPending, isFinished }] = useRequest({
+    ...requestPageOfAnalysis({ pageSize: 100 }),
+  });
   useRequest({ ...fetchApprovalMatrix() });
   // TODO: Figure out how to make this strongly typed
   const data = useSelector<RootState>((s) =>
@@ -61,10 +89,10 @@ export default function AnalysisPage() {
     () =>
       Object.keys(columnConfigs || []).map(
         (k) =>
-        ({
-          accessor: k,
-          Header: t(k),
-        } as Column<AnalysisResult>)
+          ({
+            accessor: k,
+            Header: t(k),
+          } as Column<AnalysisResult>)
       ),
     [columnConfigs, t]
   );
@@ -75,7 +103,9 @@ export default function AnalysisPage() {
     { isPending: pendingUpdate, status: updateStatus },
     // eslint-disable-next-line @typescript-eslint/naming-convention
     _submitChange,
-  ] = useMutation((payload: { [K: string]: { [K: string]: string } }) => updateAnalysis(payload));
+  ] = useMutation((payload: { [K: string]: { [K: string]: string } }) =>
+    updateAnalysis(payload)
+  );
 
   const [lastUpdatedRow, setLastUpdatedRow] = React.useState(null);
 
@@ -120,8 +150,12 @@ export default function AnalysisPage() {
     [columnConfigs]
   );
 
-  const [propFilters, setPropFilters] = React.useState({} as PropFilter<AnalysisResult>);
-  const [rangeFilters, setRangeFilters] = React.useState({} as RangeFilter<AnalysisResult>);
+  const [propFilters, setPropFilters] = React.useState(
+    {} as PropFilter<AnalysisResult>
+  );
+  const [rangeFilters, setRangeFilters] = React.useState(
+    {} as RangeFilter<AnalysisResult>
+  );
 
   const onPropFilterChange = React.useCallback(
     (p: PropFilter<AnalysisResult>) => {
@@ -137,9 +171,15 @@ export default function AnalysisPage() {
     [rangeFilters, setRangeFilters]
   );
 
-  const composedFilter = React.useCallback((a) => predicateBuilder(propFilters, rangeFilters)(a), [propFilters, rangeFilters]);
+  const composedFilter = React.useCallback(
+    (a) => predicateBuilder(propFilters, rangeFilters)(a),
+    [propFilters, rangeFilters]
+  );
 
-  const filteredData = React.useMemo(() => data.filter(composedFilter), [composedFilter, data]);
+  const filteredData = React.useMemo(() => data.filter(composedFilter), [
+    composedFilter,
+    data,
+  ]);
 
   const approvableColumns = React.useMemo(
     () => [
@@ -264,20 +304,34 @@ export default function AnalysisPage() {
     pendingRejection,
   ]);
 
-  const getCellStyle = React.useCallback((rowId: string, columnId: string) => {
-    if (!canApproveColumn(columnId)) {
-      return "cell";
-    }
-    if (approvals && approvals[rowId] && approvals[rowId][columnId] === ApprovalStatus.approved) {
-      return "cell";
-    }
-    if (approvals && approvals[rowId] && approvals[rowId][columnId] === ApprovalStatus.rejected) {
-      return "rejectedCell";
-    }
-    return "unapprovedCell";
-  }, [approvals, canApproveColumn]);
+  const getCellStyle = React.useCallback(
+    (rowId: string, columnId: string) => {
+      if (!canApproveColumn(columnId)) {
+        return "cell";
+      }
+      if (
+        approvals &&
+        approvals[rowId] &&
+        approvals[rowId][columnId] === ApprovalStatus.approved
+      ) {
+        return "cell";
+      }
+      if (
+        approvals &&
+        approvals[rowId] &&
+        approvals[rowId][columnId] === ApprovalStatus.rejected
+      ) {
+        return "rejectedCell";
+      }
+      return "unapprovedCell";
+    },
+    [approvals, canApproveColumn]
+  );
 
-  const speciesOptions = React.useMemo(() => Species.map(x => ({ label: x, value: x })), []);
+  const speciesOptions = React.useMemo(
+    () => Species.map((x) => ({ label: x, value: x })),
+    []
+  );
 
   const rowUpdating = React.useCallback(
     (id) => {
@@ -286,14 +340,21 @@ export default function AnalysisPage() {
     [lastUpdatedRow, pendingUpdate]
   );
 
-  const onAutocompleteEdit = React.useCallback((rowId: string, field: string) => (val: string | OptionTypeBase) => {
-    submitChange({ [rowId]: { [field]: (val as any).value } });
-  }, [submitChange]);
+  const onAutocompleteEdit = React.useCallback(
+    (rowId: string, field: string) => (val: string | OptionTypeBase) => {
+      submitChange({ [rowId]: { [field]: (val as any).value } });
+    },
+    [submitChange]
+  );
 
   const renderCellControl = React.useCallback(
     (rowId: string, columnId: string, value: any) => {
       let v = `${value}`;
-      if (columnId.endsWith("date") && value !== undefined && !Number.isNaN(value.getTime())) {
+      if (
+        columnId.endsWith("date") &&
+        value !== undefined &&
+        !Number.isNaN(value.getTime())
+      ) {
         v = value.toISOString();
       }
       if (columnId === "species_final") {
@@ -319,20 +380,29 @@ export default function AnalysisPage() {
     [columnConfigs, speciesOptions, onAutocompleteEdit, rowUpdating]
   );
 
-  const openDetailsView = React.useCallback((primaryKey: any) => {
-    setMoreInfoIsolate(primaryKey);
-    onMoreInfoModalOpen();
-  }, [setMoreInfoIsolate, onMoreInfoModalOpen])
+  const openDetailsView = React.useCallback(
+    (primaryKey: any) => {
+      setMoreInfoIsolate(primaryKey);
+      onMoreInfoModalOpen();
+    },
+    [setMoreInfoIsolate, onMoreInfoModalOpen]
+  );
 
-  const safeView = React.useMemo(() => camelCaseKeys(view, { deep: true }), [view]);
+  const safeView = React.useMemo(() => camelCaseKeys(view, { deep: true }), [
+    view,
+  ]);
   const sidebarWidth = "300px";
   if (!columnLoadState.isFinished) {
-    return <div>Loading</div>;
+    <Loading />
   }
 
   return (
     <React.Fragment>
-      <AnalysisDetails isolateId={moreInfoIsolate} isOpen={isMoreInfoModalOpen} onClose={onMoreInfoModalClose} />
+      <AnalysisDetails
+        isolateId={moreInfoIsolate}
+        isOpen={isMoreInfoModalOpen}
+        onClose={onMoreInfoModalClose}
+      />
       <Box
         display="grid"
         gridTemplateRows="5% 5% minmax(0, 80%) 10%"
@@ -351,11 +421,13 @@ export default function AnalysisPage() {
             <Box minW="250px" ml="5" mr="5">
               <AnalysisViewSelector />
             </Box>
-            <NavLink to="/approval-history">
-              <Button leftIcon={<CalendarIcon />}>
-                {t("My approval history")}
-              </Button>
-            </NavLink>
+            <IfPermission permission={Permission.approve}>
+              <NavLink to="/approval-history">
+                <Button leftIcon={<CalendarIcon />}>
+                  {t("My approval history")}
+                </Button>
+              </NavLink>
+            </IfPermission>
           </Flex>
         </Box>
         <Box role="form" gridColumn="1 / 2">
@@ -369,33 +441,38 @@ export default function AnalysisPage() {
         </Box>
         <Box role="main" gridColumn="2 / 4" borderWidth="1px" rounded="md">
           <Box m={2}>
-            <Button
-              leftIcon={<DragHandleIcon />}
-              margin="4px"
-              onClick={onNarrowHandler}
-            >
-              {pageState.isNarrowed ? t("Cancel") : t("Select")}
-            </Button>
-            <Button
-              leftIcon={<CheckIcon />}
-              margin="4px"
-              disabled={!pageState.isNarrowed}
-              onClick={approveSelection}
-            >
-              {t("Approve")}
-            </Button>
-            <Button
-              leftIcon={<NotAllowedIcon />}
-              margin="4px"
-              disabled={!pageState.isNarrowed}
-              onClick={rejectSelection}
-            >
-              {t("Reject")}
-            </Button>
+            <IfPermission permission={Permission.approve}>
+              <Button
+                leftIcon={<DragHandleIcon />}
+                margin="4px"
+                onClick={onNarrowHandler}
+              >
+                {pageState.isNarrowed ? t("Cancel") : t("Select")}
+              </Button>
+              <Button
+                leftIcon={<CheckIcon />}
+                margin="4px"
+                disabled={!pageState.isNarrowed}
+                onClick={approveSelection}
+              >
+                {t("Approve")}
+              </Button>
+              <Button
+                leftIcon={<NotAllowedIcon />}
+                margin="4px"
+                disabled={!pageState.isNarrowed}
+                onClick={rejectSelection}
+              >
+                {t("Reject")}
+              </Button>
+            </IfPermission>
 
             <ColumnConfigWidget>
               {columns.map((column) => (
-                <div key={column.accessor as string} style={{ marginTop: "5px" }}>
+                <div
+                  key={column.accessor as string}
+                  style={{ marginTop: "5px" }}
+                >
                   <input
                     type="checkbox"
                     checked={checkColumnIsVisible(column.accessor as string)}
@@ -409,7 +486,7 @@ export default function AnalysisPage() {
 
           <Box height="100%">
             <DataTable<AnalysisResult>
-              columns={columns /* todo: filter on permission level */}
+              columns={columns || []}
               canSelectColumn={canSelectColumn}
               canEditColumn={canEditColumn}
               canApproveColumn={canApproveColumn}
@@ -438,7 +515,8 @@ export default function AnalysisPage() {
               `${t("Found")} ${filteredData.length} ${t("records")}.`}
             {isFinished &&
               pageState.isNarrowed &&
-              `${t("Staging")} ${filteredData.filter((x) => selection[x.isolate_id]).length
+              `${t("Staging")} ${
+                filteredData.filter((x) => selection[x.isolate_id]).length
               } ${t("records")}.`}
           </Box>
         </Box>

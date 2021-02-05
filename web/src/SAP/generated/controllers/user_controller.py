@@ -2,6 +2,7 @@ import connexion
 import six
 
 from web.src.SAP.generated.models.user_defined_view import UserDefinedView  # noqa: E501
+from web.src.SAP.generated.models.user_info import UserInfo  # noqa: E501
 from .. import util
 from ...src.controllers import UserController
 
@@ -40,3 +41,13 @@ def get_user_views(user, token_info):  # noqa: E501
     :rtype: List[UserDefinedView]
     """
     return UserController.get_user_views(user, token_info)
+
+def who_am_i(user, token_info):  # noqa: E501
+    """who_am_i
+
+    Describe the current user and their permissions # noqa: E501
+
+
+    :rtype: UserInfo
+    """
+    return UserController.who_am_i(user, token_info)
