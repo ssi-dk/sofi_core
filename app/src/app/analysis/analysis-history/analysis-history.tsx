@@ -45,12 +45,12 @@ const AnalysisHistory = (props: AnalysisHistoryProps) => {
 
   return (
     <React.Fragment>
-      <Modal isOpen={isOpen} onClose={onClose} size="full">
+      <Modal isOpen={isOpen} onClose={onClose} size="full" >
         <ModalOverlay />
-        <ModalContent>
+        <ModalContent mt="0">
           <ModalHeader pl="7">{`${t("History for isolate")} ${isolateId}`}</ModalHeader>
           <ModalCloseButton />
-          <ModalBody px="7">
+          <ModalBody overflowY="auto" px="7">
             {isPending 
             ? <Loading /> 
             : <AnalysisHistoryTable sequences={analysisHistory} />}
