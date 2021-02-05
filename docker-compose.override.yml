@@ -12,6 +12,9 @@ services:
       - "bifrost_db"
 
   sap_broker_queue:
+    environment:
+      - TBR_API_URL=http://tbr_integration
+      - LIMS_API_URL=http://lims_integration
     depends_on:
       - "bifrost_db"
       - "sap_api"
@@ -56,10 +59,10 @@ services:
       - ./openapi_specs:/openapi_specs
   
   tbr_integration:
+    container_name: tbr_integration
     build: ./sap_tbr_integration
     environment:
       ASPNETCORE_ENVIRONMENT: Development
-      TBR_API_URL: https://sap_tbr_integration_1
     ports:
       - '5000:80'
       - '5001:443'
