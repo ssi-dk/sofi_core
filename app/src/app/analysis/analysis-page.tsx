@@ -330,6 +330,18 @@ export default function AnalysisPage() {
     [approvals, canApproveColumn]
   );
 
+  const getStickyCellStyle = React.useCallback(
+    (rowId: string) => {
+      const approvedCells = Object.keys(approvals[rowId] || {}).length;
+      console.log(approvedCells);
+      console.log(approvableColumns.length)
+      return approvableColumns.length - approvedCells >= 5
+        ? "unapprovedCell stickyCell"
+        : "stickyCell";
+    },
+    [approvals, approvableColumns]
+  );
+
   const speciesOptions = React.useMemo(
     () => Species.map((x) => ({ label: x, value: x })),
     []
@@ -507,6 +519,7 @@ export default function AnalysisPage() {
               approvableColumns={approvableColumns}
               getDependentColumns={getDependentColumns}
               getCellStyle={getCellStyle}
+              getStickyCellStyle={getStickyCellStyle}
               data={
                 pageState.isNarrowed
                   ? filteredData.filter((x) => selection[x.isolate_id])

@@ -10,6 +10,7 @@ import {
   fullApprovalMatrix,
 } from "sap-client";
 import { getUrl } from "service";
+import { AnalysisSlice } from "./analysis-query-configs";
 
 export type ApprovalSlice = {
   approvals: Array<Approval>;
@@ -30,16 +31,18 @@ const sendJudgement = (params: ApprovalRequest, judgement: ApprovalStatus) => {
     }
   }
   // use generated api client as base
-  const base = createApproval<ApprovalSlice>({ body: clone });
+  const base = createApproval<ApprovalSlice & AnalysisSlice>({ body: clone });
   // template the full path for the url
   base.url = getUrl(base.url);
   // define a transform for normalizing the data into our desired state
   base.transform = (response: Approval) => ({
     approvals: [response],
+    approvalMatrix: response.matrix
   });
   // define the update strategy for our state
   base.update = {
     approvals: (oldValue, newValue) => [...newValue, ...(oldValue || [])],
+    approvalMatrix: (oldValue, newValue) => ({...oldValue, ...newValue})
   };
   return base;
 };

@@ -46,6 +46,7 @@ type DataTableProps<T extends NotEmpty> = {
   onDetailsClick: (isolateId: string) => void;
   view: UserDefinedViewInternal;
   getCellStyle: (rowId: string, columnId: string) => string;
+  getStickyCellStyle: (rowId: string) => string;
   renderCellControl: (
     rowId: string,
     columnId: string,
@@ -77,6 +78,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
     canApproveColumn,
     getDependentColumns,
     getCellStyle,
+    getStickyCellStyle,
     renderCellControl,
     view,
   } = props;
@@ -327,7 +329,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
       const columnId = visibleColumns[columnIndex].id;
       const className =
         columnIndex === 0
-          ? "stickyCell"
+          ? getStickyCellStyle(rowId)
           : isInSelection(rowId, columnId)
           ? selectionClassName
           : getCellStyle(rowId, columnId);
@@ -380,6 +382,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
       rowClickHandler,
       isInSelection,
       getCellStyle,
+      getStickyCellStyle,
       onDetailsClick,
       renderCellControl,
       cellClickHandler
