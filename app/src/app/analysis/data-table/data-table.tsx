@@ -289,6 +289,20 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
     [onSelectRow]
   );
 
+  const cellClickHandler = React.useCallback(
+    (rowId, columnId) => (
+      event: React.MouseEvent<HTMLDivElement, MouseEvent>
+    ) => {
+      event.stopPropagation();
+      if (event.ctrlKey) {
+        if (canSelectColumn) {
+          onSelectCell(rowId, columnId);
+        }
+      }
+    },
+    [canSelectColumn, onSelectCell]
+  );
+
   const RenderCell = React.useCallback(
     ({ columnIndex, rowIndex, style }) => {
       // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
@@ -324,11 +338,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
           role="cell"
           style={style}
           className={className}
-          onClick={
-            canSelectColumn(columnId)
-              ? () => onSelectCell(rowId, columnId)
-              : noop
-          }
+          onClick={cellClickHandler(rowId, columnId)}
           key={columnIndex}
         >
           <Flex>
@@ -367,13 +377,12 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
       canSelectColumn,
       onSelectCol,
       onColumnResize,
-      noop,
-      onSelectCell,
       rowClickHandler,
       isInSelection,
       getCellStyle,
       onDetailsClick,
       renderCellControl,
+      cellClickHandler
     ]
   );
 
