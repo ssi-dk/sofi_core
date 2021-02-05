@@ -1,20 +1,21 @@
 import { createAction, createReducer } from "@reduxjs/toolkit";
-import { UserDefinedView } from "sap-client";
+import { UserDefinedViewInternal } from "models";
 
-const defaultView: UserDefinedView = {
+const defaultView: UserDefinedViewInternal = {
   name: "Default",
-  hidden_columns: [],
-  column_order: [],
-  sort_by: [],
+  columnResizing: { columnWidths: {}},
+  hiddenColumns: [],
+  columnOrder: [],
+  sortBy: [],
 };
 
 export const defaultViews = [defaultView];
 
 interface SelectedViewState {
-  view: UserDefinedView;
+  view: UserDefinedViewInternal;
 }
 
-export const setView = createAction<UserDefinedView>("view/setView");
+export const setView = createAction<UserDefinedViewInternal>("view/setView");
 
 export const toggleColumnVisibility = createAction<string>(
   "view/toggleColumnVisibility"
@@ -23,26 +24,27 @@ export const toggleColumnVisibility = createAction<string>(
 export const setDefaultView = createAction("view/defaultView");
 
 const initialState: SelectedViewState = {
-  view: {
-    hidden_columns: [],
-  },
+  view: defaultView
 };
 
 export const viewReducer = createReducer(initialState, (builder) => {
   builder
     .addCase(toggleColumnVisibility, (state, action) => {
-      const idx = state.view.hidden_columns.indexOf(action.payload);
+      const idx = state.view.hiddenColumns.indexOf(action.payload);
       if (idx > -1) {
-        state.view.hidden_columns = state.view.hidden_columns.filter(
+        state.view.hiddenColumns = state.view.hiddenColumns.filter(
           (x) => x !== action.payload
         );
       } else {
-        state.view.hidden_columns.push(action.payload);
+        state.view.hiddenColumns.push(action.payload);
       }
     })
-    .addCase(setView, (state, action: {type: string, payload: UserDefinedView}) => {
-      state.view = { ...action.payload };
-    })
+    .addCase(
+      setView,
+      (state, action: { type: string; payload: UserDefinedViewInternal }) => {
+        state.view = { ...action.payload };
+      }
+    )
     .addCase(setDefaultView, (state) => {
       state.view = { ...defaultView };
     });

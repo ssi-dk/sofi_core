@@ -12,12 +12,6 @@
  */
 
 import { exists, mapValues } from '../runtime';
-import {
-    UserDefinedViewColumnResizingColumnWidths,
-    UserDefinedViewColumnResizingColumnWidthsFromJSON,
-    UserDefinedViewColumnResizingColumnWidthsToJSON,
-} from './';
-
 /**
  * 
  * @export
@@ -26,10 +20,10 @@ import {
 export interface UserDefinedViewColumnResizing  {
     /**
      * 
-     * @type {Array<UserDefinedViewColumnResizingColumnWidths>}
+     * @type {{ [key: string]: object; }}
      * @memberof UserDefinedViewColumnResizing
      */
-    column_widths?: Array<UserDefinedViewColumnResizingColumnWidths>;
+    column_widths?: { [key: string]: object; };
     /**
      * 
      * @type {number}
@@ -40,7 +34,7 @@ export interface UserDefinedViewColumnResizing  {
 
 export function UserDefinedViewColumnResizingFromJSON(json: any): UserDefinedViewColumnResizing {
     return {
-        'column_widths': !exists(json, 'column_widths') ? undefined : (json['column_widths'] as Array<any>).map(UserDefinedViewColumnResizingColumnWidthsFromJSON),
+        'column_widths': !exists(json, 'column_widths') ? undefined : json['column_widths'],
         'column_width': !exists(json, 'column_width') ? undefined : json['column_width'],
     };
 }
@@ -50,7 +44,7 @@ export function UserDefinedViewColumnResizingToJSON(value?: UserDefinedViewColum
         return undefined;
     }
     return {
-        'column_widths': value.column_widths === undefined ? undefined : (value.column_widths as Array<any>).map(UserDefinedViewColumnResizingColumnWidthsToJSON),
+        'column_widths': value.column_widths,
         'column_width': value.column_width,
     };
 }

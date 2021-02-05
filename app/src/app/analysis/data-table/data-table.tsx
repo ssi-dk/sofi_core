@@ -17,14 +17,13 @@ import AutoSizer from "react-virtualized-auto-sizer";
 import { jsx } from "@emotion/react";
 import { DragDropContext, DropResult } from "react-beautiful-dnd";
 import { Flex, IconButton } from "@chakra-ui/react";
-import { ExternalLinkIcon } from '@chakra-ui/icons'
-import cleandeep from 'clean-deep'
-import deepmerge from 'lodash.merge';
+import { ExternalLinkIcon } from "@chakra-ui/icons";
+import deepmerge from "lodash.merge";
+import { UserDefinedViewInternal } from "models";
 import dtStyle from "app/analysis/data-table/data-table.styles";
-import { IndexableOf, NotEmpty, removeEmpty } from "utils";
+import { IndexableOf, NotEmpty } from "utils";
 import SelectionCheckBox from "./selection-check-box";
 import { exportDataTable } from "./table-spy";
-import { UserDefinedView } from "../../../sap-client/models";
 import { StickyVariableSizeGrid } from "./sticky-variable-size-grid";
 import DataTableColumnHeader from "./data-table-column-header";
 import "./data-table-cell-styles.css";
@@ -45,9 +44,13 @@ type DataTableProps<T extends NotEmpty> = {
   approvableColumns: string[];
   onSelect: (sel: DataTableSelection<T>) => void;
   onDetailsClick: (isolateId: string) => void;
-  view: UserDefinedView;
+  view: UserDefinedViewInternal;
   getCellStyle: (rowId: string, columnId: string) => string;
-  renderCellControl: (rowId: string, columnId: string, value: string) => JSX.Element;
+  renderCellControl: (
+    rowId: string,
+    columnId: string,
+    value: string
+  ) => JSX.Element;
 };
 
 function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
@@ -90,24 +93,19 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
 
   const resolveViewState = React.useCallback(
     (s: TableState<T>) => {
-      const nonEmptyState = cleandeep({...s});
       // use view as base, then play any nonEmptyState on top of it
-      const merged: TableState<T> = {} as TableState<T>;
-      deepmerge(merged, view, nonEmptyState) as TableState<T>;
-      if (!merged?.sortBy) {
-        merged.sortBy = [];
-      }
-      if (!merged?.columnResizing) {
-        merged.columnResizing = JSON.parse(JSON.stringify(s.columnResizing));
-      }
+      let merged: TableState<T> = {} as TableState<T>;
+      deepmerge(merged, view, s) as TableState<T>;
       // if the view changed, it overwrites whatever state we have
       if (view !== lastView) {
-        deepmerge(merged, view) as TableState<T>;
+        merged = (view as unknown) as TableState<T>;
         setLastView(view);
+        // force columns to resize
+        datagridRef.current.resetAfterColumnIndex(0);
       }
       return merged as TableState<T>;
     },
-    [view, lastView, setLastView]
+    [view, lastView, setLastView, datagridRef]
   );
 
   const onSelectCell = React.useCallback(
@@ -143,7 +141,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
     {
       columns,
       data: data ?? [],
-      useControlledState: resolveViewState, 
+      useControlledState: resolveViewState,
       defaultColumn,
     },
     useBlockLayout,
@@ -297,7 +295,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
       if (rowIndex === 0) {
         // we are the header 'row'
         const col = visibleColumns[columnIndex];
-        if (!col) return <div />
+        if (!col) return <div />;
         return (
           <div style={style}>
             <DataTableColumnHeader<T>
@@ -313,8 +311,12 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
       }
       const rowId = rows[rowIndex - 1].original[primaryKey];
       const columnId = visibleColumns[columnIndex].id;
-      const className = columnIndex === 0 ? "stickyCell" :
-                            isInSelection(rowId, columnId) ? selectionClassName : getCellStyle(rowId, columnId);
+      const className =
+        columnIndex === 0
+          ? "stickyCell"
+          : isInSelection(rowId, columnId)
+          ? selectionClassName
+          : getCellStyle(rowId, columnId);
 
       return (
         // eslint-disable-next-line jsx-a11y/click-events-have-key-events
@@ -336,10 +338,21 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
                   onClick={rowClickHandler(rows[rowIndex - 1])}
                   {...calcRowSelectionState(rows[rowIndex - 1])}
                 />
-                <IconButton size="1em" variant="unstyled" onClick={() => onDetailsClick(rowId)} aria-label="Search database" icon={<ExternalLinkIcon marginTop="-0.5em"/>} ml="1"/>
+                <IconButton
+                  size="1em"
+                  variant="unstyled"
+                  onClick={() => onDetailsClick(rowId)}
+                  aria-label="Search database"
+                  icon={<ExternalLinkIcon marginTop="-0.5em" />}
+                  ml="1"
+                />
               </React.Fragment>
             )}
-            {renderCellControl(rowId, columnId, rows[rowIndex - 1].original[columnId])}
+            {renderCellControl(
+              rowId,
+              columnId,
+              rows[rowIndex - 1].original[columnId]
+            )}
           </Flex>
         </div>
       );

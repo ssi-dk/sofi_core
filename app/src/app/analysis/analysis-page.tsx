@@ -19,7 +19,6 @@ import {
 import { Column } from "react-table";
 import {
   AnalysisResult,
-  UserDefinedView,
   ApprovalRequest,
   AnalysisQuery,
   ApprovalStatus,
@@ -28,9 +27,9 @@ import {
 import { useMutation, useRequest } from "redux-query-react";
 import { useDispatch, useSelector } from "react-redux";
 import { requestAsync } from "redux-query";
-import camelCaseKeys from "camelcase-keys";
 import { useTranslation } from "react-i18next";
 import { OptionTypeBase } from "react-select";
+import { UserDefinedViewInternal } from "models";
 import { RootState } from "app/root-reducer";
 import { predicateBuilder, PropFilter, RangeFilter } from "utils";
 import { IfPermission } from "auth/if-permission";
@@ -119,7 +118,7 @@ export default function AnalysisPage() {
 
   const selection = useSelector<RootState>((s) => s.selection.selection);
   const approvals = useSelector<RootState>((s) => s.entities.approvalMatrix);
-  const view = useSelector<RootState>((s) => s.view.view) as UserDefinedView;
+  const view = useSelector<RootState>((s) => s.view.view) as UserDefinedViewInternal;
 
   const onSearch = React.useCallback(
     (q: AnalysisQuery) => {
@@ -139,7 +138,7 @@ export default function AnalysisPage() {
     [dispatch]
   );
   const checkColumnIsVisible = React.useCallback(
-    (id) => view.hidden_columns.indexOf(id) < 0,
+    (id) => view.hiddenColumns.indexOf(id) < 0,
     [view]
   );
 
@@ -388,9 +387,6 @@ export default function AnalysisPage() {
     [setMoreInfoIsolate, onMoreInfoModalOpen]
   );
 
-  const safeView = React.useMemo(() => camelCaseKeys(view, { deep: true }), [
-    view,
-  ]);
   const sidebarWidth = "300px";
   if (!columnLoadState.isFinished) {
     <Loading />
@@ -505,7 +501,7 @@ export default function AnalysisPage() {
               }
               onSelect={(sel) => dispatch(setSelection(sel))}
               onDetailsClick={openDetailsView}
-              view={safeView}
+              view={view}
             />
           </Box>
           <Box role="status" gridColumn="2 / 4">

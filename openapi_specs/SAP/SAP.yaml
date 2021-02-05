@@ -398,14 +398,8 @@ components:
           type: object
           properties:
             column_widths:
-              type: array
-              items:
-                type: object
-                properties:
-                  columnName:
-                    type: string
-                  width:
-                    type: integer
+              type: object
+              additionalProperties: true
             column_width:
               type: integer
         sort_by:
