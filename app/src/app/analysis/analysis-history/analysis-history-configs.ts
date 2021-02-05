@@ -34,5 +34,6 @@ export const sequencesFromIsolateId = (isolateId: string) => {
       ...newValue,
     }),
   };
+  base.force = true;
   return base;
 };
