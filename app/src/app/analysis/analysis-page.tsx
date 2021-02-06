@@ -9,9 +9,7 @@ import {
   EditableInput,
   useDisclosure,
 } from "@chakra-ui/react";
-import { NavLink } from "react-router-dom";
 import {
-  CalendarIcon,
   CheckIcon,
   DragHandleIcon,
   NotAllowedIcon,
@@ -475,13 +473,7 @@ export default function AnalysisPage() {
             <Box minW="250px" ml="5" mr="5">
               <AnalysisViewSelector />
             </Box>
-            <IfPermission permission={Permission.approve}>
-              <NavLink to="/approval-history">
-                <Button leftIcon={<CalendarIcon />}>
-                  {t("My approval history")}
-                </Button>
-              </NavLink>
-            </IfPermission>
+
           </Flex>
         </Box>
         <Box role="main" gridColumn="2 / 4" borderWidth="1px" rounded="md">
