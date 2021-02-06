@@ -470,10 +470,9 @@ export default function AnalysisPage() {
         <Box role="navigation" gridColumn="2 / 4" pb={5}>
           <Flex justifyContent="flex-end">
             <AnalysisSearch onSubmit={onSearch} />
-            <Box minW="250px" ml="5" mr="5">
+            <Box minW="250px" ml="5">
               <AnalysisViewSelector />
             </Box>
-
           </Flex>
         </Box>
         <Box role="main" gridColumn="2 / 4" borderWidth="1px" rounded="md">
