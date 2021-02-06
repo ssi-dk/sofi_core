@@ -283,6 +283,7 @@ paths:
       responses:
         '204':
           description: Isolate uploaded successfully.
+
   /upload/multi_upload:
     post:
       description: Manually upload multiple sequences with metadata
@@ -304,6 +305,7 @@ paths:
       responses:
         '204':
           description: Isolate uploaded successfully.
+
   /upload/bulk_metadata:
     post:
       description: Manually upload metadata for previously uploaded sequence files
@@ -500,7 +502,6 @@ components:
         primary_isolate:
           type: boolean
 
-
     TbrSpecificMetadata:
       type: object
       required:
@@ -623,6 +624,8 @@ components:
             toxins:
               type: string
             toxins_final:
+              type: string
+            infection_source:
               type: string
             resistance_genes:
               type: string

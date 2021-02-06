@@ -42,6 +42,7 @@ const resources = {
       User: "Bruger",
       Level: "Niveau",
 
+      // field name translations
       received_date: "Modtagedato",
       sampling_date: "Prøvetagningsdato",
       institution: "Institution",
@@ -53,7 +54,8 @@ const resources = {
       fud_number: "Fud nr",
       cluster_id: "ClusterID",
       serotype_final: "Serotyp final",
-      st: "ST"
+      st: "ST",
+      infection_source: "Smittekilde"
     },
   },
 };

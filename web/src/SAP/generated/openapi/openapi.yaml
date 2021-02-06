@@ -774,6 +774,8 @@ components:
           type: string
         toxins_final:
           type: string
+        infection_source:
+          type: string
         resistance_genes:
           type: string
         amr_profile:

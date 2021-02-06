@@ -29,7 +29,7 @@ class AnalysisResult(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, isolate_id=None, sequence_id=None, sequence_filename=None, institution=None, project_number=None, project_title=None, sampling_date=None, received_date=None, run_id=None, public=None, provided_species=None, primary_isolate=None, chr_number=None, aut_number=None, product_type=None, product=None, origin_country=None, animal_species=None, sample_info=None, cpr=None, gender=None, name=None, age=None, travel=None, travel_country=None, run_date=None, kma_received_date=None, kma=None, region=None, fud_number=None, cluster_id=None, epi_export=None, id=None, resfinder_version=None, qc_provided_species=None, qc_genome1x=None, qc_genome10x=None, qc_gsize_diff1x10=None, qc_avg_coverage=None, qc_final=None, subspecies=None, species_final=None, st=None, pathotype=None, pathotype_final=None, serotype=None, serotype_final=None, adhesion=None, adhesion_final=None, toxins=None, toxins_final=None, resistance_genes=None, amr_profile=None, amr_ami=None, amr_amp=None, amr_azi=None, amr_fep=None, amr_fot=None, amr_f_c=None, amr_fox=None, amr_taz=None, amr_t_c=None, amr_chl=None, amr_cip=None, amr_cli=None, amr_col=None, amr_dap=None, amr_etp=None, amr_ery=None, amr_fus=None, amr_gen=None, amr_imi=None, amr_kan=None, amr_lzd=None, amr_mero=None, amr_mup=None, amr_nal=None, amr_pen=None, amr_syn=None, amr_rif=None, amr_str=None, amr_sul=None, amr_tei=None, amr_trm=None, amr_tet=None, amr_tia=None, amr_tgc=None, amr_tmp=None, amr_van=None):  # noqa: E501
+    def __init__(self, isolate_id=None, sequence_id=None, sequence_filename=None, institution=None, project_number=None, project_title=None, sampling_date=None, received_date=None, run_id=None, public=None, provided_species=None, primary_isolate=None, chr_number=None, aut_number=None, product_type=None, product=None, origin_country=None, animal_species=None, sample_info=None, cpr=None, gender=None, name=None, age=None, travel=None, travel_country=None, run_date=None, kma_received_date=None, kma=None, region=None, fud_number=None, cluster_id=None, epi_export=None, id=None, resfinder_version=None, qc_provided_species=None, qc_genome1x=None, qc_genome10x=None, qc_gsize_diff1x10=None, qc_avg_coverage=None, qc_final=None, subspecies=None, species_final=None, st=None, pathotype=None, pathotype_final=None, serotype=None, serotype_final=None, adhesion=None, adhesion_final=None, toxins=None, toxins_final=None, infection_source=None, resistance_genes=None, amr_profile=None, amr_ami=None, amr_amp=None, amr_azi=None, amr_fep=None, amr_fot=None, amr_f_c=None, amr_fox=None, amr_taz=None, amr_t_c=None, amr_chl=None, amr_cip=None, amr_cli=None, amr_col=None, amr_dap=None, amr_etp=None, amr_ery=None, amr_fus=None, amr_gen=None, amr_imi=None, amr_kan=None, amr_lzd=None, amr_mero=None, amr_mup=None, amr_nal=None, amr_pen=None, amr_syn=None, amr_rif=None, amr_str=None, amr_sul=None, amr_tei=None, amr_trm=None, amr_tet=None, amr_tia=None, amr_tgc=None, amr_tmp=None, amr_van=None):  # noqa: E501
         """AnalysisResult - a model defined in OpenAPI
 
         :param isolate_id: The isolate_id of this AnalysisResult.  # noqa: E501
@@ -134,6 +134,8 @@ class AnalysisResult(Model):
         :type toxins: str
         :param toxins_final: The toxins_final of this AnalysisResult.  # noqa: E501
         :type toxins_final: str
+        :param infection_source: The infection_source of this AnalysisResult.  # noqa: E501
+        :type infection_source: str
         :param resistance_genes: The resistance_genes of this AnalysisResult.  # noqa: E501
         :type resistance_genes: str
         :param amr_profile: The amr_profile of this AnalysisResult.  # noqa: E501
@@ -263,6 +265,7 @@ class AnalysisResult(Model):
             'adhesion_final': str,
             'toxins': str,
             'toxins_final': str,
+            'infection_source': str,
             'resistance_genes': str,
             'amr_profile': str,
             'amr_ami': Resistance,
@@ -355,6 +358,7 @@ class AnalysisResult(Model):
             'adhesion_final': 'adhesion_final',
             'toxins': 'toxins',
             'toxins_final': 'toxins_final',
+            'infection_source': 'infection_source',
             'resistance_genes': 'resistance_genes',
             'amr_profile': 'amr_profile',
             'amr_ami': 'amr_ami',
@@ -446,6 +450,7 @@ class AnalysisResult(Model):
         self._adhesion_final = adhesion_final
         self._toxins = toxins
         self._toxins_final = toxins_final
+        self._infection_source = infection_source
         self._resistance_genes = resistance_genes
         self._amr_profile = amr_profile
         self._amr_ami = amr_ami
@@ -1608,6 +1613,27 @@ class AnalysisResult(Model):
         """
 
         self._toxins_final = toxins_final
+
+    @property
+    def infection_source(self):
+        """Gets the infection_source of this AnalysisResult.
+
+
+        :return: The infection_source of this AnalysisResult.
+        :rtype: str
+        """
+        return self._infection_source
+
+    @infection_source.setter
+    def infection_source(self, infection_source):
+        """Sets the infection_source of this AnalysisResult.
+
+
+        :param infection_source: The infection_source of this AnalysisResult.
+        :type infection_source: str
+        """
+
+        self._infection_source = infection_source
 
     @property
     def resistance_genes(self):

@@ -151,5 +151,12 @@
     "organizations": [
       "FVST"
     ]
+  },
+  {
+    "field_name": "infection_source",
+    "editable": true,
+    "organizations": [
+      "FVST"
+    ]
   }
 ]
