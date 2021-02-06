@@ -20,6 +20,5 @@ export * from './TbrMetadata';
 export * from './TbrSpecificMetadata';
 export * from './UserDefinedView';
 export * from './UserDefinedViewColumnResizing';
-export * from './UserDefinedViewColumnResizingColumnWidths';
 export * from './UserDefinedViewSortBy';
 export * from './UserInfo';

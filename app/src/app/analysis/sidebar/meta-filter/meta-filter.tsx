@@ -3,7 +3,8 @@ import { Text, Flex } from "@chakra-ui/react";
 import Select, { ActionMeta, OptionTypeBase, ValueType } from "react-select";
 import { selectTheme } from "app/app.styles";
 import { useTranslation } from "react-i18next";
-import { AnalysisResult } from "sap-client";
+import { AnalysisResult, DataClearance, Organization } from "sap-client";
+import { IfPermission } from "auth/if-permission";
 import { PropFilter, RangeFilter } from "utils";
 import FilterBox from "../filter-box";
 import DatePicker from "./date-picker";
@@ -11,7 +12,13 @@ import DatePicker from "./date-picker";
 type MetaFilterProps = {
   organisations: string[];
   projects: string[];
-  species: string[];
+  projectNrs: string[];
+  dyreart: string[];
+  runIds: string[];
+  isolateIds: string[];
+  cprs: string[];
+  fuds: string[];
+  clusters: string[];
   onPropFilterChange: (resultingFilter: PropFilter<AnalysisResult>) => void;
   onRangeFilterChange: (resultingFilter: RangeFilter<AnalysisResult>) => void;
 };
@@ -20,7 +27,13 @@ function MetaFilter(props: MetaFilterProps) {
   const {
     organisations,
     projects,
-    species,
+    projectNrs,
+    dyreart,
+    runIds,
+    isolateIds,
+    cprs,
+    fuds,
+    clusters,
     onPropFilterChange,
     onRangeFilterChange,
   } = props;
@@ -80,9 +93,33 @@ function MetaFilter(props: MetaFilterProps) {
     () => projects.map((x) => ({ value: x, label: x })),
     [projects]
   );
-  const speciesOptions = React.useMemo(
-    () => species.map((x) => ({ value: x, label: x })),
-    [species]
+  const projectNrOptions = React.useMemo(
+    () => projectNrs.map((x) => ({ value: x, label: x })),
+    [projectNrs]
+  );
+  const dyreartOptions = React.useMemo(
+    () => dyreart.map((x) => ({ value: x, label: x })),
+    [dyreart]
+  );
+  const runIdsOptions = React.useMemo(
+    () => runIds.map((x) => ({ value: x, label: x })),
+    [runIds]
+  );
+  const isolateIdsOptions = React.useMemo(
+    () => isolateIds.map((x) => ({ value: x, label: x })),
+    [isolateIds]
+  );
+  const cprOptions = React.useMemo(
+    () => cprs.map((x) => ({ value: x, label: x })),
+    [cprs]
+  );
+  const fudOptions = React.useMemo(
+    () => fuds.map((x) => ({ value: x, label: x })),
+    [fuds]
+  );
+  const clusterOptions = React.useMemo(
+    () => clusters.map((x) => ({ value: x, label: x })),
+    [clusters]
   );
 
   const onChangeBuilder: (
@@ -129,21 +166,34 @@ function MetaFilter(props: MetaFilterProps) {
           placeholderText={t("To")}
         />
       </Flex>
-      <Text mt={2}>{t("Organisation")}</Text>
+      <Text mt={2}>{t("institution")}</Text>
       <Select
         options={organisationOptions}
         isMulti
         theme={selectTheme}
         onChange={onChangeBuilder("institution")}
       />
-      <Text mt={2}>{t("Projekt")}</Text>
-      <Select
-        options={projectOptions}
-        isMulti
-        theme={selectTheme}
-        onChange={onChangeBuilder("project_title")}
-      />
-      <Text mt={2}>{t("Modtagedato")}</Text>
+      <Flex justifyContent="space-between" direction="row">
+        <Flex direction="column" width="100%">
+          <Text mt={2}>{t("project_title")}</Text>
+          <Select
+            options={projectOptions}
+            isMulti
+            theme={selectTheme}
+            onChange={onChangeBuilder("project_title")}
+          />
+        </Flex>
+        <Flex direction="column" width="100%">
+          <Text mt={2}>{t("project_number")}</Text>
+          <Select
+            options={projectNrOptions}
+            isMulti
+            theme={selectTheme}
+            onChange={onChangeBuilder("project_number")}
+          />
+        </Flex>
+      </Flex>
+      <Text mt={2}>{t("received_date")}</Text>
       <Flex>
         <DatePicker
           selectedDate={receivedStartDate}
@@ -158,13 +208,65 @@ function MetaFilter(props: MetaFilterProps) {
           placeholderText={t("To")}
         />
       </Flex>
-      <Text mt={2}>{t("Dyreart")}</Text>
+      <Text mt={2}>{t("dyreart")}</Text>
       <Select
-        options={speciesOptions}
+        options={dyreartOptions}
         isMulti
         theme={selectTheme}
-        onChange={onChangeBuilder("provided_species")}
+        onChange={onChangeBuilder("species_final")}
       />
+      <Flex justifyContent="space-between" direction="row">
+        <Flex direction="column" width="100%">
+          <Text mt={2}>{t("run_id")}</Text>
+          <Select
+            options={runIdsOptions}
+            isMulti
+            theme={selectTheme}
+            onChange={onChangeBuilder("run_id")}
+          />
+        </Flex>
+        <Flex direction="column" width="100%">
+          <Text mt={2}>{t("isolate_id")}</Text>
+          <Select
+            options={isolateIdsOptions}
+            isMulti
+            theme={selectTheme}
+            onChange={onChangeBuilder("isolate_id")}
+          />
+        </Flex>
+      </Flex>
+      <IfPermission
+        level={DataClearance.cross_institution}
+        institution={Organization.SSI}
+      >
+        <Text mt={2}>{t("cpr")}</Text>
+        <Select
+          options={cprOptions}
+          isMulti
+          theme={selectTheme}
+          onChange={onChangeBuilder("cpr")}
+        />
+      </IfPermission>
+      <Flex justifyContent="space-between" direction="row">
+        <Flex direction="column" width="100%">
+          <Text mt={2}>{t("fud_number")}</Text>
+          <Select
+            options={fudOptions}
+            isMulti
+            theme={selectTheme}
+            onChange={onChangeBuilder("fud_number")}
+          />
+        </Flex>
+        <Flex direction="column" width="100%">
+          <Text mt={2}>{t("cluster_id")}</Text>
+          <Select
+            options={clusterOptions}
+            isMulti
+            theme={selectTheme}
+            onChange={onChangeBuilder("cluster_id")}
+          />
+        </Flex>
+      </Flex>
     </FilterBox>
   );
 }

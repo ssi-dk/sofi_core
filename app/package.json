@@ -76,7 +76,7 @@
     "redux-query-interface-superagent": "^3.4.2",
     "redux-query-react": "^3.4.2",
     "snakecase-keys": "^3.2.1",
-    "typescript": "^4"
+    "typescript": "^4.1"
   },
   "scripts": {
     "start": "PORT=3333 react-scripts start",

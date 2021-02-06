@@ -1,6 +1,6 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import React from "react";
+import React, { useState } from "react";
 import {
   useTable,
   useBlockLayout,
@@ -17,12 +17,13 @@ import AutoSizer from "react-virtualized-auto-sizer";
 import { jsx } from "@emotion/react";
 import { DragDropContext, DropResult } from "react-beautiful-dnd";
 import { Flex, IconButton } from "@chakra-ui/react";
-import { ExternalLinkIcon } from '@chakra-ui/icons'
+import { ExternalLinkIcon } from "@chakra-ui/icons";
+import deepmerge from "lodash.merge";
+import { UserDefinedViewInternal } from "models";
 import dtStyle from "app/analysis/data-table/data-table.styles";
 import { IndexableOf, NotEmpty } from "utils";
 import SelectionCheckBox from "./selection-check-box";
 import { exportDataTable } from "./table-spy";
-import { UserDefinedView } from "../../../sap-client/models";
 import { StickyVariableSizeGrid } from "./sticky-variable-size-grid";
 import DataTableColumnHeader from "./data-table-column-header";
 import "./data-table-cell-styles.css";
@@ -43,9 +44,14 @@ type DataTableProps<T extends NotEmpty> = {
   approvableColumns: string[];
   onSelect: (sel: DataTableSelection<T>) => void;
   onDetailsClick: (isolateId: string) => void;
-  view: UserDefinedView;
+  view: UserDefinedViewInternal;
   getCellStyle: (rowId: string, columnId: string) => string;
-  renderCellControl: (rowId: string, columnId: string, value: string) => JSX.Element;
+  getStickyCellStyle: (rowId: string) => string;
+  renderCellControl: (
+    rowId: string,
+    columnId: string,
+    value: string
+  ) => JSX.Element;
 };
 
 function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
@@ -72,6 +78,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
     canApproveColumn,
     getDependentColumns,
     getCellStyle,
+    getStickyCellStyle,
     renderCellControl,
     view,
   } = props;
@@ -82,6 +89,25 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
       return selection[rowId] && selection[rowId][columnId];
     },
     [selection]
+  );
+
+  const [lastView, setLastView] = useState(view);
+
+  const resolveViewState = React.useCallback(
+    (s: TableState<T>) => {
+      // use view as base, then play any nonEmptyState on top of it
+      let merged: TableState<T> = {} as TableState<T>;
+      deepmerge(merged, view, s) as TableState<T>;
+      // if the view changed, it overwrites whatever state we have
+      if (view !== lastView) {
+        merged = (view as unknown) as TableState<T>;
+        setLastView(view);
+        // force columns to resize
+        datagridRef.current.resetAfterColumnIndex(0);
+      }
+      return merged as TableState<T>;
+    },
+    [view, lastView, setLastView, datagridRef]
   );
 
   const onSelectCell = React.useCallback(
@@ -117,10 +143,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
     {
       columns,
       data: data ?? [],
-      useControlledState: React.useCallback(
-        (s) => ({ ...s, ...(view as TableState<T>) }),
-        [view]
-      ),
+      useControlledState: resolveViewState,
       defaultColumn,
     },
     useBlockLayout,
@@ -268,13 +291,27 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
     [onSelectRow]
   );
 
+  const cellClickHandler = React.useCallback(
+    (rowId, columnId) => (
+      event: React.MouseEvent<HTMLDivElement, MouseEvent>
+    ) => {
+      event.stopPropagation();
+      if (event.ctrlKey) {
+        if (canSelectColumn) {
+          onSelectCell(rowId, columnId);
+        }
+      }
+    },
+    [canSelectColumn, onSelectCell]
+  );
+
   const RenderCell = React.useCallback(
     ({ columnIndex, rowIndex, style }) => {
       // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
       if (rowIndex === 0) {
         // we are the header 'row'
         const col = visibleColumns[columnIndex];
-        if (!col) return <div />
+        if (!col) return <div />;
         return (
           <div style={style}>
             <DataTableColumnHeader<T>
@@ -290,8 +327,12 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
       }
       const rowId = rows[rowIndex - 1].original[primaryKey];
       const columnId = visibleColumns[columnIndex].id;
-      const className = columnIndex === 0 ? "stickyCell" :
-                            isInSelection(rowId, columnId) ? selectionClassName : getCellStyle(rowId, columnId);
+      const className =
+        columnIndex === 0
+          ? getStickyCellStyle(rowId)
+          : isInSelection(rowId, columnId)
+          ? selectionClassName
+          : getCellStyle(rowId, columnId);
 
       return (
         // eslint-disable-next-line jsx-a11y/click-events-have-key-events
@@ -299,11 +340,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
           role="cell"
           style={style}
           className={className}
-          onClick={
-            canSelectColumn(columnId)
-              ? () => onSelectCell(rowId, columnId)
-              : noop
-          }
+          onClick={cellClickHandler(rowId, columnId)}
           key={columnIndex}
         >
           <Flex>
@@ -313,10 +350,21 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
                   onClick={rowClickHandler(rows[rowIndex - 1])}
                   {...calcRowSelectionState(rows[rowIndex - 1])}
                 />
-                <IconButton size="1em" variant="unstyled" onClick={() => onDetailsClick(rowId)} aria-label="Search database" icon={<ExternalLinkIcon marginTop="-0.5em"/>} ml="1"/>
+                <IconButton
+                  size="1em"
+                  variant="unstyled"
+                  onClick={() => onDetailsClick(rowId)}
+                  aria-label="Search database"
+                  icon={<ExternalLinkIcon marginTop="-0.5em" />}
+                  ml="1"
+                />
               </React.Fragment>
             )}
-            {renderCellControl(rowId, columnId, rows[rowIndex - 1].original[columnId])}
+            {renderCellControl(
+              rowId,
+              columnId,
+              rows[rowIndex - 1].original[columnId]
+            )}
           </Flex>
         </div>
       );
@@ -331,13 +379,13 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
       canSelectColumn,
       onSelectCol,
       onColumnResize,
-      noop,
-      onSelectCell,
       rowClickHandler,
       isInSelection,
       getCellStyle,
+      getStickyCellStyle,
       onDetailsClick,
       renderCellControl,
+      cellClickHandler
     ]
   );
 

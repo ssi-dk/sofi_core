@@ -2,21 +2,20 @@ import React from "react";
 import Select from "react-select";
 import { RootState } from 'app/root-reducer';
 import { selectTheme } from "app/app.styles";
-import { UserDefinedView } from "sap-client";
+import { UserDefinedViewInternal } from "models";
 import { useMutation, useRequest } from "redux-query-react";
 import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { requestUserViews, addUserViewMutation, deleteUserViewMutation } from "./analysis-view-query-configs";
 import { defaultViews, setView } from './analysis-view-selection-config';
 import { spyDataTable } from "../data-table/table-spy";
-import { mapTableStateToView } from "./table-state-view-mapper";
 
 const AnalysisViewSelector = () => {
   const { t } = useTranslation();
   const addViewValue = "AddView";
   const deleteViewValue = "DeleteView";
 
-  const buildOptions = React.useCallback((options: UserDefinedView[]) => [
+  const buildOptions = React.useCallback((options: UserDefinedViewInternal[]) => [
     { label: `-- ${t("Save current view")}`, value: addViewValue },
     { label: `-- ${t("Delete current view")}`, value: deleteViewValue },
     { label: t("Predefined views"), options: defaultViews.map(x => ({ label: x.name, value: x })) },
@@ -30,26 +29,27 @@ const AnalysisViewSelector = () => {
     },
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (a: any, b: any) => a.entities?.userViews === b.entities?.userViews // prevents unnecessary re-renders
-  ) as UserDefinedView[];
-  const view = useSelector<RootState>((s) => s.view.view) as UserDefinedView;
+  ) as UserDefinedViewInternal[];
+  const view = useSelector<RootState>((s) => s.view.view) as UserDefinedViewInternal;
   const viewReq = React.useMemo(
     () => ({
       ...requestUserViews(),
     }), []
   );
   const [{ isPending, isFinished }] = useRequest(viewReq);
-  const [queryState, addView] = useMutation((v: UserDefinedView) => addUserViewMutation(v));
-  const deleteView = useMutation((v: UserDefinedView) => deleteUserViewMutation(v))[1];
+  const [queryState, addView] = useMutation((v: UserDefinedViewInternal) => addUserViewMutation(v));
+  const deleteView = useMutation((v: UserDefinedViewInternal) => deleteUserViewMutation(v))[1];
 
   const viewSelectUpdate = React.useCallback(
-    (event) => {
+    (async (event) => {
       const { value } = event;
       if (value === addViewValue) {
         const viewName = prompt("View name");
         if (viewName) {
           const tableState = spyDataTable();
-          const newView = mapTableStateToView(viewName, tableState);
-          addView(newView).then(() => dispatch(setView(newView)));
+          const newView = { ...tableState, name: viewName };
+          await addView(newView);
+          dispatch(setView(newView));
         }
       } else if (value === deleteViewValue) {
         // eslint-disable-next-line
@@ -58,23 +58,25 @@ const AnalysisViewSelector = () => {
         );
         if (doIt) {
           deleteView(view);
+          dispatch(setView(defaultViews[0]));
         }
       } else {
         dispatch(setView(value));
       }
-    },
+    }),
     [dispatch, addView, deleteView, t, view]
   );
 
-  const defaultValue= React.useMemo(() => ({label: view.name, value: view}), [view]);
+  const value= React.useMemo(() => ({label: view.name, value: view}), [view]);
 
   return <Select 
     options={isFinished ? buildOptions(userViews) : [] as any[]}
-    defaultValue={defaultValue}
+    defaultValue={value}
+    value={value}
     theme={selectTheme} 
     isLoading={isPending || queryState.isPending}
     onChange={viewSelectUpdate}
   />;
 }
 
-export default React.memo(AnalysisViewSelector);
+export default AnalysisViewSelector;

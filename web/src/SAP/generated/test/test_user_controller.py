@@ -20,14 +20,10 @@ class TestUserController(BaseTestCase):
         """
         user_defined_view = {
   "column_resizing" : {
-    "column_width" : 6,
-    "column_widths" : [ {
-      "width" : 0,
-      "columnName" : "columnName"
-    }, {
-      "width" : 0,
-      "columnName" : "columnName"
-    } ]
+    "column_width" : 0,
+    "column_widths" : {
+      "key" : "{}"
+    }
   },
   "hidden_columns" : [ "hidden_columns", "hidden_columns" ],
   "name" : "name",

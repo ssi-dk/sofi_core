@@ -419,12 +419,9 @@ components:
     UserDefinedView:
       example:
         column_resizing:
-          column_width: 6
+          column_width: 0
           column_widths:
-          - width: 0
-            columnName: columnName
-          - width: 0
-            columnName: columnName
+            key: '{}'
         hidden_columns:
         - hidden_columns
         - hidden_columns
@@ -696,28 +693,15 @@ components:
             $ref: '#/components/schemas/Permission'
           type: array
       type: object
-    UserDefinedView_column_resizing_column_widths:
-      example:
-        width: 0
-        columnName: columnName
-      properties:
-        columnName:
-          type: string
-        width:
-          type: integer
     UserDefinedView_column_resizing:
       example:
-        column_width: 6
+        column_width: 0
         column_widths:
-        - width: 0
-          columnName: columnName
-        - width: 0
-          columnName: columnName
+          key: '{}'
       properties:
         column_widths:
-          items:
-            $ref: '#/components/schemas/UserDefinedView_column_resizing_column_widths'
-          type: array
+          additionalProperties: true
+          type: object
         column_width:
           type: integer
     UserDefinedView_sort_by:
@@ -789,6 +773,8 @@ components:
         toxins:
           type: string
         toxins_final:
+          type: string
+        infection_source:
           type: string
         resistance_genes:
           type: string

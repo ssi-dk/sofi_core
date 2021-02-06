@@ -143,6 +143,12 @@ export interface AnalysisResultAllOf  {
      * @type {string}
      * @memberof AnalysisResultAllOf
      */
+    infection_source?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof AnalysisResultAllOf
+     */
     resistance_genes?: string;
     /**
      * 
@@ -389,6 +395,7 @@ export function AnalysisResultAllOfFromJSON(json: any): AnalysisResultAllOf {
         'adhesion_final': !exists(json, 'adhesion_final') ? undefined : json['adhesion_final'],
         'toxins': !exists(json, 'toxins') ? undefined : json['toxins'],
         'toxins_final': !exists(json, 'toxins_final') ? undefined : json['toxins_final'],
+        'infection_source': !exists(json, 'infection_source') ? undefined : json['infection_source'],
         'resistance_genes': !exists(json, 'resistance_genes') ? undefined : json['resistance_genes'],
         'amr_profile': !exists(json, 'amr_profile') ? undefined : json['amr_profile'],
         'amr_ami': !exists(json, 'amr_ami') ? undefined : ResistanceFromJSON(json['amr_ami']),
@@ -454,6 +461,7 @@ export function AnalysisResultAllOfToJSON(value?: AnalysisResultAllOf): any {
         'adhesion_final': value.adhesion_final,
         'toxins': value.toxins,
         'toxins_final': value.toxins_final,
+        'infection_source': value.infection_source,
         'resistance_genes': value.resistance_genes,
         'amr_profile': value.amr_profile,
         'amr_ami': ResistanceToJSON(value.amr_ami),

@@ -28,6 +28,5 @@ from .tbr_metadata import TbrMetadata
 from .tbr_specific_metadata import TbrSpecificMetadata
 from .user_defined_view import UserDefinedView
 from .user_defined_view_column_resizing import UserDefinedViewColumnResizing
-from .user_defined_view_column_resizing_column_widths import UserDefinedViewColumnResizingColumnWidths
 from .user_defined_view_sort_by import UserDefinedViewSortBy
 from .user_info import UserInfo

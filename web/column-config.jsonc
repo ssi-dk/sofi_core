@@ -94,6 +94,10 @@
     "editable": true
   },
   {
+    "field_name": "serotype_final",
+    "editable": true
+  },
+  {
     "field_name": "toxins_final",
     "editable": true,
     "approvable": true,
@@ -144,6 +148,13 @@
   {
     "field_name": "aut_number",
     "pii": true,
+    "organizations": [
+      "FVST"
+    ]
+  },
+  {
+    "field_name": "infection_source",
+    "editable": true,
     "organizations": [
       "FVST"
     ]

@@ -9,9 +9,7 @@ import {
   EditableInput,
   useDisclosure,
 } from "@chakra-ui/react";
-import { NavLink } from "react-router-dom";
 import {
-  CalendarIcon,
   CheckIcon,
   DragHandleIcon,
   NotAllowedIcon,
@@ -19,7 +17,6 @@ import {
 import { Column } from "react-table";
 import {
   AnalysisResult,
-  UserDefinedView,
   ApprovalRequest,
   AnalysisQuery,
   ApprovalStatus,
@@ -28,9 +25,9 @@ import {
 import { useMutation, useRequest } from "redux-query-react";
 import { useDispatch, useSelector } from "react-redux";
 import { requestAsync } from "redux-query";
-import camelCaseKeys from "camelcase-keys";
 import { useTranslation } from "react-i18next";
 import { OptionTypeBase } from "react-select";
+import { UserDefinedViewInternal } from "models";
 import { RootState } from "app/root-reducer";
 import { predicateBuilder, PropFilter, RangeFilter } from "utils";
 import { IfPermission } from "auth/if-permission";
@@ -57,6 +54,7 @@ import { ColumnConfigWidget } from "./data-table/column-config-widget";
 import { toggleColumnVisibility } from "./view-selector/analysis-view-selection-config";
 import InlineAutoComplete from "../inputs/inline-autocomplete";
 import Species from "../data/species.json";
+import Serotypes from "../data/serotypes.json";
 import AnalysisDetails from "./analysis-history/analysis-history";
 
 export default function AnalysisPage() {
@@ -119,7 +117,9 @@ export default function AnalysisPage() {
 
   const selection = useSelector<RootState>((s) => s.selection.selection);
   const approvals = useSelector<RootState>((s) => s.entities.approvalMatrix);
-  const view = useSelector<RootState>((s) => s.view.view) as UserDefinedView;
+  const view = useSelector<RootState>(
+    (s) => s.view.view
+  ) as UserDefinedViewInternal;
 
   const onSearch = React.useCallback(
     (q: AnalysisQuery) => {
@@ -139,7 +139,7 @@ export default function AnalysisPage() {
     [dispatch]
   );
   const checkColumnIsVisible = React.useCallback(
-    (id) => view.hidden_columns.indexOf(id) < 0,
+    (id) => view.hiddenColumns.indexOf(id) < 0,
     [view]
   );
 
@@ -328,8 +328,23 @@ export default function AnalysisPage() {
     [approvals, canApproveColumn]
   );
 
+  const getStickyCellStyle = React.useCallback(
+    (rowId: string) => {
+      const approvedCells = Object.keys(approvals[rowId] || {}).length;
+      return approvableColumns.length - approvedCells >= 5
+        ? "unapprovedCell stickyCell"
+        : "stickyCell";
+    },
+    [approvals, approvableColumns]
+  );
+
   const speciesOptions = React.useMemo(
     () => Species.map((x) => ({ label: x, value: x })),
+    []
+  );
+
+  const serotypeOptions = React.useMemo(
+    () => Serotypes.map((x) => ({ label: x, value: x })),
     []
   );
 
@@ -347,6 +362,13 @@ export default function AnalysisPage() {
     [submitChange]
   );
 
+  const onFreeTextEdit = React.useCallback(
+    (rowId: string, field: string) => (val: string) => {
+      submitChange({ [rowId]: { [field]: val } });
+    },
+    [submitChange]
+  );
+
   const renderCellControl = React.useCallback(
     (rowId: string, columnId: string, value: any) => {
       let v = `${value}`;
@@ -357,27 +379,51 @@ export default function AnalysisPage() {
       ) {
         v = value.toISOString();
       }
-      if (columnId === "species_final") {
-        return (
-          <InlineAutoComplete
-            options={speciesOptions}
-            onChange={onAutocompleteEdit(rowId, columnId)}
-            defaultValue={v}
-            isLoading={rowUpdating(rowId)}
-          />
-        );
-      }
-      if (columnConfigs[columnId].editable) {
-        return (
-          <Editable defaultValue={v}>
-            <EditablePreview />
-            <EditableInput />
-          </Editable>
-        );
+      // cannot edit cells that have already been approved
+      if (approvals?.[rowId]?.[columnId] !== ApprovalStatus.approved) {
+        if (columnId === "species_final") {
+          return (
+            <InlineAutoComplete
+              options={speciesOptions}
+              onChange={onAutocompleteEdit(rowId, columnId)}
+              defaultValue={v}
+              isLoading={rowUpdating(rowId)}
+            />
+          );
+        }
+        if (columnId === "serotype_final") {
+          return (
+            <InlineAutoComplete
+              options={serotypeOptions}
+              onChange={onAutocompleteEdit(rowId, columnId)}
+              defaultValue={v}
+              isLoading={rowUpdating(rowId)}
+            />
+          );
+        }
+        if (columnConfigs[columnId].editable) {
+          return (
+            <Editable
+              defaultValue={v}
+              onSubmit={onFreeTextEdit(rowId, columnId)}
+            >
+              <EditablePreview />
+              <EditableInput />
+            </Editable>
+          );
+        }
       }
       return <div>{`${v}`}</div>;
     },
-    [columnConfigs, speciesOptions, onAutocompleteEdit, rowUpdating]
+    [
+      columnConfigs,
+      speciesOptions,
+      serotypeOptions,
+      onAutocompleteEdit,
+      onFreeTextEdit,
+      rowUpdating,
+      approvals,
+    ]
   );
 
   const openDetailsView = React.useCallback(
@@ -388,12 +434,9 @@ export default function AnalysisPage() {
     [setMoreInfoIsolate, onMoreInfoModalOpen]
   );
 
-  const safeView = React.useMemo(() => camelCaseKeys(view, { deep: true }), [
-    view,
-  ]);
   const sidebarWidth = "300px";
   if (!columnLoadState.isFinished) {
-    <Loading />
+    <Loading />;
   }
 
   return (
@@ -415,21 +458,6 @@ export default function AnalysisPage() {
         <Box role="heading" gridColumn="1 / 4">
           <Header sidebarWidth={sidebarWidth} />
         </Box>
-        <Box role="navigation" gridColumn="2 / 4" pb={5}>
-          <Flex justifyContent="flex-end">
-            <AnalysisSearch onSubmit={onSearch} />
-            <Box minW="250px" ml="5" mr="5">
-              <AnalysisViewSelector />
-            </Box>
-            <IfPermission permission={Permission.approve}>
-              <NavLink to="/approval-history">
-                <Button leftIcon={<CalendarIcon />}>
-                  {t("My approval history")}
-                </Button>
-              </NavLink>
-            </IfPermission>
-          </Flex>
-        </Box>
         <Box role="form" gridColumn="1 / 2">
           <Box minW={sidebarWidth} pr={5}>
             <AnalysisSidebar
@@ -438,6 +466,14 @@ export default function AnalysisPage() {
               onRangeFilterChange={onRangeFilterChange}
             />
           </Box>
+        </Box>
+        <Box role="navigation" gridColumn="2 / 4" pb={5}>
+          <Flex justifyContent="flex-end">
+            <AnalysisSearch onSubmit={onSearch} />
+            <Box minW="250px" ml="5">
+              <AnalysisViewSelector />
+            </Box>
+          </Flex>
         </Box>
         <Box role="main" gridColumn="2 / 4" borderWidth="1px" rounded="md">
           <Box m={2}>
@@ -493,6 +529,7 @@ export default function AnalysisPage() {
               approvableColumns={approvableColumns}
               getDependentColumns={getDependentColumns}
               getCellStyle={getCellStyle}
+              getStickyCellStyle={getStickyCellStyle}
               data={
                 pageState.isNarrowed
                   ? filteredData.filter((x) => selection[x.isolate_id])
@@ -505,7 +542,7 @@ export default function AnalysisPage() {
               }
               onSelect={(sel) => dispatch(setSelection(sel))}
               onDetailsClick={openDetailsView}
-              view={safeView}
+              view={view}
             />
           </Box>
           <Box role="status" gridColumn="2 / 4">
