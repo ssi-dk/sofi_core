@@ -51,7 +51,10 @@ export default function SingleUploadForm() {
       e.preventDefault();
 
       //setLoading(true);
-      doUpload({ metadata: state, file: selectedFile })/*
+      doUpload({
+        metadata: state,
+        file: selectedFile,
+      }); /*
         .catch((err) => console.log(err))
         .finally(() => {
           setLoading(false);

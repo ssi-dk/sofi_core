@@ -228,8 +228,12 @@ paths:
             schema:
               $ref: '#/components/schemas/BulkUploadRequest'
       responses:
-        "204":
-          description: Isolate uploaded successfully.
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UploadResponse'
+          description: Isolate uploaded successfully. Reports errors.
       tags:
       - upload
       x-openapi-router-controller: web.src.SAP.generated.controllers.upload_controller
@@ -251,8 +255,12 @@ paths:
             schema:
               $ref: '#/components/schemas/MultiUploadRequest'
       responses:
-        "204":
-          description: Isolate uploaded successfully.
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UploadResponse'
+          description: Isolate uploaded successfully. Reports errors.
       tags:
       - upload
       x-openapi-router-controller: web.src.SAP.generated.controllers.upload_controller
@@ -274,8 +282,12 @@ paths:
             schema:
               $ref: '#/components/schemas/SingleUploadRequest'
       responses:
-        "204":
-          description: Isolate uploaded successfully.
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UploadResponse'
+          description: Isolate uploaded successfully. Reports errors.
       tags:
       - upload
       x-openapi-router-controller: web.src.SAP.generated.controllers.upload_controller
@@ -637,6 +649,15 @@ components:
       required:
       - metadata_tsv
       type: object
+    UploadResponse:
+      example:
+        error:
+          isolate_id: isolate_id
+          error: error
+      properties:
+        error:
+          $ref: '#/components/schemas/UploadResponse_error'
+      type: object
     PersonalIdentifierType:
       enum:
       - CPR
@@ -855,6 +876,15 @@ components:
       required:
       - _id
       - isolate_id
+    UploadResponse_error:
+      example:
+        isolate_id: isolate_id
+        error: error
+      properties:
+        isolate_id:
+          type: string
+        error:
+          type: string
   securitySchemes:
     jwt:
       bearerFormat: JWT

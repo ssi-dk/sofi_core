@@ -18,6 +18,9 @@ import {
     BaseMetadata,
     BaseMetadataFromJSON,
     BaseMetadataToJSON,
+    UploadResponse,
+    UploadResponseFromJSON,
+    UploadResponseToJSON,
 } from '../models';
 
 export interface BulkMetadataRequest {
@@ -38,7 +41,7 @@ export interface SingleUploadRequest {
 /**
  * Manually upload metadata for previously uploaded sequence files
  */
-function bulkMetadataRaw<T>(requestParameters: BulkMetadataRequest, requestConfig: runtime.TypedQueryConfig<T, void> = {}): QueryConfig<T> {
+function bulkMetadataRaw<T>(requestParameters: BulkMetadataRequest, requestConfig: runtime.TypedQueryConfig<T, UploadResponse> = {}): QueryConfig<T> {
     if (requestParameters.metadataTsv === null || requestParameters.metadataTsv === undefined) {
         throw new runtime.RequiredError('metadataTsv','Required parameter requestParameters.metadataTsv was null or undefined when calling bulkMetadata.');
     }
@@ -74,6 +77,7 @@ function bulkMetadataRaw<T>(requestParameters: BulkMetadataRequest, requestConfi
 
     const { transform: requestTransform } = requestConfig;
     if (requestTransform) {
+        config.transform = (body: ResponseBody, text: ResponseBody) => requestTransform(UploadResponseFromJSON(body), text);
     }
 
     return config;
@@ -82,14 +86,14 @@ function bulkMetadataRaw<T>(requestParameters: BulkMetadataRequest, requestConfi
 /**
 * Manually upload metadata for previously uploaded sequence files
 */
-export function bulkMetadata<T>(requestParameters: BulkMetadataRequest, requestConfig?: runtime.TypedQueryConfig<T, void>): QueryConfig<T> {
+export function bulkMetadata<T>(requestParameters: BulkMetadataRequest, requestConfig?: runtime.TypedQueryConfig<T, UploadResponse>): QueryConfig<T> {
     return bulkMetadataRaw(requestParameters, requestConfig);
 }
 
 /**
  * Manually upload multiple sequences with metadata
  */
-function multiUploadRaw<T>(requestParameters: MultiUploadRequest, requestConfig: runtime.TypedQueryConfig<T, void> = {}): QueryConfig<T> {
+function multiUploadRaw<T>(requestParameters: MultiUploadRequest, requestConfig: runtime.TypedQueryConfig<T, UploadResponse> = {}): QueryConfig<T> {
     if (requestParameters.metadataTsv === null || requestParameters.metadataTsv === undefined) {
         throw new runtime.RequiredError('metadataTsv','Required parameter requestParameters.metadataTsv was null or undefined when calling multiUpload.');
     }
@@ -133,6 +137,7 @@ function multiUploadRaw<T>(requestParameters: MultiUploadRequest, requestConfig:
 
     const { transform: requestTransform } = requestConfig;
     if (requestTransform) {
+        config.transform = (body: ResponseBody, text: ResponseBody) => requestTransform(UploadResponseFromJSON(body), text);
     }
 
     return config;
@@ -141,14 +146,14 @@ function multiUploadRaw<T>(requestParameters: MultiUploadRequest, requestConfig:
 /**
 * Manually upload multiple sequences with metadata
 */
-export function multiUpload<T>(requestParameters: MultiUploadRequest, requestConfig?: runtime.TypedQueryConfig<T, void>): QueryConfig<T> {
+export function multiUpload<T>(requestParameters: MultiUploadRequest, requestConfig?: runtime.TypedQueryConfig<T, UploadResponse>): QueryConfig<T> {
     return multiUploadRaw(requestParameters, requestConfig);
 }
 
 /**
  * Manually upload isolate with metadata
  */
-function singleUploadRaw<T>(requestParameters: SingleUploadRequest, requestConfig: runtime.TypedQueryConfig<T, void> = {}): QueryConfig<T> {
+function singleUploadRaw<T>(requestParameters: SingleUploadRequest, requestConfig: runtime.TypedQueryConfig<T, UploadResponse> = {}): QueryConfig<T> {
     if (requestParameters.metadata === null || requestParameters.metadata === undefined) {
         throw new runtime.RequiredError('metadata','Required parameter requestParameters.metadata was null or undefined when calling singleUpload.');
     }
@@ -192,6 +197,7 @@ function singleUploadRaw<T>(requestParameters: SingleUploadRequest, requestConfi
 
     const { transform: requestTransform } = requestConfig;
     if (requestTransform) {
+        config.transform = (body: ResponseBody, text: ResponseBody) => requestTransform(UploadResponseFromJSON(body), text);
     }
 
     return config;
@@ -200,7 +206,7 @@ function singleUploadRaw<T>(requestParameters: SingleUploadRequest, requestConfi
 /**
 * Manually upload isolate with metadata
 */
-export function singleUpload<T>(requestParameters: SingleUploadRequest, requestConfig?: runtime.TypedQueryConfig<T, void>): QueryConfig<T> {
+export function singleUpload<T>(requestParameters: SingleUploadRequest, requestConfig?: runtime.TypedQueryConfig<T, UploadResponse>): QueryConfig<T> {
     return singleUploadRaw(requestParameters, requestConfig);
 }
 
