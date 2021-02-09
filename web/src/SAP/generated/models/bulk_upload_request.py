@@ -19,10 +19,10 @@ class BulkUploadRequest(Model):
         """BulkUploadRequest - a model defined in OpenAPI
 
         :param metadata_tsv: The metadata_tsv of this BulkUploadRequest.  # noqa: E501
-        :type metadata_tsv: str
+        :type metadata_tsv: file
         """
         self.openapi_types = {
-            'metadata_tsv': str
+            'metadata_tsv': file
         }
 
         self.attribute_map = {
@@ -48,7 +48,7 @@ class BulkUploadRequest(Model):
 
 
         :return: The metadata_tsv of this BulkUploadRequest.
-        :rtype: str
+        :rtype: file
         """
         return self._metadata_tsv
 
@@ -58,7 +58,7 @@ class BulkUploadRequest(Model):
 
 
         :param metadata_tsv: The metadata_tsv of this BulkUploadRequest.
-        :type metadata_tsv: str
+        :type metadata_tsv: file
         """
         if metadata_tsv is None:
             raise ValueError("Invalid value for `metadata_tsv`, must not be `None`")  # noqa: E501

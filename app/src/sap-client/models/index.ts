@@ -19,7 +19,6 @@ export * from './Resistance';
 export * from './TbrMetadata';
 export * from './TbrSpecificMetadata';
 export * from './UploadResponse';
-export * from './UploadResponseError';
 export * from './UserDefinedView';
 export * from './UserDefinedViewColumnResizing';
 export * from './UserDefinedViewSortBy';

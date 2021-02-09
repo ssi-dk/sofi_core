@@ -8,9 +8,30 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { Loading } from "loading";
+import { MultiUploadRequest } from "sap-client";
+import { useMutation } from "redux-query-react";
+import { uploadMultipleIsolates } from "./manual-upload-configs";
 
 export default function MultiUploadForm() {
+  const [qstate, doUpload] = useMutation((payload: MultiUploadRequest) =>
+    uploadMultipleIsolates(payload)
+  );
+
+  const [metadataTSV, setMetadataTSV] = useState<any>(null);
+  const [selectedFiles, setSelectedFiles] = useState<any>(null);
+
   const [loading, setLoading] = useState<boolean>(false);
+
+  const submitForm = React.useCallback(
+    (e) => {
+      e.preventDefault();
+      doUpload({
+        metadataTsv: metadataTSV,
+        files: selectedFiles,
+      });
+    },
+    [metadataTSV, selectedFiles, doUpload]
+  );
 
   return loading ? (
     <Loading />
@@ -20,15 +41,28 @@ export default function MultiUploadForm() {
         Upload multiple sequence files with metadata. Supply a TSV file and
         select multiple gzipped sequence files to upload.
       </Text>
-      <FormControl id="metadata_file">
+      <FormControl id="metadata_tsv">
         <FormLabel>Metadata TSV file</FormLabel>
-        <Input type="file" name="metadata_file" />
+        <Input
+          type="file"
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setMetadataTSV(e.target.files![0])
+          }
+          name="metadata_tsv"
+        />
       </FormControl>
-      <FormControl id="sequence_files">
+      <FormControl id="files">
         <FormLabel>Gzipped sequences (select multiple)</FormLabel>
-        <Input type="file" name="sequence_files" multiple />
+        <Input
+          type="file"
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setSelectedFiles(e.target.files)
+          }
+          name="files"
+          multiple
+        />
       </FormControl>
-      <Button type="submit">Submit</Button>
+      <Button type="submit" onClick={submitForm}>Submit</Button>
     </VStack>
   );
 }

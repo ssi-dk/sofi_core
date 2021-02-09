@@ -632,6 +632,7 @@ components:
     MultiUploadRequest:
       properties:
         metadata_tsv:
+          format: binary
           type: string
         files:
           items:
@@ -645,18 +646,21 @@ components:
     BulkUploadRequest:
       properties:
         metadata_tsv:
+          format: binary
           type: string
       required:
       - metadata_tsv
       type: object
     UploadResponse:
       example:
-        error:
-          isolate_id: isolate_id
-          error: error
+        errors:
+        - errors
+        - errors
       properties:
-        error:
-          $ref: '#/components/schemas/UploadResponse_error'
+        errors:
+          items:
+            type: string
+          type: array
       type: object
     PersonalIdentifierType:
       enum:
@@ -876,15 +880,6 @@ components:
       required:
       - _id
       - isolate_id
-    UploadResponse_error:
-      example:
-        isolate_id: isolate_id
-        error: error
-      properties:
-        isolate_id:
-          type: string
-        error:
-          type: string
   securitySchemes:
     jwt:
       bearerFormat: JWT

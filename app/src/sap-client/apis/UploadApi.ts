@@ -24,11 +24,11 @@ import {
 } from '../models';
 
 export interface BulkMetadataRequest {
-    metadataTsv: string;
+    metadataTsv: Blob;
 }
 
 export interface MultiUploadRequest {
-    metadataTsv: string;
+    metadataTsv: Blob;
     files: Array<Blob>;
 }
 

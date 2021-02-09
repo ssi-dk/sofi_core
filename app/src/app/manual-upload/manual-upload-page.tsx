@@ -26,7 +26,7 @@ export default function ManualUploadPage() {
       height="100vh"
       gridGap="5"
     >
-      <Box role="heading" gridColumn="1 / 3">
+      <Box role="heading" gridColumn="1 / 4">
         <Header sidebarWidth="300px" />
       </Box>
       <Box gridColumn="2 / 2">

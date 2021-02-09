@@ -736,6 +736,7 @@ components:
       properties:
         metadata_tsv:
           type: string
+          format: binary
         files:
           type: array
           items:
@@ -749,17 +750,15 @@ components:
       properties:
         metadata_tsv:
           type: string
+          format: binary
 
     UploadResponse:
       type: object
       properties:
-        error:
-          type: object
-          properties:
-            isolate_id:
-              type: string
-            error:
-              type: string
+        errors:
+          type: array
+          items: 
+            type: string
 
 
     PersonalIdentifierType:

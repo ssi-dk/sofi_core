@@ -12,12 +12,6 @@
  */
 
 import { exists, mapValues } from '../runtime';
-import {
-    UploadResponseError,
-    UploadResponseErrorFromJSON,
-    UploadResponseErrorToJSON,
-} from './';
-
 /**
  * 
  * @export
@@ -26,15 +20,15 @@ import {
 export interface UploadResponse  {
     /**
      * 
-     * @type {UploadResponseError}
+     * @type {Array<string>}
      * @memberof UploadResponse
      */
-    error?: UploadResponseError;
+    errors?: Array<string>;
 }
 
 export function UploadResponseFromJSON(json: any): UploadResponse {
     return {
-        'error': !exists(json, 'error') ? undefined : UploadResponseErrorFromJSON(json['error']),
+        'errors': !exists(json, 'errors') ? undefined : json['errors'],
     };
 }
 
@@ -43,7 +37,7 @@ export function UploadResponseToJSON(value?: UploadResponse): any {
         return undefined;
     }
     return {
-        'error': UploadResponseErrorToJSON(value.error),
+        'errors': value.errors,
     };
 }
 

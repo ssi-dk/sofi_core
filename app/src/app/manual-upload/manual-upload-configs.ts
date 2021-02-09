@@ -1,4 +1,9 @@
-import { SingleUploadRequest, singleUpload, MultiUploadRequest, multiUpload } from "sap-client";
+import {
+  SingleUploadRequest,
+  singleUpload,
+  MultiUploadRequest,
+  multiUpload,
+} from "sap-client";
 import { getUrl } from "service";
 
 export const uploadIsolateFile = (req: SingleUploadRequest) => {
@@ -22,9 +27,22 @@ export const uploadIsolateFile = (req: SingleUploadRequest) => {
   return base;
 };
 
-
 export const uploadMultipleIsolates = (req: MultiUploadRequest) => {
-  const base = multiUpload<void>(req);
+  const tempreq = {...req, files: []}
+  const base = multiUpload<void>(tempreq);
   base.url = getUrl(base.url);
+
+  const formData = new FormData();
+  if (req.metadataTsv !== undefined) {
+    formData.append("metadata_tsv", req.metadataTsv as any);
+  }
+
+  if (req.files) {
+    [...req.files].forEach((element) => {
+      formData.append("files", element as any);
+    });
+  }
+
+  base.body = formData;
   return base;
 };
