@@ -8,11 +8,17 @@ from ..shared import BrokerError
 
 # LIMS API imports
 import time
+import api_clients.lims_client
+from api_clients.lims_client.api import connections_api
+from api_clients.lims_client.model.connection_create_request import ConnectionCreateRequest
+from api_clients.lims_client.model.connection_create_response import ConnectionCreateResponse
+from api_clients.lims_client.model.message_response import MessageResponse
+#from api_clients.lims_client.model.
 
 
-# lims_api_url = os.environ.get("LIMS_API_URL", "http://localhost:5000")
+lims_api_url = os.environ.get("LIMS_API_URL", "http://localhost:5000")
 
-# lims_configuration = api_clients.lims_client.Configuration(host=lims_api_url)
+lims_configuration = api_clients.lims_client.Configuration(host=lims_api_url)
 
 
 class LIMSPullingBroker(threading.Thread):
@@ -46,6 +52,7 @@ class LIMSPullingBroker(threading.Thread):
         batch_size = 200
         fetch_pipeline = [
             {"$group": {"_id": "$_id", "isolate_id": {"$first": "$isolate_id"}}},
+            {"$match": {"organization": "FVST"}},
             {
                 "$lookup": {
                     "from": "sap_lims_metadata",
@@ -54,14 +61,11 @@ class LIMSPullingBroker(threading.Thread):
                     "as": "metadata",
                 }
             },
-            # {"$unwind": {"path": "$metadata", "preserveNullAndEmptyArrays": True}},
+            {"$match": {"metadata": []}},
             {
                 "$project": {
                     "_id": False,
-                    "isolate_id": "$isolate_id",
-                    "row_ver": {
-                        "$ifNull": [{"$arrayElemAt": ["$metadata.row_ver", 0]}, 0]
-                    },
+                    "isolate_id": "$isolate_id"
                 }
             },
         ]
@@ -74,7 +78,8 @@ class LIMSPullingBroker(threading.Thread):
         update_count = 0
 
         for batch in yield_chunks(cursor, batch_size):
-            update_count += self.update_isolate_metadata(batch)
+            #update_count += self.update_isolate_metadata(batch)
+            print(batch)
 
         logging.info(f"Added/Updated {update_count} isolates with data from LIMS.")
 

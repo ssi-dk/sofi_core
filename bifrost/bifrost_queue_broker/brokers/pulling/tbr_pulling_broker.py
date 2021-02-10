@@ -55,6 +55,7 @@ class TBRPullingBroker(threading.Thread):
         batch_size = 200
         fetch_pipeline = [
             {"$group": {"_id": "$_id", "isolate_id": {"$first": "$isolate_id"}}},
+            {"$match": {"organization": "SSI"}},
             {
                 "$lookup": {
                     "from": "sap_tbr_metadata",

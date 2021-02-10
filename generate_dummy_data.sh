@@ -79,6 +79,7 @@ analysisFields=(
     "_id"
     "isolate_id"
     "sequence_id"
+    "institution"
     "resfinder_version"
     "QC_provided_species"
     "QC_genome1x"

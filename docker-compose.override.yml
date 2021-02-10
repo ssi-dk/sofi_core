@@ -47,6 +47,7 @@ services:
       - sap_mock
 
   lims_mock:
+    container_name: lims_integration
     image: stoplight/prism:latest
     command: mock /openapi_specs/lims.v1.yaml -h 0.0.0.0 -p 4021
     volumes:
