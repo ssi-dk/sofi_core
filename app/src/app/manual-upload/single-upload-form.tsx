@@ -22,7 +22,7 @@ export default function SingleUploadForm() {
 
   const [selectedFile, setSelectedFile] = useState<any>(null);
 
-  const [state, setState] = React.useState({
+  const [metadata, setMetadata] = React.useState({
     isolate_id: "",
     sequence_id: "",
     sequence_filename: "",
@@ -37,23 +37,23 @@ export default function SingleUploadForm() {
     primary_isolate: true,
   } as BaseMetadata);
 
-  const changeState = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const changeState = React.useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const { value, name } = e.target;
-    setState({
-      ...state,
+    setMetadata({
+      ...metadata,
       [name]: value,
     });
-  };
+  }, [setMetadata, metadata]);
 
   const submitForm = React.useCallback(
     (e) => {
       e.preventDefault();
       doUpload({
-        metadata: state,
+        metadata,
         file: selectedFile,
       });
     },
-    [selectedFile, state, doUpload]
+    [selectedFile, metadata, doUpload]
   );
 
   const TextInput = ({ label, name }: { label: string; name: string }) => {
@@ -64,7 +64,7 @@ export default function SingleUploadForm() {
             <FormLabel>{label}</FormLabel>
             <Input
               type="date"
-              value={state[name]}
+              value={metadata[name]}
               name={name}
               onChange={changeState}
             />
@@ -78,7 +78,7 @@ export default function SingleUploadForm() {
           <FormLabel>{label}</FormLabel>
           <Input
             type="text"
-            value={state[name]}
+            value={metadata[name]}
             name={name}
             onChange={changeState}
           />

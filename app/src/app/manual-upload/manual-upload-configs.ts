@@ -1,3 +1,4 @@
+import { QueryConfig } from "redux-query";
 import {
   SingleUploadRequest,
   singleUpload,
@@ -5,11 +6,23 @@ import {
   multiUpload,
   BulkMetadataRequest,
   bulkMetadata,
+  UploadResponse,
 } from "sap-client";
 import { getUrl } from "service";
 
+export type ErrorSlice = {
+  manualUploadErrors: string;
+};
+
+function baseErrorTranslator(base: QueryConfig<ErrorSlice>) {
+  base.transform = (response: UploadResponse) => ({manualUploadErrors: response.errors?.join("\n")})
+  base.update = {
+    manualUploadErrors: (_, newValue) => `Upload errors:\n${newValue}`
+  }
+}
+
 export const uploadIsolateFile = (req: SingleUploadRequest) => {
-  const base = singleUpload<void>(req);
+  const base = singleUpload<ErrorSlice>(req);
   base.url = getUrl(base.url);
   const formData = new FormData();
   if (req.metadata !== undefined) {
@@ -26,12 +39,14 @@ export const uploadIsolateFile = (req: SingleUploadRequest) => {
   }
 
   base.body = formData;
+
+  baseErrorTranslator(base);
   return base;
 };
 
 export const uploadMultipleIsolates = (req: MultiUploadRequest) => {
   const tempreq = { ...req, files: [] };
-  const base = multiUpload<void>(tempreq);
+  const base = multiUpload<ErrorSlice>(tempreq);
   base.url = getUrl(base.url);
 
   const formData = new FormData();
@@ -46,12 +61,14 @@ export const uploadMultipleIsolates = (req: MultiUploadRequest) => {
   }
 
   base.body = formData;
+
+  baseErrorTranslator(base);
   return base;
 };
 
 export const uploadBulkMetadata = (req: BulkMetadataRequest) => {
   const tempreq = { ...req, files: [] };
-  const base = bulkMetadata<void>(tempreq);
+  const base = bulkMetadata<ErrorSlice>(tempreq);
   base.url = getUrl(base.url);
 
   const formData = new FormData();
@@ -68,5 +85,7 @@ export const uploadBulkMetadata = (req: BulkMetadataRequest) => {
   }
 
   base.body = formData;
+
+  baseErrorTranslator(base);
   return base;
 };
