@@ -26,6 +26,17 @@ def assert_user_has(permission, token_info):
     if not user_has(permission, token_info):
         raise Forbidden(f'You lack -{permission}- permission')
 
+def authorized_to_edit(token_info, metadata):
+    if not user_has("approve", token_info):
+        return False
+    if not token_info['institution'] == metadata.institution:
+        return False
+    return True
+
+def assert_authorized_to_edit(token_info, metadata):
+    if not authorized_to_edit(token_info, metadata):
+        raise Forbidden(f'You are not authorized to edit isolate -{metadata.isolate_id}-')
+
 def authorized_columns(token_info):
     data_clearance = token_info['sofi-data-clearance']
     cols = columns()
