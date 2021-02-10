@@ -20,6 +20,16 @@ export default function MultiUploadForm() {
   const [metadataTSV, setMetadataTSV] = useState<any>(null);
   const [selectedFiles, setSelectedFiles] = useState<any>(null);
 
+  const metadataChange = React.useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) =>
+      setMetadataTSV(e.target.files![0]),
+    [setMetadataTSV]
+  );
+  const selectedFilesChange = React.useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) =>
+      setSelectedFiles(e.target.files),
+    [setSelectedFiles]
+  );
   const submitForm = React.useCallback(
     (e) => {
       e.preventDefault();
@@ -41,21 +51,13 @@ export default function MultiUploadForm() {
       </Text>
       <FormControl id="metadata_tsv">
         <FormLabel>Metadata TSV file</FormLabel>
-        <Input
-          type="file"
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            setMetadataTSV(e.target.files![0])
-          }
-          name="metadata_tsv"
-        />
+        <Input type="file" onChange={metadataChange} name="metadata_tsv" />
       </FormControl>
       <FormControl id="files">
         <FormLabel>Gzipped sequences (select multiple)</FormLabel>
         <Input
           type="file"
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            setSelectedFiles(e.target.files)
-          }
+          onChange={selectedFilesChange}
           name="files"
           multiple
         />

@@ -48,6 +48,12 @@ export default function SingleUploadForm() {
     [setMetadata, metadata]
   );
 
+  const changeFile = React.useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) =>
+      setSelectedFile(e.target.files![0]),
+    [setSelectedFile]
+  );
+
   const submitForm = React.useCallback(
     (e) => {
       e.preventDefault();
@@ -107,12 +113,7 @@ export default function SingleUploadForm() {
       <TextInput label="Public" name="_public" />
       <TextInput label="Provided species" name="provided_species" />
       <TextInput label="Primary isolate?" name="primary_isolate" />
-      <Input
-        type="file"
-        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-          setSelectedFile(e.target.files![0])
-        }
-      />
+      <Input type="file" onChange={changeFile} />
       <Button type="submit" onClick={submitForm}>
         Upload
       </Button>

@@ -34,6 +34,17 @@ export default function BulkUploadForm() {
     [path, metadataTsv, doUpload]
   );
 
+  const onPathChange = React.useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => setPath(e.target.value),
+    [setPath]
+  );
+
+  const onFilesChange = React.useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) =>
+      setMetadataTsv(e.target.files![0]),
+    [setMetadataTsv]
+  );
+
   return isPending ? (
     <Loading />
   ) : (
@@ -44,23 +55,11 @@ export default function BulkUploadForm() {
       </Text>
       <FormControl id="path">
         <FormLabel>Upload directory</FormLabel>
-        <Input
-          type="text"
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            setPath(e.target.value)
-          }
-          name="path"
-        />
+        <Input type="text" onChange={onPathChange} name="path" />
       </FormControl>
       <FormControl id="metadata_file">
         <FormLabel>Metadata TSV file</FormLabel>
-        <Input
-          type="file"
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            setMetadataTsv(e.target.files![0])
-          }
-          name="metadata_file"
-        />
+        <Input type="file" onChange={onFilesChange} name="metadata_file" />
       </FormControl>
       <Button type="submit" onClick={submitForm}>
         Submit

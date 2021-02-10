@@ -20,7 +20,12 @@ function commonBaseTransforms(base: QueryConfig<ErrorSlice>) {
     manualUploadErrors: response.errors?.join("\n"),
   });
   base.update = {
-    manualUploadErrors: (_, newValue) => `Upload errors:\n${newValue}`,
+    manualUploadErrors: (_, newValue) => {
+      if (newValue === "") {
+        return null;
+      }
+      return `Upload errors:\n${newValue}`;
+    },
   };
   base.force = true;
 }

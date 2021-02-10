@@ -26,7 +26,7 @@ export default function ManualUploadPage() {
     <Box
       display="grid"
       gridTemplateRows="10% auto"
-      gridTemplateColumns="30rem auto 5rem"
+      gridTemplateColumns="30rem auto 15rem"
       padding="8"
       height="100vh"
       gridGap="5"
