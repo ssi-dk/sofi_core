@@ -19,17 +19,6 @@ import AnalysisHistoryTable from "./analysis-history-table"
 
 const getAnalysisHistory = state => state.entities.analysisHistory;
 
-/*{
-  const hist = state.entities.analysisHistory;
-  return Object.keys(hist)
-  .sort()
-  .reduce((obj, key) => {
-    obj[key] = hist[key]; 
-    return obj;
-  },
-  {} as IsolateWithData)
-};*/
-
 type AnalysisHistoryProps = {
   isolateId: string;
   isOpen: boolean;

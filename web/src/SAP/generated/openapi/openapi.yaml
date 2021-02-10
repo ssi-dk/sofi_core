@@ -222,14 +222,21 @@ paths:
         content:
           multipart/form-data:
             encoding:
+              path:
+                contentType: text/plain
+                style: form
               metadata_tsv:
                 contentType: text/tsv
                 style: form
             schema:
               $ref: '#/components/schemas/BulkUploadRequest'
       responses:
-        "204":
-          description: Isolate uploaded successfully.
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UploadResponse'
+          description: Isolate uploaded successfully. Reports errors.
       tags:
       - upload
       x-openapi-router-controller: web.src.SAP.generated.controllers.upload_controller
@@ -251,8 +258,12 @@ paths:
             schema:
               $ref: '#/components/schemas/MultiUploadRequest'
       responses:
-        "204":
-          description: Isolate uploaded successfully.
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UploadResponse'
+          description: Isolate uploaded successfully. Reports errors.
       tags:
       - upload
       x-openapi-router-controller: web.src.SAP.generated.controllers.upload_controller
@@ -274,8 +285,12 @@ paths:
             schema:
               $ref: '#/components/schemas/SingleUploadRequest'
       responses:
-        "204":
-          description: Isolate uploaded successfully.
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UploadResponse'
+          description: Isolate uploaded successfully. Reports errors.
       tags:
       - upload
       x-openapi-router-controller: web.src.SAP.generated.controllers.upload_controller
@@ -620,6 +635,7 @@ components:
     MultiUploadRequest:
       properties:
         metadata_tsv:
+          format: binary
           type: string
         files:
           items:
@@ -632,10 +648,25 @@ components:
       type: object
     BulkUploadRequest:
       properties:
+        path:
+          type: string
         metadata_tsv:
+          format: binary
           type: string
       required:
       - metadata_tsv
+      - path
+      type: object
+    UploadResponse:
+      example:
+        errors:
+        - errors
+        - errors
+      properties:
+        errors:
+          items:
+            type: string
+          type: array
       type: object
     PersonalIdentifierType:
       enum:

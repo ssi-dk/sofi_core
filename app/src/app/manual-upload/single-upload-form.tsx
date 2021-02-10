@@ -15,14 +15,14 @@ import { useMutation } from "redux-query-react";
 import { uploadIsolateFile } from "./manual-upload-configs";
 
 export default function SingleUploadForm() {
-  const [qstate, doUpload] = useMutation((payload: SingleUploadRequest) =>
-    uploadIsolateFile(payload)
-  );
+  const [
+    { isPending },
+    doUpload,
+  ] = useMutation((payload: SingleUploadRequest) => uploadIsolateFile(payload));
 
   const [selectedFile, setSelectedFile] = useState<any>(null);
-  const [loading, setLoading] = useState<boolean>(false);
 
-  const [state, setState] = React.useState({
+  const [metadata, setMetadata] = React.useState({
     isolate_id: "",
     sequence_id: "",
     sequence_filename: "",
@@ -37,27 +37,32 @@ export default function SingleUploadForm() {
     primary_isolate: true,
   } as BaseMetadata);
 
-  const changeState = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { value, name } = e.target;
-    console.log(state);
-    setState({
-      ...state,
-      [name]: value,
-    });
-  };
+  const changeState = React.useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const { value, name } = e.target;
+      setMetadata({
+        ...metadata,
+        [name]: value,
+      });
+    },
+    [setMetadata, metadata]
+  );
+
+  const changeFile = React.useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) =>
+      setSelectedFile(e.target.files![0]),
+    [setSelectedFile]
+  );
 
   const submitForm = React.useCallback(
     (e) => {
       e.preventDefault();
-
-      //setLoading(true);
-      doUpload({ metadata: state, file: selectedFile })/*
-        .catch((err) => console.log(err))
-        .finally(() => {
-          setLoading(false);
-        });*/
+      doUpload({
+        metadata,
+        file: selectedFile,
+      });
     },
-    [selectedFile, state, doUpload]
+    [selectedFile, metadata, doUpload]
   );
 
   const TextInput = ({ label, name }: { label: string; name: string }) => {
@@ -68,7 +73,7 @@ export default function SingleUploadForm() {
             <FormLabel>{label}</FormLabel>
             <Input
               type="date"
-              value={state[name]}
+              value={metadata[name]}
               name={name}
               onChange={changeState}
             />
@@ -82,7 +87,7 @@ export default function SingleUploadForm() {
           <FormLabel>{label}</FormLabel>
           <Input
             type="text"
-            value={state[name]}
+            value={metadata[name]}
             name={name}
             onChange={changeState}
           />
@@ -91,7 +96,7 @@ export default function SingleUploadForm() {
     );
   };
 
-  return loading ? (
+  return isPending ? (
     <Loading />
   ) : (
     <VStack>
@@ -108,12 +113,7 @@ export default function SingleUploadForm() {
       <TextInput label="Public" name="_public" />
       <TextInput label="Provided species" name="provided_species" />
       <TextInput label="Primary isolate?" name="primary_isolate" />
-      <Input
-        type="file"
-        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-          setSelectedFile(e.target.files![0])
-        }
-      />
+      <Input type="file" onChange={changeFile} />
       <Button type="submit" onClick={submitForm}>
         Upload
       </Button>

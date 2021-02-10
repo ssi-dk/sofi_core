@@ -281,8 +281,12 @@ paths:
               file:
                 contentType: application/gzip
       responses:
-        '204':
-          description: Isolate uploaded successfully.
+        '200':
+          description: Isolate uploaded successfully. Reports errors.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UploadResponse'
 
   /upload/multi_upload:
     post:
@@ -303,8 +307,12 @@ paths:
               files:
                 contentType: application/gzip
       responses:
-        '204':
-          description: Isolate uploaded successfully.
+        '200':
+          description: Isolate uploaded successfully. Reports errors.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UploadResponse'
 
   /upload/bulk_metadata:
     post:
@@ -320,11 +328,17 @@ paths:
             schema:
               $ref: '#/components/schemas/BulkUploadRequest'
             encoding:
+              path:
+                contentType: text/plain
               metadata_tsv:
                 contentType: text/tsv
       responses:
-        '204':
-          description: Isolate uploaded successfully.
+        '200':
+          description: Isolate uploaded successfully. Reports errors.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UploadResponse'
 
 components:
   schemas:
@@ -724,6 +738,7 @@ components:
       properties:
         metadata_tsv:
           type: string
+          format: binary
         files:
           type: array
           items:
@@ -733,10 +748,23 @@ components:
     BulkUploadRequest:
       type: object
       required:
+        - path
         - metadata_tsv
       properties:
+        path:
+          type: string
         metadata_tsv:
           type: string
+          format: binary
+
+    UploadResponse:
+      type: object
+      properties:
+        errors:
+          type: array
+          items: 
+            type: string
+
 
     PersonalIdentifierType:
       type: string
