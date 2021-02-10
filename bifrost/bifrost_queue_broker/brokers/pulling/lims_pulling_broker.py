@@ -52,7 +52,7 @@ class LIMSPullingBroker(threading.Thread):
         batch_size = 200
         fetch_pipeline = [
             {"$group": {"_id": "$_id", "isolate_id": {"$first": "$isolate_id"}}},
-            {"$match": {"organization": "FVST"}},
+            {"$match": {"institution": "FVST"}},
             {
                 "$lookup": {
                     "from": "sap_lims_metadata",
