@@ -13,6 +13,9 @@ CLIENT_ENC = None
 HOST = os.environ.get("BIFROST_MONGO_HOST", "bifrost_db")
 PORT = int(os.environ.get("BIFROST_MONGO_PORT", 27017))
 DB_NAME = os.environ.get("BIFROST_MONGO_DB", "bifrost_test")
+ANALYSIS_COL_NAME = "sap_full_analysis"
+APPROVALS_COL_NAME = "sap_approvals"
+USERVIEWS_COL_NAME = "user_views"
 
 SOFI_BIFROST_ENCRYPTION_NAMESPACE = os.environ.get(
     "SOFI_BIFROST_ENCRYPTION_NAME", "encryption.sap_pii"

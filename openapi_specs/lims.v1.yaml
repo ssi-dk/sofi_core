@@ -61,7 +61,9 @@ paths:
                           - fieldName: sekvensID
                             fieldValue: value9
                         success: true
+                    code: 200
                     message: Action GetIsolate executed successfully
+                    status: OK
       description: Get isolate information
       requestBody:
         content:
@@ -92,7 +94,9 @@ paths:
                     output:
                       sapresponse:
                         succcess: true
+                    code: 200
                     message: Action UpdateIsolate executed successfully
+                    status: OK
         '409':
           description: Conflict - Isolate is not in OPEN state
       requestBody:
@@ -128,7 +132,9 @@ paths:
               examples:
                 example:
                   value:
+                    code: 200
                     message: Connection fvstlims|admin198020663280 checked
+                    status: OK
       operationId: get-connections
       description: Check connection
       parameters: []
@@ -145,7 +151,9 @@ paths:
               examples:
                 example:
                   value:
+                    code: 200
                     message: Connection fvstlims|admin1013035459275 cleared
+                    status: OK
       description: Delete connection
       tags:
         - connections
@@ -162,7 +170,9 @@ paths:
               examples:
                 example:
                   value:
+                    code: 200
                     message: Connection fvstlims|admin198020663280 refreshed
+                    status: OK
       description: Refreshes connection
       tags:
         - connections
@@ -192,9 +202,11 @@ paths:
               examples:
                 example:
                   value:
+                    cose: 201
                     message: Connection fvstlims|admin719456522586 created
                     connections:
                       connectionid: fvstlims|admin719456522586
+                    status: Created
       description: Create connection
       requestBody:
         content:
@@ -355,7 +367,9 @@ components:
                 - fieldName: sekvensID
                   fieldValue: value9
               success: true
+          code: 200
           message: Action GetIsolate executed successfully
+          status: OK
       description: Isolate get response
       properties:
         output:
@@ -378,7 +392,11 @@ components:
                     $ref: '#/components/schemas/MetaDataEntry'
                 success:
                   type: boolean
+        code:
+          type: number
         message:
+          type: string
+        status:
           type: string
     IsolateGetRequest:
       title: IsolateGetRequest
@@ -420,7 +438,11 @@ components:
               succcess: true
           message: Action UpdateIsolate executed successfully
       properties:
+        code:
+          type: number
         message:
+          type: string
+        status:
           type: string
         output:
           type: object
@@ -434,7 +456,11 @@ components:
       title: MessageResponse
       type: object
       properties:
+        code:
+          type: number
         message:
+          type: string
+        status:
           type: string
       description: Message response
       x-examples:
@@ -460,6 +486,8 @@ components:
       title: ConnectionCreateResponse
       type: object
       properties:
+        code:
+          type: number
         message:
           type: string
         connections:
@@ -467,11 +495,15 @@ components:
           properties:
             connectionid:
               type: string
+        status:
+          type: string
       x-examples:
         example:
+          code: 201
           message: Connection fvstlims|admin719456522586 created
           connections:
             connectionid: fvstlims|admin719456522586
+          status: Created
       description: Connection create response
   securitySchemes: {}
 tags:

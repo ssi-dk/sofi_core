@@ -13,6 +13,8 @@ all: clean build
 
 clean:
 	rm -rf ${mkfile_dir}/bifrost/bifrost_db/data/db/*
+	rm -rf ${mkfile_dir}/bifrost/bifrost_queue_broker/api_clients/tbr_client/
+	rm -rf ${mkfile_dir}/bifrost/bifrost_queue_broker/api_clients/lims_client/
 	rm -rf ${mkfile_dir}/auth/pg/pgdata/*
 	rm -rf ${mkfile_dir}/web/src/SAP/generated/
 	rm -rf ${mkfile_dir}/sap_tbr_integration/DG.SAP.TBRIntegration/bin/
@@ -107,11 +109,30 @@ ${mkfile_dir}/bifrost/bifrost_queue_broker/api_clients/tbr_client : ${mkfile_dir
 		--global-property apiTests=false,apiDocs=false \
 		--global-property modelTests=false,modelDocs=false
 
+${mkfile_dir}/bifrost/bifrost_queue_broker/api_clients/lims_client : ${mkfile_dir}/openapi_specs/lims.v1.yaml
+	# Generate LIMS client for broker
+	rm -rf ${mkfile_dir}/bifrost/bifrost_queue_broker/api_clients/lims_client
+	docker run --rm -v "${mkfile_dir}:/local" \
+		--user ${mkfile_user} \
+		"openapitools/openapi-generator:cli-v5.0.0" \
+		generate \
+		-i /local/openapi_specs/lims.v1.yaml \
+		-g python \
+		-o /local/bifrost/bifrost_queue_broker \
+		--additional-properties packageName=api_clients.lims_client \
+		--additional-properties generateSourceCodeOnly=true \
+		--global-property apiTests=false,apiDocs=false \
+		--global-property modelTests=false,modelDocs=false
+
 ${mkfile_dir}/app/node_modules/ : ${mkfile_dir}/app/package.json
 	pushd ${mkfile_dir}/app && yarn install
 
 build: ${mkfile_dir}/app/src/sap-client ${mkfile_dir}/web/src/SAP/generated ${mkfile_dir}/web/src/services/lims/openapi
 	CURRENT_UID=${mkfile_user} docker-compose build --no-cache
 
-run: ${mkfile_dir}/app/src/sap-client ${mkfile_dir}/web/src/SAP/generated ${mkfile_dir}/web/src/services/lims/openapi ${mkfile_dir}/app/node_modules/ ${mkfile_dir}/bifrost/bifrost_queue_broker/api_clients/tbr_client ${mkfile_dir}/.env
+RUN_DEPS := ${mkfile_dir}/app/src/sap-client ${mkfile_dir}/web/src/SAP/generated 
+RUN_DEPS += ${mkfile_dir}/web/src/services/lims/openapi ${mkfile_dir}/app/node_modules/
+RUN_DEPS += ${mkfile_dir}/bifrost/bifrost_queue_broker/api_clients/tbr_client ${mkfile_dir}/bifrost/bifrost_queue_broker/api_clients/lims_client 
+RUN_DEPS += ${mkfile_dir}/.env
+run: $(RUN_DEPS)
 	CURRENT_UID=${mkfile_user} docker-compose up --build
