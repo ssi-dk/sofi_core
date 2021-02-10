@@ -17,8 +17,7 @@ import MultiUploadForm from "./multi-upload-form";
 import BulkUploadForm from "./bulk-upload-form";
 import Header from "../header/header";
 
-
-const getUploadErrors = state => state.entities.manualUploadErrors;
+const getUploadErrors = (state) => state.entities.manualUploadErrors;
 
 export default function ManualUploadPage() {
   const uploadErrors = useSelector(getUploadErrors);
@@ -36,7 +35,7 @@ export default function ManualUploadPage() {
         <Header sidebarWidth="300px" />
       </Box>
       <Box gridColumn="1" gridRow="2" overflowY="auto">
-        {(uploadErrors && <pre>{uploadErrors}</pre>)}
+        {uploadErrors && <pre>{uploadErrors}</pre>}
       </Box>
       <Box gridColumn="2 / 2" overflowY="auto">
         <Tabs variant="soft-rounded">

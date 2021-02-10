@@ -37,13 +37,16 @@ export default function SingleUploadForm() {
     primary_isolate: true,
   } as BaseMetadata);
 
-  const changeState = React.useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const { value, name } = e.target;
-    setMetadata({
-      ...metadata,
-      [name]: value,
-    });
-  }, [setMetadata, metadata]);
+  const changeState = React.useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const { value, name } = e.target;
+      setMetadata({
+        ...metadata,
+        [name]: value,
+      });
+    },
+    [setMetadata, metadata]
+  );
 
   const submitForm = React.useCallback(
     (e) => {

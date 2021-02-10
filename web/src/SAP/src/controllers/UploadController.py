@@ -3,17 +3,25 @@ import csv
 from io import StringIO
 from ...generated.models.base_metadata import BaseMetadata
 from ...generated.models.upload_response import UploadResponse
-from ..services.upload_service import upload_sequence_file, upload_isolate, check_bulk_isolate_exists, upload_metadata_list
+from ..services.upload_service import (
+    upload_sequence_file,
+    upload_isolate,
+    check_bulk_isolate_exists,
+    upload_metadata_list,
+)
 import json
 import sys
 from flask import request
+
 
 def bulk_metadata(user, token_info, path, metadata_tsv):
     errors = []
     metadata_list = validate_metadata_tsv(metadata_tsv)
     sequence_names = [m["sequence_filename"] for m in metadata_list]
     trimmed_path = path.read().decode("utf-8").strip('"').strip()
-    existing_sequences, missing_sequences = check_bulk_isolate_exists(trimmed_path, sequence_names)
+    existing_sequences, missing_sequences = check_bulk_isolate_exists(
+        trimmed_path, sequence_names
+    )
     if existing_sequences:
         try:
             metadata = [BaseMetadata.from_dict(m) for m in metadata_list]
@@ -21,18 +29,20 @@ def bulk_metadata(user, token_info, path, metadata_tsv):
         except Exception as e:
             errors.append(f"Error: {str(e)}")
 
-    errors.extend([f"Missing {filename} in directory" for filename in missing_sequences])
+    errors.extend(
+        [f"Missing {filename} in directory" for filename in missing_sequences]
+    )
     return upload_response_helper(errors)
 
 
 def multi_upload(user, token_info, metadata_tsv, files):
     # Files aren't properly routed from connexion, use these files instead:
-    files = request.files.getlist('files')
+    files = request.files.getlist("files")
     errors = []
     metadata = []
     try:
         metadata_list = validate_metadata_tsv(metadata_tsv)
-        metadata_map = {item['sequence_filename']:item for item in metadata_list}
+        metadata_map = {item["sequence_filename"]: item for item in metadata_list}
 
         for file in files:
             metadata = metadata_map.get(file.filename, None)
@@ -53,8 +63,6 @@ def multi_upload(user, token_info, metadata_tsv, files):
     except Exception as e:
         print(e, file=sys.stderr)
 
-    
-
     return upload_response_helper(errors)
 
 
@@ -74,10 +82,11 @@ def validate_metadata(metadata: BaseMetadata, file):
     # TODO: Find out what sort of validation is required.
     return errors
 
+
 def validate_metadata_tsv(metadata_tsv):
     raw = StringIO(metadata_tsv.read().decode())
     header, *metadata = list(csv.reader(raw, delimiter="\t", quotechar='"'))
-    return [{h:r for h, r in zip(header, row)} for row in metadata]
+    return [{h: r for h, r in zip(header, row)} for row in metadata]
 
 
 def upload_response_helper(errors=None):

@@ -14,16 +14,19 @@ export type ErrorSlice = {
   manualUploadErrors: string;
 };
 
-function baseErrorTranslator(base: QueryConfig<ErrorSlice>) {
-  base.transform = (response: UploadResponse) => ({manualUploadErrors: response.errors?.join("\n")})
+function commonBaseTransforms(base: QueryConfig<ErrorSlice>) {
+  base.url = getUrl(base.url);
+  base.transform = (response: UploadResponse) => ({
+    manualUploadErrors: response.errors?.join("\n"),
+  });
   base.update = {
-    manualUploadErrors: (_, newValue) => `Upload errors:\n${newValue}`
-  }
+    manualUploadErrors: (_, newValue) => `Upload errors:\n${newValue}`,
+  };
+  base.force = true;
 }
 
 export const uploadIsolateFile = (req: SingleUploadRequest) => {
   const base = singleUpload<ErrorSlice>(req);
-  base.url = getUrl(base.url);
   const formData = new FormData();
   if (req.metadata !== undefined) {
     formData.append(
@@ -40,14 +43,13 @@ export const uploadIsolateFile = (req: SingleUploadRequest) => {
 
   base.body = formData;
 
-  baseErrorTranslator(base);
+  commonBaseTransforms(base);
   return base;
 };
 
 export const uploadMultipleIsolates = (req: MultiUploadRequest) => {
   const tempreq = { ...req, files: [] };
   const base = multiUpload<ErrorSlice>(tempreq);
-  base.url = getUrl(base.url);
 
   const formData = new FormData();
   if (req.metadataTsv !== undefined) {
@@ -62,14 +64,13 @@ export const uploadMultipleIsolates = (req: MultiUploadRequest) => {
 
   base.body = formData;
 
-  baseErrorTranslator(base);
+  commonBaseTransforms(base);
   return base;
 };
 
 export const uploadBulkMetadata = (req: BulkMetadataRequest) => {
   const tempreq = { ...req, files: [] };
   const base = bulkMetadata<ErrorSlice>(tempreq);
-  base.url = getUrl(base.url);
 
   const formData = new FormData();
   if (req.path) {
@@ -86,6 +87,6 @@ export const uploadBulkMetadata = (req: BulkMetadataRequest) => {
 
   base.body = formData;
 
-  baseErrorTranslator(base);
+  commonBaseTransforms(base);
   return base;
 };

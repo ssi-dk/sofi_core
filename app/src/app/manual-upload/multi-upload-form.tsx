@@ -60,7 +60,9 @@ export default function MultiUploadForm() {
           multiple
         />
       </FormControl>
-      <Button type="submit" onClick={submitForm}>Submit</Button>
+      <Button type="submit" onClick={submitForm}>
+        Submit
+      </Button>
     </VStack>
   );
 }
