@@ -11,8 +11,8 @@
 import re  # noqa: F401
 import sys  # noqa: F401
 
-from web.src.services.lims.openapi.api_client import ApiClient, Endpoint
-from web.src.services.lims.openapi.model_utils import (  # noqa: F401
+from api_clients.lims_client.api_client import ApiClient, Endpoint
+from api_clients.lims_client.model_utils import (  # noqa: F401
     check_allowed_values,
     check_validations,
     date,
@@ -21,10 +21,10 @@ from web.src.services.lims.openapi.model_utils import (  # noqa: F401
     none_type,
     validate_and_convert_types
 )
-from web.src.services.lims.openapi.model.isolate_get_request import IsolateGetRequest
-from web.src.services.lims.openapi.model.isolate_get_response import IsolateGetResponse
-from web.src.services.lims.openapi.model.isolate_update_request import IsolateUpdateRequest
-from web.src.services.lims.openapi.model.isolate_update_response import IsolateUpdateResponse
+from api_clients.lims_client.model.isolate_get_request import IsolateGetRequest
+from api_clients.lims_client.model.isolate_get_response import IsolateGetResponse
+from api_clients.lims_client.model.isolate_update_request import IsolateUpdateRequest
+from api_clients.lims_client.model.isolate_update_response import IsolateUpdateResponse
 
 
 class IsolateApi(object):

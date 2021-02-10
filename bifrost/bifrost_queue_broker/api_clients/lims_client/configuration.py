@@ -15,7 +15,7 @@ import sys
 import urllib3
 
 from http import client as http_client
-from web.src.services.lims.openapi.exceptions import ApiValueError
+from api_clients.lims_client.exceptions import ApiValueError
 
 
 JSON_SCHEMA_VALIDATION_KEYWORDS = {
@@ -130,7 +130,7 @@ class Configuration(object):
         self.logger = {}
         """Logging Settings
         """
-        self.logger["package_logger"] = logging.getLogger("web.src.services.lims.openapi")
+        self.logger["package_logger"] = logging.getLogger("api_clients.lims_client")
         self.logger["urllib3_logger"] = logging.getLogger("urllib3")
         self.logger_format = '%(asctime)s %(levelname)s %(message)s'
         """Log format

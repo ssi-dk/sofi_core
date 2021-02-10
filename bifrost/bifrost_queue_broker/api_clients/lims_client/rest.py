@@ -17,7 +17,7 @@ from urllib.parse import urlencode
 
 import urllib3
 
-from web.src.services.lims.openapi.exceptions import ApiException, UnauthorizedException, ForbiddenException, NotFoundException, ServiceException, ApiValueError
+from api_clients.lims_client.exceptions import ApiException, UnauthorizedException, ForbiddenException, NotFoundException, ServiceException, ApiValueError
 
 
 logger = logging.getLogger(__name__)

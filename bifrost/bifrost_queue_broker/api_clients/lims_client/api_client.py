@@ -20,10 +20,10 @@ from urllib.parse import quote
 from urllib3.fields import RequestField
 
 
-from web.src.services.lims.openapi import rest
-from web.src.services.lims.openapi.configuration import Configuration
-from web.src.services.lims.openapi.exceptions import ApiTypeError, ApiValueError, ApiException
-from web.src.services.lims.openapi.model_utils import (
+from api_clients.lims_client import rest
+from api_clients.lims_client.configuration import Configuration
+from api_clients.lims_client.exceptions import ApiTypeError, ApiValueError, ApiException
+from api_clients.lims_client.model_utils import (
     ModelNormal,
     ModelSimple,
     ModelComposed,

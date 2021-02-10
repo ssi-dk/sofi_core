@@ -11,8 +11,8 @@
 import re  # noqa: F401
 import sys  # noqa: F401
 
-from web.src.services.lims.openapi.api_client import ApiClient, Endpoint
-from web.src.services.lims.openapi.model_utils import (  # noqa: F401
+from api_clients.lims_client.api_client import ApiClient, Endpoint
+from api_clients.lims_client.model_utils import (  # noqa: F401
     check_allowed_values,
     check_validations,
     date,
@@ -21,9 +21,9 @@ from web.src.services.lims.openapi.model_utils import (  # noqa: F401
     none_type,
     validate_and_convert_types
 )
-from web.src.services.lims.openapi.model.connection_create_request import ConnectionCreateRequest
-from web.src.services.lims.openapi.model.connection_create_response import ConnectionCreateResponse
-from web.src.services.lims.openapi.model.message_response import MessageResponse
+from api_clients.lims_client.model.connection_create_request import ConnectionCreateRequest
+from api_clients.lims_client.model.connection_create_response import ConnectionCreateResponse
+from api_clients.lims_client.model.message_response import MessageResponse
 
 
 class ConnectionsApi(object):
