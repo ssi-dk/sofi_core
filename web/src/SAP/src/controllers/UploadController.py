@@ -8,11 +8,12 @@ import json
 import sys
 from flask import request
 
-def bulk_metadata(user, token_info, metadata_tsv):
+def bulk_metadata(user, token_info, path, metadata_tsv):
     errors = []
     metadata_list = validate_metadata_tsv(metadata_tsv)
-    sequence_ids = [m["sequence_id"] for m in metadata_list]
-    existing_sequences = check_bulk_isolate_exists(sequence_ids)
+    sequence_names = [m["sequence_filename"] for m in metadata_list]
+    trimmed_path = path.read().decode("utf-8").strip('"').strip()
+    existing_sequences, missing_sequences = check_bulk_isolate_exists(trimmed_path, sequence_names)
     if existing_sequences:
         try:
             metadata = [BaseMetadata.from_dict(m) for m in metadata_list]
@@ -20,6 +21,7 @@ def bulk_metadata(user, token_info, metadata_tsv):
         except Exception as e:
             errors.append(f"Error: {str(e)}")
 
+    errors.extend([f"Missing {filename} in directory" for filename in missing_sequences])
     return upload_response_helper(errors)
 
 

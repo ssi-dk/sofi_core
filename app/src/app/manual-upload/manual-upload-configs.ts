@@ -3,6 +3,8 @@ import {
   singleUpload,
   MultiUploadRequest,
   multiUpload,
+  BulkMetadataRequest,
+  bulkMetadata,
 } from "sap-client";
 import { getUrl } from "service";
 
@@ -28,7 +30,7 @@ export const uploadIsolateFile = (req: SingleUploadRequest) => {
 };
 
 export const uploadMultipleIsolates = (req: MultiUploadRequest) => {
-  const tempreq = {...req, files: []}
+  const tempreq = { ...req, files: [] };
   const base = multiUpload<void>(tempreq);
   base.url = getUrl(base.url);
 
@@ -41,6 +43,28 @@ export const uploadMultipleIsolates = (req: MultiUploadRequest) => {
     [...req.files].forEach((element) => {
       formData.append("files", element as any);
     });
+  }
+
+  base.body = formData;
+  return base;
+};
+
+export const uploadBulkMetadata = (req: BulkMetadataRequest) => {
+  const tempreq = { ...req, files: [] };
+  const base = bulkMetadata<void>(tempreq);
+  base.url = getUrl(base.url);
+
+  const formData = new FormData();
+  if (req.path) {
+    formData.append(
+      "path",
+      new Blob([JSON.stringify(req.path as any)], {
+        type: "text/plain",
+      })
+    );
+  }
+  if (req.metadataTsv !== undefined) {
+    formData.append("metadata_tsv", req.metadataTsv as any);
   }
 
   base.body = formData;

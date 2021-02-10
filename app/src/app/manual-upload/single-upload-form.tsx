@@ -15,12 +15,12 @@ import { useMutation } from "redux-query-react";
 import { uploadIsolateFile } from "./manual-upload-configs";
 
 export default function SingleUploadForm() {
-  const [qstate, doUpload] = useMutation((payload: SingleUploadRequest) =>
-    uploadIsolateFile(payload)
-  );
+  const [
+    { isPending },
+    doUpload,
+  ] = useMutation((payload: SingleUploadRequest) => uploadIsolateFile(payload));
 
   const [selectedFile, setSelectedFile] = useState<any>(null);
-  const [loading, setLoading] = useState<boolean>(false);
 
   const [state, setState] = React.useState({
     isolate_id: "",
@@ -39,7 +39,6 @@ export default function SingleUploadForm() {
 
   const changeState = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value, name } = e.target;
-    console.log(state);
     setState({
       ...state,
       [name]: value,
@@ -49,16 +48,10 @@ export default function SingleUploadForm() {
   const submitForm = React.useCallback(
     (e) => {
       e.preventDefault();
-
-      //setLoading(true);
       doUpload({
         metadata: state,
         file: selectedFile,
-      }); /*
-        .catch((err) => console.log(err))
-        .finally(() => {
-          setLoading(false);
-        });*/
+      });
     },
     [selectedFile, state, doUpload]
   );
@@ -94,7 +87,7 @@ export default function SingleUploadForm() {
     );
   };
 
-  return loading ? (
+  return isPending ? (
     <Loading />
   ) : (
     <VStack>

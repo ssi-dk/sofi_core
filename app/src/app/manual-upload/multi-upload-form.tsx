@@ -13,14 +13,12 @@ import { useMutation } from "redux-query-react";
 import { uploadMultipleIsolates } from "./manual-upload-configs";
 
 export default function MultiUploadForm() {
-  const [qstate, doUpload] = useMutation((payload: MultiUploadRequest) =>
+  const [{ isPending }, doUpload] = useMutation((payload: MultiUploadRequest) =>
     uploadMultipleIsolates(payload)
   );
 
   const [metadataTSV, setMetadataTSV] = useState<any>(null);
   const [selectedFiles, setSelectedFiles] = useState<any>(null);
-
-  const [loading, setLoading] = useState<boolean>(false);
 
   const submitForm = React.useCallback(
     (e) => {
@@ -33,7 +31,7 @@ export default function MultiUploadForm() {
     [metadataTSV, selectedFiles, doUpload]
   );
 
-  return loading ? (
+  return isPending ? (
     <Loading />
   ) : (
     <VStack>

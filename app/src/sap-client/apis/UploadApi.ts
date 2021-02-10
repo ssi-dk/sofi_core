@@ -24,6 +24,7 @@ import {
 } from '../models';
 
 export interface BulkMetadataRequest {
+    path: string;
     metadataTsv: Blob;
 }
 
@@ -42,6 +43,10 @@ export interface SingleUploadRequest {
  * Manually upload metadata for previously uploaded sequence files
  */
 function bulkMetadataRaw<T>(requestParameters: BulkMetadataRequest, requestConfig: runtime.TypedQueryConfig<T, UploadResponse> = {}): QueryConfig<T> {
+    if (requestParameters.path === null || requestParameters.path === undefined) {
+        throw new runtime.RequiredError('path','Required parameter requestParameters.path was null or undefined when calling bulkMetadata.');
+    }
+
     if (requestParameters.metadataTsv === null || requestParameters.metadataTsv === undefined) {
         throw new runtime.RequiredError('metadataTsv','Required parameter requestParameters.metadataTsv was null or undefined when calling bulkMetadata.');
     }
@@ -56,6 +61,10 @@ function bulkMetadataRaw<T>(requestParameters: BulkMetadataRequest, requestConfi
 
     meta.authType = ['bearer'];
     const formData = new FormData();
+    if (requestParameters.path !== undefined) {
+        formData.append('path', requestParameters.path as any);
+    }
+
     if (requestParameters.metadataTsv !== undefined) {
         formData.append('metadata_tsv', requestParameters.metadataTsv as any);
     }

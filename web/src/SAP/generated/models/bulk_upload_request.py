@@ -15,20 +15,25 @@ class BulkUploadRequest(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, metadata_tsv=None):  # noqa: E501
+    def __init__(self, path=None, metadata_tsv=None):  # noqa: E501
         """BulkUploadRequest - a model defined in OpenAPI
 
+        :param path: The path of this BulkUploadRequest.  # noqa: E501
+        :type path: str
         :param metadata_tsv: The metadata_tsv of this BulkUploadRequest.  # noqa: E501
         :type metadata_tsv: file
         """
         self.openapi_types = {
+            'path': str,
             'metadata_tsv': file
         }
 
         self.attribute_map = {
+            'path': 'path',
             'metadata_tsv': 'metadata_tsv'
         }
 
+        self._path = path
         self._metadata_tsv = metadata_tsv
 
     @classmethod
@@ -41,6 +46,29 @@ class BulkUploadRequest(Model):
         :rtype: BulkUploadRequest
         """
         return util.deserialize_model(dikt, cls)
+
+    @property
+    def path(self):
+        """Gets the path of this BulkUploadRequest.
+
+
+        :return: The path of this BulkUploadRequest.
+        :rtype: str
+        """
+        return self._path
+
+    @path.setter
+    def path(self, path):
+        """Sets the path of this BulkUploadRequest.
+
+
+        :param path: The path of this BulkUploadRequest.
+        :type path: str
+        """
+        if path is None:
+            raise ValueError("Invalid value for `path`, must not be `None`")  # noqa: E501
+
+        self._path = path
 
     @property
     def metadata_tsv(self):

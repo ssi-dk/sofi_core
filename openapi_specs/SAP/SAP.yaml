@@ -328,6 +328,8 @@ paths:
             schema:
               $ref: '#/components/schemas/BulkUploadRequest'
             encoding:
+              path:
+                contentType: text/plain
               metadata_tsv:
                 contentType: text/tsv
       responses:
@@ -746,8 +748,11 @@ components:
     BulkUploadRequest:
       type: object
       required:
+        - path
         - metadata_tsv
       properties:
+        path:
+          type: string
         metadata_tsv:
           type: string
           format: binary

@@ -222,6 +222,9 @@ paths:
         content:
           multipart/form-data:
             encoding:
+              path:
+                contentType: text/plain
+                style: form
               metadata_tsv:
                 contentType: text/tsv
                 style: form
@@ -645,11 +648,14 @@ components:
       type: object
     BulkUploadRequest:
       properties:
+        path:
+          type: string
         metadata_tsv:
           format: binary
           type: string
       required:
       - metadata_tsv
+      - path
       type: object
     UploadResponse:
       example:

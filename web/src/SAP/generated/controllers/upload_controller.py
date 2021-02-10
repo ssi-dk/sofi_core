@@ -6,17 +6,19 @@ from web.src.SAP.generated.models.upload_response import UploadResponse  # noqa:
 from .. import util
 from ...src.controllers import UploadController
 
-def bulk_metadata(user, token_info, metadata_tsv):  # noqa: E501
+def bulk_metadata(user, token_info, path, metadata_tsv):  # noqa: E501
     """bulk_metadata
 
     Manually upload metadata for previously uploaded sequence files # noqa: E501
 
+    :param path: 
+    :type path: str
     :param metadata_tsv: 
     :type metadata_tsv: str
 
     :rtype: UploadResponse
     """
-    return UploadController.bulk_metadata(user, token_info, metadata_tsv)
+    return UploadController.bulk_metadata(user, token_info, path, metadata_tsv)
 
 def multi_upload(user, token_info, metadata_tsv, files):  # noqa: E501
     """multi_upload
