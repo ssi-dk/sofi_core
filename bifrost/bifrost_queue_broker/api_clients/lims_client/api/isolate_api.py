@@ -104,7 +104,9 @@ class IsolateApi(object):
         self.post_actions_get_isolate = Endpoint(
             settings={
                 'response_type': (IsolateGetResponse,),
-                'auth': [],
+                'auth': [
+                    'cookieAuth'
+                ],
                 'endpoint_path': '/actions/GetIsolate',
                 'operation_id': 'post_actions_get_isolate',
                 'http_method': 'POST',
@@ -216,7 +218,9 @@ class IsolateApi(object):
         self.post_actions_update_isolate = Endpoint(
             settings={
                 'response_type': (IsolateUpdateResponse,),
-                'auth': [],
+                'auth': [
+                    'cookieAuth'
+                ],
                 'endpoint_path': '/actions/UpdateIsolate',
                 'operation_id': 'post_actions_update_isolate',
                 'http_method': 'POST',

@@ -10,6 +10,8 @@ servers:
 paths:
   /actions/GetIsolate:
     post:
+      security:
+        - cookieAuth: []
       summary: Get isolate
       operationId: post-actions-GetIsolate
       responses:
@@ -88,6 +90,8 @@ paths:
         - isolate
   /actions/UpdateIsolate:
     post:
+      security:
+        - cookieAuth: []
       summary: Update isolate
       operationId: post-actions-UpdateIsolate
       responses:
@@ -128,6 +132,8 @@ paths:
         - isolate
   '/connections/{connectionId}':
     get:
+      security:
+        - cookieAuth: []
       summary: Check connection
       tags:
         - connections
@@ -148,6 +154,8 @@ paths:
       description: Check connection
       parameters: []
     delete:
+      security:
+        - cookieAuth: []
       summary: Delete connection
       operationId: delete-connections
       responses:
@@ -167,6 +175,8 @@ paths:
       tags:
         - connections
     put:
+      security:
+        - cookieAuth: []
       summary: ''
       operationId: put-connections
       responses:
@@ -199,6 +209,7 @@ paths:
         required: true
   /connections:
     post:
+      security: []
       summary: ''
       operationId: post-connections
       responses:
@@ -216,6 +227,11 @@ paths:
                     connections:
                       connectionid: fvstlims|admin719456522586
                     status: Created
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+                example: 'connectionid=FVSTLIMS|admin5653995501376'
       description: Create connection
       requestBody:
         content:
@@ -516,7 +532,11 @@ components:
             connectionid: fvstlims|admin719456522586
           status: Created
       description: Connection create response
-  securitySchemes: {}
+  securitySchemes: 
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: connectionid
 tags:
   - name: isolate
   - name: connections

@@ -107,7 +107,9 @@ class ConnectionsApi(object):
         self.delete_connections = Endpoint(
             settings={
                 'response_type': (MessageResponse,),
-                'auth': [],
+                'auth': [
+                    'cookieAuth'
+                ],
                 'endpoint_path': '/connections/{connectionId}',
                 'operation_id': 'delete_connections',
                 'http_method': 'DELETE',
@@ -224,7 +226,9 @@ class ConnectionsApi(object):
         self.get_connections = Endpoint(
             settings={
                 'response_type': (MessageResponse,),
-                'auth': [],
+                'auth': [
+                    'cookieAuth'
+                ],
                 'endpoint_path': '/connections/{connectionId}',
                 'operation_id': 'get_connections',
                 'http_method': 'GET',
@@ -454,7 +458,9 @@ class ConnectionsApi(object):
         self.put_connections = Endpoint(
             settings={
                 'response_type': (MessageResponse,),
-                'auth': [],
+                'auth': [
+                    'cookieAuth'
+                ],
                 'endpoint_path': '/connections/{connectionId}',
                 'operation_id': 'put_connections',
                 'http_method': 'PUT',
