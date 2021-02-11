@@ -12,9 +12,6 @@ services:
       - "bifrost_db"
 
   sap_broker_queue:
-    environment:
-      - TBR_API_URL=http://tbr_integration
-      - LIMS_API_URL=http://localhost:4021
     depends_on:
       - "bifrost_db"
       - "sap_api"
