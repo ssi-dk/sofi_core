@@ -14,7 +14,7 @@ function SingleUploadForm() {
     doUpload,
   ] = useMutation((payload: SingleUploadRequest) => uploadIsolateFile(payload));
 
-  const [selectedFile, setSelectedFile] = useState<unknown>(null);
+  const [selectedFile, setSelectedFile] = useState<Blob>(null);
 
   const [metadata, setMetadata] = React.useState({
     isolate_id: "",
