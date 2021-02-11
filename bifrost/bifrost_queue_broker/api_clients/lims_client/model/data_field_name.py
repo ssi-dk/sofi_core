@@ -51,16 +51,17 @@ class DataFieldName(ModelSimple):
 
     allowed_values = {
         ('value',): {
-            'SPECIES': "Species",
+            'AGENS_BAKTERIE': "Agens bakterie",
+            'SPECIES': "species",
             'SUBSPECIES': "Subspecies",
-            'SEROTYPE': "Serotype",
-            'ST': "ST",
+            'SEROTYPE': "serotype",
+            'STTYPE': "STtype",
             'PATHOTYPE': "Pathotype",
             'ADHÆSIONSGENER': "Adhæsionsgener",
             'TOXINGENER': "Toxingener",
             'VIRULENSGENER': "virulensgener",
             'AMRGENER': "AMRgener",
-            'RESFINDER_VERSION': "ResFinder version",
+            'RESFINDER_VERSION': "resfinder version",
             'DATO_SEKVENSANALYSE': "dato sekvensanalyse",
             'RUNID': "RunId",
             'SEKVENSID': "sekvensID",
@@ -149,10 +150,10 @@ class DataFieldName(ModelSimple):
         Note that value can be passed either in args or in kwargs, but not in both.
 
         Args:
-            args[0] (str):, must be one of ["Species", "Subspecies", "Serotype", "ST", "Pathotype", "Adhæsionsgener", "Toxingener", "virulensgener", "AMRgener", "ResFinder version", "dato sekvensanalyse", "RunId", "sekvensID", "amr_ami", "amr_amp", "amr_azi", "amr_fep", "amr_fot", "amr_f_c", "amr_fox", "amr_taz", "amr_t_c", "amr_chl", "amr_cip", "amr_cli", "amr_col", "amr_dap", "amr_etp", "amr_ery", "amr_fus", "amr_gen", "amr_imi", "amr_kan", "amr_lzd", "amr_mero", "amr_mup", "amr_nal", "amr_pen", "amr_syn", "amr_rif", "amr_str", "amr_sul", "amr_tei", "amr_trm", "amr_tet", "amr_tia", "amr_tgc", "amr_tmp", "amr_van", ]  # noqa: E501
+            args[0] (str):, must be one of ["Agens bakterie", "species", "Subspecies", "serotype", "STtype", "Pathotype", "Adhæsionsgener", "Toxingener", "virulensgener", "AMRgener", "resfinder version", "dato sekvensanalyse", "RunId", "sekvensID", "amr_ami", "amr_amp", "amr_azi", "amr_fep", "amr_fot", "amr_f_c", "amr_fox", "amr_taz", "amr_t_c", "amr_chl", "amr_cip", "amr_cli", "amr_col", "amr_dap", "amr_etp", "amr_ery", "amr_fus", "amr_gen", "amr_imi", "amr_kan", "amr_lzd", "amr_mero", "amr_mup", "amr_nal", "amr_pen", "amr_syn", "amr_rif", "amr_str", "amr_sul", "amr_tei", "amr_trm", "amr_tet", "amr_tia", "amr_tgc", "amr_tmp", "amr_van", ]  # noqa: E501
 
         Keyword Args:
-            value (str):, must be one of ["Species", "Subspecies", "Serotype", "ST", "Pathotype", "Adhæsionsgener", "Toxingener", "virulensgener", "AMRgener", "ResFinder version", "dato sekvensanalyse", "RunId", "sekvensID", "amr_ami", "amr_amp", "amr_azi", "amr_fep", "amr_fot", "amr_f_c", "amr_fox", "amr_taz", "amr_t_c", "amr_chl", "amr_cip", "amr_cli", "amr_col", "amr_dap", "amr_etp", "amr_ery", "amr_fus", "amr_gen", "amr_imi", "amr_kan", "amr_lzd", "amr_mero", "amr_mup", "amr_nal", "amr_pen", "amr_syn", "amr_rif", "amr_str", "amr_sul", "amr_tei", "amr_trm", "amr_tet", "amr_tia", "amr_tgc", "amr_tmp", "amr_van", ]  # noqa: E501
+            value (str):, must be one of ["Agens bakterie", "species", "Subspecies", "serotype", "STtype", "Pathotype", "Adhæsionsgener", "Toxingener", "virulensgener", "AMRgener", "resfinder version", "dato sekvensanalyse", "RunId", "sekvensID", "amr_ami", "amr_amp", "amr_azi", "amr_fep", "amr_fot", "amr_f_c", "amr_fox", "amr_taz", "amr_t_c", "amr_chl", "amr_cip", "amr_cli", "amr_col", "amr_dap", "amr_etp", "amr_ery", "amr_fus", "amr_gen", "amr_imi", "amr_kan", "amr_lzd", "amr_mero", "amr_mup", "amr_nal", "amr_pen", "amr_syn", "amr_rif", "amr_str", "amr_sul", "amr_tei", "amr_trm", "amr_tet", "amr_tia", "amr_tgc", "amr_tmp", "amr_van", ]  # noqa: E501
             _check_type (bool): if True, values for parameters in openapi_types
                                 will be type checked and a TypeError will be
                                 raised if the wrong type is input.

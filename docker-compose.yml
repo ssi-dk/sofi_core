@@ -51,10 +51,13 @@ services:
       - BIFROST_MONGO_TBR_METADATA_COLLECTION=sap_tbr_metadata
       - BIFROST_MONGO_LIMS_METADATA_COLLECTION=sap_lims_metadata
       - BIFROST_MONGO_ANALYSIS_VIEW_COLLECTION=sap_analysis_results
-      - TBR_API_URL=http://tbr_integration
-      - LIMS_API_URL=http://lims_integration
       - SOFI_BIFROST_ENCRYPTION_NAME=${SOFI_BIFROST_ENCRYPTION_NAME}
       - SOFI_BIFROST_ENCRYPTION_KEY=${SOFI_BIFROST_ENCRYPTION_KEY}
+      - TBR_API_URL=http://tbr_integration
+      - LIMS_API_URL=http://lims_integration
+      - LIMS_API_DATABASEID=${LIMS_API_DATABASEID}
+      - LIMS_API_USERNAME=${LIMS_API_USERNAME}
+      - LIMS_API_PASSWORD=${LIMS_API_PASSWORD}
 
   bifrost_listener:
     build:

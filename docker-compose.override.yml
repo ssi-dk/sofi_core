@@ -14,7 +14,7 @@ services:
   sap_broker_queue:
     environment:
       - TBR_API_URL=http://tbr_integration
-      - LIMS_API_URL=http://lims_integration
+      - LIMS_API_URL=http://localhost:4021
     depends_on:
       - "bifrost_db"
       - "sap_api"
@@ -49,6 +49,8 @@ services:
   lims_mock:
     container_name: lims_integration
     image: stoplight/prism:latest
+    ports:
+      - "4021:4021"
     command: mock /openapi_specs/lims.v1.yaml -h 0.0.0.0 -p 4021
     volumes:
       - ./openapi_specs:/openapi_specs

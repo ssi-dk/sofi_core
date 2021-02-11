@@ -54,7 +54,7 @@ class TBRPullingBroker(threading.Thread):
     def run_sync_job(self):
         batch_size = 200
         fetch_pipeline = [
-            {"$group": {"_id": "$_id", "isolate_id": {"$first": "$isolate_id"}}},
+            {"$group": {"_id": "$_id", "isolate_id": {"$first": "$isolate_id"}, "institution": { "$first": "$institution"}}},
             {"$match": {"institution": "SSI"}},
             {
                 "$lookup": {
@@ -97,7 +97,7 @@ class TBRPullingBroker(threading.Thread):
                 updated_isolates = api_instance.api_isolate_changed_isolates_post(
                     row_version=row_ver_elems
                 )
-                bulk_update_queries = self.add_mongo_document_id(updated_isolates)
+                bulk_update_queries = self.upsert_tbr_metadata_batch(updated_isolates)
 
                 update_count = 0
                 if len(bulk_update_queries) > 0:
@@ -115,9 +115,8 @@ class TBRPullingBroker(threading.Thread):
                     f"Exception on check for isolate updates {self.broker_name}: {e}\n"
                 )
 
-    def add_mongo_document_id(self, updated_isolates):
+    def upsert_tbr_metadata_batch(self, updated_isolates):
         result = []
-        # And find the equivalent document id for each isolate
         for isolate in updated_isolates:
             values = isolate.to_dict()
             isolate_id = values["isolate_id"]

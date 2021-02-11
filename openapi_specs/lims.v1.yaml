@@ -44,22 +44,31 @@ paths:
                         data:
                           - fieldName: Agens bakterie
                             fieldValue: value1
+                            status: InProgress
                           - fieldName: species
                             fieldValue: value2
+                            status: InProgress
                           - fieldName: serotype
                             fieldValue: value3
+                            status: InProgress
                           - fieldName: STtype
                             fieldValue: value4
+                            status: InProgress
                           - fieldName: virulensgener
                             fieldValue: value5
+                            status: InProgress
                           - fieldName: AMRgener
                             fieldValue: value6
+                            status: InProgress
                           - fieldName: resfinder version
                             fieldValue: value7
+                            status: InProgress
                           - fieldName: RunId
                             fieldValue: value8
+                            status: InProgress
                           - fieldName: sekvensID
                             fieldValue: value9
+                            status: InProgress
                         success: true
                     code: 200
                     message: Action GetIsolate executed successfully
@@ -202,7 +211,7 @@ paths:
               examples:
                 example:
                   value:
-                    cose: 201
+                    code: 201
                     message: Connection fvstlims|admin719456522586 created
                     connections:
                       connectionid: fvstlims|admin719456522586
@@ -226,21 +235,22 @@ components:
     FieldStatus:
       type: string
       description: Indicates whether or not an analyst has approved the field
-      enum: ["released", "not-released"]
+      enum: ["Released", "InProgress"]
 
     DataFieldName:
       type: string
       enum: 
-        - "Species"
+        - "Agens bakterie"
+        - "species"
         - "Subspecies"
-        - "Serotype"
-        - "ST"
+        - "serotype"
+        - "STtype"
         - "Pathotype"
         - "Adhæsionsgener"
         - "Toxingener"
         - "virulensgener"
         - "AMRgener"
-        - "ResFinder version"
+        - "resfinder version"
         - "dato sekvensanalyse"
         - "RunId"
         - "sekvensID"
@@ -283,14 +293,15 @@ components:
 
     MetadataFieldName:
       type: string
-      enum: 
-        - "Projekt ID"
+      enum:
+        - "projektnummer"
         - "projekttitel"
-        - "Udtag. Dato"
-        - "Modtaget"
+        - "datoudtagning"
+        - "datomodtagelse"
         - "CHR-nr."
         - "Aut. Nummer"
-        - "Produkttype"
+        - "produkt"
+        - "produkttype"
         - "Produktbeskrivelse"
         - "Oprindelse land"
         - "dyreart"

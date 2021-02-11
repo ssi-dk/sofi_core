@@ -51,13 +51,14 @@ class MetadataFieldName(ModelSimple):
 
     allowed_values = {
         ('value',): {
-            'PROJEKT_ID': "Projekt ID",
+            'PROJEKTNUMMER': "projektnummer",
             'PROJEKTTITEL': "projekttitel",
-            'UDTAG._DATO': "Udtag. Dato",
-            'MODTAGET': "Modtaget",
+            'DATOUDTAGNING': "datoudtagning",
+            'DATOMODTAGELSE': "datomodtagelse",
             'CHR-NR.': "CHR-nr.",
             'AUT._NUMMER': "Aut. Nummer",
-            'PRODUKTTYPE': "Produkttype",
+            'PRODUKT': "produkt",
+            'PRODUKTTYPE': "produkttype",
             'PRODUKTBESKRIVELSE': "Produktbeskrivelse",
             'OPRINDELSE_LAND': "Oprindelse land",
             'DYREART': "dyreart",
@@ -111,10 +112,10 @@ class MetadataFieldName(ModelSimple):
         Note that value can be passed either in args or in kwargs, but not in both.
 
         Args:
-            args[0] (str):, must be one of ["Projekt ID", "projekttitel", "Udtag. Dato", "Modtaget", "CHR-nr.", "Aut. Nummer", "Produkttype", "Produktbeskrivelse", "Oprindelse land", "dyreart", "Formål", ]  # noqa: E501
+            args[0] (str):, must be one of ["projektnummer", "projekttitel", "datoudtagning", "datomodtagelse", "CHR-nr.", "Aut. Nummer", "produkt", "produkttype", "Produktbeskrivelse", "Oprindelse land", "dyreart", "Formål", ]  # noqa: E501
 
         Keyword Args:
-            value (str):, must be one of ["Projekt ID", "projekttitel", "Udtag. Dato", "Modtaget", "CHR-nr.", "Aut. Nummer", "Produkttype", "Produktbeskrivelse", "Oprindelse land", "dyreart", "Formål", ]  # noqa: E501
+            value (str):, must be one of ["projektnummer", "projekttitel", "datoudtagning", "datomodtagelse", "CHR-nr.", "Aut. Nummer", "produkt", "produkttype", "Produktbeskrivelse", "Oprindelse land", "dyreart", "Formål", ]  # noqa: E501
             _check_type (bool): if True, values for parameters in openapi_types
                                 will be type checked and a TypeError will be
                                 raised if the wrong type is input.
