@@ -132,8 +132,8 @@ class LIMSPullingBroker(threading.Thread):
                 api_response = api_instance.post_actions_get_isolate(
                     isolate_get_request=isolate_get_req
                 )
-                
-                transformed_batch.append(self.transform_lims_metadata(api_response))
+                if "output" in api_response and "sapresponse" in api_response.output:
+                    transformed_batch.append(self.transform_lims_metadata(api_response))
             
             bulk_update_queries = self.upsert_lims_metadata_batch(transformed_batch)
             update_count = 0
