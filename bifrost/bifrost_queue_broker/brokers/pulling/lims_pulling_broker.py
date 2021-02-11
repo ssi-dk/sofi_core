@@ -105,7 +105,13 @@ class LIMSPullingBroker(threading.Thread):
                 connection_id = api_response.connections.connectionid
             except api_clients.lims_client.ApiException as e:
                 print("Exception when creating connection: %s\n" % e)
+        
+        lms_cfg = api_clients.lims_client.Configuration(
+            host=lims_api_url,
+            api_key={'cookieAuth': f"connectionid={connection_id}"}
+        )
 
+        with api_clients.lims_client.ApiClient(lms_cfg) as api_client:
             for batch in yield_chunks(cursor, batch_size):
                 update_count += self.update_isolate_metadata(api_client, batch)
 
