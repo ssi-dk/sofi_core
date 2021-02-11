@@ -12,11 +12,19 @@ from ..services.upload_service import (
 import json
 import sys
 from flask import request
+from web.src.SAP.src.security.permission_check import (
+    assert_user_has,
+    assert_authorized_to_edit,
+    authorized_to_edit,
+)
 
 
 def bulk_metadata(user, token_info, path, metadata_tsv):
-    errors = []
+    assert_user_has("approve", token_info)
     metadata_list = validate_metadata_tsv(metadata_tsv)
+    for m in metadata_list:
+        assert_authorized_to_edit(token_info, m)
+    errors = []
     sequence_names = [m["sequence_filename"] for m in metadata_list]
     trimmed_path = path.read().decode("utf-8").strip('"').strip()
     existing_sequences, missing_sequences = check_bulk_isolate_exists(
@@ -36,6 +44,7 @@ def bulk_metadata(user, token_info, path, metadata_tsv):
 
 
 def multi_upload(user, token_info, metadata_tsv, files):
+    assert_user_has("approve", token_info)
     # Files aren't properly routed from connexion, use these files instead:
     files = request.files.getlist("files")
     errors = []
@@ -50,10 +59,15 @@ def multi_upload(user, token_info, metadata_tsv, files):
                 if metadata:
                     base_metadata = BaseMetadata.from_dict(metadata)
                     current_errors = validate_metadata(base_metadata, file)
-                    if not current_errors:
-                        upload_isolate(base_metadata, file)
+                    if authorized_to_edit(token_info, base_metadata):
+                        if not current_errors:
+                            upload_isolate(base_metadata, file)
+                        else:
+                            errors.extend(current_errors)
                     else:
-                        errors.extend(current_errors)
+                        errors.append(
+                            f"You are not authorized to edit isolate -{base_metadata.isolate_id}-"
+                        )
                 else:
                     errors.append(f"{file.filename} does not have a metadata entry")
 
@@ -67,7 +81,9 @@ def multi_upload(user, token_info, metadata_tsv, files):
 
 
 def single_upload(user, token_info, metadata, file):
+    assert_user_has("approve", token_info)
     base_metadata: BaseMetadata = BaseMetadata.from_dict(json.loads(metadata.read()))
+    assert_authorized_to_edit(token_info, base_metadata)
     try:
         upload_isolate(base_metadata, file)
         return upload_response_helper()

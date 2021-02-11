@@ -1,26 +1,20 @@
 import React, { useState } from "react";
-import {
-  VStack,
-  Input,
-  FormControl,
-  FormLabel,
-  Button,
-  Text,
-} from "@chakra-ui/react";
+import { VStack, Input, Button, Text } from "@chakra-ui/react";
 import { BaseMetadata } from "sap-client/models/BaseMetadata";
 import { Organization } from "sap-client/models/Organization";
 import { SingleUploadRequest } from "sap-client/apis/UploadApi";
 import { Loading } from "loading";
 import { useMutation } from "redux-query-react";
 import { uploadIsolateFile } from "./manual-upload-configs";
+import TextInput from "./text-input";
 
-export default function SingleUploadForm() {
+function SingleUploadForm() {
   const [
     { isPending },
     doUpload,
   ] = useMutation((payload: SingleUploadRequest) => uploadIsolateFile(payload));
 
-  const [selectedFile, setSelectedFile] = useState<any>(null);
+  const [selectedFile, setSelectedFile] = useState<Blob>(null);
 
   const [metadata, setMetadata] = React.useState({
     isolate_id: "",
@@ -50,6 +44,7 @@ export default function SingleUploadForm() {
 
   const changeFile = React.useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) =>
+      // eslint-disable-next-line
       setSelectedFile(e.target.files![0]),
     [setSelectedFile]
   );
@@ -65,54 +60,84 @@ export default function SingleUploadForm() {
     [selectedFile, metadata, doUpload]
   );
 
-  const TextInput = ({ label, name }: { label: string; name: string }) => {
-    if (name.endsWith("date")) {
-      return (
-        <>
-          <FormControl id={name}>
-            <FormLabel>{label}</FormLabel>
-            <Input
-              type="date"
-              value={metadata[name]}
-              name={name}
-              onChange={changeState}
-            />
-          </FormControl>
-        </>
-      );
-    }
-    return (
-      <>
-        <FormControl id={name}>
-          <FormLabel>{label}</FormLabel>
-          <Input
-            type="text"
-            value={metadata[name]}
-            name={name}
-            onChange={changeState}
-          />
-        </FormControl>
-      </>
-    );
-  };
-
   return isPending ? (
     <Loading />
   ) : (
     <VStack>
-      <Text>Uplaod single sequence file.</Text>
-      <TextInput label="Isolate ID" name="isolate_id" />
-      <TextInput label="Sequence ID" name="sequence_id" />
-      <TextInput label="sequence_filename" name="sequence_filename" />
-      <TextInput label="Institution" name="institution" />
-      <TextInput label="Project Number" name="project_number" />
-      <TextInput label="Project Title" name="project_title" />
-      <TextInput label="Sampling Date" name="sampling_date" />
-      <TextInput label="Received Date" name="received_date" />
-      <TextInput label="Run id" name="run_id" />
-      <TextInput label="Public" name="_public" />
-      <TextInput label="Provided species" name="provided_species" />
-      <TextInput label="Primary isolate?" name="primary_isolate" />
+      <Text>Upload single sequence file.</Text>
+      <TextInput
+        label="Isolate ID"
+        name="isolate_id"
+        value={metadata.isolate_id}
+        onChange={changeState}
+      />
+      <TextInput
+        label="Sequence ID"
+        name="sequence_id"
+        value={metadata.sequence_id}
+        onChange={changeState}
+      />
+      <TextInput
+        label="sequence_filename"
+        name="sequence_filename"
+        value={metadata.sequence_filename}
+        onChange={changeState}
+      />
+      <TextInput
+        label="Institution"
+        name="institution"
+        value={metadata.institution}
+        onChange={changeState}
+      />
+      <TextInput
+        label="Project Number"
+        name="project_number"
+        value={metadata.project_number}
+        onChange={changeState}
+      />
+      <TextInput
+        label="Project Title"
+        name="project_title"
+        value={metadata.project_title}
+        onChange={changeState}
+      />
+      <TextInput
+        label="Sampling Date"
+        name="sampling_date"
+        value={metadata.sampling_date}
+        onChange={changeState}
+      />
+      <TextInput
+        label="Received Date"
+        name="received_date"
+        value={metadata.received_date}
+        onChange={changeState}
+      />
+      <TextInput
+        label="Run id"
+        name="run_id"
+        value={metadata.run_id}
+        onChange={changeState}
+      />
+      <TextInput
+        label="Public"
+        name="_public"
+        // eslint-disable-next-line
+        value={metadata._public}
+        onChange={changeState}
+      />
+      <TextInput
+        label="Provided species"
+        name="provided_species"
+        value={metadata.provided_species}
+        onChange={changeState}
+      />
+      <TextInput
+        label="Primary isolate?"
+        name="primary_isolate"
+        value={metadata.primary_isolate}
+        onChange={changeState}
+      />
       <Input type="file" onChange={changeFile} />
       <Button type="submit" onClick={submitForm}>
         Upload
@@ -120,3 +145,5 @@ export default function SingleUploadForm() {
     </VStack>
   );
 }
+
+export default React.memo(SingleUploadForm);
