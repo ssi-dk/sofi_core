@@ -385,7 +385,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
       getStickyCellStyle,
       onDetailsClick,
       renderCellControl,
-      cellClickHandler
+      cellClickHandler,
     ]
   );
 

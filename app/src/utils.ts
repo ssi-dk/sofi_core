@@ -11,13 +11,17 @@ export type IndexableOf<T extends NotEmpty> = keyof Pick<
   { [K in keyof T]: T[K] extends string | number ? K : never }[keyof T]
 >;
 
-export type PropFilter<T extends NotEmpty> = Partial<{
-  [k in IndexableOf<T>]: string[];
-}>;
+export type PropFilter<T extends NotEmpty> = Partial<
+  {
+    [k in IndexableOf<T>]: string[];
+  }
+>;
 
-export type RangeFilter<T extends NotEmpty> = Partial<{
-  [k in keyof T]: {min: T[k], max: T[k]};
-}>;
+export type RangeFilter<T extends NotEmpty> = Partial<
+  {
+    [k in keyof T]: { min: T[k]; max: T[k] };
+  }
+>;
 
 export type FilterPredicate<T extends NotEmpty> = (x: T) => boolean;
 

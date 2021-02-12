@@ -37,19 +37,21 @@ const sendJudgement = (params: ApprovalRequest, judgement: ApprovalStatus) => {
   // define a transform for normalizing the data into our desired state
   base.transform = (response: Approval) => ({
     approvals: [response],
-    approvalMatrix: response.matrix
+    approvalMatrix: response.matrix,
   });
   // define the update strategy for our state
   base.update = {
     approvals: (oldValue, newValue) => [...newValue, ...(oldValue || [])],
-    approvalMatrix: (oldValue, newValue) => ({...oldValue, ...newValue})
+    approvalMatrix: (oldValue, newValue) => ({ ...oldValue, ...newValue }),
   };
   return base;
 };
 
-export const sendApproval = (params: ApprovalRequest) => sendJudgement(params, ApprovalStatus.approved);
+export const sendApproval = (params: ApprovalRequest) =>
+  sendJudgement(params, ApprovalStatus.approved);
 
-export const sendRejection = (params: ApprovalRequest) => sendJudgement(params, ApprovalStatus.rejected);
+export const sendRejection = (params: ApprovalRequest) =>
+  sendJudgement(params, ApprovalStatus.rejected);
 
 export const revokeApproval = (params: CancelApprovalRequest) => {
   // use generated api client as base
@@ -60,16 +62,16 @@ export const revokeApproval = (params: CancelApprovalRequest) => {
   base.update = {
     approvals: (oldValue) => {
       const newValue = JSON.parse(JSON.stringify(oldValue));
-      const modded = newValue.filter(x => x.id === params.approvalId)[0];
-      modded.status = ApprovalAllOfStatusEnum.cancelled
+      const modded = newValue.filter((x) => x.id === params.approvalId)[0];
+      modded.status = ApprovalAllOfStatusEnum.cancelled;
       return newValue;
-    }
+    },
   };
   return base;
 };
 
 type ApprovalMatrixSlice = { approvalMatrix: ApprovalMatrix };
-type ApprovalMatrix = {[K: string]: {[K: string]: ApprovalStatus}}
+type ApprovalMatrix = { [K: string]: { [K: string]: ApprovalStatus } };
 
 export const fetchApprovalMatrix = () => {
   const base = fullApprovalMatrix<ApprovalMatrixSlice>();
@@ -82,7 +84,7 @@ export const fetchApprovalMatrix = () => {
     approvalMatrix: (_, newValue) => newValue,
   };
   return base;
-}; 
+};
 
 export const fetchApprovals = () => {
   const base = getApprovals<ApprovalSlice>();

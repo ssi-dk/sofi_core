@@ -1,9 +1,6 @@
 import React, { useState } from "react";
 import ScrollbarSize from "react-scrollbar-size";
-import {
-  VariableSizeGrid as Grid,
-  VariableSizeGridProps,
-} from "react-window";
+import { VariableSizeGrid as Grid, VariableSizeGridProps } from "react-window";
 
 function getCellIndicies(child) {
   return { row: child.props.rowIndex, column: child.props.columnIndex };
@@ -35,7 +32,13 @@ function getShownIndicies(children) {
   };
 }
 
-function useInnerElementType(Cell, columnWidth, rowHeight, scrollbarWidth, scrollbarHeight) {
+function useInnerElementType(
+  Cell,
+  columnWidth,
+  rowHeight,
+  scrollbarWidth,
+  scrollbarHeight
+) {
   return React.useMemo(
     () =>
       React.forwardRef((props, ref) => {
@@ -129,8 +132,8 @@ function useInnerElementType(Cell, columnWidth, rowHeight, scrollbarWidth, scrol
           const width = columnWidth(columnIndex);
           const height = rowHeight(rowIndex);
 
-
-          const marginTop = i === 1 ? sumRowsHeights(rowIndex) - hardcodedOffset : undefined;
+          const marginTop =
+            i === 1 ? sumRowsHeights(rowIndex) - hardcodedOffset : undefined;
           const a = scrollbarWidth;
           const b = scrollbarHeight;
 
@@ -188,7 +191,13 @@ export const StickyVariableSizeGrid: React.FC<StickyVariableSizeGridProps> = (
       <Grid
         {...props}
         ref={gridRef}
-        innerElementType={useInnerElementType(children, columnWidth, rowHeight, currentScrollbarWidth, currentScrollbarHeight)}
+        innerElementType={useInnerElementType(
+          children,
+          columnWidth,
+          rowHeight,
+          currentScrollbarWidth,
+          currentScrollbarHeight
+        )}
       />
     </React.Fragment>
   );

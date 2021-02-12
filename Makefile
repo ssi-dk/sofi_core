@@ -64,6 +64,7 @@ ${mkfile_dir}/app/src/sap-client : ${mkfile_dir}/openapi_specs/SAP/SAP.yaml
 		-o /mnt/app/src/sap-client
 	cp -r "${mkfile_dir}/app/src/sap-client/src/"* "${mkfile_dir}/app/src/sap-client"
 	rm -rf "${mkfile_dir}/app/src/sap-client/src/"
+	yarn --cwd "${mkfile_dir}/app/" prettier --write src/
 
 ${mkfile_dir}/web/src/SAP/generated : ${mkfile_dir}/openapi_specs/SAP/SAP.yaml
 	# Generate flask api

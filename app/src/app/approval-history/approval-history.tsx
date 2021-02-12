@@ -79,7 +79,14 @@ export default function ApprovalHistory() {
       <Box role="heading" gridColumn="1 / 4">
         <AnalysisHeader />
       </Box>
-      <Box role="main" gridColumn="2 / 4" borderWidth="1px" rounded="md" padding="2em" height="85vh">
+      <Box
+        role="main"
+        gridColumn="2 / 4"
+        borderWidth="1px"
+        rounded="md"
+        padding="2em"
+        height="85vh"
+      >
         <Flex
           padding="20px"
           alignItems="center"

@@ -34,23 +34,23 @@ const styles: Partial<Styles> = {
   input: () => ({
     border: 0,
     padding: 0,
-    margin: 0
+    margin: 0,
   }),
   container: () => ({
     border: 0,
     padding: 0,
-    margin: 0
+    margin: 0,
   }),
   control: () => ({
     width: 200,
     height: 24,
     border: 0,
     padding: 0,
-    margin: 0
+    margin: 0,
   }),
   valueContainer: () => ({
-    padding: 0
-  }), 
+    padding: 0,
+  }),
   dropdownIndicator: () => ({
     display: "none",
     height: 0,
@@ -62,7 +62,7 @@ const styles: Partial<Styles> = {
   singleValue: (provided, state) => {
     const opacity = state.isDisabled ? 0.5 : 1;
     const transition = "opacity 300ms";
-    const margin = 0; 
+    const margin = 0;
 
     return { ...provided, opacity, transition, margin };
   },

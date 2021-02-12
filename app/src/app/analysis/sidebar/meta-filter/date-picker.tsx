@@ -1,8 +1,8 @@
-import React from 'react';
-import ReactDatePicker, { ReactDatePickerProps } from 'react-datepicker';
+import React from "react";
+import ReactDatePicker, { ReactDatePickerProps } from "react-datepicker";
 
-import 'react-datepicker/dist/react-datepicker.css';
-import './date-picker.css';
+import "react-datepicker/dist/react-datepicker.css";
+import "./date-picker.css";
 
 interface Props {
   isClearable?: boolean;

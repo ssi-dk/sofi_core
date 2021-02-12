@@ -11,17 +11,19 @@ import {
   Spacer,
   Flex,
   Box,
-} from "@chakra-ui/react"
-import { jsx } from "@emotion/react"
-import { rightPane, inputForm } from "app/gdpr/gdpr-extract/gdpr-extract-styles"
+} from "@chakra-ui/react";
+import { jsx } from "@emotion/react";
+import {
+  rightPane,
+  inputForm,
+} from "app/gdpr/gdpr-extract/gdpr-extract-styles";
 import { ExtractDataFromPiRequest, PersonalIdentifierType } from "sap-client";
 import { requestAsync } from "redux-query";
 import { useRequest } from "redux-query-react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "app/root-reducer";
-import { extractPersonalData } from "./gdpr-extracts-configs"
+import { extractPersonalData } from "./gdpr-extracts-configs";
 import Header from "../../header/header";
-
 
 interface PersonalDataState {
   type?: PersonalIdentifierType;
@@ -33,17 +35,19 @@ const formstateToRequest = (state: PersonalDataState) => {
     const trimmed = state.value.trim();
     return {
       identifierType: state.type,
-      identifier: state.value
-    } as ExtractDataFromPiRequest
+      identifier: state.value,
+    } as ExtractDataFromPiRequest;
   }
 
   return null;
-}
-
+};
 
 const GdprExtractPage = () => {
   const [loading, setLoading] = useState(false);
-  const [formState, setFormState] = useState({ type: null, value: "" } as PersonalDataState);
+  const [formState, setFormState] = useState({
+    type: null,
+    value: "",
+  } as PersonalDataState);
 
   const dispatch = useDispatch();
 
@@ -52,40 +56,56 @@ const GdprExtractPage = () => {
   ) as string;
 
   const typeChange = (e: ChangeEvent<HTMLSelectElement>) => {
-    setFormState({ ...formState, type: e.target.value as PersonalIdentifierType });
-  }
+    setFormState({
+      ...formState,
+      type: e.target.value as PersonalIdentifierType,
+    });
+  };
 
   const idChange = (e: ChangeEvent<HTMLInputElement>) => {
     setFormState({ ...formState, value: e.target.value });
-  }
+  };
 
-  const fetchClick = React.useCallback((e) => {
-    const req = formstateToRequest(formState)
-    if (req) {
-      //setLoading(true);
-      dispatch(
-        requestAsync(extractPersonalData(req))
-      );
-    }
-  }, [formState, dispatch])
+  const fetchClick = React.useCallback(
+    (e) => {
+      const req = formstateToRequest(formState);
+      if (req) {
+        //setLoading(true);
+        dispatch(requestAsync(extractPersonalData(req)));
+      }
+    },
+    [formState, dispatch]
+  );
 
-  const donwloadFile = React.useCallback((e) => {
-    const element = document.createElement("a");
-    // Something is funky with the typing here, so we have to do this casting..
-    const file = new Blob([((data as any) as Array<string>).join("")], { type: "text/plain;charset=utf-8" });
-    element.href = URL.createObjectURL(file);
-    element.download = "personal_data_extract.txt";
-    document.body.appendChild(element); // Required for this to work in FireFox
-    element.click();
-  }, [data])
+  const donwloadFile = React.useCallback(
+    (e) => {
+      const element = document.createElement("a");
+      // Something is funky with the typing here, so we have to do this casting..
+      const file = new Blob([((data as any) as Array<string>).join("")], {
+        type: "text/plain;charset=utf-8",
+      });
+      element.href = URL.createObjectURL(file);
+      element.download = "personal_data_extract.txt";
+      document.body.appendChild(element); // Required for this to work in FireFox
+      element.click();
+    },
+    [data]
+  );
 
   const preElementWithDownload = () => {
     if (data.length === 0) {
-      return <React.Fragment />
+      return <React.Fragment />;
     }
 
-    return <div css={rightPane}><Button type="button" mb="2" onClick={donwloadFile}>Download output</Button> <pre>{data}</pre></div>
-  }
+    return (
+      <div css={rightPane}>
+        <Button type="button" mb="2" onClick={donwloadFile}>
+          Download output
+        </Button>{" "}
+        <pre>{data}</pre>
+      </div>
+    );
+  };
 
   return (
     <Box
@@ -107,14 +127,14 @@ const GdprExtractPage = () => {
             <option value={PersonalIdentifierType.CHR}>CHR</option>
           </Select>
           <Input placeholder="Identifier" onChange={idChange} />
-          <Button colorScheme="blue" onClick={fetchClick}>Fetch</Button>
+          <Button colorScheme="blue" onClick={fetchClick}>
+            Fetch
+          </Button>
         </VStack>
       </Box>
       <Box gridColumn="2 / 2" overflowY="scroll">
         <VStack>
-          {loading
-            ? <div>Loading data...</div>
-            : preElementWithDownload()}
+          {loading ? <div>Loading data...</div> : preElementWithDownload()}
         </VStack>
       </Box>
     </Box>

@@ -12,8 +12,7 @@ import { requestUserInfo } from "app/user/user-query-configs";
 import { useRequest } from "redux-query-react";
 import { Environment, getAccessToken } from "./environment";
 
-export const Authorize = (props: { children: React.ReactNode; }) => {
-
+export const Authorize = (props: { children: React.ReactNode }) => {
   const toast = useToast();
   const { t } = useTranslation();
 
@@ -63,5 +62,5 @@ export const Authorize = (props: { children: React.ReactNode; }) => {
     redirect();
   }
 
-  return <Loading/>; 
+  return <Loading />;
 };

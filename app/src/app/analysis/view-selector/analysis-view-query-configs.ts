@@ -36,10 +36,13 @@ const makeWhole = (view: UserDefinedView) => {
 // Here at the network boundary, we handle the conversion
 const transformIn = (view: UserDefinedView) => {
   makeWhole(view);
-  const camelCased = camelCaseKeys(JSON.parse(JSON.stringify(view)), { deep: true }) as UserDefinedViewInternal;
+  const camelCased = camelCaseKeys(JSON.parse(JSON.stringify(view)), {
+    deep: true,
+  }) as UserDefinedViewInternal;
   // column names need to remain snake_cased
   if (camelCased?.columnResizing?.columnWidths) {
-    camelCased.columnResizing.columnWidths = view?.column_resizing?.column_widths;
+    camelCased.columnResizing.columnWidths =
+      view?.column_resizing?.column_widths;
   }
   return camelCased;
 };

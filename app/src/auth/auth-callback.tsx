@@ -61,7 +61,7 @@ export const Callback = (props: {
           );
           setAccessToken(tokenResp.idToken);
           setRefreshToken(tokenResp.refreshToken);
-          
+
           const profile = await fetch(
             `${Environment.openIdConnectUrl}${Environment.userInfoEndpoint}`,
             {
@@ -80,7 +80,7 @@ export const Callback = (props: {
     });
 
     const params = new URLSearchParams(props.location.search);
-    const code = params.get("code"); 
+    const code = params.get("code");
 
     if (!code) {
       setAuthError("Unable to get authorization code");

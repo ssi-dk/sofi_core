@@ -3,7 +3,7 @@ import { UserDefinedViewInternal } from "models";
 
 const defaultView: UserDefinedViewInternal = {
   name: "Default",
-  columnResizing: { columnWidths: {}},
+  columnResizing: { columnWidths: {} },
   hiddenColumns: [],
   columnOrder: [],
   sortBy: [],
@@ -24,7 +24,7 @@ export const toggleColumnVisibility = createAction<string>(
 export const setDefaultView = createAction("view/defaultView");
 
 const initialState: SelectedViewState = {
-  view: defaultView
+  view: defaultView,
 };
 
 export const viewReducer = createReducer(initialState, (builder) => {

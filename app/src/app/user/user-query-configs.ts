@@ -14,7 +14,7 @@ export const requestUserInfo = () => {
   base.transform = (response: UserInfo) => ({ user: response });
 
   base.update = {
-    user: (_, newValue) => newValue
+    user: (_, newValue) => newValue,
   };
   return base;
 };
