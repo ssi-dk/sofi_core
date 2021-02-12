@@ -17,7 +17,7 @@ from api_clients.tbr_client.model.isolate import Isolate
 from api_clients.tbr_client.model.row_version import RowVersion
 
 
-tbr_api_url = os.environ.get("TBR_API_URL", "http://localhost:5000")
+tbr_api_url = os.environ.get("TBR_API_URL")
 
 tbr_configuration = api_clients.tbr_client.Configuration(host=tbr_api_url)
 

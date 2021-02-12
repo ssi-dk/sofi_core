@@ -22,7 +22,7 @@ from api_clients.lims_client.models import (
 # from api_clients.lims_client.model.
 
 
-lims_api_url = os.environ.get("LIMS_API_URL", "http://localhost:4021")
+lims_api_url = os.environ.get("LIMS_API_URL")
 lims_api_databaseid = os.environ.get("LIMS_API_DATABASEID")
 lims_api_username = os.environ.get("LIMS_API_USERNAME")
 lims_api_password = os.environ.get("LIMS_API_PASSWORD")
