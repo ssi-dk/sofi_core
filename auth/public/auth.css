@@ -1,6 +1,6 @@
 .auth {
     min-height: 100vh;
-    color: var(--primary-light);
+    color: var(--primary-dark);
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -18,7 +18,7 @@
 }
 
 .auth a:hover {
-    color: var(--base-white);
+    color: var(--base-black);
 }
 
 .auth .divider {

@@ -280,7 +280,7 @@ export const hydraGetConsent = (
         // and what additional data you have available.
         requested_scope: data.requested_scope,
         user: data.subject,
-        client: data.client,
+        client: data.client?.client_name,
       })
     })
     // This will handle any error that happens when making HTTP calls to hydra

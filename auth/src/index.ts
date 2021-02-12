@@ -5,7 +5,7 @@ import bodyParser from 'body-parser';
 import csrf from 'csurf';
 import session from 'express-session';
 import loginHandler from './routes/login'
-import registrationHandler from './routes/registration'
+// import registrationHandler from './routes/registration'
 import errorHandler from './routes/error'
 import dashboard from './routes/dashboard'
 import debug from './routes/debug'
@@ -93,7 +93,8 @@ if (process.env.NODE_ENV === 'stub') {
 } else {
   app.get('/', protect, dashboard)
   app.get('/dashboard', protect, dashboard)
-  app.get('/auth/registration', registrationHandler)
+//  disable registration
+//  app.get('/auth/registration', registrationHandler)
   app.get('/auth/login', loginHandler)
   app.get('/error', errorHandler)
   app.get('/settings', protect, settingsHandler)
