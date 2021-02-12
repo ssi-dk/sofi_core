@@ -1,7 +1,7 @@
 import React from "react";
 import { Input, IconButton } from "@chakra-ui/react";
 import { SearchIcon } from "@chakra-ui/icons";
-import { AnalysisQuery } from 'sap-client';
+import { AnalysisQuery } from "sap-client";
 
 type AnalysisSearchProps = {
   onSubmit: (query: AnalysisQuery) => void;
@@ -20,10 +20,10 @@ const AnalysisSearch = (props: AnalysisSearchProps) => {
   const onInput = React.useCallback((e) => setInput(e.target.value), [
     setInput,
   ]);
-  const submitQuery = React.useCallback(() => onSubmit({filters: parseQuery(input)}), [
-    onSubmit,
-    input,
-  ]);
+  const submitQuery = React.useCallback(
+    () => onSubmit({ filters: parseQuery(input) }),
+    [onSubmit, input]
+  );
   const onEnterKey = React.useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) =>
       (e.key === "Enter" || e.key === "NumpadEnter") && submitQuery(),

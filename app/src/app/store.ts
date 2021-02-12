@@ -19,7 +19,7 @@ const store = configureStore({
     ...getDefaultMiddleware({ serializableCheck: false }),
     jwtMiddleware,
     queryMiddleware(superagentInterface, getQueries, getEntities),
-    routerMiddleware(history)
+    routerMiddleware(history),
   ],
 });
 

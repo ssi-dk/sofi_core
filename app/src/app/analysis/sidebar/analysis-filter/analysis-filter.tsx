@@ -1,6 +1,6 @@
 import React from "react";
 import Select, { ActionMeta, OptionTypeBase, ValueType } from "react-select";
-import { AnalysisResult } from 'sap-client';
+import { AnalysisResult } from "sap-client";
 import { Text } from "@chakra-ui/react";
 import { selectTheme } from "app/app.styles";
 import { useTranslation } from "react-i18next";
@@ -31,35 +31,59 @@ function AnalysisFilter(props: AnalysisFilterProps) {
   );
 
   const { t } = useTranslation();
-  const [state, setState] = React.useState({} as {[K in keyof AnalysisResult]: ValueType<OptionTypeBase, true>});
+  const [state, setState] = React.useState(
+    {} as { [K in keyof AnalysisResult]: ValueType<OptionTypeBase, true> }
+  );
 
   const onChangeBuilder: (
-    field: keyof AnalysisResult 
+    field: keyof AnalysisResult
   ) => (
     val: ValueType<OptionTypeBase, true>,
     action: ActionMeta<OptionTypeBase>
-  ) => void = React.useCallback((field) => {
-    return (value, { action }) => {
-      switch (action) {
-        case "clear":
-          value = [];
-          break;
-        default: break;
+  ) => void = React.useCallback(
+    (field) => {
+      return (value, { action }) => {
+        switch (action) {
+          case "clear":
+            value = [];
+            break;
+          default:
+            break;
+        }
+        const resolvedState = {
+          ...state,
+          [field]: [...(value?.values() || [])].map((x) => x.value),
+        };
+        setState(resolvedState);
+        onFilterChange(resolvedState as any);
       };
-      const resolvedState = {...state, [field]: [...value?.values() || []].map(x => x.value)};
-      setState(resolvedState);
-      onFilterChange(resolvedState as any);
-    };
-  }, [setState, onFilterChange, state]);
+    },
+    [setState, onFilterChange, state]
+  );
 
   return (
     <FilterBox title="Analysis filter">
       <Text>{t("provided_species")}</Text>
-      <Select options={providedSpeciesOptions} isMulti theme={selectTheme} onChange={onChangeBuilder("provided_species")} />
+      <Select
+        options={providedSpeciesOptions}
+        isMulti
+        theme={selectTheme}
+        onChange={onChangeBuilder("provided_species")}
+      />
       <Text mt={2}>{t("serotype_final")}</Text>
-      <Select options={serotypeOptions} isMulti theme={selectTheme} onChange={onChangeBuilder("serotype_final")} />
+      <Select
+        options={serotypeOptions}
+        isMulti
+        theme={selectTheme}
+        onChange={onChangeBuilder("serotype_final")}
+      />
       <Text mt={2}>{t("st")}</Text>
-      <Select options={stOptions} isMulti theme={selectTheme} onChange={onChangeBuilder("st")} />
+      <Select
+        options={stOptions}
+        isMulti
+        theme={selectTheme}
+        onChange={onChangeBuilder("st")}
+      />
     </FilterBox>
   );
 }

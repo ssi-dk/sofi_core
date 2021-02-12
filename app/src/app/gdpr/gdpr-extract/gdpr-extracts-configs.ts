@@ -1,7 +1,4 @@
-import {
-  extractDataFromPi,
-  ExtractDataFromPiRequest,
-} from "sap-client";
+import { extractDataFromPi, ExtractDataFromPiRequest } from "sap-client";
 import { PersonalData } from "sap-client/models/PersonalData";
 import { getUrl } from "service";
 
@@ -20,7 +17,7 @@ export const extractPersonalData = (params: ExtractDataFromPiRequest) => {
 
   // define the update strategy for our state
   base.update = {
-    personDataFromExtract: (_, newValue) => newValue
+    personDataFromExtract: (_, newValue) => newValue,
   };
 
   // Force a network call to be made. Making it promise as well.

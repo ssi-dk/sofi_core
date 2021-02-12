@@ -18,10 +18,10 @@ function AnalysisSidebar(props: AnalysisSidebarProps) {
     (items: string[]) => Array.from(new Set(items)).sort(),
     []
   );
-  const sts = React.useMemo(
-    () => sortUnique(data.map((x) => x.st)),
-    [data, sortUnique]
-  );
+  const sts = React.useMemo(() => sortUnique(data.map((x) => x.st)), [
+    data,
+    sortUnique,
+  ]);
   const serotypes = React.useMemo(
     () => sortUnique(data.map((x) => x.serotype_final)),
     [data, sortUnique]
@@ -46,22 +46,22 @@ function AnalysisSidebar(props: AnalysisSidebarProps) {
     () => sortUnique(data.map((x) => x.provided_species)),
     [data, sortUnique]
   );
-  const runIds = React.useMemo(
-    () => sortUnique(data.map((x) => x.run_id)),
-    [data, sortUnique]
-  );
-  const cprs = React.useMemo(
-    () => sortUnique(data.map((x) => x.cpr)),
-    [data, sortUnique]
-  );
+  const runIds = React.useMemo(() => sortUnique(data.map((x) => x.run_id)), [
+    data,
+    sortUnique,
+  ]);
+  const cprs = React.useMemo(() => sortUnique(data.map((x) => x.cpr)), [
+    data,
+    sortUnique,
+  ]);
   const isolateIds = React.useMemo(
     () => sortUnique(data.map((x) => x.isolate_id)),
     [data, sortUnique]
   );
-  const fuds = React.useMemo(
-    () => sortUnique(data.map((x) => x.fud_number)),
-    [data, sortUnique]
-  );
+  const fuds = React.useMemo(() => sortUnique(data.map((x) => x.fud_number)), [
+    data,
+    sortUnique,
+  ]);
   const clusters = React.useMemo(
     () => sortUnique(data.map((x) => x.cluster_id)),
     [data, sortUnique]

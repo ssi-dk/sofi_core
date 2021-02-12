@@ -55,7 +55,7 @@ const resources = {
       cluster_id: "ClusterID",
       serotype_final: "Serotyp final",
       st: "ST",
-      infection_source: "Smittekilde"
+      infection_source: "Smittekilde",
     },
   },
 };

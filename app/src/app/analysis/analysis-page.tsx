@@ -9,11 +9,7 @@ import {
   EditableInput,
   useDisclosure,
 } from "@chakra-ui/react";
-import {
-  CheckIcon,
-  DragHandleIcon,
-  NotAllowedIcon,
-} from "@chakra-ui/icons";
+import { CheckIcon, DragHandleIcon, NotAllowedIcon } from "@chakra-ui/icons";
 import { Column } from "react-table";
 import {
   AnalysisResult,

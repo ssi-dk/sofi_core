@@ -17,7 +17,6 @@ import {
 import { getUrl } from "service";
 import { arrayToNormalizedHashmap } from "utils";
 
-
 export type AnalysisSlice = {
   analysisTotalCount: number;
   analysisPagingToken: string;
@@ -43,7 +42,10 @@ export const requestPageOfAnalysis = (params: GetAnalysisRequest) => {
     analysisPagingToken: response.paging_token,
     approvalMatrix: response.approval_matrix,
     analysis: response.items
-      ? arrayToNormalizedHashmap(response.items.map((a) => AnalysisResultFromJSON(a)), "isolate_id")
+      ? arrayToNormalizedHashmap(
+          response.items.map((a) => AnalysisResultFromJSON(a)),
+          "isolate_id"
+        )
       : {},
   });
   // define the update strategy for our state
@@ -52,7 +54,7 @@ export const requestPageOfAnalysis = (params: GetAnalysisRequest) => {
     analysisPagingToken: (_, newValue) => newValue,
     approvalMatrix: (oldValue, newValue) => ({
       ...oldValue,
-      ...newValue
+      ...newValue,
     }),
     analysis: (oldValue, newValue) => ({
       ...oldValue,
@@ -74,7 +76,10 @@ export const searchPageOfAnalysis = (params: SearchAnalysisRequest) => {
     analysisPagingToken: response.paging_token,
     approvalMatrix: response.approval_matrix,
     analysis: response.items
-      ? arrayToNormalizedHashmap(response.items.map((a) => AnalysisResultFromJSON(a)), "isolate_id")
+      ? arrayToNormalizedHashmap(
+          response.items.map((a) => AnalysisResultFromJSON(a)),
+          "isolate_id"
+        )
       : {},
   });
   // define the update strategy for our state
@@ -83,7 +88,7 @@ export const searchPageOfAnalysis = (params: SearchAnalysisRequest) => {
     analysisPagingToken: (_, newValue) => newValue,
     approvalMatrix: (oldValue, newValue) => ({
       ...oldValue,
-      ...newValue
+      ...newValue,
     }),
     analysis: (oldValue, newValue) => ({
       ...oldValue,
@@ -109,14 +114,16 @@ export const requestColumns = () => {
   return base;
 };
 
-type SubmitChangesBody = { [K: string]: { [K: string]: string } }; 
+type SubmitChangesBody = { [K: string]: { [K: string]: string } };
 
 export const updateAnalysis = (change: SubmitChangesBody) => {
-  const base = submitChanges<AnalysisSlice>({body: change}); 
+  const base = submitChanges<AnalysisSlice>({ body: change });
   base.url = getUrl(base.url);
-  base.transform = (response: AnalysisSlice) => ({analysis: response }) as any;
+  base.transform = (response: AnalysisSlice) => ({ analysis: response } as any);
   base.update = {
-    analysis: (oldValue, newValue) => { return merge({}, cloneDeep(oldValue), (newValue)) }
+    analysis: (oldValue, newValue) => {
+      return merge({}, cloneDeep(oldValue), newValue);
+    },
   };
   return base;
 };

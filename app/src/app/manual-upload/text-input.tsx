@@ -15,7 +15,12 @@ const TextInput = (props: TextInputProps) => {
       <>
         <FormControl id={name}>
           <FormLabel>{label}</FormLabel>
-          <Input type="date" value={value as string} name={name} onChange={onChange} />
+          <Input
+            type="date"
+            value={value as string}
+            name={name}
+            onChange={onChange}
+          />
         </FormControl>
       </>
     );
@@ -23,7 +28,12 @@ const TextInput = (props: TextInputProps) => {
   return (
     <FormControl id={name}>
       <FormLabel>{label}</FormLabel>
-      <Input type="text" value={value as string} name={name} onChange={onChange} />
+      <Input
+        type="text"
+        value={value as string}
+        name={name}
+        onChange={onChange}
+      />
     </FormControl>
   );
 };

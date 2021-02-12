@@ -5,10 +5,10 @@ export const tableBorders = css({
 });
 
 export const overflowWrapper = css({
-  overflowX: "auto"
+  overflowX: "auto",
 });
 
 export const tableStyle = css({
   borderCollapse: "collapse",
-  borderStyle: "hidden"
+  borderStyle: "hidden",
 });

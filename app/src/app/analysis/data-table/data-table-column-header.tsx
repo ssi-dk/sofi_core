@@ -1,11 +1,7 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 import React from "react";
-import {
-  Draggable,
-  Droppable,
-  DroppableProvided,
-} from "react-beautiful-dnd";
+import { Draggable, Droppable, DroppableProvided } from "react-beautiful-dnd";
 import { Column, ColumnInstance } from "react-table";
 import { jsx } from "@emotion/react";
 import {
