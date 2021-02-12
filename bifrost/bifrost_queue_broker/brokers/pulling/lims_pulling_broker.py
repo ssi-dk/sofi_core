@@ -91,7 +91,7 @@ class LIMSPullingBroker(threading.Thread):
 
         with api_clients.lims_client.ApiClient(lims_configuration) as api_client:
             # Create an instance of the API class
-            api_instance = connections_api.ConnectionsApi(api_client)
+            conn_create_instance = connections_api.ConnectionsApi(api_client)
             conn_req = ConnectionCreateRequest(
                 databaseid=lims_api_databaseid,
                 username=lims_api_username,
@@ -99,7 +99,7 @@ class LIMSPullingBroker(threading.Thread):
             )
             connection_id = None
             try:
-                api_response: ConnectionCreateResponse = api_instance.post_connections(
+                api_response: ConnectionCreateResponse = conn_create_instance.post_connections(
                     connection_create_request=conn_req
                 )
                 connection_id = api_response.connections.connectionid
@@ -115,8 +115,9 @@ class LIMSPullingBroker(threading.Thread):
             for batch in yield_chunks(cursor, batch_size):
                 update_count += self.update_isolate_metadata(api_client, batch)
 
+            conn_delete_instance = connections_api.ConnectionsApi(api_client)
             try:
-                api_instance.delete_connections(connection_id=connection_id)
+                conn_delete_instance.delete_connections(connection_id=connection_id)
             except api_clients.lims_client.ApiException as e:
                 print("Exception when deleting connection: %s\n" % e)
 
