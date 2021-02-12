@@ -114,6 +114,8 @@ class TBRPullingBroker(threading.Thread):
                 logging.error(
                     f"Exception on check for isolate updates {self.broker_name}: {e}\n"
                 )
+            finally:
+                return 0
 
     def upsert_tbr_metadata_batch(self, updated_isolates):
         result = []
