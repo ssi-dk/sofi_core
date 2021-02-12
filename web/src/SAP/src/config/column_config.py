@@ -12,6 +12,7 @@ def gen_default_column(field_name):
     return { 'approvable': False,
              'editable': False,
              'pii': False,
+             'gdpr': False,
              'organizations': ["FVST", "SSI"],
              'field_name': field_name,
              'approves_with': [] }

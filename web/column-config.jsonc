@@ -1,17 +1,17 @@
 // Column configuration
 //
-// This file defines which fields are approvable and their relations between one another,
+// This file defines which fields are "approvable" and their relations between one another,
 // as well as various properties for controlling how the application handles these fields.
 //
 // It is helpful when editing to change the file extension to .ts and uncomment the lines below:
 //
-//import { AnalysisResult } from '../app/src/sap-client/models/AnalysisResult';
-//import { StrictColumn } from '../app/src/app/types';
+//import { AnalysisResult } from "../app/src/sap-client/models/AnalysisResult";
+//import { StrictColumn } from "../app/src/app/types";
 //var typeCheckedColumnConfig: StrictColumn<AnalysisResult>[] =
 [
   {
     "field_name": "qc_final",
-    "approvesWith": [
+    "approves_with": [
       "species_final",
       "run_id"
     ]
@@ -113,6 +113,7 @@
   {
     "field_name": "cpr",
     "pii": true,
+    "gdpr": true,
     "organizations": [
       "SSI"
     ]
@@ -134,13 +135,23 @@
   {
     "field_name": "name",
     "pii": true,
+    "gdpr": true,
     "organizations": [
       "SSI"
     ]
   },
   {
+    "field_name": "cvr_number",
+    "pii": true,
+    "gdpr": true,
+    "organizations": [
+      "FVST"
+    ]
+  },
+  {
     "field_name": "chr_number",
     "pii": true,
+    "gdpr": true,
     "organizations": [
       "FVST"
     ]
@@ -148,6 +159,7 @@
   {
     "field_name": "aut_number",
     "pii": true,
+    "gdpr": true,
     "organizations": [
       "FVST"
     ]

@@ -11,11 +11,13 @@ COPY "web/permission-config.jsonc" "/app/"
 COPY web/src /app/web/src
 RUN chmod +x start.sh
 
-FROM base AS testing
+FROM base AS testingbase
 COPY ["web/test-requirements.txt", "/app/"]
-COPY web/tests /app/tests
 RUN pip install -r test-requirements.txt
+
+FROM testingbase AS testing
+COPY web/tests /app/tests
 LABEL test=true
-RUN pytest tests --junitxml=junit.xml; exit 0
+RUN pytest -rx tests --junitxml=junit.xml; exit 0
 
 FROM base AS final

@@ -1,14 +1,9 @@
-import os
 import base64
 import json
-import commentjson
-from flask import current_app as app
-from bson.json_util import dumps
+from web.src.SAP.src.security.gdpr_logger import audit_query
 from flask.json import jsonify
 from ..repositories.analysis import get_analysis_page, get_analysis_count, update_analysis, get_single_analysis
-from web.src.SAP.generated.models import AnalysisResult
-from web.src.SAP.generated.models import Column
-from web.src.SAP.src.security.permission_check import user_has, assert_user_has, authorized_columns
+from web.src.SAP.src.security.permission_check import assert_user_has, authorized_columns
 from web.src.SAP.src.config.column_config import columns
 
 def parse_paging_token(token):
@@ -30,6 +25,7 @@ def get_analysis(user, token_info, paging_token, page_size):
     count = get_analysis_count({})
     new_token = render_paging_token(token['page_size'], {}, token['offset'] + token['page_size'])
     response = {"items": items, "paging_token": new_token, "total_count": count, "approval_matrix": {}}
+    audit_query(token_info, items)
     return jsonify(response)
 
 def search_analysis(user, token_info, query):
@@ -41,6 +37,7 @@ def search_analysis(user, token_info, query):
     count = get_analysis_count(token['query'])
     new_token = render_paging_token(token['page_size'], token['query'], token['offset'] + token['page_size'])
     response = {"items": items, "paging_token": new_token, "total_count": count, "approval_matrix": {}}
+    audit_query(token_info, items)
     return jsonify(response)
 
 def submit_changes(user, token_info, body):

@@ -29,6 +29,12 @@ export interface LimsSpecificMetadata  {
      * @type {string}
      * @memberof LimsSpecificMetadata
      */
+    cvr_number?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof LimsSpecificMetadata
+     */
     aut_number?: string;
     /**
      * 
@@ -65,6 +71,7 @@ export interface LimsSpecificMetadata  {
 export function LimsSpecificMetadataFromJSON(json: any): LimsSpecificMetadata {
     return {
         'chr_number': !exists(json, 'chr_number') ? undefined : json['chr_number'],
+        'cvr_number': !exists(json, 'cvr_number') ? undefined : json['cvr_number'],
         'aut_number': !exists(json, 'aut_number') ? undefined : json['aut_number'],
         'product_type': !exists(json, 'product_type') ? undefined : json['product_type'],
         'product': !exists(json, 'product') ? undefined : json['product'],
@@ -80,6 +87,7 @@ export function LimsSpecificMetadataToJSON(value?: LimsSpecificMetadata): any {
     }
     return {
         'chr_number': value.chr_number,
+        'cvr_number': value.cvr_number,
         'aut_number': value.aut_number,
         'product_type': value.product_type,
         'product': value.product,

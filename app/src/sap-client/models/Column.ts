@@ -25,25 +25,31 @@ import {
  */
 export interface Column  {
     /**
-     * 
+     * True if the column can be approved
      * @type {boolean}
      * @memberof Column
      */
     approvable?: boolean;
     /**
-     * 
+     * True if the column can be edited
      * @type {boolean}
      * @memberof Column
      */
     editable?: boolean;
     /**
-     * 
+     * True if the column should be restricted to viewing only by the institution that owns it
      * @type {boolean}
      * @memberof Column
      */
     pii?: boolean;
     /**
-     * 
+     * True if the column should be treated as a \'gdpr\' column, subject to more strict auditing/logging
+     * @type {boolean}
+     * @memberof Column
+     */
+    gdpr?: boolean;
+    /**
+     * List of organizations/institutions who \'own\' or should have unrestricted access to this field
      * @type {Array<Organization>}
      * @memberof Column
      */
@@ -55,7 +61,7 @@ export interface Column  {
      */
     field_name?: string;
     /**
-     * 
+     * List of other columns, if any, that should be sent along when this column gets approved
      * @type {Array<string>}
      * @memberof Column
      */
@@ -67,6 +73,7 @@ export function ColumnFromJSON(json: any): Column {
         'approvable': !exists(json, 'approvable') ? undefined : json['approvable'],
         'editable': !exists(json, 'editable') ? undefined : json['editable'],
         'pii': !exists(json, 'pii') ? undefined : json['pii'],
+        'gdpr': !exists(json, 'gdpr') ? undefined : json['gdpr'],
         'organizations': !exists(json, 'organizations') ? undefined : (json['organizations'] as Array<any>).map(OrganizationFromJSON),
         'field_name': !exists(json, 'field_name') ? undefined : json['field_name'],
         'approves_with': !exists(json, 'approves_with') ? undefined : json['approves_with'],
@@ -81,6 +88,7 @@ export function ColumnToJSON(value?: Column): any {
         'approvable': value.approvable,
         'editable': value.editable,
         'pii': value.pii,
+        'gdpr': value.gdpr,
         'organizations': value.organizations === undefined ? undefined : (value.organizations as Array<any>).map(OrganizationToJSON),
         'field_name': value.field_name,
         'approves_with': value.approves_with,

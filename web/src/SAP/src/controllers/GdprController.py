@@ -3,7 +3,9 @@ from ..repositories.gdpr import personal_data_from_identifier
 from flask.json import dumps
 from io import StringIO
 import sys
+from flask import current_app as app
 from web.src.SAP.src.security.permission_check import assert_user_has
+
 
 def json_line_generator(json_input, seperator=""):
     if isinstance(json_input, dict):
@@ -27,16 +29,18 @@ def json_line_generator(json_input, seperator=""):
 def personal_data_to_text(data):
     string = StringIO()
     for key, value in json_line_generator(data):
-        print(key, file=sys.stderr)  
+        print(key, file=sys.stderr)
         string.write(f"{key}: {value}\n")
-    
+
     return string.getvalue()
 
 
 def extract_data_from_pi(user, token_info, identifier_type=None, identifier=None):
-    # TODO: Is this the right claim?
     assert_user_has("gdpr.manage", token_info)
     document = personal_data_from_identifier(identifier_type, identifier)
     res = personal_data_to_text(document)
-    #print(identifier, identifier_type, document, file=sys.stderr)
+    mail = token_info["email"]
+    app.logger.info(
+        f"[GDPR Audit]: User -{mail}- extracted personally identifiable information via {identifier_type} {identifier}"
+    )
     return PersonalData(data=res)

@@ -13,6 +13,7 @@ services:
     depends_on:
       - "hydra"
       - "bifrost_db"
+
     environment:
       - APP_MODULE=wsgi:app
       - IDP=https://${SOFI_HOSTNAME}

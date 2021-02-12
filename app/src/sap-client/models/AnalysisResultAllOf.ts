@@ -41,37 +41,37 @@ export interface AnalysisResultAllOf  {
      * @type {number}
      * @memberof AnalysisResultAllOf
      */
-    QC_provided_species?: number;
+    qc_provided_species?: number;
     /**
      * 
      * @type {number}
      * @memberof AnalysisResultAllOf
      */
-    QC_genome1x?: number;
+    qc_genome1x?: number;
     /**
      * 
      * @type {number}
      * @memberof AnalysisResultAllOf
      */
-    QC_genome10x?: number;
+    qc_genome10x?: number;
     /**
      * 
      * @type {number}
      * @memberof AnalysisResultAllOf
      */
-    QC_Gsize_diff1x10?: number;
+    qc_gsize_diff1x10?: number;
     /**
      * 
      * @type {number}
      * @memberof AnalysisResultAllOf
      */
-    QC_Avg_coverage?: number;
+    qc_avg_coverage?: number;
     /**
      * 
      * @type {string}
      * @memberof AnalysisResultAllOf
      */
-    QC_final?: AnalysisResultAllOfQCFinalEnum;
+    qc_final?: AnalysisResultAllOfQcFinalEnum;
     /**
      * 
      * @type {string}
@@ -378,12 +378,12 @@ export function AnalysisResultAllOfFromJSON(json: any): AnalysisResultAllOf {
     return {
         '_id': json['_id'],
         'resfinder_version': !exists(json, 'resfinder_version') ? undefined : json['resfinder_version'],
-        'QC_provided_species': !exists(json, 'QC_provided_species') ? undefined : json['QC_provided_species'],
-        'QC_genome1x': !exists(json, 'QC_genome1x') ? undefined : json['QC_genome1x'],
-        'QC_genome10x': !exists(json, 'QC_genome10x') ? undefined : json['QC_genome10x'],
-        'QC_Gsize_diff1x10': !exists(json, 'QC_Gsize_diff1x10') ? undefined : json['QC_Gsize_diff1x10'],
-        'QC_Avg_coverage': !exists(json, 'QC_Avg_coverage') ? undefined : json['QC_Avg_coverage'],
-        'QC_final': !exists(json, 'QC_final') ? undefined : json['QC_final'],
+        'qc_provided_species': !exists(json, 'qc_provided_species') ? undefined : json['qc_provided_species'],
+        'qc_genome1x': !exists(json, 'qc_genome1x') ? undefined : json['qc_genome1x'],
+        'qc_genome10x': !exists(json, 'qc_genome10x') ? undefined : json['qc_genome10x'],
+        'qc_gsize_diff1x10': !exists(json, 'qc_gsize_diff1x10') ? undefined : json['qc_gsize_diff1x10'],
+        'qc_avg_coverage': !exists(json, 'qc_avg_coverage') ? undefined : json['qc_avg_coverage'],
+        'qc_final': !exists(json, 'qc_final') ? undefined : json['qc_final'],
         'subspecies': !exists(json, 'subspecies') ? undefined : json['subspecies'],
         'species_final': !exists(json, 'species_final') ? undefined : json['species_final'],
         'st': !exists(json, 'st') ? undefined : json['st'],
@@ -444,12 +444,12 @@ export function AnalysisResultAllOfToJSON(value?: AnalysisResultAllOf): any {
     return {
         '_id': value._id,
         'resfinder_version': value.resfinder_version,
-        'QC_provided_species': value.QC_provided_species,
-        'QC_genome1x': value.QC_genome1x,
-        'QC_genome10x': value.QC_genome10x,
-        'QC_Gsize_diff1x10': value.QC_Gsize_diff1x10,
-        'QC_Avg_coverage': value.QC_Avg_coverage,
-        'QC_final': value.QC_final,
+        'qc_provided_species': value.qc_provided_species,
+        'qc_genome1x': value.qc_genome1x,
+        'qc_genome10x': value.qc_genome10x,
+        'qc_gsize_diff1x10': value.qc_gsize_diff1x10,
+        'qc_avg_coverage': value.qc_avg_coverage,
+        'qc_final': value.qc_final,
         'subspecies': value.subspecies,
         'species_final': value.species_final,
         'st': value.st,
@@ -507,7 +507,7 @@ export function AnalysisResultAllOfToJSON(value?: AnalysisResultAllOf): any {
 * @export
 * @enum {string}
 */
-export enum AnalysisResultAllOfQCFinalEnum {
+export enum AnalysisResultAllOfQcFinalEnum {
     A = 'A',
     B = 'B',
     C = 'C'
