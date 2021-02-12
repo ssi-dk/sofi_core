@@ -10,6 +10,8 @@ servers:
 paths:
   /actions/GetIsolate:
     post:
+      security:
+        - cookieAuth: []
       summary: Get isolate
       operationId: post-actions-GetIsolate
       responses:
@@ -44,24 +46,35 @@ paths:
                         data:
                           - fieldName: Agens bakterie
                             fieldValue: value1
+                            status: InProgress
                           - fieldName: species
                             fieldValue: value2
+                            status: InProgress
                           - fieldName: serotype
                             fieldValue: value3
+                            status: InProgress
                           - fieldName: STtype
                             fieldValue: value4
+                            status: InProgress
                           - fieldName: virulensgener
                             fieldValue: value5
+                            status: InProgress
                           - fieldName: AMRgener
                             fieldValue: value6
+                            status: InProgress
                           - fieldName: resfinder version
                             fieldValue: value7
+                            status: InProgress
                           - fieldName: RunId
                             fieldValue: value8
+                            status: InProgress
                           - fieldName: sekvensID
                             fieldValue: value9
+                            status: InProgress
                         success: true
+                    code: 200
                     message: Action GetIsolate executed successfully
+                    status: OK
       description: Get isolate information
       requestBody:
         content:
@@ -77,6 +90,8 @@ paths:
         - isolate
   /actions/UpdateIsolate:
     post:
+      security:
+        - cookieAuth: []
       summary: Update isolate
       operationId: post-actions-UpdateIsolate
       responses:
@@ -92,7 +107,9 @@ paths:
                     output:
                       sapresponse:
                         succcess: true
+                    code: 200
                     message: Action UpdateIsolate executed successfully
+                    status: OK
         '409':
           description: Conflict - Isolate is not in OPEN state
       requestBody:
@@ -115,6 +132,8 @@ paths:
         - isolate
   '/connections/{connectionId}':
     get:
+      security:
+        - cookieAuth: []
       summary: Check connection
       tags:
         - connections
@@ -128,11 +147,15 @@ paths:
               examples:
                 example:
                   value:
+                    code: 200
                     message: Connection fvstlims|admin198020663280 checked
+                    status: OK
       operationId: get-connections
       description: Check connection
       parameters: []
     delete:
+      security:
+        - cookieAuth: []
       summary: Delete connection
       operationId: delete-connections
       responses:
@@ -145,11 +168,15 @@ paths:
               examples:
                 example:
                   value:
+                    code: 200
                     message: Connection fvstlims|admin1013035459275 cleared
+                    status: OK
       description: Delete connection
       tags:
         - connections
     put:
+      security:
+        - cookieAuth: []
       summary: ''
       operationId: put-connections
       responses:
@@ -162,7 +189,9 @@ paths:
               examples:
                 example:
                   value:
+                    code: 200
                     message: Connection fvstlims|admin198020663280 refreshed
+                    status: OK
       description: Refreshes connection
       tags:
         - connections
@@ -180,6 +209,7 @@ paths:
         required: true
   /connections:
     post:
+      security: []
       summary: ''
       operationId: post-connections
       responses:
@@ -192,9 +222,16 @@ paths:
               examples:
                 example:
                   value:
+                    code: 201
                     message: Connection fvstlims|admin719456522586 created
                     connections:
                       connectionid: fvstlims|admin719456522586
+                    status: Created
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+                example: 'connectionid=FVSTLIMS|admin5653995501376'
       description: Create connection
       requestBody:
         content:
@@ -214,21 +251,22 @@ components:
     FieldStatus:
       type: string
       description: Indicates whether or not an analyst has approved the field
-      enum: ["released", "not-released"]
+      enum: ["Released", "InProgress"]
 
     DataFieldName:
       type: string
       enum: 
-        - "Species"
+        - "Agens bakterie"
+        - "species"
         - "Subspecies"
-        - "Serotype"
-        - "ST"
+        - "serotype"
+        - "STtype"
         - "Pathotype"
         - "Adhæsionsgener"
         - "Toxingener"
         - "virulensgener"
         - "AMRgener"
-        - "ResFinder version"
+        - "resfinder version"
         - "dato sekvensanalyse"
         - "RunId"
         - "sekvensID"
@@ -271,14 +309,15 @@ components:
 
     MetadataFieldName:
       type: string
-      enum: 
-        - "Projekt ID"
+      enum:
+        - "projektnummer"
         - "projekttitel"
-        - "Udtag. Dato"
-        - "Modtaget"
+        - "datoudtagning"
+        - "datomodtagelse"
         - "CHR-nr."
         - "Aut. Nummer"
-        - "Produkttype"
+        - "produkt"
+        - "produkttype"
         - "Produktbeskrivelse"
         - "Oprindelse land"
         - "dyreart"
@@ -355,7 +394,9 @@ components:
                 - fieldName: sekvensID
                   fieldValue: value9
               success: true
+          code: 200
           message: Action GetIsolate executed successfully
+          status: OK
       description: Isolate get response
       properties:
         output:
@@ -378,7 +419,11 @@ components:
                     $ref: '#/components/schemas/MetaDataEntry'
                 success:
                   type: boolean
+        code:
+          type: number
         message:
+          type: string
+        status:
           type: string
     IsolateGetRequest:
       title: IsolateGetRequest
@@ -420,7 +465,11 @@ components:
               succcess: true
           message: Action UpdateIsolate executed successfully
       properties:
+        code:
+          type: number
         message:
+          type: string
+        status:
           type: string
         output:
           type: object
@@ -434,7 +483,11 @@ components:
       title: MessageResponse
       type: object
       properties:
+        code:
+          type: number
         message:
+          type: string
+        status:
           type: string
       description: Message response
       x-examples:
@@ -460,6 +513,8 @@ components:
       title: ConnectionCreateResponse
       type: object
       properties:
+        code:
+          type: number
         message:
           type: string
         connections:
@@ -467,13 +522,21 @@ components:
           properties:
             connectionid:
               type: string
+        status:
+          type: string
       x-examples:
         example:
+          code: 201
           message: Connection fvstlims|admin719456522586 created
           connections:
             connectionid: fvstlims|admin719456522586
+          status: Created
       description: Connection create response
-  securitySchemes: {}
+  securitySchemes: 
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: connectionid
 tags:
   - name: isolate
   - name: connections

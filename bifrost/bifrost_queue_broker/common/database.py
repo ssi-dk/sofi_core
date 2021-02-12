@@ -13,6 +13,9 @@ CLIENT_ENC = None
 HOST = os.environ.get("BIFROST_MONGO_HOST", "bifrost_db")
 PORT = int(os.environ.get("BIFROST_MONGO_PORT", 27017))
 DB_NAME = os.environ.get("BIFROST_MONGO_DB", "bifrost_test")
+ANALYSIS_COL_NAME = "sap_full_analysis"
+APPROVALS_COL_NAME = "sap_approvals"
+USERVIEWS_COL_NAME = "user_views"
 
 SOFI_BIFROST_ENCRYPTION_NAMESPACE = os.environ.get(
     "SOFI_BIFROST_ENCRYPTION_NAME", "encryption.sap_pii"
@@ -100,24 +103,24 @@ def get_connection(with_enc=False):
             return CONNECTION
 
 
-def encrypt_dict(encryption_client: ClientEncryption, dict: Dict, filter=None):
+def encrypt_dict(encryption_client: ClientEncryption, dikt: Dict, filter_list=None):
     """
     Encrypt fields of a dict, possible filtered by a an array as kwarg "filter"
     """
-    if filter is not None:
-        for filter_item in filter:
-            if filter_item in dict:
+    if filter_list is not None:
+        for filter_item in filter_list:
+            if filter_item in dikt:
                 encrypted_field = encryption_client.encrypt(
-                    dict[filter_item],
+                    dikt[filter_item],
                     Algorithm.AEAD_AES_256_CBC_HMAC_SHA_512_Deterministic,
                     key_alt_name=ENCRYPTION_KEY_NAME,
                 )
-                dict[filter_item] = encrypted_field
+                dikt[filter_item] = encrypted_field
     else:
-        for key, value in dict.items():
+        for key, value in dikt.items():
             encrypted_field = encryption_client.encrypt(
                 value,
                 Algorithm.AEAD_AES_256_CBC_HMAC_SHA_512_Deterministic,
                 key_alt_name=ENCRYPTION_KEY_NAME,
             )
-            dict[key] = encrypted_field
+            dikt[key] = encrypted_field
