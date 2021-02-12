@@ -24,8 +24,9 @@ const SelectionCheckBox = forwardRef(
     ref
   ) => {
     const defaultRef = React.useRef<HTMLInputElement>();
-    const resolvedRef = (ref ||
-      defaultRef) as React.MutableRefObject<HTMLInputElement>;
+    const resolvedRef = (ref || defaultRef) as React.MutableRefObject<
+      HTMLInputElement
+    >;
 
     useEffect(() => {
       resolvedRef.current.indeterminate = indeterminate;
