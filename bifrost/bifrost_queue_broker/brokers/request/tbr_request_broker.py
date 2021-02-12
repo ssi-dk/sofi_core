@@ -1,8 +1,9 @@
 # Broker imports
 import sys, os
 import logging
-from ..shared import BrokerError, ProcessingStatus
+from ..shared import BrokerError, ProcessingStatus, PII_FIELDS
 from .request_broker import RequestBroker
+from common.database import encrypt_dict, get_connection
 
 # TBR API imports
 import time
@@ -10,9 +11,11 @@ import api_clients.tbr_client
 from pymongo.collection import ReturnDocument
 from pprint import pprint
 from api_clients.tbr_client.api import isolate_api
-from api_clients.tbr_client.model.isolate import Isolate
-from api_clients.tbr_client.model.isolate_update import IsolateUpdate
-from api_clients.tbr_client.model.problem_details import ProblemDetails
+from api_clients.tbr_client.models import (
+    Isolate,
+    IsolateUpdate,
+    ProblemDetails,
+)
 
 tbr_api_url = os.environ.get("TBR_API_URL")
 
@@ -26,6 +29,8 @@ class TBRRequestBroker(RequestBroker):
         self.find_matcher = {"status": ProcessingStatus.WAITING.value, "service": "TBR"}
         self.db = db
         self.tbr_col = self.db[tbr_col_name]
+        _, enc = get_connection(with_enc=True)
+        self.encryption_client = enc
 
         super(TBRRequestBroker, self).__init__(
             self.db,
@@ -62,6 +67,8 @@ class TBRRequestBroker(RequestBroker):
                 values = api_response.to_dict()
                 if "isolate_id" in values:
                     del values["isolate_id"]
+                
+                encrypt_dict(self.encryption_client, values, PII_FIELDS)
 
                 # TODO: make sure this hardocded collection name is correct, or take form env variables.
                 result = self.tbr_col.find_one_and_update(
@@ -73,7 +80,7 @@ class TBRRequestBroker(RequestBroker):
                 logging.info(result)
             except Exception as e:
                 logging.error(
-                    f"Exception on isolate {isolate_id} IsolateApi->api_isolate_isolate_id_get: {e}\n"
+                    f"Exception on isolate {isolate_id} unable to fetch from TBR: {e}\n"
                 )
                 raise BrokerError
 

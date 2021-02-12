@@ -4,7 +4,7 @@ import time
 import pymongo
 import threading
 from pymongo import CursorType
-from ..shared import ProcessingStatus
+from ..shared import ProcessingStatus, BrokerError
 
 
 class RequestBroker(threading.Thread):

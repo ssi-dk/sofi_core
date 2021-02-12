@@ -4,7 +4,7 @@ import time
 import pymongo
 import threading
 from pymongo import CursorType
-from ..shared import BrokerError
+from ..shared import BrokerError, yield_chunks, PII_FIELDS
 from common.database import encrypt_dict, get_connection
 
 # TBR API imports
@@ -13,14 +13,15 @@ import api_clients.tbr_client
 from pymongo.collection import ReturnDocument
 from pprint import pprint
 from api_clients.tbr_client.api.isolate_api import ApiClient, IsolateApi
-from api_clients.tbr_client.model.isolate import Isolate
-from api_clients.tbr_client.model.row_version import RowVersion
+from api_clients.tbr_client.models import (
+    Isolate,
+    RowVersion
+)
 
 
 tbr_api_url = os.environ.get("TBR_API_URL")
 
 tbr_configuration = api_clients.tbr_client.Configuration(host=tbr_api_url)
-
 
 class TBRPullingBroker(threading.Thread):
     def __init__(self, data_lock, tbr_col_name, analysis_view_col_name, db):
@@ -128,9 +129,8 @@ class TBRPullingBroker(threading.Thread):
         for isolate in updated_isolates:
             values = isolate.to_dict()
             isolate_id = values["isolate_id"]
-            encrypt_dict(
-                self.encryption_client, values, ["cpr_nr", "name", "gender", "age"]
-            )
+
+            encrypt_dict(self.encryption_client, values, PII_FIELDS)
 
             update_query = pymongo.UpdateOne(
                 {"isolate_id": isolate_id}, {"$set": values}, upsert=True
@@ -138,18 +138,3 @@ class TBRPullingBroker(threading.Thread):
             result.append(update_query)
 
         return result
-
-
-def yield_chunks(cursor, chunk_size):
-    """
-    Generator to yield chunks from cursor
-    :param cursor:
-    :param chunk_size:
-    """
-    chunk = []
-    for i, row in enumerate(cursor):
-        if i % chunk_size == 0 and i > 0:
-            yield chunk
-            del chunk[:]
-        chunk.append(row)
-    yield chunk
