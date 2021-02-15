@@ -99,16 +99,17 @@ class LIMSPullingBroker(threading.Thread):
             )
             connection_id = None
             try:
-                api_response: ConnectionCreateResponse = conn_create_instance.post_connections(
-                    connection_create_request=conn_req
+                api_response: ConnectionCreateResponse = (
+                    conn_create_instance.post_connections(
+                        connection_create_request=conn_req
+                    )
                 )
                 connection_id = api_response.connections.connectionid
             except api_clients.lims_client.ApiException as e:
                 print("Exception when creating connection: %s\n" % e)
-        
+
         lms_cfg = api_clients.lims_client.Configuration(
-            host=lims_api_url,
-            api_key={'cookieAuth': f"connectionid={connection_id}"}
+            host=lims_api_url, api_key={"cookieAuth": f"connectionid={connection_id}"}
         )
 
         with api_clients.lims_client.ApiClient(lms_cfg) as api_client:
@@ -135,16 +136,14 @@ class LIMSPullingBroker(threading.Thread):
                 )
                 if "output" in api_response and "sapresponse" in api_response.output:
                     transformed_batch.append(self.transform_lims_metadata(api_response))
-            
+
             bulk_update_queries = self.upsert_lims_metadata_batch(transformed_batch)
             update_count = 0
             if len(bulk_update_queries) > 0:
                 bulk_result = self.metadata_col.bulk_write(
                     bulk_update_queries, ordered=False
                 )
-                update_count = (
-                    bulk_result.upserted_count + bulk_result.modified_count
-                )
+                update_count = bulk_result.upserted_count + bulk_result.modified_count
 
             return update_count
 
@@ -157,7 +156,9 @@ class LIMSPullingBroker(threading.Thread):
         result = []
         for values in metadata_batch:
             isolate_id = values["isolate_id"]
-            encrypt_dict(self.encryption_client, values, ["CHR-nr.", "Aut. Nummer", "CVR nr."])
+            encrypt_dict(
+                self.encryption_client, values, ["CHR-nr.", "Aut. Nummer", "CVR nr."]
+            )
 
             update_query = pymongo.UpdateOne(
                 {"isolate_id": isolate_id}, {"$set": values}, upsert=True
@@ -167,9 +168,20 @@ class LIMSPullingBroker(threading.Thread):
         return result
 
     def transform_lims_metadata(self, lims_metadata: IsolateGetResponse):
-        metadata = {md.meta_field_name.value:md.meta_field_value for md in lims_metadata.output.sapresponse.metadata}
-        data = {d.field_name.value:d.field_value for d in lims_metadata.output.sapresponse.data}
-        return {"isolate_id": lims_metadata.output.sapresponse.isolate_id,**metadata, **data}
+        metadata = {
+            md.meta_field_name.value: md.meta_field_value
+            for md in lims_metadata.output.sapresponse.metadata
+        }
+        data = {
+            d.field_name.value: d.field_value
+            for d in lims_metadata.output.sapresponse.data
+        }
+        return {
+            "isolate_id": lims_metadata.output.sapresponse.isolate_id,
+            **metadata,
+            **data,
+        }
+
 
 def yield_chunks(cursor, chunk_size):
     """

@@ -85,6 +85,7 @@
     "test-ci": "react-scripts --ci --passWithNoTests --reporters=jest-junit",
     "eject": "react-scripts eject",
     "format": "prettier --write src/**/*.ts{,x}",
+    "format-lefthook": "prettier --write",
     "lint": "tsc --noEmit && eslint src/**/*.ts{,x}",
     "lint:fix": "tsc --noEmit && eslint src/**/*.ts{,x} --fix"
   },

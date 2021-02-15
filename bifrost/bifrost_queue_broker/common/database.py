@@ -90,7 +90,7 @@ def get_connection(with_enc=False):
             # on MongoClient, Database, or Collection.
             coll.codec_options,
         )
-        
+
         existing = client[key_vault_db_name][key_name].find_one()
         if existing is None:
             client_encryption.create_data_key("local", key_alt_names=[key_name])

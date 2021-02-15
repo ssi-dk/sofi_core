@@ -18,7 +18,9 @@ import { isString, methodConfig, redirectOnSoftError } from '../helpers';
 //   public: 'https://ory-kratos-public.example-org.vpc',
 // },
 
-const kratos = new AdminApi(new Configuration({ basePath: config.kratos.admin }));
+const kratos = new AdminApi(
+  new Configuration({ basePath: config.kratos.admin })
+);
 
 const settingsHandler = (req: Request, res: Response, next: NextFunction) => {
   const flow = req.query.flow;

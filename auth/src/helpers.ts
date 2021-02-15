@@ -1,6 +1,6 @@
-import { AxiosError } from 'axios'
-import config from './config'
-import { NextFunction, Response } from 'express'
+import { AxiosError } from 'axios';
+import config from './config';
+import { NextFunction, Response } from 'express';
 import {
   FormField,
   LoginFlow,
@@ -8,10 +8,10 @@ import {
   RegistrationFlow,
   SettingsFlow,
   VerificationFlow,
-} from '@ory/kratos-client'
-import { getPosition } from './translations'
+} from '@ory/kratos-client';
+import { getPosition } from './translations';
 
-export const isString = (x: any): x is string => typeof x === 'string'
+export const isString = (x: any): x is string => typeof x === 'string';
 
 // Redirects to the specified URL if the error is an AxiosError with a 404, 410,
 // or 403 error code.
@@ -21,8 +21,8 @@ export const redirectOnSoftError = (
   redirectTo: string
 ) => (err: AxiosError) => {
   if (!err.response) {
-    next(err)
-    return
+    next(err);
+    return;
   }
 
   if (
@@ -30,12 +30,12 @@ export const redirectOnSoftError = (
     err.response.status === 410 ||
     err.response.status === 403
   ) {
-    res.redirect(`${config.kratos.browser}${redirectTo}`)
-    return
+    res.redirect(`${config.kratos.browser}${redirectTo}`);
+    return;
   }
 
-  next(err)
-}
+  next(err);
+};
 
 // This helper returns a flow method config (e.g. for the password flow).
 // If active is set and not the given flow method key, it wil be omitted.
@@ -54,22 +54,22 @@ export const methodConfig = (
 ) => {
   if (flow.active && flow.active !== key) {
     // The flow has an active method but it is not the one we're looking at -> return empty
-    return
+    return;
   }
 
   if (!flow.methods[key]) {
     // The flow method is apparently not configured -> return empty
-    return
+    return;
   }
 
-  const config = flow.methods[key].config
+  const config = flow.methods[key].config;
 
   // We want the form fields to be sorted so that the email address is first, the
   // password second, and so on.
   config?.fields.sort(
     (first: FormField, second: FormField) =>
       getPosition(first) - getPosition(second)
-  )
+  );
 
-  return config
-}
+  return config;
+};

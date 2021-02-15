@@ -3,7 +3,9 @@ import config from '../config';
 import { Configuration, PublicApi } from '@ory/kratos-client';
 import { isString, methodConfig, redirectOnSoftError } from '../helpers';
 
-const kratos = new PublicApi(new Configuration({ basePath: config.kratos.public }));
+const kratos = new PublicApi(
+  new Configuration({ basePath: config.kratos.public })
+);
 
 export default (req: Request, res: Response, next: NextFunction) => {
   const flow = req.query.flow;
@@ -19,7 +21,7 @@ export default (req: Request, res: Response, next: NextFunction) => {
   kratos
     .getSelfServiceVerificationFlow(flow)
     .then(({ status, data: flow }) => {
-     if (status != 200) {
+      if (status != 200) {
         return Promise.reject(flow);
       }
 
@@ -29,5 +31,7 @@ export default (req: Request, res: Response, next: NextFunction) => {
         link: methodConfig(flow, 'link'),
       });
     })
-    .catch(redirectOnSoftError(res, next, '/self-service/verification/browser'));
-}
+    .catch(
+      redirectOnSoftError(res, next, '/self-service/verification/browser')
+    );
+};

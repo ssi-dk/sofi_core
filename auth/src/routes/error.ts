@@ -4,7 +4,9 @@ import { Configuration, PublicApi } from '@ory/kratos-client';
 import { isString } from '../helpers';
 import { AxiosError } from 'axios';
 
-const kratos = new PublicApi(new Configuration({ basePath: config.kratos.public }));
+const kratos = new PublicApi(
+  new Configuration({ basePath: config.kratos.public })
+);
 
 export default (req: Request, res: Response, next: NextFunction) => {
   const error = req.query.error;
@@ -27,8 +29,8 @@ export default (req: Request, res: Response, next: NextFunction) => {
 
       return Promise.reject(
         `expected errorContainer to contain "errors" but got ${JSON.stringify(
-          body,
-        )}`,
+          body
+        )}`
       );
     })
     .catch((err: AxiosError) => {
@@ -45,4 +47,4 @@ export default (req: Request, res: Response, next: NextFunction) => {
 
       next(err);
     });
-}
+};

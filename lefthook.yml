@@ -1,0 +1,19 @@
+pre-commit:
+  commands:
+    prettier:
+      root: "app/"
+      glob: "*.{ts,tsx}"
+      exclude: "*src/sap-client/*"
+      run: yarn format-lefthook {staged_files}
+      tags: frontend style
+    prettier-node:
+      root: "auth/"
+      glob: "*.{ts,tsx}"
+      run: yarn format-lefthook {staged_files}
+      tags: frontend style
+    black:
+      glob: "*.py"
+      exclude: "web/src/SAP/generated|web/src/services/lims/openapi|bifrost/bifrost_queue_broker/api_clients/"
+      run: black {staged_files}
+      tags: backend style
+  parallel: true

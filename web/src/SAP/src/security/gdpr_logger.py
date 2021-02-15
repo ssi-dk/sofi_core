@@ -38,4 +38,6 @@ def audit_query(token_info, result: List[AnalysisResult]):
     )
     if len(isolates) > 0:
         email = token_info["email"]
-        app.logger.info(f"[GDPR Audit]: User -{email}- accessed GDPR-protected columns in isolates: {isolates}")
+        app.logger.info(
+            f"[GDPR Audit]: User -{email}- accessed GDPR-protected columns in isolates: {isolates}"
+        )

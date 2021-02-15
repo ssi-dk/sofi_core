@@ -139,3 +139,6 @@ dmypy.json
 .openapi-generator
 
 .certs/*
+
+package.json
+yarn.lock

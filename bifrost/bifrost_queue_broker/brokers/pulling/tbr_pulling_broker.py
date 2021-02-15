@@ -54,7 +54,13 @@ class TBRPullingBroker(threading.Thread):
     def run_sync_job(self):
         batch_size = 200
         fetch_pipeline = [
-            {"$group": {"_id": "$_id", "isolate_id": {"$first": "$isolate_id"}, "institution": { "$first": "$institution"}}},
+            {
+                "$group": {
+                    "_id": "$_id",
+                    "isolate_id": {"$first": "$isolate_id"},
+                    "institution": {"$first": "$institution"},
+                }
+            },
             {"$match": {"institution": "SSI"}},
             {
                 "$lookup": {
@@ -122,7 +128,9 @@ class TBRPullingBroker(threading.Thread):
         for isolate in updated_isolates:
             values = isolate.to_dict()
             isolate_id = values["isolate_id"]
-            encrypt_dict(self.encryption_client, values, ["cpr_nr", "name", "gender", "age"])
+            encrypt_dict(
+                self.encryption_client, values, ["cpr_nr", "name", "gender", "age"]
+            )
 
             update_query = pymongo.UpdateOne(
                 {"isolate_id": isolate_id}, {"$set": values}, upsert=True
@@ -145,5 +153,3 @@ def yield_chunks(cursor, chunk_size):
             del chunk[:]
         chunk.append(row)
     yield chunk
-
-

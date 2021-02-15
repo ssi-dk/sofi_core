@@ -1,10 +1,10 @@
-import winston from 'winston'
-import crypto from 'crypto'
+import winston from 'winston';
+import crypto from 'crypto';
 
-export const SECURITY_MODE_STANDALONE = 'cookie'
-export const SECURITY_MODE_JWT = 'jwt'
+export const SECURITY_MODE_STANDALONE = 'cookie';
+export const SECURITY_MODE_JWT = 'jwt';
 
-const baseUrl = process.env.BASE_URL || '/'
+const baseUrl = process.env.BASE_URL || '/';
 
 export const logger = winston.createLogger({
   format: winston.format.combine(
@@ -13,23 +13,23 @@ export const logger = winston.createLogger({
   ),
   level: process.env.NODE_ENV === 'production' ? 'info' : 'debug',
   transports: [new winston.transports.Console()],
-})
+});
 
-let securityMode = SECURITY_MODE_STANDALONE
-let browserUrl = process.env.KRATOS_BROWSER_URL || ''
-let publicUrl = process.env.KRATOS_PUBLIC_URL || ''
+let securityMode = SECURITY_MODE_STANDALONE;
+let browserUrl = process.env.KRATOS_BROWSER_URL || '';
+let publicUrl = process.env.KRATOS_PUBLIC_URL || '';
 switch ((process.env.SECURITY_MODE || '').toLowerCase()) {
   case 'jwt':
   case 'oathkeeper':
-    securityMode = SECURITY_MODE_JWT
-    break
+    securityMode = SECURITY_MODE_JWT;
+    break;
   case 'cookie':
   case 'standalone':
   default:
-    securityMode = SECURITY_MODE_STANDALONE
+    securityMode = SECURITY_MODE_STANDALONE;
 }
 
-const cookieSecret = crypto.randomBytes(48).toString('hex')
+const cookieSecret = crypto.randomBytes(48).toString('hex');
 
 export default {
   kratos: {
@@ -55,4 +55,4 @@ export default {
     certificatePath: process.env.TLS_CERT_PATH || '',
     keyPath: process.env.TLS_KEY_PATH || '',
   },
-}
+};

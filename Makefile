@@ -48,7 +48,11 @@ ${mkfile_dir}/.certs/sofi.local.crt : ${mkfile_dir}/.env
 	sudo ln -s "${mkfile_dir}/.certs/sofi.local.crt" /usr/local/share/ca-certificates/sofi.local.crt
 	sudo update-ca-certificates
 
-
+lefthook : ${mkfile_dir}/package.json
+	# install autoformatting tools: lefthook, prettier, black
+	yarn add -D @arkweid/lefthook
+	yarn exec lefthook install
+	pip3 install black
 
 ${mkfile_dir}/app/src/sap-client : ${mkfile_dir}/openapi_specs/SAP/SAP.yaml
 	# Generate web app client
@@ -135,5 +139,6 @@ RUN_DEPS := ${mkfile_dir}/app/src/sap-client ${mkfile_dir}/web/src/SAP/generated
 RUN_DEPS += ${mkfile_dir}/web/src/services/lims/openapi ${mkfile_dir}/app/node_modules/
 RUN_DEPS += ${mkfile_dir}/bifrost/bifrost_queue_broker/api_clients/tbr_client ${mkfile_dir}/bifrost/bifrost_queue_broker/api_clients/lims_client 
 RUN_DEPS += ${mkfile_dir}/.env
+RUN_DEPS += lefthook
 run: $(RUN_DEPS)
 	CURRENT_UID=${mkfile_user} docker-compose up --build
