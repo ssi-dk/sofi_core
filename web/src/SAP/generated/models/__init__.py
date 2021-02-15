@@ -16,6 +16,7 @@ from .column import Column
 from .data_clearance import DataClearance
 from .lims_metadata import LimsMetadata
 from .lims_specific_metadata import LimsSpecificMetadata
+from .metadata_reload_request import MetadataReloadRequest
 from .multi_upload_request import MultiUploadRequest
 from .organization import Organization
 from .page_of_analysis import PageOfAnalysis

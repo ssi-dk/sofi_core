@@ -101,6 +101,28 @@ paths:
       tags:
       - analysis
       x-openapi-router-controller: web.src.SAP.generated.controllers.analysis_controller
+  /analysis/reload_metadata:
+    post:
+      description: Reload metadata for a given isolate
+      operationId: reload_metadata
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MetadataReloadRequest'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/TbrMetadata'
+                - $ref: '#/components/schemas/LimsMetadata'
+          description: Reload successful
+      tags:
+      - analysis
+      x-openapi-router-controller: web.src.SAP.generated.controllers.analysis_controller
+      x-codegen-request-body-name: body
   /approvals:
     get:
       description: Retrieve list of approvals for authenticated user
@@ -515,6 +537,15 @@ components:
         additionalProperties:
           type: string
         type: object
+      type: object
+    MetadataReloadRequest:
+      example:
+        isolateId: isolateId
+      properties:
+        isolateId:
+          type: string
+        institution:
+          $ref: '#/components/schemas/Organization'
       type: object
     Resistance:
       enum:

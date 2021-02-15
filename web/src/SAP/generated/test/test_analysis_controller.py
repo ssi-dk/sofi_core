@@ -7,6 +7,8 @@ from six import BytesIO
 
 from web.src.SAP.generated.models.analysis_query import AnalysisQuery  # noqa: E501
 from web.src.SAP.generated.models.column import Column  # noqa: E501
+from web.src.SAP.generated.models.metadata_reload_request import MetadataReloadRequest  # noqa: E501
+from web.src.SAP.generated.models.one_of_tbr_metadata_lims_metadata import OneOfTbrMetadataLimsMetadata  # noqa: E501
 from web.src.SAP.generated.models.page_of_analysis import PageOfAnalysis  # noqa: E501
 from .test import BaseTestCase
 
@@ -46,6 +48,28 @@ class TestAnalysisController(BaseTestCase):
             '/api/analysis/columns',
             method='GET',
             headers=headers)
+        self.assert200(response,
+                       'Response body is : ' + response.data.decode('utf-8'))
+
+    def test_reload_metadata(self):
+        """Test case for reload_metadata
+
+        
+        """
+        body = {
+  "isolateId" : "isolateId"
+}
+        headers = { 
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer special-key',
+        }
+        response = self.client.open(
+            '/api/analysis/reload_metadata',
+            method='POST',
+            headers=headers,
+            data=json.dumps(body),
+            content_type='application/json')
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
 

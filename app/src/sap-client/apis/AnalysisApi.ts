@@ -21,14 +21,27 @@ import {
     Column,
     ColumnFromJSON,
     ColumnToJSON,
+    LimsMetadata,
+    LimsMetadataFromJSON,
+    LimsMetadataToJSON,
+    MetadataReloadRequest,
+    MetadataReloadRequestFromJSON,
+    MetadataReloadRequestToJSON,
     PageOfAnalysis,
     PageOfAnalysisFromJSON,
     PageOfAnalysisToJSON,
+    TbrMetadata,
+    TbrMetadataFromJSON,
+    TbrMetadataToJSON,
 } from '../models';
 
 export interface GetAnalysisRequest {
     pagingToken?: string;
     pageSize?: number;
+}
+
+export interface ReloadMetadataRequest {
+    body?: MetadataReloadRequest;
 }
 
 export interface SearchAnalysisRequest {
@@ -135,6 +148,51 @@ function getColumnsRaw<T>( requestConfig: runtime.TypedQueryConfig<T, Array<Colu
 */
 export function getColumns<T>( requestConfig?: runtime.TypedQueryConfig<T, Array<Column>>): QueryConfig<T> {
     return getColumnsRaw( requestConfig);
+}
+
+/**
+ * Reload metadata for a given isolate
+ */
+function reloadMetadataRaw<T>(requestParameters: ReloadMetadataRequest, requestConfig: runtime.TypedQueryConfig<T, TbrMetadata | LimsMetadata> = {}): QueryConfig<T> {
+    let queryParameters = null;
+
+
+    const headerParameters : runtime.HttpHeaders = {};
+
+    headerParameters['Content-Type'] = 'application/json';
+
+
+    const { meta = {} } = requestConfig;
+
+    meta.authType = ['bearer'];
+    const config: QueryConfig<T> = {
+        url: `${runtime.Configuration.basePath}/analysis/reload_metadata`,
+        meta,
+        update: requestConfig.update,
+        queryKey: requestConfig.queryKey,
+        optimisticUpdate: requestConfig.optimisticUpdate,
+        force: requestConfig.force,
+        rollback: requestConfig.rollback,
+        options: {
+            method: 'POST',
+            headers: headerParameters,
+        },
+        body: queryParameters || MetadataReloadRequestToJSON(requestParameters.body),
+    };
+
+    const { transform: requestTransform } = requestConfig;
+    if (requestTransform) {
+        config.transform = (body: ResponseBody, text: ResponseBody) => requestTransform(TbrMetadata | LimsMetadataFromJSON(body), text);
+    }
+
+    return config;
+}
+
+/**
+* Reload metadata for a given isolate
+*/
+export function reloadMetadata<T>(requestParameters: ReloadMetadataRequest, requestConfig?: runtime.TypedQueryConfig<T, TbrMetadata | LimsMetadata>): QueryConfig<T> {
+    return reloadMetadataRaw(requestParameters, requestConfig);
 }
 
 /**
