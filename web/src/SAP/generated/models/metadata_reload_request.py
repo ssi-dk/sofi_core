@@ -67,6 +67,8 @@ class MetadataReloadRequest(Model):
         :param isolate_id: The isolate_id of this MetadataReloadRequest.
         :type isolate_id: str
         """
+        if isolate_id is None:
+            raise ValueError("Invalid value for `isolate_id`, must not be `None`")  # noqa: E501
 
         self._isolate_id = isolate_id
 
@@ -88,5 +90,7 @@ class MetadataReloadRequest(Model):
         :param institution: The institution of this MetadataReloadRequest.
         :type institution: Organization
         """
+        if institution is None:
+            raise ValueError("Invalid value for `institution`, must not be `None`")  # noqa: E501
 
         self._institution = institution

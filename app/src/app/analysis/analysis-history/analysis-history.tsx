@@ -20,7 +20,7 @@ import {
   IsolateWithData,
 } from "./analysis-history-configs";
 import AnalysisHistoryTable from "./analysis-history-table";
-import ReloadMetadataWidget from "./reload-metadata-widget";
+import ReloadMetadataWidget from "./reload-widget/reload-metadata-widget";
 
 const getAnalysisHistory = (state: {
   entities: { analysisHistory: IsolateWithData };

@@ -544,10 +544,13 @@ components:
           type: string
         institution:
           $ref: '#/components/schemas/Organization'
+      required:
+      - institution
+      - isolateId
       type: object
     MetadataReloadResponse:
       discriminator:
-        propertyName: objectType
+        propertyName: institution
       oneOf:
       - $ref: '#/components/schemas/TbrMetadata'
       - $ref: '#/components/schemas/LimsMetadata'

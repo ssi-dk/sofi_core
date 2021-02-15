@@ -41,6 +41,10 @@ const resources = {
       Microbiologist: "Mikrobiolog",
       User: "Bruger",
       Level: "Niveau",
+      Update: "Opdater",
+      Reload: "Genindlæs",
+      Load: "Indlæs",
+      Loading: "Indlæser",
 
       // field name translations
       received_date: "Modtagedato",

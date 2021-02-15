@@ -29,19 +29,19 @@ export interface MetadataReloadRequest  {
      * @type {string}
      * @memberof MetadataReloadRequest
      */
-    isolateId?: string;
+    isolateId: string;
     /**
      * 
      * @type {Organization}
      * @memberof MetadataReloadRequest
      */
-    institution?: Organization;
+    institution: Organization;
 }
 
 export function MetadataReloadRequestFromJSON(json: any): MetadataReloadRequest {
     return {
-        'isolateId': !exists(json, 'isolateId') ? undefined : json['isolateId'],
-        'institution': !exists(json, 'institution') ? undefined : OrganizationFromJSON(json['institution']),
+        'isolateId': json['isolateId'],
+        'institution': OrganizationFromJSON(json['institution']),
     };
 }
 

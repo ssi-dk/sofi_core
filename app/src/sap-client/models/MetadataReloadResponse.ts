@@ -28,8 +28,8 @@ export type MetadataReloadResponse = LimsMetadata | TbrMetadata;
 
 
 export function MetadataReloadResponseFromJSON(json: any): MetadataReloadResponse {
-  switch (json.objectType) {
-  default: throw new Error("Unexpected objectType value.");
+  switch (json.institution) {
+  default: throw new Error("Unexpected institution value.");
   }
 }
 
@@ -38,8 +38,8 @@ export function MetadataReloadResponseToJSON(value?: MetadataReloadResponse): an
         return undefined;
     }
 
-    switch (value.objectType) {
-    default: throw new Error("Unexpected objectType value.");
+    switch (value.institution) {
+    default: throw new Error("Unexpected institution value.");
     }
 }
 

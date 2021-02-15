@@ -498,6 +498,9 @@ components:
 
     MetadataReloadRequest:
       type: object
+      required:
+        - isolateId
+        - institution
       properties:
         isolateId:
           type: string
@@ -509,7 +512,7 @@ components:
         - $ref: '#/components/schemas/TbrMetadata'
         - $ref: '#/components/schemas/LimsMetadata'
       discriminator:
-        propertyName: objectType
+        propertyName: institution
 
     Resistance:
       type: string

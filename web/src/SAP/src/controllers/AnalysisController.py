@@ -1,5 +1,6 @@
 import base64
 import json
+from ...generated.models.organization import Organization
 from web.src.SAP.src.security.gdpr_logger import audit_query
 from flask.json import jsonify
 from ..repositories.analysis import (
@@ -47,6 +48,12 @@ def get_analysis(user, token_info, paging_token, page_size):
     return jsonify(response)
 
 def reload_metadata(user, token_info, body):
+    if body.institution:
+        if body.institution == Organization.FVST:
+            return {'a': 'a'
+            }
+        elif body.institution == Organization.SSI:
+            return {'b': 'b'}
     return {}
 
 def search_analysis(user, token_info, query):
