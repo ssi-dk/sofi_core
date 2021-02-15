@@ -48,9 +48,12 @@ ${mkfile_dir}/.certs/sofi.local.crt : ${mkfile_dir}/.env
 	sudo ln -s "${mkfile_dir}/.certs/sofi.local.crt" /usr/local/share/ca-certificates/sofi.local.crt
 	sudo update-ca-certificates
 
-lefthook : ${mkfile_dir}/package.json
-	# install autoformatting tools: lefthook, prettier, black
+${mkfile_dir}/node_modules :
+	# install lefthook for management of git hooks
 	yarn add -D @arkweid/lefthook
+
+lefthook : ${mkfile_dir}/node_modules
+	# install autoformatting tools: prettier, black
 	yarn exec lefthook install
 	pip3 install black
 
