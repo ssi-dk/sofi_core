@@ -4,7 +4,7 @@ import six
 from web.src.SAP.generated.models.analysis_query import AnalysisQuery  # noqa: E501
 from web.src.SAP.generated.models.column import Column  # noqa: E501
 from web.src.SAP.generated.models.metadata_reload_request import MetadataReloadRequest  # noqa: E501
-from web.src.SAP.generated.models.one_of_tbr_metadata_lims_metadata import OneOfTbrMetadataLimsMetadata  # noqa: E501
+from web.src.SAP.generated.models.metadata_reload_response import MetadataReloadResponse  # noqa: E501
 from web.src.SAP.generated.models.page_of_analysis import PageOfAnalysis  # noqa: E501
 from .. import util
 from ...src.controllers import AnalysisController
@@ -41,7 +41,7 @@ def reload_metadata(user, token_info, body=None):  # noqa: E501
     :param body: 
     :type body: dict | bytes
 
-    :rtype: OneOfTbrMetadataLimsMetadata
+    :rtype: MetadataReloadResponse
     """
     if connexion.request.is_json:
         body = MetadataReloadRequest.from_dict(connexion.request.get_json())  # noqa: E501

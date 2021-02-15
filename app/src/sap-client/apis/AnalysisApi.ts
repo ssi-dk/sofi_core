@@ -21,18 +21,15 @@ import {
     Column,
     ColumnFromJSON,
     ColumnToJSON,
-    LimsMetadata,
-    LimsMetadataFromJSON,
-    LimsMetadataToJSON,
     MetadataReloadRequest,
     MetadataReloadRequestFromJSON,
     MetadataReloadRequestToJSON,
+    MetadataReloadResponse,
+    MetadataReloadResponseFromJSON,
+    MetadataReloadResponseToJSON,
     PageOfAnalysis,
     PageOfAnalysisFromJSON,
     PageOfAnalysisToJSON,
-    TbrMetadata,
-    TbrMetadataFromJSON,
-    TbrMetadataToJSON,
 } from '../models';
 
 export interface GetAnalysisRequest {
@@ -153,7 +150,7 @@ export function getColumns<T>( requestConfig?: runtime.TypedQueryConfig<T, Array
 /**
  * Reload metadata for a given isolate
  */
-function reloadMetadataRaw<T>(requestParameters: ReloadMetadataRequest, requestConfig: runtime.TypedQueryConfig<T, TbrMetadata | LimsMetadata> = {}): QueryConfig<T> {
+function reloadMetadataRaw<T>(requestParameters: ReloadMetadataRequest, requestConfig: runtime.TypedQueryConfig<T, MetadataReloadResponse> = {}): QueryConfig<T> {
     let queryParameters = null;
 
 
@@ -182,7 +179,7 @@ function reloadMetadataRaw<T>(requestParameters: ReloadMetadataRequest, requestC
 
     const { transform: requestTransform } = requestConfig;
     if (requestTransform) {
-        config.transform = (body: ResponseBody, text: ResponseBody) => requestTransform(TbrMetadata | LimsMetadataFromJSON(body), text);
+        config.transform = (body: ResponseBody, text: ResponseBody) => requestTransform(MetadataReloadResponseFromJSON(body), text);
     }
 
     return config;
@@ -191,7 +188,7 @@ function reloadMetadataRaw<T>(requestParameters: ReloadMetadataRequest, requestC
 /**
 * Reload metadata for a given isolate
 */
-export function reloadMetadata<T>(requestParameters: ReloadMetadataRequest, requestConfig?: runtime.TypedQueryConfig<T, TbrMetadata | LimsMetadata>): QueryConfig<T> {
+export function reloadMetadata<T>(requestParameters: ReloadMetadataRequest, requestConfig?: runtime.TypedQueryConfig<T, MetadataReloadResponse>): QueryConfig<T> {
     return reloadMetadataRaw(requestParameters, requestConfig);
 }
 

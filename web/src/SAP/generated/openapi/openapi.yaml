@@ -115,9 +115,7 @@ paths:
           content:
             application/json:
               schema:
-                oneOf:
-                - $ref: '#/components/schemas/TbrMetadata'
-                - $ref: '#/components/schemas/LimsMetadata'
+                $ref: '#/components/schemas/MetadataReloadResponse'
           description: Reload successful
       tags:
       - analysis
@@ -547,6 +545,12 @@ components:
         institution:
           $ref: '#/components/schemas/Organization'
       type: object
+    MetadataReloadResponse:
+      discriminator:
+        propertyName: objectType
+      oneOf:
+      - $ref: '#/components/schemas/TbrMetadata'
+      - $ref: '#/components/schemas/LimsMetadata'
     Resistance:
       enum:
       - Sensitiv

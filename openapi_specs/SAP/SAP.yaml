@@ -133,9 +133,7 @@ paths:
           content:
             application/json:
               schema:
-                oneOf:
-                  - $ref: '#/components/schemas/TbrMetadata'
-                  - $ref: '#/components/schemas/LimsMetadata'
+                $ref: '#/components/schemas/MetadataReloadResponse'
 
   /approvals:
     get:
@@ -505,6 +503,13 @@ components:
           type: string
         institution:
           $ref: "#/components/schemas/Organization"
+
+    MetadataReloadResponse:
+      oneOf:
+        - $ref: '#/components/schemas/TbrMetadata'
+        - $ref: '#/components/schemas/LimsMetadata'
+      discriminator:
+        propertyName: objectType
 
     Resistance:
       type: string

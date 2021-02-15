@@ -46,6 +46,8 @@ def get_analysis(user, token_info, paging_token, page_size):
     audit_query(token_info, items)
     return jsonify(response)
 
+def reload_metadata(user, token_info, body):
+    return {}
 
 def search_analysis(user, token_info, query):
     assert_user_has("search", token_info)

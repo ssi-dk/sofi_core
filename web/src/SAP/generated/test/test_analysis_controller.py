@@ -8,7 +8,7 @@ from six import BytesIO
 from web.src.SAP.generated.models.analysis_query import AnalysisQuery  # noqa: E501
 from web.src.SAP.generated.models.column import Column  # noqa: E501
 from web.src.SAP.generated.models.metadata_reload_request import MetadataReloadRequest  # noqa: E501
-from web.src.SAP.generated.models.one_of_tbr_metadata_lims_metadata import OneOfTbrMetadataLimsMetadata  # noqa: E501
+from web.src.SAP.generated.models.metadata_reload_response import MetadataReloadResponse  # noqa: E501
 from web.src.SAP.generated.models.page_of_analysis import PageOfAnalysis  # noqa: E501
 from .test import BaseTestCase
 
