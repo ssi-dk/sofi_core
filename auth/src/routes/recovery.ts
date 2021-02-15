@@ -3,7 +3,9 @@ import config from '../config';
 import { Configuration, PublicApi } from '@ory/kratos-client';
 import { isString, methodConfig, redirectOnSoftError } from '../helpers';
 
-const kratos = new PublicApi(new Configuration({ basePath: config.kratos.public }));
+const kratos = new PublicApi(
+  new Configuration({ basePath: config.kratos.public })
+);
 
 export default (req: Request, res: Response, next: NextFunction) => {
   const flow = req.query.flow;
@@ -26,8 +28,8 @@ export default (req: Request, res: Response, next: NextFunction) => {
       // Render the data using a view (e.g. Jade Template):
       res.render('recovery', {
         ...flow,
-        link: methodConfig(flow, 'link')
+        link: methodConfig(flow, 'link'),
       });
     })
     .catch(redirectOnSoftError(res, next, '/self-service/recovery/browser'));
-}
+};

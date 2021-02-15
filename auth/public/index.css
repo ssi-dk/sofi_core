@@ -10,7 +10,7 @@
     --primary-light: #ECFDFE;
     --primary-half: #95E1F9;
     --primary-main: #3DACFC;
-    --primary-dark: #2E0473;
+    --primary-dark: #222222;
     --red-strong: #F44336;
     --green-strong: #43A047;
 }
@@ -23,8 +23,8 @@ html, body {
 body {
     font-family: 'IBM Plex Sans', sans-serif;
     font-size: 16px;
-    color: var(--base-light);
-    background: var(--base-dark);
+    color: var(--base-dark);
+    background: var(--base-white);
 }
 
 .container {
@@ -62,7 +62,7 @@ body {
     box-sizing: border-box;
     justify-content: space-between;
     align-items: center;
-    box-shadow: 0 0 8px rgba(255, 255, 255, 0.1);
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
     border-bottom: 1px solid var(--primary-main);
 }
 
@@ -77,7 +77,7 @@ body {
 }
 
 .content .header .icon-actions .fork:hover path {
-    fill: var(--primary-light);
+    fill: var(--primary-dark);
 }
 
 .content .header .icon-actions .fork a,
@@ -94,7 +94,7 @@ body {
 }
 
 .content .header .icon-actions .fork a:hover {
-    color: var(--primary-light);
+    color: var(--primary-dark);
 }
 
 .content .header .logo {
@@ -111,7 +111,7 @@ body {
 
 .content .header .logout a:hover,
 .content .header .logout a:active {
-    color: var(--primary-light);
+    color: var(--primary-dark);
 }
 
 .content .container {
@@ -135,8 +135,8 @@ h4 ~ h5 {
 
 .container pre {
     text-align: left;
-    background: black;
-    color: white;
+    background: white;
+    color: black;
     padding: 13px;
     overflow: auto;
 }
@@ -157,8 +157,8 @@ h4 ~ h5 {
     font-style: normal;
     font-weight: normal;
     line-height: 160%;
-    background: black;
-    color: white;
+    background: white;
+    color: black;
     padding: 2px 4px;
 }
 
@@ -183,5 +183,5 @@ h4 ~ h5 {
 }
 
 .container a:hover {
-    color: var(--base-white);
+    color: var(--base-black);
 }

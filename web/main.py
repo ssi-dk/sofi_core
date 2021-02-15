@@ -10,18 +10,13 @@ from web.src.SAP import create_app
 app = create_app()
 
 # Get JWK from identity provider
-idp = os.environ['IDP']
-headers = {
-  'Accept': 'application/json'
-}
+idp = os.environ["IDP"]
+headers = {"Accept": "application/json"}
 
-r = requests.get(
-  idp + '/.well-known/jwks.json',
-  params={},
-  headers = headers)
+r = requests.get(idp + "/.well-known/jwks.json", params={}, headers=headers)
 
 jsonkeys = r.json()
-jsonkey = jsonkeys['keys'][0]
+jsonkey = jsonkeys["keys"][0]
 jwk_json = json.dumps(jsonkey)
 jwk = JWK.from_json(jwk_json)
 
@@ -29,10 +24,10 @@ jwk = JWK.from_json(jwk_json)
 pem = jwk.export_to_pem()
 
 # Configure JWTManager
-app.config['JWT_PUBLIC_KEY'] = pem
-app.config['JWT_DECODE_AUDIENCE'] = os.environ['SOFI_CLIENT_ID']
-app.config['JWT_IDENTITY_CLAIM'] = "email"
-app.config['JWT_ALGORITHM'] = jsonkey['alg']
+app.config["JWT_PUBLIC_KEY"] = pem
+app.config["JWT_DECODE_AUDIENCE"] = os.environ["SOFI_CLIENT_ID"]
+app.config["JWT_IDENTITY_CLAIM"] = "email"
+app.config["JWT_ALGORITHM"] = jsonkey["alg"]
 JWTManager(app)
 
 if __name__ == "__main__":

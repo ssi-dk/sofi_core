@@ -1,4 +1,4 @@
-import { FormField } from '@ory/kratos-client'
+import { FormField } from '@ory/kratos-client';
 
 const translations = {
   password: {
@@ -29,28 +29,28 @@ const translations = {
     title: 'Your email address',
     position: 0,
   },
-}
+};
 
-type Translations = typeof translations
+type Translations = typeof translations;
 
 export const getTitle = (key: string): string =>
-  key in translations ? translations[key as keyof Translations].title : key
+  key in translations ? translations[key as keyof Translations].title : key;
 
 export const getPosition = (field: FormField) =>
   field.name && field.name in translations
     ? translations[field.name as keyof Translations].position
-    : Infinity
+    : Infinity;
 
 // This helper function translates the html input type to the corresponding partial name.
 export const toFormInputPartialName = (type: string) => {
   switch (type) {
     case 'hidden':
-      return 'form_input_hidden'
+      return 'form_input_hidden';
     case 'password':
-      return 'form_input_password'
+      return 'form_input_password';
     case 'submit':
-      return 'form_field_button'
+      return 'form_field_button';
     default:
-      return 'form_input_default'
+      return 'form_input_default';
   }
-}
+};

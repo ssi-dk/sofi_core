@@ -11,14 +11,6 @@ In order to build and run locally, you will need the following utilities:
 * docker
 * docker-compose
 
-Install the provided pre-commit hooks to get project-wide autoformatting and 
-linting.
-
-```shell
-pip3 install pre-commit
-pre-commit install
-```
-
 # Running
 To run locally using `docker-compose`, execute:
 
@@ -33,7 +25,7 @@ By default, services will be available on `http://sofi.localhost`.
 This can be changed by modifying the generated `.env` file.
 The relevant env variables are `SOFI_SCHEME`, `SOFI_HOSTNAME`, and `SOFI_PORT`.
 
-Make sure to edit your `/etc/hosts` file (`    c:\windows\system32\drivers\etc\hosts` on Windows) and include the line:
+Make sure to edit your `/etc/hosts` file (`c:\windows\system32\drivers\etc\hosts` on Windows) and include the line:
 
 ```
 127.0.0.1	sofi.localhost

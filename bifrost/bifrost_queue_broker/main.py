@@ -36,7 +36,9 @@ def main():
     ANALYSIS_COLLECTION_NAME = os.environ.get(
         "BIFROST_MONGO_ANALYSIS_VIEW_COLLECTION", "sap_analysis_results"
     )
-    QUEUE_COLLECTION_NAME = os.environ.get("BIFROST_MONGO_QUEUE_COLLECTION", "sap_broker_queue")
+    QUEUE_COLLECTION_NAME = os.environ.get(
+        "BIFROST_MONGO_QUEUE_COLLECTION", "sap_broker_queue"
+    )
 
     conn, enc = get_connection(with_enc=True)
     db = conn[DB_NAME]

@@ -5,6 +5,7 @@ import json
 from ...common.database import get_connection, DB_NAME, USERVIEWS_COL_NAME
 import sys
 
+
 def from_cpr(db, cpr_num: str):
     people = db["sap_tbr_metadata"]
     fetch_pipeline = [

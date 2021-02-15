@@ -9,6 +9,7 @@
     "start": "ts-node-dev --watch public,views --respawn src/index.ts",
     "test": "npm-run-all build",
     "format": "prettier --parser typescript --no-semi --single-quote --trailing-comma es5 --write src/**.ts",
+    "format-lefthook": "prettier --write",
     "check-format": "prettier --parser typescript --no-semi --single-quote --trailing-comma es5 --check src/**.ts"
   },
   "repository": {

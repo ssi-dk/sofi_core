@@ -23,8 +23,8 @@ def test_gdpr_logger_audits_sensitive_queries():
     expected_id = "sensitive"
     unexpected_id = "not"
     results: List[AnalysisResult] = [
-        AnalysisResult(isolate_id = expected_id, cpr = "010151111"),
-        AnalysisResult(isolate_id = unexpected_id),
+        AnalysisResult(isolate_id=expected_id, cpr="010151111"),
+        AnalysisResult(isolate_id=unexpected_id),
     ]
     isolates = query_requires_audit(results)
     assert len(isolates) == 1
