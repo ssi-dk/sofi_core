@@ -1,12 +1,5 @@
-from enum import Enum
 import os
-
-class ProcessingStatus(Enum):
-    WAITING = 1
-    PROCESSING = 2
-    DONE = 3
-    ERROR = 4
-
+from common.queue import ProcessingStatus
 
 class BrokerError(Exception):
     """Thrown when a broker encounters an error."""

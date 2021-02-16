@@ -16,6 +16,10 @@ DB_NAME = os.environ.get("BIFROST_MONGO_DB", "bifrost_test")
 ANALYSIS_COL_NAME = "sap_full_analysis"
 APPROVALS_COL_NAME = "sap_approvals"
 USERVIEWS_COL_NAME = "user_views"
+QUEUE_COL_NAME = "sap_broker_queue"
+MANUAL_METADATA_COL_NAME = "sap_manual_metadata"
+TBR_METADATA_COL_NAME = "sap_tbr_metadata"
+LIMS_METADATA_COL_NAME = "sap_lims_metadata"
 
 SOFI_BIFROST_ENCRYPTION_NAMESPACE = os.environ.get(
     "SOFI_BIFROST_ENCRYPTION_NAME", "encryption.sap_pii"
