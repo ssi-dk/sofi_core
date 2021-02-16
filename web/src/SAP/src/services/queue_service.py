@@ -20,7 +20,6 @@ def post_and_await_reload(isolate_id, institution):
         metadata = fetch_metadata(isolate_id, institution)
         metadata.pop("_id", None)
         return metadata
-    elif return_status == ProcessingStatus.ISOLATE_CLOSED:
-        raise IsolateClosedException(f"Isolate {isolate_id} is closed.")
     else:
-        raise IsolateReloadException(f"Could not reload isolate {isolate_id} due to an error.")
+        #IsolateReloadException(f"Could not reload isolate {isolate_id} due to an error.")
+        return {"error": f"Could not reload isolate {isolate_id} due to an error."}, 500

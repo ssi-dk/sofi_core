@@ -64,6 +64,7 @@ const ReloadMetadataWidget = (props: ReloadMetadataWidgetProps) => {
       setNeedsNotify(false);
     }
   }, [t, toast, needsNotify, isPending, isolateId, status]);
+
   return institution === Organization.Other ? (
     <React.Fragment />
   ) : (
