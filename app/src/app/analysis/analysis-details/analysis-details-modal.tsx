@@ -1,5 +1,6 @@
 import React from "react";
 import {
+  Button,
   Modal,
   ModalOverlay,
   ModalContent,
@@ -7,17 +8,20 @@ import {
   ModalFooter,
   ModalBody,
   ModalCloseButton,
-  Button,
+  Tab,
+  Tabs,
+  TabList,
+  TabPanels,
+  TabPanel,
 } from "@chakra-ui/react";
 import { Organization } from "sap-client";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
-import { RootState } from "app/root-reducer";
 import { useRequest } from "redux-query-react";
 import { Loading } from "loading";
 import {
-  sequencesFromIsolateId,
   IsolateWithData,
+  sequencesFromIsolateId,
 } from "./analysis-history-configs";
 import AnalysisHistoryTable from "./analysis-history-table";
 import ReloadMetadataWidget from "./reload-widget/reload-metadata-widget";
@@ -38,8 +42,8 @@ const AnalysisHistory = (props: AnalysisHistoryProps) => {
 
   const analysisHistory = useSelector(getAnalysisHistory) ?? {};
   const institution =
-    Object.values(analysisHistory).find((x) => x.institution)?.institution ??
-    Organization.Other;
+    (Object.values(analysisHistory).find((x: any) => x.institution) as any)
+      ?.institution ?? Organization.Other;
 
   const [{ isPending, status }, refresh] = useRequest(
     sequencesFromIsolateId(isolateId)
@@ -50,15 +54,28 @@ const AnalysisHistory = (props: AnalysisHistoryProps) => {
       <Modal isOpen={isOpen} onClose={onClose} size="full">
         <ModalOverlay />
         <ModalContent mt="0">
-          <ModalHeader pl="7">{`${t(
-            "History for isolate"
-          )} ${isolateId}`}</ModalHeader>
+          <ModalHeader pl="7">
+            {`${t("Details for isolate")}: ${isolateId}`}
+          </ModalHeader>
           <ModalCloseButton />
           <ModalBody overflowY="auto" px="7">
             {isPending ? (
               <Loading />
             ) : (
-              <AnalysisHistoryTable sequences={analysisHistory} />
+              <Tabs isFitted variant="enclosed">
+                <TabList mb="1em">
+                  <Tab>{t("Analysis History")}</Tab>
+                  <Tab>{t("Associated Details")}</Tab>
+                </TabList>
+                <TabPanels>
+                  <TabPanel>
+                    <AnalysisHistoryTable sequences={analysisHistory} />
+                  </TabPanel>
+                  <TabPanel>
+                    <p>Insert some HTML here</p>
+                  </TabPanel>
+                </TabPanels>
+              </Tabs>
             )}
           </ModalBody>
 
@@ -67,7 +84,7 @@ const AnalysisHistory = (props: AnalysisHistoryProps) => {
               isolateId={isolateId}
               institution={institution}
             />
-            <Button mr={3} onClick={onClose}>
+            <Button colorScheme="blue" mr={3} onClick={onClose}>
               {t("Close")}
             </Button>
           </ModalFooter>

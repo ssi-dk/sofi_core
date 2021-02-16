@@ -51,7 +51,7 @@ import { toggleColumnVisibility } from "./view-selector/analysis-view-selection-
 import InlineAutoComplete from "../inputs/inline-autocomplete";
 import Species from "../data/species.json";
 import Serotypes from "../data/serotypes.json";
-import AnalysisDetails from "./analysis-history/analysis-history";
+import AnalysisDetails from "./analysis-details/analysis-details-modal";
 
 export default function AnalysisPage() {
   const { t } = useTranslation();
