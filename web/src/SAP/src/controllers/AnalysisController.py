@@ -1,5 +1,6 @@
 import base64
 import json
+from ...generated.models.organization import Organization
 from web.src.SAP.src.security.gdpr_logger import audit_query
 from flask.json import jsonify
 from ..repositories.analysis import (
@@ -13,6 +14,7 @@ from web.src.SAP.src.security.permission_check import (
     authorized_columns,
 )
 from web.src.SAP.src.config.column_config import columns
+from ..services.queue_service import post_and_await_reload
 
 
 def parse_paging_token(token):
@@ -46,6 +48,13 @@ def get_analysis(user, token_info, paging_token, page_size):
     audit_query(token_info, items)
     return jsonify(response)
 
+def reload_metadata(user, token_info, body):
+    if body.institution:
+        if body.institution == Organization.OTHER:
+            return {}
+        else:
+            return post_and_await_reload(body.isolate_id, body.institution)
+    return {}
 
 def search_analysis(user, token_info, query):
     assert_user_has("search", token_info)

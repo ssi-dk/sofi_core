@@ -25,8 +25,6 @@ fi
 
 limsFields=(
     "isolate_id"
-    "sequence_id"
-    "sequence_filename"
     "institution"
     "project_number"
     "project_title"
@@ -48,8 +46,6 @@ limsFields=(
 
 tbrFields=(
     "isolate_id"
-    "sequence_id"
-    "sequence_filename"
     "institution"
     "project_number"
     "project_title"
@@ -78,6 +74,7 @@ tbrFields=(
 analysisFields=(
     "_id"
     "isolate_id"
+    "sequence_filename"
     "sequence_id"
     "institution"
     "resfinder_version"

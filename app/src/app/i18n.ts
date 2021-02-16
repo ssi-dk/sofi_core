@@ -41,6 +41,16 @@ const resources = {
       Microbiologist: "Mikrobiolog",
       User: "Bruger",
       Level: "Niveau",
+      Update: "Opdater",
+      Reload: "Genindlæs",
+      Load: "Indlæs",
+      Loading: "Indlæser",
+      Close: "Luk",
+      MetadataReloaded: "Metadata genindlæst",
+      IsolateMetadataReloadedFor: "Genindlæst metadata for isolat",
+      MetadataNotReloaded: "Metadata ikke genindlæst",
+      IsolateMetadataNotReloadedFor:
+        "Grundet fejl er metadata ikke genindlæst for isolat",
 
       // field name translations
       received_date: "Modtagedato",

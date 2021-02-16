@@ -78,8 +78,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PageOfAnalysis'
-
-
   /analysis/columns:
     get:
       description: Get column metadata, scoped to authenticated user
@@ -96,7 +94,6 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Column'
-
   /analysis/changes:
     post:
       description: Submit a batch of analysis data changes
@@ -117,6 +114,26 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/AnalysisChange'
+  /analysis/reload_metadata:
+    post:
+      description: Reload metadata for a given isolate
+      operationId: reload_metadata
+      tags:
+        - analysis
+      x-openapi-router-controller: web.src.SAP.generated.controllers.analysis_controller
+      x-codegen-request-body-name: body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MetadataReloadRequest'
+      responses:
+        '200':
+          description: Reload successful 
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MetadataReloadResponse'
 
   /approvals:
     get:
@@ -153,7 +170,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Approval'
-
   /approvals/matrix:
     get:
       description: Get the entire approval matrix for all analysis
@@ -168,7 +184,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ApprovalMatrix"
-
   '/approvals/{approval_id}':
     delete:
       description: Cancel a pending approval
@@ -480,7 +495,25 @@ components:
         type: object
         additionalProperties:
           type: string
-    
+
+    MetadataReloadRequest:
+      type: object
+      required:
+        - isolateId
+        - institution
+      properties:
+        isolateId:
+          type: string
+        institution:
+          $ref: "#/components/schemas/Organization"
+
+    MetadataReloadResponse:
+      oneOf:
+        - $ref: '#/components/schemas/TbrMetadata'
+        - $ref: '#/components/schemas/LimsMetadata'
+      discriminator:
+        propertyName: institution
+
     Resistance:
       type: string
       enum: ["Sensitiv", "Resistent", "Ukendt"]

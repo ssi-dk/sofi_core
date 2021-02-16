@@ -55,16 +55,22 @@ const GdprExtractPage = () => {
     Object.values(s.entities.personDataFromExtract ?? "")
   ) as string;
 
-  const typeChange = (e: ChangeEvent<HTMLSelectElement>) => {
-    setFormState({
-      ...formState,
-      type: e.target.value as PersonalIdentifierType,
-    });
-  };
+  const typeChange = React.useCallback(
+    (e: ChangeEvent<HTMLSelectElement>) => {
+      setFormState({
+        ...formState,
+        type: e.target.value as PersonalIdentifierType,
+      });
+    },
+    [formState, setFormState]
+  );
 
-  const idChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setFormState({ ...formState, value: e.target.value });
-  };
+  const idChange = React.useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      setFormState({ ...formState, value: e.target.value });
+    },
+    [formState, setFormState]
+  );
 
   const fetchClick = React.useCallback(
     (e) => {

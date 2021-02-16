@@ -7,9 +7,9 @@ mkfile_user := $(mkfile_u):$(mkfile_g)
 mkfile_path := $(abspath $(lastword $(MAKEFILE_LIST)))
 mkfile_dir := $(subst /Makefile,,$(mkfile_path))
 
-.PHONY: all clean test
+.PHONY: all clean test merge_common
 
-all: clean build
+all: clean merge_common build
 
 clean:
 	rm -rf ${mkfile_dir}/bifrost/bifrost_db/data/db/*
@@ -20,6 +20,9 @@ clean:
 	rm -rf ${mkfile_dir}/sap_tbr_integration/DG.SAP.TBRIntegration/bin/
 	rm -rf ${mkfile_dir}/sap_tbr_integration/DG.SAP.TBRIntegration/obj/
 	docker-compose rm -vf
+
+merge_common: $(shell find ${mkfile_dir}/bifrost/bifrost_queue_broker/common/ -type f) $(shell find ${mkfile_dir}/web/src/SAP/common/ -type f)
+	${mkfile_dir}/merge_common.sh ${mkfile_dir}/bifrost/bifrost_queue_broker/common  ${mkfile_dir}/web/src/SAP/common
 
 ${mkfile_dir}/.env : ${mkfile_dir}/.env.local.example
 	if [ ! -f ${mkfile_dir}/.env ]; then \
@@ -138,9 +141,10 @@ ${mkfile_dir}/app/node_modules/ : ${mkfile_dir}/app/package.json
 build: ${mkfile_dir}/app/src/sap-client ${mkfile_dir}/web/src/SAP/generated ${mkfile_dir}/web/src/services/lims/openapi
 	CURRENT_UID=${mkfile_user} docker-compose build --no-cache
 
-RUN_DEPS := ${mkfile_dir}/app/src/sap-client ${mkfile_dir}/web/src/SAP/generated 
+RUN_DEPS := merge_common ${mkfile_dir}/app/src/sap-client ${mkfile_dir}/web/src/SAP/generated 
 RUN_DEPS += ${mkfile_dir}/web/src/services/lims/openapi ${mkfile_dir}/app/node_modules/
-RUN_DEPS += ${mkfile_dir}/bifrost/bifrost_queue_broker/api_clients/tbr_client ${mkfile_dir}/bifrost/bifrost_queue_broker/api_clients/lims_client 
+RUN_DEPS += ${mkfile_dir}/bifrost/bifrost_queue_broker/api_clients/tbr_client 
+RUN_DEPS += ${mkfile_dir}/bifrost/bifrost_queue_broker/api_clients/lims_client 
 RUN_DEPS += ${mkfile_dir}/.env
 RUN_DEPS += lefthook
 run: $(RUN_DEPS)

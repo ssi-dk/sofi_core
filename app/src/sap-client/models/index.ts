@@ -10,6 +10,8 @@ export * from './Column';
 export * from './DataClearance';
 export * from './LimsMetadata';
 export * from './LimsSpecificMetadata';
+export * from './MetadataReloadRequest';
+export * from './MetadataReloadResponse';
 export * from './Organization';
 export * from './PageOfAnalysis';
 export * from './Permission';
