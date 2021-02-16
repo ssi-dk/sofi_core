@@ -14,6 +14,7 @@ from web.src.SAP.src.security.permission_check import (
     authorized_columns,
 )
 from web.src.SAP.src.config.column_config import columns
+from ..services.queue_service import post_and_await_reload
 
 
 def parse_paging_token(token):
@@ -49,11 +50,10 @@ def get_analysis(user, token_info, paging_token, page_size):
 
 def reload_metadata(user, token_info, body):
     if body.institution:
-        if body.institution == Organization.FVST:
-            return {'a': 'a'
-            }
-        elif body.institution == Organization.SSI:
-            return {'b': 'b'}
+        if body.institution == Organization.OTHER:
+            return {}
+        else:
+            return post_and_await_reload(body.isolate_id, body.institution)
     return {}
 
 def search_analysis(user, token_info, query):
