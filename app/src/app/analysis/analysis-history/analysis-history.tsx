@@ -68,7 +68,7 @@ const AnalysisHistory = (props: AnalysisHistoryProps) => {
               institution={institution}
             />
             <Button mr={3} onClick={onClose}>
-              Close
+              {t("Close")}
             </Button>
           </ModalFooter>
         </ModalContent>
