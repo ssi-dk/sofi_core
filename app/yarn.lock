@@ -11664,6 +11664,11 @@ schema-utils@^3.0.0:
     ajv "^6.12.5"
     ajv-keywords "^3.5.2"
 
+scroll-sync-react@^1.1.8:
+  version "1.1.8"
+  resolved "https://registry.yarnpkg.com/scroll-sync-react/-/scroll-sync-react-1.1.8.tgz#154e9c635ac2e74ddc411b4ab992244bfc7811cb"
+  integrity sha512-6kVdTKaXD4PNVJc0HXa/jrMo6iX9n65NC1zPo6JTwHTvfhpHSvPZyTzH/p6robHJV0nkmpjGhqKeb7G6B1Df/w==
+
 scss-tokenizer@^0.2.3:
   version "0.2.3"
   resolved "https://registry.yarnpkg.com/scss-tokenizer/-/scss-tokenizer-0.2.3.tgz#8eb06db9a9723333824d3f5530641149847ce5d1"

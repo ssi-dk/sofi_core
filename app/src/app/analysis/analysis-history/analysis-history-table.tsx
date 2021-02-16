@@ -1,23 +1,12 @@
 /** @jsxRuntime classic */
 /** @jsxFrag React.Fragment */
 /** @jsx jsx */
-import React, { Fragment, useState } from "react";
-import {
-  Text,
-  List,
-  ListItem,
-  ListIcon,
-  OrderedList,
-  UnorderedList,
-} from "@chakra-ui/react";
+import React from "react";
+import { ScrollSync, ScrollSyncNode } from "scroll-sync-react";
+import { Text, List, ListIcon, ListItem } from "@chakra-ui/react";
 import { jsx } from "@emotion/react";
-import {
-  ChevronRightIcon,
-  ChevronDownIcon,
-  SettingsIcon,
-} from "@chakra-ui/icons";
+import { ChevronRightIcon } from "@chakra-ui/icons";
 import { AnalysisResult } from "sap-client";
-import { useTranslation } from "react-i18next";
 import {
   tableStyle,
   tableBorders,
@@ -30,69 +19,92 @@ type SequenceListItemProps = {
   analysisData: AnalysisResult;
 };
 
-const IsolateListItem = (props: SequenceListItemProps) => {
-  const { sequenceId, analysisData } = props;
-  const [expanded, setExpanded] = useState(false);
-
-  return (
-    <ListItem>
-      <Text
-        fontSize="lg"
-        onClick={() => setExpanded(!expanded)}
-        cursor="pointer"
-        display="inline"
-      >
-        <ListIcon as={ChevronRightIcon} color="green.500" />
-        {sequenceId}
-      </Text>
-      {expanded && (
-        <div css={overflowWrapper}>
-          <table css={tableStyle}>
-            <thead>
-              <tr>
-                {Object.keys(analysisData).map((col) => (
-                  <th css={tableBorders} key={`h_${col}`}>
-                    {col}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-
-            <tbody>
-              <tr>
-                {Object.keys(analysisData).map((col) => (
-                  <td css={tableBorders} key={`d_${col}`}>
-                    {JSON.stringify(analysisData[col])}
-                  </td>
-                ))}
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      )}
-    </ListItem>
-  );
+type SequenceListItemState = {
+  expanded: boolean;
 };
+
+const group = "historyscroller";
+
+class IsolateListItem extends React.Component<
+  SequenceListItemProps,
+  SequenceListItemState
+> {
+  constructor(props) {
+    super(props);
+    this.state = { expanded: false };
+    this.toggleExpanded = this.toggleExpanded.bind(this);
+  }
+
+  private toggleExpanded() {
+    this.setState({ expanded: !this.state.expanded });
+  }
+
+  render() {
+    return (
+      <ListItem>
+        <Text
+          fontSize="lg"
+          onClick={this.toggleExpanded}
+          cursor="pointer"
+          display="inline"
+        >
+          <ListIcon as={ChevronRightIcon} color="green.500" />
+          {this.props.sequenceId}
+        </Text>
+        {this.state.expanded && (
+          <ScrollSyncNode group={group} key={this.props.sequenceId}>
+            <div css={overflowWrapper}>
+              <table css={tableStyle}>
+                <thead>
+                  <tr>
+                    {Object.keys(this.props.analysisData).map((col) => (
+                      <th css={tableBorders} key={`h_${col}`}>
+                        {col}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+
+                <tbody>
+                  <tr>
+                    {Object.keys(this.props.analysisData).map((col) => (
+                      <td css={tableBorders} key={`d_${col}`}>
+                        {JSON.stringify(this.props.analysisData[col])}
+                      </td>
+                    ))}
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </ScrollSyncNode>
+        )}
+      </ListItem>
+    );
+  }
+}
 
 type AnalysisHistoryTableProps = {
   sequences: IsolateWithData;
 };
 
-const AnalysisHistoryTable = (props: AnalysisHistoryTableProps) => {
-  const { t } = useTranslation();
-  const { sequences } = props;
-  const sortedIds = Object.keys(sequences).sort().reverse();
-  return (
-    <List spacing={3} fontSize="1.25em">
-      {sortedIds.map((sequenceId) => (
-        <IsolateListItem
-          key={sequenceId}
-          sequenceId={sequenceId}
-          analysisData={sequences[sequenceId]}
-        />
-      ))}
-    </List>
-  );
-};
+class AnalysisHistoryTable extends React.Component<AnalysisHistoryTableProps> {
+  private sortedIds = Object.keys(this.props.sequences).sort().reverse();
 
-export default React.memo(AnalysisHistoryTable);
+  render() {
+    return (
+      <ScrollSync>
+        <List spacing={3} fontSize="1.25em">
+          {this.sortedIds.map((sequenceId) => (
+            <IsolateListItem
+              key={sequenceId}
+              sequenceId={sequenceId}
+              analysisData={this.props.sequences[sequenceId]}
+            />
+          ))}
+        </List>
+      </ScrollSync>
+    );
+  }
+}
+
+export default AnalysisHistoryTable;

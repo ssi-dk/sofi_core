@@ -75,6 +75,7 @@
     "redux-query": "^3.4.2",
     "redux-query-interface-superagent": "^3.4.2",
     "redux-query-react": "^3.4.2",
+    "scroll-sync-react": "^1.1.8",
     "snakecase-keys": "^3.2.1",
     "typescript": "^4.1"
   },

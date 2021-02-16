@@ -80,7 +80,9 @@ function AccountManager() {
           <Stat>
             <StatLabel>{user?.institution}</StatLabel>
             {user?.groups?.map((g) => (
-              <StatNumber fontSize="sm">{groupLabel(g)}</StatNumber>
+              <StatNumber key={g} fontSize="sm">
+                {groupLabel(g)}
+              </StatNumber>
             ))}
             <StatLabel>{accessLevel(user?.data_clearance)}</StatLabel>
           </Stat>
