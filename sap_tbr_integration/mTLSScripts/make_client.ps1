@@ -4,8 +4,8 @@ $client_dir = "$PSScriptRoot/client"
 New-Item -ItemType Directory -Force -Path $ca_dir
 New-Item -ItemType Directory -Force -Path $client_dir
 
-$ca_key = "$ca_dir/CA.key"
-$ca_pem = "$ca_dir/CA.pem"
+$ca_key = "$ca_dir/SOFI_ROOT.key"
+$ca_pem = "$ca_dir/SOFI_ROOT.pem"
 
 $client_key = "$client_dir/client.key"
 $client_csr = "$client_dir/client.csr"

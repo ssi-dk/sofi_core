@@ -1,10 +1,10 @@
 $ca_dir = "$PSScriptRoot/root"
 New-Item -ItemType Directory -Force -Path $ca_dir
 
-$ca_key = "$ca_dir/CA.key"
-$ca_pem = "$ca_dir/CA.pem"
-$ca_crt = "$ca_dir/CA.crt"
-$ca_pfx = "$ca_dir/CA.pfx"
+$ca_key = "$ca_dir/SOFI_ROOT.key"
+$ca_pem = "$ca_dir/SOFI_ROOT.pem"
+$ca_crt = "$ca_dir/SOFI_ROOT.crt"
+$ca_pfx = "$ca_dir/SOFI_ROOT.pfx"
 
 # Generate a key
 openssl genrsa -aes256 -passout pass:test -out $ca_key 2048
