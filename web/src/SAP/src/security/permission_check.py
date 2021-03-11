@@ -33,6 +33,10 @@ def assert_user_has(permission, token_info):
 def authorized_to_edit(token_info, metadata):
     if not user_has("approve", token_info):
         return False
+    if token_info["sofi-data-clearance"] == "all":
+        return True
+    if token_info["sofi-data-clearance"] == "cross-institution":
+        return True
     if not token_info["institution"] == metadata.institution:
         return False
     return True
