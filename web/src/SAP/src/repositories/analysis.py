@@ -1,4 +1,5 @@
 # import .database
+from typing import Any, Dict
 import pymongo
 import logging
 import json
@@ -64,8 +65,8 @@ def update_analysis(change):
         samples.update_one({"isolate_id": u["id"]}, {"$set": u})
 
 
-def get_single_analysis(identifier):
+def get_single_analysis(identifier: str) -> Dict[str, Any]:
     conn = get_connection()
     mydb = conn[DB_NAME]
     samples = mydb[ANALYSIS_COL_NAME]
-    return samples.find_one({"isolate_id": identifier})
+    return samples.find_one({"isolate_id": f'{identifier}'})

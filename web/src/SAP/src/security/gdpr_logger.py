@@ -1,4 +1,4 @@
-from typing import List
+from typing import Dict, List
 import functools
 from flask import current_app as app
 from web.src.SAP.common.config.column_config import columns
@@ -27,7 +27,7 @@ def query_requires_audit(result: List[AnalysisResult]):
     return audited_isolates
 
 
-def audit_query(token_info, result: List[AnalysisResult]):
+def audit_query(token_info: Dict[str, str], result: List[AnalysisResult]):
     isolates = list(
         map(
             lambda x: x["isolate_id"]

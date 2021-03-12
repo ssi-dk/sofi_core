@@ -83,7 +83,7 @@ def multi_upload(user, token_info, metadata_tsv, files):
 def single_upload(user, token_info, metadata, file):
     assert_user_has("approve", token_info)
     base_metadata: BaseMetadata = BaseMetadata.from_dict(json.loads(metadata.read()))
-    assert_authorized_to_edit(token_info, base_metadata)
+    assert_authorized_to_edit(token_info, base_metadata.to_dict())
     try:
         upload_isolate(base_metadata, file)
         return upload_response_helper()

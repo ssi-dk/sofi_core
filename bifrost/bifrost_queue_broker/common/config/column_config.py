@@ -1,5 +1,5 @@
 import os
-from typing import List
+from typing import Dict, List, Union
 import commentjson
 import functools
 
@@ -10,14 +10,14 @@ except:
     pass
 
 PATH = os.path.dirname(os.path.realpath(__file__))
-print(PATH)
 
 COLUMN_CONFIG = None
 with open(PATH + "/column-config.jsonc") as js_file:
     COLUMN_CONFIG = commentjson.loads(js_file.read())
 
+ColumnDict = Dict[str, Union[bool, List[str], str]]
 
-def gen_default_column(field_name):
+def gen_default_column(field_name: str) -> ColumnDict:
     return {
         "approvable": False,
         "editable": False,
@@ -30,15 +30,15 @@ def gen_default_column(field_name):
 
 
 @functools.lru_cache(maxsize=1)
-def columns():
+def columns() -> List[Dict[str, str]]:
     analysis = AnalysisResult()
-    cols = {}
+    cols: Dict[str, ColumnDict] = {}
     # build up dictionary of default configs
     for attr, _ in analysis.openapi_types.items():
         cols.update({attr: gen_default_column(attr)})
     # apply configuration file on top
     with open(PATH + "/column-config.jsonc") as js_file:
-        config = commentjson.loads(js_file.read())
+        config: List[ColumnDict] = commentjson.loads(js_file.read())
         for c in config:
             cols.update({c["field_name"]: {**cols[c["field_name"]], **c}})
         return list(cols.values())
