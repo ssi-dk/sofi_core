@@ -23,7 +23,7 @@ keyUsage = digitalSignature, nonRepudiation, keyEncipherment, dataEncipherment"
 openssl genrsa -out $client_key 2048
 
 # Generate a Certificate Signing Request (csr)
-openssl req -new -key $client_key -out $client_csr -subj "/C=DK/ST=Copenhagen/L=Copenhagen/O=Delegate/CN=Delegate Sofi"
+openssl req -new -key $client_key -out $client_csr -subj "/C=DK/ST=Copenhagen/L=Copenhagen/O=Delegate/CN=sofi_tbr_integration_dev"
 
 # Using the CA, create client cert based on the CSR
 openssl x509 -passin pass:test -req -in $client_csr -CA $ca_pem -CAkey $ca_key -CAcreateserial -out $client_crt -days 1024 -sha256 -extfile $client_ext
