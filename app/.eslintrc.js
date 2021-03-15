@@ -29,6 +29,7 @@ module.exports = {
     project: './tsconfig.json',
   },
   rules: {
+    'max-classes-per-file': 'warn',
     'spaced-comment': 'warn',
     'global-require': 'warn',
     'no-cond-assign': 'off',

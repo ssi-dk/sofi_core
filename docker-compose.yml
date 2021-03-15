@@ -202,7 +202,7 @@ services:
     environment:
       - DSN=postgres://${PG_USER}:${PG_SECRET}@postgresd:5432/kratos?sslmode=${SSL_MODE}&max_conns=20&max_idle_conns=4
       - SERVE_PUBLIC_BASE_URL=https://${SOFI_HOSTNAME}:${SOFI_PORT}/.ory/kratos/public/
-      - SELFSERVICE_WHITELISTED_RETURN_URLS=https://${SOFI_HOSTNAME}:${SOFI_PORT}/ss/auth/hydra/login,https://${SOFI_HOSTNAME}:${SOFI_PORT}/
+      - SELFSERVICE_WHITELISTED_RETURN_URLS=https://${SOFI_HOSTNAME}:${SOFI_PORT}/ss/auth/hydra/login,https://${SOFI_HOSTNAME}:${SOFI_PORT}/,https://${SOFI_HOSTNAME}/
       - SELFSERVICE_DEFAULT_BROWSER_RETURN_URL=https://${SOFI_HOSTNAME}:${SOFI_PORT}
       - SELFSERVICE_FLOWS_SETTINGS_UI_URL=https://${SOFI_HOSTNAME}:${SOFI_PORT}/ss/settings
       - SELFSERVICE_FLOWS_VERIFICATION_UI_URL=https://${SOFI_HOSTNAME}:${SOFI_PORT}/ss/verify
