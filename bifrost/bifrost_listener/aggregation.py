@@ -73,5 +73,6 @@ agg_pipeline = [
             ),
         },
     },
+    # TODO: Perhaps we should merge on sequence id instead of mongo pseudokey.
     {"$merge": {"into": "sap_analysis_results", "on": "_id", "whenMatched": "merge"}},
 ]
