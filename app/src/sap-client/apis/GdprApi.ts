@@ -28,6 +28,11 @@ export interface ExtractDataFromPiRequest {
     identifier: string;
 }
 
+export interface ForgetPiiRequest {
+    identifierType: PersonalIdentifierType;
+    identifier: string;
+}
+
 
 /**
  * Extract all data given a personal identifier
@@ -89,5 +94,67 @@ function extractDataFromPiRaw<T>(requestParameters: ExtractDataFromPiRequest, re
 */
 export function extractDataFromPi<T>(requestParameters: ExtractDataFromPiRequest, requestConfig?: runtime.TypedQueryConfig<T, PersonalData>): QueryConfig<T> {
     return extractDataFromPiRaw(requestParameters, requestConfig);
+}
+
+/**
+ * Forget about a person identifer, GDPR right to be forgotten
+ */
+function forgetPiiRaw<T>(requestParameters: ForgetPiiRequest, requestConfig: runtime.TypedQueryConfig<T, PersonalData> = {}): QueryConfig<T> {
+    if (requestParameters.identifierType === null || requestParameters.identifierType === undefined) {
+        throw new runtime.RequiredError('identifierType','Required parameter requestParameters.identifierType was null or undefined when calling forgetPii.');
+    }
+
+    if (requestParameters.identifier === null || requestParameters.identifier === undefined) {
+        throw new runtime.RequiredError('identifier','Required parameter requestParameters.identifier was null or undefined when calling forgetPii.');
+    }
+
+    let queryParameters = null;
+
+    queryParameters = {};
+
+
+    if (requestParameters.identifierType !== undefined) {
+        queryParameters['identifier_type'] = requestParameters.identifierType;
+    }
+
+
+    if (requestParameters.identifier !== undefined) {
+        queryParameters['identifier'] = requestParameters.identifier;
+    }
+
+    const headerParameters : runtime.HttpHeaders = {};
+
+
+    const { meta = {} } = requestConfig;
+
+    meta.authType = ['bearer'];
+    const config: QueryConfig<T> = {
+        url: `${runtime.Configuration.basePath}/gdpr/forget`,
+        meta,
+        update: requestConfig.update,
+        queryKey: requestConfig.queryKey,
+        optimisticUpdate: requestConfig.optimisticUpdate,
+        force: requestConfig.force,
+        rollback: requestConfig.rollback,
+        options: {
+            method: 'GET',
+            headers: headerParameters,
+        },
+        body: queryParameters,
+    };
+
+    const { transform: requestTransform } = requestConfig;
+    if (requestTransform) {
+        config.transform = (body: ResponseBody, text: ResponseBody) => requestTransform(PersonalDataFromJSON(body), text);
+    }
+
+    return config;
+}
+
+/**
+* Forget about a person identifer, GDPR right to be forgotten
+*/
+export function forgetPii<T>(requestParameters: ForgetPiiRequest, requestConfig?: runtime.TypedQueryConfig<T, PersonalData>): QueryConfig<T> {
+    return forgetPiiRaw(requestParameters, requestConfig);
 }
 

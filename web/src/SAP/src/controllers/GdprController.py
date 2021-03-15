@@ -6,6 +6,8 @@ import sys
 from flask import current_app as app
 from web.src.SAP.src.security.permission_check import assert_user_has
 
+def forget_pii(user, token_info, identifier_type, identifier):  # noqa: E501
+    return {"ok": "k"}
 
 def json_line_generator(json_input, seperator=""):
     if isinstance(json_input, dict):
