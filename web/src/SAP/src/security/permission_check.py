@@ -46,9 +46,7 @@ def authorized_to_edit(token_info: Dict[str, str], metadata: Dict[str, Any]):
 def assert_authorized_to_edit(token_info: Dict[str, str], metadata: Dict[str, Any]):
     if not authorized_to_edit(token_info, metadata):
         theId = metadata["isolate_id"]
-        raise Forbidden(
-            f"You are not authorized to edit isolate -{theId}-"
-        )
+        raise Forbidden(f"You are not authorized to edit isolate -{theId}-")
 
 
 def authorized_columns(token_info: Dict[str, Any]):

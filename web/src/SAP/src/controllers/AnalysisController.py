@@ -13,7 +13,8 @@ from ..repositories.analysis import (
     get_single_analysis,
 )
 from web.src.SAP.src.security.permission_check import (
-    assert_authorized_to_edit, assert_user_has,
+    assert_authorized_to_edit,
+    assert_user_has,
     authorized_columns,
 )
 from web.src.SAP.common.config.column_config import columns
@@ -85,20 +86,20 @@ def search_analysis(user, token_info, query):
     return jsonify(response)
 
 
-def submit_changes(user, token_info: Dict[str, str], body: Dict[str, Any]) -> Dict[str, Dict[str, Any]]:
+def submit_changes(
+    user, token_info: Dict[str, str], body: Dict[str, Any]
+) -> Dict[str, Dict[str, Any]]:
     assert_user_has("approve", token_info)
     updates = list(map(lambda x: x, body.keys()))
-    allowed_cols = authorized_columns(token_info) 
+    allowed_cols = authorized_columns(token_info)
     for identifier in updates:
         row = get_single_analysis(identifier)
         # Make sure user is allowed to modify this row
         assert_authorized_to_edit(token_info, row)
         for col in body[identifier].keys():
-        # Make sure is allowed to modify that column
+            # Make sure is allowed to modify that column
             if not col in allowed_cols:
-                raise Forbidden(
-                    f'You are not authorized to edit column -{col}-'
-                )
+                raise Forbidden(f"You are not authorized to edit column -{col}-")
     # TODO: Verify that none of these cells are already approved
     update_analysis(body)
     res = dict()

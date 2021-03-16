@@ -17,6 +17,7 @@ with open(PATH + "/column-config.jsonc") as js_file:
 
 ColumnDict = Dict[str, Union[bool, List[str], str]]
 
+
 def gen_default_column(field_name: str) -> ColumnDict:
     return {
         "approvable": False,

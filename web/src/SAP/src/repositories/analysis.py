@@ -69,4 +69,4 @@ def get_single_analysis(identifier: str) -> Dict[str, Any]:
     conn = get_connection()
     mydb = conn[DB_NAME]
     samples = mydb[ANALYSIS_COL_NAME]
-    return samples.find_one({"isolate_id": f'{identifier}'})
+    return samples.find_one({"isolate_id": f"{identifier}"})
