@@ -8,6 +8,7 @@ from web.src.SAP.src.security.permission_check import assert_user_has
 
 
 def forget_pii(user, token_info, identifier_type, identifier):
+    assert_user_has("gdpr.manage", token_info)
     res = forget_user_data(identifier_type, identifier)
     return res
 
