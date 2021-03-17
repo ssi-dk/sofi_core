@@ -1,6 +1,16 @@
 USE [IB_Tarmbakdata]
 GO
 
+ALTER TABLE [dbo].[tbl_GenoRes] DROP CONSTRAINT PK_tbl_GenoRes;
+GO
+
+ALTER TABLE [dbo].[tbl_GenoRes] 
+ADD CONSTRAINT [PK_tbl_GenoRes] PRIMARY KEY CLUSTERED 
+(
+	[isolatnr] ASC
+) WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY];
+GO
+
 ALTER TABLE [dbo].[tbl_Isolater_SAP]
 ADD Dato_godkendt_toxin [datetime] NULL; 
 GO
