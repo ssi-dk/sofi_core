@@ -13,7 +13,7 @@ from web.src.SAP.src.security.permission_check import (
     assert_user_has,
     authorized_columns,
 )
-from web.src.SAP.src.config.column_config import columns
+from web.src.SAP.common.config.column_config import columns
 from ..services.queue_service import post_and_await_reload
 
 

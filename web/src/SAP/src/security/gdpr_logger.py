@@ -1,7 +1,7 @@
 from typing import List
 import functools
 from flask import current_app as app
-from web.src.SAP.src.config.column_config import columns
+from web.src.SAP.common.config.column_config import columns
 from web.src.SAP.generated.models import AnalysisResult
 
 

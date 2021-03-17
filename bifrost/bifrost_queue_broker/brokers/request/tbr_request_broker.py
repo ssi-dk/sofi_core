@@ -3,7 +3,8 @@ import sys, os
 import logging
 from ..shared import BrokerError, ProcessingStatus
 from .request_broker import RequestBroker
-from common.database import encrypt_dict, get_connection, PII_FIELDS
+from common.database import encrypt_dict, get_connection
+from common.config.column_config import pii_columns
 
 # TBR API imports
 import time
@@ -68,7 +69,7 @@ class TBRRequestBroker(RequestBroker):
                 if "isolate_id" in values:
                     del values["isolate_id"]
 
-                encrypt_dict(self.encryption_client, values, PII_FIELDS)
+                encrypt_dict(self.encryption_client, values, pii_columns())
 
                 # TODO: make sure this hardocded collection name is correct, or take form env variables.
                 result = self.tbr_col.find_one_and_update(

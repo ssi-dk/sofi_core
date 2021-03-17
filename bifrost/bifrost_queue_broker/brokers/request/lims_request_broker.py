@@ -3,7 +3,8 @@ import logging
 from ..shared import BrokerError, ProcessingStatus
 from ..lims_conn import *
 from .request_broker import RequestBroker
-from common.database import encrypt_dict, get_connection, PII_FIELDS
+from common.database import encrypt_dict, get_connection
+from common.config.column_config import pii_columns
 
 # LIMS API imports
 import time
@@ -70,7 +71,7 @@ class LIMSRequestBroker(RequestBroker):
                 if "output" in api_response and "sapresponse" in api_response.output:
                     values = transform_lims_metadata(api_response)
                     isolate_id = values["isolate_id"]
-                    encrypt_dict(self.encryption_client, values, PII_FIELDS)
+                    encrypt_dict(self.encryption_client, values, pii_columns())
 
                     result = self.lims_col.find_one_and_update(
                         {"isolate_id": isolate_id}, {"$set": values}, upsert=True

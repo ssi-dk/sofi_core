@@ -630,7 +630,7 @@ components:
       - sequence_id
     TbrSpecificMetadata:
       properties:
-        cpr:
+        cpr_nr:
           type: string
         gender:
           enum:

@@ -111,7 +111,7 @@
     "editable": true
   },
   {
-    "field_name": "cpr",
+    "field_name": "cpr_nr",
     "pii": true,
     "gdpr": true,
     "organizations": [

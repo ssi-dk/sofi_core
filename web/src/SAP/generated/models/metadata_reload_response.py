@@ -21,7 +21,7 @@ class MetadataReloadResponse(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, isolate_id=None, sequence_id=None, sequence_filename=None, institution=None, project_number=None, project_title=None, sampling_date=None, received_date=None, run_id=None, public=None, provided_species=None, primary_isolate=None, cpr=None, gender=None, name=None, age=None, travel=None, travel_country=None, run_date=None, kma_received_date=None, kma=None, region=None, fud_number=None, cluster_id=None, epi_export=None, chr_number=None, cvr_number=None, aut_number=None, product_type=None, product=None, origin_country=None, animal_species=None, sample_info=None):  # noqa: E501
+    def __init__(self, isolate_id=None, sequence_id=None, sequence_filename=None, institution=None, project_number=None, project_title=None, sampling_date=None, received_date=None, run_id=None, public=None, provided_species=None, primary_isolate=None, cpr_nr=None, gender=None, name=None, age=None, travel=None, travel_country=None, run_date=None, kma_received_date=None, kma=None, region=None, fud_number=None, cluster_id=None, epi_export=None, chr_number=None, cvr_number=None, aut_number=None, product_type=None, product=None, origin_country=None, animal_species=None, sample_info=None):  # noqa: E501
         """MetadataReloadResponse - a model defined in OpenAPI
 
         :param isolate_id: The isolate_id of this MetadataReloadResponse.  # noqa: E501
@@ -48,8 +48,8 @@ class MetadataReloadResponse(Model):
         :type provided_species: str
         :param primary_isolate: The primary_isolate of this MetadataReloadResponse.  # noqa: E501
         :type primary_isolate: bool
-        :param cpr: The cpr of this MetadataReloadResponse.  # noqa: E501
-        :type cpr: str
+        :param cpr_nr: The cpr_nr of this MetadataReloadResponse.  # noqa: E501
+        :type cpr_nr: str
         :param gender: The gender of this MetadataReloadResponse.  # noqa: E501
         :type gender: str
         :param name: The name of this MetadataReloadResponse.  # noqa: E501
@@ -104,7 +104,7 @@ class MetadataReloadResponse(Model):
             'public': str,
             'provided_species': str,
             'primary_isolate': bool,
-            'cpr': str,
+            'cpr_nr': str,
             'gender': str,
             'name': str,
             'age': int,
@@ -140,7 +140,7 @@ class MetadataReloadResponse(Model):
             'public': 'public',
             'provided_species': 'provided_species',
             'primary_isolate': 'primary_isolate',
-            'cpr': 'cpr',
+            'cpr_nr': 'cpr_nr',
             'gender': 'gender',
             'name': 'name',
             'age': 'age',
@@ -175,7 +175,7 @@ class MetadataReloadResponse(Model):
         self._public = public
         self._provided_species = provided_species
         self._primary_isolate = primary_isolate
-        self._cpr = cpr
+        self._cpr_nr = cpr_nr
         self._gender = gender
         self._name = name
         self._age = age
@@ -477,25 +477,25 @@ class MetadataReloadResponse(Model):
         self._primary_isolate = primary_isolate
 
     @property
-    def cpr(self):
-        """Gets the cpr of this MetadataReloadResponse.
+    def cpr_nr(self):
+        """Gets the cpr_nr of this MetadataReloadResponse.
 
 
-        :return: The cpr of this MetadataReloadResponse.
+        :return: The cpr_nr of this MetadataReloadResponse.
         :rtype: str
         """
-        return self._cpr
+        return self._cpr_nr
 
-    @cpr.setter
-    def cpr(self, cpr):
-        """Sets the cpr of this MetadataReloadResponse.
+    @cpr_nr.setter
+    def cpr_nr(self, cpr_nr):
+        """Sets the cpr_nr of this MetadataReloadResponse.
 
 
-        :param cpr: The cpr of this MetadataReloadResponse.
-        :type cpr: str
+        :param cpr_nr: The cpr_nr of this MetadataReloadResponse.
+        :type cpr_nr: str
         """
 
-        self._cpr = cpr
+        self._cpr_nr = cpr_nr
 
     @property
     def gender(self):

@@ -15,11 +15,11 @@ class TbrSpecificMetadata(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, cpr=None, gender=None, name=None, age=None, travel=None, travel_country=None, run_date=None, kma_received_date=None, kma=None, region=None, fud_number=None, cluster_id=None, epi_export=None):  # noqa: E501
+    def __init__(self, cpr_nr=None, gender=None, name=None, age=None, travel=None, travel_country=None, run_date=None, kma_received_date=None, kma=None, region=None, fud_number=None, cluster_id=None, epi_export=None):  # noqa: E501
         """TbrSpecificMetadata - a model defined in OpenAPI
 
-        :param cpr: The cpr of this TbrSpecificMetadata.  # noqa: E501
-        :type cpr: str
+        :param cpr_nr: The cpr_nr of this TbrSpecificMetadata.  # noqa: E501
+        :type cpr_nr: str
         :param gender: The gender of this TbrSpecificMetadata.  # noqa: E501
         :type gender: str
         :param name: The name of this TbrSpecificMetadata.  # noqa: E501
@@ -46,7 +46,7 @@ class TbrSpecificMetadata(Model):
         :type epi_export: str
         """
         self.openapi_types = {
-            'cpr': str,
+            'cpr_nr': str,
             'gender': str,
             'name': str,
             'age': int,
@@ -62,7 +62,7 @@ class TbrSpecificMetadata(Model):
         }
 
         self.attribute_map = {
-            'cpr': 'cpr',
+            'cpr_nr': 'cpr_nr',
             'gender': 'gender',
             'name': 'name',
             'age': 'age',
@@ -77,7 +77,7 @@ class TbrSpecificMetadata(Model):
             'epi_export': 'epi_export'
         }
 
-        self._cpr = cpr
+        self._cpr_nr = cpr_nr
         self._gender = gender
         self._name = name
         self._age = age
@@ -103,25 +103,25 @@ class TbrSpecificMetadata(Model):
         return util.deserialize_model(dikt, cls)
 
     @property
-    def cpr(self):
-        """Gets the cpr of this TbrSpecificMetadata.
+    def cpr_nr(self):
+        """Gets the cpr_nr of this TbrSpecificMetadata.
 
 
-        :return: The cpr of this TbrSpecificMetadata.
+        :return: The cpr_nr of this TbrSpecificMetadata.
         :rtype: str
         """
-        return self._cpr
+        return self._cpr_nr
 
-    @cpr.setter
-    def cpr(self, cpr):
-        """Sets the cpr of this TbrSpecificMetadata.
+    @cpr_nr.setter
+    def cpr_nr(self, cpr_nr):
+        """Sets the cpr_nr of this TbrSpecificMetadata.
 
 
-        :param cpr: The cpr of this TbrSpecificMetadata.
-        :type cpr: str
+        :param cpr_nr: The cpr_nr of this TbrSpecificMetadata.
+        :type cpr_nr: str
         """
 
-        self._cpr = cpr
+        self._cpr_nr = cpr_nr
 
     @property
     def gender(self):
