@@ -14,7 +14,11 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { jsx } from "@emotion/react";
-import { ExtractDataFromPiRequest, ForgetPiiRequest, PersonalIdentifierType } from "sap-client";
+import {
+  ExtractDataFromPiRequest,
+  ForgetPiiRequest,
+  PersonalIdentifierType,
+} from "sap-client";
 import { requestAsync } from "redux-query";
 import { RootState } from "app/root-reducer";
 import { useMutation } from "redux-query-react";
@@ -41,9 +45,8 @@ const formstateToRequest = (state: PersonalDataState) => {
   return null;
 };
 
-const getForgetResponse = (state: {
-  entities: ForgetPiiResponse ;
-}) => state.entities.forgetPiiResponse;
+const getForgetResponse = (state: { entities: ForgetPiiResponse }) =>
+  state.entities.forgetPiiResponse;
 
 const GdprForgetPage = () => {
   const { t } = useTranslation();
@@ -71,7 +74,10 @@ const GdprForgetPage = () => {
   // reload success status toast
   React.useMemo(() => {
     if (needsNotify && status >= 200 && status < 300 && !isPending) {
-      const description = forgetResponse === "" ? t("Person does not exist in the system") : `${t("Removed personal data by")} ${formState.type}.`;
+      const description =
+        forgetResponse === ""
+          ? t("Person does not exist in the system")
+          : `${t("Removed personal data by")} ${formState.type}.`;
       toast({
         title: t("Request successful"),
         description,

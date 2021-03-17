@@ -1,10 +1,17 @@
-
 /** @jsxRuntime classic */
 /** @jsxFrag React.Fragment */
 /** @jsx jsx */
 import React, { ChangeEvent, useState } from "react";
 import { jsx } from "@emotion/react";
-import { Tabs, TabList, TabPanels, Tab, TabPanel, Box, Flex } from "@chakra-ui/react";
+import {
+  Tabs,
+  TabList,
+  TabPanels,
+  Tab,
+  TabPanel,
+  Box,
+  Flex,
+} from "@chakra-ui/react";
 import { IfPermission } from "auth/if-permission";
 import { Permission } from "sap-client";
 import { useTranslation } from "react-i18next";
@@ -14,7 +21,8 @@ import Header from "../header/header";
 
 const GdprPage = () => {
   const { t } = useTranslation();
-    return (<IfPermission permission={Permission.approve}>
+  return (
+    <IfPermission permission={Permission.approve}>
       <Box
         display="grid"
         gridTemplateRows="10% auto"
@@ -29,8 +37,12 @@ const GdprPage = () => {
         <Box gridColumn="2 / 2" height="80vh">
           <Tabs variant="soft-rounded">
             <TabList>
-              <Tab _selected={{ bg: "blue.100" }}>{t("Extract personal data")}</Tab>
-              <Tab _selected={{ bg: "blue.100" }}>{t("Delete personal data")}</Tab>
+              <Tab _selected={{ bg: "blue.100" }}>
+                {t("Extract personal data")}
+              </Tab>
+              <Tab _selected={{ bg: "blue.100" }}>
+                {t("Delete personal data")}
+              </Tab>
             </TabList>
             <TabPanels>
               <TabPanel>

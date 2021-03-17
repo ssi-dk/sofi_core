@@ -126,7 +126,9 @@ const GdprExtractPage = () => {
       <Box gridColumn="1 / 2">
         <VStack css={inputForm}>
           <Select onChange={typeChange}>
-            <option value="" disabled selected>{t("Identifier type")}</option>
+            <option value="" disabled selected>
+              {t("Identifier type")}
+            </option>
             <option value={PersonalIdentifierType.CPR}>CPR</option>
             <option value={PersonalIdentifierType.CVR}>CVR</option>
             <option value={PersonalIdentifierType.CHR}>CHR</option>
