@@ -67,7 +67,7 @@ class TBRRequestBroker(RequestBroker):
                 values = api_response.to_dict()
                 if "isolate_id" in values:
                     del values["isolate_id"]
-                
+
                 encrypt_dict(self.encryption_client, values, PII_FIELDS)
 
                 # TODO: make sure this hardocded collection name is correct, or take form env variables.

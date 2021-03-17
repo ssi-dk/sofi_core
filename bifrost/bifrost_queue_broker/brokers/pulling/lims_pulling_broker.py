@@ -19,6 +19,7 @@ from api_clients.lims_client.models import (
     ConnectionCreateResponse,
 )
 
+
 class LIMSPullingBroker(threading.Thread):
     def __init__(self, data_lock, lims_col_name, analysis_view_col_name, db):
         super(LIMSPullingBroker, self).__init__()
@@ -100,7 +101,7 @@ class LIMSPullingBroker(threading.Thread):
                 )
                 if "output" in api_response and "sapresponse" in api_response.output:
                     transformed_batch.append(transform_lims_metadata(api_response))
-            
+
             bulk_update_queries = self.upsert_lims_metadata_batch(transformed_batch)
             update_count = 0
             if len(bulk_update_queries) > 0:

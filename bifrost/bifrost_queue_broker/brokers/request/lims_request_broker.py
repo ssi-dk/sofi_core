@@ -16,6 +16,7 @@ from api_clients.lims_client.models import (
     ConnectionCreateResponse,
 )
 
+
 class LIMSRequestBroker(RequestBroker):
     def __init__(self, data_lock, queue_col_name, lims_col_name, db):
         self.data_lock = data_lock
@@ -70,7 +71,7 @@ class LIMSRequestBroker(RequestBroker):
                     values = transform_lims_metadata(api_response)
                     isolate_id = values["isolate_id"]
                     encrypt_dict(self.encryption_client, values, PII_FIELDS)
-                    
+
                     result = self.lims_col.find_one_and_update(
                         {"isolate_id": isolate_id}, {"$set": values}, upsert=True
                     )
@@ -82,8 +83,6 @@ class LIMSRequestBroker(RequestBroker):
                 raise BrokerError
 
         close_lims_connection(conn_id, lms_cfg)
-    
-
 
 
 """

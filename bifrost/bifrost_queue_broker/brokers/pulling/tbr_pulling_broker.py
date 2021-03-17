@@ -5,7 +5,7 @@ import pymongo
 import threading
 from pymongo import CursorType
 from ..shared import BrokerError, yield_chunks
-from common.database import encrypt_dict, get_connection, PII_FIELDS 
+from common.database import encrypt_dict, get_connection, PII_FIELDS
 
 # TBR API imports
 import time
@@ -118,8 +118,10 @@ class TBRPullingBroker(threading.Thread):
                         bulk_update_queries, ordered=False
                     )
                     update_count = (
-                        bulk_result.upserted_count + bulk_result.modified_count + bulk_result.inserted_count
-                )
+                        bulk_result.upserted_count
+                        + bulk_result.modified_count
+                        + bulk_result.inserted_count
+                    )
 
             except Exception as e:
                 logging.error(
