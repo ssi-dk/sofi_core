@@ -48,6 +48,7 @@ def get_analysis(user, token_info, paging_token, page_size):
     audit_query(token_info, items)
     return jsonify(response)
 
+
 def reload_metadata(user, token_info, body):
     if body.institution:
         if body.institution == Organization.OTHER:
@@ -55,6 +56,7 @@ def reload_metadata(user, token_info, body):
         else:
             return post_and_await_reload(body.isolate_id, body.institution)
     return {}
+
 
 def search_analysis(user, token_info, query):
     assert_user_has("search", token_info)

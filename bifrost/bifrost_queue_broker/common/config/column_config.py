@@ -1,6 +1,7 @@
 import os
 import commentjson
 import functools
+
 try:
     from web.src.SAP.generated.models import AnalysisResult
     from web.src.SAP.generated.models import Column
@@ -40,6 +41,7 @@ def columns():
         for c in config:
             cols.update({c["field_name"]: {**cols[c["field_name"]], **c}})
         return list(cols.values())
+
 
 @functools.lru_cache(maxsize=1)
 def pii_columns():

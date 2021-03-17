@@ -23,7 +23,7 @@ export interface TbrSpecificMetadata  {
      * @type {string}
      * @memberof TbrSpecificMetadata
      */
-    cpr?: string;
+    cpr_nr?: string;
     /**
      * 
      * @type {string}
@@ -100,7 +100,7 @@ export interface TbrSpecificMetadata  {
 
 export function TbrSpecificMetadataFromJSON(json: any): TbrSpecificMetadata {
     return {
-        'cpr': !exists(json, 'cpr') ? undefined : json['cpr'],
+        'cpr_nr': !exists(json, 'cpr_nr') ? undefined : json['cpr_nr'],
         'gender': !exists(json, 'gender') ? undefined : json['gender'],
         'name': !exists(json, 'name') ? undefined : json['name'],
         'age': !exists(json, 'age') ? undefined : json['age'],
@@ -121,7 +121,7 @@ export function TbrSpecificMetadataToJSON(value?: TbrSpecificMetadata): any {
         return undefined;
     }
     return {
-        'cpr': value.cpr,
+        'cpr_nr': value.cpr_nr,
         'gender': value.gender,
         'name': value.name,
         'age': value.age,

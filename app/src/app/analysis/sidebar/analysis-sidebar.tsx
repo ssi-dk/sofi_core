@@ -50,7 +50,7 @@ function AnalysisSidebar(props: AnalysisSidebarProps) {
     data,
     sortUnique,
   ]);
-  const cprs = React.useMemo(() => sortUnique(data.map((x) => x.cpr)), [
+  const cprs = React.useMemo(() => sortUnique(data.map((x) => x.cpr_nr)), [
     data,
     sortUnique,
   ]);

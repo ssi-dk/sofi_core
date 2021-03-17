@@ -13,6 +13,7 @@ import sys
 
 PII_FIELDS = pii_columns()
 
+
 def lookup_pipeline():
     return [
         {
