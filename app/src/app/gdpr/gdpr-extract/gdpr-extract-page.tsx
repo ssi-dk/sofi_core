@@ -20,10 +20,10 @@ import {
 import { ExtractDataFromPiRequest, PersonalIdentifierType } from "sap-client";
 import { requestAsync } from "redux-query";
 import { useRequest } from "redux-query-react";
+import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "app/root-reducer";
 import { extractPersonalData } from "./gdpr-extracts-configs";
-import Header from "../../header/header";
 
 interface PersonalDataState {
   type?: PersonalIdentifierType;
@@ -43,6 +43,7 @@ const formstateToRequest = (state: PersonalDataState) => {
 };
 
 const GdprExtractPage = () => {
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [formState, setFormState] = useState({
     type: null,
@@ -118,16 +119,16 @@ const GdprExtractPage = () => {
       display="grid"
       gridTemplateRows="10% auto"
       gridTemplateColumns="25% auto"
-      padding="8"
-      height="100vh"
+      paddingTop="4"
+      height="70vh"
       gridGap="5"
     >
-      <Box role="heading" gridColumn="1 / 3">
-        <Header sidebarWidth="300px" />
-      </Box>
       <Box gridColumn="1 / 2">
         <VStack css={inputForm}>
-          <Select placeholder="Identifier type" onChange={typeChange}>
+          <Select onChange={typeChange}>
+            <option value="" disabled selected>
+              {t("Identifier type")}
+            </option>
             <option value={PersonalIdentifierType.CPR}>CPR</option>
             <option value={PersonalIdentifierType.CVR}>CVR</option>
             <option value={PersonalIdentifierType.CHR}>CHR</option>
@@ -138,7 +139,7 @@ const GdprExtractPage = () => {
           </Button>
         </VStack>
       </Box>
-      <Box gridColumn="2 / 2" overflowY="scroll">
+      <Box gridColumn="2 / 2" gridRow="1 / 3" overflowY="scroll">
         <VStack>
           {loading ? <div>Loading data...</div> : preElementWithDownload()}
         </VStack>

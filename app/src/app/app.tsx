@@ -8,9 +8,9 @@ import { Callback } from "auth/auth-callback";
 import { globalCss } from "./app.styles";
 import "./i18n";
 import AnalysisPage from "./analysis/analysis-page";
-import GdprExtractPage from "./gdpr/gdpr-extract/gdpr-extract-page";
 import ApprovalHistory from "./approval-history/approval-history";
 import ManualUploadPage from "./manual-upload/manual-upload-page";
+import GdprPage from "./gdpr/gdpr";
 
 export default function App() {
   return (
@@ -36,10 +36,10 @@ export default function App() {
         />
         <Route
           exact
-          path="/gdpr/extract"
+          path="/gdpr"
           render={() => (
             <Authorize>
-              <GdprExtractPage />
+              <GdprPage />
             </Authorize>
           )}
         />

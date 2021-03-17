@@ -1,9 +1,9 @@
 import os, sys
 import logging
-from ..shared import BrokerError, ProcessingStatus, PII_FIELDS
+from ..shared import BrokerError, ProcessingStatus
 from ..lims_conn import *
 from .request_broker import RequestBroker
-from common.database import encrypt_dict, get_connection
+from common.database import encrypt_dict, get_connection, PII_FIELDS
 
 # LIMS API imports
 import time
@@ -15,6 +15,7 @@ from api_clients.lims_client.models import (
     ConnectionCreateRequest,
     ConnectionCreateResponse,
 )
+
 
 class LIMSRequestBroker(RequestBroker):
     def __init__(self, data_lock, queue_col_name, lims_col_name, db):
@@ -70,7 +71,7 @@ class LIMSRequestBroker(RequestBroker):
                     values = transform_lims_metadata(api_response)
                     isolate_id = values["isolate_id"]
                     encrypt_dict(self.encryption_client, values, PII_FIELDS)
-                    
+
                     result = self.lims_col.find_one_and_update(
                         {"isolate_id": isolate_id}, {"$set": values}, upsert=True
                     )
@@ -82,8 +83,6 @@ class LIMSRequestBroker(RequestBroker):
                 raise BrokerError
 
         close_lims_connection(conn_id, lms_cfg)
-    
-
 
 
 """

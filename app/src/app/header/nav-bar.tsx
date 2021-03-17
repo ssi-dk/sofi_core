@@ -31,8 +31,8 @@ function NavBar() {
         </NavLink>
       </IfPermission>
       <IfPermission permission={Permission.gdpr_manage}>
-        <NavLink to="/gdpr/extract">
-          <Button leftIcon={<LockIcon />}>{t("GDPR extract")}</Button>
+        <NavLink to="/gdpr">
+          <Button leftIcon={<LockIcon />}>{t("GDPR")}</Button>
         </NavLink>
       </IfPermission>
     </Flex>

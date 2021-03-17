@@ -4,9 +4,9 @@ import time
 import pymongo
 import threading
 from pymongo import CursorType
-from ..shared import BrokerError, yield_chunks, PII_FIELDS
+from ..shared import BrokerError, yield_chunks
 from ..lims_conn import *
-from common.database import encrypt_dict, get_connection
+from common.database import encrypt_dict, get_connection, PII_FIELDS
 
 # LIMS API imports
 import time
@@ -18,6 +18,7 @@ from api_clients.lims_client.models import (
     ConnectionCreateRequest,
     ConnectionCreateResponse,
 )
+
 
 class LIMSPullingBroker(threading.Thread):
     def __init__(self, data_lock, lims_col_name, analysis_view_col_name, db):
@@ -51,6 +52,7 @@ class LIMSPullingBroker(threading.Thread):
     def run_sync_job(self):
         batch_size = 200
         fetch_pipeline = [
+            {"$match": {"institution": "FVST"}},
             {
                 "$group": {
                     "_id": "$_id",
@@ -58,7 +60,6 @@ class LIMSPullingBroker(threading.Thread):
                     "institution": {"$first": "$institution"},
                 }
             },
-            {"$match": {"institution": "FVST"}},
             {
                 "$lookup": {
                     "from": "sap_lims_metadata",
@@ -67,7 +68,15 @@ class LIMSPullingBroker(threading.Thread):
                     "as": "metadata",
                 }
             },
-            {"$match": {"metadata": []}},
+            {
+                "$match": {
+                    "$or": [
+                        {"metadata.gdpr_deleted": {"$exists": False}},
+                        {"metadata.gdpr_deleted": False},
+                    ],
+                    "metadata": [],
+                }
+            },
             {"$project": {"_id": False, "isolate_id": "$isolate_id"}},
         ]
 
@@ -100,7 +109,7 @@ class LIMSPullingBroker(threading.Thread):
                 )
                 if "output" in api_response and "sapresponse" in api_response.output:
                     transformed_batch.append(transform_lims_metadata(api_response))
-            
+
             bulk_update_queries = self.upsert_lims_metadata_batch(transformed_batch)
             update_count = 0
             if len(bulk_update_queries) > 0:

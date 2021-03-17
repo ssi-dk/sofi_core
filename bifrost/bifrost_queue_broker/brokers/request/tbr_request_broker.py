@@ -1,9 +1,9 @@
 # Broker imports
 import sys, os
 import logging
-from ..shared import BrokerError, ProcessingStatus, PII_FIELDS
+from ..shared import BrokerError, ProcessingStatus
 from .request_broker import RequestBroker
-from common.database import encrypt_dict, get_connection
+from common.database import encrypt_dict, get_connection, PII_FIELDS
 
 # TBR API imports
 import time
@@ -67,7 +67,7 @@ class TBRRequestBroker(RequestBroker):
                 values = api_response.to_dict()
                 if "isolate_id" in values:
                     del values["isolate_id"]
-                
+
                 encrypt_dict(self.encryption_client, values, PII_FIELDS)
 
                 # TODO: make sure this hardocded collection name is correct, or take form env variables.

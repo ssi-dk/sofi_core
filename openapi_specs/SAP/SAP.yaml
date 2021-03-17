@@ -276,6 +276,33 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PersonalData'
+  /gdpr/forget:
+    get:
+      description: Forget about a person identifer, GDPR right to be forgotten
+      operationId: forget_pii
+      tags:
+        - gdpr
+      x-openapi-router-controller: web.src.SAP.generated.controllers.gdpr_controller
+      parameters:
+        - in: query
+          name: identifier_type
+          schema:
+            $ref: '#/components/schemas/PersonalIdentifierType'
+          description: Identifier type
+          required: true
+        - in: query
+          name: identifier
+          schema:
+            type: string
+          description: Personal identifier number.
+          required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PersonalData'
 
   /upload/single_upload:
     post:
