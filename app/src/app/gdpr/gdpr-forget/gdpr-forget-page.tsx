@@ -76,7 +76,9 @@ const GdprForgetPage = () => {
       const description =
         forgetResponse === ""
           ? t("Person does not exist in the system")
-          : `${t("Removed personal data by")} ${formState.type}. ${forgetResponse} ${t("entries removed")}.`;
+          : `${t("Removed personal data by")} ${
+              formState.type
+            }. ${forgetResponse} ${t("entries removed")}.`;
       toast({
         title: t("Request successful"),
         description,

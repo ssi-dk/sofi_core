@@ -36,7 +36,9 @@ const ConfirmModal = (props: ConfirmModalProp) => {
           <Button variant="ghost" mr={3} onClick={onClose}>
             {t("Close")}
           </Button>
-          <Button colorScheme="red" onClick={onConfirm}>{t("Forget user")}</Button>
+          <Button colorScheme="red" onClick={onConfirm}>
+            {t("Forget user")}
+          </Button>
         </ModalFooter>
       </ModalContent>
     </Modal>
