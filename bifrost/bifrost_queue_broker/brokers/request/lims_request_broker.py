@@ -1,9 +1,9 @@
 import os, sys
 import logging
-from ..shared import BrokerError, ProcessingStatus, PII_FIELDS
+from ..shared import BrokerError, ProcessingStatus
 from ..lims_conn import *
 from .request_broker import RequestBroker
-from common.database import encrypt_dict, get_connection
+from common.database import encrypt_dict, get_connection, PII_FIELDS
 
 # LIMS API imports
 import time

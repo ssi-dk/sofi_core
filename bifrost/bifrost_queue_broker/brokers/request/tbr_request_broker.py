@@ -1,9 +1,9 @@
 # Broker imports
 import sys, os
 import logging
-from ..shared import BrokerError, ProcessingStatus, PII_FIELDS
+from ..shared import BrokerError, ProcessingStatus
 from .request_broker import RequestBroker
-from common.database import encrypt_dict, get_connection
+from common.database import encrypt_dict, get_connection, PII_FIELDS
 
 # TBR API imports
 import time

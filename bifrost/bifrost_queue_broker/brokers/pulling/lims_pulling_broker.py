@@ -4,9 +4,9 @@ import time
 import pymongo
 import threading
 from pymongo import CursorType
-from ..shared import BrokerError, yield_chunks, PII_FIELDS
+from ..shared import BrokerError, yield_chunks
 from ..lims_conn import *
-from common.database import encrypt_dict, get_connection
+from common.database import encrypt_dict, get_connection, PII_FIELDS
 
 # LIMS API imports
 import time

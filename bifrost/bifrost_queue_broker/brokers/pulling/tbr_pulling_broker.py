@@ -4,8 +4,8 @@ import time
 import pymongo
 import threading
 from pymongo import CursorType
-from ..shared import BrokerError, yield_chunks, PII_FIELDS
-from common.database import encrypt_dict, get_connection
+from ..shared import BrokerError, yield_chunks
+from common.database import encrypt_dict, get_connection, PII_FIELDS 
 
 # TBR API imports
 import time
@@ -13,15 +13,13 @@ import api_clients.tbr_client
 from pymongo.collection import ReturnDocument
 from pprint import pprint
 from api_clients.tbr_client.api.isolate_api import ApiClient, IsolateApi
-from api_clients.tbr_client.models import (
-    Isolate,
-    RowVersion
-)
+from api_clients.tbr_client.models import Isolate, RowVersion
 
 
 tbr_api_url = os.environ.get("TBR_API_URL")
 
 tbr_configuration = api_clients.tbr_client.Configuration(host=tbr_api_url)
+
 
 class TBRPullingBroker(threading.Thread):
     def __init__(self, data_lock, tbr_col_name, analysis_view_col_name, db):
@@ -55,6 +53,7 @@ class TBRPullingBroker(threading.Thread):
     def run_sync_job(self):
         batch_size = 200
         fetch_pipeline = [
+            {"$match": {"institution": "SSI"}},
             {
                 "$group": {
                     "_id": "$_id",
@@ -62,7 +61,6 @@ class TBRPullingBroker(threading.Thread):
                     "institution": {"$first": "$institution"},
                 }
             },
-            {"$match": {"institution": "SSI"}},
             {
                 "$lookup": {
                     "from": "sap_tbr_metadata",
@@ -72,6 +70,14 @@ class TBRPullingBroker(threading.Thread):
                 }
             },
             # {"$unwind": {"path": "$metadata", "preserveNullAndEmptyArrays": True}},
+            {
+                "$match": {
+                    "$or": [
+                        {"metadata.gdpr_deleted": {"$exists": False}},
+                        {"metadata.gdpr_deleted": False},
+                    ]
+                }
+            },
             {
                 "$project": {
                     "_id": False,
@@ -98,6 +104,7 @@ class TBRPullingBroker(threading.Thread):
     def update_isolate_metadata(self, element_batch):
         with ApiClient(tbr_configuration) as api_client:
             api_instance = IsolateApi(api_client)
+            update_count = 0
             try:
                 row_ver_elems = [RowVersion(**element) for element in element_batch]
 
@@ -106,23 +113,20 @@ class TBRPullingBroker(threading.Thread):
                 )
                 bulk_update_queries = self.upsert_tbr_metadata_batch(updated_isolates)
 
-                update_count = 0
                 if len(bulk_update_queries) > 0:
                     bulk_result = self.metadata_col.bulk_write(
                         bulk_update_queries, ordered=False
                     )
                     update_count = (
-                        bulk_result.upserted_count + bulk_result.modified_count
-                    )
-
-                return update_count
+                        bulk_result.upserted_count + bulk_result.modified_count + bulk_result.inserted_count
+                )
 
             except Exception as e:
                 logging.error(
                     f"Exception on check for isolate updates {self.broker_name}: {e}\n"
                 )
             finally:
-                return 0
+                return update_count
 
     def upsert_tbr_metadata_batch(self, updated_isolates):
         result = []
