@@ -78,11 +78,10 @@ def del_cpr(db, cpr_num: str):
     for batch in yield_chunks(people.find()):
         filtered = list(filter(lambda x: x.get("cpr_nr", -1) == cpr_num, batch))
         result.extend(filtered)
-    print(result, file=sys.stderr)
     if len(result) > 0:
         cleared_values = {key: "" for key in PII_FIELDS}
         ids = [x["_id"] for x in result]
-        people.update_one(
+        people.update(
             {"_id": {"$in": ids}},
             {"$set": {"gdpr_deleted": True}, "$unset": cleared_values},
         )
@@ -98,7 +97,7 @@ def del_cvr(db, cvr_num: str):
     if len(result) > 0:
         cleared_values = {key: "" for key in PII_FIELDS}
         ids = [x["_id"] for x in result]
-        people.update_one(
+        people.update(
             {"_id": {"$in": ids}},
             {"$set": {"gdpr_deleted": True}, "$unset": cleared_values},
         )
@@ -114,7 +113,7 @@ def del_chr(db, chr_num: str):
     if len(result) > 0:
         cleared_values = {key: "" for key in PII_FIELDS}
         ids = [x["_id"] for x in result]
-        people.update_one(
+        people.update(
             {"_id": {"$in": ids}},
             {"$set": {"gdpr_deleted": True}, "$unset": cleared_values},
         )
@@ -127,5 +126,5 @@ delete_user_mapping = {"CPR": del_cpr, "CVR": del_cvr, "CHR": del_chr}
 def forget_user_data(identifier_type: str, identifier: Optional[str]):
     conn = get_connection()
     db = conn[DB_NAME]
-    res = delete_user_mapping[identifier_type](db, identifier)
-    return {"data": f"Deleted {res} entries" if res > 0 else ""}
+    num_updated = delete_user_mapping[identifier_type](db, identifier)
+    return {"data": str(num_updated) if num_updated > 0 else ""}

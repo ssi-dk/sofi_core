@@ -6,27 +6,18 @@ import {
   Input,
   Button,
   Select,
-  Textarea,
   VStack,
-  Spacer,
-  Flex,
-  Box,
   useToast,
+  useDisclosure,
 } from "@chakra-ui/react";
 import { jsx } from "@emotion/react";
-import {
-  ExtractDataFromPiRequest,
-  ForgetPiiRequest,
-  PersonalIdentifierType,
-} from "sap-client";
-import { requestAsync } from "redux-query";
-import { RootState } from "app/root-reducer";
+import { ExtractDataFromPiRequest, PersonalIdentifierType } from "sap-client";
 import { useMutation } from "redux-query-react";
 import { useDispatch, useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { forgetPersonalData, ForgetPiiResponse } from "./gdpr-forget-configs";
 import { inputForm } from "./gdpr-forget-styles";
-import Header from "../../header/header";
+import ConfirmModal from "../confirm-modal";
 
 interface PersonalDataState {
   type?: PersonalIdentifierType;
@@ -51,6 +42,7 @@ const getForgetResponse = (state: { entities: ForgetPiiResponse }) =>
 const GdprForgetPage = () => {
   const { t } = useTranslation();
   const toast = useToast();
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const [needsNotify, setNeedsNotify] = useState(true);
   const [formState, setFormState] = useState({
     type: null,
@@ -66,10 +58,17 @@ const GdprForgetPage = () => {
 
   const forgetResponse = useSelector(getForgetResponse);
 
+  const buttonClick = React.useCallback(() => {
+    if (formState.type && formState.value && formState.value.length > 0) {
+      onOpen();
+    }
+  }, [formState, onOpen]);
+
   const deleteClick = React.useCallback(() => {
+    onClose();
     setNeedsNotify(true);
     removeUserData(formState);
-  }, [removeUserData, formState]);
+  }, [removeUserData, formState, onClose]);
 
   // reload success status toast
   React.useMemo(() => {
@@ -77,7 +76,7 @@ const GdprForgetPage = () => {
       const description =
         forgetResponse === ""
           ? t("Person does not exist in the system")
-          : `${t("Removed personal data by")} ${formState.type}.`;
+          : `${t("Removed personal data by")} ${formState.type}. ${forgetResponse} ${t("entries removed")}.`;
       toast({
         title: t("Request successful"),
         description,
@@ -102,7 +101,6 @@ const GdprForgetPage = () => {
       setNeedsNotify(false);
     }
   }, [t, toast, needsNotify, isPending, status]);
-  const dispatch = useDispatch();
 
   const typeChange = React.useCallback(
     (e: ChangeEvent<HTMLSelectElement>) => {
@@ -133,10 +131,19 @@ const GdprForgetPage = () => {
           <option value={PersonalIdentifierType.CHR}>CHR</option>
         </Select>
         <Input placeholder="Identifier" onChange={idChange} />
-        <Button isLoading={isPending} colorScheme="blue" onClick={deleteClick}>
+        <Button isLoading={isPending} colorScheme="blue" onClick={buttonClick}>
           {t("Forget user")}
         </Button>
       </VStack>
+      <ConfirmModal
+        title={t("Delete personal data?")}
+        text={`${t(
+          "Are you sure you want to delete personal data stored with"
+        )} ${formState.type} ${formState.value}`}
+        isOpen={isOpen}
+        onClose={onClose}
+        onConfirm={deleteClick}
+      />
     </div>
   );
 };
