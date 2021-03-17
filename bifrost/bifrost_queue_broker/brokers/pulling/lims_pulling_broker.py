@@ -52,6 +52,7 @@ class LIMSPullingBroker(threading.Thread):
     def run_sync_job(self):
         batch_size = 200
         fetch_pipeline = [
+            {"$match": {"institution": "FVST"}},
             {
                 "$group": {
                     "_id": "$_id",
@@ -59,7 +60,6 @@ class LIMSPullingBroker(threading.Thread):
                     "institution": {"$first": "$institution"},
                 }
             },
-            {"$match": {"institution": "FVST"}},
             {
                 "$lookup": {
                     "from": "sap_lims_metadata",
@@ -68,7 +68,15 @@ class LIMSPullingBroker(threading.Thread):
                     "as": "metadata",
                 }
             },
-            {"$match": {"metadata": []}},
+            {
+                "$match": {
+                    "$or": [
+                        {"metadata.gdpr_deleted": {"$exists": False}},
+                        {"metadata.gdpr_deleted": False},
+                    ],
+                    "metadata": [],
+                }
+            },
             {"$project": {"_id": False, "isolate_id": "$isolate_id"}},
         ]
 
