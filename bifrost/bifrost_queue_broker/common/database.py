@@ -129,6 +129,7 @@ def encrypt_dict(encryption_client: ClientEncryption, dikt: Dict, filter_list=No
             )
             dikt[key] = encrypted_field
 
+
 def yield_chunks(cursor, chunk_size=200):
     """
     Generator to yield chunks from cursor
@@ -145,4 +146,15 @@ def yield_chunks(cursor, chunk_size=200):
 
 
 # TODO: perhaps combine this with column configs to extract "gdpr: true" values instead of having this one-off list..
-PII_FIELDS = ["CHR-nr", "Aut Nummer", "CVR nr", "cpr_nr", "name", "gender", "age", "cpr", "chr", "cvr"]
+PII_FIELDS = [
+    "CHR-nr",
+    "Aut Nummer",
+    "CVR nr",
+    "cpr_nr",
+    "name",
+    "gender",
+    "age",
+    "cpr",
+    "chr",
+    "cvr",
+]
