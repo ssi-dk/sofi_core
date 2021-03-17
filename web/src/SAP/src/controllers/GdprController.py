@@ -1,5 +1,5 @@
 from ...generated.models import PersonalData
-from ..repositories.gdpr import personal_data_from_identifier
+from ..repositories.gdpr import personal_data_from_identifier, forget_user_data
 from flask.json import dumps
 from io import StringIO
 import sys
@@ -7,8 +7,9 @@ from flask import current_app as app
 from web.src.SAP.src.security.permission_check import assert_user_has
 
 
-def forget_pii(user, token_info, identifier_type, identifier):  # noqa: E501
-    return {"ok": "k"}
+def forget_pii(user, token_info, identifier_type, identifier):
+    res = forget_user_data(identifier_type, identifier)
+    return res
 
 
 def json_line_generator(json_input, seperator=""):
