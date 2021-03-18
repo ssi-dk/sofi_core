@@ -1,4 +1,5 @@
 import os
+from typing import Any, Dict
 import commentjson
 from flask import current_app as app
 from werkzeug.exceptions import Forbidden
@@ -9,7 +10,7 @@ with open(os.getcwd() + "/permission-config.jsonc") as js_file:
     PERMISSION_CONFIG = commentjson.loads(js_file.read())
 
 
-def list_permissions(token_info):
+def list_permissions(token_info: Dict[str, str]):
     list = []
     for group in token_info["security-groups"]:
         for perm in PERMISSION_CONFIG[group]:
@@ -17,7 +18,7 @@ def list_permissions(token_info):
     return list
 
 
-def user_has(permission, token_info):
+def user_has(permission: str, token_info: Dict[str, str]):
     for group in token_info["security-groups"]:
         for perm in PERMISSION_CONFIG[group]:
             if perm == permission:
@@ -25,27 +26,30 @@ def user_has(permission, token_info):
     return False
 
 
-def assert_user_has(permission, token_info):
+def assert_user_has(permission: str, token_info: Dict[str, str]):
     if not user_has(permission, token_info):
         raise Forbidden(f"You lack -{permission}- permission")
 
 
-def authorized_to_edit(token_info, metadata):
+def authorized_to_edit(token_info: Dict[str, str], metadata: Dict[str, Any]):
     if not user_has("approve", token_info):
         return False
-    if not token_info["institution"] == metadata.institution:
+    if token_info["sofi-data-clearance"] == "all":
+        return True
+    if token_info["sofi-data-clearance"] == "cross-institution":
+        return True
+    if not token_info["institution"] == metadata["institution"]:
         return False
     return True
 
 
-def assert_authorized_to_edit(token_info, metadata):
+def assert_authorized_to_edit(token_info: Dict[str, str], metadata: Dict[str, Any]):
     if not authorized_to_edit(token_info, metadata):
-        raise Forbidden(
-            f"You are not authorized to edit isolate -{metadata.isolate_id}-"
-        )
+        theId = metadata["isolate_id"]
+        raise Forbidden(f"You are not authorized to edit isolate -{theId}-")
 
 
-def authorized_columns(token_info):
+def authorized_columns(token_info: Dict[str, Any]):
     data_clearance = token_info["sofi-data-clearance"]
     cols = columns()
     institution = token_info["institution"]
