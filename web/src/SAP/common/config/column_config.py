@@ -1,4 +1,5 @@
 import os
+from typing import List
 import commentjson
 import functools
 
@@ -44,5 +45,5 @@ def columns():
 
 
 @functools.lru_cache(maxsize=1)
-def pii_columns():
+def pii_columns() -> List[str]:
     return [x["field_name"] for x in COLUMN_CONFIG if x.get("pii", False)]
