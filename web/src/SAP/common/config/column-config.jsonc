@@ -1,0 +1,174 @@
+// Column configuration
+//
+// This file defines which fields are "approvable" and their relations between one another,
+// as well as various properties for controlling how the application handles these fields.
+//
+// It is helpful when editing to change the file extension to .ts and uncomment the lines below:
+//
+//import { AnalysisResult } from "../app/src/sap-client/models/AnalysisResult";
+//import { StrictColumn } from "../app/src/app/types";
+//var typeCheckedColumnConfig: StrictColumn<AnalysisResult>[] =
+[
+  {
+    "field_name": "qc_final",
+    "approves_with": [
+      "species_final",
+      "run_id"
+    ]
+  },
+  {
+    "field_name": "st",
+    "approvable": true,
+    "approves_with": [
+      "st"
+    ]
+  },
+  {
+    "field_name": "serotype",
+    "approvable": true,
+    "editable": true,
+    "approves_with": [
+      "serotype_final",
+      "subspecies",
+      "pathotype",
+      "adhesion",
+      "toxins"
+    ]
+  },
+  {
+    "field_name": "resistance_genes",
+    "approvable": true,
+    "approves_with": [
+      "amr_profile",
+      "amr_ami",
+      "amr_amp",
+      "amr_azi",
+      "amr_fep",
+      "amr_fot",
+      "amr_f_c",
+      "amr_fox",
+      "amr_taz",
+      "amr_t_c",
+      "amr_chl",
+      "amr_cip",
+      "amr_cli",
+      "amr_col",
+      "amr_dap",
+      "amr_etp",
+      "amr_ery",
+      "amr_fus",
+      "amr_gen",
+      "amr_imi",
+      "amr_kan",
+      "amr_lzd",
+      "amr_mero",
+      "amr_mup",
+      "amr_nal",
+      "amr_pen",
+      "amr_syn",
+      "amr_rif",
+      "amr_str",
+      "amr_sul",
+      "amr_tei",
+      "amr_trm",
+      "amr_tet",
+      "amr_tia",
+      "amr_tgc",
+      "amr_tmp",
+      "amr_van"
+    ]
+  },
+  {
+    "field_name": "cluster_id",
+    "approvable": true,
+    "approves_with": [
+      "fud_number"
+    ]
+  },
+  {
+    "field_name": "pathotype_final",
+    "editable": true
+  },
+  {
+    "field_name": "species_final",
+    "editable": true
+  },
+  {
+    "field_name": "serotype_final",
+    "editable": true
+  },
+  {
+    "field_name": "toxins_final",
+    "editable": true,
+    "approvable": true,
+    "approves_with": [
+      "adhesion_final",
+      "pathotype_final"
+    ]
+  },
+  {
+    "field_name": "adhesion_final",
+    "editable": true
+  },
+  {
+    "field_name": "cpr_nr",
+    "pii": true,
+    "gdpr": true,
+    "organizations": [
+      "SSI"
+    ]
+  },
+  {
+    "field_name": "gender",
+    "pii": true,
+    "organizations": [
+      "SSI"
+    ]
+  },
+  {
+    "field_name": "age",
+    "pii": true,
+    "organizations": [
+      "SSI"
+    ]
+  },
+  {
+    "field_name": "name",
+    "pii": true,
+    "gdpr": true,
+    "organizations": [
+      "SSI"
+    ]
+  },
+  {
+    "field_name": "cvr_number",
+    "pii": true,
+    "gdpr": true,
+    "organizations": [
+      "FVST"
+    ]
+  },
+  {
+    "field_name": "chr_number",
+    "pii": true,
+    "gdpr": true,
+    "organizations": [
+      "FVST"
+    ]
+  },
+  {
+    "field_name": "aut_number",
+    "pii": true,
+    "gdpr": true,
+    "organizations": [
+      "FVST"
+    ]
+  },
+  {
+    "field_name": "infection_source",
+    "editable": true,
+    "organizations": [
+      "FVST"
+    ]
+  }
+]

@@ -2,7 +2,7 @@ from os.path import isfile
 import sys
 from pathlib import Path
 from ...generated.models.base_metadata import BaseMetadata
-from ..config.upload_config import upload_path
+from ...common.config.upload_config import upload_path
 from ..repositories.metadata import upsert_manual_metadata
 
 

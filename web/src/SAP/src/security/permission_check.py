@@ -2,7 +2,7 @@ import os
 import commentjson
 from flask import current_app as app
 from werkzeug.exceptions import Forbidden
-from web.src.SAP.src.config.column_config import columns
+from web.src.SAP.common.config.column_config import columns
 
 PERMISSION_CONFIG = None
 with open(os.getcwd() + "/permission-config.jsonc") as js_file:

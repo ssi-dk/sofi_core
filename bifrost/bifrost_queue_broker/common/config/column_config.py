@@ -1,11 +1,19 @@
 import os
+from typing import List
 import commentjson
 import functools
-from web.src.SAP.generated.models import AnalysisResult
-from web.src.SAP.generated.models import Column
+
+try:
+    from web.src.SAP.generated.models import AnalysisResult
+    from web.src.SAP.generated.models import Column
+except:
+    pass
+
+PATH = os.path.dirname(os.path.realpath(__file__))
+print(PATH)
 
 COLUMN_CONFIG = None
-with open(os.getcwd() + "/column-config.jsonc") as js_file:
+with open(PATH + "/column-config.jsonc") as js_file:
     COLUMN_CONFIG = commentjson.loads(js_file.read())
 
 
@@ -29,8 +37,13 @@ def columns():
     for attr, _ in analysis.openapi_types.items():
         cols.update({attr: gen_default_column(attr)})
     # apply configuration file on top
-    with open(os.getcwd() + "/column-config.jsonc") as js_file:
+    with open(PATH + "/column-config.jsonc") as js_file:
         config = commentjson.loads(js_file.read())
         for c in config:
             cols.update({c["field_name"]: {**cols[c["field_name"]], **c}})
         return list(cols.values())
+
+
+@functools.lru_cache(maxsize=1)
+def pii_columns() -> List[str]:
+    return [x["field_name"] for x in COLUMN_CONFIG if x.get("pii", False)]

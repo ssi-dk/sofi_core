@@ -11,7 +11,7 @@ def test_gdpr_logger_recognizes_sensitive_columns():
     cols = gdpr_sensitive_columns()
     pprint(list(cols))
 
-    assert "cpr" in cols
+    assert "cpr_nr" in cols
     assert "cvr_number" in cols
     assert "chr_number" in cols
     assert "aut_number" in cols
@@ -23,7 +23,7 @@ def test_gdpr_logger_audits_sensitive_queries():
     expected_id = "sensitive"
     unexpected_id = "not"
     results: List[AnalysisResult] = [
-        AnalysisResult(isolate_id=expected_id, cpr="010151111"),
+        AnalysisResult(isolate_id=expected_id, cpr_nr="010151111"),
         AnalysisResult(isolate_id=unexpected_id),
     ]
     isolates = query_requires_audit(results)

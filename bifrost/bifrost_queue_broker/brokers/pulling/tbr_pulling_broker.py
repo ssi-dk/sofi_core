@@ -5,7 +5,8 @@ import pymongo
 import threading
 from pymongo import CursorType
 from ..shared import BrokerError, yield_chunks
-from common.database import encrypt_dict, get_connection, PII_FIELDS
+from common.database import encrypt_dict, get_connection
+from common.config.column_config import pii_columns
 
 # TBR API imports
 import time
@@ -136,7 +137,7 @@ class TBRPullingBroker(threading.Thread):
             values = isolate.to_dict()
             isolate_id = values["isolate_id"]
 
-            encrypt_dict(self.encryption_client, values, PII_FIELDS)
+            encrypt_dict(self.encryption_client, values, pii_columns())
 
             update_query = pymongo.UpdateOne(
                 {"isolate_id": isolate_id}, {"$set": values}, upsert=True

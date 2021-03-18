@@ -244,7 +244,7 @@ function MetaFilter(props: MetaFilterProps) {
           options={cprOptions}
           isMulti
           theme={selectTheme}
-          onChange={onChangeBuilder("cpr")}
+          onChange={onChangeBuilder("cpr_nr")}
         />
       </IfPermission>
       <Flex justifyContent="space-between" direction="row">

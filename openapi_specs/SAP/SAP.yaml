@@ -588,7 +588,7 @@ components:
       required:
         - run_date
       properties:
-        cpr:
+        cpr_nr:
           type: string
         gender:
           type: string

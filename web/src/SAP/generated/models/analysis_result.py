@@ -27,7 +27,7 @@ class AnalysisResult(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, isolate_id=None, sequence_id=None, sequence_filename=None, institution=None, project_number=None, project_title=None, sampling_date=None, received_date=None, run_id=None, public=None, provided_species=None, primary_isolate=None, chr_number=None, cvr_number=None, aut_number=None, product_type=None, product=None, origin_country=None, animal_species=None, sample_info=None, cpr=None, gender=None, name=None, age=None, travel=None, travel_country=None, run_date=None, kma_received_date=None, kma=None, region=None, fud_number=None, cluster_id=None, epi_export=None, id=None, resfinder_version=None, qc_provided_species=None, qc_genome1x=None, qc_genome10x=None, qc_gsize_diff1x10=None, qc_avg_coverage=None, qc_final=None, subspecies=None, species_final=None, st=None, pathotype=None, pathotype_final=None, serotype=None, serotype_final=None, adhesion=None, adhesion_final=None, toxins=None, toxins_final=None, infection_source=None, resistance_genes=None, amr_profile=None, amr_ami=None, amr_amp=None, amr_azi=None, amr_fep=None, amr_fot=None, amr_f_c=None, amr_fox=None, amr_taz=None, amr_t_c=None, amr_chl=None, amr_cip=None, amr_cli=None, amr_col=None, amr_dap=None, amr_etp=None, amr_ery=None, amr_fus=None, amr_gen=None, amr_imi=None, amr_kan=None, amr_lzd=None, amr_mero=None, amr_mup=None, amr_nal=None, amr_pen=None, amr_syn=None, amr_rif=None, amr_str=None, amr_sul=None, amr_tei=None, amr_trm=None, amr_tet=None, amr_tia=None, amr_tgc=None, amr_tmp=None, amr_van=None):  # noqa: E501
+    def __init__(self, isolate_id=None, sequence_id=None, sequence_filename=None, institution=None, project_number=None, project_title=None, sampling_date=None, received_date=None, run_id=None, public=None, provided_species=None, primary_isolate=None, chr_number=None, cvr_number=None, aut_number=None, product_type=None, product=None, origin_country=None, animal_species=None, sample_info=None, cpr_nr=None, gender=None, name=None, age=None, travel=None, travel_country=None, run_date=None, kma_received_date=None, kma=None, region=None, fud_number=None, cluster_id=None, epi_export=None, id=None, resfinder_version=None, qc_provided_species=None, qc_genome1x=None, qc_genome10x=None, qc_gsize_diff1x10=None, qc_avg_coverage=None, qc_final=None, subspecies=None, species_final=None, st=None, pathotype=None, pathotype_final=None, serotype=None, serotype_final=None, adhesion=None, adhesion_final=None, toxins=None, toxins_final=None, infection_source=None, resistance_genes=None, amr_profile=None, amr_ami=None, amr_amp=None, amr_azi=None, amr_fep=None, amr_fot=None, amr_f_c=None, amr_fox=None, amr_taz=None, amr_t_c=None, amr_chl=None, amr_cip=None, amr_cli=None, amr_col=None, amr_dap=None, amr_etp=None, amr_ery=None, amr_fus=None, amr_gen=None, amr_imi=None, amr_kan=None, amr_lzd=None, amr_mero=None, amr_mup=None, amr_nal=None, amr_pen=None, amr_syn=None, amr_rif=None, amr_str=None, amr_sul=None, amr_tei=None, amr_trm=None, amr_tet=None, amr_tia=None, amr_tgc=None, amr_tmp=None, amr_van=None):  # noqa: E501
         """AnalysisResult - a model defined in OpenAPI
 
         :param isolate_id: The isolate_id of this AnalysisResult.  # noqa: E501
@@ -70,8 +70,8 @@ class AnalysisResult(Model):
         :type animal_species: str
         :param sample_info: The sample_info of this AnalysisResult.  # noqa: E501
         :type sample_info: str
-        :param cpr: The cpr of this AnalysisResult.  # noqa: E501
-        :type cpr: str
+        :param cpr_nr: The cpr_nr of this AnalysisResult.  # noqa: E501
+        :type cpr_nr: str
         :param gender: The gender of this AnalysisResult.  # noqa: E501
         :type gender: str
         :param name: The name of this AnalysisResult.  # noqa: E501
@@ -234,7 +234,7 @@ class AnalysisResult(Model):
             'origin_country': str,
             'animal_species': str,
             'sample_info': str,
-            'cpr': str,
+            'cpr_nr': str,
             'gender': str,
             'name': str,
             'age': int,
@@ -328,7 +328,7 @@ class AnalysisResult(Model):
             'origin_country': 'origin_country',
             'animal_species': 'animal_species',
             'sample_info': 'sample_info',
-            'cpr': 'cpr',
+            'cpr_nr': 'cpr_nr',
             'gender': 'gender',
             'name': 'name',
             'age': 'age',
@@ -421,7 +421,7 @@ class AnalysisResult(Model):
         self._origin_country = origin_country
         self._animal_species = animal_species
         self._sample_info = sample_info
-        self._cpr = cpr
+        self._cpr_nr = cpr_nr
         self._gender = gender
         self._name = name
         self._age = age
@@ -941,25 +941,25 @@ class AnalysisResult(Model):
         self._sample_info = sample_info
 
     @property
-    def cpr(self):
-        """Gets the cpr of this AnalysisResult.
+    def cpr_nr(self):
+        """Gets the cpr_nr of this AnalysisResult.
 
 
-        :return: The cpr of this AnalysisResult.
+        :return: The cpr_nr of this AnalysisResult.
         :rtype: str
         """
-        return self._cpr
+        return self._cpr_nr
 
-    @cpr.setter
-    def cpr(self, cpr):
-        """Sets the cpr of this AnalysisResult.
+    @cpr_nr.setter
+    def cpr_nr(self, cpr_nr):
+        """Sets the cpr_nr of this AnalysisResult.
 
 
-        :param cpr: The cpr of this AnalysisResult.
-        :type cpr: str
+        :param cpr_nr: The cpr_nr of this AnalysisResult.
+        :type cpr_nr: str
         """
 
-        self._cpr = cpr
+        self._cpr_nr = cpr_nr
 
     @property
     def gender(self):
