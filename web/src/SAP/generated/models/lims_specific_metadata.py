@@ -72,7 +72,7 @@ class LimsSpecificMetadata(Model):
 
         :param dikt: A dict.
         :type: dict
-        :return: The LimsSpecificMetadata of this LimsSpecificMetadata.  # noqa: E501
+        :return: The lims-specific-metadata of this LimsSpecificMetadata.  # noqa: E501
         :rtype: LimsSpecificMetadata
         """
         return util.deserialize_model(dikt, cls)

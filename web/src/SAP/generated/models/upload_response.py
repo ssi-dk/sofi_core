@@ -37,7 +37,7 @@ class UploadResponse(Model):
 
         :param dikt: A dict.
         :type: dict
-        :return: The UploadResponse of this UploadResponse.  # noqa: E501
+        :return: The upload-response of this UploadResponse.  # noqa: E501
         :rtype: UploadResponse
         """
         return util.deserialize_model(dikt, cls)

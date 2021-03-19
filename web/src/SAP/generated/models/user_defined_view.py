@@ -61,7 +61,7 @@ class UserDefinedView(Model):
 
         :param dikt: A dict.
         :type: dict
-        :return: The UserDefinedView of this UserDefinedView.  # noqa: E501
+        :return: The user-defined-view of this UserDefinedView.  # noqa: E501
         :rtype: UserDefinedView
         """
         return util.deserialize_model(dikt, cls)

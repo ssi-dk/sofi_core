@@ -63,7 +63,7 @@ class UserInfo(Model):
 
         :param dikt: A dict.
         :type: dict
-        :return: The UserInfo of this UserInfo.  # noqa: E501
+        :return: The user-info of this UserInfo.  # noqa: E501
         :rtype: UserInfo
         """
         return util.deserialize_model(dikt, cls)

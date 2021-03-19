@@ -163,7 +163,7 @@ class TbrMetadata(Model):
 
         :param dikt: A dict.
         :type: dict
-        :return: The TbrMetadata of this TbrMetadata.  # noqa: E501
+        :return: The tbr-metadata of this TbrMetadata.  # noqa: E501
         :rtype: TbrMetadata
         """
         return util.deserialize_model(dikt, cls)

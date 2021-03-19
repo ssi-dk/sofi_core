@@ -42,7 +42,7 @@ class BulkUploadRequest(Model):
 
         :param dikt: A dict.
         :type: dict
-        :return: The BulkUploadRequest of this BulkUploadRequest.  # noqa: E501
+        :return: The bulk-upload-request of this BulkUploadRequest.  # noqa: E501
         :rtype: BulkUploadRequest
         """
         return util.deserialize_model(dikt, cls)

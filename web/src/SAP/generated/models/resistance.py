@@ -37,7 +37,7 @@ class Resistance(Model):
 
         :param dikt: A dict.
         :type: dict
-        :return: The Resistance of this Resistance.  # noqa: E501
+        :return: The resistance of this Resistance.  # noqa: E501
         :rtype: Resistance
         """
         return util.deserialize_model(dikt, cls)

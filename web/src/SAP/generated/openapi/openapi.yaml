@@ -41,7 +41,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PageOfAnalysis'
+                $ref: '#/components/schemas/page-of-analysis'
           description: Page of isolates
       tags:
       - analysis
@@ -53,13 +53,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/AnalysisQuery'
+              $ref: '#/components/schemas/analysis-query'
       responses:
         "200":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PageOfAnalysis'
+                $ref: '#/components/schemas/page-of-analysis'
           description: Page of isolates
       tags:
       - analysis
@@ -73,13 +73,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/AnalysisChange'
+              $ref: '#/components/schemas/analysis-change'
       responses:
         "200":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AnalysisChange'
+                $ref: '#/components/schemas/analysis-change'
           description: Changes accepted
       tags:
       - analysis
@@ -95,7 +95,7 @@ paths:
             application/json:
               schema:
                 items:
-                  $ref: '#/components/schemas/Column'
+                  $ref: '#/components/schemas/column'
                 type: array
           description: Column collection
       tags:
@@ -109,13 +109,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/MetadataReloadRequest'
+              $ref: '#/components/schemas/metadata-reload-request'
       responses:
         "200":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/MetadataReloadResponse'
+                $ref: '#/components/schemas/metadata-reload-response'
           description: Reload successful
       tags:
       - analysis
@@ -131,7 +131,7 @@ paths:
             application/json:
               schema:
                 items:
-                  $ref: '#/components/schemas/Approval'
+                  $ref: '#/components/schemas/approval'
                 type: array
           description: List of Approvals
       tags:
@@ -144,13 +144,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ApprovalRequest'
+              $ref: '#/components/schemas/approval-request'
       responses:
         "201":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Approval'
+                $ref: '#/components/schemas/approval'
           description: Approval accepted
       tags:
       - approval
@@ -165,7 +165,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApprovalMatrix'
+                $ref: '#/components/schemas/approval-matrix'
           description: Approval matrix
       tags:
       - approval
@@ -200,7 +200,7 @@ paths:
         name: identifier_type
         required: true
         schema:
-          $ref: '#/components/schemas/PersonalIdentifierType'
+          $ref: '#/components/schemas/personal-identifier-type'
         style: form
       - description: Personal identifier number.
         explode: true
@@ -215,7 +215,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PersonalData'
+                $ref: '#/components/schemas/personal-data'
           description: OK
       tags:
       - gdpr
@@ -231,7 +231,7 @@ paths:
         name: identifier_type
         required: true
         schema:
-          $ref: '#/components/schemas/PersonalIdentifierType'
+          $ref: '#/components/schemas/personal-identifier-type'
         style: form
       - description: Personal identifier number.
         explode: true
@@ -246,7 +246,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PersonalData'
+                $ref: '#/components/schemas/personal-data'
           description: OK
       tags:
       - gdpr
@@ -260,7 +260,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UserInfo'
+                $ref: '#/components/schemas/user-info'
           description: User info
       tags:
       - user
@@ -280,13 +280,13 @@ paths:
                 contentType: text/tsv
                 style: form
             schema:
-              $ref: '#/components/schemas/BulkUploadRequest'
+              $ref: '#/components/schemas/bulk-upload-request'
       responses:
         "200":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UploadResponse'
+                $ref: '#/components/schemas/upload-response'
           description: Isolate uploaded successfully. Reports errors.
       tags:
       - upload
@@ -307,13 +307,13 @@ paths:
                 contentType: application/gzip
                 style: form
             schema:
-              $ref: '#/components/schemas/MultiUploadRequest'
+              $ref: '#/components/schemas/multi-upload-request'
       responses:
         "200":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UploadResponse'
+                $ref: '#/components/schemas/upload-response'
           description: Isolate uploaded successfully. Reports errors.
       tags:
       - upload
@@ -334,13 +334,13 @@ paths:
                 contentType: application/gzip
                 style: form
             schema:
-              $ref: '#/components/schemas/SingleUploadRequest'
+              $ref: '#/components/schemas/single-upload-request'
       responses:
         "200":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UploadResponse'
+                $ref: '#/components/schemas/upload-response'
           description: Isolate uploaded successfully. Reports errors.
       tags:
       - upload
@@ -355,7 +355,7 @@ paths:
             application/json:
               schema:
                 items:
-                  $ref: '#/components/schemas/UserDefinedView'
+                  $ref: '#/components/schemas/user-defined-view'
                 type: array
           description: Return user-defined view collection for the authenticated user
       tags:
@@ -367,7 +367,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UserDefinedView'
+              $ref: '#/components/schemas/user-defined-view'
       responses:
         "204":
           description: User-defined view created.
@@ -395,13 +395,33 @@ paths:
       x-openapi-router-controller: web.src.SAP.generated.controllers.user_controller
 components:
   schemas:
-    Organization:
-      enum:
-      - SSI
-      - FVST
-      - Other
-      type: string
-    PageOfAnalysis:
+    user-info:
+      example:
+        permissions:
+        - null
+        - null
+        groups:
+        - groups
+        - groups
+        userId: userId
+      properties:
+        userId:
+          type: string
+        data_clearance:
+          $ref: '#/components/schemas/data-clearance'
+        institution:
+          $ref: '#/components/schemas/organization'
+        groups:
+          items:
+            type: string
+          type: array
+        permissions:
+          items:
+            $ref: '#/components/schemas/permission'
+          type: array
+      title: UserInfo
+      type: object
+    page-of-analysis:
       example:
         paging_token: paging_token
         approval_matrix:
@@ -419,25 +439,23 @@ components:
           type: integer
         items:
           items:
-            $ref: '#/components/schemas/AnalysisResult'
+            $ref: '#/components/schemas/analysis-result'
           type: array
         approval_matrix:
           additionalProperties:
             additionalProperties:
-              $ref: '#/components/schemas/ApprovalStatus'
+              $ref: '#/components/schemas/approval-status'
             type: object
+          title: ApprovalMatrix
           type: object
       required:
       - approval_matrix
       - items
       - paging_token
       - total_count
-    AnalysisQuery:
-      example:
-        paging_token: paging_token
-        filters:
-          key: filters
-        page_size: 0
+      title: PageOfAnalysis
+      type: object
+    analysis-query:
       properties:
         paging_token:
           description: opaque token to supply to get the next page of isolates
@@ -452,7 +470,9 @@ components:
           additionalProperties:
             type: string
           type: object
-    Column:
+      title: AnalysisQuery
+      type: object
+    column:
       example:
         pii: true
         approves_with:
@@ -484,7 +504,7 @@ components:
           description: List of organizations/institutions who 'own' or should have
             unrestricted access to this field
           items:
-            $ref: '#/components/schemas/Organization'
+            $ref: '#/components/schemas/organization'
           type: array
         field_name:
           type: string
@@ -494,7 +514,61 @@ components:
           items:
             type: string
           type: array
-    UserDefinedView:
+      title: Column
+      type: object
+    analysis-change:
+      additionalProperties:
+        additionalProperties:
+          type: string
+        type: object
+      title: AnalysisChange
+      type: object
+    metadata-reload-request:
+      properties:
+        isolateId:
+          type: string
+        institution:
+          $ref: '#/components/schemas/organization'
+      required:
+      - institution
+      - isolateId
+      title: MetadataReloadRequest
+      type: object
+    metadata-reload-response:
+      discriminator:
+        propertyName: institution
+      oneOf:
+      - $ref: '#/components/schemas/tbr-metadata'
+      - $ref: '#/components/schemas/lims-metadata'
+      title: MetadataReloadResponse
+      type: object
+    approval:
+      allOf:
+      - $ref: '#/components/schemas/approval-request'
+      - $ref: '#/components/schemas/approval_allOf'
+      title: Approval
+      type: object
+    approval-request:
+      properties:
+        matrix:
+          additionalProperties:
+            additionalProperties:
+              $ref: '#/components/schemas/approval-status'
+            type: object
+          title: ApprovalMatrix
+          type: object
+      required:
+      - matrix
+      title: ApprovalRequest
+      type: object
+    approval-matrix:
+      additionalProperties:
+        additionalProperties:
+          $ref: '#/components/schemas/approval-status'
+        type: object
+      title: ApprovalMatrix
+      type: object
+    user-defined-view:
       example:
         column_resizing:
           column_width: 0
@@ -520,78 +594,138 @@ components:
             type: string
           type: array
         column_resizing:
-          $ref: '#/components/schemas/UserDefinedView_column_resizing'
+          $ref: '#/components/schemas/user_defined_view_column_resizing'
         sort_by:
           items:
-            $ref: '#/components/schemas/UserDefinedView_sort_by'
+            $ref: '#/components/schemas/user_defined_view_sort_by'
           type: array
         column_order:
           items:
             type: string
           type: array
+      title: UserDefinedView
       type: object
-    ApprovalRequest:
+    personal-identifier-type:
+      enum:
+      - CPR
+      - CVR
+      - CHR
+      title: PersonalIdentifierType
+      type: string
+    personal-data:
       example:
-        matrix:
-          key:
-            key: matrix
+        data: data
       properties:
-        matrix:
-          additionalProperties:
-            additionalProperties:
-              $ref: '#/components/schemas/ApprovalStatus'
-            type: object
-          type: object
+        data:
+          type: string
       required:
-      - matrix
+      - data
+      title: PersonalData
       type: object
-    Approval:
+    single-upload-request:
+      properties:
+        metadata:
+          $ref: '#/components/schemas/base-metadata'
+        file:
+          format: binary
+          type: string
+      required:
+      - file
+      - metadata
+      title: SingleUploadRequest
+      type: object
+    upload-response:
+      example:
+        errors:
+        - errors
+        - errors
+      properties:
+        errors:
+          items:
+            type: string
+          type: array
+      title: UploadResponse
+      type: object
+    multi-upload-request:
+      properties:
+        metadata_tsv:
+          format: binary
+          type: string
+        files:
+          items:
+            format: binary
+            type: string
+          type: array
+      required:
+      - files
+      - metadata_tsv
+      title: MultiUploadRequest
+      type: object
+    bulk-upload-request:
+      properties:
+        path:
+          type: string
+        metadata_tsv:
+          format: binary
+          type: string
+      required:
+      - metadata_tsv
+      - path
+      title: BulkUploadRequest
+      type: object
+    data-clearance:
+      enum:
+      - own-institution
+      - cross-institution
+      - all
+      title: DataClearance
+      type: string
+    organization:
+      enum:
+      - SSI
+      - FVST
+      - Other
+      title: Organization
+      type: string
+    permission:
+      enum:
+      - search
+      - export
+      - approve
+      - phylogeny.read
+      - phylogeny.write
+      - gdpr.manage
+      - permissions.write
+      title: Permission
+      type: string
+    analysis-result:
       allOf:
-      - $ref: '#/components/schemas/ApprovalRequest'
-      - $ref: '#/components/schemas/Approval_allOf'
-    ApprovalStatus:
+      - $ref: '#/components/schemas/base-metadata'
+      - $ref: '#/components/schemas/lims-specific-metadata'
+      - $ref: '#/components/schemas/tbr-specific-metadata'
+      - $ref: '#/components/schemas/analysis_result_allOf'
+      title: AnalysisResult
+      type: object
+    tbr-metadata:
+      allOf:
+      - $ref: '#/components/schemas/base-metadata'
+      - $ref: '#/components/schemas/tbr-specific-metadata'
+      title: TbrMetadata
+      type: object
+    lims-metadata:
+      allOf:
+      - $ref: '#/components/schemas/base-metadata'
+      - $ref: '#/components/schemas/lims-specific-metadata'
+      title: LimsMetadata
+      type: object
+    approval-status:
       enum:
       - pending
       - rejected
       - approved
+      title: ApprovalStatus
       type: string
-    ApprovalMatrix:
-      additionalProperties:
-        additionalProperties:
-          $ref: '#/components/schemas/ApprovalStatus'
-        type: object
-      type: object
-    AnalysisChange:
-      additionalProperties:
-        additionalProperties:
-          type: string
-        type: object
-      type: object
-    MetadataReloadRequest:
-      example:
-        isolateId: isolateId
-      properties:
-        isolateId:
-          type: string
-        institution:
-          $ref: '#/components/schemas/Organization'
-      required:
-      - institution
-      - isolateId
-      type: object
-    MetadataReloadResponse:
-      discriminator:
-        propertyName: institution
-      oneOf:
-      - $ref: '#/components/schemas/TbrMetadata'
-      - $ref: '#/components/schemas/LimsMetadata'
-    Resistance:
-      enum:
-      - Sensitiv
-      - Resistent
-      - Ukendt
-      type: string
-    BaseMetadata:
+    base-metadata:
       properties:
         isolate_id:
           type: string
@@ -600,7 +734,7 @@ components:
         sequence_filename:
           type: string
         institution:
-          $ref: '#/components/schemas/Organization'
+          $ref: '#/components/schemas/organization'
         project_number:
           type: number
         project_title:
@@ -628,7 +762,30 @@ components:
       - run_id
       - sequence_filename
       - sequence_id
-    TbrSpecificMetadata:
+      title: BaseMetadata
+      type: object
+    lims-specific-metadata:
+      properties:
+        chr_number:
+          type: string
+        cvr_number:
+          type: string
+        aut_number:
+          type: string
+        product_type:
+          type: string
+        product:
+          type: string
+        origin_country:
+          type: string
+          x-faker: address.country
+        animal_species:
+          type: string
+        sample_info:
+          type: string
+      title: LimsSpecificMetadata
+      type: object
+    tbr-specific-metadata:
       properties:
         cpr_nr:
           type: string
@@ -667,165 +824,16 @@ components:
           type: string
       required:
       - run_date
+      title: TbrSpecificMetadata
       type: object
-    TbrMetadata:
-      allOf:
-      - $ref: '#/components/schemas/BaseMetadata'
-      - $ref: '#/components/schemas/TbrSpecificMetadata'
-    LimsSpecificMetadata:
-      properties:
-        chr_number:
-          type: string
-        cvr_number:
-          type: string
-        aut_number:
-          type: string
-        product_type:
-          type: string
-        product:
-          type: string
-        origin_country:
-          type: string
-          x-faker: address.country
-        animal_species:
-          type: string
-        sample_info:
-          type: string
-      type: object
-    LimsMetadata:
-      allOf:
-      - $ref: '#/components/schemas/BaseMetadata'
-      - $ref: '#/components/schemas/LimsSpecificMetadata'
-    AnalysisResult:
-      allOf:
-      - $ref: '#/components/schemas/BaseMetadata'
-      - $ref: '#/components/schemas/LimsSpecificMetadata'
-      - $ref: '#/components/schemas/TbrSpecificMetadata'
-      - $ref: '#/components/schemas/AnalysisResult_allOf'
-    SingleUploadRequest:
-      properties:
-        metadata:
-          $ref: '#/components/schemas/BaseMetadata'
-        file:
-          format: binary
-          type: string
-      required:
-      - file
-      - metadata
-      type: object
-    MultiUploadRequest:
-      properties:
-        metadata_tsv:
-          format: binary
-          type: string
-        files:
-          items:
-            format: binary
-            type: string
-          type: array
-      required:
-      - files
-      - metadata_tsv
-      type: object
-    BulkUploadRequest:
-      properties:
-        path:
-          type: string
-        metadata_tsv:
-          format: binary
-          type: string
-      required:
-      - metadata_tsv
-      - path
-      type: object
-    UploadResponse:
-      example:
-        errors:
-        - errors
-        - errors
-      properties:
-        errors:
-          items:
-            type: string
-          type: array
-      type: object
-    PersonalIdentifierType:
+    resistance:
       enum:
-      - CPR
-      - CVR
-      - CHR
+      - Sensitiv
+      - Resistent
+      - Ukendt
+      title: Resistance
       type: string
-    PersonalData:
-      example:
-        data: data
-      properties:
-        data:
-          type: string
-      required:
-      - data
-      type: object
-    DataClearance:
-      enum:
-      - own-institution
-      - cross-institution
-      - all
-      type: string
-    Permission:
-      enum:
-      - search
-      - export
-      - approve
-      - phylogeny.read
-      - phylogeny.write
-      - gdpr.manage
-      - permissions.write
-      type: string
-    UserInfo:
-      example:
-        permissions:
-        - null
-        - null
-        groups:
-        - groups
-        - groups
-        userId: userId
-      properties:
-        userId:
-          type: string
-        data_clearance:
-          $ref: '#/components/schemas/DataClearance'
-        institution:
-          $ref: '#/components/schemas/Organization'
-        groups:
-          items:
-            type: string
-          type: array
-        permissions:
-          items:
-            $ref: '#/components/schemas/Permission'
-          type: array
-      type: object
-    UserDefinedView_column_resizing:
-      example:
-        column_width: 0
-        column_widths:
-          key: '{}'
-      properties:
-        column_widths:
-          additionalProperties: true
-          type: object
-        column_width:
-          type: integer
-    UserDefinedView_sort_by:
-      example:
-        id: id
-        desc: true
-      properties:
-        desc:
-          type: boolean
-        id:
-          type: string
-    Approval_allOf:
+    approval_allOf:
       properties:
         id:
           type: string
@@ -840,7 +848,27 @@ components:
           - cancelled
           - submitted
           type: string
-    AnalysisResult_allOf:
+    user_defined_view_column_resizing:
+      example:
+        column_width: 0
+        column_widths:
+          key: '{}'
+      properties:
+        column_widths:
+          additionalProperties: true
+          type: object
+        column_width:
+          type: integer
+    user_defined_view_sort_by:
+      example:
+        id: id
+        desc: true
+      properties:
+        desc:
+          type: boolean
+        id:
+          type: string
+    analysis_result_allOf:
       properties:
         _id:
           format: uuid
@@ -892,77 +920,77 @@ components:
         amr_profile:
           type: string
         amr_ami:
-          $ref: '#/components/schemas/Resistance'
+          $ref: '#/components/schemas/resistance'
         amr_amp:
-          $ref: '#/components/schemas/Resistance'
+          $ref: '#/components/schemas/resistance'
         amr_azi:
-          $ref: '#/components/schemas/Resistance'
+          $ref: '#/components/schemas/resistance'
         amr_fep:
-          $ref: '#/components/schemas/Resistance'
+          $ref: '#/components/schemas/resistance'
         amr_fot:
-          $ref: '#/components/schemas/Resistance'
+          $ref: '#/components/schemas/resistance'
         amr_f_c:
-          $ref: '#/components/schemas/Resistance'
+          $ref: '#/components/schemas/resistance'
         amr_fox:
-          $ref: '#/components/schemas/Resistance'
+          $ref: '#/components/schemas/resistance'
         amr_taz:
-          $ref: '#/components/schemas/Resistance'
+          $ref: '#/components/schemas/resistance'
         amr_t_c:
-          $ref: '#/components/schemas/Resistance'
+          $ref: '#/components/schemas/resistance'
         amr_chl:
-          $ref: '#/components/schemas/Resistance'
+          $ref: '#/components/schemas/resistance'
         amr_cip:
-          $ref: '#/components/schemas/Resistance'
+          $ref: '#/components/schemas/resistance'
         amr_cli:
-          $ref: '#/components/schemas/Resistance'
+          $ref: '#/components/schemas/resistance'
         amr_col:
-          $ref: '#/components/schemas/Resistance'
+          $ref: '#/components/schemas/resistance'
         amr_dap:
-          $ref: '#/components/schemas/Resistance'
+          $ref: '#/components/schemas/resistance'
         amr_etp:
-          $ref: '#/components/schemas/Resistance'
+          $ref: '#/components/schemas/resistance'
         amr_ery:
-          $ref: '#/components/schemas/Resistance'
+          $ref: '#/components/schemas/resistance'
         amr_fus:
-          $ref: '#/components/schemas/Resistance'
+          $ref: '#/components/schemas/resistance'
         amr_gen:
-          $ref: '#/components/schemas/Resistance'
+          $ref: '#/components/schemas/resistance'
         amr_imi:
-          $ref: '#/components/schemas/Resistance'
+          $ref: '#/components/schemas/resistance'
         amr_kan:
-          $ref: '#/components/schemas/Resistance'
+          $ref: '#/components/schemas/resistance'
         amr_lzd:
-          $ref: '#/components/schemas/Resistance'
+          $ref: '#/components/schemas/resistance'
         amr_mero:
-          $ref: '#/components/schemas/Resistance'
+          $ref: '#/components/schemas/resistance'
         amr_mup:
-          $ref: '#/components/schemas/Resistance'
+          $ref: '#/components/schemas/resistance'
         amr_nal:
-          $ref: '#/components/schemas/Resistance'
+          $ref: '#/components/schemas/resistance'
         amr_pen:
-          $ref: '#/components/schemas/Resistance'
+          $ref: '#/components/schemas/resistance'
         amr_syn:
-          $ref: '#/components/schemas/Resistance'
+          $ref: '#/components/schemas/resistance'
         amr_rif:
-          $ref: '#/components/schemas/Resistance'
+          $ref: '#/components/schemas/resistance'
         amr_str:
-          $ref: '#/components/schemas/Resistance'
+          $ref: '#/components/schemas/resistance'
         amr_sul:
-          $ref: '#/components/schemas/Resistance'
+          $ref: '#/components/schemas/resistance'
         amr_tei:
-          $ref: '#/components/schemas/Resistance'
+          $ref: '#/components/schemas/resistance'
         amr_trm:
-          $ref: '#/components/schemas/Resistance'
+          $ref: '#/components/schemas/resistance'
         amr_tet:
-          $ref: '#/components/schemas/Resistance'
+          $ref: '#/components/schemas/resistance'
         amr_tia:
-          $ref: '#/components/schemas/Resistance'
+          $ref: '#/components/schemas/resistance'
         amr_tgc:
-          $ref: '#/components/schemas/Resistance'
+          $ref: '#/components/schemas/resistance'
         amr_tmp:
-          $ref: '#/components/schemas/Resistance'
+          $ref: '#/components/schemas/resistance'
         amr_van:
-          $ref: '#/components/schemas/Resistance'
+          $ref: '#/components/schemas/resistance'
       required:
       - _id
       - isolate_id

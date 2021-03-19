@@ -324,7 +324,7 @@ class AnalysisResultAllOf(Model):
 
         :param dikt: A dict.
         :type: dict
-        :return: The AnalysisResult_allOf of this AnalysisResultAllOf.  # noqa: E501
+        :return: The analysis_result_allOf of this AnalysisResultAllOf.  # noqa: E501
         :rtype: AnalysisResultAllOf
         """
         return util.deserialize_model(dikt, cls)

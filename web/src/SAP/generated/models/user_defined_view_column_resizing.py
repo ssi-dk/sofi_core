@@ -42,7 +42,7 @@ class UserDefinedViewColumnResizing(Model):
 
         :param dikt: A dict.
         :type: dict
-        :return: The UserDefinedView_column_resizing of this UserDefinedViewColumnResizing.  # noqa: E501
+        :return: The user_defined_view_column_resizing of this UserDefinedViewColumnResizing.  # noqa: E501
         :rtype: UserDefinedViewColumnResizing
         """
         return util.deserialize_model(dikt, cls)

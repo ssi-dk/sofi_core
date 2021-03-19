@@ -63,7 +63,7 @@ class Approval(Model):
 
         :param dikt: A dict.
         :type: dict
-        :return: The Approval of this Approval.  # noqa: E501
+        :return: The approval of this Approval.  # noqa: E501
         :rtype: Approval
         """
         return util.deserialize_model(dikt, cls)

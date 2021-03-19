@@ -1,0 +1,25 @@
+{
+  "$id": "https://sofi-platform.dk/analysis-query.v1.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "AnalysisQuery",
+  "type": "object",
+  "properties": {
+    "paging_token": {
+      "type": "string",
+      "description": "opaque token to supply to get the next page of isolates",
+      "format": "byte",
+      "nullable": true
+    },
+    "page_size": {
+      "type": "integer",
+      "default": 100,
+      "nullable": true
+    },
+    "filters": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    }
+  }
+}

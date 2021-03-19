@@ -60,7 +60,7 @@ lefthook : ${mkfile_dir}/node_modules
 	yarn exec lefthook install
 	pip3 install black
 
-${mkfile_dir}/app/src/sap-client : ${mkfile_dir}/openapi_specs/SAP/SAP.yaml
+${mkfile_dir}/app/src/sap-client : $(shell find ${mkfile_dir}/openapi_specs/SAP/ -type f)
 	# Generate web app client
 	rm -rf "${mkfile_dir}/app/sap-client/src"
 	rm -rf "${mkfile_dir}/app/sap-client/dist"
@@ -76,7 +76,7 @@ ${mkfile_dir}/app/src/sap-client : ${mkfile_dir}/openapi_specs/SAP/SAP.yaml
 	rm -rf "${mkfile_dir}/app/src/sap-client/src/"
 	yarn --cwd "${mkfile_dir}/app/" prettier --write src/
 
-${mkfile_dir}/web/src/SAP/generated : ${mkfile_dir}/openapi_specs/SAP/SAP.yaml
+${mkfile_dir}/web/src/SAP/generated : $(shell find ${mkfile_dir}/openapi_specs/SAP/ -type f) 
 	# Generate flask api
 	docker run --rm -v "${mkfile_dir}:/mnt" \
 		--user ${mkfile_user} \

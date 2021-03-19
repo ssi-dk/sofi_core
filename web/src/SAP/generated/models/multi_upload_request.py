@@ -42,7 +42,7 @@ class MultiUploadRequest(Model):
 
         :param dikt: A dict.
         :type: dict
-        :return: The MultiUploadRequest of this MultiUploadRequest.  # noqa: E501
+        :return: The multi-upload-request of this MultiUploadRequest.  # noqa: E501
         :rtype: MultiUploadRequest
         """
         return util.deserialize_model(dikt, cls)

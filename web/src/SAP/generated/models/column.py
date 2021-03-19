@@ -69,7 +69,7 @@ class Column(Model):
 
         :param dikt: A dict.
         :type: dict
-        :return: The Column of this Column.  # noqa: E501
+        :return: The column of this Column.  # noqa: E501
         :rtype: Column
         """
         return util.deserialize_model(dikt, cls)

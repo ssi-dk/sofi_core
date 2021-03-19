@@ -44,7 +44,7 @@ class SingleUploadRequest(Model):
 
         :param dikt: A dict.
         :type: dict
-        :return: The SingleUploadRequest of this SingleUploadRequest.  # noqa: E501
+        :return: The single-upload-request of this SingleUploadRequest.  # noqa: E501
         :rtype: SingleUploadRequest
         """
         return util.deserialize_model(dikt, cls)

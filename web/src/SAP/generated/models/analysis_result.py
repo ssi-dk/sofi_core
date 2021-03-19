@@ -499,7 +499,7 @@ class AnalysisResult(Model):
 
         :param dikt: A dict.
         :type: dict
-        :return: The AnalysisResult of this AnalysisResult.  # noqa: E501
+        :return: The analysis-result of this AnalysisResult.  # noqa: E501
         :rtype: AnalysisResult
         """
         return util.deserialize_model(dikt, cls)

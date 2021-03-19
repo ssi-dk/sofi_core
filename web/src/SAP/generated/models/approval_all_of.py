@@ -52,7 +52,7 @@ class ApprovalAllOf(Model):
 
         :param dikt: A dict.
         :type: dict
-        :return: The Approval_allOf of this ApprovalAllOf.  # noqa: E501
+        :return: The approval_allOf of this ApprovalAllOf.  # noqa: E501
         :rtype: ApprovalAllOf
         """
         return util.deserialize_model(dikt, cls)
