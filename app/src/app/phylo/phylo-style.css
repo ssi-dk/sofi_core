@@ -1,0 +1,30 @@
+.phylocanvas-context-menu {
+  display: none;
+  position: absolute;
+  background-color: #fff;
+  padding: 0.5rem 0 0.5rem 0;
+}
+
+.visible {
+  display: block !important;
+}
+
+.phylocanvas-context-menu ul {
+  list-style: none;
+}
+
+.phylocanvas-context-menu ul li {
+  padding: 0 0.5rem 0 0.5rem;
+}
+
+.phylocanvas-context-menu ul li :is(button, a) {
+  padding: 0.2rem;
+  cursor: pointer;
+}
+.phylocanvas-context-menu ul li:hover {
+  background-color: #e2e8f0;
+}
+
+.phylocanvas-context-menu ul:last-child {
+  display: none;
+}
