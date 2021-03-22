@@ -1,0 +1,56 @@
+{
+  "$id": "https://sofi-platform.dk/base-metadata.v1.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "BaseMetadata",
+  "type": "object",
+  "required": [
+    "isolate_id",
+    "sequence_id",
+    "sequence_filename",
+    "institution",
+    "received_date",
+    "run_id",
+    "provided_species",
+    "primary_isolate"
+  ],
+  "properties": {
+    "isolate_id": {
+      "type": "string"
+    },
+    "sequence_id": {
+      "type": "string"
+    },
+    "sequence_filename": {
+      "type": "string"
+    },
+    "institution": {
+      "$ref": "./organization.v1.json"
+    },
+    "project_number": {
+      "type": "number"
+    },
+    "project_title": {
+      "type": "string"
+    },
+    "sampling_date": {
+      "format": "date-time",
+      "type": "string"
+    },
+    "received_date": {
+      "format": "date-time",
+      "type": "string"
+    },
+    "run_id": {
+      "type": "string"
+    },
+    "public": {
+      "type": "string"
+    },
+    "provided_species": {
+      "type": "string"
+    },
+    "primary_isolate": {
+      "type": "boolean"
+    }
+  }
+}

@@ -56,9 +56,7 @@ class TestAnalysisController(BaseTestCase):
 
         
         """
-        body = {
-  "isolateId" : "isolateId"
-}
+        body = {}
         headers = { 
             'Accept': 'application/json',
             'Content-Type': 'application/json',
@@ -78,13 +76,7 @@ class TestAnalysisController(BaseTestCase):
 
         
         """
-        query = {
-  "paging_token" : "paging_token",
-  "filters" : {
-    "key" : "filters"
-  },
-  "page_size" : 0
-}
+        query = {}
         headers = { 
             'Accept': 'application/json',
             'Content-Type': 'application/json',

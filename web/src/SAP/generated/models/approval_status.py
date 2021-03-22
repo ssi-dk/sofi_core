@@ -37,7 +37,7 @@ class ApprovalStatus(Model):
 
         :param dikt: A dict.
         :type: dict
-        :return: The ApprovalStatus of this ApprovalStatus.  # noqa: E501
+        :return: The approval-status of this ApprovalStatus.  # noqa: E501
         :rtype: ApprovalStatus
         """
         return util.deserialize_model(dikt, cls)

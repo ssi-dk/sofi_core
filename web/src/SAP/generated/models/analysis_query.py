@@ -47,7 +47,7 @@ class AnalysisQuery(Model):
 
         :param dikt: A dict.
         :type: dict
-        :return: The AnalysisQuery of this AnalysisQuery.  # noqa: E501
+        :return: The analysis-query of this AnalysisQuery.  # noqa: E501
         :rtype: AnalysisQuery
         """
         return util.deserialize_model(dikt, cls)

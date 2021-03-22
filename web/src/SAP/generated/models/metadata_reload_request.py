@@ -44,7 +44,7 @@ class MetadataReloadRequest(Model):
 
         :param dikt: A dict.
         :type: dict
-        :return: The MetadataReloadRequest of this MetadataReloadRequest.  # noqa: E501
+        :return: The metadata-reload-request of this MetadataReloadRequest.  # noqa: E501
         :rtype: MetadataReloadRequest
         """
         return util.deserialize_model(dikt, cls)

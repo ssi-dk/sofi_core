@@ -42,7 +42,7 @@ class UserDefinedViewSortBy(Model):
 
         :param dikt: A dict.
         :type: dict
-        :return: The UserDefinedView_sort_by of this UserDefinedViewSortBy.  # noqa: E501
+        :return: The user_defined_view_sort_by of this UserDefinedViewSortBy.  # noqa: E501
         :rtype: UserDefinedViewSortBy
         """
         return util.deserialize_model(dikt, cls)

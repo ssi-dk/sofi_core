@@ -18,24 +18,7 @@ class TestUserController(BaseTestCase):
 
         
         """
-        user_defined_view = {
-  "column_resizing" : {
-    "column_width" : 0,
-    "column_widths" : {
-      "key" : "{}"
-    }
-  },
-  "hidden_columns" : [ "hidden_columns", "hidden_columns" ],
-  "name" : "name",
-  "sort_by" : [ {
-    "id" : "id",
-    "desc" : true
-  }, {
-    "id" : "id",
-    "desc" : true
-  } ],
-  "column_order" : [ "column_order", "column_order" ]
-}
+        user_defined_view = {}
         headers = { 
             'Content-Type': 'application/json',
             'Authorization': 'Bearer special-key',

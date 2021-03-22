@@ -94,7 +94,7 @@ class BaseMetadata(Model):
 
         :param dikt: A dict.
         :type: dict
-        :return: The BaseMetadata of this BaseMetadata.  # noqa: E501
+        :return: The base-metadata of this BaseMetadata.  # noqa: E501
         :rtype: BaseMetadata
         """
         return util.deserialize_model(dikt, cls)

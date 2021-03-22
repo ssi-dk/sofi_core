@@ -37,7 +37,7 @@ class PersonalData(Model):
 
         :param dikt: A dict.
         :type: dict
-        :return: The PersonalData of this PersonalData.  # noqa: E501
+        :return: The personal-data of this PersonalData.  # noqa: E501
         :rtype: PersonalData
         """
         return util.deserialize_model(dikt, cls)

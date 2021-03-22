@@ -1,3 +1,4 @@
+connexion==2.7.0
 connexion[swagger-ui] >= 2.6.0; python_version>="3.6"
 # 2.3 is the last version that supports python 3.4-3.5
 connexion[swagger-ui] <= 2.3.0; python_version=="3.5" or python_version=="3.4"
@@ -19,3 +20,4 @@ python-jose[cryptography]
 six>=1.9
 jwcrypto >= 0.8
 Flask-JWT-Extended >= 3.25.1
+openapi-spec-validator==0.2.9

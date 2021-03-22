@@ -37,7 +37,7 @@ class PersonalIdentifierType(Model):
 
         :param dikt: A dict.
         :type: dict
-        :return: The PersonalIdentifierType of this PersonalIdentifierType.  # noqa: E501
+        :return: The personal-identifier-type of this PersonalIdentifierType.  # noqa: E501
         :rtype: PersonalIdentifierType
         """
         return util.deserialize_model(dikt, cls)

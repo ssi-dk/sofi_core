@@ -37,7 +37,7 @@ class Organization(Model):
 
         :param dikt: A dict.
         :type: dict
-        :return: The Organization of this Organization.  # noqa: E501
+        :return: The organization of this Organization.  # noqa: E501
         :rtype: Organization
         """
         return util.deserialize_model(dikt, cls)

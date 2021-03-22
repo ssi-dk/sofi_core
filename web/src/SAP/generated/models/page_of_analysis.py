@@ -56,7 +56,7 @@ class PageOfAnalysis(Model):
 
         :param dikt: A dict.
         :type: dict
-        :return: The PageOfAnalysis of this PageOfAnalysis.  # noqa: E501
+        :return: The page-of-analysis of this PageOfAnalysis.  # noqa: E501
         :rtype: PageOfAnalysis
         """
         return util.deserialize_model(dikt, cls)

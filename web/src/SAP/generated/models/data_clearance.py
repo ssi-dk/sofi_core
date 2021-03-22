@@ -37,7 +37,7 @@ class DataClearance(Model):
 
         :param dikt: A dict.
         :type: dict
-        :return: The DataClearance of this DataClearance.  # noqa: E501
+        :return: The data-clearance of this DataClearance.  # noqa: E501
         :rtype: DataClearance
         """
         return util.deserialize_model(dikt, cls)

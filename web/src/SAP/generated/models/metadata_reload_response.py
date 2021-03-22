@@ -203,7 +203,7 @@ class MetadataReloadResponse(Model):
 
         :param dikt: A dict.
         :type: dict
-        :return: The MetadataReloadResponse of this MetadataReloadResponse.  # noqa: E501
+        :return: The metadata-reload-response of this MetadataReloadResponse.  # noqa: E501
         :rtype: MetadataReloadResponse
         """
         return util.deserialize_model(dikt, cls)

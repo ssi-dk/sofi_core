@@ -41,7 +41,7 @@ class Permission(Model):
 
         :param dikt: A dict.
         :type: dict
-        :return: The Permission of this Permission.  # noqa: E501
+        :return: The permission of this Permission.  # noqa: E501
         :rtype: Permission
         """
         return util.deserialize_model(dikt, cls)

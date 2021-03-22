@@ -97,7 +97,7 @@ class TbrSpecificMetadata(Model):
 
         :param dikt: A dict.
         :type: dict
-        :return: The TbrSpecificMetadata of this TbrSpecificMetadata.  # noqa: E501
+        :return: The tbr-specific-metadata of this TbrSpecificMetadata.  # noqa: E501
         :rtype: TbrSpecificMetadata
         """
         return util.deserialize_model(dikt, cls)
