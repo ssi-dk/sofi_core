@@ -22,6 +22,7 @@ except ImportError:
 
 SPECIFICATION_DIR = "/app/openapi_specs/SAP/"
 
+
 def my_local_file_handler(uri):
     """return the parsed result"""
     import yaml
@@ -39,6 +40,7 @@ spec_validator_handlers[""] = my_local_file_handler
 
 # patch refresolver-bug: (does not handle relative refs correct in path scopes)
 from jsonschema.validators import RefResolver
+
 
 def myresolve(self, ref):
     url = self._urljoin_cache(self.resolution_scope, ref)
