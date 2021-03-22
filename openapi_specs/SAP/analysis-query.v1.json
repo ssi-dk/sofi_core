@@ -15,11 +15,14 @@
       "default": 100,
       "nullable": true
     },
-    "filters": {
+    "max_results": {
+      "type": "integer",
+      "default": 128,
+      "nullable": true
+    },
+    "query_expression": {
       "type": "object",
-      "additionalProperties": {
-        "type": "string"
-      }
+      "$ref": "./query-expression.v1.json"
     }
   }
 }

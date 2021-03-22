@@ -12,6 +12,12 @@
  */
 
 import { exists, mapValues } from '../runtime';
+import {
+    QueryExpression,
+    QueryExpressionFromJSON,
+    QueryExpressionToJSON,
+} from './';
+
 /**
  * 
  * @export
@@ -32,17 +38,24 @@ export interface AnalysisQuery  {
     page_size?: number;
     /**
      * 
-     * @type {{ [key: string]: string; }}
+     * @type {number}
      * @memberof AnalysisQuery
      */
-    filters?: { [key: string]: string; };
+    max_results?: number;
+    /**
+     * 
+     * @type {QueryExpression}
+     * @memberof AnalysisQuery
+     */
+    query_expression?: QueryExpression;
 }
 
 export function AnalysisQueryFromJSON(json: any): AnalysisQuery {
     return {
         'paging_token': !exists(json, 'paging_token') ? undefined : json['paging_token'],
         'page_size': !exists(json, 'page_size') ? undefined : json['page_size'],
-        'filters': !exists(json, 'filters') ? undefined : json['filters'],
+        'max_results': !exists(json, 'max_results') ? undefined : json['max_results'],
+        'query_expression': !exists(json, 'query_expression') ? undefined : json['query_expression'],
     };
 }
 
@@ -53,7 +66,8 @@ export function AnalysisQueryToJSON(value?: AnalysisQuery): any {
     return {
         'paging_token': value.paging_token,
         'page_size': value.page_size,
-        'filters': value.filters,
+        'max_results': value.max_results,
+        'query_expression': value.query_expression,
     };
 }
 

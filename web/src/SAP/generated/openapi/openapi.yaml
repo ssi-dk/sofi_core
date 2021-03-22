@@ -466,10 +466,12 @@ components:
           default: 100
           nullable: true
           type: integer
-        filters:
-          additionalProperties:
-            type: string
-          type: object
+        max_results:
+          default: 128
+          nullable: true
+          type: integer
+        query_expression:
+          $ref: '#/components/schemas/query-expression'
       title: AnalysisQuery
       type: object
     column:
@@ -705,6 +707,48 @@ components:
       - $ref: '#/components/schemas/tbr-specific-metadata'
       - $ref: '#/components/schemas/analysis_result_allOf'
       title: AnalysisResult
+      type: object
+    query-expression:
+      properties:
+        left:
+          $ref: '#/components/schemas/Operand'
+        operator:
+          enum:
+          - AND
+          - OR
+          - AND NOT
+          - OR NOT
+          - <implicit>
+          type: string
+        right:
+          $ref: '#/components/schemas/Operand'
+      title: QueryExpression
+      type: object
+    Operand:
+      discriminator:
+        mapping:
+          TERM: '#/components/schemas/QueryLeaf'
+          AND: '#/components/schemas/query-expression'
+          OR: '#/components/schemas/query-expression'
+          AND NOT: '#/components/schemas/query-expression'
+          OR NOT: '#/components/schemas/query-expression'
+        propertyName: operator
+      oneOf:
+      - $ref: '#/components/schemas/QueryLeaf'
+      - $ref: '#/components/schemas/query-expression'
+    QueryLeaf:
+      properties:
+        field:
+          type: string
+        term:
+          type: string
+        operator:
+          enum:
+          - TERM
+          type: string
+      required:
+      - field
+      - term
       type: object
     tbr-metadata:
       allOf:

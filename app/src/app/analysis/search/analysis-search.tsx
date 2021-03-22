@@ -21,8 +21,10 @@ const AnalysisSearch = (props: AnalysisSearchProps) => {
     setInput,
   ]);
   const submitQuery = React.useCallback(
-    () => onSubmit({ filters: parseQuery(input) }),
-    [onSubmit, input]
+    //    () => onSubmit({ filters: parseQuery(input) }),
+    () => onSubmit({}),
+    //    [onSubmit, input]
+    [onSubmit]
   );
   const onEnterKey = React.useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) =>
