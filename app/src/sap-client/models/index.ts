@@ -12,6 +12,7 @@ export * from './LimsMetadata';
 export * from './LimsSpecificMetadata';
 export * from './MetadataReloadRequest';
 export * from './MetadataReloadResponse';
+export * from './NewickTreeResponse';
 export * from './Organization';
 export * from './PageOfAnalysis';
 export * from './Permission';

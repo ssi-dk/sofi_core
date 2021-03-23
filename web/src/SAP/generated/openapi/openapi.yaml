@@ -101,6 +101,29 @@ paths:
       tags:
       - analysis
       x-openapi-router-controller: web.src.SAP.generated.controllers.analysis_controller
+  /analysis/comparative/newick:
+    get:
+      description: Get newick tree file along with metadata for a given job id.
+      operationId: get_comparative_newick_data
+      parameters:
+      - description: Job id that points to the comparative analysis run.
+        explode: true
+        in: query
+        name: job_id
+        required: true
+        schema:
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/newick-tree-response'
+          description: Newick tree
+      tags:
+      - comparative_analysis
+      x-openapi-router-controller: web.src.SAP.generated.controllers.comparative_analysis_controller
   /analysis/reload_metadata:
     post:
       description: Reload metadata for a given isolate
@@ -541,6 +564,14 @@ components:
       - $ref: '#/components/schemas/tbr-metadata'
       - $ref: '#/components/schemas/lims-metadata'
       title: MetadataReloadResponse
+      type: object
+    newick-tree-response:
+      example:
+        tree: tree
+      properties:
+        tree:
+          type: string
+      title: NewickTreeResponse
       type: object
     approval:
       allOf:

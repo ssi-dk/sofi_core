@@ -134,6 +134,28 @@ paths:
             application/json:
               schema:
                 $ref: './metadata-reload-response.v1.json'
+  
+  /analysis/comparative/newick:
+    get:
+      description: Get newick tree file along with metadata for a given job id.
+      operationId: get_comparative_newick_data
+      x-openapi-router-controller: web.src.SAP.generated.controllers.comparative_analysis_controller
+      parameters:
+        - name: job_id
+          in: query
+          description: Job id that points to the comparative analysis run.
+          required: true
+          schema:
+            type: string
+      tags:
+        - comparative_analysis
+      responses:
+        '200':
+          description: Newick tree
+          content:
+            application/json:
+              schema:
+                $ref: './newick-tree-response.v1.json'
 
   /approvals:
     get:
