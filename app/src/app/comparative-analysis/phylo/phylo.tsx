@@ -136,10 +136,8 @@ export default function Tree(props: {
   }, [props.selectedIDs]);
 
   return (
-    <Box width="1280px" height="720px">
-      <Box borderRadius="2" width="100%" height="100%">
-        <canvas ref={canvas} onContextMenu={disableContextMenu} />
-      </Box>
+    <Box borderRadius="2" width="100%" height="100%">
+      <canvas ref={canvas} onContextMenu={disableContextMenu} />
     </Box>
   );
 }
