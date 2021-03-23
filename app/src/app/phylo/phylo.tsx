@@ -20,7 +20,7 @@ function initPhylocanvas(canvas, newick, styles, onSelected) {
       haloStyle: "#34B6C7",
       tooltipcontent: (node) => {
         return `id: ${node.id}<br>
-          branch lenght: ${node.branchlength}`;
+          branch length: ${node.branchlength}`;
       },
       image: "",
     },
@@ -76,6 +76,10 @@ export default function Tree(props: {
   const canvas = useRef<HTMLCanvasElement | null>(null);
   const tree = useRef(null);
 
+  const disableContextMenu = useCallback((e: React.MouseEvent<HTMLElement>) => {
+    e.preventDefault();
+  }, []);
+
   const updateWidthAndHeight = useCallback(() => {
     if (tree.current && canvas.current) {
       const width = canvas.current.parentElement.clientWidth;
@@ -106,6 +110,7 @@ export default function Tree(props: {
         // const ids = tree.current.nodes.leafNodes.map((value) => value.id);
         // props.setWorkingIDs(ids);
         // console.log(tree.current);
+        tree.current.contextMenu.el.oncontextmenu = disableContextMenu;
       }
     }
 
@@ -115,7 +120,12 @@ export default function Tree(props: {
         console.log("tree cleanup");
       }
     };
-  }, [props.leaf_colors, props.newick_data, props.onSelected]);
+  }, [
+    props.leaf_colors,
+    props.newick_data,
+    props.onSelected,
+    disableContextMenu,
+  ]);
 
   useEffect(() => {
     if (tree.current && tree.current.state.selectedIds) {
@@ -128,7 +138,7 @@ export default function Tree(props: {
   return (
     <Box width="1280px" height="720px">
       <Box borderRadius="2" width="100%" height="100%">
-        <canvas ref={canvas} />
+        <canvas ref={canvas} onContextMenu={disableContextMenu} />
       </Box>
     </Box>
   );

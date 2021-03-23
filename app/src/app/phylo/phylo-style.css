@@ -3,10 +3,23 @@
   position: absolute;
   background-color: #fff;
   padding: 0.5rem 0 0.5rem 0;
+  border-radius: 5px;
+  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2),
+    0 1px 5px 0 rgba(0, 0, 0, 0.12);
+  letter-spacing: 0;
+  list-style: outside none none;
+  min-width: 124px;
+  padding: 8px 0;
 }
 
 .visible {
-  display: block !important;
+  display: block;
+}
+
+.phylocanvas-context-menu ul + ul {
+  border-top: 1px solid #e0e0e0;
+  margin-top: 8px;
+  padding-top: 8px;
 }
 
 .phylocanvas-context-menu ul {
@@ -20,6 +33,8 @@
 .phylocanvas-context-menu ul li :is(button, a) {
   padding: 0.2rem;
   cursor: pointer;
+  width: 100%;
+  text-align: left;
 }
 .phylocanvas-context-menu ul li:hover {
   background-color: #e2e8f0;
@@ -27,4 +42,26 @@
 
 .phylocanvas-context-menu ul:last-child {
   display: none;
+}
+
+.phylocanvas-tooltip {
+  display: none;
+  position: fixed;
+  z-index: 2000;
+  background: rgba(97, 97, 97, 0.9) none repeat scroll 0% 0%;
+  color: rgb(255, 255, 255);
+  cursor: pointer;
+  padding: 8px;
+  margin-top: 16px;
+  border-radius: 2px;
+  text-align: center;
+  font-family: sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  top: 140px;
+  left: 715px;
+}
+
+.phylocanvas-tooltip-visible {
+  display: block;
 }
