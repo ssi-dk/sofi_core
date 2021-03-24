@@ -5,6 +5,7 @@ import pymongo
 import threading
 from pymongo import CursorType
 from ..shared import BrokerError, yield_chunks
+from ..tbr_conn import get_tbr_configuration
 from common.database import encrypt_dict, get_connection
 from common.config.column_config import pii_columns
 
@@ -15,11 +16,6 @@ from pymongo.collection import ReturnDocument
 from pprint import pprint
 from api_clients.tbr_client.api.isolate_api import ApiClient, IsolateApi
 from api_clients.tbr_client.models import Isolate, RowVersion
-
-
-tbr_api_url = os.environ.get("TBR_API_URL")
-
-tbr_configuration = api_clients.tbr_client.Configuration(host=tbr_api_url)
 
 
 class TBRPullingBroker(threading.Thread):
@@ -103,7 +99,7 @@ class TBRPullingBroker(threading.Thread):
         logging.info(f"Added/Updated {update_count} isolates with data from TBR.")
 
     def update_isolate_metadata(self, element_batch):
-        with ApiClient(tbr_configuration) as api_client:
+        with ApiClient(get_tbr_configuration()) as api_client:
             api_instance = IsolateApi(api_client)
             update_count = 0
             try:

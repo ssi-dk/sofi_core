@@ -2,6 +2,7 @@
 import sys, os
 import logging
 from ..shared import BrokerError, ProcessingStatus
+from ..tbr_conn import get_tbr_configuration
 from .request_broker import RequestBroker
 from common.database import encrypt_dict, get_connection
 from common.config.column_config import pii_columns
@@ -61,7 +62,7 @@ class TBRRequestBroker(RequestBroker):
     def fetch_and_update_isolate_metadata(self, request):
         isolate_id = request["isolate_id"]
 
-        with api_clients.tbr_client.ApiClient(tbr_configuration) as api_client:
+        with api_clients.tbr_client.ApiClient(get_tbr_configuration()) as api_client:
             api_instance = isolate_api.IsolateApi(api_client)
             try:
                 api_response = api_instance.api_isolate_isolate_id_get(isolate_id)
@@ -90,7 +91,9 @@ class TBRRequestBroker(RequestBroker):
         if "body" in request:
             body = request["body"]
 
-            with api_clients.tbr_client.ApiClient(tbr_configuration) as api_client:
+            with api_clients.tbr_client.ApiClient(
+                get_tbr_configuration()
+            ) as api_client:
                 api_instance = isolate_api.IsolateApi(api_client)
                 try:
                     api_response = api_instance.api_isolate_put(isolate_update=body)
