@@ -14,11 +14,8 @@ const parseQuery = (input: string) => {
   const ast = luceneParse(input);
   // translate display names to internal names
   recurseTree(ast, (x) => {
-    console.log(x);
-    console.log(x["field"]);
     if (x["field"]) {
-      //      x["field"] = getFieldInternalName(x["field"]) ?? x["field"];
-      x["field"] = "HOLYMOLY";
+      x["field"] = getFieldInternalName(x["field"]) ?? x["field"];
     }
   });
   return ast;

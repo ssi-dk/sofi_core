@@ -77,7 +77,6 @@ ${mkfile_dir}/app/src/sap-client : $(shell find ${mkfile_dir}/openapi_specs/SOFI
 		generate \
 		-i "/mnt/openapi_specs/SOFI/SOFI.yaml" \
 		--additional-properties=modelPropertyNaming=original,enumPropertyNaming=original \
-		--global-property skipFormModel=false \
 		-g typescript-redux-query \
 		-o /mnt/app/src/sap-client
 	cp -r "${mkfile_dir}/app/src/sap-client/src/"* "${mkfile_dir}/app/src/sap-client"
