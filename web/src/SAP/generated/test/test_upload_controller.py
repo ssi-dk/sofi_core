@@ -25,7 +25,7 @@ class TestUploadController(BaseTestCase):
             'Authorization': 'Bearer special-key',
         }
         data = dict(path='path_example'
-                    metadata_tsv='/path/to/file')
+                    metadata_tsv=(BytesIO(b'some file data'), 'file.txt'))
         response = self.client.open(
             '/api/upload/bulk_metadata',
             method='POST',
@@ -46,10 +46,10 @@ class TestUploadController(BaseTestCase):
             'Content-Type': 'multipart/form-data',
             'Authorization': 'Bearer special-key',
         }
-        data = dict(metadata_tsv='/path/to/file'
-                    files='/path/to/file')
+        data = dict(metadata_tsv=(BytesIO(b'some file data'), 'file.txt')
+                    files=(BytesIO(b'some file data'), 'file.txt'))
         response = self.client.open(
-            '/api/upload/multi_upload',
+            '/api/upload/multi',
             method='POST',
             headers=headers,
             data=data,
@@ -68,8 +68,8 @@ class TestUploadController(BaseTestCase):
             'Content-Type': 'multipart/form-data',
             'Authorization': 'Bearer special-key',
         }
-        data = dict(metadata=web.src.SAP.generated.BaseMetadata()
-                    file='/path/to/file')
+        data = dict(metadata={}
+                    file=(BytesIO(b'some file data'), 'file.txt'))
         response = self.client.open(
             '/api/upload/single_upload',
             method='POST',

@@ -18,7 +18,7 @@ class TestGdprController(BaseTestCase):
 
         
         """
-        query_string = [('identifier_type', web.src.SAP.generated.PersonalIdentifierType())
+        query_string = [('identifier_type', {})
                         ('identifier', 'identifier_example')]
         headers = { 
             'Accept': 'application/json',
@@ -37,7 +37,7 @@ class TestGdprController(BaseTestCase):
 
         
         """
-        query_string = [('identifier_type', web.src.SAP.generated.PersonalIdentifierType())
+        query_string = [('identifier_type', {})
                         ('identifier', 'identifier_example')]
         headers = { 
             'Accept': 'application/json',

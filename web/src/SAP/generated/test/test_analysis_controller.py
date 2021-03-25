@@ -21,7 +21,7 @@ class TestAnalysisController(BaseTestCase):
 
         
         """
-        query_string = [('paging_token', 'paging_token_example')
+        query_string = [('paging_token', None)
                         ('page_size', 100)]
         headers = { 
             'Accept': 'application/json',

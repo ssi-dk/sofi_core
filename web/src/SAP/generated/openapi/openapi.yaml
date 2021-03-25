@@ -292,7 +292,7 @@ paths:
       - upload
       x-openapi-router-controller: web.src.SAP.generated.controllers.upload_controller
       x-codegen-request-body-name: query
-  /upload/multi_upload:
+  /upload/multi:
     post:
       description: Manually upload multiple sequences with metadata
       operationId: multi_upload
@@ -400,7 +400,6 @@ components:
       - SSI
       - FVST
       - Other
-      title: Organization
       type: string
     PageOfAnalysis:
       example:
@@ -415,29 +414,24 @@ components:
       properties:
         paging_token:
           nullable: true
-          title: paging_token
           type: string
         total_count:
-          title: total_count
           type: integer
         items:
           items:
             $ref: '#/components/schemas/AnalysisResult'
-          title: items
           type: array
         approval_matrix:
           additionalProperties:
             additionalProperties:
               $ref: '#/components/schemas/ApprovalStatus'
             type: object
-          title: approval_matrix
           type: object
       required:
       - approval_matrix
       - items
       - paging_token
       - total_count
-      title: PageOfAnalysis
     QueryOperator:
       enum:
       - AND
@@ -445,7 +439,6 @@ components:
       - AND NOT
       - OR NOT
       - <implicit>
-      title: QueryOperator
       type: string
     QueryOperand:
       example:
@@ -457,18 +450,13 @@ components:
         operator:
           $ref: '#/components/schemas/QueryOperator'
         left:
-          title: left
           type: object
         right:
-          title: right
           type: object
         field:
-          title: field
           type: string
         term:
-          title: term
           type: string
-      title: QueryOperand
       type: object
     QueryExpression:
       example:
@@ -489,7 +477,6 @@ components:
           $ref: '#/components/schemas/QueryOperator'
         right:
           $ref: '#/components/schemas/QueryOperand'
-      title: QueryExpression
       type: object
     AnalysisQuery:
       example:
@@ -534,40 +521,32 @@ components:
       properties:
         approvable:
           description: True if the column can be approved
-          title: approvable
           type: boolean
         editable:
           description: True if the column can be edited
-          title: editable
           type: boolean
         pii:
           description: True if the column should be restricted to viewing only by
             the institution that owns it
-          title: pii
           type: boolean
         gdpr:
           description: True if the column should be treated as a 'gdpr' column, subject
             to more strict auditing/logging
-          title: gdpr
           type: boolean
         organizations:
           description: List of organizations/institutions who 'own' or should have
             unrestricted access to this field
           items:
             $ref: '#/components/schemas/Organization'
-          title: organizations
           type: array
         field_name:
-          title: field_name
           type: string
         approves_with:
           description: List of other columns, if any, that should be sent along when
             this column gets approved
           items:
             type: string
-          title: approves_with
           type: array
-      title: Column
     UserDefinedView:
       example:
         column_resizing:
@@ -588,26 +567,21 @@ components:
         - column_order
       properties:
         name:
-          title: name
           type: string
         hidden_columns:
           items:
             type: string
-          title: hidden_columns
           type: array
         column_resizing:
           $ref: '#/components/schemas/UserDefinedView_column_resizing'
         sort_by:
           items:
             $ref: '#/components/schemas/UserDefinedView_sort_by'
-          title: sort_by
           type: array
         column_order:
           items:
             type: string
-          title: column_order
           type: array
-      title: UserDefinedView
       type: object
     ApprovalRequest:
       example:
@@ -620,7 +594,6 @@ components:
             additionalProperties:
               $ref: '#/components/schemas/ApprovalStatus'
             type: object
-          title: approval_matrix
           type: object
       required:
       - matrix
@@ -629,20 +602,17 @@ components:
       allOf:
       - $ref: '#/components/schemas/ApprovalRequest'
       - $ref: '#/components/schemas/Approval_allOf'
-      title: Approval
     ApprovalStatus:
       enum:
       - pending
       - rejected
       - approved
-      title: ApprovalStatus
       type: string
     ApprovalMatrix:
       additionalProperties:
         additionalProperties:
           $ref: '#/components/schemas/ApprovalStatus'
         type: object
-      title: approval_matrix
       type: object
     AnalysisChange:
       additionalProperties:
@@ -668,52 +638,39 @@ components:
       oneOf:
       - $ref: '#/components/schemas/TbrMetadata'
       - $ref: '#/components/schemas/LimsMetadata'
-      title: MetadataReloadResponse
     Resistance:
       enum:
       - Sensitiv
       - Resistent
       - Ukendt
-      title: Resistance
       type: string
     BaseMetadata:
       properties:
         isolate_id:
-          title: isolate_id
           type: string
         sequence_id:
-          title: sequence_id
           type: string
         sequence_filename:
-          title: sequence_filename
           type: string
         institution:
           $ref: '#/components/schemas/Organization'
         project_number:
-          title: project_number
           type: number
         project_title:
-          title: project_title
           type: string
         sampling_date:
           format: date-time
-          title: sampling_date
           type: string
         received_date:
           format: date-time
-          title: received_date
           type: string
         run_id:
-          title: run_id
           type: string
         public:
-          title: public
           type: string
         provided_species:
-          title: provided_species
           type: string
         primary_isolate:
-          title: primary_isolate
           type: boolean
       required:
       - institution
@@ -724,7 +681,6 @@ components:
       - run_id
       - sequence_filename
       - sequence_id
-      title: BaseMetadata
     TbrSpecificMetadata:
       properties:
         cpr_nr:
@@ -799,7 +755,6 @@ components:
       - $ref: '#/components/schemas/LimsSpecificMetadata'
       - $ref: '#/components/schemas/TbrSpecificMetadata'
       - $ref: '#/components/schemas/AnalysisResult_allOf'
-      title: AnalysisResult
     SingleUploadRequest:
       properties:
         metadata:
@@ -845,34 +800,28 @@ components:
         errors:
           items:
             type: string
-          title: errors
           type: array
-      title: UploadResponse
       type: object
     PersonalIdentifierType:
       enum:
       - CPR
       - CVR
       - CHR
-      title: PersonalIdentifierType
       type: string
     PersonalData:
       example:
         data: data
       properties:
         data:
-          title: data
           type: string
       required:
       - data
-      title: PersonalData
       type: object
     DataClearance:
       enum:
       - own-institution
       - cross-institution
       - all
-      title: DataClearance
       type: string
     Permission:
       enum:
@@ -883,7 +832,6 @@ components:
       - phylogeny.write
       - gdpr.manage
       - permissions.write
-      title: Permission
       type: string
     UserInfo:
       example:
@@ -896,7 +844,6 @@ components:
         userId: userId
       properties:
         userId:
-          title: userId
           type: string
         data_clearance:
           $ref: '#/components/schemas/DataClearance'
@@ -905,14 +852,11 @@ components:
         groups:
           items:
             type: string
-          title: groups
           type: array
         permissions:
           items:
             $ref: '#/components/schemas/Permission'
-          title: permissions
           type: array
-      title: UserInfo
       type: object
     UserDefinedView_column_resizing:
       example:
@@ -922,12 +866,9 @@ components:
       properties:
         column_widths:
           additionalProperties: true
-          title: column_widths
           type: object
         column_width:
-          title: column_width
           type: integer
-      title: UserDefinedView_column_resizing
       type: object
     UserDefinedView_sort_by:
       example:
@@ -935,12 +876,9 @@ components:
         desc: true
       properties:
         desc:
-          title: desc
           type: boolean
         id:
-          title: id
           type: string
-      title: UserDefinedView_sort_by
       type: object
     Approval_allOf:
       properties:

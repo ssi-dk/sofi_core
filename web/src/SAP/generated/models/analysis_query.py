@@ -23,14 +23,14 @@ class AnalysisQuery(Model):
         """AnalysisQuery - a model defined in OpenAPI
 
         :param paging_token: The paging_token of this AnalysisQuery.  # noqa: E501
-        :type paging_token: str
+        :type paging_token: bytearray
         :param page_size: The page_size of this AnalysisQuery.  # noqa: E501
         :type page_size: int
         :param expression: The expression of this AnalysisQuery.  # noqa: E501
         :type expression: QueryExpression
         """
         self.openapi_types = {
-            'paging_token': str,
+            'paging_token': bytearray,
             'page_size': int,
             'expression': QueryExpression,
         }
@@ -63,7 +63,7 @@ class AnalysisQuery(Model):
         opaque token to supply to get the next page of isolates  # noqa: E501
 
         :return: The paging_token of this AnalysisQuery.
-        :rtype: str
+        :rtype: bytearray
         """
         return self._paging_token
 
@@ -74,7 +74,7 @@ class AnalysisQuery(Model):
         opaque token to supply to get the next page of isolates  # noqa: E501
 
         :param paging_token: The paging_token of this AnalysisQuery.
-        :type paging_token: str
+        :type paging_token: bytearray
         """
 
         self._paging_token = paging_token

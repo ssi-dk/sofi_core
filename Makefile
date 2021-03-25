@@ -73,7 +73,7 @@ ${mkfile_dir}/app/src/sap-client : $(shell find ${mkfile_dir}/openapi_specs/SOFI
 	rm -rf "${mkfile_dir}/app/sap-client/dist"
 	docker run --rm -v "${mkfile_dir}:/mnt" \
 		--user ${mkfile_user} \
-		"openapitools/openapi-generator:cli-v5.1.0" \
+		"openapitools/openapi-generator:cli-v5.0.0" \
 		generate \
 		-i "/mnt/openapi_specs/SOFI/SOFI.yaml" \
 		--additional-properties=modelPropertyNaming=original,enumPropertyNaming=original \
@@ -88,7 +88,7 @@ ${mkfile_dir}/web/src/SAP/generated : $(shell find ${mkfile_dir}/openapi_specs/S
 	# Generate flask api
 	docker run --rm -v "${mkfile_dir}:/mnt" \
 		--user ${mkfile_user} \
-		"openapitools/openapi-generator:cli-v5.1.0" \
+		"openapitools/openapi-generator:cli-v5.0.0" \
 		generate \
 		-i "/mnt/openapi_specs/SOFI/SOFI.yaml" \
 		-g python-flask \

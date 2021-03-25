@@ -330,7 +330,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/UploadResponse'
 
-  /upload/multi_upload:
+  /upload/multi:
     post:
       description: Manually upload multiple sequences with metadata
       operationId: multi_upload

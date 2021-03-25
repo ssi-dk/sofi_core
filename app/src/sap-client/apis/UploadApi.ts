@@ -130,7 +130,7 @@ function multiUploadRaw<T>(requestParameters: MultiUploadRequest, requestConfig:
     }
 
     const config: QueryConfig<T> = {
-        url: `${runtime.Configuration.basePath}/upload/multi_upload`,
+        url: `${runtime.Configuration.basePath}/upload/multi`,
         meta,
         update: requestConfig.update,
         queryKey: requestConfig.queryKey,
