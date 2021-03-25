@@ -1,9 +1,9 @@
 import os
 import api_clients.tbr_client
 import functools
-import requests.packages.urllib3
+import urllib3
 
-requests.packages.urllib3.disable_warnings()
+urllib3.disable_warnings()
 
 tbr_api_url = os.environ.get("TBR_API_URL")
 DISABLE_CERT = os.getenv("DISABLE_CERT", "False").lower() in ["true", "1"]
