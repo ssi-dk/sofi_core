@@ -10,7 +10,7 @@ COPY main.py /app/
 
 ENV LOGLEVEL="INFO"
 WORKDIR /app/
-CMD [ "python", "-u", "/main.py" ]
+CMD [ "python", "-u", "main.py" ]
 
 FROM base AS testing
 COPY ["test-requirements.txt", "/app/"]
