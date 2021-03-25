@@ -1,0 +1,32 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "LimsSpecificMetadata",
+  "type": "object",
+  "properties": {
+    "chr_number": {
+      "type": "string"
+    },
+    "cvr_number": {
+      "type": "string"
+    },
+    "aut_number": {
+      "type": "string"
+    },
+    "product_type": {
+      "type": "string"
+    },
+    "product": {
+      "type": "string"
+    },
+    "origin_country": {
+      "type": "string",
+      "x-faker": "address.country"
+    },
+    "animal_species": {
+      "type": "string"
+    },
+    "sample_info": {
+      "type": "string"
+    }
+  }
+}

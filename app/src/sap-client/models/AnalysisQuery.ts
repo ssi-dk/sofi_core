@@ -1,7 +1,7 @@
 // tslint:disable
 /**
- * SAP
- * Sekvensanalyseplatform
+ * SOFI
+ * SOFI Sekvensanalyseplatform
  *
  * The version of the OpenAPI document: 0.1.0
  * 
@@ -12,6 +12,12 @@
  */
 
 import { exists, mapValues } from '../runtime';
+import {
+    QueryExpression,
+    QueryExpressionFromJSON,
+    QueryExpressionToJSON,
+} from './';
+
 /**
  * 
  * @export
@@ -32,17 +38,17 @@ export interface AnalysisQuery  {
     page_size?: number;
     /**
      * 
-     * @type {{ [key: string]: string; }}
+     * @type {QueryExpression}
      * @memberof AnalysisQuery
      */
-    filters?: { [key: string]: string; };
+    expression?: QueryExpression;
 }
 
 export function AnalysisQueryFromJSON(json: any): AnalysisQuery {
     return {
         'paging_token': !exists(json, 'paging_token') ? undefined : json['paging_token'],
         'page_size': !exists(json, 'page_size') ? undefined : json['page_size'],
-        'filters': !exists(json, 'filters') ? undefined : json['filters'],
+        'expression': !exists(json, 'expression') ? undefined : QueryExpressionFromJSON(json['expression']),
     };
 }
 
@@ -53,7 +59,7 @@ export function AnalysisQueryToJSON(value?: AnalysisQuery): any {
     return {
         'paging_token': value.paging_token,
         'page_size': value.page_size,
-        'filters': value.filters,
+        'expression': QueryExpressionToJSON(value.expression),
     };
 }
 

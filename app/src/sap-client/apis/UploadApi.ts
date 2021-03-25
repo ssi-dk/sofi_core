@@ -1,7 +1,7 @@
 // tslint:disable
 /**
- * SAP
- * Sekvensanalyseplatform
+ * SOFI
+ * SOFI Sekvensanalyseplatform
  *
  * The version of the OpenAPI document: 0.1.0
  * 
@@ -130,7 +130,7 @@ function multiUploadRaw<T>(requestParameters: MultiUploadRequest, requestConfig:
     }
 
     const config: QueryConfig<T> = {
-        url: `${runtime.Configuration.basePath}/upload/multi_upload`,
+        url: `${runtime.Configuration.basePath}/upload/multi`,
         meta,
         update: requestConfig.update,
         queryKey: requestConfig.queryKey,

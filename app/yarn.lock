@@ -8516,6 +8516,11 @@ lru-cache@^6.0.0:
   dependencies:
     yallist "^4.0.0"
 
+lucene@^2.1.1:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/lucene/-/lucene-2.1.1.tgz#e710cc123b214eaf72a4c5f1da06943c0af44d86"
+  integrity sha512-l0qCX+pgXEZh/7sYQNG+vzhOIFRPjlJJkQ/irk9n7Ak3d+1MrU6F7IV31KILwFkUn153oLK8a2AIt48DzLdVPg==
+
 lz-string@^1.4.4:
   version "1.4.4"
   resolved "https://registry.yarnpkg.com/lz-string/-/lz-string-1.4.4.tgz#c0d8eaf36059f705796e1e344811cf4c498d3a26"

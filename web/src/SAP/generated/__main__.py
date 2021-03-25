@@ -7,7 +7,7 @@ def create_app():
     app = connexion.App(__name__, specification_dir='./openapi/')
     app.app.json_encoder = encoder.JSONEncoder
     app.add_api('openapi.yaml',
-                arguments={'title': 'SAP'},
+                arguments={'title': 'SOFI'},
                 pythonic_params=True)
     return app.app
 

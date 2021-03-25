@@ -1,11 +1,6 @@
 import connexion
 import six
 
-from web.src.SAP.generated.models.analysis_query import AnalysisQuery  # noqa: E501
-from web.src.SAP.generated.models.column import Column  # noqa: E501
-from web.src.SAP.generated.models.metadata_reload_request import MetadataReloadRequest  # noqa: E501
-from web.src.SAP.generated.models.metadata_reload_response import MetadataReloadResponse  # noqa: E501
-from web.src.SAP.generated.models.page_of_analysis import PageOfAnalysis  # noqa: E501
 from .. import util
 from ...src.controllers import AnalysisController
 
@@ -44,6 +39,7 @@ def reload_metadata(user, token_info, body=None):  # noqa: E501
     :rtype: MetadataReloadResponse
     """
     if connexion.request.is_json:
+        import MetadataReloadRequest
         body = MetadataReloadRequest.from_dict(connexion.request.get_json())  # noqa: E501
     return AnalysisController.reload_metadata(user, token_info, body)
 
@@ -58,6 +54,7 @@ def search_analysis(user, token_info, query=None):  # noqa: E501
     :rtype: PageOfAnalysis
     """
     if connexion.request.is_json:
+        import AnalysisQuery
         query = AnalysisQuery.from_dict(connexion.request.get_json())  # noqa: E501
     return AnalysisController.search_analysis(user, token_info, query)
 
@@ -67,7 +64,6 @@ def submit_changes(user, token_info, body=None):  # noqa: E501
     Submit a batch of analysis data changes # noqa: E501
 
     :param body: 
-    :type body: Dict[str, ]
 
     :rtype: Dict[str, Dict[str, str]]
     """

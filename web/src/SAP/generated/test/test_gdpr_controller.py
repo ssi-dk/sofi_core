@@ -18,7 +18,7 @@ class TestGdprController(BaseTestCase):
 
         
         """
-        query_string = [('identifier_type', {}),
+        query_string = [('identifier_type', {})
                         ('identifier', 'identifier_example')]
         headers = { 
             'Accept': 'application/json',
@@ -37,7 +37,7 @@ class TestGdprController(BaseTestCase):
 
         
         """
-        query_string = [('identifier_type', {}),
+        query_string = [('identifier_type', {})
                         ('identifier', 'identifier_example')]
         headers = { 
             'Accept': 'application/json',

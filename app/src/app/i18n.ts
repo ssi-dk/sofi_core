@@ -1,5 +1,26 @@
+import { template } from "@babel/core";
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
+import { isTemplateExpression } from "typescript";
+import { invertMap } from "utils";
+
+const fieldDisplayNames = {
+  da: {
+    received_date: "Modtagedato",
+    sampling_date: "Prøvetagningsdato",
+    institution: "Institution",
+    project_title: "Projekt titel",
+    project_number: "Projekt nr",
+    provided_species: "Provided species",
+    run_id: "RunID",
+    isolate_id: "IsolatID",
+    fud_number: "Fud nr",
+    cluster_id: "ClusterID",
+    serotype_final: "Serotyp final",
+    st: "ST",
+    infection_source: "Smittekilde",
+  },
+};
 
 const resources = {
   da: {
@@ -53,19 +74,7 @@ const resources = {
         "Grundet fejl er metadata ikke genindlæst for isolat",
 
       // field name translations
-      received_date: "Modtagedato",
-      sampling_date: "Prøvetagningsdato",
-      institution: "Institution",
-      project_title: "Projekt titel",
-      project_number: "Projekt nr",
-      provided_species: "Provided species",
-      run_id: "RunID",
-      isolate_id: "IsolatID",
-      fud_number: "Fud nr",
-      cluster_id: "ClusterID",
-      serotype_final: "Serotyp final",
-      st: "ST",
-      infection_source: "Smittekilde",
+      ...fieldDisplayNames.da,
     },
   },
 };
@@ -82,5 +91,35 @@ i18n
       escapeValue: false, // react already safe from xss
     },
   });
+
+/**
+ * Get the display name of a field given its internal name
+ * @param internalName the internal name of the field
+ * @param lang i18n lng code to translate displayName to. Defaults to current language
+ */
+export const getFieldDisplayName = (
+  internalName: string,
+  lang?: string | undefined
+) => {
+  const lng = lang ?? i18n.language;
+  return fieldDisplayNames[lng][internalName];
+};
+
+const flippedFieldMap = Object.keys(fieldDisplayNames)
+  .map((x) => ({ key: x, value: invertMap(fieldDisplayNames[x], true) }))
+  .reduce((obj, item) => (obj[item.key] = item.value) && obj, {});
+
+/**
+ * Get the internal name of a field given its displayName
+ * @param displayName the display name of the field. Case insensitive
+ * @param lang i18n lng code to translate displayName from. Defaults to current language
+ */
+export const getFieldInternalName = (
+  displayName: string,
+  lang?: string | undefined
+) => {
+  const lng = lang ?? i18n.language;
+  return flippedFieldMap[lng][displayName.toLocaleLowerCase()];
+};
 
 export default i18n;
