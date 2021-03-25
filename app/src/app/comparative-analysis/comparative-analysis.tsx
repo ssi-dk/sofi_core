@@ -8,6 +8,7 @@ import {
 } from "./comparative-analysis-configs";
 import Header from "../header/header";
 import Tree from "./phylo/phylo";
+import ComparativeAnalysisSidebar from "./sidebar/comparative-analysis-sidebar";
 
 const newickTreeSelector = (state: {
   entities: ComparativeAnalysisNewickSlice;
@@ -43,10 +44,14 @@ export default function ComparativeAnalysis() {
       padding="8"
       height="100vh"
       gridGap="2"
-      rowgap="5"
     >
       <Box role="heading" gridColumn="1 / 4">
         <Header sidebarWidth={sidebarWidth} />
+      </Box>
+      <Box role="form" gridColumn="1 / 1" gridRow="2 / 4">
+        <Box minW={sidebarWidth} pr={5}>
+          <ComparativeAnalysisSidebar />
+        </Box>
       </Box>
       <Box
         role="main"
