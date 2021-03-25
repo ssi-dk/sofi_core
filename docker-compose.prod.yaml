@@ -1,6 +1,10 @@
 version: "3"
-services:
 
+x-extra_hosts:
+  &default-extra_hosts
+  - "sofi_tbr_integration:192.168.113.11"
+
+services:
   sap-web:
     image: sekvensanalyseplatform/sap-web:latest
     ports:
@@ -19,6 +23,9 @@ services:
       - "6000:6000"
     labels:
       - "com.centurylinklabs.watchtower.enable=true"
+
+  sap_broker_queue:
+    extra_hosts: *default-extra_hosts
 
   auth-selfservice-ui:
     image: sekvensanalyseplatform/auth-selfservice-ui:latest
