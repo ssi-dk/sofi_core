@@ -5,9 +5,13 @@ from datetime import date, datetime  # noqa: F401
 
 from typing import List, Dict  # noqa: F401
 
-from .base_model_ import Model
+from web.src.SAP.generated.models.base_model_ import Model
+from web.src.SAP.generated.models.query_operand import QueryOperand
+from web.src.SAP.generated.models.query_operator import QueryOperator
+from web.src.SAP.generated import util
 
-from .. import util
+from web.src.SAP.generated.models.query_operand import QueryOperand  # noqa: E501
+from web.src.SAP.generated.models.query_operator import QueryOperator  # noqa: E501
 
 class QueryExpression(Model):
 
@@ -21,22 +25,22 @@ class QueryExpression(Model):
         """QueryExpression - a model defined in OpenAPI
 
         :param left: The left of this QueryExpression.  # noqa: E501
-        :type left: Operand
+        :type left: QueryOperand
         :param operator: The operator of this QueryExpression.  # noqa: E501
-        :type operator: str
+        :type operator: QueryOperator
         :param right: The right of this QueryExpression.  # noqa: E501
-        :type right: Operand
+        :type right: QueryOperand
         """
         self.openapi_types = {
-            'left': Operand,
-            'operator': str,
-            'right': Operand
+            'left': QueryOperand,
+            'operator': QueryOperator,
+            'right': QueryOperand,
         }
 
         self.attribute_map = {
             'left': 'left',
             'operator': 'operator',
-            'right': 'right'
+            'right': 'right',
         }
 
         self._left = left
@@ -49,7 +53,7 @@ class QueryExpression(Model):
 
         :param dikt: A dict.
         :type: dict
-        :return: The query-expression of this QueryExpression.  # noqa: E501
+        :return: The QueryExpression of this QueryExpression.  # noqa: E501
         :rtype: QueryExpression
         """
         return util.deserialize_model(dikt, cls)
@@ -60,7 +64,7 @@ class QueryExpression(Model):
 
 
         :return: The left of this QueryExpression.
-        :rtype: Operand
+        :rtype: QueryOperand
         """
         return self._left
 
@@ -70,7 +74,7 @@ class QueryExpression(Model):
 
 
         :param left: The left of this QueryExpression.
-        :type left: Operand
+        :type left: QueryOperand
         """
 
         self._left = left
@@ -81,7 +85,7 @@ class QueryExpression(Model):
 
 
         :return: The operator of this QueryExpression.
-        :rtype: str
+        :rtype: QueryOperator
         """
         return self._operator
 
@@ -91,14 +95,8 @@ class QueryExpression(Model):
 
 
         :param operator: The operator of this QueryExpression.
-        :type operator: str
+        :type operator: QueryOperator
         """
-        allowed_values = ["AND", "OR", "AND NOT", "OR NOT", "<implicit>"]  # noqa: E501
-        if operator not in allowed_values:
-            raise ValueError(
-                "Invalid value for `operator` ({0}), must be one of {1}"
-                .format(operator, allowed_values)
-            )
 
         self._operator = operator
 
@@ -108,7 +106,7 @@ class QueryExpression(Model):
 
 
         :return: The right of this QueryExpression.
-        :rtype: Operand
+        :rtype: QueryOperand
         """
         return self._right
 
@@ -118,7 +116,7 @@ class QueryExpression(Model):
 
 
         :param right: The right of this QueryExpression.
-        :type right: Operand
+        :type right: QueryOperand
         """
 
         self._right = right

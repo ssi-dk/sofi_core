@@ -5,9 +5,9 @@ from datetime import date, datetime  # noqa: F401
 
 from typing import List, Dict  # noqa: F401
 
-from .base_model_ import Model
+from web.src.SAP.generated.models.base_model_ import Model
+from web.src.SAP.generated import util
 
-from .. import util
 
 class Permission(Model):
 
@@ -43,7 +43,7 @@ class Permission(Model):
 
         :param dikt: A dict.
         :type: dict
-        :return: The permission of this Permission.  # noqa: E501
+        :return: The Permission of this Permission.  # noqa: E501
         :rtype: Permission
         """
         return util.deserialize_model(dikt, cls)

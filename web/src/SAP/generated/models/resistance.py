@@ -5,9 +5,9 @@ from datetime import date, datetime  # noqa: F401
 
 from typing import List, Dict  # noqa: F401
 
-from .base_model_ import Model
+from web.src.SAP.generated.models.base_model_ import Model
+from web.src.SAP.generated import util
 
-from .. import util
 
 class Resistance(Model):
 
@@ -39,7 +39,7 @@ class Resistance(Model):
 
         :param dikt: A dict.
         :type: dict
-        :return: The resistance of this Resistance.  # noqa: E501
+        :return: The Resistance of this Resistance.  # noqa: E501
         :rtype: Resistance
         """
         return util.deserialize_model(dikt, cls)

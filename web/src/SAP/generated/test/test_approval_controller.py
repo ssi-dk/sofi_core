@@ -33,7 +33,13 @@ class TestApprovalController(BaseTestCase):
 
         
         """
-        body = {}
+        body = {
+  "matrix" : {
+    "key" : {
+      "key" : "matrix"
+    }
+  }
+}
         headers = { 
             'Accept': 'application/json',
             'Content-Type': 'application/json',

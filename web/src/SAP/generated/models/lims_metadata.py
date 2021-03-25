@@ -5,9 +5,15 @@ from datetime import date, datetime  # noqa: F401
 
 from typing import List, Dict  # noqa: F401
 
-from .base_model_ import Model
+from web.src.SAP.generated.models.base_model_ import Model
+from web.src.SAP.generated.models.base_metadata import BaseMetadata
+from web.src.SAP.generated.models.lims_specific_metadata import LimsSpecificMetadata
+from web.src.SAP.generated.models.organization import Organization
+from web.src.SAP.generated import util
 
-from .. import util
+from web.src.SAP.generated.models.base_metadata import BaseMetadata  # noqa: E501
+from web.src.SAP.generated.models.lims_specific_metadata import LimsSpecificMetadata  # noqa: E501
+from web.src.SAP.generated.models.organization import Organization  # noqa: E501
 
 class LimsMetadata(Model):
 
@@ -81,7 +87,7 @@ class LimsMetadata(Model):
             'product': str,
             'origin_country': str,
             'animal_species': str,
-            'sample_info': str
+            'sample_info': str,
         }
 
         self.attribute_map = {
@@ -104,7 +110,7 @@ class LimsMetadata(Model):
             'product': 'product',
             'origin_country': 'origin_country',
             'animal_species': 'animal_species',
-            'sample_info': 'sample_info'
+            'sample_info': 'sample_info',
         }
 
         self._isolate_id = isolate_id
@@ -134,7 +140,7 @@ class LimsMetadata(Model):
 
         :param dikt: A dict.
         :type: dict
-        :return: The lims-metadata of this LimsMetadata.  # noqa: E501
+        :return: The LimsMetadata of this LimsMetadata.  # noqa: E501
         :rtype: LimsMetadata
         """
         return util.deserialize_model(dikt, cls)

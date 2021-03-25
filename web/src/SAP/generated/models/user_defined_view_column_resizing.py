@@ -5,9 +5,9 @@ from datetime import date, datetime  # noqa: F401
 
 from typing import List, Dict  # noqa: F401
 
-from .base_model_ import Model
+from web.src.SAP.generated.models.base_model_ import Model
+from web.src.SAP.generated import util
 
-from .. import util
 
 class UserDefinedViewColumnResizing(Model):
 
@@ -27,12 +27,12 @@ class UserDefinedViewColumnResizing(Model):
         """
         self.openapi_types = {
             'column_widths': Dict[str, object],
-            'column_width': int
+            'column_width': int,
         }
 
         self.attribute_map = {
             'column_widths': 'column_widths',
-            'column_width': 'column_width'
+            'column_width': 'column_width',
         }
 
         self._column_widths = column_widths
@@ -44,7 +44,7 @@ class UserDefinedViewColumnResizing(Model):
 
         :param dikt: A dict.
         :type: dict
-        :return: The user_defined_view_column_resizing of this UserDefinedViewColumnResizing.  # noqa: E501
+        :return: The UserDefinedView_column_resizing of this UserDefinedViewColumnResizing.  # noqa: E501
         :rtype: UserDefinedViewColumnResizing
         """
         return util.deserialize_model(dikt, cls)

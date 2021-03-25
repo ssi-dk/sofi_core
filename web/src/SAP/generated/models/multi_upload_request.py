@@ -5,9 +5,9 @@ from datetime import date, datetime  # noqa: F401
 
 from typing import List, Dict  # noqa: F401
 
-from .base_model_ import Model
+from web.src.SAP.generated.models.base_model_ import Model
+from web.src.SAP.generated import util
 
-from .. import util
 
 class MultiUploadRequest(Model):
 
@@ -27,12 +27,12 @@ class MultiUploadRequest(Model):
         """
         self.openapi_types = {
             'metadata_tsv': file,
-            'files': List[file]
+            'files': List[file],
         }
 
         self.attribute_map = {
             'metadata_tsv': 'metadata_tsv',
-            'files': 'files'
+            'files': 'files',
         }
 
         self._metadata_tsv = metadata_tsv
@@ -44,7 +44,7 @@ class MultiUploadRequest(Model):
 
         :param dikt: A dict.
         :type: dict
-        :return: The multi-upload-request of this MultiUploadRequest.  # noqa: E501
+        :return: The MultiUploadRequest of this MultiUploadRequest.  # noqa: E501
         :rtype: MultiUploadRequest
         """
         return util.deserialize_model(dikt, cls)

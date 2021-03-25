@@ -5,9 +5,11 @@ from datetime import date, datetime  # noqa: F401
 
 from typing import List, Dict  # noqa: F401
 
-from .base_model_ import Model
+from web.src.SAP.generated.models.base_model_ import Model
+from web.src.SAP.generated.models.approval_status import ApprovalStatus
+from web.src.SAP.generated import util
 
-from .. import util
+from web.src.SAP.generated.models.approval_status import ApprovalStatus  # noqa: E501
 
 class ApprovalRequest(Model):
 
@@ -24,11 +26,11 @@ class ApprovalRequest(Model):
         :type matrix: Dict[str, Dict[str, ApprovalStatus]]
         """
         self.openapi_types = {
-            'matrix': Dict[str, Dict[str, ApprovalStatus]]
+            'matrix': Dict[str, Dict[str, ApprovalStatus]],
         }
 
         self.attribute_map = {
-            'matrix': 'matrix'
+            'matrix': 'matrix',
         }
 
         self._matrix = matrix
@@ -39,7 +41,7 @@ class ApprovalRequest(Model):
 
         :param dikt: A dict.
         :type: dict
-        :return: The approval-request of this ApprovalRequest.  # noqa: E501
+        :return: The ApprovalRequest of this ApprovalRequest.  # noqa: E501
         :rtype: ApprovalRequest
         """
         return util.deserialize_model(dikt, cls)

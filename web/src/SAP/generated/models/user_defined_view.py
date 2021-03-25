@@ -5,9 +5,13 @@ from datetime import date, datetime  # noqa: F401
 
 from typing import List, Dict  # noqa: F401
 
-from .base_model_ import Model
+from web.src.SAP.generated.models.base_model_ import Model
+from web.src.SAP.generated.models.user_defined_view_column_resizing import UserDefinedViewColumnResizing
+from web.src.SAP.generated.models.user_defined_view_sort_by import UserDefinedViewSortBy
+from web.src.SAP.generated import util
 
-from .. import util
+from web.src.SAP.generated.models.user_defined_view_column_resizing import UserDefinedViewColumnResizing  # noqa: E501
+from web.src.SAP.generated.models.user_defined_view_sort_by import UserDefinedViewSortBy  # noqa: E501
 
 class UserDefinedView(Model):
 
@@ -36,7 +40,7 @@ class UserDefinedView(Model):
             'hidden_columns': List[str],
             'column_resizing': UserDefinedViewColumnResizing,
             'sort_by': List[UserDefinedViewSortBy],
-            'column_order': List[str]
+            'column_order': List[str],
         }
 
         self.attribute_map = {
@@ -44,7 +48,7 @@ class UserDefinedView(Model):
             'hidden_columns': 'hidden_columns',
             'column_resizing': 'column_resizing',
             'sort_by': 'sort_by',
-            'column_order': 'column_order'
+            'column_order': 'column_order',
         }
 
         self._name = name
@@ -59,7 +63,7 @@ class UserDefinedView(Model):
 
         :param dikt: A dict.
         :type: dict
-        :return: The user-defined-view of this UserDefinedView.  # noqa: E501
+        :return: The UserDefinedView of this UserDefinedView.  # noqa: E501
         :rtype: UserDefinedView
         """
         return util.deserialize_model(dikt, cls)

@@ -5,9 +5,9 @@ from datetime import date, datetime  # noqa: F401
 
 from typing import List, Dict  # noqa: F401
 
-from .base_model_ import Model
+from web.src.SAP.generated.models.base_model_ import Model
+from web.src.SAP.generated import util
 
-from .. import util
 
 class PersonalIdentifierType(Model):
 
@@ -39,7 +39,7 @@ class PersonalIdentifierType(Model):
 
         :param dikt: A dict.
         :type: dict
-        :return: The personal-identifier-type of this PersonalIdentifierType.  # noqa: E501
+        :return: The PersonalIdentifierType of this PersonalIdentifierType.  # noqa: E501
         :rtype: PersonalIdentifierType
         """
         return util.deserialize_model(dikt, cls)

@@ -5,9 +5,9 @@ from datetime import date, datetime  # noqa: F401
 
 from typing import List, Dict  # noqa: F401
 
-from .base_model_ import Model
+from web.src.SAP.generated.models.base_model_ import Model
+from web.src.SAP.generated import util
 
-from .. import util
 
 class UploadResponse(Model):
 
@@ -24,11 +24,11 @@ class UploadResponse(Model):
         :type errors: List[str]
         """
         self.openapi_types = {
-            'errors': List[str]
+            'errors': List[str],
         }
 
         self.attribute_map = {
-            'errors': 'errors'
+            'errors': 'errors',
         }
 
         self._errors = errors
@@ -39,7 +39,7 @@ class UploadResponse(Model):
 
         :param dikt: A dict.
         :type: dict
-        :return: The upload-response of this UploadResponse.  # noqa: E501
+        :return: The UploadResponse of this UploadResponse.  # noqa: E501
         :rtype: UploadResponse
         """
         return util.deserialize_model(dikt, cls)

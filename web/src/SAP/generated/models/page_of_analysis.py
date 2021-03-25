@@ -5,9 +5,13 @@ from datetime import date, datetime  # noqa: F401
 
 from typing import List, Dict  # noqa: F401
 
-from .base_model_ import Model
+from web.src.SAP.generated.models.base_model_ import Model
+from web.src.SAP.generated.models.analysis_result import AnalysisResult
+from web.src.SAP.generated.models.approval_status import ApprovalStatus
+from web.src.SAP.generated import util
 
-from .. import util
+from web.src.SAP.generated.models.analysis_result import AnalysisResult  # noqa: E501
+from web.src.SAP.generated.models.approval_status import ApprovalStatus  # noqa: E501
 
 class PageOfAnalysis(Model):
 
@@ -33,14 +37,14 @@ class PageOfAnalysis(Model):
             'paging_token': str,
             'total_count': int,
             'items': List[AnalysisResult],
-            'approval_matrix': Dict[str, Dict[str, ApprovalStatus]]
+            'approval_matrix': Dict[str, Dict[str, ApprovalStatus]],
         }
 
         self.attribute_map = {
             'paging_token': 'paging_token',
             'total_count': 'total_count',
             'items': 'items',
-            'approval_matrix': 'approval_matrix'
+            'approval_matrix': 'approval_matrix',
         }
 
         self._paging_token = paging_token
@@ -54,7 +58,7 @@ class PageOfAnalysis(Model):
 
         :param dikt: A dict.
         :type: dict
-        :return: The page-of-analysis of this PageOfAnalysis.  # noqa: E501
+        :return: The PageOfAnalysis of this PageOfAnalysis.  # noqa: E501
         :rtype: PageOfAnalysis
         """
         return util.deserialize_model(dikt, cls)

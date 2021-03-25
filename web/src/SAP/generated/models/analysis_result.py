@@ -5,9 +5,21 @@ from datetime import date, datetime  # noqa: F401
 
 from typing import List, Dict  # noqa: F401
 
-from .base_model_ import Model
+from web.src.SAP.generated.models.base_model_ import Model
+from web.src.SAP.generated.models.analysis_result_all_of import AnalysisResultAllOf
+from web.src.SAP.generated.models.base_metadata import BaseMetadata
+from web.src.SAP.generated.models.lims_specific_metadata import LimsSpecificMetadata
+from web.src.SAP.generated.models.organization import Organization
+from web.src.SAP.generated.models.resistance import Resistance
+from web.src.SAP.generated.models.tbr_specific_metadata import TbrSpecificMetadata
+from web.src.SAP.generated import util
 
-from .. import util
+from web.src.SAP.generated.models.analysis_result_all_of import AnalysisResultAllOf  # noqa: E501
+from web.src.SAP.generated.models.base_metadata import BaseMetadata  # noqa: E501
+from web.src.SAP.generated.models.lims_specific_metadata import LimsSpecificMetadata  # noqa: E501
+from web.src.SAP.generated.models.organization import Organization  # noqa: E501
+from web.src.SAP.generated.models.resistance import Resistance  # noqa: E501
+from web.src.SAP.generated.models.tbr_specific_metadata import TbrSpecificMetadata  # noqa: E501
 
 class AnalysisResult(Model):
 
@@ -294,7 +306,7 @@ class AnalysisResult(Model):
             'amr_tia': Resistance,
             'amr_tgc': Resistance,
             'amr_tmp': Resistance,
-            'amr_van': Resistance
+            'amr_van': Resistance,
         }
 
         self.attribute_map = {
@@ -388,7 +400,7 @@ class AnalysisResult(Model):
             'amr_tia': 'amr_tia',
             'amr_tgc': 'amr_tgc',
             'amr_tmp': 'amr_tmp',
-            'amr_van': 'amr_van'
+            'amr_van': 'amr_van',
         }
 
         self._isolate_id = isolate_id
@@ -489,7 +501,7 @@ class AnalysisResult(Model):
 
         :param dikt: A dict.
         :type: dict
-        :return: The analysis-result of this AnalysisResult.  # noqa: E501
+        :return: The AnalysisResult of this AnalysisResult.  # noqa: E501
         :rtype: AnalysisResult
         """
         return util.deserialize_model(dikt, cls)

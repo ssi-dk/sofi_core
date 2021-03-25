@@ -5,9 +5,11 @@ from datetime import date, datetime  # noqa: F401
 
 from typing import List, Dict  # noqa: F401
 
-from .base_model_ import Model
+from web.src.SAP.generated.models.base_model_ import Model
+from web.src.SAP.generated.models.organization import Organization
+from web.src.SAP.generated import util
 
-from .. import util
+from web.src.SAP.generated.models.organization import Organization  # noqa: E501
 
 class BaseMetadata(Model):
 
@@ -57,7 +59,7 @@ class BaseMetadata(Model):
             'run_id': str,
             'public': str,
             'provided_species': str,
-            'primary_isolate': bool
+            'primary_isolate': bool,
         }
 
         self.attribute_map = {
@@ -72,7 +74,7 @@ class BaseMetadata(Model):
             'run_id': 'run_id',
             'public': 'public',
             'provided_species': 'provided_species',
-            'primary_isolate': 'primary_isolate'
+            'primary_isolate': 'primary_isolate',
         }
 
         self._isolate_id = isolate_id
@@ -94,7 +96,7 @@ class BaseMetadata(Model):
 
         :param dikt: A dict.
         :type: dict
-        :return: The base-metadata of this BaseMetadata.  # noqa: E501
+        :return: The BaseMetadata of this BaseMetadata.  # noqa: E501
         :rtype: BaseMetadata
         """
         return util.deserialize_model(dikt, cls)

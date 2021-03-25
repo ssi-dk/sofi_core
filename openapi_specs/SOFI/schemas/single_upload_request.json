@@ -1,0 +1,15 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "SingleUploadRequest",
+  "type": "object",
+  "required": ["metadata", "file"],
+  "properties": {
+    "metadata": {
+      "$ref": "./base_metadata.json"
+    },
+    "file": {
+      "type": "string",
+      "format": "binary"
+    }
+  }
+}

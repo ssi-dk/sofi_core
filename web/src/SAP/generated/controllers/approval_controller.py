@@ -1,8 +1,6 @@
 import connexion
 import six
 
-from web.src.SAP.generated.models.approval import Approval  # noqa: E501
-from web.src.SAP.generated.models.approval_request import ApprovalRequest  # noqa: E501
 from .. import util
 from ...src.controllers import ApprovalController
 
@@ -29,6 +27,7 @@ def create_approval(user, token_info, body=None):  # noqa: E501
     :rtype: Approval
     """
     if connexion.request.is_json:
+        import ApprovalRequest
         body = ApprovalRequest.from_dict(connexion.request.get_json())  # noqa: E501
     return ApprovalController.create_approval(user, token_info, body)
 

@@ -1,0 +1,40 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Column",
+  "type": "object",
+  "properties": {
+    "approvable": {
+      "description": "True if the column can be approved",
+      "type": "boolean"
+    },
+    "editable": {
+      "description": "True if the column can be edited",
+      "type": "boolean"
+    },
+    "pii": {
+      "description": "True if the column should be restricted to viewing only by the institution that owns it",
+      "type": "boolean"
+    },
+    "gdpr": {
+      "description": "True if the column should be treated as a 'gdpr' column, subject to more strict auditing/logging",
+      "type": "boolean"
+    },
+    "organizations": {
+      "type": "array",
+      "description": "List of organizations/institutions who 'own' or should have unrestricted access to this field",
+      "items": {
+        "$ref": "./organization.json"
+      }
+    },
+    "field_name": {
+      "type": "string"
+    },
+    "approves_with": {
+      "description": "List of other columns, if any, that should be sent along when this column gets approved",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

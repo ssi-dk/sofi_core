@@ -5,9 +5,15 @@ from datetime import date, datetime  # noqa: F401
 
 from typing import List, Dict  # noqa: F401
 
-from .base_model_ import Model
+from web.src.SAP.generated.models.base_model_ import Model
+from web.src.SAP.generated.models.base_metadata import BaseMetadata
+from web.src.SAP.generated.models.organization import Organization
+from web.src.SAP.generated.models.tbr_specific_metadata import TbrSpecificMetadata
+from web.src.SAP.generated import util
 
-from .. import util
+from web.src.SAP.generated.models.base_metadata import BaseMetadata  # noqa: E501
+from web.src.SAP.generated.models.organization import Organization  # noqa: E501
+from web.src.SAP.generated.models.tbr_specific_metadata import TbrSpecificMetadata  # noqa: E501
 
 class TbrMetadata(Model):
 
@@ -96,7 +102,7 @@ class TbrMetadata(Model):
             'region': str,
             'fud_number': str,
             'cluster_id': str,
-            'epi_export': str
+            'epi_export': str,
         }
 
         self.attribute_map = {
@@ -124,7 +130,7 @@ class TbrMetadata(Model):
             'region': 'region',
             'fud_number': 'fud_number',
             'cluster_id': 'cluster_id',
-            'epi_export': 'epi_export'
+            'epi_export': 'epi_export',
         }
 
         self._isolate_id = isolate_id
@@ -159,7 +165,7 @@ class TbrMetadata(Model):
 
         :param dikt: A dict.
         :type: dict
-        :return: The tbr-metadata of this TbrMetadata.  # noqa: E501
+        :return: The TbrMetadata of this TbrMetadata.  # noqa: E501
         :rtype: TbrMetadata
         """
         return util.deserialize_model(dikt, cls)

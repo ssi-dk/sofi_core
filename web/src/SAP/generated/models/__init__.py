@@ -19,14 +19,14 @@ from .lims_specific_metadata import LimsSpecificMetadata
 from .metadata_reload_request import MetadataReloadRequest
 from .metadata_reload_response import MetadataReloadResponse
 from .multi_upload_request import MultiUploadRequest
-from .operand import Operand
 from .organization import Organization
 from .page_of_analysis import PageOfAnalysis
 from .permission import Permission
 from .personal_data import PersonalData
 from .personal_identifier_type import PersonalIdentifierType
 from .query_expression import QueryExpression
-from .query_leaf import QueryLeaf
+from .query_operand import QueryOperand
+from .query_operator import QueryOperator
 from .resistance import Resistance
 from .single_upload_request import SingleUploadRequest
 from .tbr_metadata import TbrMetadata

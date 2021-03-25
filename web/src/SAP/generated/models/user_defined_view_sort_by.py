@@ -5,9 +5,9 @@ from datetime import date, datetime  # noqa: F401
 
 from typing import List, Dict  # noqa: F401
 
-from .base_model_ import Model
+from web.src.SAP.generated.models.base_model_ import Model
+from web.src.SAP.generated import util
 
-from .. import util
 
 class UserDefinedViewSortBy(Model):
 
@@ -27,12 +27,12 @@ class UserDefinedViewSortBy(Model):
         """
         self.openapi_types = {
             'desc': bool,
-            'id': str
+            'id': str,
         }
 
         self.attribute_map = {
             'desc': 'desc',
-            'id': 'id'
+            'id': 'id',
         }
 
         self._desc = desc
@@ -44,7 +44,7 @@ class UserDefinedViewSortBy(Model):
 
         :param dikt: A dict.
         :type: dict
-        :return: The user_defined_view_sort_by of this UserDefinedViewSortBy.  # noqa: E501
+        :return: The UserDefinedView_sort_by of this UserDefinedViewSortBy.  # noqa: E501
         :rtype: UserDefinedViewSortBy
         """
         return util.deserialize_model(dikt, cls)

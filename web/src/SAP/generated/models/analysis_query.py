@@ -5,9 +5,11 @@ from datetime import date, datetime  # noqa: F401
 
 from typing import List, Dict  # noqa: F401
 
-from .base_model_ import Model
+from web.src.SAP.generated.models.base_model_ import Model
+from web.src.SAP.generated.models.query_expression import QueryExpression
+from web.src.SAP.generated import util
 
-from .. import util
+from web.src.SAP.generated.models.query_expression import QueryExpression  # noqa: E501
 
 class AnalysisQuery(Model):
 
@@ -17,36 +19,31 @@ class AnalysisQuery(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, paging_token=None, page_size=100, max_results=128, query_expression=None):  # noqa: E501
+    def __init__(self, paging_token=None, page_size=100, expression=None):  # noqa: E501
         """AnalysisQuery - a model defined in OpenAPI
 
         :param paging_token: The paging_token of this AnalysisQuery.  # noqa: E501
-        :type paging_token: bytearray
+        :type paging_token: str
         :param page_size: The page_size of this AnalysisQuery.  # noqa: E501
         :type page_size: int
-        :param max_results: The max_results of this AnalysisQuery.  # noqa: E501
-        :type max_results: int
-        :param query_expression: The query_expression of this AnalysisQuery.  # noqa: E501
-        :type query_expression: QueryExpression
+        :param expression: The expression of this AnalysisQuery.  # noqa: E501
+        :type expression: QueryExpression
         """
         self.openapi_types = {
-            'paging_token': bytearray,
+            'paging_token': str,
             'page_size': int,
-            'max_results': int,
-            'query_expression': QueryExpression
+            'expression': QueryExpression,
         }
 
         self.attribute_map = {
             'paging_token': 'paging_token',
             'page_size': 'page_size',
-            'max_results': 'max_results',
-            'query_expression': 'query_expression'
+            'expression': 'expression',
         }
 
         self._paging_token = paging_token
         self._page_size = page_size
-        self._max_results = max_results
-        self._query_expression = query_expression
+        self._expression = expression
 
     @classmethod
     def from_dict(cls, dikt):
@@ -54,7 +51,7 @@ class AnalysisQuery(Model):
 
         :param dikt: A dict.
         :type: dict
-        :return: The analysis-query of this AnalysisQuery.  # noqa: E501
+        :return: The AnalysisQuery of this AnalysisQuery.  # noqa: E501
         :rtype: AnalysisQuery
         """
         return util.deserialize_model(dikt, cls)
@@ -66,7 +63,7 @@ class AnalysisQuery(Model):
         opaque token to supply to get the next page of isolates  # noqa: E501
 
         :return: The paging_token of this AnalysisQuery.
-        :rtype: bytearray
+        :rtype: str
         """
         return self._paging_token
 
@@ -77,7 +74,7 @@ class AnalysisQuery(Model):
         opaque token to supply to get the next page of isolates  # noqa: E501
 
         :param paging_token: The paging_token of this AnalysisQuery.
-        :type paging_token: bytearray
+        :type paging_token: str
         """
 
         self._paging_token = paging_token
@@ -104,43 +101,22 @@ class AnalysisQuery(Model):
         self._page_size = page_size
 
     @property
-    def max_results(self):
-        """Gets the max_results of this AnalysisQuery.
+    def expression(self):
+        """Gets the expression of this AnalysisQuery.
 
 
-        :return: The max_results of this AnalysisQuery.
-        :rtype: int
-        """
-        return self._max_results
-
-    @max_results.setter
-    def max_results(self, max_results):
-        """Sets the max_results of this AnalysisQuery.
-
-
-        :param max_results: The max_results of this AnalysisQuery.
-        :type max_results: int
-        """
-
-        self._max_results = max_results
-
-    @property
-    def query_expression(self):
-        """Gets the query_expression of this AnalysisQuery.
-
-
-        :return: The query_expression of this AnalysisQuery.
+        :return: The expression of this AnalysisQuery.
         :rtype: QueryExpression
         """
-        return self._query_expression
+        return self._expression
 
-    @query_expression.setter
-    def query_expression(self, query_expression):
-        """Sets the query_expression of this AnalysisQuery.
+    @expression.setter
+    def expression(self, expression):
+        """Sets the expression of this AnalysisQuery.
 
 
-        :param query_expression: The query_expression of this AnalysisQuery.
-        :type query_expression: QueryExpression
+        :param expression: The expression of this AnalysisQuery.
+        :type expression: QueryExpression
         """
 
-        self._query_expression = query_expression
+        self._expression = expression

@@ -5,9 +5,9 @@ from datetime import date, datetime  # noqa: F401
 
 from typing import List, Dict  # noqa: F401
 
-from .base_model_ import Model
+from web.src.SAP.generated.models.base_model_ import Model
+from web.src.SAP.generated import util
 
-from .. import util
 
 class Organization(Model):
 
@@ -39,7 +39,7 @@ class Organization(Model):
 
         :param dikt: A dict.
         :type: dict
-        :return: The organization of this Organization.  # noqa: E501
+        :return: The Organization of this Organization.  # noqa: E501
         :rtype: Organization
         """
         return util.deserialize_model(dikt, cls)

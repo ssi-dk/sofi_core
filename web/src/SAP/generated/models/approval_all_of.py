@@ -5,9 +5,9 @@ from datetime import date, datetime  # noqa: F401
 
 from typing import List, Dict  # noqa: F401
 
-from .base_model_ import Model
+from web.src.SAP.generated.models.base_model_ import Model
+from web.src.SAP.generated import util
 
-from .. import util
 
 class ApprovalAllOf(Model):
 
@@ -33,14 +33,14 @@ class ApprovalAllOf(Model):
             'id': str,
             'approver': str,
             'timestamp': datetime,
-            'status': str
+            'status': str,
         }
 
         self.attribute_map = {
             'id': 'id',
             'approver': 'approver',
             'timestamp': 'timestamp',
-            'status': 'status'
+            'status': 'status',
         }
 
         self._id = id
@@ -54,7 +54,7 @@ class ApprovalAllOf(Model):
 
         :param dikt: A dict.
         :type: dict
-        :return: The approval_allOf of this ApprovalAllOf.  # noqa: E501
+        :return: The Approval_allOf of this ApprovalAllOf.  # noqa: E501
         :rtype: ApprovalAllOf
         """
         return util.deserialize_model(dikt, cls)

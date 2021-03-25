@@ -5,9 +5,11 @@ from datetime import date, datetime  # noqa: F401
 
 from typing import List, Dict  # noqa: F401
 
-from .base_model_ import Model
+from web.src.SAP.generated.models.base_model_ import Model
+from web.src.SAP.generated.models.resistance import Resistance
+from web.src.SAP.generated import util
 
-from .. import util
+from web.src.SAP.generated.models.resistance import Resistance  # noqa: E501
 
 class AnalysisResultAllOf(Model):
 
@@ -195,7 +197,7 @@ class AnalysisResultAllOf(Model):
             'amr_tia': Resistance,
             'amr_tgc': Resistance,
             'amr_tmp': Resistance,
-            'amr_van': Resistance
+            'amr_van': Resistance,
         }
 
         self.attribute_map = {
@@ -256,7 +258,7 @@ class AnalysisResultAllOf(Model):
             'amr_tia': 'amr_tia',
             'amr_tgc': 'amr_tgc',
             'amr_tmp': 'amr_tmp',
-            'amr_van': 'amr_van'
+            'amr_van': 'amr_van',
         }
 
         self._id = id
@@ -324,7 +326,7 @@ class AnalysisResultAllOf(Model):
 
         :param dikt: A dict.
         :type: dict
-        :return: The analysis_result_allOf of this AnalysisResultAllOf.  # noqa: E501
+        :return: The AnalysisResult_allOf of this AnalysisResultAllOf.  # noqa: E501
         :rtype: AnalysisResultAllOf
         """
         return util.deserialize_model(dikt, cls)

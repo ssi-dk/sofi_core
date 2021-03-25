@@ -5,9 +5,9 @@ from datetime import date, datetime  # noqa: F401
 
 from typing import List, Dict  # noqa: F401
 
-from .base_model_ import Model
+from web.src.SAP.generated.models.base_model_ import Model
+from web.src.SAP.generated import util
 
-from .. import util
 
 class LimsSpecificMetadata(Model):
 
@@ -45,7 +45,7 @@ class LimsSpecificMetadata(Model):
             'product': str,
             'origin_country': str,
             'animal_species': str,
-            'sample_info': str
+            'sample_info': str,
         }
 
         self.attribute_map = {
@@ -56,7 +56,7 @@ class LimsSpecificMetadata(Model):
             'product': 'product',
             'origin_country': 'origin_country',
             'animal_species': 'animal_species',
-            'sample_info': 'sample_info'
+            'sample_info': 'sample_info',
         }
 
         self._chr_number = chr_number
@@ -74,7 +74,7 @@ class LimsSpecificMetadata(Model):
 
         :param dikt: A dict.
         :type: dict
-        :return: The lims-specific-metadata of this LimsSpecificMetadata.  # noqa: E501
+        :return: The LimsSpecificMetadata of this LimsSpecificMetadata.  # noqa: E501
         :rtype: LimsSpecificMetadata
         """
         return util.deserialize_model(dikt, cls)

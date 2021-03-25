@@ -1,7 +1,7 @@
 // tslint:disable
 /**
- * SAP
- * Sekvensanalyseplatform
+ * SOFI
+ * SOFI Sekvensanalyseplatform
  *
  * The version of the OpenAPI document: 0.1.0
  * 
@@ -13,9 +13,12 @@
 
 import { exists, mapValues } from '../runtime';
 import {
-    Operand,
-    OperandFromJSON,
-    OperandToJSON,
+    QueryOperand,
+    QueryOperandFromJSON,
+    QueryOperandToJSON,
+    QueryOperator,
+    QueryOperatorFromJSON,
+    QueryOperatorToJSON,
 } from './';
 
 /**
@@ -26,29 +29,29 @@ import {
 export interface QueryExpression  {
     /**
      * 
-     * @type {Operand}
+     * @type {QueryOperand}
      * @memberof QueryExpression
      */
-    left?: Operand;
+    left?: QueryOperand;
     /**
      * 
-     * @type {string}
+     * @type {QueryOperator}
      * @memberof QueryExpression
      */
-    operator?: QueryExpressionOperatorEnum;
+    operator?: QueryOperator;
     /**
      * 
-     * @type {Operand}
+     * @type {QueryOperand}
      * @memberof QueryExpression
      */
-    right?: Operand;
+    right?: QueryOperand;
 }
 
 export function QueryExpressionFromJSON(json: any): QueryExpression {
     return {
-        'left': !exists(json, 'left') ? undefined : json['left'],
-        'operator': !exists(json, 'operator') ? undefined : json['operator'],
-        'right': !exists(json, 'right') ? undefined : json['right'],
+        'left': !exists(json, 'left') ? undefined : QueryOperandFromJSON(json['left']),
+        'operator': !exists(json, 'operator') ? undefined : QueryOperatorFromJSON(json['operator']),
+        'right': !exists(json, 'right') ? undefined : QueryOperandFromJSON(json['right']),
     };
 }
 
@@ -57,22 +60,10 @@ export function QueryExpressionToJSON(value?: QueryExpression): any {
         return undefined;
     }
     return {
-        'left': value.left,
-        'operator': value.operator,
-        'right': value.right,
+        'left': QueryOperandToJSON(value.left),
+        'operator': QueryOperatorToJSON(value.operator),
+        'right': QueryOperandToJSON(value.right),
     };
-}
-
-/**
-* @export
-* @enum {string}
-*/
-export enum QueryExpressionOperatorEnum {
-    AND = 'AND',
-    OR = 'OR',
-    AND_NOT = 'AND NOT',
-    OR_NOT = 'OR NOT',
-    implicit = '<implicit>'
 }
 
 

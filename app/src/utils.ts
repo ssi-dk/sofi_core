@@ -62,3 +62,24 @@ export function predicateBuilder<T extends NotEmpty>(
   return (t: T) =>
     notEmpty(t) && ppreds.every((p) => p(t)) && rpreds.every((p) => p(t));
 }
+
+export function invertMap(
+  data: { [K: string]: string },
+  normalizeKeys = false
+) {
+  return Object.entries(data).reduce(
+    // eslint-disable-next-line
+    (obj, item) =>
+      (obj[item[1]] = normalizeKeys ? item[0] : item[0].toLocaleLowerCase()) &&
+      obj,
+    {}
+  );
+}
+
+export function recurseTree(obj: Object, fn: (o: Object) => void) {
+  fn(obj);
+  // eslint-disable-next-line
+  for (const k in obj) {
+    if (typeof obj[k] === "object" && obj[k] !== null) recurseTree(obj[k], fn);
+  }
+}

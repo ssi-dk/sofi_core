@@ -1,8 +1,6 @@
 import connexion
 import six
 
-from web.src.SAP.generated.models.user_defined_view import UserDefinedView  # noqa: E501
-from web.src.SAP.generated.models.user_info import UserInfo  # noqa: E501
 from .. import util
 from ...src.controllers import UserController
 
@@ -17,6 +15,7 @@ def create_user_view(user, token_info, user_defined_view=None):  # noqa: E501
     :rtype: None
     """
     if connexion.request.is_json:
+        import UserDefinedView
         user_defined_view = UserDefinedView.from_dict(connexion.request.get_json())  # noqa: E501
     return UserController.create_user_view(user, token_info, user_defined_view)
 

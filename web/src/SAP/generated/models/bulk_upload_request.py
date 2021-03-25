@@ -5,9 +5,9 @@ from datetime import date, datetime  # noqa: F401
 
 from typing import List, Dict  # noqa: F401
 
-from .base_model_ import Model
+from web.src.SAP.generated.models.base_model_ import Model
+from web.src.SAP.generated import util
 
-from .. import util
 
 class BulkUploadRequest(Model):
 
@@ -27,12 +27,12 @@ class BulkUploadRequest(Model):
         """
         self.openapi_types = {
             'path': str,
-            'metadata_tsv': file
+            'metadata_tsv': file,
         }
 
         self.attribute_map = {
             'path': 'path',
-            'metadata_tsv': 'metadata_tsv'
+            'metadata_tsv': 'metadata_tsv',
         }
 
         self._path = path
@@ -44,7 +44,7 @@ class BulkUploadRequest(Model):
 
         :param dikt: A dict.
         :type: dict
-        :return: The bulk-upload-request of this BulkUploadRequest.  # noqa: E501
+        :return: The BulkUploadRequest of this BulkUploadRequest.  # noqa: E501
         :rtype: BulkUploadRequest
         """
         return util.deserialize_model(dikt, cls)

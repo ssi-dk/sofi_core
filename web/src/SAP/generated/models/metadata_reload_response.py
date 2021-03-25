@@ -5,9 +5,15 @@ from datetime import date, datetime  # noqa: F401
 
 from typing import List, Dict  # noqa: F401
 
-from .base_model_ import Model
+from web.src.SAP.generated.models.base_model_ import Model
+from web.src.SAP.generated.models.lims_metadata import LimsMetadata
+from web.src.SAP.generated.models.organization import Organization
+from web.src.SAP.generated.models.tbr_metadata import TbrMetadata
+from web.src.SAP.generated import util
 
-from .. import util
+from web.src.SAP.generated.models.lims_metadata import LimsMetadata  # noqa: E501
+from web.src.SAP.generated.models.organization import Organization  # noqa: E501
+from web.src.SAP.generated.models.tbr_metadata import TbrMetadata  # noqa: E501
 
 class MetadataReloadResponse(Model):
 
@@ -120,7 +126,7 @@ class MetadataReloadResponse(Model):
             'product': str,
             'origin_country': str,
             'animal_species': str,
-            'sample_info': str
+            'sample_info': str,
         }
 
         self.attribute_map = {
@@ -156,7 +162,7 @@ class MetadataReloadResponse(Model):
             'product': 'product',
             'origin_country': 'origin_country',
             'animal_species': 'animal_species',
-            'sample_info': 'sample_info'
+            'sample_info': 'sample_info',
         }
 
         self._isolate_id = isolate_id
@@ -199,7 +205,7 @@ class MetadataReloadResponse(Model):
 
         :param dikt: A dict.
         :type: dict
-        :return: The metadata-reload-response of this MetadataReloadResponse.  # noqa: E501
+        :return: The MetadataReloadResponse of this MetadataReloadResponse.  # noqa: E501
         :rtype: MetadataReloadResponse
         """
         return util.deserialize_model(dikt, cls)

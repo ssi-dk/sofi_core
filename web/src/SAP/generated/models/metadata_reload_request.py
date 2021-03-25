@@ -5,9 +5,11 @@ from datetime import date, datetime  # noqa: F401
 
 from typing import List, Dict  # noqa: F401
 
-from .base_model_ import Model
+from web.src.SAP.generated.models.base_model_ import Model
+from web.src.SAP.generated.models.organization import Organization
+from web.src.SAP.generated import util
 
-from .. import util
+from web.src.SAP.generated.models.organization import Organization  # noqa: E501
 
 class MetadataReloadRequest(Model):
 
@@ -27,12 +29,12 @@ class MetadataReloadRequest(Model):
         """
         self.openapi_types = {
             'isolate_id': str,
-            'institution': Organization
+            'institution': Organization,
         }
 
         self.attribute_map = {
             'isolate_id': 'isolateId',
-            'institution': 'institution'
+            'institution': 'institution',
         }
 
         self._isolate_id = isolate_id
@@ -44,7 +46,7 @@ class MetadataReloadRequest(Model):
 
         :param dikt: A dict.
         :type: dict
-        :return: The metadata-reload-request of this MetadataReloadRequest.  # noqa: E501
+        :return: The MetadataReloadRequest of this MetadataReloadRequest.  # noqa: E501
         :rtype: MetadataReloadRequest
         """
         return util.deserialize_model(dikt, cls)

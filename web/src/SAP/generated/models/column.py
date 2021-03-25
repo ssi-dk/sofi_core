@@ -5,9 +5,11 @@ from datetime import date, datetime  # noqa: F401
 
 from typing import List, Dict  # noqa: F401
 
-from .base_model_ import Model
+from web.src.SAP.generated.models.base_model_ import Model
+from web.src.SAP.generated.models.organization import Organization
+from web.src.SAP.generated import util
 
-from .. import util
+from web.src.SAP.generated.models.organization import Organization  # noqa: E501
 
 class Column(Model):
 
@@ -42,7 +44,7 @@ class Column(Model):
             'gdpr': bool,
             'organizations': List[Organization],
             'field_name': str,
-            'approves_with': List[str]
+            'approves_with': List[str],
         }
 
         self.attribute_map = {
@@ -52,7 +54,7 @@ class Column(Model):
             'gdpr': 'gdpr',
             'organizations': 'organizations',
             'field_name': 'field_name',
-            'approves_with': 'approves_with'
+            'approves_with': 'approves_with',
         }
 
         self._approvable = approvable
@@ -69,7 +71,7 @@ class Column(Model):
 
         :param dikt: A dict.
         :type: dict
-        :return: The column of this Column.  # noqa: E501
+        :return: The Column of this Column.  # noqa: E501
         :rtype: Column
         """
         return util.deserialize_model(dikt, cls)

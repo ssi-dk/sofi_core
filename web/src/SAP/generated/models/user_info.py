@@ -5,9 +5,15 @@ from datetime import date, datetime  # noqa: F401
 
 from typing import List, Dict  # noqa: F401
 
-from .base_model_ import Model
+from web.src.SAP.generated.models.base_model_ import Model
+from web.src.SAP.generated.models.data_clearance import DataClearance
+from web.src.SAP.generated.models.organization import Organization
+from web.src.SAP.generated.models.permission import Permission
+from web.src.SAP.generated import util
 
-from .. import util
+from web.src.SAP.generated.models.data_clearance import DataClearance  # noqa: E501
+from web.src.SAP.generated.models.organization import Organization  # noqa: E501
+from web.src.SAP.generated.models.permission import Permission  # noqa: E501
 
 class UserInfo(Model):
 
@@ -36,7 +42,7 @@ class UserInfo(Model):
             'data_clearance': DataClearance,
             'institution': Organization,
             'groups': List[str],
-            'permissions': List[Permission]
+            'permissions': List[Permission],
         }
 
         self.attribute_map = {
@@ -44,7 +50,7 @@ class UserInfo(Model):
             'data_clearance': 'data_clearance',
             'institution': 'institution',
             'groups': 'groups',
-            'permissions': 'permissions'
+            'permissions': 'permissions',
         }
 
         self._user_id = user_id
@@ -59,7 +65,7 @@ class UserInfo(Model):
 
         :param dikt: A dict.
         :type: dict
-        :return: The user-info of this UserInfo.  # noqa: E501
+        :return: The UserInfo of this UserInfo.  # noqa: E501
         :rtype: UserInfo
         """
         return util.deserialize_model(dikt, cls)

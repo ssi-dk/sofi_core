@@ -5,9 +5,9 @@ from datetime import date, datetime  # noqa: F401
 
 from typing import List, Dict  # noqa: F401
 
-from .base_model_ import Model
+from web.src.SAP.generated.models.base_model_ import Model
+from web.src.SAP.generated import util
 
-from .. import util
 
 class TbrSpecificMetadata(Model):
 
@@ -60,7 +60,7 @@ class TbrSpecificMetadata(Model):
             'region': str,
             'fud_number': str,
             'cluster_id': str,
-            'epi_export': str
+            'epi_export': str,
         }
 
         self.attribute_map = {
@@ -76,7 +76,7 @@ class TbrSpecificMetadata(Model):
             'region': 'region',
             'fud_number': 'fud_number',
             'cluster_id': 'cluster_id',
-            'epi_export': 'epi_export'
+            'epi_export': 'epi_export',
         }
 
         self._cpr_nr = cpr_nr
@@ -99,7 +99,7 @@ class TbrSpecificMetadata(Model):
 
         :param dikt: A dict.
         :type: dict
-        :return: The tbr-specific-metadata of this TbrSpecificMetadata.  # noqa: E501
+        :return: The TbrSpecificMetadata of this TbrSpecificMetadata.  # noqa: E501
         :rtype: TbrSpecificMetadata
         """
         return util.deserialize_model(dikt, cls)

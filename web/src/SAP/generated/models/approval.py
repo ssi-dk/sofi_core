@@ -5,9 +5,15 @@ from datetime import date, datetime  # noqa: F401
 
 from typing import List, Dict  # noqa: F401
 
-from .base_model_ import Model
+from web.src.SAP.generated.models.base_model_ import Model
+from web.src.SAP.generated.models.approval_all_of import ApprovalAllOf
+from web.src.SAP.generated.models.approval_request import ApprovalRequest
+from web.src.SAP.generated.models.approval_status import ApprovalStatus
+from web.src.SAP.generated import util
 
-from .. import util
+from web.src.SAP.generated.models.approval_all_of import ApprovalAllOf  # noqa: E501
+from web.src.SAP.generated.models.approval_request import ApprovalRequest  # noqa: E501
+from web.src.SAP.generated.models.approval_status import ApprovalStatus  # noqa: E501
 
 class Approval(Model):
 
@@ -36,7 +42,7 @@ class Approval(Model):
             'id': str,
             'approver': str,
             'timestamp': datetime,
-            'status': str
+            'status': str,
         }
 
         self.attribute_map = {
@@ -44,7 +50,7 @@ class Approval(Model):
             'id': 'id',
             'approver': 'approver',
             'timestamp': 'timestamp',
-            'status': 'status'
+            'status': 'status',
         }
 
         self._matrix = matrix
@@ -59,7 +65,7 @@ class Approval(Model):
 
         :param dikt: A dict.
         :type: dict
-        :return: The approval of this Approval.  # noqa: E501
+        :return: The Approval of this Approval.  # noqa: E501
         :rtype: Approval
         """
         return util.deserialize_model(dikt, cls)

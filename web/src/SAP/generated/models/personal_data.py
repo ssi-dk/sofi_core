@@ -5,9 +5,9 @@ from datetime import date, datetime  # noqa: F401
 
 from typing import List, Dict  # noqa: F401
 
-from .base_model_ import Model
+from web.src.SAP.generated.models.base_model_ import Model
+from web.src.SAP.generated import util
 
-from .. import util
 
 class PersonalData(Model):
 
@@ -24,11 +24,11 @@ class PersonalData(Model):
         :type data: str
         """
         self.openapi_types = {
-            'data': str
+            'data': str,
         }
 
         self.attribute_map = {
-            'data': 'data'
+            'data': 'data',
         }
 
         self._data = data
@@ -39,7 +39,7 @@ class PersonalData(Model):
 
         :param dikt: A dict.
         :type: dict
-        :return: The personal-data of this PersonalData.  # noqa: E501
+        :return: The PersonalData of this PersonalData.  # noqa: E501
         :rtype: PersonalData
         """
         return util.deserialize_model(dikt, cls)

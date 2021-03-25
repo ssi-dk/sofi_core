@@ -5,9 +5,11 @@ from datetime import date, datetime  # noqa: F401
 
 from typing import List, Dict  # noqa: F401
 
-from .base_model_ import Model
+from web.src.SAP.generated.models.base_model_ import Model
+from web.src.SAP.generated.models.base_metadata import BaseMetadata
+from web.src.SAP.generated import util
 
-from .. import util
+from web.src.SAP.generated.models.base_metadata import BaseMetadata  # noqa: E501
 
 class SingleUploadRequest(Model):
 
@@ -27,12 +29,12 @@ class SingleUploadRequest(Model):
         """
         self.openapi_types = {
             'metadata': BaseMetadata,
-            'file': file
+            'file': file,
         }
 
         self.attribute_map = {
             'metadata': 'metadata',
-            'file': 'file'
+            'file': 'file',
         }
 
         self._metadata = metadata
@@ -44,7 +46,7 @@ class SingleUploadRequest(Model):
 
         :param dikt: A dict.
         :type: dict
-        :return: The single-upload-request of this SingleUploadRequest.  # noqa: E501
+        :return: The SingleUploadRequest of this SingleUploadRequest.  # noqa: E501
         :rtype: SingleUploadRequest
         """
         return util.deserialize_model(dikt, cls)
