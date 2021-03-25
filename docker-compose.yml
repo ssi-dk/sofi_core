@@ -1,4 +1,9 @@
 version: '3.4'
+
+x-extra_hosts:
+  &default-extra_hosts
+  - "sofi_tbr_integration_dev:192.168.113.12"
+
 services:
 
   sap_api:
@@ -64,6 +69,7 @@ services:
       - ${TBR_CLIENT_KEY}:/app/.certs/client.key:ro
       - ${TBR_CLIENT_CERT}:/app/.certs/client.pem:ro
       - ${TBR_ROOT_CA}:/app/.certs/SOFI_ROOT.pem:ro
+    extra_hosts: *default-extra_hosts
 
   bifrost_listener:
     build:
