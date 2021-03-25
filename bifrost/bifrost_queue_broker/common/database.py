@@ -11,7 +11,9 @@ DEBUG = os.getenv("DEBUG", "False").lower() in ["true", "1"]
 CONNECTION = None
 CLIENT_ENC = None
 
-BIFROST_CONN = os.environ.get("BIFROST_CONN", "mongodb://localhost:27017/")
+BIFROST_MONGO_CONN = os.environ.get(
+    "BIFROST_MONGO_CONN", "mongodb://localhost:27017/bifrost_test"
+)
 DB_NAME = os.environ.get("BIFROST_MONGO_DB", "bifrost_test")
 ANALYSIS_COL_NAME = "sap_analysis_results"
 APPROVALS_COL_NAME = "sap_approvals"
@@ -71,7 +73,9 @@ def get_connection(with_enc=False):
         client = (
             MongoClient(auto_encryption_opts=auto_encryption_opts)
             if DEBUG
-            else MongoClient(BIFROST_CONN, auto_encryption_opts=auto_encryption_opts)
+            else MongoClient(
+                BIFROST_MONGO_CONN, auto_encryption_opts=auto_encryption_opts
+            )
         )
         coll = client.test.coll
 
