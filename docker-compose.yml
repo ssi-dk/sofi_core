@@ -60,6 +60,10 @@ services:
       - LIMS_API_DATABASEID=${LIMS_API_DATABASEID}
       - LIMS_API_USERNAME=${LIMS_API_USERNAME}
       - LIMS_API_PASSWORD=${LIMS_API_PASSWORD}
+    volumes:
+      - ${TBR_CLIENT_KEY}:/app/.certs/client.key:ro
+      - ${TBR_CLIENT_CERT}:/app/.certs/client.pem:ro
+      - ${TBR_ROOT_CA}:/app/.certs/SOFI_ROOT.pem:ro
 
   bifrost_listener:
     build:

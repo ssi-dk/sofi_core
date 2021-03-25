@@ -15,7 +15,6 @@ CMD [ "python", "-u", "/app/main.py" ]
 FROM base AS testing
 COPY ["test-requirements.txt", "/app/"]
 COPY tests/ /app/tests
-COPY .certs/ /app/.certs
 WORKDIR /app/
 RUN pip install -r test-requirements.txt
 LABEL test=true
