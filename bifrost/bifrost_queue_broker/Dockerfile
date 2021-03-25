@@ -9,8 +9,8 @@ COPY api_clients/ /app/api_clients/
 COPY main.py /app/
 
 ENV LOGLEVEL="INFO"
-
-CMD [ "python", "-u", "/app/main.py" ]
+WORKDIR /app/
+CMD [ "python", "-u", "/main.py" ]
 
 FROM base AS testing
 COPY ["test-requirements.txt", "/app/"]
