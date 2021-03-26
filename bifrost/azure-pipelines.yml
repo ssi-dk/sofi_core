@@ -34,13 +34,13 @@ steps:
   condition: succeededOrFailed()
 
 - script: |
-    docker login -u $(dockerId) -p $(dockerPass)
+    echo $(dockerPass) | docker login -u $(dockerId) --password-stdin
     docker push $(listenerImageName)
     docker push $(brokerImageName)
   displayName: 'Publish docker images'
 
 - script: |
-    echo 'docker login -u $(dockerId) -p $(dockerPass)' > deployment.sh
+    echo 'cat /dev/stdin | docker login -u $(dockerId) --password-stdin' > deployment.sh
     echo 'docker pull $(listenerImageName)' >> deployment.sh
     echo 'docker tag $(listenerImageName) $(listenerImageNameRelease)' >> deployment.sh
     echo 'docker push $(listenerImageNameRelease)' >> deployment.sh
