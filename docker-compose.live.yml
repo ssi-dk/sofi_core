@@ -1,26 +1,22 @@
-version: "3"
+version: "3.4"
 
 x-extra_hosts:
   &default-extra_hosts
   - "sofi_tbr_integration:192.168.113.11"
 
 services:
-  sap-web:
+  sap_web:
     image: sekvensanalyseplatform/sap-web:latest
-    ports:
-      - "3000:3000"
     labels:
       - "com.centurylinklabs.watchtower.enable=true"
 
-  sap-api:
+  sap_api:
     image: sekvensanalyseplatform/sap-api:latest
-    logging: 
+    logging:
       driver: local
-      options: 
+      options:
         max-size: 50m
         max-file: "20"
-    ports:
-      - "6000:6000"
     labels:
       - "com.centurylinklabs.watchtower.enable=true"
 
@@ -37,7 +33,7 @@ services:
     extra_hosts: *default-extra_hosts
 
   auth-selfservice-ui:
-    image: sekvensanalyseplatform/auth-selfservice-ui:latest
+    image: sekvensanalyseplatform/auth-selfservice-ui:master
     labels:
       - "com.centurylinklabs.watchtower.enable=true"
 
@@ -48,15 +44,9 @@ services:
     command: --label-enable --interval 30
 
   kratos:
-    logging: 
+    logging:
       driver: local
-      options: 
+      options:
         max-size: 50m
         max-file: "20"
 
-  hydra:
-    logging: 
-      driver: local
-      options: 
-        max-size: 50m
-        max-file: "20"
