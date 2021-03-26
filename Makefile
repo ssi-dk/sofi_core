@@ -60,7 +60,14 @@ lefthook : ${mkfile_dir}/node_modules
 	yarn exec lefthook install
 	pip3 install black
 
-${mkfile_dir}/app/src/sap-client : $(shell find ${mkfile_dir}/openapi_specs/SAP/ -type f)
+# unused target for now
+${mkfile_dir}/openapi_specs/SOFI/SOFI_merged.yaml : $(shell find ${mkfile_dir}/openapi_specs/SOFI/ -type f)
+	docker run --rm -v "${mkfile_dir}:/mnt" \
+		--user ${mkfile_user} \
+	 	jeanberu/swagger-cli swagger-cli \
+		bundle /mnt/openapi_specs/SOFI/SOFI.yaml -r -t yaml -o /mnt/openapi_specs/SOFI/SOFI_merged.yaml
+
+${mkfile_dir}/app/src/sap-client : $(shell find ${mkfile_dir}/openapi_specs/SOFI/ -type f)
 	# Generate web app client
 	rm -rf "${mkfile_dir}/app/sap-client/src"
 	rm -rf "${mkfile_dir}/app/sap-client/dist"
@@ -68,7 +75,7 @@ ${mkfile_dir}/app/src/sap-client : $(shell find ${mkfile_dir}/openapi_specs/SAP/
 		--user ${mkfile_user} \
 		"openapitools/openapi-generator:cli-v5.0.0" \
 		generate \
-		-i "/mnt/openapi_specs/SAP/SAP.yaml" \
+		-i "/mnt/openapi_specs/SOFI/SOFI.yaml" \
 		--additional-properties=modelPropertyNaming=original,enumPropertyNaming=original \
 		-g typescript-redux-query \
 		-o /mnt/app/src/sap-client
@@ -76,17 +83,19 @@ ${mkfile_dir}/app/src/sap-client : $(shell find ${mkfile_dir}/openapi_specs/SAP/
 	rm -rf "${mkfile_dir}/app/src/sap-client/src/"
 	yarn --cwd "${mkfile_dir}/app/" prettier --write src/
 
-${mkfile_dir}/web/src/SAP/generated : $(shell find ${mkfile_dir}/openapi_specs/SAP/ -type f) 
+${mkfile_dir}/web/src/SAP/generated : $(shell find ${mkfile_dir}/openapi_specs/SOFI/ -type f)
 	# Generate flask api
 	docker run --rm -v "${mkfile_dir}:/mnt" \
 		--user ${mkfile_user} \
-		"openapitools/openapi-generator:cli-v4.3.1" \
+		"openapitools/openapi-generator:cli-v5.0.0" \
 		generate \
-		-i "/mnt/openapi_specs/SAP/SAP.yaml" \
+		-i "/mnt/openapi_specs/SOFI/SOFI.yaml" \
 		-g python-flask \
+		--global-property skipFormModel=false \
+		--skip-validate-spec \
 		-o "/mnt/web/src/SAP" \
-		-t "/mnt/openapi_specs/SAP/templates" \
-		-c "/mnt/openapi_specs/SAP/SAP-config.yaml"
+		-t "/mnt/openapi_specs/SOFI/templates" \
+		-c "/mnt/openapi_specs/SOFI/SOFI-config.yaml"
 	rm -rf "${mkfile_dir}/web/src/SAP/generated"
 	mv "${mkfile_dir}/web/src/SAP/web/src/SAP/generated" "${mkfile_dir}/web/src/SAP/generated"
 

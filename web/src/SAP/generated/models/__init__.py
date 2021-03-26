@@ -25,6 +25,9 @@ from .page_of_analysis import PageOfAnalysis
 from .permission import Permission
 from .personal_data import PersonalData
 from .personal_identifier_type import PersonalIdentifierType
+from .query_expression import QueryExpression
+from .query_operand import QueryOperand
+from .query_operator import QueryOperator
 from .resistance import Resistance
 from .single_upload_request import SingleUploadRequest
 from .tbr_metadata import TbrMetadata

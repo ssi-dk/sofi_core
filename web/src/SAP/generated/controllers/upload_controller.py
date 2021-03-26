@@ -1,8 +1,6 @@
 import connexion
 import six
 
-from web.src.SAP.generated.models.base_metadata import BaseMetadata  # noqa: E501
-from web.src.SAP.generated.models.upload_response import UploadResponse  # noqa: E501
 from .. import util
 from ...src.controllers import UploadController
 
@@ -28,7 +26,6 @@ def multi_upload(user, token_info, metadata_tsv, files):  # noqa: E501
     :param metadata_tsv: 
     :type metadata_tsv: str
     :param files: 
-    :type files: List[str]
 
     :rtype: UploadResponse
     """
@@ -47,5 +44,6 @@ def single_upload(user, token_info, metadata, file):  # noqa: E501
     :rtype: UploadResponse
     """
     if connexion.request.is_json:
+        import BaseMetadata
         metadata = BaseMetadata.from_dict(connexion.request.get_json())  # noqa: E501
     return UploadController.single_upload(user, token_info, metadata, file)

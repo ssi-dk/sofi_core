@@ -1,7 +1,6 @@
 import connexion
 import six
 
-from web.src.SAP.generated.models.newick_tree_response import NewickTreeResponse  # noqa: E501
 from .. import util
 from ...src.controllers import ComparativeAnalysisController
 

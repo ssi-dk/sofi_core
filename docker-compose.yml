@@ -1,4 +1,9 @@
 version: '3.4'
+
+x-extra_hosts:
+  &default-extra_hosts
+  - "sofi_tbr_integration_dev:192.168.113.12"
+
 services:
 
   sap_api:
@@ -18,8 +23,7 @@ services:
       - APP_MODULE=wsgi:app
       - IDP=https://${SOFI_HOSTNAME}
       - SOFI_CLIENT_ID=${SOFI_CLIENT_ID}
-      - BIFROST_MONGO_HOST=${BIFROST_MONGO_HOST}
-      - BIFROST_MONGO_PORT=${BIFROST_MONGO_PORT}
+      - BIFROST_MONGO_CONN=${BIFROST_MONGO_CONN}
       - BIFROST_MONGO_DB=${BIFROST_MONGO_DB}
       - SOFI_BIFROST_ENCRYPTION_NAME=${SOFI_BIFROST_ENCRYPTION_NAME}
       - SOFI_BIFROST_ENCRYPTION_KEY=${SOFI_BIFROST_ENCRYPTION_KEY}
@@ -46,8 +50,7 @@ services:
     environment:
       - PYTHONDONTWRITEBYTECODE=1
       - PYTHONUNBUFFERED=0
-      - BIFROST_MONGO_HOST=${BIFROST_MONGO_HOST}
-      - BIFROST_MONGO_PORT=${BIFROST_MONGO_PORT}
+      - BIFROST_MONGO_CONN=${BIFROST_MONGO_CONN}
       - BIFROST_MONGO_DB=${BIFROST_MONGO_DB}
       - BIFROST_MONGO_QUEUE_COLLECTION=sap_broker_queue
       - BIFROST_MONGO_TBR_METADATA_COLLECTION=sap_tbr_metadata
@@ -60,6 +63,11 @@ services:
       - LIMS_API_DATABASEID=${LIMS_API_DATABASEID}
       - LIMS_API_USERNAME=${LIMS_API_USERNAME}
       - LIMS_API_PASSWORD=${LIMS_API_PASSWORD}
+    volumes:
+      - ${TBR_CLIENT_KEY}:/app/.certs/client.key:ro
+      - ${TBR_CLIENT_CERT}:/app/.certs/client.pem:ro
+      - ${TBR_ROOT_CA}:/app/.certs/SOFI_ROOT.pem:ro
+    extra_hosts: *default-extra_hosts
 
   bifrost_listener:
     build:

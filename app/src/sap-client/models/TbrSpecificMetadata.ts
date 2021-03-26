@@ -1,7 +1,7 @@
 // tslint:disable
 /**
- * SAP
- * Sekvensanalyseplatform
+ * SOFI
+ * SOFI Sekvensanalyseplatform
  *
  * The version of the OpenAPI document: 0.1.0
  * 

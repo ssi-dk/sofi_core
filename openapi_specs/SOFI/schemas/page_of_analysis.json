@@ -1,0 +1,24 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "PageOfAnalysis",
+  "type": "object",
+  "required": ["paging_token", "total_count", "items", "approval_matrix"],
+  "properties": {
+    "paging_token": {
+      "type": "string",
+      "nullable": true
+    },
+    "total_count": {
+      "type": "integer"
+    },
+    "items": {
+      "type": "array",
+      "items": {
+        "$ref": "./analysis_result.json"
+      }
+    },
+    "approval_matrix": {
+      "$ref": "./approval_matrix.json"
+    }
+  }
+}

@@ -21,7 +21,7 @@ class TestAnalysisController(BaseTestCase):
 
         
         """
-        query_string = [('paging_token', None),
+        query_string = [('paging_token', None)
                         ('page_size', 100)]
         headers = { 
             'Accept': 'application/json',
@@ -56,7 +56,9 @@ class TestAnalysisController(BaseTestCase):
 
         
         """
-        body = {}
+        body = {
+  "isolateId" : "isolateId"
+}
         headers = { 
             'Accept': 'application/json',
             'Content-Type': 'application/json',
@@ -76,7 +78,24 @@ class TestAnalysisController(BaseTestCase):
 
         
         """
-        query = {}
+        query = {
+  "paging_token" : "paging_token",
+  "expression" : {
+    "left" : {
+      "field" : "field",
+      "left" : "{}",
+      "term" : "term",
+      "right" : "{}"
+    },
+    "right" : {
+      "field" : "field",
+      "left" : "{}",
+      "term" : "term",
+      "right" : "{}"
+    }
+  },
+  "page_size" : 0
+}
         headers = { 
             'Accept': 'application/json',
             'Content-Type': 'application/json',

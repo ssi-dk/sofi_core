@@ -1,0 +1,54 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "TbrSpecificMetadata",
+  "type": "object",
+  "required": ["run_date"],
+  "properties": {
+    "cpr_nr": {
+      "type": "string"
+    },
+    "gender": {
+      "type": "string",
+      "enum": ["M", "K"]
+    },
+    "name": {
+      "type": "string",
+      "x-faker": "name.findName"
+    },
+    "age": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 128
+    },
+    "travel": {
+      "type": "string"
+    },
+    "travel_country": {
+      "type": "string",
+      "x-faker": "address.country"
+    },
+    "run_date": {
+      "format": "date-time",
+      "type": "string"
+    },
+    "kma_received_date": {
+      "format": "date-time",
+      "type": "string"
+    },
+    "kma": {
+      "type": "string"
+    },
+    "region": {
+      "type": "string"
+    },
+    "fud_number": {
+      "type": "string"
+    },
+    "cluster_id": {
+      "type": "string"
+    },
+    "epi_export": {
+      "type": "string"
+    }
+  }
+}

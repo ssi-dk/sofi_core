@@ -2,17 +2,24 @@ import React from "react";
 import { Input, IconButton } from "@chakra-ui/react";
 import { SearchIcon } from "@chakra-ui/icons";
 import { AnalysisQuery } from "sap-client";
+import { parse as luceneParse } from "lucene";
+import { recurseTree } from "utils";
+import { getFieldInternalName } from "app/i18n";
 
 type AnalysisSearchProps = {
   onSubmit: (query: AnalysisQuery) => void;
 };
 
-const parseQuery = (input: string) =>
-  input
-    .replace(": ", ":")
-    .split(" ")
-    .map((kv) => ({ [kv.split(":")[0]]: kv.split(":")[1] }))
-    .reduce((a, b) => ({ ...a, ...b }), {});
+const parseQuery = (input: string) => {
+  const ast = luceneParse(input);
+  // translate display names to internal names
+  recurseTree(ast, (x) => {
+    if (x["field"]) {
+      x["field"] = getFieldInternalName(x["field"]) ?? x["field"];
+    }
+  });
+  return ast;
+};
 
 const AnalysisSearch = (props: AnalysisSearchProps) => {
   const { onSubmit } = props;
@@ -21,7 +28,7 @@ const AnalysisSearch = (props: AnalysisSearchProps) => {
     setInput,
   ]);
   const submitQuery = React.useCallback(
-    () => onSubmit({ filters: parseQuery(input) }),
+    () => onSubmit({ expression: parseQuery(input) }),
     [onSubmit, input]
   );
   const onEnterKey = React.useCallback(

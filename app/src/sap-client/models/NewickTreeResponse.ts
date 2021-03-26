@@ -1,7 +1,7 @@
 // tslint:disable
 /**
- * SAP
- * Sekvensanalyseplatform
+ * SOFI
+ * SOFI Sekvensanalyseplatform
  *
  * The version of the OpenAPI document: 0.1.0
  * 
@@ -23,12 +23,12 @@ export interface NewickTreeResponse  {
      * @type {string}
      * @memberof NewickTreeResponse
      */
-    tree?: string;
+    tree: string;
 }
 
 export function NewickTreeResponseFromJSON(json: any): NewickTreeResponse {
     return {
-        'tree': !exists(json, 'tree') ? undefined : json['tree'],
+        'tree': json['tree'],
     };
 }
 

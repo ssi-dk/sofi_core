@@ -24,7 +24,7 @@ class TestUploadController(BaseTestCase):
             'Content-Type': 'multipart/form-data',
             'Authorization': 'Bearer special-key',
         }
-        data = dict(path='path_example',
+        data = dict(path='path_example'
                     metadata_tsv=(BytesIO(b'some file data'), 'file.txt'))
         response = self.client.open(
             '/api/upload/bulk_metadata',
@@ -46,10 +46,10 @@ class TestUploadController(BaseTestCase):
             'Content-Type': 'multipart/form-data',
             'Authorization': 'Bearer special-key',
         }
-        data = dict(metadata_tsv=(BytesIO(b'some file data'), 'file.txt'),
+        data = dict(metadata_tsv=(BytesIO(b'some file data'), 'file.txt')
                     files=(BytesIO(b'some file data'), 'file.txt'))
         response = self.client.open(
-            '/api/upload/multi_upload',
+            '/api/upload/multi',
             method='POST',
             headers=headers,
             data=data,
@@ -68,7 +68,7 @@ class TestUploadController(BaseTestCase):
             'Content-Type': 'multipart/form-data',
             'Authorization': 'Bearer special-key',
         }
-        data = dict(metadata={},
+        data = dict(metadata={}
                     file=(BytesIO(b'some file data'), 'file.txt'))
         response = self.client.open(
             '/api/upload/single_upload',
