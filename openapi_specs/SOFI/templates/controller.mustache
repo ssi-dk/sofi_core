@@ -67,7 +67,7 @@ def {{operationId}}(user, token_info{{#allParams}}, {{paramName}}{{^required}}=N
                 {{^isFile}}
                     {{^isUuid}}
     if connexion.request.is_json:
-        import {{#baseType}}{{baseType}}{{/baseType}}{{^baseType}}{{#dataType}} {{dataType}}{{/dataType}}{{/baseType}}
+        from ..models import {{#baseType}}{{baseType}}{{/baseType}}{{^baseType}}{{#dataType}} {{dataType}}{{/dataType}}{{/baseType}}
         {{paramName}} = {{#baseType}}{{baseType}}{{/baseType}}{{^baseType}}{{#dataType}} {{dataType}}{{/dataType}}{{/baseType}}.from_dict(connexion.request.get_json())  # noqa: E501
                     {{/isUuid}}
                 {{/isFile}}

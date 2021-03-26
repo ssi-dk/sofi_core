@@ -27,7 +27,7 @@ def create_approval(user, token_info, body=None):  # noqa: E501
     :rtype: Approval
     """
     if connexion.request.is_json:
-        import ApprovalRequest
+        from ..models import ApprovalRequest
         body = ApprovalRequest.from_dict(connexion.request.get_json())  # noqa: E501
     return ApprovalController.create_approval(user, token_info, body)
 

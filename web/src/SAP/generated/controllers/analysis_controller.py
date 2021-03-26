@@ -39,7 +39,7 @@ def reload_metadata(user, token_info, body=None):  # noqa: E501
     :rtype: MetadataReloadResponse
     """
     if connexion.request.is_json:
-        import MetadataReloadRequest
+        from ..models import MetadataReloadRequest
         body = MetadataReloadRequest.from_dict(connexion.request.get_json())  # noqa: E501
     return AnalysisController.reload_metadata(user, token_info, body)
 
@@ -54,7 +54,7 @@ def search_analysis(user, token_info, query=None):  # noqa: E501
     :rtype: PageOfAnalysis
     """
     if connexion.request.is_json:
-        import AnalysisQuery
+        from ..models import AnalysisQuery
         query = AnalysisQuery.from_dict(connexion.request.get_json())  # noqa: E501
     return AnalysisController.search_analysis(user, token_info, query)
 
