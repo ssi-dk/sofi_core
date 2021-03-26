@@ -33,7 +33,7 @@ steps:
   displayName: 'Publish docker image'
 
 - script: |
-    echo 'cat /dev/stdin | docker login -u $(dockerId) --password-stdin' > deployment.sh
+    echo 'cat - | docker login -u $(dockerId) --password-stdin' > deployment.sh
     echo 'docker pull $(imageName)' >> deployment.sh
     echo 'docker tag $(imageName) $(imageNameRelease)' >> deployment.sh
     echo 'docker push $(imageNameRelease)' >> deployment.sh
