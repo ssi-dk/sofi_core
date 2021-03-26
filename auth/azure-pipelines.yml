@@ -16,7 +16,7 @@ steps:
   displayName: 'Publish docker image'
 
 - script: |
-    echo 'echo $(dockerPass) | docker login -u $(dockerId) --password-stdin' > deployment.sh
+    echo 'echo $MAPPED_DOCKER_PASS | docker login -u $(dockerId) --password-stdin' > deployment.sh
     echo 'docker pull $(imageName)' >> deployment.sh
     echo 'docker tag $(imageName) $(imageNameRelease)' >> deployment.sh
     echo 'docker push $(imageNameRelease)' >> deployment.sh
