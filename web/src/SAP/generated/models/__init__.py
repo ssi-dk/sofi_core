@@ -19,6 +19,7 @@ from .lims_specific_metadata import LimsSpecificMetadata
 from .metadata_reload_request import MetadataReloadRequest
 from .metadata_reload_response import MetadataReloadResponse
 from .multi_upload_request import MultiUploadRequest
+from .newick_tree_response import NewickTreeResponse
 from .organization import Organization
 from .page_of_analysis import PageOfAnalysis
 from .permission import Permission

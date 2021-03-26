@@ -11,6 +11,8 @@ import AnalysisPage from "./analysis/analysis-page";
 import ApprovalHistory from "./approval-history/approval-history";
 import ManualUploadPage from "./manual-upload/manual-upload-page";
 import GdprPage from "./gdpr/gdpr";
+import Tree from "./comparative-analysis/phylo/phylo";
+import ComparativeAnalysis from "./comparative-analysis/comparative-analysis";
 
 export default function App() {
   return (
@@ -40,6 +42,15 @@ export default function App() {
           render={() => (
             <Authorize>
               <GdprPage />
+            </Authorize>
+          )}
+        />
+        <Route
+          exact
+          path="/phylo"
+          render={() => (
+            <Authorize>
+              <ComparativeAnalysis />
             </Authorize>
           )}
         />
