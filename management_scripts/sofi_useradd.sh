@@ -54,7 +54,7 @@ display_usage() {
   echo -e "\n"
 } 
 
-if [  $# -le 4 ] 
+if [  $# -le 3 ] 
 then 
   display_usage
   exit 1

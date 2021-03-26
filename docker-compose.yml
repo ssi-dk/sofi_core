@@ -17,7 +17,6 @@ services:
     command: ["/bin/sh", "-c", "/app/start.sh"]
     depends_on:
       - "hydra"
-      - "bifrost_db"
 
     environment:
       - APP_MODULE=wsgi:app
@@ -118,8 +117,10 @@ services:
       - POSTGRES_USER=${PG_USER}
       - POSTGRES_PASSWORD=${PG_SECRET}
       - POSTGRES_MULTIPLE_DATABASES=kratos,hydra
+      - PGDATA=/var/lib/postgresql/data/pgdata
     volumes:
       - ./auth/pg/pg-init:/docker-entrypoint-initdb.d
+      - ${PG_DATA_DIR}:/var/lib/postgresql/data/
 
   hydra-migrate:
     image: oryd/hydra:v1.9.0-alpine

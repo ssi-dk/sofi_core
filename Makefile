@@ -150,10 +150,10 @@ ${mkfile_dir}/app/node_modules/ : ${mkfile_dir}/app/package.json
 build: ${mkfile_dir}/app/src/sap-client ${mkfile_dir}/web/src/SAP/generated ${mkfile_dir}/web/src/services/lims/openapi
 	CURRENT_UID=${mkfile_user} docker-compose build --no-cache
 
-install: build
-	cp ${mkfile_dir}/sofi.service /etc/systemd/system/sofi.service
-	systemctl enable sofi.service
-	systemctl status sofi.service
+install:
+		cp ${mkfile_dir}/sofi.service /etc/systemd/system/sofi.service
+		systemctl enable sofi.service
+		# Execute 'systemctl start sofi.service' to launch
 
 RUN_DEPS := merge_common ${mkfile_dir}/app/src/sap-client ${mkfile_dir}/web/src/SAP/generated 
 RUN_DEPS += ${mkfile_dir}/web/src/services/lims/openapi ${mkfile_dir}/app/node_modules/
@@ -161,5 +161,6 @@ RUN_DEPS += ${mkfile_dir}/bifrost/bifrost_queue_broker/api_clients/tbr_client
 RUN_DEPS += ${mkfile_dir}/bifrost/bifrost_queue_broker/api_clients/lims_client 
 RUN_DEPS += ${mkfile_dir}/.env
 RUN_DEPS += lefthook
+
 run: $(RUN_DEPS)
 	CURRENT_UID=${mkfile_user} docker-compose -f ${mkfile_dir}/docker-compose.yml -f ${mkfile_dir}/docker-compose.local.yml up --build 
