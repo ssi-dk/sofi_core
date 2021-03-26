@@ -19,8 +19,8 @@ ExecStartPre=-/bin/bash -c 'docker ps -aqf "name=%i_*" | xargs docker rm'
 
 WorkingDirectory=/home/sap/sofi
 
-ExecStart=/usr/local/bin/docker-compose -f /home/sap/sofi/docker-compose.yml -f /home/sap/sofi/docker-compose.prod.yaml up -d
-ExecStop=/usr/local/bin/docker-compose -f /home/sap/sofi/docker-compose.yml -f /home/sap/sofi/docker-compose.prod.yaml down -v
+ExecStart=/usr/local/bin/docker-compose -f /home/sap/sofi/docker-compose.yml -f /home/sap/sofi/docker-compose.live.yml up -d
+ExecStop=/usr/local/bin/docker-compose -f /home/sap/sofi/docker-compose.yml -f /home/sap/sofi/docker-compose.live.yml down -v
 
 [Install]
 WantedBy=multi-user.target

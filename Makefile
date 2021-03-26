@@ -162,4 +162,4 @@ RUN_DEPS += ${mkfile_dir}/bifrost/bifrost_queue_broker/api_clients/lims_client
 RUN_DEPS += ${mkfile_dir}/.env
 RUN_DEPS += lefthook
 run: $(RUN_DEPS)
-	CURRENT_UID=${mkfile_user} docker-compose up --build
+	CURRENT_UID=${mkfile_user} docker-compose -f ${mkfile_dir}/docker-compose.yml -f ${mkfile_dir}/docker-compose.local.yml up --build 
