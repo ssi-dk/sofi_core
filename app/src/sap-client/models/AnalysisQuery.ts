@@ -42,6 +42,12 @@ export interface AnalysisQuery  {
      * @memberof AnalysisQuery
      */
     expression?: QueryExpression;
+    /**
+     * 
+     * @type {object}
+     * @memberof AnalysisQuery
+     */
+    filters?: object;
 }
 
 export function AnalysisQueryFromJSON(json: any): AnalysisQuery {
@@ -49,6 +55,7 @@ export function AnalysisQueryFromJSON(json: any): AnalysisQuery {
         'paging_token': !exists(json, 'paging_token') ? undefined : json['paging_token'],
         'page_size': !exists(json, 'page_size') ? undefined : json['page_size'],
         'expression': !exists(json, 'expression') ? undefined : QueryExpressionFromJSON(json['expression']),
+        'filters': !exists(json, 'filters') ? undefined : json['filters'],
     };
 }
 
@@ -60,6 +67,7 @@ export function AnalysisQueryToJSON(value?: AnalysisQuery): any {
         'paging_token': value.paging_token,
         'page_size': value.page_size,
         'expression': QueryExpressionToJSON(value.expression),
+        'filters': value.filters,
     };
 }
 

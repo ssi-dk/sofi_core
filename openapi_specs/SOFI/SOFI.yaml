@@ -470,6 +470,8 @@ components:
           nullable: true
         expression:
           $ref: "#/components/schemas/QueryExpression"
+        filters:
+          type: object
 
     Column:
       properties:
