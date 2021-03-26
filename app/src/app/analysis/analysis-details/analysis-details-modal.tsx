@@ -14,11 +14,12 @@ import {
   TabPanels,
   TabPanel,
 } from "@chakra-ui/react";
-import { Organization } from "sap-client";
+import { Organization, Permission } from "sap-client";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { useRequest } from "redux-query-react";
 import { Loading } from "loading";
+import { IfPermission } from "auth/if-permission";
 import {
   IsolateWithData,
   sequencesFromIsolateId,
@@ -80,10 +81,12 @@ const AnalysisHistory = (props: AnalysisHistoryProps) => {
           </ModalBody>
 
           <ModalFooter>
-            <ReloadMetadataWidget
-              isolateId={isolateId}
-              institution={institution}
-            />
+            <IfPermission permission={Permission.approve}>
+              <ReloadMetadataWidget
+                isolateId={isolateId}
+                institution={institution}
+              />
+            </IfPermission>
             <Button colorScheme="blue" mr={3} onClick={onClose}>
               {t("Close")}
             </Button>

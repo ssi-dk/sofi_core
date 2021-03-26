@@ -94,6 +94,7 @@ class TestAnalysisController(BaseTestCase):
       "right" : "{}"
     }
   },
+  "filters" : "{}",
   "page_size" : 0
 }
         headers = { 

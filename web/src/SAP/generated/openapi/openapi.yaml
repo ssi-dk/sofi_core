@@ -515,6 +515,7 @@ components:
             left: '{}'
             term: term
             right: '{}'
+        filters: '{}'
         page_size: 0
       properties:
         paging_token:
@@ -528,6 +529,8 @@ components:
           type: integer
         expression:
           $ref: '#/components/schemas/QueryExpression'
+        filters:
+          type: object
     Column:
       example:
         pii: true

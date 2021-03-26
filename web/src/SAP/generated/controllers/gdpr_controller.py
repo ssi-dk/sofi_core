@@ -17,7 +17,7 @@ def extract_data_from_pi(user, token_info, identifier_type, identifier):  # noqa
     :rtype: PersonalData
     """
     if connexion.request.is_json:
-        import  PersonalIdentifierType
+        from ..models import  PersonalIdentifierType
         identifier_type =  PersonalIdentifierType.from_dict(connexion.request.get_json())  # noqa: E501
     return GdprController.extract_data_from_pi(user, token_info, identifier_type, identifier)
 
@@ -34,6 +34,6 @@ def forget_pii(user, token_info, identifier_type, identifier):  # noqa: E501
     :rtype: PersonalData
     """
     if connexion.request.is_json:
-        import  PersonalIdentifierType
+        from ..models import  PersonalIdentifierType
         identifier_type =  PersonalIdentifierType.from_dict(connexion.request.get_json())  # noqa: E501
     return GdprController.forget_pii(user, token_info, identifier_type, identifier)

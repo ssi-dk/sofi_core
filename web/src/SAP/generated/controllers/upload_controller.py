@@ -44,6 +44,6 @@ def single_upload(user, token_info, metadata, file):  # noqa: E501
     :rtype: UploadResponse
     """
     if connexion.request.is_json:
-        import BaseMetadata
+        from ..models import BaseMetadata
         metadata = BaseMetadata.from_dict(connexion.request.get_json())  # noqa: E501
     return UploadController.single_upload(user, token_info, metadata, file)

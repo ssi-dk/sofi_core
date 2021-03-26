@@ -19,7 +19,7 @@ class AnalysisQuery(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, paging_token=None, page_size=100, expression=None):  # noqa: E501
+    def __init__(self, paging_token=None, page_size=100, expression=None, filters=None):  # noqa: E501
         """AnalysisQuery - a model defined in OpenAPI
 
         :param paging_token: The paging_token of this AnalysisQuery.  # noqa: E501
@@ -28,22 +28,27 @@ class AnalysisQuery(Model):
         :type page_size: int
         :param expression: The expression of this AnalysisQuery.  # noqa: E501
         :type expression: QueryExpression
+        :param filters: The filters of this AnalysisQuery.  # noqa: E501
+        :type filters: object
         """
         self.openapi_types = {
             'paging_token': bytearray,
             'page_size': int,
             'expression': QueryExpression,
+            'filters': object,
         }
 
         self.attribute_map = {
             'paging_token': 'paging_token',
             'page_size': 'page_size',
             'expression': 'expression',
+            'filters': 'filters',
         }
 
         self._paging_token = paging_token
         self._page_size = page_size
         self._expression = expression
+        self._filters = filters
 
     @classmethod
     def from_dict(cls, dikt):
@@ -120,3 +125,24 @@ class AnalysisQuery(Model):
         """
 
         self._expression = expression
+
+    @property
+    def filters(self):
+        """Gets the filters of this AnalysisQuery.
+
+
+        :return: The filters of this AnalysisQuery.
+        :rtype: object
+        """
+        return self._filters
+
+    @filters.setter
+    def filters(self, filters):
+        """Sets the filters of this AnalysisQuery.
+
+
+        :param filters: The filters of this AnalysisQuery.
+        :type filters: object
+        """
+
+        self._filters = filters

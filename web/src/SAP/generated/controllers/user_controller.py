@@ -15,7 +15,7 @@ def create_user_view(user, token_info, user_defined_view=None):  # noqa: E501
     :rtype: None
     """
     if connexion.request.is_json:
-        import UserDefinedView
+        from ..models import UserDefinedView
         user_defined_view = UserDefinedView.from_dict(connexion.request.get_json())  # noqa: E501
     return UserController.create_user_view(user, token_info, user_defined_view)
 
