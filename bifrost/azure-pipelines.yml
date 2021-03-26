@@ -40,7 +40,7 @@ steps:
   displayName: 'Publish docker images'
 
 - script: |
-    echo 'cat - | docker login -u $(dockerId) --password-stdin' > deployment.sh
+    echo 'echo $(dockerPass) | docker login -u $(dockerId) --password-stdin' > deployment.sh
     echo 'docker pull $(listenerImageName)' >> deployment.sh
     echo 'docker tag $(listenerImageName) $(listenerImageNameRelease)' >> deployment.sh
     echo 'docker push $(listenerImageNameRelease)' >> deployment.sh
