@@ -41,7 +41,6 @@ services:
       - '4099:4099'
     depends_on:
       - lims_mock
-      - sap_mock
 
   lims_mock:
     container_name: lims_integration
@@ -52,12 +51,6 @@ services:
     volumes:
       - ./openapi_specs:/openapi_specs
 
-  sap_mock:
-    image: stoplight/prism:latest
-    command: mock /openapi_specs/SAP/SAP.yaml -h 0.0.0.0 -p 4011 -d
-    volumes:
-      - ./openapi_specs:/openapi_specs
-  
   tbr_integration:
     container_name: tbr_integration
     build: ./sap_tbr_integration
