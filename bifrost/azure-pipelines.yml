@@ -8,11 +8,11 @@ variables:
   brokerImageNameRelease: '$(dockerId)/sap-queue-broker:latest'
 
 steps:
-- script: docker build -f Dockerfile -t $(listenerImageName) ./bifrost_listener
+- script: docker build -f ./bifrost_listener/Dockerfile -t $(listenerImageName) ./bifrost_listener
   displayName: 'Docker build and test listener'
   workingDirectory: bifrost
 
-- script: docker build -f Dockerfile -t $(brokerImageName) ./bifrost_queue_broker
+- script: docker build -f ./bifrost_queue_broker/Dockerfile -t $(brokerImageName) ./bifrost_queue_broker
   displayName: 'Docker build and test broker'
   workingDirectory: bifrost
 
