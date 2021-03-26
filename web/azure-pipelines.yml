@@ -27,12 +27,12 @@ steps:
   condition: succeededOrFailed()
 
 - script: |
-    docker login -u $(dockerId) -p $(dockerPass)
+    echo $(dockerPass) | docker login -u $(dockerId) --password-stdin
     docker push $(imageName)
   displayName: 'Publish docker image'
 
 - script: |
-    echo 'docker login -u $(dockerId) -p $(dockerPass)' > deployment.sh
+    echo 'cat /dev/stdin | docker login -u $(dockerId) --password-stdin' > deployment.sh
     echo 'docker pull $(imageName)' >> deployment.sh
     echo 'docker tag $(imageName) $(imageNameRelease)' >> deployment.sh
     echo 'docker push $(imageNameRelease)' >> deployment.sh
