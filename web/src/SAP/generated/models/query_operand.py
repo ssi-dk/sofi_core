@@ -19,7 +19,7 @@ class QueryOperand(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, operator=None, left=None, right=None, field=None, term=None):  # noqa: E501
+    def __init__(self, operator=None, left=None, right=None, field=None, term=None, prefix=None):  # noqa: E501
         """QueryOperand - a model defined in OpenAPI
 
         :param operator: The operator of this QueryOperand.  # noqa: E501
@@ -32,6 +32,8 @@ class QueryOperand(Model):
         :type field: str
         :param term: The term of this QueryOperand.  # noqa: E501
         :type term: str
+        :param prefix: The prefix of this QueryOperand.  # noqa: E501
+        :type prefix: str
         """
         self.openapi_types = {
             'operator': QueryOperator,
@@ -39,6 +41,7 @@ class QueryOperand(Model):
             'right': object,
             'field': str,
             'term': str,
+            'prefix': str,
         }
 
         self.attribute_map = {
@@ -47,6 +50,7 @@ class QueryOperand(Model):
             'right': 'right',
             'field': 'field',
             'term': 'term',
+            'prefix': 'prefix',
         }
 
         self._operator = operator
@@ -54,6 +58,7 @@ class QueryOperand(Model):
         self._right = right
         self._field = field
         self._term = term
+        self._prefix = prefix
 
     @classmethod
     def from_dict(cls, dikt):
@@ -170,3 +175,24 @@ class QueryOperand(Model):
         """
 
         self._term = term
+
+    @property
+    def prefix(self):
+        """Gets the prefix of this QueryOperand.
+
+
+        :return: The prefix of this QueryOperand.
+        :rtype: str
+        """
+        return self._prefix
+
+    @prefix.setter
+    def prefix(self, prefix):
+        """Sets the prefix of this QueryOperand.
+
+
+        :param prefix: The prefix of this QueryOperand.
+        :type prefix: str
+        """
+
+        self._prefix = prefix

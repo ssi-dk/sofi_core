@@ -54,6 +54,12 @@ export interface QueryOperand  {
      * @memberof QueryOperand
      */
     term?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof QueryOperand
+     */
+    prefix?: string;
 }
 
 export function QueryOperandFromJSON(json: any): QueryOperand {
@@ -63,6 +69,7 @@ export function QueryOperandFromJSON(json: any): QueryOperand {
         'right': !exists(json, 'right') ? undefined : json['right'],
         'field': !exists(json, 'field') ? undefined : json['field'],
         'term': !exists(json, 'term') ? undefined : json['term'],
+        'prefix': !exists(json, 'prefix') ? undefined : json['prefix'],
     };
 }
 
@@ -76,6 +83,7 @@ export function QueryOperandToJSON(value?: QueryOperand): any {
         'right': value.right,
         'field': value.field,
         'term': value.term,
+        'prefix': value.prefix,
     };
 }
 
