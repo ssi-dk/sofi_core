@@ -69,11 +69,15 @@ def search_analysis(user, token_info, query: AnalysisQuery):
     assert_user_has("search", token_info)
     # TODO: filter on user claims
     visitor = AbstractSyntaxTreeVisitor()
-    expr_empty =  query.expression is None or query.expression.__dict__.get('_left', None) is None and query.expression.__dict__.get('_operator', None) is None
+    expr_empty = (
+        query.expression is None
+        or query.expression.__dict__.get("_left", None) is None
+        and query.expression.__dict__.get("_operator", None) is None
+    )
     default_token = {
         "page_size": query.page_size or 100,
         "offset": 0,
-        "query": visitor.visit(query.expression) if not expr_empty else {}
+        "query": visitor.visit(query.expression) if not expr_empty else {},
     }
     token = parse_paging_token(query.paging_token) or default_token
     items = get_analysis_page(token["query"], token["page_size"], token["offset"])
