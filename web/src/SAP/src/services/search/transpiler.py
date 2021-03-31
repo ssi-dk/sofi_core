@@ -8,10 +8,8 @@ from ....generated.models.query_expression import (
 )
 
 
-def structure_not(right):
-    # (rfield, rval) = right
-    # return { rfield: { "$not": { "$eq": rval } } }
-    return right
+IMPLICIT_OP = "$and"
+IMPLICIT_FIELD = "sequence_id"
 
 
 def structure_operator(operator, left, right):
@@ -20,14 +18,15 @@ def structure_operator(operator, left, right):
     elif operator == QueryOperator.OR:
         return {"$or": [left, right]}
     elif operator == QueryOperator._IMPLICIT_:
-        return {"$and": [left, right]}
+        return {IMPLICIT_OP: [left, right]}
 
 
 def structure_leaf(node, is_negated):
+    field = node.field if node.field != "<implicit>" else IMPLICIT_FIELD
     if is_negated:
-        return {node.field: {"$ne": node.term}}
+        return {field: {"$ne": node.term}}
     else:
-        return {node.field: node.term}
+        return {field: node.term}
 
 
 def is_negated_op(node):
@@ -103,6 +102,5 @@ class AbstractSyntaxTreeVisitor(object):
                 operator, left.accept(self, is_negated), right.accept(self, is_negated)
             )
         elif node.field and node.term:
-            # TODO: figure out what implicit should be in the case of node.field
             is_negated = is_negated or (node.prefix is not None and "-" in node.prefix)
             return structure_leaf(node, is_negated)
