@@ -16,7 +16,7 @@ def remove_id(item):
 # TODO: only select the latest document pr. isolate id.
 def get_analysis_page(query, page_size, offset):
     conn = get_connection()
-    print(query, file=sys.stderr)
+    # print(query, file=sys.stderr)
     mydb = conn[DB_NAME]
     samples = mydb["sap_analysis_results"]
     fetch_pipeline = [
