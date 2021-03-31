@@ -84,12 +84,14 @@ class TestAnalysisController(BaseTestCase):
     "left" : {
       "field" : "field",
       "left" : "{}",
+      "prefix" : "prefix",
       "term" : "term",
       "right" : "{}"
     },
     "right" : {
       "field" : "field",
       "left" : "{}",
+      "prefix" : "prefix",
       "term" : "term",
       "right" : "{}"
     }

@@ -467,6 +467,7 @@ components:
       example:
         field: field
         left: '{}'
+        prefix: prefix
         term: term
         right: '{}'
       properties:
@@ -480,17 +481,22 @@ components:
           type: string
         term:
           type: string
+        prefix:
+          nullable: true
+          type: string
       type: object
     QueryExpression:
       example:
         left:
           field: field
           left: '{}'
+          prefix: prefix
           term: term
           right: '{}'
         right:
           field: field
           left: '{}'
+          prefix: prefix
           term: term
           right: '{}'
       properties:
@@ -508,11 +514,13 @@ components:
           left:
             field: field
             left: '{}'
+            prefix: prefix
             term: term
             right: '{}'
           right:
             field: field
             left: '{}'
+            prefix: prefix
             term: term
             right: '{}'
         filters: '{}'

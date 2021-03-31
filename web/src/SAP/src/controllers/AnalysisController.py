@@ -1,6 +1,8 @@
 import base64
 import json
+import sys
 from typing import Any, Dict
+from web.src.SAP.generated.models.analysis_query import AnalysisQuery
 from werkzeug.exceptions import Forbidden
 from flask import current_app as app
 from ...generated.models.organization import Organization
@@ -19,6 +21,7 @@ from web.src.SAP.src.security.permission_check import (
 )
 from web.src.SAP.common.config.column_config import columns
 from ..services.queue_service import post_and_await_reload
+from ..services.search.transpiler import AbstractSyntaxTreeVisitor
 
 
 def parse_paging_token(token):
@@ -62,13 +65,19 @@ def reload_metadata(user, token_info, body):
     return {}
 
 
-def search_analysis(user, token_info, query):
+def search_analysis(user, token_info, query: AnalysisQuery):
     assert_user_has("search", token_info)
     # TODO: filter on user claims
+    visitor = AbstractSyntaxTreeVisitor()
+    expr_empty = (
+        query.expression is None
+        or query.expression.__dict__.get("_left", None) is None
+        and query.expression.__dict__.get("_operator", None) is None
+    )
     default_token = {
         "page_size": query.page_size or 100,
         "offset": 0,
-        "query": query.filters,
+        "query": visitor.visit(query.expression) if not expr_empty else {},
     }
     token = parse_paging_token(query.paging_token) or default_token
     items = get_analysis_page(token["query"], token["page_size"], token["offset"])

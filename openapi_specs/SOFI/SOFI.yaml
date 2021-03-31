@@ -446,7 +446,10 @@ components:
           type: string
         term:
           type: string
-    
+        prefix:
+          nullable: true
+          type: string
+
     QueryExpression:
       type: object
       properties:
