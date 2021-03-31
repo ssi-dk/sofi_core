@@ -23,18 +23,21 @@ def structure_operator(operator, left, right):
         return {"$and": [left, right]}
 
 
-def is_negated_op(node: QueryOperand):
-    res = (
-        node.operator and "NOT" in node.operator
-    )  # or (node.prefix and "-" in node.prefix)
-    return res
-
-
 def structure_leaf(node, is_negated):
     if is_negated:
         return {node.field: {"$ne": node.term}}
     else:
         return {node.field: node.term}
+
+
+def is_negated_op(node):
+    operator = node.operator
+    if operator == QueryOperator.AND_NOT:
+        return QueryOperator.AND, True
+    elif operator == QueryOperator.OR_NOT:
+        return QueryOperator.OR, True
+    else:
+        return operator, False
 
 
 def de_morgan_law(operator):
@@ -43,9 +46,9 @@ def de_morgan_law(operator):
     elif operator == QueryOperator.OR:
         return QueryOperator.OR
     elif operator == QueryOperator.AND_NOT:
-        return QueryOperator.AND
-    elif operator == QueryOperator.OR_NOT:
         return QueryOperator.OR
+    elif operator == QueryOperator.OR_NOT:
+        return QueryOperator.AND
     elif operator == QueryOperator._IMPLICIT_:
         return QueryOperator._IMPLICIT_
 
@@ -68,10 +71,7 @@ class AbstractSyntaxTreeVisitor(object):
 
     @when(QueryExpression)
     def visit(self, node: QueryExpression):
-        is_negated = is_negated_op(node)
-        operator = node.operator
-        if is_negated:
-            operator = de_morgan_law(operator)
+        operator, is_negated = is_negated_op(node)
 
         if node.operator == None:
             return structure_leaf(node.left, is_negated)
@@ -83,16 +83,24 @@ class AbstractSyntaxTreeVisitor(object):
     @when(QueryOperand)
     def visit(self, node: QueryOperand, is_negated: bool = False):
         if node.operator is not None:
-            is_negated = is_negated or is_negated_op(node)
-            operator = node.operator
+            operator, is_negated_operator = is_negated_op(node)
+            is_negated = is_negated or is_negated_operator
             if is_negated:
-                operator = de_morgan_law(operator)
-            # Because of the openapi generator, this is a problem with nested expressions, e.g. "amr_amp: Sensitiv AND NOT (isolate_id: 1 OR isolate_id: 3)"
-            # return structure_operator(operator, node.left.accept(self, is_negated), node.right.accept(self, is_negated))
+                operator = de_morgan_law(node.operator)
+            # Because of the openapi generator, there is a problem with nested expressions, e.g. "amr_amp: Sensitiv AND NOT (isolate_id: 1 OR isolate_id: 3)"
+            # we need to manually reparse the models
+            left = (
+                QueryOperand.from_dict(node.left)
+                if isinstance(node.left, dict)
+                else node.left
+            )
+            right = (
+                QueryOperand.from_dict(node.right)
+                if isinstance(node.right, dict)
+                else node.right
+            )
             return structure_operator(
-                operator,
-                QueryOperand.accept(self, node.left, is_negated),
-                QueryOperand.accept(self, node.right, is_negated),
+                operator, left.accept(self, is_negated), right.accept(self, is_negated)
             )
         elif node.field and node.term:
             # TODO: figure out what implicit should be in the case of node.field
