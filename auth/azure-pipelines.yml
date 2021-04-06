@@ -8,7 +8,7 @@ variables:
 steps:
 - script: docker build -f Dockerfile -t $(imageName) .
   displayName: 'Docker build and test'
-  workingDirectory: app
+  workingDirectory: auth
 
 - script: |
     echo $MAPPED_DOCKER_PASS | docker login -u $(dockerId) --password-stdin
