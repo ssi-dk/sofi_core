@@ -75,6 +75,7 @@ services:
     container_name: bifrost_listener
     user: ${CURRENT_UID}
     environment:
+      - BIFROST_CONN=${BIFROST_MONGO_CONN}
       - PYTHONDONTWRITEBYTECODE=1
       - PYTHONUNBUFFERED=0
     restart: on-failure
