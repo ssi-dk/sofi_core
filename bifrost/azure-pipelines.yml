@@ -38,6 +38,8 @@ steps:
     docker push $(listenerImageName)
     docker push $(brokerImageName)
   displayName: 'Publish docker images'
+  env:
+    MAPPED_DOCKER_PASS: $(dockerPass)
 
 - script: |
     echo 'echo $MAPPED_DOCKER_PASS | docker login -u $(dockerId) --password-stdin' > deployment.sh
