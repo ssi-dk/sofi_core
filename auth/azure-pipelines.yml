@@ -11,7 +11,7 @@ steps:
   workingDirectory: app
 
 - script: |
-    echo $(dockerPass) | docker login -u $(dockerId) --password-stdin
+    echo $MAPPED_DOCKER_PASS | docker login -u $(dockerId) --password-stdin
     docker push $(imageName)
   displayName: 'Publish docker image'
 

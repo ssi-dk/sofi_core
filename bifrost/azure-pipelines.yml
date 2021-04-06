@@ -34,7 +34,7 @@ steps:
   condition: succeededOrFailed()
 
 - script: |
-    echo $(dockerPass) | docker login -u $(dockerId) --password-stdin
+    echo $MAPPED_DOCKER_PASS | docker login -u $(dockerId) --password-stdin
     docker push $(listenerImageName)
     docker push $(brokerImageName)
   displayName: 'Publish docker images'
