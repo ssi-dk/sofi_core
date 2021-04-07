@@ -5,7 +5,7 @@ x-extra_hosts:
   - "sofi_tbr_integration:192.168.113.11"
 
 services:
-  sap_web:
+  sap_app:
     image: sekvensanalyseplatform/sap-web:latest
     labels:
       - "com.centurylinklabs.watchtower.enable=true"
