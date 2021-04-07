@@ -1,5 +1,6 @@
 :3333 {
     root * /var/www/html
-    file_server
     log
+    file_server
+    try_files {path} /index.html
 }
