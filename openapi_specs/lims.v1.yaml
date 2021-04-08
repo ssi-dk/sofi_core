@@ -29,47 +29,38 @@ paths:
                         isolateId: abcx
                         isolateApproved: false
                         metadata:
-                          - metaFieldName: projektnummer
+                          - metaFieldName: Projektnr
                             metaFieldValue: test-project-123
-                          - metaFieldName: projekttitel
+                          - metaFieldName: Projekttitel
                             metaFieldValue: test-project
-                          - metaFieldName: datoudtagning
+                          - metaFieldName: "Dato_proeve "
                             metaFieldValue: 14-09-2020
-                          - metaFieldName: datomodtagelse
+                          - metaFieldName: Dato_modtagelse
                             metaFieldValue: 14-09-2020
-                          - metaFieldName: produkttype
+                          - metaFieldName: Produkt_type
                             metaFieldValue: test-produkt-type
-                          - metaFieldName: produkt
+                          - metaFieldName: Produkt
                             metaFieldValue: test-product
-                          - metaFieldName: dyreart
+                          - metaFieldName: Dyreart
                             metaFieldValue: test-animal
                         data:
-                          - fieldName: Agens bakterie
-                            fieldValue: value1
-                            status: InProgress
-                          - fieldName: species
+                          - fieldName: Species_final
                             fieldValue: value2
                             status: InProgress
-                          - fieldName: serotype
+                          - fieldName: Serotype_final
                             fieldValue: value3
                             status: InProgress
-                          - fieldName: STtype
+                          - fieldName: ST
                             fieldValue: value4
                             status: InProgress
-                          - fieldName: virulensgener
+                          - fieldName: Virulensgener
                             fieldValue: value5
                             status: InProgress
-                          - fieldName: AMRgener
-                            fieldValue: value6
+                          - fieldName: Dato_analyseSAP
+                            fieldValue: ""
                             status: InProgress
-                          - fieldName: resfinder version
-                            fieldValue: value7
-                            status: InProgress
-                          - fieldName: RunId
-                            fieldValue: value8
-                            status: InProgress
-                          - fieldName: sekvensID
-                            fieldValue: value9
+                          - fieldName: "AMR _ Amp"
+                            fieldValue: ""
                             status: InProgress
                         success: true
                     code: 200
@@ -256,72 +247,80 @@ components:
     DataFieldName:
       type: string
       enum: 
-        - "Agens bakterie"
-        - "species"
+        - "Species_final"
         - "Subspecies"
-        - "serotype"
-        - "STtype"
-        - "Pathotype"
-        - "Adhæsionsgener"
-        - "Toxingener"
-        - "virulensgener"
-        - "AMRgener"
-        - "resfinder version"
-        - "dato sekvensanalyse"
-        - "RunId"
-        - "sekvensID"
-        - "amr_ami"
-        - "amr_amp"
-        - "amr_azi"
-        - "amr_fep"
-        - "amr_fot"
-        - "amr_f_c"
-        - "amr_fox"
-        - "amr_taz"
-        - "amr_t_c"
-        - "amr_chl"
-        - "amr_cip"
-        - "amr_cli"
-        - "amr_col"
-        - "amr_dap"
-        - "amr_etp"
-        - "amr_ery"
-        - "amr_fus"
-        - "amr_gen"
-        - "amr_imi"
-        - "amr_kan"
-        - "amr_lzd"
-        - "amr_mero"
-        - "amr_mup"
-        - "amr_nal"
-        - "amr_pen"
-        - "amr_syn"
-        - "amr_rif"
-        - "amr_str"
-        - "amr_sul"
-        - "amr_tei"
-        - "amr_trm"
-        - "amr_tet"
-        - "amr_tia"
-        - "amr_tgc"
-        - "amr_tmp"
-        - "amr_van"
+        - "Serotype_final"
+        - "Sero_enterobase"
+        - "Sero_seqSero"
+        - "Sero_Antigen_seqSero"
+        - "Sero_D-tartrate"
+        - "Serotype_finder"
+        - "ST"
+        - "Pathotype_final"
+        - "Virulensgener"
+        - "Adheasion_final"
+        - "Toxin_final"
+        - "Dato_analyseSAP"
+        - "SekvensId"
+        - "AMR_profil"
+        - "AMR _ Ami"
+        - "AMR _ Amp"
+        - "AMR _ Azi"
+        - "AMR _ Fep"
+        - "AMR _ Fot"
+        - "AMR _ F/C"
+        - "AMR _ Fox"
+        - "AMR _ Taz"
+        - "AMR _ T/C"
+        - "AMR _ Chl"
+        - "AMR _ Cip"
+        - "AMR _ Cli"
+        - "AMR _ Col"
+        - "AMR _ Dap"
+        - "AMR _ Etp"
+        - "AMR _ Ery"
+        - "AMR _ Fus"
+        - "AMR _ Gen"
+        - "AMR _ Imi"
+        - "AMR _ Kan"
+        - "AMR _ Lzd"
+        - "AMR _ Mero"
+        - "AMR _ Mup"
+        - "AMR _ Nal"
+        - "AMR _ Pen"
+        - "AMR _ Syn"
+        - "AMR _ Rif"
+        - "AMR _ Str"
+        - "AMR _ Sul"
+        - "AMR _ Tei"
+        - "AMR _ Trm"
+        - "AMR _ Tet"
+        - "AMR _ Tia"
+        - "AMR _ Tgc"
+        - "AMR _Tmp "
+        - "AMR _ Van"
 
     MetadataFieldName:
       type: string
       enum:
-        - "projektnummer"
-        - "projekttitel"
-        - "datoudtagning"
-        - "datomodtagelse"
-        - "CHR-nr."
-        - "Aut. Nummer"
-        - "produkt"
-        - "produkttype"
-        - "Produktbeskrivelse"
-        - "Oprindelse land"
-        - "dyreart"
-        - "Formål"
+        - SekvensId
+        - Sekvensfilnavn
+        - Institution
+        - Projektnr
+        - Projekttitel
+        - "Dato_proeve "
+        - Dato_modtagelse
+        - RunID
+        - Acc_nr
+        - QC_provided_species
+        - CHR
+        - Aut_nr
+        - Produkt_type
+        - Produkt
+        - Oprindelsesland
+        - Dyreart
+        - Proeveinfo
+
     DataEntry:
       title: DataEntry
       type: object
