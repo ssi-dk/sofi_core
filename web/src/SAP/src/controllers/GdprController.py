@@ -9,18 +9,18 @@ from flask import current_app as app
 from web.src.SAP.src.security.permission_check import assert_user_has
 
 
-def audit_gdpr(token_info: Dict[str, str], isolates: List[str]):
+def audit_gdpr_forget(token_info: Dict[str, str], isolates: List[str]):
     if len(isolates) > 0:
         email = token_info["email"]
         app.logger.info(
-            f"[GDPR Audit]: User -{email}- accessed GDPR-protected columns in isolates: {isolates}"
+            f"[GDPR Audit]: User -{email}- forgot a user, matching isolate ids: {isolates}"
         )
 
 
 def forget_pii(user, token_info, identifier_type, identifier):
     assert_user_has("gdpr.manage", token_info)
     res, ids = forget_user_data(identifier_type, identifier)
-    audit_gdpr(token_info, ids)
+    audit_gdpr_forget(token_info, ids)
     return res
 
 
