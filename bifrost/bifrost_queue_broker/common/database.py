@@ -31,6 +31,8 @@ SOFI_BIFROST_ENCRYPTION_NAMESPACE = os.environ.get(
     ENCRYPTION_KEY_NAME,
 ) = SOFI_BIFROST_ENCRYPTION_NAMESPACE.split(".", 1)
 
+isolate_column = "display_name"
+institution_column = "categories.sample_info.summary.institution"
 
 # The MongoClient is thread safe and pooled, so no problem sharing it :)
 def get_connection(with_enc=False):

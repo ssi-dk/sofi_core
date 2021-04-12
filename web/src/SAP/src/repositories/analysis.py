@@ -4,7 +4,7 @@ import pymongo
 import logging
 import json
 from web.src.SAP.generated.models import AnalysisResult
-from ...common.database import get_connection, DB_NAME, ANALYSIS_COL_NAME
+from ...common.database import get_connection, DB_NAME, ANALYSIS_COL_NAME, institution_column, isolate_column
 import sys
 
 
@@ -24,7 +24,7 @@ def get_analysis_page(query, page_size, offset):
         {
             "$lookup": {
                 "from": "sap_tbr_metadata",
-                "localField": "isolate_id",
+                "localField": isolate_column,
                 "foreignField": "isolate_id",
                 "as": "metadata",
             }
