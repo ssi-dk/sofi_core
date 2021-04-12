@@ -77,7 +77,9 @@ def search_analysis(user, token_info, query: AnalysisQuery):
     default_token = {
         "page_size": query.page_size or 100,
         "offset": 0,
-        "query": visitor.visit(query.expression) if not expr_empty else {},
+        "query": visitor.visit(query.expression)
+        if not expr_empty
+        else (query.filters if not None else {}),
     }
     token = parse_paging_token(query.paging_token) or default_token
     items = get_analysis_page(token["query"], token["page_size"], token["offset"])
