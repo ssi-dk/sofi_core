@@ -4,7 +4,7 @@ import time
 import pymongo
 import threading
 from pymongo import CursorType
-from ..shared import BrokerError, yield_chunks
+from ..shared import BrokerError, yield_chunks, isolate_column, institution_column
 from ..lims_conn import *
 from common.database import encrypt_dict, get_connection
 from common.config.column_config import pii_columns
@@ -57,8 +57,8 @@ class LIMSPullingBroker(threading.Thread):
             {
                 "$group": {
                     "_id": "$_id",
-                    "isolate_id": {"$first": "$isolate_id"},
-                    "institution": {"$first": "$institution"},
+                    "isolate_id": {"$first": "$" + isolate_column},
+                    "institution": {"$first": "$" + institution_column},
                 }
             },
             {

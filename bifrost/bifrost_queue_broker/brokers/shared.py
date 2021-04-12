@@ -22,6 +22,9 @@ class immutable_dict(dict):
         pass
 
 
+isolate_column = "display_name"
+institution_column = "categories.sample_info.summary.institution"
+
 column_mapping = immutable_dict(
     {
         # LIMS mapping
