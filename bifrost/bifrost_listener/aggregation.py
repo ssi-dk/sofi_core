@@ -22,6 +22,7 @@ def removeNullProperty(expr):
 agg_pipeline = [
     {
         "$project": {
+            "isolate_id": "$display_name",
             "sequence_id": "$name",
             "institution": "$categories.sample_info.summary.institution",
             "qc_detected_species": "$categories.species_detection.summary.detected_species",
