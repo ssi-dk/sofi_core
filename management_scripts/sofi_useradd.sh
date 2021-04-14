@@ -3,8 +3,9 @@
 
 set -euo pipefail
 
-SOFI_HOSTNAME=dev.sofi-platform.dk
-SOFI_PORT=8080
+SRCDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+# sourced .env to get hostname and port
+source "$SRCDIR/../.env"
 
 createUser(){
   # params
@@ -61,11 +62,10 @@ then
 fi 
  
 # check if user has supplied -h or --help and display usage
-if [[ ( $# == "--help") ||  $# == "-h" ]] 
+if [[ $* == *--help* || $* == *-h* ]]
 then 
   display_usage
   exit 0
 fi 
 
-# Super account with access to everything, for debugging purposes
 createUser $1 $2 $3 $4
