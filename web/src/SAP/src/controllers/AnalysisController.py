@@ -41,7 +41,9 @@ def get_analysis(user, token_info, paging_token, page_size):
     # TODO: filter on user claims
     default_token = {"page_size": page_size or 100, "offset": 0}
     token = parse_paging_token(paging_token) or default_token
-    items = get_analysis_page({}, token["page_size"], token["offset"])
+    # If user has 'own-institution' clearance, pass an implicit filter to the query
+    institution_filter =  token_info["institution"] if token_info["sofi-data-clearance"] == "own-institution" else False
+    items = get_analysis_page({}, token["page_size"], token["offset"], institution_filter)
     count = get_analysis_count({})
     new_token = render_paging_token(
         token["page_size"], {}, token["offset"] + token["page_size"]
@@ -67,7 +69,6 @@ def reload_metadata(user, token_info, body):
 
 def search_analysis(user, token_info, query: AnalysisQuery):
     assert_user_has("search", token_info)
-    # TODO: filter on user claims
     visitor = AbstractSyntaxTreeVisitor()
     expr_empty = (
         query.expression is None
@@ -82,7 +83,11 @@ def search_analysis(user, token_info, query: AnalysisQuery):
         else (query.filters if not None else {}),
     }
     token = parse_paging_token(query.paging_token) or default_token
-    items = get_analysis_page(token["query"], token["page_size"], token["offset"])
+    # If user has 'own-institution' clearance, pass an implicit filter to the query
+    institution_filter =  token_info["institution"] if token_info["sofi-data-clearance"] == "own-institution" else False
+    print(institution_filter, file=sys.stderr)
+
+    items = get_analysis_page(token["query"], token["page_size"], token["offset"], institution_filter)
     count = get_analysis_count(token["query"])
     new_token = render_paging_token(
         token["page_size"], token["query"], token["offset"] + token["page_size"]
