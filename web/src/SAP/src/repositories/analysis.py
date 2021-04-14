@@ -20,12 +20,12 @@ def remove_id(item):
 
 
 # TODO: only select the latest document pr. isolate id.
-def get_analysis_page(query, page_size, offset, restrict_to_institution):
+def get_analysis_page(query, page_size, offset, columns, restrict_to_institution):
     conn = get_connection()
-    print(query, file=sys.stderr)
     if restrict_to_institution:
         query["institution"] = restrict_to_institution
-    print(query, file=sys.stderr)
+    column_projection = {x:1 for x in columns} 
+    #print(column_projection, file=sys.stderr)
     mydb = conn[DB_NAME]
     samples = mydb["sap_analysis_results"]
     fetch_pipeline = [
@@ -51,6 +51,7 @@ def get_analysis_page(query, page_size, offset, restrict_to_institution):
         {"$sort": {"run_date": pymongo.DESCENDING}},
         {"$skip": offset},
         {"$limit": (int(page_size) + 2)},
+        {"$project": column_projection }
     ]
 
     # return list(map(remove_id, samples.find(query).sort('run_date',pymongo.DESCENDING).skip(offset).limit(int(page_size) + 2)))
