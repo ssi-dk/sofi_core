@@ -93,7 +93,7 @@ services:
       # Ensure our public client application is created
       test: "/healthcheck-runner.sh"
       interval: 30s 
-      start_period: 30s
+      start_period: 60s
       retries: 10
     volumes:
       - ./auth/config/hydra/healthcheck-runner.sh:/healthcheck-runner.sh:ro
