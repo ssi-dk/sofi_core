@@ -4,7 +4,7 @@ import time
 import pymongo
 import threading
 from pymongo import CursorType
-from ..shared import BrokerError, yield_chunks
+from ..shared import BrokerError, yield_chunks, column_mapping
 from ..tbr_conn import get_tbr_configuration
 from common.database import (
     encrypt_dict,
@@ -137,6 +137,7 @@ class TBRPullingBroker(threading.Thread):
         for isolate in updated_isolates:
             values = isolate.to_dict()
             isolate_id = values["isolate_id"]
+            values = {column_mapping[k]: v for k, v in values.items()}
 
             encrypt_dict(self.encryption_client, values, pii_columns())
 
