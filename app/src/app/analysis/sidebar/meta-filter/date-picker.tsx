@@ -20,6 +20,7 @@ const DatePicker = ({
 }: Props & ReactDatePickerProps) => {
   return (
     <ReactDatePicker
+      dateFormat="yyyy-MM-dd"
       selected={selectedDate}
       onSelect={onChange}
       onChange={onChange}
