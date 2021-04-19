@@ -270,7 +270,15 @@ export default function AnalysisPage() {
       });
       setNeedsApproveNotify(false);
     }
-  }, [t, approvalStatus, data, selection, toast, needsApproveNotify, pendingApproval]);
+  }, [
+    t,
+    approvalStatus,
+    data,
+    selection,
+    toast,
+    needsApproveNotify,
+    pendingApproval,
+  ]);
 
   // Display rejection toasts
   React.useMemo(() => {

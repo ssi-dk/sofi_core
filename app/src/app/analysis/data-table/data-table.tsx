@@ -199,9 +199,11 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
   const onSelectRow = React.useCallback(
     (row: Row<T>) => {
       const { checked } = calcRowSelectionState(row);
+      const visibleCols = visibleColumns.map(x => x.id);
       const id = row.original[primaryKey];
       const cols = columns
         .filter((x) => typeof x.accessor === "string")
+        .filter((x) => visibleCols.indexOf(x.accessor as string) >= 0)
         .filter((x) => canApproveColumn(x.accessor as string))
         .map((x) => ({ [x.accessor as string]: !checked }))
         .reduce((acc, val) => ({ ...acc, ...val }), []);
@@ -214,6 +216,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
       selection,
       primaryKey,
       columns,
+      visibleColumns,
       calcRowSelectionState,
       canApproveColumn,
     ]
