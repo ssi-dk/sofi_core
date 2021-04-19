@@ -27,7 +27,7 @@ def get_analysis_page(query, page_size, offset, columns, restrict_to_institution
     column_projection = {x: 1 for x in columns}
     # print(column_projection, file=sys.stderr)
     mydb = conn[DB_NAME]
-    samples = mydb["sap_analysis_results"]
+    samples = mydb[ANALYSIS_COL_NAME]
     fetch_pipeline = [
         {"$match": query},
         {
