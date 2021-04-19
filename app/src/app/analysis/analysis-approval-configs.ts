@@ -44,6 +44,7 @@ const sendJudgement = (params: ApprovalRequest, judgement: ApprovalStatus) => {
     approvals: (oldValue, newValue) => [...newValue, ...(oldValue || [])],
     approvalMatrix: (oldValue, newValue) => ({ ...oldValue, ...newValue }),
   };
+  base.force = true;
   return base;
 };
 
@@ -67,6 +68,7 @@ export const revokeApproval = (params: CancelApprovalRequest) => {
       return newValue;
     },
   };
+  base.force = true;
   return base;
 };
 
@@ -83,6 +85,7 @@ export const fetchApprovalMatrix = () => {
   base.update = {
     approvalMatrix: (_, newValue) => newValue,
   };
+  base.force = true;
   return base;
 };
 
@@ -98,5 +101,6 @@ export const fetchApprovals = () => {
   base.update = {
     approvals: (_, newValue) => newValue,
   };
+  base.force = true;
   return base;
 };
