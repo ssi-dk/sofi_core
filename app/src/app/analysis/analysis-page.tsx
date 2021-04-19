@@ -227,7 +227,8 @@ export default function AnalysisPage() {
     doRejection,
   ] = useMutation((payload: ApprovalRequest) => sendRejection(payload));
 
-  const [needsNotify, setNeedsNotify] = useState(true);
+  const [needsApproveNotify, setNeedsApproveNotify] = useState(true);
+  const [needsRejectNotify, setNeedsRejectNotify] = useState(true);
 
   const onNarrowHandler = React.useCallback(
     () =>
@@ -239,21 +240,21 @@ export default function AnalysisPage() {
   );
 
   const approveSelection = React.useCallback(() => {
-    setNeedsNotify(true);
+    setNeedsApproveNotify(true);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     doApproval({ matrix: selection as any });
-  }, [selection, doApproval, setNeedsNotify]);
+  }, [selection, doApproval, setNeedsApproveNotify]);
 
   const rejectSelection = React.useCallback(() => {
-    setNeedsNotify(true);
+    setNeedsRejectNotify(true);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     doRejection({ matrix: selection as any });
-  }, [selection, doRejection, setNeedsNotify]);
+  }, [selection, doRejection, setNeedsRejectNotify]);
 
   // Display approval toasts
   React.useMemo(() => {
     if (
-      needsNotify &&
+      needsApproveNotify &&
       approvalStatus >= 200 &&
       approvalStatus < 300 &&
       !pendingApproval
@@ -264,17 +265,17 @@ export default function AnalysisPage() {
           "records"
         )} ${t("have been submitted for approval.")}`,
         status: "info",
-        duration: null,
+        duration: 5000,
         isClosable: true,
       });
-      setNeedsNotify(false);
+      setNeedsApproveNotify(false);
     }
-  }, [t, approvalStatus, data, selection, toast, needsNotify, pendingApproval]);
+  }, [t, approvalStatus, data, selection, toast, needsApproveNotify, pendingApproval]);
 
   // Display rejection toasts
   React.useMemo(() => {
     if (
-      needsNotify &&
+      needsRejectNotify &&
       rejectionStatus >= 200 &&
       rejectionStatus < 300 &&
       !pendingRejection
@@ -288,7 +289,7 @@ export default function AnalysisPage() {
         duration: null,
         isClosable: true,
       });
-      setNeedsNotify(false);
+      setNeedsRejectNotify(false);
     }
   }, [
     t,
@@ -296,7 +297,7 @@ export default function AnalysisPage() {
     data,
     selection,
     toast,
-    needsNotify,
+    needsRejectNotify,
     pendingRejection,
   ]);
 

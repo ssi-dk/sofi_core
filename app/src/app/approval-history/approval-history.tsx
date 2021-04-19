@@ -58,7 +58,7 @@ export default function ApprovalHistory() {
         title: t("Approval undone"),
         description: `${t("Approval was successfully revoked.")}`,
         status: "info",
-        duration: null,
+        duration: 5000,
         isClosable: true,
       });
       setNeedsNotify(false);

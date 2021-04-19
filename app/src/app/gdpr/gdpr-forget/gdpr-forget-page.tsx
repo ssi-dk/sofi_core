@@ -97,7 +97,7 @@ const GdprForgetPage = () => {
         title: t("Unknown error"),
         description: `${t("Error while trying to remove personal data")}`,
         status: "error",
-        duration: 5000,
+        duration: null,
         isClosable: true,
       });
       setNeedsNotify(false);
