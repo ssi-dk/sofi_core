@@ -29,6 +29,7 @@ const resources = {
       To: "Til",
       Select: "Tilvælg",
       Cancel: "Annullér",
+      Return: "Tilbage",
       Found: "Fundet",
       records: "enheder",
       Staging: "Forbereder",

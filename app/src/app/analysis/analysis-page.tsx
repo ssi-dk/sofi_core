@@ -479,7 +479,7 @@ export default function AnalysisPage() {
                 margin="4px"
                 onClick={onNarrowHandler}
               >
-                {pageState.isNarrowed ? t("Cancel") : t("Select")}
+                {pageState.isNarrowed ? t("Return") : t("Select")}
               </Button>
               <Button
                 leftIcon={<CheckIcon />}
