@@ -121,12 +121,21 @@ export default function AnalysisPage() {
   const onSearch = React.useCallback(
     (q: AnalysisQuery) => {
       dispatch({ type: "RESET/Analysis" });
-      dispatch(
-        requestAsync({
-          ...searchPageOfAnalysis({ query: { ...q, page_size: 100 } }),
-          queryKey: JSON.stringify(q),
-        })
-      );
+      // if we got an empty expression, just request a page
+      if (q.expression && Object.keys(q.expression).length === 0) {
+        dispatch(
+          requestAsync({
+            ...requestPageOfAnalysis({ pageSize: 1000 }),
+          })
+        );
+      } else {
+        dispatch(
+          requestAsync({
+            ...searchPageOfAnalysis({ query: { ...q, page_size: 100 } }),
+            queryKey: JSON.stringify(q),
+          })
+        );
+      }
     },
     [dispatch]
   );
