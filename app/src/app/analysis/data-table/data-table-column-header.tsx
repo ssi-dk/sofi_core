@@ -4,6 +4,7 @@ import React from "react";
 import { Draggable, Droppable, DroppableProvided } from "react-beautiful-dnd";
 import { Column, ColumnInstance } from "react-table";
 import { jsx } from "@emotion/react";
+import { Tooltip } from "@chakra-ui/react";
 import {
   getColumnStyle,
   headerButton,
@@ -76,7 +77,9 @@ function DataTableColumnHeader<T extends NotEmpty>(
                 {...calcColSelectionState(column)}
               />
             )}
-            <span css={headerName}>{column.render("Header")}</span>
+            <Tooltip label={column.id}>
+              <span css={headerName}>{column.render("Header")}</span>
+            </Tooltip>
             <button
               type="button"
               css={headerButton}
