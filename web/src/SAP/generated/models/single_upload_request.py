@@ -19,26 +19,26 @@ class SingleUploadRequest(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, metadata=None, file=None):  # noqa: E501
+    def __init__(self, metadata=None, files=None):  # noqa: E501
         """SingleUploadRequest - a model defined in OpenAPI
 
         :param metadata: The metadata of this SingleUploadRequest.  # noqa: E501
         :type metadata: BaseMetadata
-        :param file: The file of this SingleUploadRequest.  # noqa: E501
-        :type file: file
+        :param files: The files of this SingleUploadRequest.  # noqa: E501
+        :type files: List[file]
         """
         self.openapi_types = {
             'metadata': BaseMetadata,
-            'file': file,
+            'files': List[file],
         }
 
         self.attribute_map = {
             'metadata': 'metadata',
-            'file': 'file',
+            'files': 'files',
         }
 
         self._metadata = metadata
-        self._file = file
+        self._files = files
 
     @classmethod
     def from_dict(cls, dikt):
@@ -75,24 +75,24 @@ class SingleUploadRequest(Model):
         self._metadata = metadata
 
     @property
-    def file(self):
-        """Gets the file of this SingleUploadRequest.
+    def files(self):
+        """Gets the files of this SingleUploadRequest.
 
 
-        :return: The file of this SingleUploadRequest.
-        :rtype: file
+        :return: The files of this SingleUploadRequest.
+        :rtype: List[file]
         """
-        return self._file
+        return self._files
 
-    @file.setter
-    def file(self, file):
-        """Sets the file of this SingleUploadRequest.
+    @files.setter
+    def files(self, files):
+        """Sets the files of this SingleUploadRequest.
 
 
-        :param file: The file of this SingleUploadRequest.
-        :type file: file
+        :param files: The files of this SingleUploadRequest.
+        :type files: List[file]
         """
-        if file is None:
-            raise ValueError("Invalid value for `file`, must not be `None`")  # noqa: E501
+        if files is None:
+            raise ValueError("Invalid value for `files`, must not be `None`")  # noqa: E501
 
-        self._file = file
+        self._files = files
