@@ -38,6 +38,8 @@ export const requestPageOfAnalysis = (params: GetAnalysisRequest) => {
   base.url = getUrl(base.url);
   // define a transform for normalizing the data into our desired state
   base.transform = (response: PageOfAnalysis) => ({
+    lastPage:
+      response.paging_token !== null && response.paging_token !== undefined,
     analysisTotalCount: response.total_count,
     analysisPagingToken: response.paging_token,
     approvalMatrix: response.approval_matrix,

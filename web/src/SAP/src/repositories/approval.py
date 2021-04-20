@@ -35,12 +35,8 @@ def insert_approval(username: str, approval: Approval):
     approvals = mydb[APPROVALS_COL_NAME]
     appr = approval.to_dict()
     appr["approver"] = username
-    print(approval.matrix, file=sys.stderr)
-    print(approval.matrix.keys(), file=sys.stderr)
     seqs = list(approval.matrix.keys())
-    print(seqs, file=sys.stderr)
     appr["sequence_ids"] = list(approval.matrix.keys())
-    print(appr, file=sys.stderr)
 
     return approvals.insert_one(appr)
 

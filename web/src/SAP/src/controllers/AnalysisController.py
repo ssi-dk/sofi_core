@@ -27,7 +27,7 @@ from ..services.search.transpiler import AbstractSyntaxTreeVisitor
 def parse_paging_token(token):
     if token:
         body = base64.b64decode(token)
-        return json.load(body)
+        return json.loads(body)
     else:
         return None
 
@@ -38,7 +38,7 @@ def render_paging_token(page_size, query, offset):
 
 
 def get_analysis(user, token_info, paging_token, page_size):
-    # TODO: filter on user claims
+    assert_user_has("search", token_info)
     default_token = {"page_size": page_size or 100, "offset": 0}
     token = parse_paging_token(paging_token) or default_token
     # If user has 'own-institution' clearance, pass an implicit filter to the query
@@ -55,7 +55,7 @@ def get_analysis(user, token_info, paging_token, page_size):
         institution_filter,
     )
     count = get_analysis_count({})
-    new_token = render_paging_token(
+    new_token = None if len(items) == 0 else render_paging_token(
         token["page_size"], {}, token["offset"] + token["page_size"]
     )
     response = {
@@ -78,7 +78,6 @@ def reload_metadata(user, token_info, body):
 
 
 def search_analysis(user, token_info, query: AnalysisQuery):
-    assert_user_has("search", token_info)
     visitor = AbstractSyntaxTreeVisitor()
     expr_empty = (
         query.expression is None
@@ -92,6 +91,7 @@ def search_analysis(user, token_info, query: AnalysisQuery):
         if not expr_empty
         else (query.filters if not None else {}),
     }
+
     token = parse_paging_token(query.paging_token) or default_token
     # If user has 'own-institution' clearance, pass an implicit filter to the query
     institution_filter = (
@@ -108,7 +108,7 @@ def search_analysis(user, token_info, query: AnalysisQuery):
         institution_filter,
     )
     count = get_analysis_count(token["query"])
-    new_token = render_paging_token(
+    new_token = None if len(items) == 0 else render_paging_token(
         token["page_size"], token["query"], token["offset"] + token["page_size"]
     )
     response = {
