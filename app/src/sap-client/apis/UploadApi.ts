@@ -35,7 +35,7 @@ export interface MultiUploadRequest {
 
 export interface SingleUploadRequest {
     metadata: BaseMetadata;
-    file: Blob;
+    files: Array<Blob>;
 }
 
 
@@ -167,8 +167,8 @@ function singleUploadRaw<T>(requestParameters: SingleUploadRequest, requestConfi
         throw new runtime.RequiredError('metadata','Required parameter requestParameters.metadata was null or undefined when calling singleUpload.');
     }
 
-    if (requestParameters.file === null || requestParameters.file === undefined) {
-        throw new runtime.RequiredError('file','Required parameter requestParameters.file was null or undefined when calling singleUpload.');
+    if (requestParameters.files === null || requestParameters.files === undefined) {
+        throw new runtime.RequiredError('files','Required parameter requestParameters.files was null or undefined when calling singleUpload.');
     }
 
     let queryParameters = null;
@@ -185,8 +185,8 @@ function singleUploadRaw<T>(requestParameters: SingleUploadRequest, requestConfi
         formData.append('metadata', requestParameters.metadata as any);
     }
 
-    if (requestParameters.file !== undefined) {
-        formData.append('file', requestParameters.file as any);
+    if (requestParameters.files) {
+        formData.append('files', requestParameters.files?.join(runtime.COLLECTION_FORMATS["csv"]));
     }
 
     const config: QueryConfig<T> = {

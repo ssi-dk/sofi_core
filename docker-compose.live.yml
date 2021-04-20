@@ -21,13 +21,13 @@ services:
       - "com.centurylinklabs.watchtower.enable=true"
 
   sap_broker_queue:
-    image: sekvensanalyseplatform/bifrost-queue-broker:latest
+    image: sekvensanalyseplatform/sap-queue-broker:master
     labels:
       - "com.centurylinklabs.watchtower.enable=true"
     extra_hosts: *default-extra_hosts
 
   bifrost_listener:
-    image: sekvensanalyseplatform/bifrost-listener:latest
+    image: sekvensanalyseplatform/bifrost-listener:master
     labels:
       - "com.centurylinklabs.watchtower.enable=true"
     extra_hosts: *default-extra_hosts

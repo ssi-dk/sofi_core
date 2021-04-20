@@ -17,7 +17,7 @@ export type ErrorSlice = {
 function commonBaseTransforms(base: QueryConfig<ErrorSlice>) {
   base.url = getUrl(base.url);
   base.transform = (response: UploadResponse) => ({
-    manualUploadErrors: response.errors?.join("\n"),
+    manualUploadErrors: response.errors?.join("\n") ?? "",
   });
   base.update = {
     manualUploadErrors: (_, newValue) => {
@@ -31,7 +31,9 @@ function commonBaseTransforms(base: QueryConfig<ErrorSlice>) {
 }
 
 export const uploadIsolateFile = (req: SingleUploadRequest) => {
-  const base = singleUpload<ErrorSlice>(req);
+  const tempreq = { ...req, files: [] };
+  const base = singleUpload<ErrorSlice>(tempreq);
+
   const formData = new FormData();
   if (req.metadata !== undefined) {
     formData.append(
@@ -42,8 +44,10 @@ export const uploadIsolateFile = (req: SingleUploadRequest) => {
     );
   }
 
-  if (req.file !== undefined) {
-    formData.append("file", req.file as any);
+  if (req.files) {
+    [...req.files].forEach((element) => {
+      formData.append("files", element as any);
+    });
   }
 
   base.body = formData;

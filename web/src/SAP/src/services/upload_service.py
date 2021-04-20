@@ -24,8 +24,9 @@ def check_bulk_isolate_exists(path, sequence_names):
     )
 
 
-def upload_isolate(metadata: BaseMetadata, file):
-    upload_sequence_file(file, metadata.institution)
+def upload_isolate(metadata: BaseMetadata, files):
+    for file in files:
+        upload_sequence_file(file, metadata.institution)
     upsert_manual_metadata(metadata)
 
 

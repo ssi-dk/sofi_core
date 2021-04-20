@@ -69,7 +69,7 @@ class TestUploadController(BaseTestCase):
             'Authorization': 'Bearer special-key',
         }
         data = dict(metadata={}
-                    file=(BytesIO(b'some file data'), 'file.txt'))
+                    files=(BytesIO(b'some file data'), 'file.txt'))
         response = self.client.open(
             '/api/upload/single_upload',
             method='POST',

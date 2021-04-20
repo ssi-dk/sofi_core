@@ -61,7 +61,7 @@ def multi_upload(user, token_info, metadata_tsv, files):
                     current_errors = validate_metadata(base_metadata, file)
                     if authorized_to_edit(token_info, base_metadata):
                         if not current_errors:
-                            upload_isolate(base_metadata, file)
+                            upload_isolate(base_metadata, [file])
                         else:
                             errors.extend(current_errors)
                     else:
@@ -80,15 +80,16 @@ def multi_upload(user, token_info, metadata_tsv, files):
     return upload_response_helper(errors)
 
 
-def single_upload(user, token_info, metadata, file):
+def single_upload(user, token_info, metadata, _files):
     assert_user_has("approve", token_info)
     base_metadata: BaseMetadata = BaseMetadata.from_dict(json.loads(metadata.read()))
     assert_authorized_to_edit(token_info, base_metadata.to_dict())
     try:
-        upload_isolate(base_metadata, file)
+        files = request.files.getlist("files")
+        upload_isolate(base_metadata, files)
         return upload_response_helper()
     except Exception as e:
-        return upload_response_helper([base_metadata.isolate_id, e.args[0]])
+        return upload_response_helper([e.args[0]])
 
 
 def validate_metadata(metadata: BaseMetadata, file):

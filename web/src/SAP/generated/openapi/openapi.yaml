@@ -353,7 +353,7 @@ paths:
               metadata:
                 contentType: application/json
                 style: form
-              file:
+              files:
                 contentType: application/gzip
                 style: form
             schema:
@@ -802,11 +802,13 @@ components:
       properties:
         metadata:
           $ref: '#/components/schemas/BaseMetadata'
-        file:
-          format: binary
-          type: string
+        files:
+          items:
+            format: binary
+            type: string
+          type: array
       required:
-      - file
+      - files
       - metadata
       type: object
     MultiUploadRequest:

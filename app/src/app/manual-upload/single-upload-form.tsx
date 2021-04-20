@@ -1,5 +1,12 @@
 import React, { useState } from "react";
-import { VStack, Input, Button, Text } from "@chakra-ui/react";
+import {
+  VStack,
+  Input,
+  Button,
+  Text,
+  FormLabel,
+  FormControl,
+} from "@chakra-ui/react";
 import { BaseMetadata } from "sap-client/models/BaseMetadata";
 import { Organization } from "sap-client/models/Organization";
 import { SingleUploadRequest } from "sap-client/apis/UploadApi";
@@ -14,7 +21,7 @@ function SingleUploadForm() {
     doUpload,
   ] = useMutation((payload: SingleUploadRequest) => uploadIsolateFile(payload));
 
-  const [selectedFile, setSelectedFile] = useState<Blob>(null);
+  const [selectedFiles, setSelectedFile] = useState<any>(null);
 
   const [metadata, setMetadata] = React.useState({
     isolate_id: "",
@@ -45,7 +52,7 @@ function SingleUploadForm() {
   const changeFile = React.useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) =>
       // eslint-disable-next-line
-      setSelectedFile(e.target.files![0]),
+      setSelectedFile(e.target.files),
     [setSelectedFile]
   );
 
@@ -54,10 +61,10 @@ function SingleUploadForm() {
       e.preventDefault();
       doUpload({
         metadata,
-        file: selectedFile,
+        files: selectedFiles,
       });
     },
-    [selectedFile, metadata, doUpload]
+    [selectedFiles, metadata, doUpload]
   );
 
   return isPending ? (
@@ -138,7 +145,10 @@ function SingleUploadForm() {
         value={metadata.primary_isolate}
         onChange={changeState}
       />
-      <Input type="file" onChange={changeFile} />
+      <FormControl id="files">
+        <FormLabel>Gzipped fastq sequences (select multiple)</FormLabel>
+        <Input type="file" onChange={changeFile} multiple />
+      </FormControl>
       <Button type="submit" onClick={submitForm}>
         Upload
       </Button>
