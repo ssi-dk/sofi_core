@@ -63,6 +63,7 @@ export const requestUserViews = () => {
   base.update = {
     userViews: (_, newValue) => newValue,
   };
+  base.force = true;
   return base;
 };
 
@@ -76,6 +77,7 @@ export const addUserViewMutation = (view: UserDefinedViewInternal) => {
   base.update = {
     userViews: (oldViews) => [...oldViews, view],
   };
+  base.force = true;
   return base;
 };
 
@@ -85,5 +87,6 @@ export const deleteUserViewMutation = (view: UserDefinedView) => {
   base.update = {
     userViews: (oldViews) => oldViews.filter((x) => x.name !== view.name),
   };
+  base.force = true;
   return base;
 };

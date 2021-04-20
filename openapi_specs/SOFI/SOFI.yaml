@@ -553,6 +553,10 @@ components:
             timestamp:
               type: string
               format: date-time
+            sequence_ids:
+              type: array
+              items:
+                type: string
             status:
               type: string
               enum: [pending, cancelled, submitted]
@@ -600,8 +604,8 @@ components:
 
     BaseMetadata:
       required:
-        - isolate_id
         - sequence_id
+        - isolate_id
         - sequence_filename
         - institution
         - received_date
@@ -609,9 +613,9 @@ components:
         - provided_species
         - primary_isolate
       properties:
-        isolate_id:
-          type: string
         sequence_id:
+          type: string
+        isolate_id:
           type: string
         sequence_filename:
           type: string
@@ -763,6 +767,10 @@ components:
             resistance_genes:
               type: string
             amr_profile:
+              type: string
+            comment_cluster:
+              type: string
+            comment_general:
               type: string
             amr_ami:
               $ref: "#/components/schemas/Resistance"

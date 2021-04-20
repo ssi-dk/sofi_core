@@ -38,6 +38,12 @@ export interface ApprovalAllOf  {
     timestamp?: Date;
     /**
      * 
+     * @type {Array<string>}
+     * @memberof ApprovalAllOf
+     */
+    sequence_ids?: Array<string>;
+    /**
+     * 
      * @type {string}
      * @memberof ApprovalAllOf
      */
@@ -49,6 +55,7 @@ export function ApprovalAllOfFromJSON(json: any): ApprovalAllOf {
         'id': !exists(json, 'id') ? undefined : json['id'],
         'approver': !exists(json, 'approver') ? undefined : json['approver'],
         'timestamp': !exists(json, 'timestamp') ? undefined : new Date(json['timestamp']),
+        'sequence_ids': !exists(json, 'sequence_ids') ? undefined : json['sequence_ids'],
         'status': !exists(json, 'status') ? undefined : json['status'],
     };
 }
@@ -61,6 +68,7 @@ export function ApprovalAllOfToJSON(value?: ApprovalAllOf): any {
         'id': value.id,
         'approver': value.approver,
         'timestamp': value.timestamp === undefined ? undefined : value.timestamp.toISOString(),
+        'sequence_ids': value.sequence_ids,
         'status': value.status,
     };
 }

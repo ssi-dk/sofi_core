@@ -95,6 +95,7 @@ export const searchPageOfAnalysis = (params: SearchAnalysisRequest) => {
       ...newValue,
     }),
   };
+  base.force = true;
   return base;
 };
 
@@ -125,5 +126,6 @@ export const updateAnalysis = (change: SubmitChangesBody) => {
       return merge({}, cloneDeep(oldValue), newValue);
     },
   };
+  base.force = true;
   return base;
 };

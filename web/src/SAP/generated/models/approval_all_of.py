@@ -17,7 +17,7 @@ class ApprovalAllOf(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, id=None, approver=None, timestamp=None, status=None):  # noqa: E501
+    def __init__(self, id=None, approver=None, timestamp=None, sequence_ids=None, status=None):  # noqa: E501
         """ApprovalAllOf - a model defined in OpenAPI
 
         :param id: The id of this ApprovalAllOf.  # noqa: E501
@@ -26,6 +26,8 @@ class ApprovalAllOf(Model):
         :type approver: str
         :param timestamp: The timestamp of this ApprovalAllOf.  # noqa: E501
         :type timestamp: datetime
+        :param sequence_ids: The sequence_ids of this ApprovalAllOf.  # noqa: E501
+        :type sequence_ids: List[str]
         :param status: The status of this ApprovalAllOf.  # noqa: E501
         :type status: str
         """
@@ -33,6 +35,7 @@ class ApprovalAllOf(Model):
             'id': str,
             'approver': str,
             'timestamp': datetime,
+            'sequence_ids': List[str],
             'status': str,
         }
 
@@ -40,12 +43,14 @@ class ApprovalAllOf(Model):
             'id': 'id',
             'approver': 'approver',
             'timestamp': 'timestamp',
+            'sequence_ids': 'sequence_ids',
             'status': 'status',
         }
 
         self._id = id
         self._approver = approver
         self._timestamp = timestamp
+        self._sequence_ids = sequence_ids
         self._status = status
 
     @classmethod
@@ -121,6 +126,27 @@ class ApprovalAllOf(Model):
         """
 
         self._timestamp = timestamp
+
+    @property
+    def sequence_ids(self):
+        """Gets the sequence_ids of this ApprovalAllOf.
+
+
+        :return: The sequence_ids of this ApprovalAllOf.
+        :rtype: List[str]
+        """
+        return self._sequence_ids
+
+    @sequence_ids.setter
+    def sequence_ids(self, sequence_ids):
+        """Sets the sequence_ids of this ApprovalAllOf.
+
+
+        :param sequence_ids: The sequence_ids of this ApprovalAllOf.
+        :type sequence_ids: List[str]
+        """
+
+        self._sequence_ids = sequence_ids
 
     @property
     def status(self):

@@ -208,12 +208,12 @@ function MetaFilter(props: MetaFilterProps) {
           placeholderText={t("To")}
         />
       </Flex>
-      <Text mt={2}>{t("dyreart")}</Text>
+      <Text mt={2}>{t("animal_species")}</Text>
       <Select
         options={dyreartOptions}
         isMulti
         theme={selectTheme}
-        onChange={onChangeBuilder("species_final")}
+        onChange={onChangeBuilder("animal_species")}
       />
       <Flex justifyContent="space-between" direction="row">
         <Flex direction="column" width="100%">

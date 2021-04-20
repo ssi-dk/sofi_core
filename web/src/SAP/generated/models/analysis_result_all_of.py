@@ -19,7 +19,7 @@ class AnalysisResultAllOf(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, id=None, resfinder_version=None, qc_provided_species=None, qc_genome1x=None, qc_genome10x=None, qc_gsize_diff1x10=None, qc_avg_coverage=None, qc_final=None, subspecies=None, species_final=None, st=None, pathotype=None, pathotype_final=None, serotype=None, serotype_final=None, adhesion=None, adhesion_final=None, toxins=None, toxins_final=None, infection_source=None, resistance_genes=None, amr_profile=None, amr_ami=None, amr_amp=None, amr_azi=None, amr_fep=None, amr_fot=None, amr_f_c=None, amr_fox=None, amr_taz=None, amr_t_c=None, amr_chl=None, amr_cip=None, amr_cli=None, amr_col=None, amr_dap=None, amr_etp=None, amr_ery=None, amr_fus=None, amr_gen=None, amr_imi=None, amr_kan=None, amr_lzd=None, amr_mero=None, amr_mup=None, amr_nal=None, amr_pen=None, amr_syn=None, amr_rif=None, amr_str=None, amr_sul=None, amr_tei=None, amr_trm=None, amr_tet=None, amr_tia=None, amr_tgc=None, amr_tmp=None, amr_van=None):  # noqa: E501
+    def __init__(self, id=None, resfinder_version=None, qc_provided_species=None, qc_genome1x=None, qc_genome10x=None, qc_gsize_diff1x10=None, qc_avg_coverage=None, qc_final=None, subspecies=None, species_final=None, st=None, pathotype=None, pathotype_final=None, serotype=None, serotype_final=None, adhesion=None, adhesion_final=None, toxins=None, toxins_final=None, infection_source=None, resistance_genes=None, amr_profile=None, comment_cluster=None, comment_general=None, amr_ami=None, amr_amp=None, amr_azi=None, amr_fep=None, amr_fot=None, amr_f_c=None, amr_fox=None, amr_taz=None, amr_t_c=None, amr_chl=None, amr_cip=None, amr_cli=None, amr_col=None, amr_dap=None, amr_etp=None, amr_ery=None, amr_fus=None, amr_gen=None, amr_imi=None, amr_kan=None, amr_lzd=None, amr_mero=None, amr_mup=None, amr_nal=None, amr_pen=None, amr_syn=None, amr_rif=None, amr_str=None, amr_sul=None, amr_tei=None, amr_trm=None, amr_tet=None, amr_tia=None, amr_tgc=None, amr_tmp=None, amr_van=None):  # noqa: E501
         """AnalysisResultAllOf - a model defined in OpenAPI
 
         :param id: The id of this AnalysisResultAllOf.  # noqa: E501
@@ -66,6 +66,10 @@ class AnalysisResultAllOf(Model):
         :type resistance_genes: str
         :param amr_profile: The amr_profile of this AnalysisResultAllOf.  # noqa: E501
         :type amr_profile: str
+        :param comment_cluster: The comment_cluster of this AnalysisResultAllOf.  # noqa: E501
+        :type comment_cluster: str
+        :param comment_general: The comment_general of this AnalysisResultAllOf.  # noqa: E501
+        :type comment_general: str
         :param amr_ami: The amr_ami of this AnalysisResultAllOf.  # noqa: E501
         :type amr_ami: Resistance
         :param amr_amp: The amr_amp of this AnalysisResultAllOf.  # noqa: E501
@@ -162,6 +166,8 @@ class AnalysisResultAllOf(Model):
             'infection_source': str,
             'resistance_genes': str,
             'amr_profile': str,
+            'comment_cluster': str,
+            'comment_general': str,
             'amr_ami': Resistance,
             'amr_amp': Resistance,
             'amr_azi': Resistance,
@@ -223,6 +229,8 @@ class AnalysisResultAllOf(Model):
             'infection_source': 'infection_source',
             'resistance_genes': 'resistance_genes',
             'amr_profile': 'amr_profile',
+            'comment_cluster': 'comment_cluster',
+            'comment_general': 'comment_general',
             'amr_ami': 'amr_ami',
             'amr_amp': 'amr_amp',
             'amr_azi': 'amr_azi',
@@ -283,6 +291,8 @@ class AnalysisResultAllOf(Model):
         self._infection_source = infection_source
         self._resistance_genes = resistance_genes
         self._amr_profile = amr_profile
+        self._comment_cluster = comment_cluster
+        self._comment_general = comment_general
         self._amr_ami = amr_ami
         self._amr_amp = amr_amp
         self._amr_azi = amr_azi
@@ -800,6 +810,48 @@ class AnalysisResultAllOf(Model):
         """
 
         self._amr_profile = amr_profile
+
+    @property
+    def comment_cluster(self):
+        """Gets the comment_cluster of this AnalysisResultAllOf.
+
+
+        :return: The comment_cluster of this AnalysisResultAllOf.
+        :rtype: str
+        """
+        return self._comment_cluster
+
+    @comment_cluster.setter
+    def comment_cluster(self, comment_cluster):
+        """Sets the comment_cluster of this AnalysisResultAllOf.
+
+
+        :param comment_cluster: The comment_cluster of this AnalysisResultAllOf.
+        :type comment_cluster: str
+        """
+
+        self._comment_cluster = comment_cluster
+
+    @property
+    def comment_general(self):
+        """Gets the comment_general of this AnalysisResultAllOf.
+
+
+        :return: The comment_general of this AnalysisResultAllOf.
+        :rtype: str
+        """
+        return self._comment_general
+
+    @comment_general.setter
+    def comment_general(self, comment_general):
+        """Sets the comment_general of this AnalysisResultAllOf.
+
+
+        :param comment_general: The comment_general of this AnalysisResultAllOf.
+        :type comment_general: str
+        """
+
+        self._comment_general = comment_general
 
     @property
     def amr_ami(self):

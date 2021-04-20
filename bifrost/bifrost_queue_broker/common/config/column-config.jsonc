@@ -81,9 +81,19 @@
   {
     "field_name": "cluster_id",
     "approvable": true,
+    "editable": true,
     "approves_with": [
-      "fud_number"
+      "fud_number",
+      "epi_export"
     ]
+  },
+  {
+    "field_name": "fud_number",
+    "editable": true
+  },
+  {
+    "field_name": "epi_export",
+    "editable": true
   },
   {
     "field_name": "pathotype_final",
@@ -170,5 +180,19 @@
     "organizations": [
       "FVST"
     ]
+  },
+  {
+    "field_name": "public",
+    "editable": true
+  },
+  {
+    "field_name": "comment_cluster",
+    "editable": true,
+    "approvable": true
+  },
+  {
+    "field_name": "comment_general",
+    "editable": true,
+    "approvable": true
   }
 ]
