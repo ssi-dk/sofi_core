@@ -63,6 +63,7 @@ export const requestPageOfAnalysis = (params: GetAnalysisRequest) => {
       ...newValue,
     }),
   };
+  base.force = true;
   return base;
 };
 

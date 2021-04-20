@@ -55,8 +55,12 @@ def get_analysis(user, token_info, paging_token, page_size):
         institution_filter,
     )
     count = get_analysis_count({})
-    new_token = None if len(items) == 0 else render_paging_token(
-        token["page_size"], {}, token["offset"] + token["page_size"]
+    new_token = (
+        None
+        if len(items) < token["page_size"]
+        else render_paging_token(
+            token["page_size"], {}, token["offset"] + token["page_size"]
+        )
     )
     response = {
         "items": items,
@@ -108,8 +112,12 @@ def search_analysis(user, token_info, query: AnalysisQuery):
         institution_filter,
     )
     count = get_analysis_count(token["query"])
-    new_token = None if len(items) == 0 else render_paging_token(
-        token["page_size"], token["query"], token["offset"] + token["page_size"]
+    new_token = (
+        None
+        if len(items) < token["page_size"]
+        else render_paging_token(
+            token["page_size"], token["query"], token["offset"] + token["page_size"]
+        )
     )
     response = {
         "items": items,
