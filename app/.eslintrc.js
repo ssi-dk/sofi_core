@@ -30,6 +30,7 @@ module.exports = {
   },
   rules: {
     'max-classes-per-file': 'warn',
+    'prefer-destructuring': 'off',
     'spaced-comment': 'warn',
     'global-require': 'warn',
     'no-cond-assign': 'off',

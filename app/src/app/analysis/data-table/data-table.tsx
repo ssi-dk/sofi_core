@@ -199,7 +199,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
   const onSelectRow = React.useCallback(
     (row: Row<T>) => {
       const { checked } = calcRowSelectionState(row);
-      const visibleCols = visibleColumns.map(x => x.id);
+      const visibleCols = visibleColumns.map((x) => x.id);
       const id = row.original[primaryKey];
       const cols = columns
         .filter((x) => typeof x.accessor === "string")
