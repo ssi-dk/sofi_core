@@ -59,15 +59,16 @@ export default function App() {
           path="/callback"
           render={() => <Callback location={window.location} />}
         />
-        <Route
-          path="/"
-          render={() => (
-            <Authorize>
-              <AnalysisPage />
-            </Authorize>
-          )}
-        />
       </Switch>
+      {/* Keep AnalysisPage out of the Switch so it never unmounts */}
+      <Route
+        path="/"
+        render={() => (
+          <Authorize>
+            <AnalysisPage />
+          </Authorize>
+        )}
+      />
     </ChakraProvider>
   );
 }
