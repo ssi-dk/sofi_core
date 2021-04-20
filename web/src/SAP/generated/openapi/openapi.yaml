@@ -680,9 +680,9 @@ components:
       type: string
     BaseMetadata:
       properties:
-        isolate_id:
-          type: string
         sequence_id:
+          type: string
+        isolate_id:
           type: string
         sequence_filename:
           type: string
@@ -934,6 +934,10 @@ components:
         timestamp:
           format: date-time
           type: string
+        sequence_ids:
+          items:
+            type: string
+          type: array
         status:
           enum:
           - pending

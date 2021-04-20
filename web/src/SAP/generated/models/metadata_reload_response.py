@@ -23,13 +23,13 @@ class MetadataReloadResponse(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, isolate_id=None, sequence_id=None, sequence_filename=None, institution=None, project_number=None, project_title=None, sampling_date=None, received_date=None, run_id=None, public=None, provided_species=None, primary_isolate=None, cpr_nr=None, gender=None, name=None, age=None, travel=None, travel_country=None, run_date=None, kma_received_date=None, kma=None, region=None, fud_number=None, cluster_id=None, epi_export=None, chr_number=None, cvr_number=None, aut_number=None, product_type=None, product=None, origin_country=None, animal_species=None, sample_info=None):  # noqa: E501
+    def __init__(self, sequence_id=None, isolate_id=None, sequence_filename=None, institution=None, project_number=None, project_title=None, sampling_date=None, received_date=None, run_id=None, public=None, provided_species=None, primary_isolate=None, cpr_nr=None, gender=None, name=None, age=None, travel=None, travel_country=None, run_date=None, kma_received_date=None, kma=None, region=None, fud_number=None, cluster_id=None, epi_export=None, chr_number=None, cvr_number=None, aut_number=None, product_type=None, product=None, origin_country=None, animal_species=None, sample_info=None):  # noqa: E501
         """MetadataReloadResponse - a model defined in OpenAPI
 
-        :param isolate_id: The isolate_id of this MetadataReloadResponse.  # noqa: E501
-        :type isolate_id: str
         :param sequence_id: The sequence_id of this MetadataReloadResponse.  # noqa: E501
         :type sequence_id: str
+        :param isolate_id: The isolate_id of this MetadataReloadResponse.  # noqa: E501
+        :type isolate_id: str
         :param sequence_filename: The sequence_filename of this MetadataReloadResponse.  # noqa: E501
         :type sequence_filename: str
         :param institution: The institution of this MetadataReloadResponse.  # noqa: E501
@@ -94,8 +94,8 @@ class MetadataReloadResponse(Model):
         :type sample_info: str
         """
         self.openapi_types = {
-            'isolate_id': str,
             'sequence_id': str,
+            'isolate_id': str,
             'sequence_filename': str,
             'institution': Organization,
             'project_number': float,
@@ -130,8 +130,8 @@ class MetadataReloadResponse(Model):
         }
 
         self.attribute_map = {
-            'isolate_id': 'isolate_id',
             'sequence_id': 'sequence_id',
+            'isolate_id': 'isolate_id',
             'sequence_filename': 'sequence_filename',
             'institution': 'institution',
             'project_number': 'project_number',
@@ -165,8 +165,8 @@ class MetadataReloadResponse(Model):
             'sample_info': 'sample_info',
         }
 
-        self._isolate_id = isolate_id
         self._sequence_id = sequence_id
+        self._isolate_id = isolate_id
         self._sequence_filename = sequence_filename
         self._institution = institution
         self._project_number = project_number
@@ -211,29 +211,6 @@ class MetadataReloadResponse(Model):
         return util.deserialize_model(dikt, cls)
 
     @property
-    def isolate_id(self):
-        """Gets the isolate_id of this MetadataReloadResponse.
-
-
-        :return: The isolate_id of this MetadataReloadResponse.
-        :rtype: str
-        """
-        return self._isolate_id
-
-    @isolate_id.setter
-    def isolate_id(self, isolate_id):
-        """Sets the isolate_id of this MetadataReloadResponse.
-
-
-        :param isolate_id: The isolate_id of this MetadataReloadResponse.
-        :type isolate_id: str
-        """
-        if isolate_id is None:
-            raise ValueError("Invalid value for `isolate_id`, must not be `None`")  # noqa: E501
-
-        self._isolate_id = isolate_id
-
-    @property
     def sequence_id(self):
         """Gets the sequence_id of this MetadataReloadResponse.
 
@@ -255,6 +232,29 @@ class MetadataReloadResponse(Model):
             raise ValueError("Invalid value for `sequence_id`, must not be `None`")  # noqa: E501
 
         self._sequence_id = sequence_id
+
+    @property
+    def isolate_id(self):
+        """Gets the isolate_id of this MetadataReloadResponse.
+
+
+        :return: The isolate_id of this MetadataReloadResponse.
+        :rtype: str
+        """
+        return self._isolate_id
+
+    @isolate_id.setter
+    def isolate_id(self, isolate_id):
+        """Sets the isolate_id of this MetadataReloadResponse.
+
+
+        :param isolate_id: The isolate_id of this MetadataReloadResponse.
+        :type isolate_id: str
+        """
+        if isolate_id is None:
+            raise ValueError("Invalid value for `isolate_id`, must not be `None`")  # noqa: E501
+
+        self._isolate_id = isolate_id
 
     @property
     def sequence_filename(self):

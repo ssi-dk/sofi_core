@@ -15,7 +15,7 @@ from web.src.SAP.src.security.permission_check import assert_user_has
 
 
 def get_approvals(user, token_info):
-    return jsonify(find_approvals(user))
+    return jsonify(find_approvals(token_info["email"]))
 
 
 def create_approval(user, token_info, body: ApprovalRequest):
@@ -26,14 +26,14 @@ def create_approval(user, token_info, body: ApprovalRequest):
     appr.timestamp = datetime.datetime.now().isoformat()
     appr.status = "submitted"
     appr.id = str(uuid.uuid4())
-    res = insert_approval(appr)
+    res = insert_approval(token_info["email"], appr)
     # TODO: update LIMS/TBR
     return jsonify(appr.to_dict()) if res != None else abort(400)
 
 
 def cancel_approval(user, token_info, approval_id: str):
     assert_user_has("approve", token_info)
-    res = revoke_approval(user, approval_id)
+    res = revoke_approval(token_info["email"], approval_id)
     return None if res.modified_count > 0 else abort(404)
 
 

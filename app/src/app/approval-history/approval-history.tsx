@@ -95,16 +95,17 @@ export default function ApprovalHistory() {
         >
           <Heading>{`${t("My approval history")}`}</Heading>
         </Flex>
-        <Grid padding="20px" templateColumns="repeat(5, 1fr)" gap={6}>
+        <Grid padding="20px" templateColumns="repeat(6, 1fr)" gap={6}>
           <Heading size="md">Id</Heading>
           <Heading size="md">{t("Time")}</Heading>
           <Heading size="md">{t("Approved by")}</Heading>
+          <Heading size="md">{t("Sequences")}</Heading>
           <Heading size="md">{t("Status")}</Heading>
         </Grid>
         {approvalHistory &&
           approvalHistory.map((h) => {
             return (
-              <Grid padding="20px" templateColumns="repeat(5, 1fr)" gap={6}>
+              <Grid padding="20px" templateColumns="repeat(6, 1fr)" gap={6}>
                 <Text>{h.id}</Text>
                 <Text>{`${new Date(
                   h.timestamp
@@ -112,6 +113,11 @@ export default function ApprovalHistory() {
                   h.timestamp
                 ).toLocaleTimeString()}`}</Text>
                 <Text>{h.approver}</Text>
+                <Flex flexDirection="column">
+                  {h.sequence_ids?.map((x) => (
+                    <span>{x}</span>
+                  ))}
+                </Flex>
                 <Text>{h.status}</Text>
                 {h.status === ApprovalAllOfStatusEnum.submitted && (
                   <Button

@@ -29,13 +29,13 @@ class AnalysisResult(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, isolate_id=None, sequence_id=None, sequence_filename=None, institution=None, project_number=None, project_title=None, sampling_date=None, received_date=None, run_id=None, public=None, provided_species=None, primary_isolate=None, chr_number=None, cvr_number=None, aut_number=None, product_type=None, product=None, origin_country=None, animal_species=None, sample_info=None, cpr_nr=None, gender=None, name=None, age=None, travel=None, travel_country=None, run_date=None, kma_received_date=None, kma=None, region=None, fud_number=None, cluster_id=None, epi_export=None, id=None, resfinder_version=None, qc_provided_species=None, qc_genome1x=None, qc_genome10x=None, qc_gsize_diff1x10=None, qc_avg_coverage=None, qc_final=None, subspecies=None, species_final=None, st=None, pathotype=None, pathotype_final=None, serotype=None, serotype_final=None, adhesion=None, adhesion_final=None, toxins=None, toxins_final=None, infection_source=None, resistance_genes=None, amr_profile=None, comment_cluster=None, comment_general=None, amr_ami=None, amr_amp=None, amr_azi=None, amr_fep=None, amr_fot=None, amr_f_c=None, amr_fox=None, amr_taz=None, amr_t_c=None, amr_chl=None, amr_cip=None, amr_cli=None, amr_col=None, amr_dap=None, amr_etp=None, amr_ery=None, amr_fus=None, amr_gen=None, amr_imi=None, amr_kan=None, amr_lzd=None, amr_mero=None, amr_mup=None, amr_nal=None, amr_pen=None, amr_syn=None, amr_rif=None, amr_str=None, amr_sul=None, amr_tei=None, amr_trm=None, amr_tet=None, amr_tia=None, amr_tgc=None, amr_tmp=None, amr_van=None):  # noqa: E501
+    def __init__(self, sequence_id=None, isolate_id=None, sequence_filename=None, institution=None, project_number=None, project_title=None, sampling_date=None, received_date=None, run_id=None, public=None, provided_species=None, primary_isolate=None, chr_number=None, cvr_number=None, aut_number=None, product_type=None, product=None, origin_country=None, animal_species=None, sample_info=None, cpr_nr=None, gender=None, name=None, age=None, travel=None, travel_country=None, run_date=None, kma_received_date=None, kma=None, region=None, fud_number=None, cluster_id=None, epi_export=None, id=None, resfinder_version=None, qc_provided_species=None, qc_genome1x=None, qc_genome10x=None, qc_gsize_diff1x10=None, qc_avg_coverage=None, qc_final=None, subspecies=None, species_final=None, st=None, pathotype=None, pathotype_final=None, serotype=None, serotype_final=None, adhesion=None, adhesion_final=None, toxins=None, toxins_final=None, infection_source=None, resistance_genes=None, amr_profile=None, comment_cluster=None, comment_general=None, amr_ami=None, amr_amp=None, amr_azi=None, amr_fep=None, amr_fot=None, amr_f_c=None, amr_fox=None, amr_taz=None, amr_t_c=None, amr_chl=None, amr_cip=None, amr_cli=None, amr_col=None, amr_dap=None, amr_etp=None, amr_ery=None, amr_fus=None, amr_gen=None, amr_imi=None, amr_kan=None, amr_lzd=None, amr_mero=None, amr_mup=None, amr_nal=None, amr_pen=None, amr_syn=None, amr_rif=None, amr_str=None, amr_sul=None, amr_tei=None, amr_trm=None, amr_tet=None, amr_tia=None, amr_tgc=None, amr_tmp=None, amr_van=None):  # noqa: E501
         """AnalysisResult - a model defined in OpenAPI
 
-        :param isolate_id: The isolate_id of this AnalysisResult.  # noqa: E501
-        :type isolate_id: str
         :param sequence_id: The sequence_id of this AnalysisResult.  # noqa: E501
         :type sequence_id: str
+        :param isolate_id: The isolate_id of this AnalysisResult.  # noqa: E501
+        :type isolate_id: str
         :param sequence_filename: The sequence_filename of this AnalysisResult.  # noqa: E501
         :type sequence_filename: str
         :param institution: The institution of this AnalysisResult.  # noqa: E501
@@ -220,8 +220,8 @@ class AnalysisResult(Model):
         :type amr_van: Resistance
         """
         self.openapi_types = {
-            'isolate_id': str,
             'sequence_id': str,
+            'isolate_id': str,
             'sequence_filename': str,
             'institution': Organization,
             'project_number': float,
@@ -316,8 +316,8 @@ class AnalysisResult(Model):
         }
 
         self.attribute_map = {
-            'isolate_id': 'isolate_id',
             'sequence_id': 'sequence_id',
+            'isolate_id': 'isolate_id',
             'sequence_filename': 'sequence_filename',
             'institution': 'institution',
             'project_number': 'project_number',
@@ -411,8 +411,8 @@ class AnalysisResult(Model):
             'amr_van': 'amr_van',
         }
 
-        self._isolate_id = isolate_id
         self._sequence_id = sequence_id
+        self._isolate_id = isolate_id
         self._sequence_filename = sequence_filename
         self._institution = institution
         self._project_number = project_number
@@ -517,29 +517,6 @@ class AnalysisResult(Model):
         return util.deserialize_model(dikt, cls)
 
     @property
-    def isolate_id(self):
-        """Gets the isolate_id of this AnalysisResult.
-
-
-        :return: The isolate_id of this AnalysisResult.
-        :rtype: str
-        """
-        return self._isolate_id
-
-    @isolate_id.setter
-    def isolate_id(self, isolate_id):
-        """Sets the isolate_id of this AnalysisResult.
-
-
-        :param isolate_id: The isolate_id of this AnalysisResult.
-        :type isolate_id: str
-        """
-        if isolate_id is None:
-            raise ValueError("Invalid value for `isolate_id`, must not be `None`")  # noqa: E501
-
-        self._isolate_id = isolate_id
-
-    @property
     def sequence_id(self):
         """Gets the sequence_id of this AnalysisResult.
 
@@ -561,6 +538,29 @@ class AnalysisResult(Model):
             raise ValueError("Invalid value for `sequence_id`, must not be `None`")  # noqa: E501
 
         self._sequence_id = sequence_id
+
+    @property
+    def isolate_id(self):
+        """Gets the isolate_id of this AnalysisResult.
+
+
+        :return: The isolate_id of this AnalysisResult.
+        :rtype: str
+        """
+        return self._isolate_id
+
+    @isolate_id.setter
+    def isolate_id(self, isolate_id):
+        """Sets the isolate_id of this AnalysisResult.
+
+
+        :param isolate_id: The isolate_id of this AnalysisResult.
+        :type isolate_id: str
+        """
+        if isolate_id is None:
+            raise ValueError("Invalid value for `isolate_id`, must not be `None`")  # noqa: E501
+
+        self._isolate_id = isolate_id
 
     @property
     def sequence_filename(self):

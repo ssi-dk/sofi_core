@@ -29,12 +29,20 @@ def find_approvals(user: str):
     )
 
 
-def insert_approval(approval: Approval):
+def insert_approval(username: str, approval: Approval):
     conn = get_connection()
     mydb = conn[DB_NAME]
     approvals = mydb[APPROVALS_COL_NAME]
+    appr = approval.to_dict()
+    appr["approver"] = username
+    print(approval.matrix, file=sys.stderr)
+    print(approval.matrix.keys(), file=sys.stderr)
+    seqs = list(approval.matrix.keys())
+    print(seqs, file=sys.stderr)
+    appr["sequence_ids"] = list(approval.matrix.keys())
+    print(appr, file=sys.stderr)
 
-    return approvals.insert_one(approval.to_dict())
+    return approvals.insert_one(appr)
 
 
 def revoke_approval(username: str, approval_id: str):
