@@ -1,4 +1,6 @@
 from .visitor import on, when
+import re
+import sys
 
 from ....generated.models.query_expression import (
     QueryExpression,
@@ -21,12 +23,27 @@ def structure_operator(operator, left, right):
         return {IMPLICIT_OP: [left, right]}
 
 
+def check_for_wildcard(term):
+    if "*" in term:
+        terms = [x for x in term.split("*") if x != ""]
+        escaped = list(map(re.escape, terms))
+        # since regex matches on anything within the value, we do not need to put in the wildcard
+        # if we do need to, we can reenable this and perhaps pin with ^ or $
+        # regex_pattern = ''.join([x if x != "" else ".*" for x in escaped])
+        regex_pattern = "".join(escaped)
+        return {"$regex": regex_pattern, "$options": "i"}
+
+    return term
+
+
 def structure_leaf(node, is_negated):
     field = node.field if node.field != "<implicit>" else IMPLICIT_FIELD
     if is_negated:
-        return {field: {"$ne": node.term}}
+        return {field: {"$ne": check_for_wildcard(node.term)}}
     else:
-        return {field: node.term}
+        res = {field: check_for_wildcard(node.term)}
+        print(res, file=sys.stderr)
+        return res
 
 
 def is_negated_op(node):
