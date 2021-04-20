@@ -12,10 +12,10 @@ Restart=always
 ExecStartPre=/usr/bin/docker-compose down -v
 ExecStartPre=/usr/bin/docker-compose rm -fv
 
-WorkingDirectory=/home/sap/sofi
+WorkingDirectory=/opt/sofi
 
-ExecStart=/usr/local/bin/docker-compose -f /home/sap/sofi/docker-compose.yml -f /home/sap/sofi/docker-compose.live.yml up
-ExecStop=/usr/local/bin/docker-compose -f /home/sap/sofi/docker-compose.yml -f /home/sap/sofi/docker-compose.live.yml down -v
+ExecStart=/usr/local/bin/docker-compose -f /opt/sofi/docker-compose.yml -f /opt/sofi/docker-compose.live.yml up
+ExecStop=/usr/local/bin/docker-compose -f /opt/sofi/docker-compose.yml -f /opt/sofi/docker-compose.live.yml down -v
 
 [Install]
 WantedBy=multi-user.target
