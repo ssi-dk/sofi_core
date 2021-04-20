@@ -41,6 +41,13 @@ agg_pipeline = [
                     },
                 }
             ),
+            "sequence_filenames": {
+                "$reduce": {
+                    "input": "$categories.paired_reads.summary.data",
+                    "initialValue": "",
+                    "in": {"$concat": ["$$value", "$$this", ","]},
+                }
+            },
             "qc_genome1x": "$categories.denovo_assembly.summary.length",
             "qc_genome10x": "$categories.mapping_qc.summary.values_at_floor_of_depth.x10.length",
             "qc_gsize_diff1x10": removeNullProperty(
