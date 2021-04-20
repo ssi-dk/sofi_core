@@ -47,8 +47,8 @@ def get_analysis_page(query, page_size, offset, columns, restrict_to_institution
                 }
             }
         },
+        {"$sort": {"_id": pymongo.DESCENDING}},
         {"$unset": ["_id", "metadata"]},
-        {"$sort": {"run_date": pymongo.DESCENDING}},
         {"$skip": offset},
         {"$limit": (int(page_size) + 2)},
         {"$project": column_projection},

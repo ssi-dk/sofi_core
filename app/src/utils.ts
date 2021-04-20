@@ -70,7 +70,7 @@ export function invertMap(
   return Object.entries(data).reduce(
     // eslint-disable-next-line
     (obj, item) =>
-      (obj[item[1]] = normalizeKeys ? item[0] : item[0].toLocaleLowerCase()) &&
+      (obj[normalizeKeys ? item[1].toLocaleLowerCase() : item[1]] = item[0]) &&
       obj,
     {}
   );

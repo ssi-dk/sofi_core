@@ -67,8 +67,9 @@ export default function AnalysisPage() {
 
   const [columnLoadState] = useRequest(requestColumns());
   const [{ isPending, isFinished }] = useRequest({
-    ...requestPageOfAnalysis({ pageSize: 100 }),
+    ...requestPageOfAnalysis({ pageSize: 1000 }),
   });
+
   useRequest({ ...fetchApprovalMatrix() });
   // TODO: Figure out how to make this strongly typed
   const data = useSelector<RootState>((s) =>

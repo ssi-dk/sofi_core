@@ -6,6 +6,7 @@ import superagentInterface from "redux-query-interface-superagent";
 import { createBrowserHistory } from "history";
 import createRootReducer, { RootState } from "./root-reducer";
 import { jwtMiddleware } from "middleware/jwt-middleware";
+import { pagingMiddleware } from "middleware/paging-middleware";
 
 // selectors
 export const getQueries = (state: RootState) => state.queries;
@@ -17,6 +18,7 @@ const store = configureStore({
   reducer: createRootReducer(history),
   middleware: [
     ...getDefaultMiddleware({ serializableCheck: false }),
+    pagingMiddleware,
     jwtMiddleware,
     queryMiddleware(superagentInterface, getQueries, getEntities),
     routerMiddleware(history),
