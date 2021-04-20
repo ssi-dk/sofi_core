@@ -62,7 +62,7 @@ export default function App() {
         />
         <CacheRoute
           path="/"
-          children={() => (
+          render={() => (
             <Authorize>
               <AnalysisPage />
             </Authorize>
