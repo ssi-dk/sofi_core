@@ -1,7 +1,8 @@
 import React from "react";
 import { Global } from "@emotion/react";
 import { ChakraProvider } from "@chakra-ui/react";
-import { Switch, Route } from "react-router";
+import { Route } from "react-router";
+import { CacheSwitch, CacheRoute } from "react-router-cache-route";
 import { Authorize } from "auth/authorize";
 import appTheme from "app/app.theme";
 import { Callback } from "auth/auth-callback";
@@ -18,7 +19,7 @@ export default function App() {
   return (
     <ChakraProvider theme={appTheme}>
       <Global styles={globalCss} />
-      <Switch>
+      <CacheSwitch>
         <Route
           path="/manual-upload"
           render={() => (
@@ -59,16 +60,15 @@ export default function App() {
           path="/callback"
           render={() => <Callback location={window.location} />}
         />
-      </Switch>
-      {/* Keep AnalysisPage out of the Switch so it never unmounts */}
-      <Route
-        path="/"
-        render={() => (
-          <Authorize>
-            <AnalysisPage />
-          </Authorize>
-        )}
-      />
+        <CacheRoute
+          path="/"
+          children={() => (
+            <Authorize>
+              <AnalysisPage />
+            </Authorize>
+          )}
+        />
+      </CacheSwitch>
     </ChakraProvider>
   );
 }
