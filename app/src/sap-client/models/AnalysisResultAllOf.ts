@@ -158,6 +158,18 @@ export interface AnalysisResultAllOf  {
     amr_profile?: string;
     /**
      * 
+     * @type {string}
+     * @memberof AnalysisResultAllOf
+     */
+    comment_cluster?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof AnalysisResultAllOf
+     */
+    comment_general?: string;
+    /**
+     * 
      * @type {Resistance}
      * @memberof AnalysisResultAllOf
      */
@@ -398,6 +410,8 @@ export function AnalysisResultAllOfFromJSON(json: any): AnalysisResultAllOf {
         'infection_source': !exists(json, 'infection_source') ? undefined : json['infection_source'],
         'resistance_genes': !exists(json, 'resistance_genes') ? undefined : json['resistance_genes'],
         'amr_profile': !exists(json, 'amr_profile') ? undefined : json['amr_profile'],
+        'comment_cluster': !exists(json, 'comment_cluster') ? undefined : json['comment_cluster'],
+        'comment_general': !exists(json, 'comment_general') ? undefined : json['comment_general'],
         'amr_ami': !exists(json, 'amr_ami') ? undefined : ResistanceFromJSON(json['amr_ami']),
         'amr_amp': !exists(json, 'amr_amp') ? undefined : ResistanceFromJSON(json['amr_amp']),
         'amr_azi': !exists(json, 'amr_azi') ? undefined : ResistanceFromJSON(json['amr_azi']),
@@ -464,6 +478,8 @@ export function AnalysisResultAllOfToJSON(value?: AnalysisResultAllOf): any {
         'infection_source': value.infection_source,
         'resistance_genes': value.resistance_genes,
         'amr_profile': value.amr_profile,
+        'comment_cluster': value.comment_cluster,
+        'comment_general': value.comment_general,
         'amr_ami': ResistanceToJSON(value.amr_ami),
         'amr_amp': ResistanceToJSON(value.amr_amp),
         'amr_azi': ResistanceToJSON(value.amr_azi),

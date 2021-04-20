@@ -764,6 +764,10 @@ components:
               type: string
             amr_profile:
               type: string
+            comment_cluster:
+              type: string
+            comment_general:
+              type: string
             amr_ami:
               $ref: "#/components/schemas/Resistance"
             amr_amp:

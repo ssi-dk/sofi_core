@@ -26,8 +26,8 @@ function AnalysisSidebar(props: AnalysisSidebarProps) {
     () => sortUnique(data.map((x) => x.serotype_final)),
     [data, sortUnique]
   );
-  const speciesFinal = React.useMemo(
-    () => sortUnique(data.map((x) => x.species_final)),
+  const animalSpecies = React.useMemo(
+    () => sortUnique(data.map((x) => x.animal_species)),
     [data, sortUnique]
   );
   const organisations = React.useMemo(
@@ -73,7 +73,7 @@ function AnalysisSidebar(props: AnalysisSidebarProps) {
         organisations={organisations}
         projects={projects}
         projectNrs={projectNrs}
-        dyreart={speciesFinal}
+        dyreart={animalSpecies}
         runIds={runIds}
         cprs={cprs}
         isolateIds={isolateIds}
