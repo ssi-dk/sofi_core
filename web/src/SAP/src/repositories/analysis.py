@@ -29,7 +29,6 @@ def get_analysis_page(query, page_size, offset, columns, restrict_to_institution
     mydb = conn[DB_NAME]
     samples = mydb[ANALYSIS_COL_NAME]
     fetch_pipeline = [
-        {"$match": query},
         {
             "$lookup": {
                 "from": "sap_tbr_metadata",
@@ -47,6 +46,7 @@ def get_analysis_page(query, page_size, offset, columns, restrict_to_institution
                 }
             }
         },
+        {"$match": query},
         {"$sort": {"_id": pymongo.DESCENDING}},
         {"$unset": ["_id", "metadata"]},
         {"$skip": offset},
