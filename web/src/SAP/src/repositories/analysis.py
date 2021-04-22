@@ -37,6 +37,7 @@ def get_analysis_page(query, page_size, offset, columns, restrict_to_institution
                 "as": "metadata",
             }
         },
+        {"$match": query},
         # This removes isolates without metadata.
         # {"$match": {"metadata": {"$ne": []}}},
         {

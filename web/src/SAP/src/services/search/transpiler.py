@@ -39,11 +39,17 @@ def check_for_wildcard(term):
 def structure_leaf(node, is_negated):
     field = node.field if node.field != "<implicit>" else IMPLICIT_FIELD
     if is_negated:
-        return {field: {"$ne": check_for_wildcard(node.term)}}
+        if node.term.isnumeric():
+            return {field: {"$ne": float(node.term)}}
+        else:
+            return {field: {"$ne": check_for_wildcard(node.term)}}
     else:
-        res = {field: check_for_wildcard(node.term)}
-        print(res, file=sys.stderr)
-        return res
+        if node.term.isnumeric():
+            return {field: float(node.term)}
+        else:
+            res = {field: check_for_wildcard(node.term)}
+            print(res, file=sys.stderr)
+            return res
 
 
 def is_negated_op(node):
