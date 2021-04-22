@@ -17,6 +17,16 @@ const parseQuery = (input: string) => {
     if (x["field"]) {
       x["field"] = getFieldInternalName(x["field"]) ?? x["field"];
     }
+    // parse numbers where we find them
+    // not doing this because the redux-query code generator cannot handle `oneOf` correctly just yet
+    // but in the future, it would be nice to make term string | number and parse it here
+    /*
+    if (x["term"]) {
+      if (!Number.isNaN(x["term"])) {
+        x["term"] = parseFloat(x["term"]);
+      }
+    }
+    */
   });
   return ast;
 };
