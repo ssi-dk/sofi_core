@@ -23,7 +23,7 @@ def structure_operator(operator, left, right):
         return {IMPLICIT_OP: [left, right]}
 
 
-def check_for_wildcard(term):
+def check_for_wildcard(term: str):
     if "*" in term:
         terms = [x for x in term.split("*") if x != ""]
         escaped = list(map(re.escape, terms))
@@ -36,20 +36,35 @@ def check_for_wildcard(term):
     return term
 
 
+def coerce_term(term: str):
+    try:
+        try:
+            return int(term)
+        except Exception:
+            pass
+        try:
+            return float(term)
+        except Exception:
+            pass
+    except Exception:
+        return term
+
+
 def structure_leaf(node, is_negated):
     field = node.field if node.field != "<implicit>" else IMPLICIT_FIELD
+    coerced = coerce_term(node.term)
     if is_negated:
-        if node.term.isnumeric():
-            return {field: {"$ne": float(node.term)}}
+        if isinstance(coerced, str):
+            return {field: {"$ne": check_for_wildcard(coerced)}}
         else:
-            return {field: {"$ne": check_for_wildcard(node.term)}}
+            return {field: {"$ne": coerced}}
     else:
-        if node.term.isnumeric():
-            return {field: float(node.term)}
-        else:
-            res = {field: check_for_wildcard(node.term)}
+        if isinstance(coerced, str):
+            res = {field: check_for_wildcard(coerced)}
             print(res, file=sys.stderr)
             return res
+        else:
+            return {field: coerced}
 
 
 def is_negated_op(node):
