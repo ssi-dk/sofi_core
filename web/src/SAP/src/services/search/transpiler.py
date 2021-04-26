@@ -47,7 +47,7 @@ def coerce_term(term: str):
         try:
             return float(term)
         except Exception:
-            pass
+            raise
     except Exception:
         return term
 

@@ -8,8 +8,6 @@ from ...common.database import (
     get_connection,
     DB_NAME,
     ANALYSIS_COL_NAME,
-    institution_column,
-    isolate_column,
 )
 import sys
 
@@ -37,7 +35,6 @@ def get_analysis_page(query, page_size, offset, columns, restrict_to_institution
                 "as": "metadata",
             }
         },
-        {"$match": query},
         # This removes isolates without metadata.
         # {"$match": {"metadata": {"$ne": []}}},
         {
