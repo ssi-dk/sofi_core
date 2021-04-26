@@ -41,11 +41,11 @@ agg_pipeline = [
                     },
                 }
             ),
-            "sequence_filenames": {
+            "sequence_filename": {
                 "$reduce": {
                     "input": "$categories.paired_reads.summary.data",
                     "initialValue": "",
-                    "in": {"$concat": ["$$value", "$$this", ","]},
+                    "in": {"$concat": ["$$value", "$$this", ";"]},
                 }
             },
             "qc_genome1x": "$categories.denovo_assembly.summary.length",
