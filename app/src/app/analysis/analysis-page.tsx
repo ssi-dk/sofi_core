@@ -271,9 +271,9 @@ export default function AnalysisPage() {
     ) {
       toast({
         title: t("Approval submitted"),
-        description: `${data.filter((x) => selection[x.isolate_id]).length} ${t(
-          "records"
-        )} ${t("have been submitted for approval.")}`,
+        description: `${
+          data.filter((x) => selection[x.sequence_id]).length
+        } ${t("records")} ${t("have been submitted for approval.")}`,
         status: "info",
         duration: 5000,
         isClosable: true,
@@ -300,9 +300,9 @@ export default function AnalysisPage() {
     ) {
       toast({
         title: t("Rejection submitted"),
-        description: `${data.filter((x) => selection[x.isolate_id]).length} ${t(
-          "records"
-        )} ${t("have been rejected.")}`,
+        description: `${
+          data.filter((x) => selection[x.sequence_id]).length
+        } ${t("records")} ${t("have been rejected.")}`,
         status: "info",
         duration: null,
         isClosable: true,
@@ -547,11 +547,11 @@ export default function AnalysisPage() {
               getStickyCellStyle={getStickyCellStyle}
               data={
                 pageState.isNarrowed
-                  ? filteredData.filter((x) => selection[x.isolate_id])
+                  ? filteredData.filter((x) => selection[x.sequence_id])
                   : filteredData
               }
               renderCellControl={renderCellControl}
-              primaryKey="isolate_id"
+              primaryKey="sequence_id"
               selectionClassName={
                 pageState.isNarrowed ? "approvingCell" : "selectedCell"
               }
@@ -568,7 +568,7 @@ export default function AnalysisPage() {
             {isFinished &&
               pageState.isNarrowed &&
               `${t("Staging")} ${
-                filteredData.filter((x) => selection[x.isolate_id]).length
+                filteredData.filter((x) => selection[x.sequence_id]).length
               } ${t("records")}.`}
           </Box>
         </Box>
