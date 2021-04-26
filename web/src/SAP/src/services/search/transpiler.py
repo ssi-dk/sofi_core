@@ -33,7 +33,9 @@ def check_for_wildcard(term: str):
         regex_pattern = "".join(escaped)
         return {"$regex": regex_pattern, "$options": "i"}
 
-    return term
+    escaped = re.escape(term)
+    search = "^" + escaped + "$"
+    return {"$regex": search, "$options": "i"}
 
 
 def coerce_term(term: str):
