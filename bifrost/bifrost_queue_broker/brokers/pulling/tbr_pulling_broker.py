@@ -9,8 +9,6 @@ from ..tbr_conn import get_tbr_configuration
 from common.database import (
     encrypt_dict,
     get_connection,
-    isolate_column,
-    institution_column,
 )
 from common.config.column_config import pii_columns
 
@@ -59,8 +57,8 @@ class TBRPullingBroker(threading.Thread):
             {
                 "$group": {
                     "_id": "$_id",
-                    "isolate_id": {"$first": "$" + isolate_column},
-                    "institution": {"$first": "$" + institution_column},
+                    "isolate_id": {"$first": "$isolate_id"},
+                    "institution": {"$first": "$institution"},
                 }
             },
             {
