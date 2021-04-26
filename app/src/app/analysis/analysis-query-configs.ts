@@ -46,7 +46,7 @@ export const requestPageOfAnalysis = (params: GetAnalysisRequest) => {
     analysis: response.items
       ? arrayToNormalizedHashmap(
           response.items.map((a) => AnalysisResultFromJSON(a)),
-          "isolate_id"
+          "sequence_id"
         )
       : {},
   });
@@ -81,7 +81,7 @@ export const searchPageOfAnalysis = (params: SearchAnalysisRequest) => {
     analysis: response.items
       ? arrayToNormalizedHashmap(
           response.items.map((a) => AnalysisResultFromJSON(a)),
-          "isolate_id"
+          "sequence_id"
         )
       : {},
   });

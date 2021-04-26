@@ -36,7 +36,7 @@ Setting `SOFI_HOSTNAME` to `localhost` or `127.0.0.1` is not currently supported
 When running in the dev environment, a default user account is created,
  which you can use for signing into the application.
 
-Username: `user@fvst.dk`
+Username: `admin@fvst.dk`
 Password: `delegate21`
 
 ## Local dev running

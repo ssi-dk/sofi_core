@@ -71,11 +71,11 @@ def update_analysis(change):
     samples = mydb[ANALYSIS_COL_NAME]
     updates = map(lambda x: {**change[x], "id": x}, change.keys())
     for u in updates:
-        samples.update_one({"isolate_id": u["id"]}, {"$set": u})
+        samples.update_one({"sequence_id": u["id"]}, {"$set": u})
 
 
 def get_single_analysis(identifier: str) -> Dict[str, Any]:
     conn = get_connection()
     mydb = conn[DB_NAME]
     samples = mydb[ANALYSIS_COL_NAME]
-    return samples.find_one({"isolate_id": f"{identifier}"})
+    return samples.find_one({"sequence_id": f"{identifier}"})

@@ -18,7 +18,11 @@ export type AnalysisHistorySlice = {
 export const sequencesFromIsolateId = (isolateId: string) => {
   // use generated api client as base
   const params = {
-    query: { filters: { isolate_id: isolateId } },
+    query: {
+      expression: {
+        left: { field: "isolate_id", term: isolateId },
+      },
+    },
   } as SearchAnalysisRequest;
   const base = searchAnalysis<AnalysisHistorySlice>(params);
   // template the full path for the url
