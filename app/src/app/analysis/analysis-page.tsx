@@ -338,9 +338,16 @@ export default function AnalysisPage() {
       ) {
         return "rejectedCell";
       }
+
+      if (
+        filteredData[rowId]?.[columnId] === null ||
+        filteredData[rowId]?.[columnId] === undefined
+      ) {
+        return "emptyCell";
+      }
       return "unapprovedCell";
     },
-    [approvals, canApproveColumn]
+    [approvals, canApproveColumn, filteredData]
   );
 
   const getStickyCellStyle = React.useCallback(
@@ -428,7 +435,10 @@ export default function AnalysisPage() {
           );
         }
       }
-      return <div>{`${v}`}</div>;
+      if (v !== null && v !== undefined) {
+        return <div>{`${v}`}</div>;
+      }
+      return <div />;
     },
     [
       columnConfigs,
