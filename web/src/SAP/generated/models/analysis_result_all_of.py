@@ -19,13 +19,25 @@ class AnalysisResultAllOf(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, id=None, resfinder_version=None, qc_provided_species=None, qc_genome1x=None, qc_genome10x=None, qc_gsize_diff1x10=None, qc_avg_coverage=None, qc_final=None, subspecies=None, species_final=None, st=None, pathotype=None, pathotype_final=None, serotype=None, serotype_final=None, adhesion=None, adhesion_final=None, toxins=None, toxins_final=None, infection_source=None, resistance_genes=None, amr_profile=None, comment_cluster=None, comment_general=None, amr_ami=None, amr_amp=None, amr_azi=None, amr_fep=None, amr_fot=None, amr_f_c=None, amr_fox=None, amr_taz=None, amr_t_c=None, amr_chl=None, amr_cip=None, amr_cli=None, amr_col=None, amr_dap=None, amr_etp=None, amr_ery=None, amr_fus=None, amr_gen=None, amr_imi=None, amr_kan=None, amr_lzd=None, amr_mero=None, amr_mup=None, amr_nal=None, amr_pen=None, amr_syn=None, amr_rif=None, amr_str=None, amr_sul=None, amr_tei=None, amr_trm=None, amr_tet=None, amr_tia=None, amr_tgc=None, amr_tmp=None, amr_van=None):  # noqa: E501
+    def __init__(self, resfinder_version=None, date_analysis_sofi=None, date_approved_serotype=None, date_approved_qc=None, date_approved_amr=None, date_approved_st=None, date_approved_toxin=None, date_approved_cluster=None, qc_provided_species=None, qc_genome1x=None, qc_genome10x=None, qc_gsize_diff1x10=None, qc_avg_coverage=None, qc_final=None, qc_num_contigs=None, qc_ambiguous_sites=None, qc_num_reads=None, qc_main_sp_plus_uncl=None, qc_unclassified_reads=None, qc_db_id=None, qc_failed_tests=None, qc_cgmlst_percent=None, cgmlst_schema_salmonella=None, cgmlst_schema_ecoli=None, cgmlst_schema_campylobacter=None, cgmlst_schema_listeria=None, cgmlst_schema_klebsiella=None, subspecies=None, species_final=None, st=None, pathotype=None, pathotype_final=None, sero_enterobase=None, sero_seqsero=None, sero_antigen_seqzero=None, sero_d_tartrate=None, sero_serotype_finder=None, serotype_final=None, adhesion_final=None, virulence_genes=None, toxins_final=None, infection_source=None, resistance_genes=None, amr_profile=None, comment_cluster=None, comment_general=None, comment_supplementary=None, comment_qc=None, amr_ami=None, amr_amp=None, amr_azi=None, amr_fep=None, amr_fot=None, amr_f_c=None, amr_fox=None, amr_taz=None, amr_t_c=None, amr_chl=None, amr_cip=None, amr_cli=None, amr_col=None, amr_dap=None, amr_etp=None, amr_ery=None, amr_fus=None, amr_gen=None, amr_imi=None, amr_kan=None, amr_lzd=None, amr_mero=None, amr_mup=None, amr_nal=None, amr_pen=None, amr_syn=None, amr_rif=None, amr_str=None, amr_sul=None, amr_tei=None, amr_trm=None, amr_tet=None, amr_tia=None, amr_tgc=None, amr_tmp=None, amr_van=None):  # noqa: E501
         """AnalysisResultAllOf - a model defined in OpenAPI
 
-        :param id: The id of this AnalysisResultAllOf.  # noqa: E501
-        :type id: str
         :param resfinder_version: The resfinder_version of this AnalysisResultAllOf.  # noqa: E501
         :type resfinder_version: str
+        :param date_analysis_sofi: The date_analysis_sofi of this AnalysisResultAllOf.  # noqa: E501
+        :type date_analysis_sofi: datetime
+        :param date_approved_serotype: The date_approved_serotype of this AnalysisResultAllOf.  # noqa: E501
+        :type date_approved_serotype: datetime
+        :param date_approved_qc: The date_approved_qc of this AnalysisResultAllOf.  # noqa: E501
+        :type date_approved_qc: datetime
+        :param date_approved_amr: The date_approved_amr of this AnalysisResultAllOf.  # noqa: E501
+        :type date_approved_amr: datetime
+        :param date_approved_st: The date_approved_st of this AnalysisResultAllOf.  # noqa: E501
+        :type date_approved_st: datetime
+        :param date_approved_toxin: The date_approved_toxin of this AnalysisResultAllOf.  # noqa: E501
+        :type date_approved_toxin: datetime
+        :param date_approved_cluster: The date_approved_cluster of this AnalysisResultAllOf.  # noqa: E501
+        :type date_approved_cluster: datetime
         :param qc_provided_species: The qc_provided_species of this AnalysisResultAllOf.  # noqa: E501
         :type qc_provided_species: float
         :param qc_genome1x: The qc_genome1x of this AnalysisResultAllOf.  # noqa: E501
@@ -38,6 +50,32 @@ class AnalysisResultAllOf(Model):
         :type qc_avg_coverage: float
         :param qc_final: The qc_final of this AnalysisResultAllOf.  # noqa: E501
         :type qc_final: str
+        :param qc_num_contigs: The qc_num_contigs of this AnalysisResultAllOf.  # noqa: E501
+        :type qc_num_contigs: float
+        :param qc_ambiguous_sites: The qc_ambiguous_sites of this AnalysisResultAllOf.  # noqa: E501
+        :type qc_ambiguous_sites: float
+        :param qc_num_reads: The qc_num_reads of this AnalysisResultAllOf.  # noqa: E501
+        :type qc_num_reads: float
+        :param qc_main_sp_plus_uncl: The qc_main_sp_plus_uncl of this AnalysisResultAllOf.  # noqa: E501
+        :type qc_main_sp_plus_uncl: float
+        :param qc_unclassified_reads: The qc_unclassified_reads of this AnalysisResultAllOf.  # noqa: E501
+        :type qc_unclassified_reads: float
+        :param qc_db_id: The qc_db_id of this AnalysisResultAllOf.  # noqa: E501
+        :type qc_db_id: str
+        :param qc_failed_tests: The qc_failed_tests of this AnalysisResultAllOf.  # noqa: E501
+        :type qc_failed_tests: str
+        :param qc_cgmlst_percent: The qc_cgmlst_percent of this AnalysisResultAllOf.  # noqa: E501
+        :type qc_cgmlst_percent: float
+        :param cgmlst_schema_salmonella: The cgmlst_schema_salmonella of this AnalysisResultAllOf.  # noqa: E501
+        :type cgmlst_schema_salmonella: object
+        :param cgmlst_schema_ecoli: The cgmlst_schema_ecoli of this AnalysisResultAllOf.  # noqa: E501
+        :type cgmlst_schema_ecoli: object
+        :param cgmlst_schema_campylobacter: The cgmlst_schema_campylobacter of this AnalysisResultAllOf.  # noqa: E501
+        :type cgmlst_schema_campylobacter: object
+        :param cgmlst_schema_listeria: The cgmlst_schema_listeria of this AnalysisResultAllOf.  # noqa: E501
+        :type cgmlst_schema_listeria: object
+        :param cgmlst_schema_klebsiella: The cgmlst_schema_klebsiella of this AnalysisResultAllOf.  # noqa: E501
+        :type cgmlst_schema_klebsiella: object
         :param subspecies: The subspecies of this AnalysisResultAllOf.  # noqa: E501
         :type subspecies: str
         :param species_final: The species_final of this AnalysisResultAllOf.  # noqa: E501
@@ -48,16 +86,22 @@ class AnalysisResultAllOf(Model):
         :type pathotype: str
         :param pathotype_final: The pathotype_final of this AnalysisResultAllOf.  # noqa: E501
         :type pathotype_final: str
-        :param serotype: The serotype of this AnalysisResultAllOf.  # noqa: E501
-        :type serotype: str
+        :param sero_enterobase: The sero_enterobase of this AnalysisResultAllOf.  # noqa: E501
+        :type sero_enterobase: str
+        :param sero_seqsero: The sero_seqsero of this AnalysisResultAllOf.  # noqa: E501
+        :type sero_seqsero: str
+        :param sero_antigen_seqzero: The sero_antigen_seqzero of this AnalysisResultAllOf.  # noqa: E501
+        :type sero_antigen_seqzero: str
+        :param sero_d_tartrate: The sero_d_tartrate of this AnalysisResultAllOf.  # noqa: E501
+        :type sero_d_tartrate: str
+        :param sero_serotype_finder: The sero_serotype_finder of this AnalysisResultAllOf.  # noqa: E501
+        :type sero_serotype_finder: str
         :param serotype_final: The serotype_final of this AnalysisResultAllOf.  # noqa: E501
         :type serotype_final: str
-        :param adhesion: The adhesion of this AnalysisResultAllOf.  # noqa: E501
-        :type adhesion: str
         :param adhesion_final: The adhesion_final of this AnalysisResultAllOf.  # noqa: E501
         :type adhesion_final: str
-        :param toxins: The toxins of this AnalysisResultAllOf.  # noqa: E501
-        :type toxins: str
+        :param virulence_genes: The virulence_genes of this AnalysisResultAllOf.  # noqa: E501
+        :type virulence_genes: str
         :param toxins_final: The toxins_final of this AnalysisResultAllOf.  # noqa: E501
         :type toxins_final: str
         :param infection_source: The infection_source of this AnalysisResultAllOf.  # noqa: E501
@@ -70,6 +114,10 @@ class AnalysisResultAllOf(Model):
         :type comment_cluster: str
         :param comment_general: The comment_general of this AnalysisResultAllOf.  # noqa: E501
         :type comment_general: str
+        :param comment_supplementary: The comment_supplementary of this AnalysisResultAllOf.  # noqa: E501
+        :type comment_supplementary: str
+        :param comment_qc: The comment_qc of this AnalysisResultAllOf.  # noqa: E501
+        :type comment_qc: str
         :param amr_ami: The amr_ami of this AnalysisResultAllOf.  # noqa: E501
         :type amr_ami: Resistance
         :param amr_amp: The amr_amp of this AnalysisResultAllOf.  # noqa: E501
@@ -144,30 +192,54 @@ class AnalysisResultAllOf(Model):
         :type amr_van: Resistance
         """
         self.openapi_types = {
-            'id': str,
             'resfinder_version': str,
+            'date_analysis_sofi': datetime,
+            'date_approved_serotype': datetime,
+            'date_approved_qc': datetime,
+            'date_approved_amr': datetime,
+            'date_approved_st': datetime,
+            'date_approved_toxin': datetime,
+            'date_approved_cluster': datetime,
             'qc_provided_species': float,
             'qc_genome1x': float,
             'qc_genome10x': float,
             'qc_gsize_diff1x10': float,
             'qc_avg_coverage': float,
             'qc_final': str,
+            'qc_num_contigs': float,
+            'qc_ambiguous_sites': float,
+            'qc_num_reads': float,
+            'qc_main_sp_plus_uncl': float,
+            'qc_unclassified_reads': float,
+            'qc_db_id': str,
+            'qc_failed_tests': str,
+            'qc_cgmlst_percent': float,
+            'cgmlst_schema_salmonella': object,
+            'cgmlst_schema_ecoli': object,
+            'cgmlst_schema_campylobacter': object,
+            'cgmlst_schema_listeria': object,
+            'cgmlst_schema_klebsiella': object,
             'subspecies': str,
             'species_final': str,
             'st': str,
             'pathotype': str,
             'pathotype_final': str,
-            'serotype': str,
+            'sero_enterobase': str,
+            'sero_seqsero': str,
+            'sero_antigen_seqzero': str,
+            'sero_d_tartrate': str,
+            'sero_serotype_finder': str,
             'serotype_final': str,
-            'adhesion': str,
             'adhesion_final': str,
-            'toxins': str,
+            'virulence_genes': str,
             'toxins_final': str,
             'infection_source': str,
             'resistance_genes': str,
             'amr_profile': str,
             'comment_cluster': str,
             'comment_general': str,
+            'comment_supplementary': str,
+            'comment_qc': str,
             'amr_ami': Resistance,
             'amr_amp': Resistance,
             'amr_azi': Resistance,
@@ -207,30 +279,54 @@ class AnalysisResultAllOf(Model):
         }
 
         self.attribute_map = {
-            'id': '_id',
             'resfinder_version': 'resfinder_version',
+            'date_analysis_sofi': 'date_analysis_sofi',
+            'date_approved_serotype': 'date_approved_serotype',
+            'date_approved_qc': 'date_approved_qc',
+            'date_approved_amr': 'date_approved_amr',
+            'date_approved_st': 'date_approved_st',
+            'date_approved_toxin': 'date_approved_toxin',
+            'date_approved_cluster': 'date_approved_cluster',
             'qc_provided_species': 'qc_provided_species',
             'qc_genome1x': 'qc_genome1x',
             'qc_genome10x': 'qc_genome10x',
             'qc_gsize_diff1x10': 'qc_gsize_diff1x10',
             'qc_avg_coverage': 'qc_avg_coverage',
             'qc_final': 'qc_final',
+            'qc_num_contigs': 'qc_num_contigs',
+            'qc_ambiguous_sites': 'qc_ambiguous_sites',
+            'qc_num_reads': 'qc_num_reads',
+            'qc_main_sp_plus_uncl': 'qc_main_sp_plus_uncl',
+            'qc_unclassified_reads': 'qc_unclassified_reads',
+            'qc_db_id': 'qc_db_id',
+            'qc_failed_tests': 'qc_failed_tests',
+            'qc_cgmlst_percent': 'qc_cgmlst_percent',
+            'cgmlst_schema_salmonella': 'cgmlst_schema_salmonella',
+            'cgmlst_schema_ecoli': 'cgmlst_schema_ecoli',
+            'cgmlst_schema_campylobacter': 'cgmlst_schema_campylobacter',
+            'cgmlst_schema_listeria': 'cgmlst_schema_listeria',
+            'cgmlst_schema_klebsiella': 'cgmlst_schema_klebsiella',
             'subspecies': 'subspecies',
             'species_final': 'species_final',
             'st': 'st',
             'pathotype': 'pathotype',
             'pathotype_final': 'pathotype_final',
-            'serotype': 'serotype',
+            'sero_enterobase': 'sero_enterobase',
+            'sero_seqsero': 'sero_seqsero',
+            'sero_antigen_seqzero': 'sero_antigen_seqzero',
+            'sero_d_tartrate': 'sero_d_tartrate',
+            'sero_serotype_finder': 'sero_serotype_finder',
             'serotype_final': 'serotype_final',
-            'adhesion': 'adhesion',
             'adhesion_final': 'adhesion_final',
-            'toxins': 'toxins',
+            'virulence_genes': 'virulence_genes',
             'toxins_final': 'toxins_final',
             'infection_source': 'infection_source',
             'resistance_genes': 'resistance_genes',
             'amr_profile': 'amr_profile',
             'comment_cluster': 'comment_cluster',
             'comment_general': 'comment_general',
+            'comment_supplementary': 'comment_supplementary',
+            'comment_qc': 'comment_qc',
             'amr_ami': 'amr_ami',
             'amr_amp': 'amr_amp',
             'amr_azi': 'amr_azi',
@@ -269,30 +365,54 @@ class AnalysisResultAllOf(Model):
             'amr_van': 'amr_van',
         }
 
-        self._id = id
         self._resfinder_version = resfinder_version
+        self._date_analysis_sofi = date_analysis_sofi
+        self._date_approved_serotype = date_approved_serotype
+        self._date_approved_qc = date_approved_qc
+        self._date_approved_amr = date_approved_amr
+        self._date_approved_st = date_approved_st
+        self._date_approved_toxin = date_approved_toxin
+        self._date_approved_cluster = date_approved_cluster
         self._qc_provided_species = qc_provided_species
         self._qc_genome1x = qc_genome1x
         self._qc_genome10x = qc_genome10x
         self._qc_gsize_diff1x10 = qc_gsize_diff1x10
         self._qc_avg_coverage = qc_avg_coverage
         self._qc_final = qc_final
+        self._qc_num_contigs = qc_num_contigs
+        self._qc_ambiguous_sites = qc_ambiguous_sites
+        self._qc_num_reads = qc_num_reads
+        self._qc_main_sp_plus_uncl = qc_main_sp_plus_uncl
+        self._qc_unclassified_reads = qc_unclassified_reads
+        self._qc_db_id = qc_db_id
+        self._qc_failed_tests = qc_failed_tests
+        self._qc_cgmlst_percent = qc_cgmlst_percent
+        self._cgmlst_schema_salmonella = cgmlst_schema_salmonella
+        self._cgmlst_schema_ecoli = cgmlst_schema_ecoli
+        self._cgmlst_schema_campylobacter = cgmlst_schema_campylobacter
+        self._cgmlst_schema_listeria = cgmlst_schema_listeria
+        self._cgmlst_schema_klebsiella = cgmlst_schema_klebsiella
         self._subspecies = subspecies
         self._species_final = species_final
         self._st = st
         self._pathotype = pathotype
         self._pathotype_final = pathotype_final
-        self._serotype = serotype
+        self._sero_enterobase = sero_enterobase
+        self._sero_seqsero = sero_seqsero
+        self._sero_antigen_seqzero = sero_antigen_seqzero
+        self._sero_d_tartrate = sero_d_tartrate
+        self._sero_serotype_finder = sero_serotype_finder
         self._serotype_final = serotype_final
-        self._adhesion = adhesion
         self._adhesion_final = adhesion_final
-        self._toxins = toxins
+        self._virulence_genes = virulence_genes
         self._toxins_final = toxins_final
         self._infection_source = infection_source
         self._resistance_genes = resistance_genes
         self._amr_profile = amr_profile
         self._comment_cluster = comment_cluster
         self._comment_general = comment_general
+        self._comment_supplementary = comment_supplementary
+        self._comment_qc = comment_qc
         self._amr_ami = amr_ami
         self._amr_amp = amr_amp
         self._amr_azi = amr_azi
@@ -342,29 +462,6 @@ class AnalysisResultAllOf(Model):
         return util.deserialize_model(dikt, cls)
 
     @property
-    def id(self):
-        """Gets the id of this AnalysisResultAllOf.
-
-
-        :return: The id of this AnalysisResultAllOf.
-        :rtype: str
-        """
-        return self._id
-
-    @id.setter
-    def id(self, id):
-        """Sets the id of this AnalysisResultAllOf.
-
-
-        :param id: The id of this AnalysisResultAllOf.
-        :type id: str
-        """
-        if id is None:
-            raise ValueError("Invalid value for `id`, must not be `None`")  # noqa: E501
-
-        self._id = id
-
-    @property
     def resfinder_version(self):
         """Gets the resfinder_version of this AnalysisResultAllOf.
 
@@ -384,6 +481,153 @@ class AnalysisResultAllOf(Model):
         """
 
         self._resfinder_version = resfinder_version
+
+    @property
+    def date_analysis_sofi(self):
+        """Gets the date_analysis_sofi of this AnalysisResultAllOf.
+
+
+        :return: The date_analysis_sofi of this AnalysisResultAllOf.
+        :rtype: datetime
+        """
+        return self._date_analysis_sofi
+
+    @date_analysis_sofi.setter
+    def date_analysis_sofi(self, date_analysis_sofi):
+        """Sets the date_analysis_sofi of this AnalysisResultAllOf.
+
+
+        :param date_analysis_sofi: The date_analysis_sofi of this AnalysisResultAllOf.
+        :type date_analysis_sofi: datetime
+        """
+
+        self._date_analysis_sofi = date_analysis_sofi
+
+    @property
+    def date_approved_serotype(self):
+        """Gets the date_approved_serotype of this AnalysisResultAllOf.
+
+
+        :return: The date_approved_serotype of this AnalysisResultAllOf.
+        :rtype: datetime
+        """
+        return self._date_approved_serotype
+
+    @date_approved_serotype.setter
+    def date_approved_serotype(self, date_approved_serotype):
+        """Sets the date_approved_serotype of this AnalysisResultAllOf.
+
+
+        :param date_approved_serotype: The date_approved_serotype of this AnalysisResultAllOf.
+        :type date_approved_serotype: datetime
+        """
+
+        self._date_approved_serotype = date_approved_serotype
+
+    @property
+    def date_approved_qc(self):
+        """Gets the date_approved_qc of this AnalysisResultAllOf.
+
+
+        :return: The date_approved_qc of this AnalysisResultAllOf.
+        :rtype: datetime
+        """
+        return self._date_approved_qc
+
+    @date_approved_qc.setter
+    def date_approved_qc(self, date_approved_qc):
+        """Sets the date_approved_qc of this AnalysisResultAllOf.
+
+
+        :param date_approved_qc: The date_approved_qc of this AnalysisResultAllOf.
+        :type date_approved_qc: datetime
+        """
+
+        self._date_approved_qc = date_approved_qc
+
+    @property
+    def date_approved_amr(self):
+        """Gets the date_approved_amr of this AnalysisResultAllOf.
+
+
+        :return: The date_approved_amr of this AnalysisResultAllOf.
+        :rtype: datetime
+        """
+        return self._date_approved_amr
+
+    @date_approved_amr.setter
+    def date_approved_amr(self, date_approved_amr):
+        """Sets the date_approved_amr of this AnalysisResultAllOf.
+
+
+        :param date_approved_amr: The date_approved_amr of this AnalysisResultAllOf.
+        :type date_approved_amr: datetime
+        """
+
+        self._date_approved_amr = date_approved_amr
+
+    @property
+    def date_approved_st(self):
+        """Gets the date_approved_st of this AnalysisResultAllOf.
+
+
+        :return: The date_approved_st of this AnalysisResultAllOf.
+        :rtype: datetime
+        """
+        return self._date_approved_st
+
+    @date_approved_st.setter
+    def date_approved_st(self, date_approved_st):
+        """Sets the date_approved_st of this AnalysisResultAllOf.
+
+
+        :param date_approved_st: The date_approved_st of this AnalysisResultAllOf.
+        :type date_approved_st: datetime
+        """
+
+        self._date_approved_st = date_approved_st
+
+    @property
+    def date_approved_toxin(self):
+        """Gets the date_approved_toxin of this AnalysisResultAllOf.
+
+
+        :return: The date_approved_toxin of this AnalysisResultAllOf.
+        :rtype: datetime
+        """
+        return self._date_approved_toxin
+
+    @date_approved_toxin.setter
+    def date_approved_toxin(self, date_approved_toxin):
+        """Sets the date_approved_toxin of this AnalysisResultAllOf.
+
+
+        :param date_approved_toxin: The date_approved_toxin of this AnalysisResultAllOf.
+        :type date_approved_toxin: datetime
+        """
+
+        self._date_approved_toxin = date_approved_toxin
+
+    @property
+    def date_approved_cluster(self):
+        """Gets the date_approved_cluster of this AnalysisResultAllOf.
+
+
+        :return: The date_approved_cluster of this AnalysisResultAllOf.
+        :rtype: datetime
+        """
+        return self._date_approved_cluster
+
+    @date_approved_cluster.setter
+    def date_approved_cluster(self, date_approved_cluster):
+        """Sets the date_approved_cluster of this AnalysisResultAllOf.
+
+
+        :param date_approved_cluster: The date_approved_cluster of this AnalysisResultAllOf.
+        :type date_approved_cluster: datetime
+        """
+
+        self._date_approved_cluster = date_approved_cluster
 
     @property
     def qc_provided_species(self):
@@ -518,6 +762,279 @@ class AnalysisResultAllOf(Model):
         self._qc_final = qc_final
 
     @property
+    def qc_num_contigs(self):
+        """Gets the qc_num_contigs of this AnalysisResultAllOf.
+
+
+        :return: The qc_num_contigs of this AnalysisResultAllOf.
+        :rtype: float
+        """
+        return self._qc_num_contigs
+
+    @qc_num_contigs.setter
+    def qc_num_contigs(self, qc_num_contigs):
+        """Sets the qc_num_contigs of this AnalysisResultAllOf.
+
+
+        :param qc_num_contigs: The qc_num_contigs of this AnalysisResultAllOf.
+        :type qc_num_contigs: float
+        """
+
+        self._qc_num_contigs = qc_num_contigs
+
+    @property
+    def qc_ambiguous_sites(self):
+        """Gets the qc_ambiguous_sites of this AnalysisResultAllOf.
+
+
+        :return: The qc_ambiguous_sites of this AnalysisResultAllOf.
+        :rtype: float
+        """
+        return self._qc_ambiguous_sites
+
+    @qc_ambiguous_sites.setter
+    def qc_ambiguous_sites(self, qc_ambiguous_sites):
+        """Sets the qc_ambiguous_sites of this AnalysisResultAllOf.
+
+
+        :param qc_ambiguous_sites: The qc_ambiguous_sites of this AnalysisResultAllOf.
+        :type qc_ambiguous_sites: float
+        """
+
+        self._qc_ambiguous_sites = qc_ambiguous_sites
+
+    @property
+    def qc_num_reads(self):
+        """Gets the qc_num_reads of this AnalysisResultAllOf.
+
+
+        :return: The qc_num_reads of this AnalysisResultAllOf.
+        :rtype: float
+        """
+        return self._qc_num_reads
+
+    @qc_num_reads.setter
+    def qc_num_reads(self, qc_num_reads):
+        """Sets the qc_num_reads of this AnalysisResultAllOf.
+
+
+        :param qc_num_reads: The qc_num_reads of this AnalysisResultAllOf.
+        :type qc_num_reads: float
+        """
+
+        self._qc_num_reads = qc_num_reads
+
+    @property
+    def qc_main_sp_plus_uncl(self):
+        """Gets the qc_main_sp_plus_uncl of this AnalysisResultAllOf.
+
+
+        :return: The qc_main_sp_plus_uncl of this AnalysisResultAllOf.
+        :rtype: float
+        """
+        return self._qc_main_sp_plus_uncl
+
+    @qc_main_sp_plus_uncl.setter
+    def qc_main_sp_plus_uncl(self, qc_main_sp_plus_uncl):
+        """Sets the qc_main_sp_plus_uncl of this AnalysisResultAllOf.
+
+
+        :param qc_main_sp_plus_uncl: The qc_main_sp_plus_uncl of this AnalysisResultAllOf.
+        :type qc_main_sp_plus_uncl: float
+        """
+
+        self._qc_main_sp_plus_uncl = qc_main_sp_plus_uncl
+
+    @property
+    def qc_unclassified_reads(self):
+        """Gets the qc_unclassified_reads of this AnalysisResultAllOf.
+
+
+        :return: The qc_unclassified_reads of this AnalysisResultAllOf.
+        :rtype: float
+        """
+        return self._qc_unclassified_reads
+
+    @qc_unclassified_reads.setter
+    def qc_unclassified_reads(self, qc_unclassified_reads):
+        """Sets the qc_unclassified_reads of this AnalysisResultAllOf.
+
+
+        :param qc_unclassified_reads: The qc_unclassified_reads of this AnalysisResultAllOf.
+        :type qc_unclassified_reads: float
+        """
+
+        self._qc_unclassified_reads = qc_unclassified_reads
+
+    @property
+    def qc_db_id(self):
+        """Gets the qc_db_id of this AnalysisResultAllOf.
+
+
+        :return: The qc_db_id of this AnalysisResultAllOf.
+        :rtype: str
+        """
+        return self._qc_db_id
+
+    @qc_db_id.setter
+    def qc_db_id(self, qc_db_id):
+        """Sets the qc_db_id of this AnalysisResultAllOf.
+
+
+        :param qc_db_id: The qc_db_id of this AnalysisResultAllOf.
+        :type qc_db_id: str
+        """
+
+        self._qc_db_id = qc_db_id
+
+    @property
+    def qc_failed_tests(self):
+        """Gets the qc_failed_tests of this AnalysisResultAllOf.
+
+
+        :return: The qc_failed_tests of this AnalysisResultAllOf.
+        :rtype: str
+        """
+        return self._qc_failed_tests
+
+    @qc_failed_tests.setter
+    def qc_failed_tests(self, qc_failed_tests):
+        """Sets the qc_failed_tests of this AnalysisResultAllOf.
+
+
+        :param qc_failed_tests: The qc_failed_tests of this AnalysisResultAllOf.
+        :type qc_failed_tests: str
+        """
+
+        self._qc_failed_tests = qc_failed_tests
+
+    @property
+    def qc_cgmlst_percent(self):
+        """Gets the qc_cgmlst_percent of this AnalysisResultAllOf.
+
+
+        :return: The qc_cgmlst_percent of this AnalysisResultAllOf.
+        :rtype: float
+        """
+        return self._qc_cgmlst_percent
+
+    @qc_cgmlst_percent.setter
+    def qc_cgmlst_percent(self, qc_cgmlst_percent):
+        """Sets the qc_cgmlst_percent of this AnalysisResultAllOf.
+
+
+        :param qc_cgmlst_percent: The qc_cgmlst_percent of this AnalysisResultAllOf.
+        :type qc_cgmlst_percent: float
+        """
+
+        self._qc_cgmlst_percent = qc_cgmlst_percent
+
+    @property
+    def cgmlst_schema_salmonella(self):
+        """Gets the cgmlst_schema_salmonella of this AnalysisResultAllOf.
+
+
+        :return: The cgmlst_schema_salmonella of this AnalysisResultAllOf.
+        :rtype: object
+        """
+        return self._cgmlst_schema_salmonella
+
+    @cgmlst_schema_salmonella.setter
+    def cgmlst_schema_salmonella(self, cgmlst_schema_salmonella):
+        """Sets the cgmlst_schema_salmonella of this AnalysisResultAllOf.
+
+
+        :param cgmlst_schema_salmonella: The cgmlst_schema_salmonella of this AnalysisResultAllOf.
+        :type cgmlst_schema_salmonella: object
+        """
+
+        self._cgmlst_schema_salmonella = cgmlst_schema_salmonella
+
+    @property
+    def cgmlst_schema_ecoli(self):
+        """Gets the cgmlst_schema_ecoli of this AnalysisResultAllOf.
+
+
+        :return: The cgmlst_schema_ecoli of this AnalysisResultAllOf.
+        :rtype: object
+        """
+        return self._cgmlst_schema_ecoli
+
+    @cgmlst_schema_ecoli.setter
+    def cgmlst_schema_ecoli(self, cgmlst_schema_ecoli):
+        """Sets the cgmlst_schema_ecoli of this AnalysisResultAllOf.
+
+
+        :param cgmlst_schema_ecoli: The cgmlst_schema_ecoli of this AnalysisResultAllOf.
+        :type cgmlst_schema_ecoli: object
+        """
+
+        self._cgmlst_schema_ecoli = cgmlst_schema_ecoli
+
+    @property
+    def cgmlst_schema_campylobacter(self):
+        """Gets the cgmlst_schema_campylobacter of this AnalysisResultAllOf.
+
+
+        :return: The cgmlst_schema_campylobacter of this AnalysisResultAllOf.
+        :rtype: object
+        """
+        return self._cgmlst_schema_campylobacter
+
+    @cgmlst_schema_campylobacter.setter
+    def cgmlst_schema_campylobacter(self, cgmlst_schema_campylobacter):
+        """Sets the cgmlst_schema_campylobacter of this AnalysisResultAllOf.
+
+
+        :param cgmlst_schema_campylobacter: The cgmlst_schema_campylobacter of this AnalysisResultAllOf.
+        :type cgmlst_schema_campylobacter: object
+        """
+
+        self._cgmlst_schema_campylobacter = cgmlst_schema_campylobacter
+
+    @property
+    def cgmlst_schema_listeria(self):
+        """Gets the cgmlst_schema_listeria of this AnalysisResultAllOf.
+
+
+        :return: The cgmlst_schema_listeria of this AnalysisResultAllOf.
+        :rtype: object
+        """
+        return self._cgmlst_schema_listeria
+
+    @cgmlst_schema_listeria.setter
+    def cgmlst_schema_listeria(self, cgmlst_schema_listeria):
+        """Sets the cgmlst_schema_listeria of this AnalysisResultAllOf.
+
+
+        :param cgmlst_schema_listeria: The cgmlst_schema_listeria of this AnalysisResultAllOf.
+        :type cgmlst_schema_listeria: object
+        """
+
+        self._cgmlst_schema_listeria = cgmlst_schema_listeria
+
+    @property
+    def cgmlst_schema_klebsiella(self):
+        """Gets the cgmlst_schema_klebsiella of this AnalysisResultAllOf.
+
+
+        :return: The cgmlst_schema_klebsiella of this AnalysisResultAllOf.
+        :rtype: object
+        """
+        return self._cgmlst_schema_klebsiella
+
+    @cgmlst_schema_klebsiella.setter
+    def cgmlst_schema_klebsiella(self, cgmlst_schema_klebsiella):
+        """Sets the cgmlst_schema_klebsiella of this AnalysisResultAllOf.
+
+
+        :param cgmlst_schema_klebsiella: The cgmlst_schema_klebsiella of this AnalysisResultAllOf.
+        :type cgmlst_schema_klebsiella: object
+        """
+
+        self._cgmlst_schema_klebsiella = cgmlst_schema_klebsiella
+
+    @property
     def subspecies(self):
         """Gets the subspecies of this AnalysisResultAllOf.
 
@@ -623,25 +1140,109 @@ class AnalysisResultAllOf(Model):
         self._pathotype_final = pathotype_final
 
     @property
-    def serotype(self):
-        """Gets the serotype of this AnalysisResultAllOf.
+    def sero_enterobase(self):
+        """Gets the sero_enterobase of this AnalysisResultAllOf.
 
 
-        :return: The serotype of this AnalysisResultAllOf.
+        :return: The sero_enterobase of this AnalysisResultAllOf.
         :rtype: str
         """
-        return self._serotype
+        return self._sero_enterobase
 
-    @serotype.setter
-    def serotype(self, serotype):
-        """Sets the serotype of this AnalysisResultAllOf.
+    @sero_enterobase.setter
+    def sero_enterobase(self, sero_enterobase):
+        """Sets the sero_enterobase of this AnalysisResultAllOf.
 
 
-        :param serotype: The serotype of this AnalysisResultAllOf.
-        :type serotype: str
+        :param sero_enterobase: The sero_enterobase of this AnalysisResultAllOf.
+        :type sero_enterobase: str
         """
 
-        self._serotype = serotype
+        self._sero_enterobase = sero_enterobase
+
+    @property
+    def sero_seqsero(self):
+        """Gets the sero_seqsero of this AnalysisResultAllOf.
+
+
+        :return: The sero_seqsero of this AnalysisResultAllOf.
+        :rtype: str
+        """
+        return self._sero_seqsero
+
+    @sero_seqsero.setter
+    def sero_seqsero(self, sero_seqsero):
+        """Sets the sero_seqsero of this AnalysisResultAllOf.
+
+
+        :param sero_seqsero: The sero_seqsero of this AnalysisResultAllOf.
+        :type sero_seqsero: str
+        """
+
+        self._sero_seqsero = sero_seqsero
+
+    @property
+    def sero_antigen_seqzero(self):
+        """Gets the sero_antigen_seqzero of this AnalysisResultAllOf.
+
+
+        :return: The sero_antigen_seqzero of this AnalysisResultAllOf.
+        :rtype: str
+        """
+        return self._sero_antigen_seqzero
+
+    @sero_antigen_seqzero.setter
+    def sero_antigen_seqzero(self, sero_antigen_seqzero):
+        """Sets the sero_antigen_seqzero of this AnalysisResultAllOf.
+
+
+        :param sero_antigen_seqzero: The sero_antigen_seqzero of this AnalysisResultAllOf.
+        :type sero_antigen_seqzero: str
+        """
+
+        self._sero_antigen_seqzero = sero_antigen_seqzero
+
+    @property
+    def sero_d_tartrate(self):
+        """Gets the sero_d_tartrate of this AnalysisResultAllOf.
+
+
+        :return: The sero_d_tartrate of this AnalysisResultAllOf.
+        :rtype: str
+        """
+        return self._sero_d_tartrate
+
+    @sero_d_tartrate.setter
+    def sero_d_tartrate(self, sero_d_tartrate):
+        """Sets the sero_d_tartrate of this AnalysisResultAllOf.
+
+
+        :param sero_d_tartrate: The sero_d_tartrate of this AnalysisResultAllOf.
+        :type sero_d_tartrate: str
+        """
+
+        self._sero_d_tartrate = sero_d_tartrate
+
+    @property
+    def sero_serotype_finder(self):
+        """Gets the sero_serotype_finder of this AnalysisResultAllOf.
+
+
+        :return: The sero_serotype_finder of this AnalysisResultAllOf.
+        :rtype: str
+        """
+        return self._sero_serotype_finder
+
+    @sero_serotype_finder.setter
+    def sero_serotype_finder(self, sero_serotype_finder):
+        """Sets the sero_serotype_finder of this AnalysisResultAllOf.
+
+
+        :param sero_serotype_finder: The sero_serotype_finder of this AnalysisResultAllOf.
+        :type sero_serotype_finder: str
+        """
+
+        self._sero_serotype_finder = sero_serotype_finder
 
     @property
     def serotype_final(self):
@@ -665,27 +1266,6 @@ class AnalysisResultAllOf(Model):
         self._serotype_final = serotype_final
 
     @property
-    def adhesion(self):
-        """Gets the adhesion of this AnalysisResultAllOf.
-
-
-        :return: The adhesion of this AnalysisResultAllOf.
-        :rtype: str
-        """
-        return self._adhesion
-
-    @adhesion.setter
-    def adhesion(self, adhesion):
-        """Sets the adhesion of this AnalysisResultAllOf.
-
-
-        :param adhesion: The adhesion of this AnalysisResultAllOf.
-        :type adhesion: str
-        """
-
-        self._adhesion = adhesion
-
-    @property
     def adhesion_final(self):
         """Gets the adhesion_final of this AnalysisResultAllOf.
 
@@ -707,25 +1287,25 @@ class AnalysisResultAllOf(Model):
         self._adhesion_final = adhesion_final
 
     @property
-    def toxins(self):
-        """Gets the toxins of this AnalysisResultAllOf.
+    def virulence_genes(self):
+        """Gets the virulence_genes of this AnalysisResultAllOf.
 
 
-        :return: The toxins of this AnalysisResultAllOf.
+        :return: The virulence_genes of this AnalysisResultAllOf.
         :rtype: str
         """
-        return self._toxins
+        return self._virulence_genes
 
-    @toxins.setter
-    def toxins(self, toxins):
-        """Sets the toxins of this AnalysisResultAllOf.
+    @virulence_genes.setter
+    def virulence_genes(self, virulence_genes):
+        """Sets the virulence_genes of this AnalysisResultAllOf.
 
 
-        :param toxins: The toxins of this AnalysisResultAllOf.
-        :type toxins: str
+        :param virulence_genes: The virulence_genes of this AnalysisResultAllOf.
+        :type virulence_genes: str
         """
 
-        self._toxins = toxins
+        self._virulence_genes = virulence_genes
 
     @property
     def toxins_final(self):
@@ -852,6 +1432,48 @@ class AnalysisResultAllOf(Model):
         """
 
         self._comment_general = comment_general
+
+    @property
+    def comment_supplementary(self):
+        """Gets the comment_supplementary of this AnalysisResultAllOf.
+
+
+        :return: The comment_supplementary of this AnalysisResultAllOf.
+        :rtype: str
+        """
+        return self._comment_supplementary
+
+    @comment_supplementary.setter
+    def comment_supplementary(self, comment_supplementary):
+        """Sets the comment_supplementary of this AnalysisResultAllOf.
+
+
+        :param comment_supplementary: The comment_supplementary of this AnalysisResultAllOf.
+        :type comment_supplementary: str
+        """
+
+        self._comment_supplementary = comment_supplementary
+
+    @property
+    def comment_qc(self):
+        """Gets the comment_qc of this AnalysisResultAllOf.
+
+
+        :return: The comment_qc of this AnalysisResultAllOf.
+        :rtype: str
+        """
+        return self._comment_qc
+
+    @comment_qc.setter
+    def comment_qc(self, comment_qc):
+        """Sets the comment_qc of this AnalysisResultAllOf.
+
+
+        :param comment_qc: The comment_qc of this AnalysisResultAllOf.
+        :type comment_qc: str
+        """
+
+        self._comment_qc = comment_qc
 
     @property
     def amr_ami(self):

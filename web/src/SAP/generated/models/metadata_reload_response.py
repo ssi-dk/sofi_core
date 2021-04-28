@@ -23,7 +23,7 @@ class MetadataReloadResponse(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, sequence_id=None, isolate_id=None, sequence_filename=None, institution=None, project_number=None, project_title=None, sampling_date=None, received_date=None, run_id=None, public=None, provided_species=None, primary_isolate=None, cpr_nr=None, gender=None, name=None, age=None, travel=None, travel_country=None, run_date=None, kma_received_date=None, kma=None, region=None, fud_number=None, cluster_id=None, epi_export=None, chr_number=None, cvr_number=None, aut_number=None, product_type=None, product=None, origin_country=None, animal_species=None, sample_info=None):  # noqa: E501
+    def __init__(self, sequence_id=None, isolate_id=None, sequence_filename=None, institution=None, project_number=None, project_title=None, sampling_date=None, received_date=None, sofi_date=None, run_id=None, public=None, provided_species=None, primary_isolate=None, cpr_nr=None, gender=None, name=None, age=None, travel=None, travel_country=None, run_date=None, kma_received_date=None, kma=None, region=None, fud_number=None, cluster_id=None, epi_export=None, chr_number=None, cvr_number=None, aut_number=None, product_type=None, product=None, origin_country=None, animal_species=None, sample_info=None):  # noqa: E501
         """MetadataReloadResponse - a model defined in OpenAPI
 
         :param sequence_id: The sequence_id of this MetadataReloadResponse.  # noqa: E501
@@ -42,6 +42,8 @@ class MetadataReloadResponse(Model):
         :type sampling_date: datetime
         :param received_date: The received_date of this MetadataReloadResponse.  # noqa: E501
         :type received_date: datetime
+        :param sofi_date: The sofi_date of this MetadataReloadResponse.  # noqa: E501
+        :type sofi_date: datetime
         :param run_id: The run_id of this MetadataReloadResponse.  # noqa: E501
         :type run_id: str
         :param public: The public of this MetadataReloadResponse.  # noqa: E501
@@ -102,6 +104,7 @@ class MetadataReloadResponse(Model):
             'project_title': str,
             'sampling_date': datetime,
             'received_date': datetime,
+            'sofi_date': datetime,
             'run_id': str,
             'public': str,
             'provided_species': str,
@@ -138,6 +141,7 @@ class MetadataReloadResponse(Model):
             'project_title': 'project_title',
             'sampling_date': 'sampling_date',
             'received_date': 'received_date',
+            'sofi_date': 'sofi_date',
             'run_id': 'run_id',
             'public': 'public',
             'provided_species': 'provided_species',
@@ -173,6 +177,7 @@ class MetadataReloadResponse(Model):
         self._project_title = project_title
         self._sampling_date = sampling_date
         self._received_date = received_date
+        self._sofi_date = sofi_date
         self._run_id = run_id
         self._public = public
         self._provided_species = provided_species
@@ -387,6 +392,27 @@ class MetadataReloadResponse(Model):
             raise ValueError("Invalid value for `received_date`, must not be `None`")  # noqa: E501
 
         self._received_date = received_date
+
+    @property
+    def sofi_date(self):
+        """Gets the sofi_date of this MetadataReloadResponse.
+
+
+        :return: The sofi_date of this MetadataReloadResponse.
+        :rtype: datetime
+        """
+        return self._sofi_date
+
+    @sofi_date.setter
+    def sofi_date(self, sofi_date):
+        """Sets the sofi_date of this MetadataReloadResponse.
+
+
+        :param sofi_date: The sofi_date of this MetadataReloadResponse.
+        :type sofi_date: datetime
+        """
+
+        self._sofi_date = sofi_date
 
     @property
     def run_id(self):

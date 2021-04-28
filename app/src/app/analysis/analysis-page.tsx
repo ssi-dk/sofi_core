@@ -320,7 +320,13 @@ export default function AnalysisPage() {
   ]);
 
   const getCellStyle = React.useCallback(
-    (rowId: string, columnId: string) => {
+    (rowId: string, columnId: string, value: any) => {
+      if (value !== 0 && !value) {
+        return "emptyCell";
+      }
+      if (`${value}` === "Invalid Date") {
+        return "emptyCell";
+      }
       if (!canApproveColumn(columnId)) {
         return "cell";
       }
@@ -386,13 +392,19 @@ export default function AnalysisPage() {
 
   const renderCellControl = React.useCallback(
     (rowId: string, columnId: string, value: any) => {
+      if (value !== 0 && !value) {
+        return <div />;
+      }
       let v = `${value}`;
+      if (v === "Invalid Date") {
+        return <div />;
+      }
       if (
         columnId.endsWith("date") &&
         value !== undefined &&
         !Number.isNaN(value.getTime())
       ) {
-        v = value.toISOString();
+        v = value.toISOString()?.split("T")[0];
       }
       // cannot edit cells that have already been approved
       if (approvals?.[rowId]?.[columnId] !== ApprovalStatus.approved) {

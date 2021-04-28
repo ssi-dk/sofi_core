@@ -24,15 +24,14 @@
     ]
   },
   {
-    "field_name": "serotype",
+    "field_name": "serotype_final",
     "approvable": true,
     "editable": true,
     "approves_with": [
-      "serotype_final",
       "subspecies",
-      "pathotype",
-      "adhesion",
-      "toxins"
+      "pathotype_final",
+      "adhesion_final",
+      "toxins_final"
     ]
   },
   {

@@ -45,7 +45,7 @@ type DataTableProps<T extends NotEmpty> = {
   onSelect: (sel: DataTableSelection<T>) => void;
   onDetailsClick: (isolateId: string) => void;
   view: UserDefinedViewInternal;
-  getCellStyle: (rowId: string, columnId: string) => string;
+  getCellStyle: (rowId: string, columnId: string, value: any) => string;
   getStickyCellStyle: (rowId: string) => string;
   renderCellControl: (
     rowId: string,
@@ -335,7 +335,11 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
           ? getStickyCellStyle(rowId)
           : isInSelection(rowId, columnId)
           ? selectionClassName
-          : getCellStyle(rowId, columnId);
+          : getCellStyle(
+              rowId,
+              columnId,
+              rows[rowIndex - 1].original[columnId]
+            );
 
       return (
         // eslint-disable-next-line jsx-a11y/click-events-have-key-events
