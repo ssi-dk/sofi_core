@@ -698,6 +698,9 @@ components:
         received_date:
           format: date-time
           type: string
+        sofi_date:
+          format: date-time
+          type: string
         run_id:
           type: string
         public:
@@ -947,10 +950,28 @@ components:
       type: object
     AnalysisResult_allOf:
       properties:
-        _id:
-          format: uuid
-          type: string
         resfinder_version:
+          type: string
+        date_analysis_sofi:
+          format: date-time
+          type: string
+        date_approved_serotype:
+          format: date-time
+          type: string
+        date_approved_qc:
+          format: date-time
+          type: string
+        date_approved_amr:
+          format: date-time
+          type: string
+        date_approved_st:
+          format: date-time
+          type: string
+        date_approved_toxin:
+          format: date-time
+          type: string
+        date_approved_cluster:
+          format: date-time
           type: string
         qc_provided_species:
           type: number
@@ -968,6 +989,32 @@ components:
           - B
           - C
           type: string
+        qc_num_contigs:
+          type: number
+        qc_ambiguous_sites:
+          type: number
+        qc_num_reads:
+          type: number
+        qc_main_sp_plus_uncl:
+          type: number
+        qc_unclassified_reads:
+          type: number
+        qc_db_id:
+          type: string
+        qc_failed_tests:
+          type: string
+        qc_cgmlst_percent:
+          type: number
+        cgmlst_schema_salmonella:
+          type: object
+        cgmlst_schema_ecoli:
+          type: object
+        cgmlst_schema_campylobacter:
+          type: object
+        cgmlst_schema_listeria:
+          type: object
+        cgmlst_schema_klebsiella:
+          type: object
         subspecies:
           type: string
         species_final:
@@ -978,15 +1025,21 @@ components:
           type: string
         pathotype_final:
           type: string
-        serotype:
+        sero_enterobase:
+          type: string
+        sero_seqsero:
+          type: string
+        sero_antigen_seqzero:
+          type: string
+        sero_d_tartrate:
+          type: string
+        sero_serotype_finder:
           type: string
         serotype_final:
           type: string
-        adhesion:
-          type: string
         adhesion_final:
           type: string
-        toxins:
+        virulence_genes:
           type: string
         toxins_final:
           type: string
@@ -999,6 +1052,10 @@ components:
         comment_cluster:
           type: string
         comment_general:
+          type: string
+        comment_supplementary:
+          type: string
+        comment_qc:
           type: string
         amr_ami:
           $ref: '#/components/schemas/Resistance'
@@ -1073,7 +1130,6 @@ components:
         amr_van:
           $ref: '#/components/schemas/Resistance'
       required:
-      - _id
       - isolate_id
       type: object
   securitySchemes:

@@ -29,13 +29,49 @@ export interface AnalysisResultAllOf  {
      * @type {string}
      * @memberof AnalysisResultAllOf
      */
-    _id: string;
+    resfinder_version?: string;
     /**
      * 
-     * @type {string}
+     * @type {Date}
      * @memberof AnalysisResultAllOf
      */
-    resfinder_version?: string;
+    date_analysis_sofi?: Date;
+    /**
+     * 
+     * @type {Date}
+     * @memberof AnalysisResultAllOf
+     */
+    date_approved_serotype?: Date;
+    /**
+     * 
+     * @type {Date}
+     * @memberof AnalysisResultAllOf
+     */
+    date_approved_qc?: Date;
+    /**
+     * 
+     * @type {Date}
+     * @memberof AnalysisResultAllOf
+     */
+    date_approved_amr?: Date;
+    /**
+     * 
+     * @type {Date}
+     * @memberof AnalysisResultAllOf
+     */
+    date_approved_st?: Date;
+    /**
+     * 
+     * @type {Date}
+     * @memberof AnalysisResultAllOf
+     */
+    date_approved_toxin?: Date;
+    /**
+     * 
+     * @type {Date}
+     * @memberof AnalysisResultAllOf
+     */
+    date_approved_cluster?: Date;
     /**
      * 
      * @type {number}
@@ -74,6 +110,84 @@ export interface AnalysisResultAllOf  {
     qc_final?: AnalysisResultAllOfQcFinalEnum;
     /**
      * 
+     * @type {number}
+     * @memberof AnalysisResultAllOf
+     */
+    qc_num_contigs?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof AnalysisResultAllOf
+     */
+    qc_ambiguous_sites?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof AnalysisResultAllOf
+     */
+    qc_num_reads?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof AnalysisResultAllOf
+     */
+    qc_main_sp_plus_uncl?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof AnalysisResultAllOf
+     */
+    qc_unclassified_reads?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof AnalysisResultAllOf
+     */
+    qc_db_id?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof AnalysisResultAllOf
+     */
+    qc_failed_tests?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof AnalysisResultAllOf
+     */
+    qc_cgmlst_percent?: number;
+    /**
+     * 
+     * @type {object}
+     * @memberof AnalysisResultAllOf
+     */
+    cgmlst_schema_salmonella?: object;
+    /**
+     * 
+     * @type {object}
+     * @memberof AnalysisResultAllOf
+     */
+    cgmlst_schema_ecoli?: object;
+    /**
+     * 
+     * @type {object}
+     * @memberof AnalysisResultAllOf
+     */
+    cgmlst_schema_campylobacter?: object;
+    /**
+     * 
+     * @type {object}
+     * @memberof AnalysisResultAllOf
+     */
+    cgmlst_schema_listeria?: object;
+    /**
+     * 
+     * @type {object}
+     * @memberof AnalysisResultAllOf
+     */
+    cgmlst_schema_klebsiella?: object;
+    /**
+     * 
      * @type {string}
      * @memberof AnalysisResultAllOf
      */
@@ -107,7 +221,31 @@ export interface AnalysisResultAllOf  {
      * @type {string}
      * @memberof AnalysisResultAllOf
      */
-    serotype?: string;
+    sero_enterobase?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof AnalysisResultAllOf
+     */
+    sero_seqsero?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof AnalysisResultAllOf
+     */
+    sero_antigen_seqzero?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof AnalysisResultAllOf
+     */
+    sero_d_tartrate?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof AnalysisResultAllOf
+     */
+    sero_serotype_finder?: string;
     /**
      * 
      * @type {string}
@@ -119,19 +257,13 @@ export interface AnalysisResultAllOf  {
      * @type {string}
      * @memberof AnalysisResultAllOf
      */
-    adhesion?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof AnalysisResultAllOf
-     */
     adhesion_final?: string;
     /**
      * 
      * @type {string}
      * @memberof AnalysisResultAllOf
      */
-    toxins?: string;
+    virulence_genes?: string;
     /**
      * 
      * @type {string}
@@ -168,6 +300,18 @@ export interface AnalysisResultAllOf  {
      * @memberof AnalysisResultAllOf
      */
     comment_general?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof AnalysisResultAllOf
+     */
+    comment_supplementary?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof AnalysisResultAllOf
+     */
+    comment_qc?: string;
     /**
      * 
      * @type {Resistance}
@@ -388,30 +532,54 @@ export interface AnalysisResultAllOf  {
 
 export function AnalysisResultAllOfFromJSON(json: any): AnalysisResultAllOf {
     return {
-        '_id': json['_id'],
         'resfinder_version': !exists(json, 'resfinder_version') ? undefined : json['resfinder_version'],
+        'date_analysis_sofi': !exists(json, 'date_analysis_sofi') ? undefined : new Date(json['date_analysis_sofi']),
+        'date_approved_serotype': !exists(json, 'date_approved_serotype') ? undefined : new Date(json['date_approved_serotype']),
+        'date_approved_qc': !exists(json, 'date_approved_qc') ? undefined : new Date(json['date_approved_qc']),
+        'date_approved_amr': !exists(json, 'date_approved_amr') ? undefined : new Date(json['date_approved_amr']),
+        'date_approved_st': !exists(json, 'date_approved_st') ? undefined : new Date(json['date_approved_st']),
+        'date_approved_toxin': !exists(json, 'date_approved_toxin') ? undefined : new Date(json['date_approved_toxin']),
+        'date_approved_cluster': !exists(json, 'date_approved_cluster') ? undefined : new Date(json['date_approved_cluster']),
         'qc_provided_species': !exists(json, 'qc_provided_species') ? undefined : json['qc_provided_species'],
         'qc_genome1x': !exists(json, 'qc_genome1x') ? undefined : json['qc_genome1x'],
         'qc_genome10x': !exists(json, 'qc_genome10x') ? undefined : json['qc_genome10x'],
         'qc_gsize_diff1x10': !exists(json, 'qc_gsize_diff1x10') ? undefined : json['qc_gsize_diff1x10'],
         'qc_avg_coverage': !exists(json, 'qc_avg_coverage') ? undefined : json['qc_avg_coverage'],
         'qc_final': !exists(json, 'qc_final') ? undefined : json['qc_final'],
+        'qc_num_contigs': !exists(json, 'qc_num_contigs') ? undefined : json['qc_num_contigs'],
+        'qc_ambiguous_sites': !exists(json, 'qc_ambiguous_sites') ? undefined : json['qc_ambiguous_sites'],
+        'qc_num_reads': !exists(json, 'qc_num_reads') ? undefined : json['qc_num_reads'],
+        'qc_main_sp_plus_uncl': !exists(json, 'qc_main_sp_plus_uncl') ? undefined : json['qc_main_sp_plus_uncl'],
+        'qc_unclassified_reads': !exists(json, 'qc_unclassified_reads') ? undefined : json['qc_unclassified_reads'],
+        'qc_db_id': !exists(json, 'qc_db_id') ? undefined : json['qc_db_id'],
+        'qc_failed_tests': !exists(json, 'qc_failed_tests') ? undefined : json['qc_failed_tests'],
+        'qc_cgmlst_percent': !exists(json, 'qc_cgmlst_percent') ? undefined : json['qc_cgmlst_percent'],
+        'cgmlst_schema_salmonella': !exists(json, 'cgmlst_schema_salmonella') ? undefined : json['cgmlst_schema_salmonella'],
+        'cgmlst_schema_ecoli': !exists(json, 'cgmlst_schema_ecoli') ? undefined : json['cgmlst_schema_ecoli'],
+        'cgmlst_schema_campylobacter': !exists(json, 'cgmlst_schema_campylobacter') ? undefined : json['cgmlst_schema_campylobacter'],
+        'cgmlst_schema_listeria': !exists(json, 'cgmlst_schema_listeria') ? undefined : json['cgmlst_schema_listeria'],
+        'cgmlst_schema_klebsiella': !exists(json, 'cgmlst_schema_klebsiella') ? undefined : json['cgmlst_schema_klebsiella'],
         'subspecies': !exists(json, 'subspecies') ? undefined : json['subspecies'],
         'species_final': !exists(json, 'species_final') ? undefined : json['species_final'],
         'st': !exists(json, 'st') ? undefined : json['st'],
         'pathotype': !exists(json, 'pathotype') ? undefined : json['pathotype'],
         'pathotype_final': !exists(json, 'pathotype_final') ? undefined : json['pathotype_final'],
-        'serotype': !exists(json, 'serotype') ? undefined : json['serotype'],
+        'sero_enterobase': !exists(json, 'sero_enterobase') ? undefined : json['sero_enterobase'],
+        'sero_seqsero': !exists(json, 'sero_seqsero') ? undefined : json['sero_seqsero'],
+        'sero_antigen_seqzero': !exists(json, 'sero_antigen_seqzero') ? undefined : json['sero_antigen_seqzero'],
+        'sero_d_tartrate': !exists(json, 'sero_d_tartrate') ? undefined : json['sero_d_tartrate'],
+        'sero_serotype_finder': !exists(json, 'sero_serotype_finder') ? undefined : json['sero_serotype_finder'],
         'serotype_final': !exists(json, 'serotype_final') ? undefined : json['serotype_final'],
-        'adhesion': !exists(json, 'adhesion') ? undefined : json['adhesion'],
         'adhesion_final': !exists(json, 'adhesion_final') ? undefined : json['adhesion_final'],
-        'toxins': !exists(json, 'toxins') ? undefined : json['toxins'],
+        'virulence_genes': !exists(json, 'virulence_genes') ? undefined : json['virulence_genes'],
         'toxins_final': !exists(json, 'toxins_final') ? undefined : json['toxins_final'],
         'infection_source': !exists(json, 'infection_source') ? undefined : json['infection_source'],
         'resistance_genes': !exists(json, 'resistance_genes') ? undefined : json['resistance_genes'],
         'amr_profile': !exists(json, 'amr_profile') ? undefined : json['amr_profile'],
         'comment_cluster': !exists(json, 'comment_cluster') ? undefined : json['comment_cluster'],
         'comment_general': !exists(json, 'comment_general') ? undefined : json['comment_general'],
+        'comment_supplementary': !exists(json, 'comment_supplementary') ? undefined : json['comment_supplementary'],
+        'comment_qc': !exists(json, 'comment_qc') ? undefined : json['comment_qc'],
         'amr_ami': !exists(json, 'amr_ami') ? undefined : ResistanceFromJSON(json['amr_ami']),
         'amr_amp': !exists(json, 'amr_amp') ? undefined : ResistanceFromJSON(json['amr_amp']),
         'amr_azi': !exists(json, 'amr_azi') ? undefined : ResistanceFromJSON(json['amr_azi']),
@@ -456,30 +624,54 @@ export function AnalysisResultAllOfToJSON(value?: AnalysisResultAllOf): any {
         return undefined;
     }
     return {
-        '_id': value._id,
         'resfinder_version': value.resfinder_version,
+        'date_analysis_sofi': value.date_analysis_sofi === undefined ? undefined : value.date_analysis_sofi.toISOString(),
+        'date_approved_serotype': value.date_approved_serotype === undefined ? undefined : value.date_approved_serotype.toISOString(),
+        'date_approved_qc': value.date_approved_qc === undefined ? undefined : value.date_approved_qc.toISOString(),
+        'date_approved_amr': value.date_approved_amr === undefined ? undefined : value.date_approved_amr.toISOString(),
+        'date_approved_st': value.date_approved_st === undefined ? undefined : value.date_approved_st.toISOString(),
+        'date_approved_toxin': value.date_approved_toxin === undefined ? undefined : value.date_approved_toxin.toISOString(),
+        'date_approved_cluster': value.date_approved_cluster === undefined ? undefined : value.date_approved_cluster.toISOString(),
         'qc_provided_species': value.qc_provided_species,
         'qc_genome1x': value.qc_genome1x,
         'qc_genome10x': value.qc_genome10x,
         'qc_gsize_diff1x10': value.qc_gsize_diff1x10,
         'qc_avg_coverage': value.qc_avg_coverage,
         'qc_final': value.qc_final,
+        'qc_num_contigs': value.qc_num_contigs,
+        'qc_ambiguous_sites': value.qc_ambiguous_sites,
+        'qc_num_reads': value.qc_num_reads,
+        'qc_main_sp_plus_uncl': value.qc_main_sp_plus_uncl,
+        'qc_unclassified_reads': value.qc_unclassified_reads,
+        'qc_db_id': value.qc_db_id,
+        'qc_failed_tests': value.qc_failed_tests,
+        'qc_cgmlst_percent': value.qc_cgmlst_percent,
+        'cgmlst_schema_salmonella': value.cgmlst_schema_salmonella,
+        'cgmlst_schema_ecoli': value.cgmlst_schema_ecoli,
+        'cgmlst_schema_campylobacter': value.cgmlst_schema_campylobacter,
+        'cgmlst_schema_listeria': value.cgmlst_schema_listeria,
+        'cgmlst_schema_klebsiella': value.cgmlst_schema_klebsiella,
         'subspecies': value.subspecies,
         'species_final': value.species_final,
         'st': value.st,
         'pathotype': value.pathotype,
         'pathotype_final': value.pathotype_final,
-        'serotype': value.serotype,
+        'sero_enterobase': value.sero_enterobase,
+        'sero_seqsero': value.sero_seqsero,
+        'sero_antigen_seqzero': value.sero_antigen_seqzero,
+        'sero_d_tartrate': value.sero_d_tartrate,
+        'sero_serotype_finder': value.sero_serotype_finder,
         'serotype_final': value.serotype_final,
-        'adhesion': value.adhesion,
         'adhesion_final': value.adhesion_final,
-        'toxins': value.toxins,
+        'virulence_genes': value.virulence_genes,
         'toxins_final': value.toxins_final,
         'infection_source': value.infection_source,
         'resistance_genes': value.resistance_genes,
         'amr_profile': value.amr_profile,
         'comment_cluster': value.comment_cluster,
         'comment_general': value.comment_general,
+        'comment_supplementary': value.comment_supplementary,
+        'comment_qc': value.comment_qc,
         'amr_ami': ResistanceToJSON(value.amr_ami),
         'amr_amp': ResistanceToJSON(value.amr_amp),
         'amr_azi': ResistanceToJSON(value.amr_azi),

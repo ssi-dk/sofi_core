@@ -74,6 +74,12 @@ export interface BaseMetadata  {
     received_date: Date;
     /**
      * 
+     * @type {Date}
+     * @memberof BaseMetadata
+     */
+    sofi_date?: Date;
+    /**
+     * 
      * @type {string}
      * @memberof BaseMetadata
      */
@@ -108,6 +114,7 @@ export function BaseMetadataFromJSON(json: any): BaseMetadata {
         'project_title': !exists(json, 'project_title') ? undefined : json['project_title'],
         'sampling_date': !exists(json, 'sampling_date') ? undefined : new Date(json['sampling_date']),
         'received_date': new Date(json['received_date']),
+        'sofi_date': !exists(json, 'sofi_date') ? undefined : new Date(json['sofi_date']),
         'run_id': json['run_id'],
         '_public': !exists(json, 'public') ? undefined : json['public'],
         'provided_species': json['provided_species'],
@@ -128,6 +135,7 @@ export function BaseMetadataToJSON(value?: BaseMetadata): any {
         'project_title': value.project_title,
         'sampling_date': value.sampling_date === undefined ? undefined : value.sampling_date.toISOString(),
         'received_date': value.received_date.toISOString(),
+        'sofi_date': value.sofi_date === undefined ? undefined : value.sofi_date.toISOString(),
         'run_id': value.run_id,
         'public': value._public,
         'provided_species': value.provided_species,
