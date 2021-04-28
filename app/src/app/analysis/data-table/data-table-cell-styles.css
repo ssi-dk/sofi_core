@@ -48,7 +48,7 @@
 
 .emptyCell {
   border: 1px solid transparent;
-  background-color: #E2E8F0;
+  background-color: #f7f9fb;
   border-left: 1px dashed rgba(0, 0, 0, 0.1);
 }
 
