@@ -10,6 +10,7 @@ import {
   Grid,
 } from "@chakra-ui/react";
 import { ArrowBackIcon, DeleteIcon } from "@chakra-ui/icons";
+import { DateTime } from "luxon";
 import { Approval, ApprovalAllOfStatusEnum } from "sap-client";
 import { useMutation, useRequest } from "redux-query-react";
 import { useSelector } from "react-redux";
@@ -107,11 +108,9 @@ export default function ApprovalHistory() {
             return (
               <Grid padding="20px" templateColumns="repeat(6, 1fr)" gap={6}>
                 <Text>{h.id}</Text>
-                <Text>{`${new Date(
-                  h.timestamp
-                ).toLocaleDateString()} ${new Date(
-                  h.timestamp
-                ).toLocaleTimeString()}`}</Text>
+                <Text>{`${DateTime.fromISO(h.timestamp, { zone: "utc" })
+                  .setZone("local")
+                  .toLocaleString(DateTime.DATETIME_MED)}`}</Text>
                 <Text>{h.approver}</Text>
                 <Flex flexDirection="column">
                   {h.sequence_ids?.map((x) => (

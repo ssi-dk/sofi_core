@@ -8588,6 +8588,11 @@ lucene@^2.1.1:
   resolved "https://registry.yarnpkg.com/lucene/-/lucene-2.1.1.tgz#e710cc123b214eaf72a4c5f1da06943c0af44d86"
   integrity sha512-l0qCX+pgXEZh/7sYQNG+vzhOIFRPjlJJkQ/irk9n7Ak3d+1MrU6F7IV31KILwFkUn153oLK8a2AIt48DzLdVPg==
 
+luxon@^1.26.0:
+  version "1.26.0"
+  resolved "https://registry.yarnpkg.com/luxon/-/luxon-1.26.0.tgz#d3692361fda51473948252061d0f8561df02b578"
+  integrity sha512-+V5QIQ5f6CDXQpWNICELwjwuHdqeJM1UenlZWx5ujcRMc9venvluCjFb4t5NYLhb6IhkbMVOxzVuOqkgMxee2A==
+
 lz-string@^1.4.4:
   version "1.4.4"
   resolved "https://registry.yarnpkg.com/lz-string/-/lz-string-1.4.4.tgz#c0d8eaf36059f705796e1e344811cf4c498d3a26"
