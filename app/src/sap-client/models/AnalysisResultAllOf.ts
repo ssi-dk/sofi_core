@@ -293,6 +293,12 @@ export interface AnalysisResultAllOf  {
      * @type {string}
      * @memberof AnalysisResultAllOf
      */
+    comment?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof AnalysisResultAllOf
+     */
     comment_cluster?: string;
     /**
      * 
@@ -576,6 +582,7 @@ export function AnalysisResultAllOfFromJSON(json: any): AnalysisResultAllOf {
         'infection_source': !exists(json, 'infection_source') ? undefined : json['infection_source'],
         'resistance_genes': !exists(json, 'resistance_genes') ? undefined : json['resistance_genes'],
         'amr_profile': !exists(json, 'amr_profile') ? undefined : json['amr_profile'],
+        'comment': !exists(json, 'comment') ? undefined : json['comment'],
         'comment_cluster': !exists(json, 'comment_cluster') ? undefined : json['comment_cluster'],
         'comment_general': !exists(json, 'comment_general') ? undefined : json['comment_general'],
         'comment_supplementary': !exists(json, 'comment_supplementary') ? undefined : json['comment_supplementary'],
@@ -668,6 +675,7 @@ export function AnalysisResultAllOfToJSON(value?: AnalysisResultAllOf): any {
         'infection_source': value.infection_source,
         'resistance_genes': value.resistance_genes,
         'amr_profile': value.amr_profile,
+        'comment': value.comment,
         'comment_cluster': value.comment_cluster,
         'comment_general': value.comment_general,
         'comment_supplementary': value.comment_supplementary,

@@ -32,7 +32,7 @@
     ]
   },
   {
-    "field_name": "resistance_genes",
+    "field_name": "amr_profile",
     "approvable": true,
     "approves_with": [
       "amr_profile",
@@ -77,19 +77,17 @@
   {
     "field_name": "cluster_id",
     "approvable": true,
-    "editable": true,
-    "approves_with": [
-      "fud_number",
-      "epi_export"
-    ]
+    "editable": true
   },
   {
     "field_name": "fud_number",
-    "editable": true
+    "editable": true,
+    "approvable": true
   },
   {
     "field_name": "epi_export",
-    "editable": true
+    "editable": true,
+    "approvable": true
   },
   {
     "field_name": "pathotype_final",
@@ -183,12 +181,17 @@
   },
   {
     "field_name": "comment_cluster",
-    "editable": true,
-    "approvable": true
+    "editable": true
+  },
+  {
+    "field_name": "comment",
+    "editable": true
   },
   {
     "field_name": "comment_general",
-    "editable": true,
-    "approvable": true
+    "organizations": [
+      "SSI"
+    ],
+    "editable": true
   }
 ]

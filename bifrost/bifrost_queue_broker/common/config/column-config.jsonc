@@ -28,10 +28,7 @@
     "approvable": true,
     "editable": true,
     "approves_with": [
-      "subspecies",
-      "pathotype_final",
-      "adhesion_final",
-      "toxins_final"
+      "subspecies"
     ]
   },
   {
@@ -186,12 +183,17 @@
   },
   {
     "field_name": "comment_cluster",
-    "editable": true,
-    "approvable": true
+    "editable": true
+  },
+  {
+    "field_name": "comment",
+    "editable": true
   },
   {
     "field_name": "comment_general",
-    "editable": true,
-    "approvable": true
+    "organizations": [
+      "SSI"
+    ],
+    "editable": true
   }
 ]

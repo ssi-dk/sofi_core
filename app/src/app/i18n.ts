@@ -123,6 +123,7 @@ const fieldDisplayNames = {
     comment_supplementary: "Comments_supplementary",
     comment_cluster: "Comments_cluster",
     comment_general: "Comments_general",
+    comment: "Comments",
     qc_final: "QC_final",
     comment_qc: "Comments_QC",
     qc_provided_species: "QC_provided_species",

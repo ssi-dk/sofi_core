@@ -1049,6 +1049,8 @@ components:
           type: string
         amr_profile:
           type: string
+        comment:
+          type: string
         comment_cluster:
           type: string
         comment_general:
