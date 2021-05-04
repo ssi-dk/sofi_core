@@ -1,15 +1,19 @@
 import React, { useState } from "react";
-import { NavLink } from "react-router-dom";
 import {
   Box,
   Flex,
-  Button,
+  IconButton,
   useToast,
   Text,
   Heading,
-  Grid,
+  Table,
+  Thead,
+  Tbody,
+  Tr,
+  Th,
+  Td,
 } from "@chakra-ui/react";
-import { ArrowBackIcon, DeleteIcon } from "@chakra-ui/icons";
+import { CheckIcon, CloseIcon, TimeIcon, DeleteIcon } from "@chakra-ui/icons";
 import { DateTime } from "luxon";
 import { Approval, ApprovalAllOfStatusEnum } from "sap-client";
 import { useMutation, useRequest } from "redux-query-react";
@@ -20,7 +24,21 @@ import {
   revokeApproval,
   fetchApprovals,
 } from "app/analysis/analysis-approval-configs";
-import AnalysisHeader from "app/header/header";
+import HalfHolyGrailLayout from "layouts/half-holy-grail";
+
+type StatusIconProps = {
+  status: ApprovalAllOfStatusEnum;
+};
+
+const StatusIcon = React.memo((props: StatusIconProps) => {
+  return props.status === ApprovalAllOfStatusEnum.submitted ? (
+    <CheckIcon />
+  ) : props.status === ApprovalAllOfStatusEnum.cancelled ? (
+    <CloseIcon />
+  ) : (
+    <TimeIcon />
+  );
+});
 
 export default function ApprovalHistory() {
   const [historyLoadState] = useRequest(fetchApprovals());
@@ -66,73 +84,71 @@ export default function ApprovalHistory() {
     }
   }, [t, revocationLoadState, toast, needsNotify, setNeedsNotify]);
 
-  return (
-    <Box
-      display="grid"
-      gridTemplateRows="5% 5% minmax(0, 80%) 10%"
-      gridTemplateColumns="300px auto"
-      padding="8"
-      height="100vh"
-      width="100%"
-      gridGap="2"
-      rowgap="5"
-    >
-      <Box role="heading" gridColumn="1 / 4">
-        <AnalysisHeader />
-      </Box>
-      <Box
-        role="main"
-        gridColumn="2 / 4"
-        borderWidth="1px"
-        rounded="md"
-        padding="2em"
-        height="85vh"
+  const content = (
+    <Box textOverflow="hidden" minH="100vh">
+      <Flex
+        padding="20px"
+        alignItems="center"
+        gap={6}
+        justifyContent="space-between"
       >
-        <Flex
-          padding="20px"
-          alignItems="center"
-          gap={6}
-          justifyContent="space-between"
-        >
-          <Heading>{`${t("My approval history")}`}</Heading>
-        </Flex>
-        <Grid padding="20px" templateColumns="repeat(6, 1fr)" gap={6}>
-          <Heading size="md">Id</Heading>
-          <Heading size="md">{t("Time")}</Heading>
-          <Heading size="md">{t("Approved by")}</Heading>
-          <Heading size="md">{t("Sequences")}</Heading>
-          <Heading size="md">{t("Status")}</Heading>
-        </Grid>
-        {approvalHistory &&
-          approvalHistory.map((h) => {
-            return (
-              <Grid padding="20px" templateColumns="repeat(6, 1fr)" gap={6}>
-                <Text>{h.id}</Text>
-                <Text>{`${DateTime.fromISO(h.timestamp, { zone: "utc" })
-                  .setZone("local")
-                  .toLocaleString(DateTime.DATETIME_MED)}`}</Text>
-                <Text>{h.approver}</Text>
-                <Flex flexDirection="column">
-                  {h.sequence_ids?.map((x) => (
-                    <span>{x}</span>
-                  ))}
-                </Flex>
-                <Text>{h.status}</Text>
-                {h.status === ApprovalAllOfStatusEnum.submitted && (
-                  <Button
-                    leftIcon={<DeleteIcon />}
-                    onClick={() => revokeItem(h.id)}
-                  >
-                    {`${t("Revoke approval")}`}
-                  </Button>
-                )}
-              </Grid>
-            );
-          })}
-        {historyLoadState.isPending && `${t("Fetching...")}`}
-        {historyLoadState.isFinished &&
-          `${t("Found")} ${approvalHistory.length} ${t("approvals")}.`}
-      </Box>
+        <Heading>{`${t("My approval history")}`}</Heading>
+      </Flex>
+      <Table>
+        <Thead>
+          <Tr>
+            <Th>{t("Time")}</Th>
+            <Th>{t("Approved by")}</Th>
+            <Th>{t("Sequences")}</Th>
+            <Th>{t("Status")}</Th>
+          </Tr>
+        </Thead>
+        <Tbody>
+          {approvalHistory &&
+            approvalHistory.map((h) => {
+              return (
+                <Tr>
+                  <Td>
+                    <Text textStyle="xs">
+                      {`${DateTime.fromISO(h.timestamp, { zone: "utc" })
+                        .setZone("local")
+                        .toLocaleString(DateTime.DATETIME_MED)}`}
+                    </Text>
+                  </Td>
+                  <Td>
+                    <Text>{h.approver}</Text>
+                  </Td>
+                  <Td>
+                    <Flex overflow="hidden" flexDirection="column">
+                      {h.sequence_ids?.map((x) => (
+                        <Text overflow="hidden" textOverflow="ellipsis">
+                          {x}
+                        </Text>
+                      ))}
+                    </Flex>
+                  </Td>
+                  <Td>
+                    <StatusIcon status={h.status} />
+                  </Td>
+                  <Td>
+                    {h.status === ApprovalAllOfStatusEnum.submitted && (
+                      <IconButton
+                        icon={<DeleteIcon />}
+                        aria-label={`${t("Revoke approval")}`}
+                        onClick={() => revokeItem(h.id)}
+                      />
+                    )}
+                  </Td>
+                </Tr>
+              );
+            })}
+        </Tbody>
+      </Table>
+      {historyLoadState.isPending && `${t("Fetching...")}`}
+      {historyLoadState.isFinished &&
+        `${t("Found")} ${approvalHistory.length} ${t("approvals")}.`}
     </Box>
   );
+
+  return <HalfHolyGrailLayout content={content} sidebar={null} />;
 }

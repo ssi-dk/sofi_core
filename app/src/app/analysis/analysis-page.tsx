@@ -36,7 +36,7 @@ import {
   searchPageOfAnalysis,
   updateAnalysis,
 } from "./analysis-query-configs";
-import Header from "../header/header";
+import HalfHolyGrailLayout from "../../layouts/half-holy-grail";
 import AnalysisSidebar from "./sidebar/analysis-sidebar";
 import AnalysisViewSelector from "./view-selector/analysis-view-selector";
 import AnalysisSearch from "./search/analysis-search";
@@ -466,6 +466,98 @@ export default function AnalysisPage() {
     <Loading />;
   }
 
+  const content = (
+    <React.Fragment>
+      <Box role="navigation" gridColumn="2 / 4" pb={5}>
+        <Flex justifyContent="flex-end">
+          <AnalysisSearch onSubmit={onSearch} />
+          <Box minW="250px" ml="5">
+            <AnalysisViewSelector />
+          </Box>
+        </Flex>
+      </Box>
+      <Box role="main" gridColumn="2 / 4" borderWidth="1px" rounded="md">
+        <Box m={2}>
+          <IfPermission permission={Permission.approve}>
+            <Button
+              leftIcon={<DragHandleIcon />}
+              margin="4px"
+              onClick={onNarrowHandler}
+            >
+              {pageState.isNarrowed ? t("Return") : t("Select")}
+            </Button>
+            <Button
+              leftIcon={<CheckIcon />}
+              margin="4px"
+              disabled={!pageState.isNarrowed}
+              onClick={approveSelection}
+            >
+              {t("Approve")}
+            </Button>
+            <Button
+              leftIcon={<NotAllowedIcon />}
+              margin="4px"
+              disabled={!pageState.isNarrowed}
+              onClick={rejectSelection}
+            >
+              {t("Reject")}
+            </Button>
+          </IfPermission>
+
+          <ColumnConfigWidget>
+            {columns.map((column) => (
+              <div key={column.accessor as string} style={{ marginTop: "5px" }}>
+                <input
+                  type="checkbox"
+                  checked={checkColumnIsVisible(column.accessor as string)}
+                  onClick={toggleColumn(column.accessor)}
+                />{" "}
+                {column.accessor as string}
+              </div>
+            ))}
+          </ColumnConfigWidget>
+        </Box>
+
+        <Box height="100%">
+          <DataTable<AnalysisResult>
+            columns={columns || []}
+            canSelectColumn={canSelectColumn}
+            canEditColumn={canEditColumn}
+            canApproveColumn={canApproveColumn}
+            approvableColumns={approvableColumns}
+            getDependentColumns={getDependentColumns}
+            getCellStyle={getCellStyle}
+            getStickyCellStyle={getStickyCellStyle}
+            data={
+              pageState.isNarrowed
+                ? filteredData.filter((x) => selection[x.sequence_id])
+                : filteredData
+            }
+            renderCellControl={renderCellControl}
+            primaryKey="sequence_id"
+            selectionClassName={
+              pageState.isNarrowed ? "approvingCell" : "selectedCell"
+            }
+            onSelect={(sel) => dispatch(setSelection(sel))}
+            onDetailsClick={openDetailsView}
+            view={view}
+          />
+        </Box>
+        <Box role="status" gridColumn="2 / 4">
+          {isPending && `${t("Fetching...")} ${data.length}`}
+          {isFinished &&
+            !pageState.isNarrowed &&
+            `${t("Found")} ${filteredData.length} ${t("records")}.`}
+          {isFinished &&
+            pageState.isNarrowed &&
+            `${t("Staging")} ${
+              filteredData.filter((x) => selection[x.sequence_id]).length
+            } ${t("records")}.`}
+        </Box>
+      </Box>
+    </React.Fragment>
+  );
+
   return (
     <React.Fragment>
       <AnalysisDetails
@@ -473,118 +565,16 @@ export default function AnalysisPage() {
         isOpen={isMoreInfoModalOpen}
         onClose={onMoreInfoModalClose}
       />
-      <Box
-        display="grid"
-        gridTemplateRows="5% 5% minmax(0, 80%) 10%"
-        gridTemplateColumns="300px auto"
-        padding="8"
-        height="100vh"
-        gridGap="2"
-        rowgap="5"
-      >
-        <Box role="heading" gridColumn="1 / 4">
-          <Header sidebarWidth={sidebarWidth} />
-        </Box>
-        <Box role="form" gridColumn="1 / 2">
-          <Box minW={sidebarWidth} pr={5}>
-            <AnalysisSidebar
-              data={filteredData}
-              onPropFilterChange={onPropFilterChange}
-              onRangeFilterChange={onRangeFilterChange}
-            />
-          </Box>
-        </Box>
-        <Box role="navigation" gridColumn="2 / 4" pb={5}>
-          <Flex justifyContent="flex-end">
-            <AnalysisSearch onSubmit={onSearch} />
-            <Box minW="250px" ml="5">
-              <AnalysisViewSelector />
-            </Box>
-          </Flex>
-        </Box>
-        <Box role="main" gridColumn="2 / 4" borderWidth="1px" rounded="md">
-          <Box m={2}>
-            <IfPermission permission={Permission.approve}>
-              <Button
-                leftIcon={<DragHandleIcon />}
-                margin="4px"
-                onClick={onNarrowHandler}
-              >
-                {pageState.isNarrowed ? t("Return") : t("Select")}
-              </Button>
-              <Button
-                leftIcon={<CheckIcon />}
-                margin="4px"
-                disabled={!pageState.isNarrowed}
-                onClick={approveSelection}
-              >
-                {t("Approve")}
-              </Button>
-              <Button
-                leftIcon={<NotAllowedIcon />}
-                margin="4px"
-                disabled={!pageState.isNarrowed}
-                onClick={rejectSelection}
-              >
-                {t("Reject")}
-              </Button>
-            </IfPermission>
-
-            <ColumnConfigWidget>
-              {columns.map((column) => (
-                <div
-                  key={column.accessor as string}
-                  style={{ marginTop: "5px" }}
-                >
-                  <input
-                    type="checkbox"
-                    checked={checkColumnIsVisible(column.accessor as string)}
-                    onClick={toggleColumn(column.accessor)}
-                  />{" "}
-                  {column.accessor as string}
-                </div>
-              ))}
-            </ColumnConfigWidget>
-          </Box>
-
-          <Box height="100%">
-            <DataTable<AnalysisResult>
-              columns={columns || []}
-              canSelectColumn={canSelectColumn}
-              canEditColumn={canEditColumn}
-              canApproveColumn={canApproveColumn}
-              approvableColumns={approvableColumns}
-              getDependentColumns={getDependentColumns}
-              getCellStyle={getCellStyle}
-              getStickyCellStyle={getStickyCellStyle}
-              data={
-                pageState.isNarrowed
-                  ? filteredData.filter((x) => selection[x.sequence_id])
-                  : filteredData
-              }
-              renderCellControl={renderCellControl}
-              primaryKey="sequence_id"
-              selectionClassName={
-                pageState.isNarrowed ? "approvingCell" : "selectedCell"
-              }
-              onSelect={(sel) => dispatch(setSelection(sel))}
-              onDetailsClick={openDetailsView}
-              view={view}
-            />
-          </Box>
-          <Box role="status" gridColumn="2 / 4">
-            {isPending && `${t("Fetching...")} ${data.length}`}
-            {isFinished &&
-              !pageState.isNarrowed &&
-              `${t("Found")} ${filteredData.length} ${t("records")}.`}
-            {isFinished &&
-              pageState.isNarrowed &&
-              `${t("Staging")} ${
-                filteredData.filter((x) => selection[x.sequence_id]).length
-              } ${t("records")}.`}
-          </Box>
-        </Box>
-      </Box>
+      <HalfHolyGrailLayout
+        sidebar={
+          <AnalysisSidebar
+            data={filteredData}
+            onPropFilterChange={onPropFilterChange}
+            onRangeFilterChange={onRangeFilterChange}
+          />
+        }
+        content={content}
+      />
     </React.Fragment>
   );
 }
