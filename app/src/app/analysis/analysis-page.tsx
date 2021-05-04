@@ -461,7 +461,6 @@ export default function AnalysisPage() {
     [setMoreInfoIsolate, onMoreInfoModalOpen]
   );
 
-  const sidebarWidth = "300px";
   if (!columnLoadState.isFinished) {
     <Loading />;
   }
@@ -518,7 +517,7 @@ export default function AnalysisPage() {
           </ColumnConfigWidget>
         </Box>
 
-        <Box height="100%">
+        <Box height="calc(100vh - 250px)">
           <DataTable<AnalysisResult>
             columns={columns || []}
             canSelectColumn={canSelectColumn}
