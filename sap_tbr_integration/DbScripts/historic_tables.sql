@@ -24,7 +24,8 @@ CREATE TABLE [dbo].[HIST_tbl_Isolater_SAP](
     [AMR_profil] [nvarchar](50) NULL,
     [Dato_godkendt_serotype] [datetime] NULL,
     [Dato_godkendt_QC] [datetime] NULL,
-    [Dato_godkendt_ST] [datetime] NULL
+    [Dato_godkendt_ST] [datetime] NULL,
+    [Dato_log] [datetime] NOT NULL
   ) ON [PRIMARY]
 GO
 
@@ -34,7 +35,7 @@ AFTER UPDATE
 AS 
 BEGIN
   WITH IsolateChanges AS (
-      SELECT d.*
+      SELECT d.*, GETDATE() as [Dato_log]
       FROM inserted i
         JOIN deleted d ON i.Isolatnr = d.Isolatnr
       WHERE
@@ -68,7 +69,8 @@ BEGIN
     [AMR_profil],
     [Dato_godkendt_serotype],
     [Dato_godkendt_QC],
-    [Dato_godkendt_ST]
+    [Dato_godkendt_ST],
+    [Dato_log]
   FROM IsolateChanges
 END
 GO
@@ -118,7 +120,8 @@ CREATE TABLE [dbo].[HIST_tbl_GenoRes](
     [AMR_Tia] [nvarchar](10) NULL,
     [AMR_Tgc] [nvarchar](10) NULL,
     [AMR_Tmp] [nvarchar](10) NULL,
-    [AMR_Van] [nvarchar](10) NULL
+    [AMR_Van] [nvarchar](10) NULL,
+    [Dato_log] [datetime] NOT NULL
   ) ON [PRIMARY]
 GO
 
@@ -127,7 +130,7 @@ AFTER UPDATE
 AS 
 BEGIN
 	WITH GeoResChanges AS (
-			SELECT d.*
+			SELECT d.*, GETDATE() as [Dato_log]
 			FROM inserted i
 				JOIN deleted d ON i.isolatnr = d.isolatnr
 			WHERE
@@ -213,7 +216,8 @@ BEGIN
 		[AMR_Tia],
 		[AMR_Tgc],
 		[AMR_Tmp],
-		[AMR_Van]
+		[AMR_Van],
+    [Dato_log]
 	FROM GeoResChanges
 END
 GO
