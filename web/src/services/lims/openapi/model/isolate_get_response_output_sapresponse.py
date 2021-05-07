@@ -85,7 +85,9 @@ class IsolateGetResponseOutputSapresponse(ModelNormal):
             'isolate_approved': (bool,),  # noqa: E501
             'data': ([DataEntry],),  # noqa: E501
             'metadata': ([MetaDataEntry],),  # noqa: E501
-            'success': (bool,),  # noqa: E501
+            'message': (str,),  # noqa: E501
+            'success': (bool, none_type,),  # noqa: E501
+            'succcess': (bool, none_type,),  # noqa: E501
         }
 
     @cached_property
@@ -98,7 +100,9 @@ class IsolateGetResponseOutputSapresponse(ModelNormal):
         'isolate_approved': 'isolateApproved',  # noqa: E501
         'data': 'data',  # noqa: E501
         'metadata': 'metadata',  # noqa: E501
+        'message': 'message',  # noqa: E501
         'success': 'success',  # noqa: E501
+        'succcess': 'succcess',  # noqa: E501
     }
 
     _composed_schemas = {}
@@ -151,7 +155,9 @@ class IsolateGetResponseOutputSapresponse(ModelNormal):
             isolate_approved (bool): [optional]  # noqa: E501
             data ([DataEntry]): [optional]  # noqa: E501
             metadata ([MetaDataEntry]): [optional]  # noqa: E501
-            success (bool): [optional]  # noqa: E501
+            message (str): [optional]  # noqa: E501
+            success (bool, none_type): [optional]  # noqa: E501
+            succcess (bool, none_type): [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)

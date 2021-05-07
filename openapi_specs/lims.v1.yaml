@@ -33,7 +33,7 @@ paths:
                             metaFieldValue: test-project-123
                           - metaFieldName: Projekttitel
                             metaFieldValue: test-project
-                          - metaFieldName: "Dato_proeve "
+                          - metaFieldName: Dato_proeve
                             metaFieldValue: 14-09-2020
                           - metaFieldName: Dato_modtagelse
                             metaFieldValue: 14-09-2020
@@ -62,7 +62,7 @@ paths:
                           - fieldName: "AMR _ Amp"
                             fieldValue: ""
                             status: InProgress
-                        success: true
+                        succcess: true
                     code: 200
                     message: Action GetIsolate executed successfully
                     status: OK
@@ -308,7 +308,7 @@ components:
         - Institution
         - Projektnr
         - Projekttitel
-        - "Dato_proeve "
+        - Dato_proeve
         - Dato_modtagelse
         - RunID
         - Acc_nr
@@ -392,6 +392,7 @@ components:
                   fieldValue: value8
                 - fieldName: sekvensID
                   fieldValue: value9
+              succcess: true
               success: true
           code: 200
           message: Action GetIsolate executed successfully
@@ -416,7 +417,13 @@ components:
                   type: array
                   items:
                     $ref: '#/components/schemas/MetaDataEntry'
+                message:
+                  type: string
                 success:
+                  nullable: true
+                  type: boolean
+                succcess:
+                  nullable: true
                   type: boolean
         code:
           type: number
@@ -476,7 +483,7 @@ components:
             sapresponse:
               type: object
               properties:
-                success:
+                succcess:
                   type: boolean
     MessageResponse:
       title: MessageResponse
