@@ -937,6 +937,12 @@ components:
         timestamp:
           format: date-time
           type: string
+        matrix:
+          additionalProperties:
+            additionalProperties:
+              $ref: '#/components/schemas/ApprovalStatus'
+            type: object
+          type: object
         sequence_ids:
           items:
             type: string

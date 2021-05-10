@@ -12,6 +12,12 @@
  */
 
 import { exists, mapValues } from '../runtime';
+import {
+    ApprovalStatus,
+    ApprovalStatusFromJSON,
+    ApprovalStatusToJSON,
+} from './';
+
 /**
  * 
  * @export
@@ -38,6 +44,12 @@ export interface ApprovalAllOf  {
     timestamp?: Date;
     /**
      * 
+     * @type {{ [key: string]: { [key: string]: ApprovalStatus; }; }}
+     * @memberof ApprovalAllOf
+     */
+    matrix?: { [key: string]: { [key: string]: ApprovalStatus; }; };
+    /**
+     * 
      * @type {Array<string>}
      * @memberof ApprovalAllOf
      */
@@ -55,6 +67,7 @@ export function ApprovalAllOfFromJSON(json: any): ApprovalAllOf {
         'id': !exists(json, 'id') ? undefined : json['id'],
         'approver': !exists(json, 'approver') ? undefined : json['approver'],
         'timestamp': !exists(json, 'timestamp') ? undefined : new Date(json['timestamp']),
+        'matrix': !exists(json, 'matrix') ? undefined : json['matrix'],
         'sequence_ids': !exists(json, 'sequence_ids') ? undefined : json['sequence_ids'],
         'status': !exists(json, 'status') ? undefined : json['status'],
     };
@@ -68,6 +81,7 @@ export function ApprovalAllOfToJSON(value?: ApprovalAllOf): any {
         'id': value.id,
         'approver': value.approver,
         'timestamp': value.timestamp === undefined ? undefined : value.timestamp.toISOString(),
+        'matrix': value.matrix,
         'sequence_ids': value.sequence_ids,
         'status': value.status,
     };

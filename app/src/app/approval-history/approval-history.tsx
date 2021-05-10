@@ -107,7 +107,7 @@ export default function ApprovalHistory() {
           {approvalHistory &&
             approvalHistory.map((h) => {
               return (
-                <Tr>
+                <Tr verticalAlign="top">
                   <Td>
                     <Text textStyle="xs">
                       {`${DateTime.fromISO(h.timestamp, { zone: "utc" })
@@ -120,10 +120,30 @@ export default function ApprovalHistory() {
                   </Td>
                   <Td>
                     <Flex overflow="hidden" flexDirection="column">
-                      {h.sequence_ids?.map((x) => (
-                        <Text overflow="hidden" textOverflow="ellipsis">
-                          {x}
-                        </Text>
+                      {Object.keys(h.matrix)?.map((x) => (
+                        <React.Fragment>
+                          <Text
+                            as="pre"
+                            overflow="hidden"
+                            textOverflow="ellipsis"
+                          >
+                            {x}
+                          </Text>
+                          {Object.keys(h.matrix[x]).map((y) => (
+                            <Text
+                              as="pre"
+                              overflow="hidden"
+                              textOverflow="ellipsis"
+                              color={
+                                h.matrix[x][y] === "approved"
+                                  ? "blue.400"
+                                  : "red.400"
+                              }
+                            >
+                              {`    ${y}`}
+                            </Text>
+                          ))}
+                        </React.Fragment>
                       ))}
                     </Flex>
                   </Td>
