@@ -9,7 +9,7 @@ import {
   EditableInput,
   useDisclosure,
   Skeleton,
-  Divider
+  Divider,
 } from "@chakra-ui/react";
 import { CheckIcon, DragHandleIcon, NotAllowedIcon } from "@chakra-ui/icons";
 import { Column } from "react-table";
@@ -382,15 +382,15 @@ export default function AnalysisPage() {
 
   const cellUpdating = React.useCallback(
     (id, column) => {
-      const updating = id === lastUpdatedRow &&
-             lastUpdatedColumns.indexOf(column) >= 0 &&
-             pendingUpdate;
+      const updating =
+        id === lastUpdatedRow &&
+        lastUpdatedColumns.indexOf(column) >= 0 &&
+        pendingUpdate;
       console.log(id, column, updating);
       return updating;
     },
     [lastUpdatedRow, lastUpdatedColumns, pendingUpdate]
   );
-
 
   const onAutocompleteEdit = React.useCallback(
     (rowId: string, field: string) => (val: string | OptionTypeBase) => {
@@ -408,9 +408,9 @@ export default function AnalysisPage() {
 
   const renderCellControl = React.useCallback(
     (rowId: string, columnId: string, value: any) => {
-     if (cellUpdating(rowId, columnId)) {
-          return <Skeleton width="100px" height="20px" />;
-        }
+      if (cellUpdating(rowId, columnId)) {
+        return <Skeleton width="100px" height="20px" />;
+      }
       if (value !== 0 && !value && !columnConfigs[columnId].editable) {
         return <div />;
       }
@@ -455,6 +455,7 @@ export default function AnalysisPage() {
                 minW="100%"
                 minH="100%"
                 defaultValue={value || value === 0 ? v : ""}
+                submitOnBlur={false}
                 onSubmit={onFreeTextEdit(rowId, columnId)}
               >
                 <EditablePreview height="100%" width="100%" />
