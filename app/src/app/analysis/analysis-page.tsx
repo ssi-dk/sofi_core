@@ -109,7 +109,7 @@ export default function AnalysisPage() {
 
   const submitChange = React.useCallback(
     (payload: { [K: string]: { [K: string]: string } }) => {
-      setLastUpdatedRow(Object.keys(payload[Object.keys(payload)[0]]));
+      setLastUpdatedRow(Object.keys(payload)[0]);
       setLastUpdatedColumns(Object.keys(payload[Object.keys(payload)[0]]));
       _submitChange(payload);
     },
@@ -386,7 +386,10 @@ export default function AnalysisPage() {
         id === lastUpdatedRow &&
         lastUpdatedColumns.indexOf(column) >= 0 &&
         pendingUpdate;
-      console.log(id, column, updating);
+      if (pendingUpdate) {
+        console.log(id, column, pendingUpdate, updating);
+        console.log(lastUpdatedRow, lastUpdatedColumns, pendingUpdate, updating);
+      }
       return updating;
     },
     [lastUpdatedRow, lastUpdatedColumns, pendingUpdate]
