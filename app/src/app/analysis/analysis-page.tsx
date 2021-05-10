@@ -388,7 +388,12 @@ export default function AnalysisPage() {
         pendingUpdate;
       if (pendingUpdate) {
         console.log(id, column, pendingUpdate, updating);
-        console.log(lastUpdatedRow, lastUpdatedColumns, pendingUpdate, updating);
+        console.log(
+          lastUpdatedRow,
+          lastUpdatedColumns,
+          pendingUpdate,
+          updating
+        );
       }
       return updating;
     },

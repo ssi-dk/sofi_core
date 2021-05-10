@@ -94,7 +94,7 @@ export default function ApprovalHistory() {
       >
         <Heading>{`${t("My approval history")}`}</Heading>
       </Flex>
-      <Table>
+      <Table variant="striped">
         <Thead>
           <Tr>
             <Th>{t("Time")}</Th>
