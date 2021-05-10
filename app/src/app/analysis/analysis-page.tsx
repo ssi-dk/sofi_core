@@ -8,6 +8,8 @@ import {
   EditablePreview,
   EditableInput,
   useDisclosure,
+  Skeleton,
+  Divider
 } from "@chakra-ui/react";
 import { CheckIcon, DragHandleIcon, NotAllowedIcon } from "@chakra-ui/icons";
 import { Column } from "react-table";
@@ -103,10 +105,12 @@ export default function AnalysisPage() {
   );
 
   const [lastUpdatedRow, setLastUpdatedRow] = React.useState(null);
+  const [lastUpdatedColumns, setLastUpdatedColumns] = React.useState([]);
 
   const submitChange = React.useCallback(
     (payload: { [K: string]: { [K: string]: string } }) => {
-      setLastUpdatedRow(Object.keys(payload)[0]);
+      setLastUpdatedRow(Object.keys(payload[Object.keys(payload)[0]]));
+      setLastUpdatedColumns(Object.keys(payload[Object.keys(payload)[0]]));
       _submitChange(payload);
     },
     [_submitChange, setLastUpdatedRow]
@@ -376,6 +380,18 @@ export default function AnalysisPage() {
     [lastUpdatedRow, pendingUpdate]
   );
 
+  const cellUpdating = React.useCallback(
+    (id, column) => {
+      const updating = id === lastUpdatedRow &&
+             lastUpdatedColumns.indexOf(column) >= 0 &&
+             pendingUpdate;
+      console.log(id, column, updating);
+      return updating;
+    },
+    [lastUpdatedRow, lastUpdatedColumns, pendingUpdate]
+  );
+
+
   const onAutocompleteEdit = React.useCallback(
     (rowId: string, field: string) => (val: string | OptionTypeBase) => {
       submitChange({ [rowId]: { [field]: (val as any).value } });
@@ -392,7 +408,10 @@ export default function AnalysisPage() {
 
   const renderCellControl = React.useCallback(
     (rowId: string, columnId: string, value: any) => {
-      if (value !== 0 && !value) {
+     if (cellUpdating(rowId, columnId)) {
+          return <Skeleton width="100px" height="20px" />;
+        }
+      if (value !== 0 && !value && !columnConfigs[columnId].editable) {
         return <div />;
       }
       let v = `${value}`;
@@ -428,15 +447,21 @@ export default function AnalysisPage() {
             />
           );
         }
+
         if (columnConfigs[columnId].editable) {
           return (
-            <Editable
-              defaultValue={v}
-              onSubmit={onFreeTextEdit(rowId, columnId)}
-            >
-              <EditablePreview />
-              <EditableInput />
-            </Editable>
+            <Box minWidth="100%" minHeight="100%">
+              <Editable
+                minW="100%"
+                minH="100%"
+                defaultValue={value || value === 0 ? v : ""}
+                onSubmit={onFreeTextEdit(rowId, columnId)}
+              >
+                <EditablePreview height="100%" width="100%" />
+                <EditableInput height="100%" width="100%" />
+              </Editable>
+              <Divider borderTop="1px solid black" />
+            </Box>
           );
         }
       }
@@ -449,6 +474,7 @@ export default function AnalysisPage() {
       onAutocompleteEdit,
       onFreeTextEdit,
       rowUpdating,
+      cellUpdating,
       approvals,
     ]
   );
