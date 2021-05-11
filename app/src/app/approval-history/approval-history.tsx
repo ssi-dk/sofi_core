@@ -77,7 +77,7 @@ export default function ApprovalHistory() {
         title: t("Approval undone"),
         description: `${t("Approval was successfully revoked.")}`,
         status: "info",
-        duration: 5000,
+        duration: 3000,
         isClosable: true,
       });
       setNeedsNotify(false);
@@ -112,7 +112,7 @@ export default function ApprovalHistory() {
                     <Text textStyle="xs">
                       {`${DateTime.fromISO(h.timestamp, { zone: "utc" })
                         .setZone("local")
-                        .toLocaleString(DateTime.DATETIME_MED)}`}
+                        .toFormat("yyyy-MM-dd HH:mm")}`}
                     </Text>
                   </Td>
                   <Td>
@@ -136,13 +136,14 @@ export default function ApprovalHistory() {
                               textOverflow="ellipsis"
                               color={
                                 h.matrix[x][y] === "approved"
-                                  ? "blue.400"
-                                  : "red.400"
+                                  ? "gray.900"
+                                  : "red.700"
                               }
                             >
                               {`    ${y}`}
                             </Text>
                           ))}
+                          <Text as="pre">{`\n`}</Text>
                         </React.Fragment>
                       ))}
                     </Flex>

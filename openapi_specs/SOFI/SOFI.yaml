@@ -553,8 +553,6 @@ components:
             timestamp:
               type: string
               format: date-time
-            matrix:
-              $ref: "#/components/schemas/ApprovalMatrix"
             sequence_ids:
               type: array
               items:

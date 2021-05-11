@@ -6,10 +6,8 @@ from datetime import date, datetime  # noqa: F401
 from typing import List, Dict  # noqa: F401
 
 from web.src.SAP.generated.models.base_model_ import Model
-from web.src.SAP.generated.models.approval_status import ApprovalStatus
 from web.src.SAP.generated import util
 
-from web.src.SAP.generated.models.approval_status import ApprovalStatus  # noqa: E501
 
 class ApprovalAllOf(Model):
 
@@ -19,7 +17,7 @@ class ApprovalAllOf(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, id=None, approver=None, timestamp=None, matrix=None, sequence_ids=None, status=None):  # noqa: E501
+    def __init__(self, id=None, approver=None, timestamp=None, sequence_ids=None, status=None):  # noqa: E501
         """ApprovalAllOf - a model defined in OpenAPI
 
         :param id: The id of this ApprovalAllOf.  # noqa: E501
@@ -28,8 +26,6 @@ class ApprovalAllOf(Model):
         :type approver: str
         :param timestamp: The timestamp of this ApprovalAllOf.  # noqa: E501
         :type timestamp: datetime
-        :param matrix: The matrix of this ApprovalAllOf.  # noqa: E501
-        :type matrix: Dict[str, Dict[str, ApprovalStatus]]
         :param sequence_ids: The sequence_ids of this ApprovalAllOf.  # noqa: E501
         :type sequence_ids: List[str]
         :param status: The status of this ApprovalAllOf.  # noqa: E501
@@ -39,7 +35,6 @@ class ApprovalAllOf(Model):
             'id': str,
             'approver': str,
             'timestamp': datetime,
-            'matrix': Dict[str, Dict[str, ApprovalStatus]],
             'sequence_ids': List[str],
             'status': str,
         }
@@ -48,7 +43,6 @@ class ApprovalAllOf(Model):
             'id': 'id',
             'approver': 'approver',
             'timestamp': 'timestamp',
-            'matrix': 'matrix',
             'sequence_ids': 'sequence_ids',
             'status': 'status',
         }
@@ -56,7 +50,6 @@ class ApprovalAllOf(Model):
         self._id = id
         self._approver = approver
         self._timestamp = timestamp
-        self._matrix = matrix
         self._sequence_ids = sequence_ids
         self._status = status
 
@@ -133,27 +126,6 @@ class ApprovalAllOf(Model):
         """
 
         self._timestamp = timestamp
-
-    @property
-    def matrix(self):
-        """Gets the matrix of this ApprovalAllOf.
-
-
-        :return: The matrix of this ApprovalAllOf.
-        :rtype: Dict[str, Dict[str, ApprovalStatus]]
-        """
-        return self._matrix
-
-    @matrix.setter
-    def matrix(self, matrix):
-        """Sets the matrix of this ApprovalAllOf.
-
-
-        :param matrix: The matrix of this ApprovalAllOf.
-        :type matrix: Dict[str, Dict[str, ApprovalStatus]]
-        """
-
-        self._matrix = matrix
 
     @property
     def sequence_ids(self):

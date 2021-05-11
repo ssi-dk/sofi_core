@@ -83,7 +83,7 @@ const GdprForgetPage = () => {
         title: t("Request successful"),
         description,
         status: "success",
-        duration: 5000,
+        duration: 3000,
         isClosable: true,
       });
       setNeedsNotify(false);

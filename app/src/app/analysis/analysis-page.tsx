@@ -279,7 +279,7 @@ export default function AnalysisPage() {
           data.filter((x) => selection[x.sequence_id]).length
         } ${t("records")} ${t("have been submitted for approval.")}`,
         status: "info",
-        duration: 5000,
+        duration: 3000,
         isClosable: true,
       });
       setNeedsApproveNotify(false);
