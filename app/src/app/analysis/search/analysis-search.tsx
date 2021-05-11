@@ -1,5 +1,5 @@
 import React from "react";
-import { Input, IconButton } from "@chakra-ui/react";
+import { Input, IconButton, useToast } from "@chakra-ui/react";
 import { SearchIcon } from "@chakra-ui/icons";
 import { AnalysisQuery } from "sap-client";
 import { parse as luceneParse } from "lucene";
@@ -10,36 +10,37 @@ type AnalysisSearchProps = {
   onSubmit: (query: AnalysisQuery) => void;
 };
 
-const parseQuery = (input: string) => {
-  const ast = luceneParse(input);
-  // translate display names to internal names
-  recurseTree(ast, (x) => {
-    if (x["field"]) {
-      x["field"] = getFieldInternalName(x["field"]) ?? x["field"];
-    }
-    // parse numbers where we find them
-    // not doing this because the redux-query code generator cannot handle `oneOf` correctly just yet
-    // but in the future, it would be nice to make term string | number and parse it here
-    /*
-    if (x["term"]) {
-      if (!Number.isNaN(x["term"])) {
-        x["term"] = parseFloat(x["term"]);
+const parseQuery = (input: string, toast) => {
+  try {
+    const ast = luceneParse(input);
+    // translate display names to internal names
+    recurseTree(ast, (x) => {
+      if (x["field"]) {
+        x["field"] = getFieldInternalName(x["field"]) ?? x["field"];
       }
-    }
-    */
-  });
-  return ast;
+    });
+    return ast;
+  } catch (ex) {
+    toast({
+      title: "Invalid query syntax",
+      description: `${ex}`,
+      status: "error",
+      isClosable: true,
+    });
+    return {};
+  }
 };
 
 const AnalysisSearch = (props: AnalysisSearchProps) => {
   const { onSubmit } = props;
+  const toast = useToast();
   const [input, setInput] = React.useState("");
   const onInput = React.useCallback((e) => setInput(e.target.value), [
     setInput,
   ]);
   const submitQuery = React.useCallback(
-    () => onSubmit({ expression: parseQuery(input) }),
-    [onSubmit, input]
+    () => onSubmit({ expression: parseQuery(input, toast) }),
+    [onSubmit, input, toast]
   );
   const onEnterKey = React.useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) =>
@@ -49,7 +50,7 @@ const AnalysisSearch = (props: AnalysisSearchProps) => {
   return (
     <React.Fragment>
       <Input
-        placeholder="species: e.coli"
+        placeholder={`species_final:"Escherichia coli"`}
         onInput={onInput}
         onKeyDown={onEnterKey}
         onSubmit={submitQuery}
