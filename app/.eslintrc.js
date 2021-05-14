@@ -46,6 +46,7 @@ module.exports = {
     "@typescript-eslint/explicit-module-boundary-types": "off",
     "@typescript-eslint/no-var-requires": "warn",
     '@typescript-eslint/dot-notation': 'off',
+    '@typescript-eslint/no-inferrable-types': 'off',
     "import/prefer-default-export": "warn",
     "react/destructuring-assignment": "warn",
     "no-param-reassign": "off",

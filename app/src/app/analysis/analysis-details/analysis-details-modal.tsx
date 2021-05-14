@@ -73,7 +73,7 @@ const AnalysisHistory = (props: AnalysisHistoryProps) => {
                     <AnalysisHistoryTable sequences={analysisHistory} />
                   </TabPanel>
                   <TabPanel>
-                    <p>Insert some HTML here</p>
+                    <p>{/* Load some HTML here */}</p>
                   </TabPanel>
                 </TabPanels>
               </Tabs>
