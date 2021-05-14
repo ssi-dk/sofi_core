@@ -25,6 +25,9 @@ CREATE TABLE [dbo].[HIST_tbl_Isolater_SAP](
     [Dato_godkendt_serotype] [datetime] NULL,
     [Dato_godkendt_QC] [datetime] NULL,
     [Dato_godkendt_ST] [datetime] NULL,
+    [Dato_godkendt_toxin] [datetime] NULL,
+    [Dato_godkendt_cluster] [datetime] NULL,
+    [Dato_Epi] [datetime] null,
     [Dato_log] [datetime] NOT NULL
   ) ON [PRIMARY]
 GO
@@ -52,7 +55,10 @@ BEGIN
         d.[AMR_profil]             IS NOT NULL and d.[AMR_profil]             != i.[AMR_profil] or
         d.[Dato_godkendt_serotype] IS NOT NULL and d.[Dato_godkendt_serotype] != i.[Dato_godkendt_serotype] or
         d.[Dato_godkendt_QC]       IS NOT NULL and d.[Dato_godkendt_QC]       != i.[Dato_godkendt_QC] or
-        d.[Dato_godkendt_ST]       IS NOT NULL and d.[Dato_godkendt_ST]       != i.[Dato_godkendt_ST]
+        d.[Dato_godkendt_ST]       IS NOT NULL and d.[Dato_godkendt_ST]       != i.[Dato_godkendt_ST] or
+        d.[Dato_godkendt_toxin]    IS NOT NULL and d.[Dato_godkendt_toxin]    != i.[Dato_godkendt_toxin] or
+        d.[Dato_godkendt_cluster]  IS NOT NULL and d.[Dato_godkendt_cluster]  != i.[Dato_godkendt_cluster] or
+        d.[Dato_Epi]               IS NOT NULL and d.[Dato_Epi]               != i.[Dato_Epi]
   )
   INSERT INTO [IB_Tarmbakdata].[dbo].[HIST_tbl_Isolater_SAP]
   SELECT 
@@ -69,7 +75,10 @@ BEGIN
     [AMR_profil],
     [Dato_godkendt_serotype],
     [Dato_godkendt_QC],
-    [Dato_godkendt_ST],
+    [Dato_godkendt_ST], 
+    [Dato_godkendt_toxin], 
+    [Dato_godkendt_cluster], 
+    [Dato_Epi],
     [Dato_log]
   FROM IsolateChanges
 END

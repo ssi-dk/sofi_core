@@ -13,4 +13,5 @@ sleep 50
 # docker exec -it sdb /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P "MyStrongPassword123" -i /scripts/rowver_sp.sql
 docker exec -it sdb /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P "MyStrongPassword123" -i /scripts/create_db_consolidated.sql
 docker exec -it sdb /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P "MyStrongPassword123" -i /scripts/change_sps.sql
+docker exec -it sdb /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P "MyStrongPassword123" -i /scripts/historic_tables.sql
 docker exec -it sdb /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P "MyStrongPassword123" -i /scripts/dummy_data.sql
