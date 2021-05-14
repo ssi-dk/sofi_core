@@ -13,7 +13,8 @@
     "field_name": "qc_final",
     "approves_with": [
       "species_final",
-      "run_id"
+      "run_id",
+      "sequence_id"
     ]
   },
   {

@@ -69,7 +69,7 @@ export default function AnalysisPage() {
 
   const [columnLoadState] = useRequest(requestColumns());
   const [{ isPending, isFinished }] = useRequest({
-    ...requestPageOfAnalysis({ pageSize: 1000 }),
+    ...requestPageOfAnalysis({ pageSize: 100 }, false),
   });
 
   useRequest({ ...fetchApprovalMatrix() });
@@ -129,7 +129,7 @@ export default function AnalysisPage() {
       if (q.expression && Object.keys(q.expression).length === 0) {
         dispatch(
           requestAsync({
-            ...requestPageOfAnalysis({ pageSize: 1000 }),
+            ...requestPageOfAnalysis({ pageSize: 100 }, false),
           })
         );
       } else {
@@ -325,7 +325,7 @@ export default function AnalysisPage() {
 
   const getCellStyle = React.useCallback(
     (rowId: string, columnId: string, value: any) => {
-      if (value !== 0 && !value) {
+      if (value !== 0 && value !== false && !value) {
         return "emptyCell";
       }
       if (`${value}` === "Invalid Date") {
@@ -386,15 +386,6 @@ export default function AnalysisPage() {
         id === lastUpdatedRow &&
         lastUpdatedColumns.indexOf(column) >= 0 &&
         pendingUpdate;
-      if (pendingUpdate) {
-        console.log(id, column, pendingUpdate, updating);
-        console.log(
-          lastUpdatedRow,
-          lastUpdatedColumns,
-          pendingUpdate,
-          updating
-        );
-      }
       return updating;
     },
     [lastUpdatedRow, lastUpdatedColumns, pendingUpdate]
@@ -419,7 +410,12 @@ export default function AnalysisPage() {
       if (cellUpdating(rowId, columnId)) {
         return <Skeleton width="100px" height="20px" />;
       }
-      if (value !== 0 && !value && !columnConfigs[columnId].editable) {
+      if (
+        value !== 0 &&
+        value !== false &&
+        !value &&
+        !columnConfigs[columnId].editable
+      ) {
         return <div />;
       }
       let v = `${value}`;

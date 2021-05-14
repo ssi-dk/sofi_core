@@ -7,12 +7,15 @@ export const pagingMiddleware = (store) => (next) => (action) => {
   if (action && action.type === REQUEST_SUCCESS) {
     // ugly hack
     if (action.url.indexOf("/api/analysis") > -1) {
-      // we want to page the analysis results automatically
-      const pagingToken = action.responseBody.paging_token;
-      if (pagingToken) {
-        store.dispatch(
-          requestAsync({ ...requestPageOfAnalysis({ pagingToken }) })
-        );
+      console.log(action);
+      if (action.entities.autoPage) {
+        // we want to page the analysis results automatically
+        const pagingToken = action.responseBody.paging_token;
+        if (pagingToken) {
+          store.dispatch(
+            requestAsync({ ...requestPageOfAnalysis({ pagingToken }) })
+          );
+        }
       }
     }
   }

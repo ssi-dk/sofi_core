@@ -20,6 +20,7 @@ import { arrayToNormalizedHashmap } from "utils";
 export type AnalysisSlice = {
   analysisTotalCount: number;
   analysisPagingToken: string;
+  autoPage: boolean;
   analysis: { [K: string]: AnalysisResult };
   approvalMatrix: { [K: string]: { [K: string]: ApprovalStatus } };
 };
@@ -31,7 +32,10 @@ export type ColumnSlice = {
 };
 
 // query config for retrieving a page of analysis
-export const requestPageOfAnalysis = (params: GetAnalysisRequest) => {
+export const requestPageOfAnalysis = (
+  params: GetAnalysisRequest,
+  autoPage: boolean = true
+) => {
   // use generated api client as base
   const base = getAnalysis<AnalysisSlice>(params);
   // template the full path for the url
@@ -43,6 +47,7 @@ export const requestPageOfAnalysis = (params: GetAnalysisRequest) => {
     analysisTotalCount: response.total_count,
     analysisPagingToken: response.paging_token,
     approvalMatrix: response.approval_matrix,
+    autoPage,
     analysis: response.items
       ? arrayToNormalizedHashmap(
           response.items.map((a) => AnalysisResultFromJSON(a)),
@@ -54,6 +59,7 @@ export const requestPageOfAnalysis = (params: GetAnalysisRequest) => {
   base.update = {
     analysisTotalCount: (_, newValue) => newValue,
     analysisPagingToken: (_, newValue) => newValue,
+    autoPage: (_, newValue) => newValue,
     approvalMatrix: (oldValue, newValue) => ({
       ...oldValue,
       ...newValue,
@@ -68,7 +74,10 @@ export const requestPageOfAnalysis = (params: GetAnalysisRequest) => {
 };
 
 // query config for retrieving a page of analysis
-export const searchPageOfAnalysis = (params: SearchAnalysisRequest) => {
+export const searchPageOfAnalysis = (
+  params: SearchAnalysisRequest,
+  autoPage: boolean = true
+) => {
   // use generated api client as base
   const base = searchAnalysis<AnalysisSlice>(params);
   // template the full path for the url
@@ -78,6 +87,7 @@ export const searchPageOfAnalysis = (params: SearchAnalysisRequest) => {
     analysisTotalCount: response.total_count,
     analysisPagingToken: response.paging_token,
     approvalMatrix: response.approval_matrix,
+    autoPage,
     analysis: response.items
       ? arrayToNormalizedHashmap(
           response.items.map((a) => AnalysisResultFromJSON(a)),
@@ -89,6 +99,7 @@ export const searchPageOfAnalysis = (params: SearchAnalysisRequest) => {
   base.update = {
     analysisTotalCount: (_, newValue) => newValue,
     analysisPagingToken: (_, newValue) => newValue,
+    autoPage: (_, newValue) => newValue,
     approvalMatrix: (oldValue, newValue) => ({
       ...oldValue,
       ...newValue,
