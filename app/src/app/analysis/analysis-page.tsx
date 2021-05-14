@@ -129,7 +129,7 @@ export default function AnalysisPage() {
       if (q.expression && Object.keys(q.expression).length === 0) {
         dispatch(
           requestAsync({
-            ...requestPageOfAnalysis({ pageSize: 1000 }),
+            ...requestPageOfAnalysis({ pageSize: 100 }),
           })
         );
       } else {
@@ -325,7 +325,7 @@ export default function AnalysisPage() {
 
   const getCellStyle = React.useCallback(
     (rowId: string, columnId: string, value: any) => {
-      if (value !== 0 && !value) {
+      if (value !== 0 && value !== false && !value) {
         return "emptyCell";
       }
       if (`${value}` === "Invalid Date") {
@@ -419,7 +419,7 @@ export default function AnalysisPage() {
       if (cellUpdating(rowId, columnId)) {
         return <Skeleton width="100px" height="20px" />;
       }
-      if (value !== 0 && !value && !columnConfigs[columnId].editable) {
+      if (value !== 0 && value !== false && !value && !columnConfigs[columnId].editable) {
         return <div />;
       }
       let v = `${value}`;

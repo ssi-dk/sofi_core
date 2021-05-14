@@ -27,6 +27,7 @@ from ..services.search.transpiler import AbstractSyntaxTreeVisitor
 def parse_paging_token(token):
     if token:
         body = base64.b64decode(token)
+        print(body, file=sys.stderr)
         return json.loads(body)
     else:
         return None
@@ -48,7 +49,7 @@ def get_analysis(user, token_info, paging_token, page_size):
         else False
     )
     items = get_analysis_page(
-        {},
+        token["query"],
         token["page_size"],
         token["offset"],
         authorized_columns(token_info),
@@ -59,7 +60,7 @@ def get_analysis(user, token_info, paging_token, page_size):
         None
         if len(items) < token["page_size"]
         else render_paging_token(
-            token["page_size"], {}, token["offset"] + token["page_size"]
+            token["page_size"], token["query"], token["offset"] + token["page_size"]
         )
     )
     response = {
@@ -89,7 +90,7 @@ def search_analysis(user, token_info, query: AnalysisQuery):
         and query.expression.__dict__.get("_operator", None) is None
     )
     default_token = {
-        "page_size": query.page_size or 100,
+        "page_size": query.page_size or 1000,
         "offset": 0,
         "query": visitor.visit(query.expression)
         if not expr_empty
