@@ -8,6 +8,8 @@ import {
   EditablePreview,
   EditableInput,
   useDisclosure,
+  Skeleton,
+  Divider,
 } from "@chakra-ui/react";
 import { CheckIcon, DragHandleIcon, NotAllowedIcon } from "@chakra-ui/icons";
 import { Column } from "react-table";
@@ -36,7 +38,7 @@ import {
   searchPageOfAnalysis,
   updateAnalysis,
 } from "./analysis-query-configs";
-import Header from "../header/header";
+import HalfHolyGrailLayout from "../../layouts/half-holy-grail";
 import AnalysisSidebar from "./sidebar/analysis-sidebar";
 import AnalysisViewSelector from "./view-selector/analysis-view-selector";
 import AnalysisSearch from "./search/analysis-search";
@@ -103,10 +105,12 @@ export default function AnalysisPage() {
   );
 
   const [lastUpdatedRow, setLastUpdatedRow] = React.useState(null);
+  const [lastUpdatedColumns, setLastUpdatedColumns] = React.useState([]);
 
   const submitChange = React.useCallback(
     (payload: { [K: string]: { [K: string]: string } }) => {
       setLastUpdatedRow(Object.keys(payload)[0]);
+      setLastUpdatedColumns(Object.keys(payload[Object.keys(payload)[0]]));
       _submitChange(payload);
     },
     [_submitChange, setLastUpdatedRow]
@@ -275,7 +279,7 @@ export default function AnalysisPage() {
           data.filter((x) => selection[x.sequence_id]).length
         } ${t("records")} ${t("have been submitted for approval.")}`,
         status: "info",
-        duration: 5000,
+        duration: 3000,
         isClosable: true,
       });
       setNeedsApproveNotify(false);
@@ -376,6 +380,26 @@ export default function AnalysisPage() {
     [lastUpdatedRow, pendingUpdate]
   );
 
+  const cellUpdating = React.useCallback(
+    (id, column) => {
+      const updating =
+        id === lastUpdatedRow &&
+        lastUpdatedColumns.indexOf(column) >= 0 &&
+        pendingUpdate;
+      if (pendingUpdate) {
+        console.log(id, column, pendingUpdate, updating);
+        console.log(
+          lastUpdatedRow,
+          lastUpdatedColumns,
+          pendingUpdate,
+          updating
+        );
+      }
+      return updating;
+    },
+    [lastUpdatedRow, lastUpdatedColumns, pendingUpdate]
+  );
+
   const onAutocompleteEdit = React.useCallback(
     (rowId: string, field: string) => (val: string | OptionTypeBase) => {
       submitChange({ [rowId]: { [field]: (val as any).value } });
@@ -392,7 +416,10 @@ export default function AnalysisPage() {
 
   const renderCellControl = React.useCallback(
     (rowId: string, columnId: string, value: any) => {
-      if (value !== 0 && !value) {
+      if (cellUpdating(rowId, columnId)) {
+        return <Skeleton width="100px" height="20px" />;
+      }
+      if (value !== 0 && !value && !columnConfigs[columnId].editable) {
         return <div />;
       }
       let v = `${value}`;
@@ -428,15 +455,22 @@ export default function AnalysisPage() {
             />
           );
         }
+
         if (columnConfigs[columnId].editable) {
           return (
-            <Editable
-              defaultValue={v}
-              onSubmit={onFreeTextEdit(rowId, columnId)}
-            >
-              <EditablePreview />
-              <EditableInput />
-            </Editable>
+            <Box minWidth="100%" minHeight="100%">
+              <Editable
+                minW="100%"
+                minH="100%"
+                defaultValue={value || value === 0 ? v : ""}
+                submitOnBlur={false}
+                onSubmit={onFreeTextEdit(rowId, columnId)}
+              >
+                <EditablePreview height="100%" width="100%" />
+                <EditableInput height="100%" width="100%" />
+              </Editable>
+              <Divider borderTop="1px solid black" />
+            </Box>
           );
         }
       }
@@ -449,6 +483,7 @@ export default function AnalysisPage() {
       onAutocompleteEdit,
       onFreeTextEdit,
       rowUpdating,
+      cellUpdating,
       approvals,
     ]
   );
@@ -461,10 +496,101 @@ export default function AnalysisPage() {
     [setMoreInfoIsolate, onMoreInfoModalOpen]
   );
 
-  const sidebarWidth = "300px";
   if (!columnLoadState.isFinished) {
     <Loading />;
   }
+
+  const content = (
+    <React.Fragment>
+      <Box role="navigation" gridColumn="2 / 4" pb={5}>
+        <Flex justifyContent="flex-end">
+          <AnalysisSearch onSubmit={onSearch} />
+          <Box minW="250px" ml="5">
+            <AnalysisViewSelector />
+          </Box>
+        </Flex>
+      </Box>
+      <Box role="main" gridColumn="2 / 4" borderWidth="1px" rounded="md">
+        <Box m={2}>
+          <IfPermission permission={Permission.approve}>
+            <Button
+              leftIcon={<DragHandleIcon />}
+              margin="4px"
+              onClick={onNarrowHandler}
+            >
+              {pageState.isNarrowed ? t("Return") : t("Select")}
+            </Button>
+            <Button
+              leftIcon={<CheckIcon />}
+              margin="4px"
+              disabled={!pageState.isNarrowed}
+              onClick={approveSelection}
+            >
+              {t("Approve")}
+            </Button>
+            <Button
+              leftIcon={<NotAllowedIcon />}
+              margin="4px"
+              disabled={!pageState.isNarrowed}
+              onClick={rejectSelection}
+            >
+              {t("Reject")}
+            </Button>
+          </IfPermission>
+
+          <ColumnConfigWidget>
+            {columns.map((column) => (
+              <div key={column.accessor as string} style={{ marginTop: "5px" }}>
+                <input
+                  type="checkbox"
+                  checked={checkColumnIsVisible(column.accessor as string)}
+                  onClick={toggleColumn(column.accessor)}
+                />{" "}
+                {column.accessor as string}
+              </div>
+            ))}
+          </ColumnConfigWidget>
+        </Box>
+
+        <Box height="calc(100vh - 250px)">
+          <DataTable<AnalysisResult>
+            columns={columns || []}
+            canSelectColumn={canSelectColumn}
+            canEditColumn={canEditColumn}
+            canApproveColumn={canApproveColumn}
+            approvableColumns={approvableColumns}
+            getDependentColumns={getDependentColumns}
+            getCellStyle={getCellStyle}
+            getStickyCellStyle={getStickyCellStyle}
+            data={
+              pageState.isNarrowed
+                ? filteredData.filter((x) => selection[x.sequence_id])
+                : filteredData
+            }
+            renderCellControl={renderCellControl}
+            primaryKey="sequence_id"
+            selectionClassName={
+              pageState.isNarrowed ? "approvingCell" : "selectedCell"
+            }
+            onSelect={(sel) => dispatch(setSelection(sel))}
+            onDetailsClick={openDetailsView}
+            view={view}
+          />
+        </Box>
+        <Box role="status" gridColumn="2 / 4">
+          {isPending && `${t("Fetching...")} ${data.length}`}
+          {isFinished &&
+            !pageState.isNarrowed &&
+            `${t("Found")} ${filteredData.length} ${t("records")}.`}
+          {isFinished &&
+            pageState.isNarrowed &&
+            `${t("Staging")} ${
+              filteredData.filter((x) => selection[x.sequence_id]).length
+            } ${t("records")}.`}
+        </Box>
+      </Box>
+    </React.Fragment>
+  );
 
   return (
     <React.Fragment>
@@ -473,118 +599,16 @@ export default function AnalysisPage() {
         isOpen={isMoreInfoModalOpen}
         onClose={onMoreInfoModalClose}
       />
-      <Box
-        display="grid"
-        gridTemplateRows="5% 5% minmax(0, 80%) 10%"
-        gridTemplateColumns="300px auto"
-        padding="8"
-        height="100vh"
-        gridGap="2"
-        rowgap="5"
-      >
-        <Box role="heading" gridColumn="1 / 4">
-          <Header sidebarWidth={sidebarWidth} />
-        </Box>
-        <Box role="form" gridColumn="1 / 2">
-          <Box minW={sidebarWidth} pr={5}>
-            <AnalysisSidebar
-              data={filteredData}
-              onPropFilterChange={onPropFilterChange}
-              onRangeFilterChange={onRangeFilterChange}
-            />
-          </Box>
-        </Box>
-        <Box role="navigation" gridColumn="2 / 4" pb={5}>
-          <Flex justifyContent="flex-end">
-            <AnalysisSearch onSubmit={onSearch} />
-            <Box minW="250px" ml="5">
-              <AnalysisViewSelector />
-            </Box>
-          </Flex>
-        </Box>
-        <Box role="main" gridColumn="2 / 4" borderWidth="1px" rounded="md">
-          <Box m={2}>
-            <IfPermission permission={Permission.approve}>
-              <Button
-                leftIcon={<DragHandleIcon />}
-                margin="4px"
-                onClick={onNarrowHandler}
-              >
-                {pageState.isNarrowed ? t("Return") : t("Select")}
-              </Button>
-              <Button
-                leftIcon={<CheckIcon />}
-                margin="4px"
-                disabled={!pageState.isNarrowed}
-                onClick={approveSelection}
-              >
-                {t("Approve")}
-              </Button>
-              <Button
-                leftIcon={<NotAllowedIcon />}
-                margin="4px"
-                disabled={!pageState.isNarrowed}
-                onClick={rejectSelection}
-              >
-                {t("Reject")}
-              </Button>
-            </IfPermission>
-
-            <ColumnConfigWidget>
-              {columns.map((column) => (
-                <div
-                  key={column.accessor as string}
-                  style={{ marginTop: "5px" }}
-                >
-                  <input
-                    type="checkbox"
-                    checked={checkColumnIsVisible(column.accessor as string)}
-                    onClick={toggleColumn(column.accessor)}
-                  />{" "}
-                  {column.accessor as string}
-                </div>
-              ))}
-            </ColumnConfigWidget>
-          </Box>
-
-          <Box height="100%">
-            <DataTable<AnalysisResult>
-              columns={columns || []}
-              canSelectColumn={canSelectColumn}
-              canEditColumn={canEditColumn}
-              canApproveColumn={canApproveColumn}
-              approvableColumns={approvableColumns}
-              getDependentColumns={getDependentColumns}
-              getCellStyle={getCellStyle}
-              getStickyCellStyle={getStickyCellStyle}
-              data={
-                pageState.isNarrowed
-                  ? filteredData.filter((x) => selection[x.sequence_id])
-                  : filteredData
-              }
-              renderCellControl={renderCellControl}
-              primaryKey="sequence_id"
-              selectionClassName={
-                pageState.isNarrowed ? "approvingCell" : "selectedCell"
-              }
-              onSelect={(sel) => dispatch(setSelection(sel))}
-              onDetailsClick={openDetailsView}
-              view={view}
-            />
-          </Box>
-          <Box role="status" gridColumn="2 / 4">
-            {isPending && `${t("Fetching...")} ${data.length}`}
-            {isFinished &&
-              !pageState.isNarrowed &&
-              `${t("Found")} ${filteredData.length} ${t("records")}.`}
-            {isFinished &&
-              pageState.isNarrowed &&
-              `${t("Staging")} ${
-                filteredData.filter((x) => selection[x.sequence_id]).length
-              } ${t("records")}.`}
-          </Box>
-        </Box>
-      </Box>
+      <HalfHolyGrailLayout
+        sidebar={
+          <AnalysisSidebar
+            data={filteredData}
+            onPropFilterChange={onPropFilterChange}
+            onRangeFilterChange={onRangeFilterChange}
+          />
+        }
+        content={content}
+      />
     </React.Fragment>
   );
 }

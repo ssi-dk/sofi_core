@@ -19,7 +19,7 @@ class AnalysisResultAllOf(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, resfinder_version=None, date_analysis_sofi=None, date_approved_serotype=None, date_approved_qc=None, date_approved_amr=None, date_approved_st=None, date_approved_toxin=None, date_approved_cluster=None, qc_provided_species=None, qc_genome1x=None, qc_genome10x=None, qc_gsize_diff1x10=None, qc_avg_coverage=None, qc_final=None, qc_num_contigs=None, qc_ambiguous_sites=None, qc_num_reads=None, qc_main_sp_plus_uncl=None, qc_unclassified_reads=None, qc_db_id=None, qc_failed_tests=None, qc_cgmlst_percent=None, cgmlst_schema_salmonella=None, cgmlst_schema_ecoli=None, cgmlst_schema_campylobacter=None, cgmlst_schema_listeria=None, cgmlst_schema_klebsiella=None, subspecies=None, species_final=None, st=None, pathotype=None, pathotype_final=None, sero_enterobase=None, sero_seqsero=None, sero_antigen_seqzero=None, sero_d_tartrate=None, sero_serotype_finder=None, serotype_final=None, adhesion_final=None, virulence_genes=None, toxins_final=None, infection_source=None, resistance_genes=None, amr_profile=None, comment_cluster=None, comment_general=None, comment_supplementary=None, comment_qc=None, amr_ami=None, amr_amp=None, amr_azi=None, amr_fep=None, amr_fot=None, amr_f_c=None, amr_fox=None, amr_taz=None, amr_t_c=None, amr_chl=None, amr_cip=None, amr_cli=None, amr_col=None, amr_dap=None, amr_etp=None, amr_ery=None, amr_fus=None, amr_gen=None, amr_imi=None, amr_kan=None, amr_lzd=None, amr_mero=None, amr_mup=None, amr_nal=None, amr_pen=None, amr_syn=None, amr_rif=None, amr_str=None, amr_sul=None, amr_tei=None, amr_trm=None, amr_tet=None, amr_tia=None, amr_tgc=None, amr_tmp=None, amr_van=None):  # noqa: E501
+    def __init__(self, resfinder_version=None, date_analysis_sofi=None, date_approved_serotype=None, date_approved_qc=None, date_approved_amr=None, date_approved_st=None, date_approved_toxin=None, date_approved_cluster=None, qc_provided_species=None, qc_genome1x=None, qc_genome10x=None, qc_gsize_diff1x10=None, qc_avg_coverage=None, qc_final=None, qc_num_contigs=None, qc_ambiguous_sites=None, qc_num_reads=None, qc_main_sp_plus_uncl=None, qc_unclassified_reads=None, qc_db_id=None, qc_failed_tests=None, qc_cgmlst_percent=None, cgmlst_schema_salmonella=None, cgmlst_schema_ecoli=None, cgmlst_schema_campylobacter=None, cgmlst_schema_listeria=None, cgmlst_schema_klebsiella=None, subspecies=None, species_final=None, st=None, pathotype=None, pathotype_final=None, sero_enterobase=None, sero_seqsero=None, sero_antigen_seqzero=None, sero_d_tartrate=None, sero_serotype_finder=None, serotype_final=None, adhesion_final=None, virulence_genes=None, toxins_final=None, infection_source=None, resistance_genes=None, amr_profile=None, comment=None, comment_cluster=None, comment_general=None, comment_supplementary=None, comment_qc=None, amr_ami=None, amr_amp=None, amr_azi=None, amr_fep=None, amr_fot=None, amr_f_c=None, amr_fox=None, amr_taz=None, amr_t_c=None, amr_chl=None, amr_cip=None, amr_cli=None, amr_col=None, amr_dap=None, amr_etp=None, amr_ery=None, amr_fus=None, amr_gen=None, amr_imi=None, amr_kan=None, amr_lzd=None, amr_mero=None, amr_mup=None, amr_nal=None, amr_pen=None, amr_syn=None, amr_rif=None, amr_str=None, amr_sul=None, amr_tei=None, amr_trm=None, amr_tet=None, amr_tia=None, amr_tgc=None, amr_tmp=None, amr_van=None):  # noqa: E501
         """AnalysisResultAllOf - a model defined in OpenAPI
 
         :param resfinder_version: The resfinder_version of this AnalysisResultAllOf.  # noqa: E501
@@ -110,6 +110,8 @@ class AnalysisResultAllOf(Model):
         :type resistance_genes: str
         :param amr_profile: The amr_profile of this AnalysisResultAllOf.  # noqa: E501
         :type amr_profile: str
+        :param comment: The comment of this AnalysisResultAllOf.  # noqa: E501
+        :type comment: str
         :param comment_cluster: The comment_cluster of this AnalysisResultAllOf.  # noqa: E501
         :type comment_cluster: str
         :param comment_general: The comment_general of this AnalysisResultAllOf.  # noqa: E501
@@ -236,6 +238,7 @@ class AnalysisResultAllOf(Model):
             'infection_source': str,
             'resistance_genes': str,
             'amr_profile': str,
+            'comment': str,
             'comment_cluster': str,
             'comment_general': str,
             'comment_supplementary': str,
@@ -323,6 +326,7 @@ class AnalysisResultAllOf(Model):
             'infection_source': 'infection_source',
             'resistance_genes': 'resistance_genes',
             'amr_profile': 'amr_profile',
+            'comment': 'comment',
             'comment_cluster': 'comment_cluster',
             'comment_general': 'comment_general',
             'comment_supplementary': 'comment_supplementary',
@@ -409,6 +413,7 @@ class AnalysisResultAllOf(Model):
         self._infection_source = infection_source
         self._resistance_genes = resistance_genes
         self._amr_profile = amr_profile
+        self._comment = comment
         self._comment_cluster = comment_cluster
         self._comment_general = comment_general
         self._comment_supplementary = comment_supplementary
@@ -1390,6 +1395,27 @@ class AnalysisResultAllOf(Model):
         """
 
         self._amr_profile = amr_profile
+
+    @property
+    def comment(self):
+        """Gets the comment of this AnalysisResultAllOf.
+
+
+        :return: The comment of this AnalysisResultAllOf.
+        :rtype: str
+        """
+        return self._comment
+
+    @comment.setter
+    def comment(self, comment):
+        """Sets the comment of this AnalysisResultAllOf.
+
+
+        :param comment: The comment of this AnalysisResultAllOf.
+        :type comment: str
+        """
+
+        self._comment = comment
 
     @property
     def comment_cluster(self):

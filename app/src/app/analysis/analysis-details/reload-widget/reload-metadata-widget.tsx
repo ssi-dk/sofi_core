@@ -44,7 +44,7 @@ const ReloadMetadataWidget = (props: ReloadMetadataWidgetProps) => {
         title: t("MetadataReloaded"),
         description: `${t("IsolateMetadataReloadedFor")} ${isolateId}.`,
         status: "success",
-        duration: 5000,
+        duration: 3000,
         isClosable: true,
       });
       setNeedsNotify(false);
