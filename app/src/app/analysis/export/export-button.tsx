@@ -1,6 +1,6 @@
 import React from "react";
 import { IconButton } from "@chakra-ui/react";
-import { SearchIcon } from "@chakra-ui/icons";
+import { DownloadIcon } from "@chakra-ui/icons";
 import { AnalysisResult } from "sap-client";
 import { convertToCsv, downloadFile } from "./data-export";
 import { spyDataTable } from "../data-table/table-spy";
@@ -31,7 +31,8 @@ const ExportButton = (props: ExportButtonProps) => {
   return (
     <IconButton
       aria-label="Export data"
-      icon={<SearchIcon />}
+      icon={<DownloadIcon />}
+      size="sm"
       ml="1"
       onClick={download}
     />

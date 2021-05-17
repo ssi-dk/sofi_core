@@ -515,7 +515,7 @@ export default function AnalysisPage() {
         </Flex>
       </Box>
       <Box role="main" gridColumn="2 / 4" borderWidth="1px" rounded="md">
-        <Box m={2}>
+        <Flex m={2} alignItems="center">
           <IfPermission permission={Permission.approve}>
             <Button
               leftIcon={<DragHandleIcon />}
@@ -555,11 +555,13 @@ export default function AnalysisPage() {
             ))}
           </ColumnConfigWidget>
 
+          <Flex grow={1} width="100%" />
+
           <ExportButton
             data={filteredData}
             columns={columns.map((x) => x.accessor) as any}
           />
-        </Box>
+        </Flex>
 
         <Box height="calc(100vh - 250px)">
           <DataTable<AnalysisResult>
