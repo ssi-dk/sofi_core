@@ -12,7 +12,7 @@ import {
   Divider,
 } from "@chakra-ui/react";
 import { CheckIcon, DragHandleIcon, NotAllowedIcon } from "@chakra-ui/icons";
-import { Column } from "react-table";
+import { Column, TableState } from "react-table";
 import {
   AnalysisResult,
   ApprovalRequest,
@@ -54,6 +54,7 @@ import InlineAutoComplete from "../inputs/inline-autocomplete";
 import Species from "../data/species.json";
 import Serotypes from "../data/serotypes.json";
 import AnalysisDetails from "./analysis-details/analysis-details-modal";
+import ExportButton from "./export/export-button";
 
 export default function AnalysisPage() {
   const { t } = useTranslation();
@@ -148,13 +149,16 @@ export default function AnalysisPage() {
     [dispatch]
   );
 
+  const { hiddenColumns } = view;
+
   const toggleColumn = React.useCallback(
     (id) => () => dispatch(toggleColumnVisibility(id)),
     [dispatch]
   );
+
   const checkColumnIsVisible = React.useCallback(
-    (id) => view.hiddenColumns.indexOf(id) < 0,
-    [view]
+    (id) => hiddenColumns.indexOf(id) < 0,
+    [hiddenColumns]
   );
 
   const canSelectColumn = React.useCallback(
@@ -550,6 +554,11 @@ export default function AnalysisPage() {
               </div>
             ))}
           </ColumnConfigWidget>
+
+          <ExportButton
+            data={filteredData}
+            columns={columns.map((x) => x.accessor) as any}
+          />
         </Box>
 
         <Box height="calc(100vh - 250px)">
