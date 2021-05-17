@@ -11,6 +11,10 @@ DROP TABLE IF EXISTS [dbo].[HIST_tbl_Isolater_SAP];
 GO
 
 CREATE TABLE [dbo].[HIST_tbl_Isolater_SAP](
+    [ID] INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
+    [isolatnr] [nvarchar](14) NOT NULL,
+    [Operation] [nvarchar](1) NULL,
+    [Opdateret_af] [nvarchar](50) NULL,
     [RunID] [nvarchar](50) NULL,
     [FUDNR] [nvarchar](10) NULL,
     [ClusterID] [nvarchar](50) NULL,
@@ -25,6 +29,9 @@ CREATE TABLE [dbo].[HIST_tbl_Isolater_SAP](
     [Dato_godkendt_serotype] [datetime] NULL,
     [Dato_godkendt_QC] [datetime] NULL,
     [Dato_godkendt_ST] [datetime] NULL,
+    [Dato_godkendt_toxin] [datetime] NULL,
+    [Dato_godkendt_cluster] [datetime] NULL,
+    [Dato_Epi] [datetime] null,
     [Dato_log] [datetime] NOT NULL
   ) ON [PRIMARY]
 GO
@@ -52,10 +59,16 @@ BEGIN
         d.[AMR_profil]             IS NOT NULL and d.[AMR_profil]             != i.[AMR_profil] or
         d.[Dato_godkendt_serotype] IS NOT NULL and d.[Dato_godkendt_serotype] != i.[Dato_godkendt_serotype] or
         d.[Dato_godkendt_QC]       IS NOT NULL and d.[Dato_godkendt_QC]       != i.[Dato_godkendt_QC] or
-        d.[Dato_godkendt_ST]       IS NOT NULL and d.[Dato_godkendt_ST]       != i.[Dato_godkendt_ST]
+        d.[Dato_godkendt_ST]       IS NOT NULL and d.[Dato_godkendt_ST]       != i.[Dato_godkendt_ST] or
+        d.[Dato_godkendt_toxin]    IS NOT NULL and d.[Dato_godkendt_toxin]    != i.[Dato_godkendt_toxin] or
+        d.[Dato_godkendt_cluster]  IS NOT NULL and d.[Dato_godkendt_cluster]  != i.[Dato_godkendt_cluster] or
+        d.[Dato_Epi]               IS NOT NULL and d.[Dato_Epi]               != i.[Dato_Epi]
   )
-  INSERT INTO [IB_Tarmbakdata].[dbo].[HIST_tbl_Isolater_SAP]
+  INSERT INTO [dbo].[HIST_tbl_Isolater_SAP] ([isolatnr], [Operation], [Opdateret_af], [RunID], [FUDNR], [ClusterID], [Species], [Subspecies], [Serotype], [ST], [pathotype], [Adheasion], [Toxin], [AMR_profil], [Dato_godkendt_serotype], [Dato_godkendt_QC], [Dato_godkendt_ST], [Dato_godkendt_toxin], [Dato_godkendt_cluster], [Dato_Epi], [Dato_log])
   SELECT 
+    [isolatnr],
+    'U',
+    'SOFI',
     [RunID],
     [FUDNR],
     [ClusterID],
@@ -69,7 +82,10 @@ BEGIN
     [AMR_profil],
     [Dato_godkendt_serotype],
     [Dato_godkendt_QC],
-    [Dato_godkendt_ST],
+    [Dato_godkendt_ST], 
+    [Dato_godkendt_toxin], 
+    [Dato_godkendt_cluster], 
+    [Dato_Epi],
     [Dato_log]
   FROM IsolateChanges
 END
@@ -81,6 +97,10 @@ DROP TABLE IF EXISTS [dbo].[HIST_tbl_GenoRes];
 GO
 
 CREATE TABLE [dbo].[HIST_tbl_GenoRes](
+    [ID] INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
+    [isolatnr] [nvarchar](14) NOT NULL,
+    [Operation] [nvarchar](1) NULL,
+    [Opdateret_af] [nvarchar](50) NULL,
     [ResfinderVersion] [nvarchar](10) NULL,
     [Dato_godkendt_resistens] [date] NULL,
     [Resistensgener] [nvarchar](200) NULL,
@@ -175,8 +195,11 @@ BEGIN
 				d.[AMR_Tmp]                 IS NOT NULL and d.[AMR_Tmp]                 != i.[AMR_Tmp] or
 				d.[AMR_Van]                 IS NOT NULL and d.[AMR_Van]                 != i.[AMR_Van]
 	)
-	INSERT INTO [IB_Tarmbakdata].[dbo].[HIST_tbl_GenoRes]
-	SELECT 
+	INSERT INTO [dbo].[HIST_tbl_GenoRes] ([isolatnr], [Operation], [Opdateret_af], [ResfinderVersion], [Dato_godkendt_resistens], [Resistensgener], [AMR_profil], [AMR_Ami], [AMR_Amp], [AMR_Azi], [AMR_Fep], [AMR_Fot], [AMR_F_C], [AMR_Fox], [AMR_Taz], [AMR_T_C], [AMR_Chl], [AMR_Cip], [AMR_Cli], [AMR_Col], [AMR_Dap], [AMR_Etp], [AMR_Ery], [AMR_Fus], [AMR_Gen], [AMR_Imi], [AMR_Kan], [AMR_Lzd], [AMR_Mero], [AMR_Mup], [AMR_Nal], [AMR_Pen], [AMR_Syn], [AMR_Rif], [AMR_Str], [AMR_Sul], [AMR_Tei], [AMR_Trm], [AMR_Tet], [AMR_Tia], [AMR_Tgc], [AMR_Tmp], [AMR_Van], [Dato_log])
+	SELECT
+    [isolatnr],
+    'U',
+    'SOFI',
 		[ResfinderVersion],
 		[Dato_godkendt_resistens],
 		[Resistensgener],
