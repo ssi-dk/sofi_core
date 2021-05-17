@@ -54,7 +54,7 @@ def get_analysis(user, token_info, paging_token, page_size):
         authorized_columns(token_info),
         institution_filter,
     )
-    count = get_analysis_count({})
+    count = get_analysis_count(token.get("query", {}))
     new_token = (
         None
         if len(items) < token["page_size"]

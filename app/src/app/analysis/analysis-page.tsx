@@ -78,6 +78,10 @@ export default function AnalysisPage() {
     Object.values(s.entities.analysis ?? {})
   ) as AnalysisResult[];
 
+  const totalCount = useSelector<RootState>(
+    (s) => s.entities.analysisTotalCount
+  ) as number;
+
   const columnConfigs = useSelector<RootState>(
     (s) => s.entities.columns
   ) as ColumnSlice;
@@ -577,7 +581,9 @@ export default function AnalysisPage() {
           {isPending && `${t("Fetching...")} ${data.length}`}
           {isFinished &&
             !pageState.isNarrowed &&
-            `${t("Found")} ${filteredData.length} ${t("records")}.`}
+            `${t("Showing")} ${filteredData.length} ${t(
+              "of"
+            )} ${totalCount} ${t("records")}.`}
           {isFinished &&
             pageState.isNarrowed &&
             `${t("Staging")} ${
