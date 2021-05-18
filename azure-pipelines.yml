@@ -1,5 +1,7 @@
 trigger:
    - '*'
+# Configure BuildNumber
+name: $(Rev:r)
 
 stages:
   - stage: Build
@@ -11,7 +13,7 @@ stages:
         dependsOn: []
 
         variables:
-          imageName: '$(dockerId)/sap-api:$(Build.SourceBranchName)'
+          imageName: '$(dockerId)/sap-api:$(Build.BuildNumber)'
           imageNameRelease: '$(dockerId)/sap-api:latest'
 
         steps:
@@ -51,7 +53,7 @@ stages:
         dependsOn: []
 
         variables:
-          imageName: '$(dockerId)/sap-web:$(Build.SourceBranchName)'
+          imageName: '$(dockerId)/sap-web:$(Build.BuildNumber)'
           imageNameRelease: '$(dockerId)/sap-web:latest'
 
         steps:
@@ -79,8 +81,8 @@ stages:
         - script: |
             echo $MAPPED_DOCKER_PASS | docker login -u $(dockerId) --password-stdin
             docker push $(imageName)
-            docker tag $(imageName) $(imageNameRelease)'
-            docker push $(imageNameRelease)'
+            docker tag $(imageName) $(imageNameRelease)
+            docker push $(imageNameRelease)
           displayName: 'Publish docker image'
           env:
             MAPPED_DOCKER_PASS: $(dockerPass)
@@ -92,7 +94,7 @@ stages:
         dependsOn: []
 
         variables:
-          listenerImageName: '$(dockerId)/bifrost-listener:$(Build.SourceBranchName)'
+          listenerImageName: '$(dockerId)/bifrost-listener:$(Build.BuildNumber)'
           listenerImageNameRelease: '$(dockerId)/bifrost-listener:latest'
 
         steps:
@@ -116,7 +118,7 @@ stages:
         dependsOn: []
 
         variables:
-          brokerImageName: '$(dockerId)/sap-queue-broker:$(Build.SourceBranchName)'
+          brokerImageName: '$(dockerId)/sap-queue-broker:$(Build.BuildNumber)'
           brokerImageNameRelease: '$(dockerId)/sap-queue-broker:latest'
 
         steps:
@@ -157,7 +159,7 @@ stages:
         continueOnError: false
         dependsOn: []
         variables:
-          imageName: '$(dockerId)/auth-selfservice-ui:$(Build.SourceBranchName)'
+          imageName: '$(dockerId)/auth-selfservice-ui:$(Build.BuildNumber)'
           imageNameRelease: '$(dockerId)/auth-selfservice-ui:latest'
 
         steps:
@@ -174,3 +176,36 @@ stages:
           displayName: 'Publish docker image'
           env:
             MAPPED_DOCKER_PASS: $(dockerPass)
+
+      - job: Prep_artifact
+        pool:
+          vmImage: 'ubuntu-latest'
+        continueOnError: false
+        variables:
+          buildNo: '$(Build.BuildNumber)'
+
+        steps:
+        - script: |
+            echo $(buildNo) >> tag.txt
+          displayName: 'Stamp build number'
+          workingDirectory: $(Build.ArtifactStagingDirectory)
+
+        - task: CopyFiles@2
+          inputs:
+            contents: |
+              Makefile
+              docker-compose.yml
+              docker-compose.live.yml
+              Caddyfile
+              sofi.service
+            targetFolder: $(build.artifactstagingdirectory)
+          displayName: 'Copy deployment artifacts into staging folder'
+
+        - task: PublishBuildArtifacts@1
+          inputs:
+            pathtoPublish: '$(Build.ArtifactStagingDirectory)' 
+            artifactName: 'drop' 
+            publishLocation: 'Container'
+          displayName: 'Publish build artifact'
+
+
