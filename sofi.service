@@ -9,8 +9,8 @@ After=docker.service
 Restart=always
 
 # Remove old containers
-ExecStartPre=/usr/bin/docker-compose down -v
-ExecStartPre=/usr/bin/docker-compose rm -fv
+ExecStartPre=/usr/bin/docker-compose -f /opt/sofi/docker-compose.yml -f /opt/sofi/docker-compose.live.yml down -v
+ExecStartPre=/usr/bin/docker-compose -f /opt/sofi/docker-compose.yml -f /opt/sofi/docker-compose.live.yml rm -fv
 
 WorkingDirectory=/opt/sofi
 
