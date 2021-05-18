@@ -101,23 +101,6 @@ stages:
           workingDirectory: bifrost
 
         - script: |
-            export id=$(docker images --filter "label=test=true" -q | head -1)
-            docker create --name testlistener $id
-            docker cp testlistener:/app/junit.xml ./junit.xml
-            docker rm testlistener
-          displayName: 'Get test results'
-          condition: succeededOrFailed()
-
-        - task: PublishTestResults@2
-          inputs:
-            testResultsFiles: '**/junit.xml' 
-            searchFolder: '$(System.DefaultWorkingDirectory)/'
-            publishRunAttachments: true
-            failTaskOnFailedTests: true
-          displayName: 'Publish test results'
-          condition: succeededOrFailed()
-
-        - script: |
             echo $MAPPED_DOCKER_PASS | docker login -u $(dockerId) --password-stdin
             docker push $(listenerImageName)
             docker tag $(listenerImageName) $(listenerImageNameRelease)
