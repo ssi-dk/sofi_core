@@ -142,6 +142,7 @@ class Isolate(ModelNormal):
             'date_approved_st': (datetime, none_type,),  # noqa: E501
             'date_approved_toxin': (datetime, none_type,),  # noqa: E501
             'date_approved_cluster': (datetime, none_type,),  # noqa: E501
+            'date_epi': (datetime, none_type,),  # noqa: E501
             'row_ver': (int,),  # noqa: E501
         }
 
@@ -219,6 +220,7 @@ class Isolate(ModelNormal):
         'date_approved_st': 'dateApprovedST',  # noqa: E501
         'date_approved_toxin': 'dateApprovedToxin',  # noqa: E501
         'date_approved_cluster': 'dateApprovedCluster',  # noqa: E501
+        'date_epi': 'dateEpi',  # noqa: E501
         'row_ver': 'rowVer',  # noqa: E501
     }
 
@@ -336,6 +338,7 @@ class Isolate(ModelNormal):
             date_approved_st (datetime, none_type): [optional]  # noqa: E501
             date_approved_toxin (datetime, none_type): [optional]  # noqa: E501
             date_approved_cluster (datetime, none_type): [optional]  # noqa: E501
+            date_epi (datetime, none_type): [optional]  # noqa: E501
             row_ver (int): [optional]  # noqa: E501
         """
 

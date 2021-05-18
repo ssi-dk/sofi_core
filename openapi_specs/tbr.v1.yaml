@@ -317,6 +317,10 @@ components:
           type: string
           format: date-time
           nullable: true
+        dateEpi:
+          type: string
+          format: date-time
+          nullable: true
         rowVer:
           type: integer
           format: int64
