@@ -209,3 +209,63 @@ stages:
           displayName: 'Publish build artifact'
 
 
+  - stage: Deploy_Test
+    pool: 
+      name: Computerome
+      demands:
+        - agent.name -equals foodwebdev
+    jobs:
+    - deployment: deploy_test
+      continueOnError: false
+      environment: SOFI Test
+
+      strategy:
+        runOnce:
+          deploy:
+            steps:
+              - download: none
+
+              - task: DownloadPipelineArtifact@2
+                displayName: "Download build artifact"
+                inputs:
+                  artifactName: drop
+                  targetPath: $(System.DefaultWorkingDirectory)
+              
+              - script: |
+                  cp ./* /opt/sofi/
+                  cd /opt/sofi/
+                  sed -i "s/^SOFI_RELEASE_TAG=.*$/SOFI_RELEASE_TAG=`cat tag.txt`/g" .env
+                  make install
+                  systemctl restart sofi.service
+
+  - stage: Deploy_Prod
+    pool: 
+      name: Computerome
+      demands:
+        - agent.name -equals foodweb
+    jobs:
+    - deployment: deploy_prod
+      continueOnError: false
+      environment: SOFI Prod
+
+      strategy:
+        runOnce:
+          deploy:
+            steps:
+              - download: none
+
+              - task: DownloadPipelineArtifact@2
+                displayName: "Download build artifact"
+                inputs:
+                  artifactName: drop
+                  targetPath: $(System.DefaultWorkingDirectory)
+              
+              - script: |
+                  cp ./* /opt/sofi/
+                  cd /opt/sofi/
+                  sed -i "s/^SOFI_RELEASE_TAG=.*$/SOFI_RELEASE_TAG=`cat tag.txt`/g" .env
+                  make install
+                  systemctl restart sofi.service
+
+
+
