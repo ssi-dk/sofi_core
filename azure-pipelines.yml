@@ -20,9 +20,9 @@ stages:
 
         - script: |
             export id=$(docker images --filter "label=test=true" -q | head -1)
-            docker create --name testcontainer $id
-            docker cp testcontainer:/app/junit.xml ./junit.xml
-            docker rm testcontainer
+            docker create --name testapi $id
+            docker cp testapi:/app/junit.xml ./junit.xml
+            docker rm testapi
           displayName: 'Get test results'
           condition: succeededOrFailed()
 
@@ -61,9 +61,9 @@ stages:
 
         - script: |
             export id=$(docker images --filter "label=test=true" -q | head -1)
-            docker create --name testcontainer $id
-            docker cp testcontainer:/app/junit.xml ./junit.xml
-            docker rm testcontainer
+            docker create --name testweb $id
+            docker cp testweb:/app/junit.xml ./junit.xml
+            docker rm testweb
           displayName: 'Get test results'
           condition: succeededOrFailed()
 
@@ -102,9 +102,9 @@ stages:
 
         - script: |
             export id=$(docker images --filter "label=test=true" -q | head -1)
-            docker create --name testcontainer $id
-            docker cp testcontainer:/app/junit.xml ./junit.xml
-            docker rm testcontainer
+            docker create --name testlistener $id
+            docker cp testlistener:/app/junit.xml ./junit.xml
+            docker rm testlistener
           displayName: 'Get test results'
           condition: succeededOrFailed()
 
@@ -143,9 +143,9 @@ stages:
 
         - script: |
             export id=$(docker images --filter "label=test=true" -q | head -1)
-            docker create --name testcontainer $id
-            docker cp testcontainer:/app/junit.xml ./junit.xml
-            docker rm testcontainer
+            docker create --name testbroker $id
+            docker cp testbroker:/app/junit.xml ./junit.xml
+            docker rm testbroker
           displayName: 'Get test results'
           condition: succeededOrFailed()
 
