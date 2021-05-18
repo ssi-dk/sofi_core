@@ -12,7 +12,7 @@ import {
   Divider,
 } from "@chakra-ui/react";
 import { CheckIcon, DragHandleIcon, NotAllowedIcon } from "@chakra-ui/icons";
-import { Column } from "react-table";
+import { Column, TableState } from "react-table";
 import {
   AnalysisResult,
   ApprovalRequest,
@@ -54,6 +54,7 @@ import InlineAutoComplete from "../inputs/inline-autocomplete";
 import Species from "../data/species.json";
 import Serotypes from "../data/serotypes.json";
 import AnalysisDetails from "./analysis-details/analysis-details-modal";
+import ExportButton from "./export/export-button";
 
 export default function AnalysisPage() {
   const { t } = useTranslation();
@@ -77,6 +78,10 @@ export default function AnalysisPage() {
   const data = useSelector<RootState>((s) =>
     Object.values(s.entities.analysis ?? {})
   ) as AnalysisResult[];
+
+  const totalCount = useSelector<RootState>(
+    (s) => s.entities.analysisTotalCount
+  ) as number;
 
   const columnConfigs = useSelector<RootState>(
     (s) => s.entities.columns
@@ -144,13 +149,16 @@ export default function AnalysisPage() {
     [dispatch]
   );
 
+  const { hiddenColumns } = view;
+
   const toggleColumn = React.useCallback(
     (id) => () => dispatch(toggleColumnVisibility(id)),
     [dispatch]
   );
+
   const checkColumnIsVisible = React.useCallback(
-    (id) => view.hiddenColumns.indexOf(id) < 0,
-    [view]
+    (id) => hiddenColumns.indexOf(id) < 0,
+    [hiddenColumns]
   );
 
   const canSelectColumn = React.useCallback(
@@ -507,7 +515,7 @@ export default function AnalysisPage() {
         </Flex>
       </Box>
       <Box role="main" gridColumn="2 / 4" borderWidth="1px" rounded="md">
-        <Box m={2}>
+        <Flex m={2} alignItems="center">
           <IfPermission permission={Permission.approve}>
             <Button
               leftIcon={<DragHandleIcon />}
@@ -546,7 +554,14 @@ export default function AnalysisPage() {
               </div>
             ))}
           </ColumnConfigWidget>
-        </Box>
+
+          <Flex grow={1} width="100%" />
+
+          <ExportButton
+            data={filteredData}
+            columns={columns.map((x) => x.accessor) as any}
+          />
+        </Flex>
 
         <Box height="calc(100vh - 250px)">
           <DataTable<AnalysisResult>
@@ -577,7 +592,9 @@ export default function AnalysisPage() {
           {isPending && `${t("Fetching...")} ${data.length}`}
           {isFinished &&
             !pageState.isNarrowed &&
-            `${t("Found")} ${filteredData.length} ${t("records")}.`}
+            `${t("Showing")} ${filteredData.length} ${t(
+              "of"
+            )} ${totalCount} ${t("records")}.`}
           {isFinished &&
             pageState.isNarrowed &&
             `${t("Staging")} ${
