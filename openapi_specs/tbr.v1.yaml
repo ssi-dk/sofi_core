@@ -349,6 +349,9 @@ components:
         isolateId:
           type: string
           nullable: true
+        runId:
+          type: string
+          nullable: true
         serotype:
           type: string
           nullable: true
@@ -515,6 +518,10 @@ components:
           format: date-time
           nullable: true
         dateApprovedCluster:
+          type: string
+          format: date-time
+          nullable: true
+        dateEpi:
           type: string
           format: date-time
           nullable: true

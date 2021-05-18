@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Dapper;
 using DG.SAP.TBRIntegration.Models;
 using DG.SAP.TBRIntegration.Options;
+using Newtonsoft.Json;
 
 namespace DG.SAP.TBRIntegration.Repositories
 {
@@ -45,6 +46,8 @@ namespace DG.SAP.TBRIntegration.Repositories
             }
             catch (Exception e)
             {
+                Console.WriteLine(JsonConvert.SerializeObject(isolateUpdate));
+                Console.WriteLine(e.ToString());
                 return false;
             }
         }

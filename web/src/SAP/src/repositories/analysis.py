@@ -5,6 +5,8 @@ import logging
 import json
 from web.src.SAP.generated.models import AnalysisResult
 from ...common.database import (
+    LIMS_METADATA_COL_NAME,
+    TBR_METADATA_COL_NAME,
     get_connection,
     DB_NAME,
     ANALYSIS_COL_NAME,
@@ -79,3 +81,53 @@ def get_single_analysis(identifier: str) -> Dict[str, Any]:
     mydb = conn[DB_NAME]
     samples = mydb[ANALYSIS_COL_NAME]
     return samples.find_one({"sequence_id": f"{identifier}"}, {"_id": 0})
+
+
+def get_analysis_with_metadata(sequence_id: str) -> Dict[str, Any]:
+    conn = get_connection()
+    mydb = conn[DB_NAME]
+    samples = mydb[ANALYSIS_COL_NAME]
+
+    fetch_pipeline = [
+        {"$match": {"sequence_id": sequence_id}},
+        {
+            "$lookup": {
+                "from": TBR_METADATA_COL_NAME,
+                "localField": "isolate_id",
+                "foreignField": "isolate_id",
+                "as": "metadata",
+            }
+        },
+        {
+            "$replaceRoot": {
+                "newRoot": {
+                    "$mergeObjects": [{"$arrayElemAt": ["$metadata", 0]}, "$$ROOT"]
+                }
+            }
+        },
+        {
+            "$lookup": {
+                "from": LIMS_METADATA_COL_NAME,
+                "localField": "isolate_id",
+                "foreignField": "isolate_id",
+                "as": "metadata",
+            }
+        },
+        # This removes isolates without metadata.
+        # {"$match": {"metadata": {"$ne": []}}},
+        {
+            "$replaceRoot": {
+                "newRoot": {
+                    "$mergeObjects": [{"$arrayElemAt": ["$metadata", 0]}, "$$ROOT"]
+                }
+            }
+        },
+        {"$unset": ["_id", "metadata"]},
+        {"$limit": (int(1))},
+    ]
+
+    res = list(samples.aggregate(fetch_pipeline))
+    if len(res) == 1:
+        return res[0]
+    else:
+        return None

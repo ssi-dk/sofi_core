@@ -50,7 +50,6 @@ class RequestBroker(threading.Thread):
                     self.mark_error(record)
 
             except StopIteration:
-                logging.debug(f"{self.broker_name} received StopIteration.")
                 time.sleep(1)
             else:
                 pass
