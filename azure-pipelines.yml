@@ -198,6 +198,7 @@ stages:
               docker-compose.live.yml
               Caddyfile
               sofi.service
+              auth/config/**
             targetFolder: $(build.artifactstagingdirectory)
           displayName: 'Copy deployment artifacts into staging folder'
 
