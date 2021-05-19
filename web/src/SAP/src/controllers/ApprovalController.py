@@ -8,10 +8,12 @@ from ..repositories.approval import (
 from flask.json import jsonify
 from flask import abort
 import json
+import sys
 import datetime
 import uuid
 import logging
 from web.src.SAP.src.security.permission_check import assert_user_has
+from ..services.queue_service import post_and_await_approval
 
 
 def get_approvals(user, token_info):
@@ -27,8 +29,18 @@ def create_approval(user, token_info, body: ApprovalRequest):
     appr.status = "submitted"
     appr.id = str(uuid.uuid4())
     res = insert_approval(token_info["email"], appr)
-    # TODO: update LIMS/TBR
+    errors = handle_approvals(appr, token_info["institution"])
+    print(errors, file=sys.stderr)
     return jsonify(appr.to_dict()) if res != None else abort(400)
+
+
+def handle_approvals(approvals: Approval, institution: str):
+    errors = []
+    for sequence_id, field_mask in approvals.matrix.items():
+        if error := post_and_await_approval(sequence_id, field_mask, institution):
+            errors.append(error)
+
+    return errors
 
 
 def cancel_approval(user, token_info, approval_id: str):

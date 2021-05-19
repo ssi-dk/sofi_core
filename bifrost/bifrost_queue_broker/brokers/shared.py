@@ -18,11 +18,15 @@ class immutable_dict(dict):
         val = self.get(key, key)
         return val
 
+    def normal_get(self, key):
+        val = dict.get(self, key, None)
+        return val
+
     def __setitem__(self, key, val):
         pass
 
 
-column_mapping = immutable_dict(
+lims_column_mapping = immutable_dict(
     {
         # LIMS mapping
         "isolateId": "isolate_id",
@@ -32,6 +36,7 @@ column_mapping = immutable_dict(
         "Projekttitel": "project_title",
         # LIMS api returns a space after Dato_proeve currently.
         "Dato_proeve ": "sampling_date",
+        "Dato_proeve": "sampling_date",
         "Dato_modtagelse": "received_date",
         "RunID": "run_id",
         "Acc_nr": "public",
@@ -84,6 +89,15 @@ column_mapping = immutable_dict(
         "AMR _ Tgc": "amr_tgc",
         "AMR _Tmp ": "amr_tmp",
         "AMR _ Van": "amr_van",
+    }
+)
+
+reverse_lims_column_mapping = immutable_dict(
+    (v, k) for k, v in lims_column_mapping.items()
+)
+
+tbr_column_mappings = immutable_dict(
+    {
         # TBR AMR mappings
         "test_date": "run_date",
         "kma_date": "kma_received_date",
@@ -129,4 +143,8 @@ column_mapping = immutable_dict(
         "trimethoprim": "amr_tmp",
         "vancomycin": "amr_van",
     }
+)
+
+reverse_tbr_column_mapping = immutable_dict(
+    (v, k) for k, v in tbr_column_mappings.items()
 )

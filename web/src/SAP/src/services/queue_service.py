@@ -1,12 +1,22 @@
 import sys
+from typing import Dict
+from web.src.SAP.generated.models.approval_status import ApprovalStatus
 from ...generated.models.base_metadata import BaseMetadata
 from ...generated.models.lims_metadata import LimsMetadata
 from ...generated.models.tbr_metadata import TbrMetadata
+from ..repositories.analysis import get_analysis_with_metadata
 from ..repositories.metadata import fetch_metadata
-from ..repositories.queue import refresh_metadata, await_update_loop, ProcessingStatus
+from ..repositories.queue import (
+    refresh_metadata,
+    approve_data,
+    await_update_loop,
+    ProcessingStatus,
+)
+
 
 class IsolateClosedException(Exception):
     pass
+
 
 class IsolateReloadException(Exception):
     pass
@@ -21,5 +31,27 @@ def post_and_await_reload(isolate_id, institution):
         metadata.pop("_id", None)
         return metadata
     else:
-        #IsolateReloadException(f"Could not reload isolate {isolate_id} due to an error.")
+        # IsolateReloadException(f"Could not reload isolate {isolate_id} due to an error.")
         return {"error": f"Could not reload isolate {isolate_id} due to an error."}, 500
+
+
+def post_and_await_approval(sequence_id, field_mask, user_institution):
+    data = get_analysis_with_metadata(sequence_id)
+    fields = {
+        col: data.get(col, None)
+        for col, val in field_mask.items()
+        if val == ApprovalStatus.APPROVED
+    }
+
+    institution = data.get("institution", user_institution)
+    isolate_id = data.get("isolate_id")
+
+    print(data, file=sys.stderr)
+
+    req_id = approve_data(isolate_id, sequence_id, fields, institution)
+    return_status = await_update_loop(req_id)
+
+    if return_status == ProcessingStatus.DONE.value:
+        return None
+    else:
+        return f"Could not approve isolate {sequence_id} due to an error."

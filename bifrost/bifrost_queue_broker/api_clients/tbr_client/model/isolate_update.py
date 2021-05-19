@@ -75,6 +75,7 @@ class IsolateUpdate(ModelNormal):
         """
         return {
             'isolate_id': (str, none_type,),  # noqa: E501
+            'run_id': (str, none_type,),  # noqa: E501
             'serotype': (str, none_type,),  # noqa: E501
             'st': (int, none_type,),  # noqa: E501
             'fud_nr': (str, none_type,),  # noqa: E501
@@ -129,6 +130,7 @@ class IsolateUpdate(ModelNormal):
             'date_approved_st': (datetime, none_type,),  # noqa: E501
             'date_approved_toxin': (datetime, none_type,),  # noqa: E501
             'date_approved_cluster': (datetime, none_type,),  # noqa: E501
+            'date_epi': (datetime, none_type,),  # noqa: E501
         }
 
     @cached_property
@@ -138,6 +140,7 @@ class IsolateUpdate(ModelNormal):
 
     attribute_map = {
         'isolate_id': 'isolateId',  # noqa: E501
+        'run_id': 'runId',  # noqa: E501
         'serotype': 'serotype',  # noqa: E501
         'st': 'st',  # noqa: E501
         'fud_nr': 'fudNr',  # noqa: E501
@@ -192,6 +195,7 @@ class IsolateUpdate(ModelNormal):
         'date_approved_st': 'dateApprovedST',  # noqa: E501
         'date_approved_toxin': 'dateApprovedToxin',  # noqa: E501
         'date_approved_cluster': 'dateApprovedCluster',  # noqa: E501
+        'date_epi': 'dateEpi',  # noqa: E501
     }
 
     _composed_schemas = {}
@@ -241,6 +245,7 @@ class IsolateUpdate(ModelNormal):
                                 through its discriminator because we passed in
                                 _visited_composed_classes = (Animal,)
             isolate_id (str, none_type): [optional]  # noqa: E501
+            run_id (str, none_type): [optional]  # noqa: E501
             serotype (str, none_type): [optional]  # noqa: E501
             st (int, none_type): [optional]  # noqa: E501
             fud_nr (str, none_type): [optional]  # noqa: E501
@@ -295,6 +300,7 @@ class IsolateUpdate(ModelNormal):
             date_approved_st (datetime, none_type): [optional]  # noqa: E501
             date_approved_toxin (datetime, none_type): [optional]  # noqa: E501
             date_approved_cluster (datetime, none_type): [optional]  # noqa: E501
+            date_epi (datetime, none_type): [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)

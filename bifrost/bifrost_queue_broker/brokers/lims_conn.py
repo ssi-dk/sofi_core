@@ -8,7 +8,7 @@ from api_clients.lims_client.models import (
     IsolateGetResponse,
 )
 
-from .shared import column_mapping
+from .shared import lims_column_mapping as column_mapping
 
 lims_api_url = os.environ.get("LIMS_API_URL")
 lims_api_databaseid = os.environ.get("LIMS_API_DATABASEID")

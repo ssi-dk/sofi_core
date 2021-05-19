@@ -1,7 +1,12 @@
 # Broker imports
 import sys, os
 import logging
-from ..shared import BrokerError, ProcessingStatus
+from ..shared import (
+    BrokerError,
+    ProcessingStatus,
+    tbr_column_mappings as column_mapping,
+    reverse_tbr_column_mapping as reverse_column_mapping,
+)
 from ..tbr_conn import get_tbr_configuration
 from .request_broker import RequestBroker
 from common.database import encrypt_dict, get_connection
@@ -44,8 +49,6 @@ class TBRRequestBroker(RequestBroker):
 
     # This function gets called with the body of every TBR request from the queue.
     def handle_tbr_request(self, request):
-        logging.info(request)
-
         self.data_lock.acquire()
         try:
             if "isolate_id" in request and "request_type" in request:
@@ -70,6 +73,7 @@ class TBRRequestBroker(RequestBroker):
                 if "isolate_id" in values:
                     del values["isolate_id"]
 
+                values = {column_mapping[k]: v for k, v in values.items()}
                 encrypt_dict(self.encryption_client, values, pii_columns())
 
                 # TODO: make sure this hardocded collection name is correct, or take form env variables.
@@ -88,16 +92,27 @@ class TBRRequestBroker(RequestBroker):
 
     def approve_fields(self, request):
         isolate_id = request["isolate_id"]
-        if "body" in request:
-            body = request["body"]
+
+        if body := request["body"]:
+            fields = body.copy()
+
+            mapped_request = {
+                reverse_column_mapping[k]: v
+                for k, v in fields.items()
+                if reverse_column_mapping.normal_get(k)
+            }
+            mapped_request["isolate_id"] = isolate_id
+            # del mapped_request["sequence_id"]
 
             with api_clients.tbr_client.ApiClient(
                 get_tbr_configuration()
             ) as api_client:
                 api_instance = isolate_api.IsolateApi(api_client)
                 try:
-                    api_response = api_instance.api_isolate_put(isolate_update=body)
-                    logging.info(api_response)
+                    api_response = api_instance.api_isolate_put(
+                        isolate_update=mapped_request
+                    )
+                    logging.debug(f"Api responded with: {api_response}")
                 except Exception as e:
                     logging.info(
                         f"Exception on isolate {isolate_id} when calling IsolateApi->api_isolate_put: {e}\n"

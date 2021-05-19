@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Dapper;
 using DG.SAP.TBRIntegration.Models;
 using DG.SAP.TBRIntegration.Options;
+using Newtonsoft.Json;
 
 namespace DG.SAP.TBRIntegration.Repositories
 {

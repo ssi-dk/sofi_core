@@ -57,8 +57,8 @@ namespace DG.SAP.TBRIntegration.Models
         public DateTime? DateApprovedSerotype { get; set; }
         public DateTime? DateApprovedQC { get; set; }
         public DateTime? DateApprovedST { get; set; }
-        public DateTime? DateApprovedToxin { get; set; }
         public DateTime? DateApprovedCluster { get; set; }
+        public DateTime? DateApprovedToxin { get; set; }
         public DateTime? DateEpi { get; set; }
     }
 }
