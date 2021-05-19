@@ -123,13 +123,21 @@ class LIMSRequestBroker(RequestBroker):
                         "output" in api_response
                         and "sapresponse" in api_response.output
                         and (
-                            not api_response.output.sapresponse.success
-                            or not api_response.output.sapresponse.succcess
+                            (
+                                "succcess" in api_response.output.sapresponse
+                                and not api_response.output.sapresponse.succcess
+                            )
+                            or (
+                                "success" in api_response.output.sapresponse
+                                and not api_response.output.sapresponse.success
+                            )
                             or api_response.status == "Released"
                         )
                     ):
                         raise BrokerError
 
+                except BrokerError:
+                    raise
                 except Exception as e:
                     logging.error(
                         f"Exception on isolate {sequence_id} update request: {e}\n"
