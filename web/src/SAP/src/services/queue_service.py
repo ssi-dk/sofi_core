@@ -54,4 +54,7 @@ def post_and_await_approval(sequence_id, field_mask, user_institution):
     if return_status == ProcessingStatus.DONE.value:
         return None
     else:
-        return f"Could not approve isolate {sequence_id} due to an error."
+        return (
+            sequence_id,
+            f"Could not approve isolate {sequence_id} due to an error.",
+        )
