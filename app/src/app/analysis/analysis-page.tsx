@@ -10,6 +10,7 @@ import {
   useDisclosure,
   Skeleton,
   Divider,
+  Spinner,
 } from "@chakra-ui/react";
 import { CheckIcon, DragHandleIcon, NotAllowedIcon } from "@chakra-ui/icons";
 import { Column, TableState } from "react-table";
@@ -100,6 +101,10 @@ export default function AnalysisPage() {
   );
 
   const [pageState, setPageState] = useState({ isNarrowed: false });
+
+  const approvalErrors = useSelector<RootState>(
+    (s) => s.entities.approvalErrors
+  ) as Array<string>;
 
   const [
     { isPending: pendingUpdate, status: updateStatus },
@@ -290,10 +295,22 @@ export default function AnalysisPage() {
         duration: 3000,
         isClosable: true,
       });
+      if (approvalErrors?.length > 0) {
+        approvalErrors.forEach((e) => {
+          toast({
+            title: t("An approval failed"),
+            description: e,
+            status: "error",
+            duration: null,
+            isClosable: true,
+          });
+        });
+      }
       setNeedsApproveNotify(false);
     }
   }, [
     t,
+    approvalErrors,
     approvalStatus,
     data,
     selection,
@@ -515,53 +532,59 @@ export default function AnalysisPage() {
         </Flex>
       </Box>
       <Box role="main" gridColumn="2 / 4" borderWidth="1px" rounded="md">
-        <Flex m={2} alignItems="center">
-          <IfPermission permission={Permission.approve}>
-            <Button
-              leftIcon={<DragHandleIcon />}
-              margin="4px"
-              onClick={onNarrowHandler}
-            >
-              {pageState.isNarrowed ? t("Return") : t("Select")}
-            </Button>
-            <Button
-              leftIcon={<CheckIcon />}
-              margin="4px"
-              disabled={!pageState.isNarrowed}
-              onClick={approveSelection}
-            >
-              {t("Approve")}
-            </Button>
-            <Button
-              leftIcon={<NotAllowedIcon />}
-              margin="4px"
-              disabled={!pageState.isNarrowed}
-              onClick={rejectSelection}
-            >
-              {t("Reject")}
-            </Button>
-          </IfPermission>
-
-          <ColumnConfigWidget>
-            {columns.map((column) => (
-              <div key={column.accessor as string} style={{ marginTop: "5px" }}>
-                <input
-                  type="checkbox"
-                  checked={checkColumnIsVisible(column.accessor as string)}
-                  onClick={toggleColumn(column.accessor)}
-                />{" "}
-                {column.accessor as string}
-              </div>
-            ))}
-          </ColumnConfigWidget>
-
-          <Flex grow={1} width="100%" />
-
-          <ExportButton
-            data={filteredData}
-            columns={columns.map((x) => x.accessor) as any}
-          />
-        </Flex>
+        {pendingApproval ? (
+          <Flex m={2} alignItems="center">
+            <Spinner />
+          </Flex>
+        ) : (
+          <Flex m={2} alignItems="center">
+            <IfPermission permission={Permission.approve}>
+              <Button
+                leftIcon={<DragHandleIcon />}
+                margin="4px"
+                onClick={onNarrowHandler}
+              >
+                {pageState.isNarrowed ? t("Return") : t("Select")}
+              </Button>
+              <Button
+                leftIcon={<CheckIcon />}
+                margin="4px"
+                disabled={!pageState.isNarrowed}
+                onClick={approveSelection}
+              >
+                {t("Approve")}
+              </Button>
+              <Button
+                leftIcon={<NotAllowedIcon />}
+                margin="4px"
+                disabled={!pageState.isNarrowed}
+                onClick={rejectSelection}
+              >
+                {t("Reject")}
+              </Button>
+            </IfPermission>
+            <ColumnConfigWidget>
+              {columns.map((column) => (
+                <div
+                  key={column.accessor as string}
+                  style={{ marginTop: "5px" }}
+                >
+                  <input
+                    type="checkbox"
+                    checked={checkColumnIsVisible(column.accessor as string)}
+                    onClick={toggleColumn(column.accessor)}
+                  />{" "}
+                  {column.accessor as string}
+                </div>
+              ))}
+            </ColumnConfigWidget>
+            <Flex grow={1} width="100%" />
+            <ExportButton
+              data={filteredData}
+              columns={columns.map((x) => x.accessor) as any}
+            />
+          </Flex>
+        )}
 
         <Box height="calc(100vh - 250px)">
           <DataTable<AnalysisResult>

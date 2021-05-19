@@ -199,6 +199,8 @@ stages:
               Caddyfile
               sofi.service
               auth/config/**
+              auth/pg/pg-init/**
+              management_scripts/**
             targetFolder: $(build.artifactstagingdirectory)
           displayName: 'Copy deployment artifacts into staging folder'
 
@@ -233,9 +235,11 @@ stages:
                   targetPath: $(System.DefaultWorkingDirectory)
               
               - script: |
-                  cp ./* /opt/sofi/
+                  cp -R ./* /opt/sofi/
                   cd /opt/sofi/
                   sed -i "s/^SOFI_RELEASE_TAG=.*$/SOFI_RELEASE_TAG=`cat tag.txt`/g" .env
+                  chmod -R +x /opt/sofi/management_scripts
+                  systemctl disable sofi.service
                   make install
                   systemctl restart sofi.service
 
@@ -262,11 +266,11 @@ stages:
                   targetPath: $(System.DefaultWorkingDirectory)
               
               - script: |
-                  cp ./* /opt/sofi/
+                  cp -R ./* /opt/sofi/
                   cd /opt/sofi/
                   sed -i "s/^SOFI_RELEASE_TAG=.*$/SOFI_RELEASE_TAG=`cat tag.txt`/g" .env
+                  chmod -R +x /opt/sofi/management_scripts
+                  systemctl disable sofi.service
                   make install
                   systemctl restart sofi.service
-
-
 
