@@ -46,8 +46,6 @@ namespace DG.SAP.TBRIntegration.Repositories
             }
             catch (Exception e)
             {
-                Console.WriteLine(JsonConvert.SerializeObject(isolateUpdate));
-                Console.WriteLine(e.ToString());
                 return false;
             }
         }
