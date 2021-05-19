@@ -119,9 +119,7 @@ class LIMSPullingBroker(threading.Thread):
                     ):
                         transformed_batch.append(transform_lims_metadata(api_response))
                 except Exception as e:
-                    logging.debug(
-                        f"Isolate Id {element['isolate_id']} has success false"
-                    )
+                    logging.debug(f"Skipping isolate: {element['isolate_id']}")
 
             bulk_update_queries = self.upsert_lims_metadata_batch(transformed_batch)
             update_count = 0

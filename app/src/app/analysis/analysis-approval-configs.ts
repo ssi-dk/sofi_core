@@ -14,6 +14,12 @@ import { AnalysisSlice } from "./analysis-query-configs";
 
 export type ApprovalSlice = {
   approvals: Array<Approval>;
+  approvalErrors: Array<string>;
+};
+
+type ApprovalResponse = {
+  success: Approval;
+  error: Array<string>;
 };
 
 const sendJudgement = (params: ApprovalRequest, judgement: ApprovalStatus) => {
@@ -35,14 +41,16 @@ const sendJudgement = (params: ApprovalRequest, judgement: ApprovalStatus) => {
   // template the full path for the url
   base.url = getUrl(base.url);
   // define a transform for normalizing the data into our desired state
-  base.transform = (response: Approval) => ({
-    approvals: [response],
-    approvalMatrix: response.matrix,
+  base.transform = (response: ApprovalResponse) => ({
+    approvals: [response.success],
+    approvalMatrix: response.success.matrix,
+    approvalErrors: response.error,
   });
   // define the update strategy for our state
   base.update = {
     approvals: (oldValue, newValue) => [...newValue, ...(oldValue || [])],
     approvalMatrix: (oldValue, newValue) => ({ ...oldValue, ...newValue }),
+    approvalErrors: (oldValue, newValue) => [...newValue, ...(oldValue || [])],
   };
   base.force = true;
   return base;

@@ -62,7 +62,7 @@ def structure_leaf(node, is_negated):
     coerced = coerce_term(node.term)
     if is_negated:
         if isinstance(coerced, str):
-            return {field: {"$ne": check_for_wildcard(coerced)}}
+            return {field: {"$not": check_for_wildcard(coerced)}}
         else:
             return {field: {"$ne": coerced}}
     else:
@@ -117,6 +117,11 @@ class AbstractSyntaxTreeVisitor(object):
         operator, is_negated = is_negated_op(node)
 
         if node.operator == None:
+            is_negated = is_negated or (
+                node.left is not None
+                and node.left.prefix is not None
+                and "-" in node.left.prefix
+            )
             return structure_leaf(node.left, is_negated)
         # The right node would be negated in any of the AND NOT or OR NOT operators
         return structure_operator(

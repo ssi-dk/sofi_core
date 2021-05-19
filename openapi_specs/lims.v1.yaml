@@ -483,8 +483,12 @@ components:
             sapresponse:
               type: object
               properties:
+                success:
+                  type: boolean
                 succcess:
                   type: boolean
+                message:
+                  type: string
     MessageResponse:
       title: MessageResponse
       type: object

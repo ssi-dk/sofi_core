@@ -74,7 +74,9 @@ class IsolateUpdateResponseOutputSapresponse(ModelNormal):
                 and the value is attribute type.
         """
         return {
+            'success': (bool,),  # noqa: E501
             'succcess': (bool,),  # noqa: E501
+            'message': (str,),  # noqa: E501
         }
 
     @cached_property
@@ -83,7 +85,9 @@ class IsolateUpdateResponseOutputSapresponse(ModelNormal):
 
 
     attribute_map = {
+        'success': 'success',  # noqa: E501
         'succcess': 'succcess',  # noqa: E501
+        'message': 'message',  # noqa: E501
     }
 
     _composed_schemas = {}
@@ -132,7 +136,9 @@ class IsolateUpdateResponseOutputSapresponse(ModelNormal):
                                 Animal class but this time we won't travel
                                 through its discriminator because we passed in
                                 _visited_composed_classes = (Animal,)
+            success (bool): [optional]  # noqa: E501
             succcess (bool): [optional]  # noqa: E501
+            message (str): [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)

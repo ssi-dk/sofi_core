@@ -99,6 +99,7 @@ def search_analysis(user, token_info, query: AnalysisQuery):
     }
 
     token = parse_paging_token(query.paging_token) or default_token
+    print(default_token["query"], file=sys.stderr)
     # If user has 'own-institution' clearance, pass an implicit filter to the query
     institution_filter = (
         token_info["institution"]

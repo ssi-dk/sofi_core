@@ -28,10 +28,19 @@ def create_approval(user, token_info, body: ApprovalRequest):
     appr.timestamp = datetime.datetime.now().isoformat()
     appr.status = "submitted"
     appr.id = str(uuid.uuid4())
+    errors_tuple = handle_approvals(appr, token_info["institution"])
+    errors = []
+    for (error_seq_id, error) in errors_tuple:
+        del appr.matrix[error_seq_id]
+        errors.append(error)
+
+    # Insert approval after matrix has been manipulated
     res = insert_approval(token_info["email"], appr)
-    errors = handle_approvals(appr, token_info["institution"])
-    print(errors, file=sys.stderr)
-    return jsonify(appr.to_dict()) if res != None else abort(400)
+    return (
+        jsonify({"success": appr.to_dict(), "error": errors})
+        if res != None
+        else abort(400)
+    )
 
 
 def handle_approvals(approvals: Approval, institution: str):
