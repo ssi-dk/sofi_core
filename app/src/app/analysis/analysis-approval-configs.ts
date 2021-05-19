@@ -50,7 +50,7 @@ const sendJudgement = (params: ApprovalRequest, judgement: ApprovalStatus) => {
   base.update = {
     approvals: (oldValue, newValue) => [...newValue, ...(oldValue || [])],
     approvalMatrix: (oldValue, newValue) => ({ ...oldValue, ...newValue }),
-    approvalErrors: (oldValue, newValue) => [...newValue, ...(oldValue || [])],
+    approvalErrors: (_, newValue) => newValue,
   };
   base.force = true;
   return base;
