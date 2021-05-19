@@ -105,12 +105,12 @@ class LIMSRequestBroker(RequestBroker):
             }
             conn_id, lms_cfg = create_lims_conn_config()
 
+            value_set = set(DataFieldName.allowed_values[("value",)].values())
             data = [
-                DataEntry(field_name=DataFieldName(value=k), field_value=v)
+                DataEntry(field_name=DataFieldName(value=k), field_value=str(v))
                 for k, v in mapped_request.items()
-                if DataFieldName.allowed_values[("value",)].get(k, None)
+                if k in value_set and v is not None
             ]
-
             with api_clients.lims_client.ApiClient(lms_cfg) as api_client:
                 req = IsolateUpdateRequest(isolate_id=sequence_id, data=data)
                 api_instance = isolate_api.IsolateApi(api_client)
@@ -119,6 +119,17 @@ class LIMSRequestBroker(RequestBroker):
                         isolate_update_request=req
                     )
                     logging.debug(f"Api responded with: {api_response}")
+                    if (
+                        "output" in api_response
+                        and "sapresponse" in api_response.output
+                        and (
+                            not api_response.output.sapresponse.success
+                            or not api_response.output.sapresponse.succcess
+                            or api_response.status == "Released"
+                        )
+                    ):
+                        raise BrokerError
+
                 except Exception as e:
                     logging.error(
                         f"Exception on isolate {sequence_id} update request: {e}\n"
