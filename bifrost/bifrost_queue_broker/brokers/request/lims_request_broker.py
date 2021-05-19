@@ -22,6 +22,8 @@ from api_clients.lims_client.models import (
     IsolateUpdateResponse,
     ConnectionCreateRequest,
     ConnectionCreateResponse,
+    DataEntry,
+    DataFieldName,
 )
 
 
@@ -48,8 +50,6 @@ class LIMSRequestBroker(RequestBroker):
 
     # This function gets called with the body of every LIMS request from the queue.
     def handle_lims_request(self, request):
-        logging.info(request)
-
         self.data_lock.acquire()
         try:
             if "isolate_id" in request and "request_type" in request:
@@ -105,8 +105,14 @@ class LIMSRequestBroker(RequestBroker):
             }
             conn_id, lms_cfg = create_lims_conn_config()
 
+            data = [
+                DataEntry(field_name=DataFieldName(value=k), field_value=v)
+                for k, v in mapped_request.items()
+                if DataFieldName.allowed_values[("value",)].get(k, None)
+            ]
+
             with api_clients.lims_client.ApiClient(lms_cfg) as api_client:
-                req = IsolateUpdateRequest(isolate_id=sequence_id, data=mapped_request)
+                req = IsolateUpdateRequest(isolate_id=sequence_id, data=data)
                 api_instance = isolate_api.IsolateApi(api_client)
                 try:
                     api_response = api_instance.post_actions_update_isolate(
@@ -114,8 +120,8 @@ class LIMSRequestBroker(RequestBroker):
                     )
                     logging.debug(f"Api responded with: {api_response}")
                 except Exception as e:
-                    logging.info(
-                        f"Exception on isolate {sequence_id} when calling IsolateApi->api_isolate_put: {e}\n"
+                    logging.error(
+                        f"Exception on isolate {sequence_id} update request: {e}\n"
                     )
                     close_lims_connection(conn_id, lms_cfg)
                     raise BrokerError
