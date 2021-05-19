@@ -1,0 +1,272 @@
+trigger:
+   - '*'
+# Configure BuildNumber
+name: $(Rev:r)
+
+stages:
+  - stage: Build
+    jobs:
+      - job: Build_api
+        pool:
+          vmImage: 'ubuntu-latest'
+        continueOnError: false
+        dependsOn: []
+
+        variables:
+          imageName: '$(dockerId)/sap-api:$(Build.BuildNumber)'
+          imageNameRelease: '$(dockerId)/sap-api:latest'
+
+        steps:
+        - script: docker build -f Dockerfile -t $(imageName) .
+          displayName: 'Docker build and test'
+
+        - script: |
+            export id=$(docker images --filter "label=test=true" -q | head -1)
+            docker create --name testapi $id
+            docker cp testapi:/app/junit.xml ./junit.xml
+            docker rm testapi
+          displayName: 'Get test results'
+          condition: succeededOrFailed()
+
+        - task: PublishTestResults@2
+          inputs:
+            testResultsFiles: '**/junit.xml' 
+            searchFolder: '$(System.DefaultWorkingDirectory)/'
+            publishRunAttachments: true
+            failTaskOnFailedTests: true
+          displayName: 'Publish test results'
+          condition: succeededOrFailed()
+
+        - script: |
+            echo $MAPPED_DOCKER_PASS | docker login -u $(dockerId) --password-stdin
+            docker push $(imageName)
+            docker tag $(imageName) $(imageNameRelease)
+            docker push $(imageNameRelease)
+          displayName: 'Publish docker image'
+          env:
+            MAPPED_DOCKER_PASS: $(dockerPass)
+
+      - job: Build_webapp
+        pool:
+          vmImage: 'ubuntu-latest'
+        continueOnError: false
+        dependsOn: []
+
+        variables:
+          imageName: '$(dockerId)/sap-web:$(Build.BuildNumber)'
+          imageNameRelease: '$(dockerId)/sap-web:latest'
+
+        steps:
+        - script: docker build -f Dockerfile -t $(imageName) .
+          displayName: 'Docker build and test'
+          workingDirectory: app
+
+        - script: |
+            export id=$(docker images --filter "label=test=true" -q | head -1)
+            docker create --name testweb $id
+            docker cp testweb:/app/junit.xml ./junit.xml
+            docker rm testweb
+          displayName: 'Get test results'
+          condition: succeededOrFailed()
+
+        - task: PublishTestResults@2
+          inputs:
+            testResultsFiles: '**/junit.xml' 
+            searchFolder: '$(System.DefaultWorkingDirectory)/'
+            publishRunAttachments: true
+            failTaskOnFailedTests: true
+          displayName: 'Publish test results'
+          condition: succeededOrFailed()
+
+        - script: |
+            echo $MAPPED_DOCKER_PASS | docker login -u $(dockerId) --password-stdin
+            docker push $(imageName)
+            docker tag $(imageName) $(imageNameRelease)
+            docker push $(imageNameRelease)
+          displayName: 'Publish docker image'
+          env:
+            MAPPED_DOCKER_PASS: $(dockerPass)
+
+      - job: Build_listener
+        pool:
+          vmImage: 'ubuntu-latest'
+        continueOnError: false
+        dependsOn: []
+
+        variables:
+          listenerImageName: '$(dockerId)/bifrost-listener:$(Build.BuildNumber)'
+          listenerImageNameRelease: '$(dockerId)/bifrost-listener:latest'
+
+        steps:
+        - script: docker build -f ./bifrost_listener/Dockerfile -t $(listenerImageName) ./bifrost_listener
+          displayName: 'Docker build and test listener'
+          workingDirectory: bifrost
+
+        - script: |
+            echo $MAPPED_DOCKER_PASS | docker login -u $(dockerId) --password-stdin
+            docker push $(listenerImageName)
+            docker tag $(listenerImageName) $(listenerImageNameRelease)
+            docker push $(listenerImageNameRelease)
+          displayName: 'Publish docker images'
+          env:
+            MAPPED_DOCKER_PASS: $(dockerPass)
+
+      - job: Build_broker
+        pool:
+          vmImage: 'ubuntu-latest'
+        continueOnError: false
+        dependsOn: []
+
+        variables:
+          brokerImageName: '$(dockerId)/sap-queue-broker:$(Build.BuildNumber)'
+          brokerImageNameRelease: '$(dockerId)/sap-queue-broker:latest'
+
+        steps:
+        - script: docker build -f ./bifrost_queue_broker/Dockerfile -t $(brokerImageName) ./bifrost_queue_broker
+          displayName: 'Docker build and test broker'
+          workingDirectory: bifrost
+
+        - script: |
+            export id=$(docker images --filter "label=test=true" -q | head -1)
+            docker create --name testbroker $id
+            docker cp testbroker:/app/junit.xml ./junit.xml
+            docker rm testbroker
+          displayName: 'Get test results'
+          condition: succeededOrFailed()
+
+        - task: PublishTestResults@2
+          inputs:
+            testResultsFiles: '**/junit.xml' 
+            searchFolder: '$(System.DefaultWorkingDirectory)/'
+            publishRunAttachments: true
+            failTaskOnFailedTests: true
+          displayName: 'Publish test results'
+          condition: succeededOrFailed()
+
+        - script: |
+            echo $MAPPED_DOCKER_PASS | docker login -u $(dockerId) --password-stdin
+            docker push $(brokerImageName)
+            docker tag $(brokerImageName) $(brokerImageNameRelease)
+            docker push $(brokeImageNameRelease)
+            docker push $(brokerImageName)
+          displayName: 'Publish docker images'
+          env:
+            MAPPED_DOCKER_PASS: $(dockerPass)
+
+      - job: Build_auth
+        pool:
+          vmImage: 'ubuntu-latest'
+        continueOnError: false
+        dependsOn: []
+        variables:
+          imageName: '$(dockerId)/auth-selfservice-ui:$(Build.BuildNumber)'
+          imageNameRelease: '$(dockerId)/auth-selfservice-ui:latest'
+
+        steps:
+        - script: docker build -f Dockerfile -t $(imageName) .
+          displayName: 'Docker build and test'
+          workingDirectory: auth
+
+        - script: |
+            echo $MAPPED_DOCKER_PASS | docker login -u $(dockerId) --password-stdin
+            docker push $(imageName)
+            docker tag $(imageName) $(imageNameRelease)
+            docker push $(imageNameRelease)
+
+          displayName: 'Publish docker image'
+          env:
+            MAPPED_DOCKER_PASS: $(dockerPass)
+
+      - job: Prep_artifact
+        pool:
+          vmImage: 'ubuntu-latest'
+        continueOnError: false
+        variables:
+          buildNo: '$(Build.BuildNumber)'
+
+        steps:
+        - script: |
+            echo $(buildNo) >> tag.txt
+          displayName: 'Stamp build number'
+          workingDirectory: $(Build.ArtifactStagingDirectory)
+
+        - task: CopyFiles@2
+          inputs:
+            contents: |
+              Makefile
+              docker-compose.yml
+              docker-compose.live.yml
+              Caddyfile
+              sofi.service
+              auth/config/**
+            targetFolder: $(build.artifactstagingdirectory)
+          displayName: 'Copy deployment artifacts into staging folder'
+
+        - task: PublishBuildArtifacts@1
+          inputs:
+            pathtoPublish: '$(Build.ArtifactStagingDirectory)' 
+            artifactName: 'drop' 
+            publishLocation: 'Container'
+          displayName: 'Publish build artifact'
+
+
+  - stage: Deploy_Test
+    pool: 
+      name: Computerome
+      demands:
+        - agent.name -equals foodwebdev
+    jobs:
+    - deployment: deploy_test
+      continueOnError: false
+      environment: SOFI Test
+
+      strategy:
+        runOnce:
+          deploy:
+            steps:
+              - download: none
+
+              - task: DownloadPipelineArtifact@2
+                displayName: "Download build artifact"
+                inputs:
+                  artifactName: drop
+                  targetPath: $(System.DefaultWorkingDirectory)
+              
+              - script: |
+                  cp ./* /opt/sofi/
+                  cd /opt/sofi/
+                  sed -i "s/^SOFI_RELEASE_TAG=.*$/SOFI_RELEASE_TAG=`cat tag.txt`/g" .env
+                  make install
+                  systemctl restart sofi.service
+
+  - stage: Deploy_Prod
+    pool: 
+      name: Computerome
+      demands:
+        - agent.name -equals foodweb
+    jobs:
+    - deployment: deploy_prod
+      continueOnError: false
+      environment: SOFI Prod
+
+      strategy:
+        runOnce:
+          deploy:
+            steps:
+              - download: none
+
+              - task: DownloadPipelineArtifact@2
+                displayName: "Download build artifact"
+                inputs:
+                  artifactName: drop
+                  targetPath: $(System.DefaultWorkingDirectory)
+              
+              - script: |
+                  cp ./* /opt/sofi/
+                  cd /opt/sofi/
+                  sed -i "s/^SOFI_RELEASE_TAG=.*$/SOFI_RELEASE_TAG=`cat tag.txt`/g" .env
+                  make install
+                  systemctl restart sofi.service
+
+
+

@@ -7,9 +7,6 @@ x-extra_hosts:
 services:
 
   sap_api:
-    build: 
-      context: .
-      target: final
     expose:
       - 6000
     ports:
@@ -29,8 +26,6 @@ services:
       - BIFROST_UPLOAD_DIR=/tmp
 
   sap_app:
-    build:
-      context: ./app
     expose:
       - 3333
     user: ${CURRENT_UID}
@@ -41,9 +36,6 @@ services:
       - "sap_api"
 
   sap_broker_queue:
-    build:
-      context: ./bifrost/bifrost_queue_broker
-      dockerfile: Dockerfile
     container_name: bifrost_queue_broker
     user: ${CURRENT_UID}
     environment:
@@ -69,9 +61,6 @@ services:
     extra_hosts: *default-extra_hosts
 
   bifrost_listener:
-    build:
-      context: ./bifrost/bifrost_listener
-      dockerfile: Dockerfile
     container_name: bifrost_listener
     user: ${CURRENT_UID}
     environment:
@@ -173,9 +162,6 @@ services:
         target: /home/ory/
 
   auth-selfservice-ui:
-    build:
-      context: ./auth
-      dockerfile: Dockerfile
     environment:
       - HYDRA_ADMIN_URL=http://hydra:4445
       - HYDRA_BROWSER_URL=https://${SOFI_HOSTNAME}:${SOFI_PORT}

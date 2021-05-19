@@ -6,43 +6,26 @@ x-extra_hosts:
 
 services:
   sap_app:
-    image: sekvensanalyseplatform/sap-web:latest
-    labels:
-      - "com.centurylinklabs.watchtower.enable=true"
+    image: sekvensanalyseplatform/sap-web:${SOFI_RELEASE_TAG}
 
   sap_api:
-    image: sekvensanalyseplatform/sap-api:latest
+    image: sekvensanalyseplatform/sap-api:${SOFI_RELEASE_TAG}
     logging:
       driver: local
       options:
         max-size: 50m
         max-file: "20"
-    labels:
-      - "com.centurylinklabs.watchtower.enable=true"
 
   sap_broker_queue:
-    image: sekvensanalyseplatform/sap-queue-broker:master
-    labels:
-      - "com.centurylinklabs.watchtower.enable=true"
+    image: sekvensanalyseplatform/sap-queue-broker:${SOFI_RELEASE_TAG}
     extra_hosts: *default-extra_hosts
 
   bifrost_listener:
-    image: sekvensanalyseplatform/bifrost-listener:master
-    labels:
-      - "com.centurylinklabs.watchtower.enable=true"
+    image: sekvensanalyseplatform/bifrost-listener:${SOFI_RELEASE_TAG}
     extra_hosts: *default-extra_hosts
 
   auth-selfservice-ui:
-    image: sekvensanalyseplatform/auth-selfservice-ui:master
-    labels:
-      - "com.centurylinklabs.watchtower.enable=true"
-
-  watchtower:
-    image: containrrr/watchtower
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    # Rate limit of anon docker user is 120 seconds
-    command: --label-enable --interval 120
+    image: sekvensanalyseplatform/auth-selfservice-ui:${SOFI_RELEASE_TAG}
 
   kratos:
     logging:
