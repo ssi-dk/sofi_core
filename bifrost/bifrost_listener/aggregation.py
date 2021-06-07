@@ -81,15 +81,20 @@ def agg_pipeline(changed_ids=None):
                         },
                     }
                 ),
-                "qc_score": {
-                    "$filter": {
-                        "input": "$categories.stamper.summary.tests",
-                        "as": "elem",
-                        "cond": {"$eq": ["$$elem.name", "qc_score"]},
+                "qc_score": removeNullProperty(
+                    {
+                        "$first": {
+                            "$filter": {
+                                "input": "$categories.stamper.summary.tests",
+                                "as": "elem",
+                                "cond": {"$eq": ["$$elem.name", "qc_score"]},
+                            }
+                        }
                     }
-                },
+                ),
             },
         },
+        {"$set": {"qc_score": "$qc_score.value"}},
         # TODO: Perhaps we should merge on sequence id instead of mongo pseudokey.
         {
             "$merge": {
