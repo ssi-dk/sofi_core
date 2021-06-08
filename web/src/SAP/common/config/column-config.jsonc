@@ -11,6 +11,7 @@
 [
   {
     "field_name": "qc_final",
+    "internalApprovalOnly": true,
     "approves_with": [
       "species_final",
       "run_id",
@@ -20,6 +21,7 @@
   {
     "field_name": "st",
     "approvable": true,
+    "internalApprovalOnly": false,
     "approves_with": [
       "st"
     ]
@@ -28,6 +30,7 @@
     "field_name": "serotype_final",
     "approvable": true,
     "editable": true,
+    "internalApprovalOnly": false,
     "approves_with": [
       "subspecies"
     ]
@@ -35,6 +38,7 @@
   {
     "field_name": "amr_profile",
     "approvable": true,
+    "internalApprovalOnly": false,
     "approves_with": [
       "amr_profile",
       "amr_ami",
@@ -78,16 +82,19 @@
   {
     "field_name": "cluster_id",
     "approvable": true,
+    "internalApprovalOnly": false,
     "editable": true
   },
   {
     "field_name": "fud_number",
     "editable": true,
+    "internalApprovalOnly": false,
     "approvable": true
   },
   {
     "field_name": "epi_export",
     "editable": true,
+    "internalApprovalOnly": false,
     "approvable": true
   },
   {
@@ -106,6 +113,7 @@
     "field_name": "toxins_final",
     "editable": true,
     "approvable": true,
+    "internalApprovalOnly": false,
     "approves_with": [
       "adhesion_final",
       "pathotype_final"

@@ -1,9 +1,7 @@
 import sys
 from typing import Dict
 from web.src.SAP.generated.models.approval_status import ApprovalStatus
-from ...generated.models.base_metadata import BaseMetadata
-from ...generated.models.lims_metadata import LimsMetadata
-from ...generated.models.tbr_metadata import TbrMetadata
+from ...common.config.column_config import internal_approval_fields
 from ..repositories.analysis import get_analysis_with_metadata
 from ..repositories.metadata import fetch_metadata
 from ..repositories.queue import (
@@ -37,10 +35,12 @@ def post_and_await_reload(isolate_id, institution):
 
 def post_and_await_approval(sequence_id, field_mask, user_institution):
     data = get_analysis_with_metadata(sequence_id)
+    internal_fields = internal_approval_fields()
+
     fields = {
         col: data.get(col, None)
         for col, val in field_mask.items()
-        if val == ApprovalStatus.APPROVED
+        if val == ApprovalStatus.APPROVED and col not in internal_fields
     }
 
     institution = data.get("institution", user_institution)

@@ -6,3 +6,15 @@ The client creation script assumes Root CA in the Root folder. A key (Root CA pr
 
 The IIS setup requires the base64 encoded certificate of the client, in order to refresh the SOFI TBR broker certifiate. The last command in the 
 make_client file strips this out, alternatively the command `sed '/CERTIFICATE-----/d' client/client.crt | tr -d '\n'` in shell to accomplish the same.
+
+
+To convert these certs into client.key and client.pem for use with curl/python client lib, use 
+`openssl pkcs12 -in client.pfx -out client.pem -clcerts -nodes`
+and
+`openssl pkcs12 -in client.pfx -nocerts -nodes -out client.key`
+
+and type in the password for each.
+
+Make sure that the root certificate is added to server. For CentOS the .crt should be placed in 
+`/etc/pki/ca-trust/source/anchors/` and updated with `update-ca-trust extract`
+Dynamic CA config might need to be enabled with `update-ca-trust force-enable`
