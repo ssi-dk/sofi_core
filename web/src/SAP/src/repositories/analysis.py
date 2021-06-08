@@ -6,6 +6,7 @@ import json
 from web.src.SAP.generated.models import AnalysisResult
 from ...common.database import (
     LIMS_METADATA_COL_NAME,
+    MANUAL_METADATA_COL_NAME,
     TBR_METADATA_COL_NAME,
     get_connection,
     DB_NAME,
@@ -113,8 +114,21 @@ def get_analysis_with_metadata(sequence_id: str) -> Dict[str, Any]:
                 "as": "metadata",
             }
         },
-        # This removes isolates without metadata.
-        # {"$match": {"metadata": {"$ne": []}}},
+        {
+            "$replaceRoot": {
+                "newRoot": {
+                    "$mergeObjects": [{"$arrayElemAt": ["$metadata", 0]}, "$$ROOT"]
+                }
+            }
+        },
+        {
+            "$lookup": {
+                "from": MANUAL_METADATA_COL_NAME,
+                "localField": "isolate_id",
+                "foreignField": "isolate_id",
+                "as": "metadata",
+            }
+        },
         {
             "$replaceRoot": {
                 "newRoot": {

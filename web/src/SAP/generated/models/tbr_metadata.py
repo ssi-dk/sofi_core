@@ -23,15 +23,13 @@ class TbrMetadata(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, sequence_id=None, isolate_id=None, sequence_filename=None, institution=None, project_number=None, project_title=None, sampling_date=None, received_date=None, sofi_date=None, run_id=None, public=None, provided_species=None, primary_isolate=None, cpr_nr=None, gender=None, name=None, age=None, travel=None, travel_country=None, run_date=None, kma_received_date=None, kma=None, region=None, fud_number=None, cluster_id=None, epi_export=None):  # noqa: E501
+    def __init__(self, sequence_id=None, isolate_id=None, institution=None, project_number=None, project_title=None, sampling_date=None, received_date=None, sofi_date=None, run_id=None, public=None, provided_species=None, primary_isolate=None, cpr_nr=None, gender=None, name=None, age=None, travel=None, travel_country=None, run_date=None, kma_received_date=None, kma=None, region=None, fud_number=None, cluster_id=None, epi_export=None):  # noqa: E501
         """TbrMetadata - a model defined in OpenAPI
 
         :param sequence_id: The sequence_id of this TbrMetadata.  # noqa: E501
         :type sequence_id: str
         :param isolate_id: The isolate_id of this TbrMetadata.  # noqa: E501
         :type isolate_id: str
-        :param sequence_filename: The sequence_filename of this TbrMetadata.  # noqa: E501
-        :type sequence_filename: str
         :param institution: The institution of this TbrMetadata.  # noqa: E501
         :type institution: Organization
         :param project_number: The project_number of this TbrMetadata.  # noqa: E501
@@ -82,7 +80,6 @@ class TbrMetadata(Model):
         self.openapi_types = {
             'sequence_id': str,
             'isolate_id': str,
-            'sequence_filename': str,
             'institution': Organization,
             'project_number': float,
             'project_title': str,
@@ -111,7 +108,6 @@ class TbrMetadata(Model):
         self.attribute_map = {
             'sequence_id': 'sequence_id',
             'isolate_id': 'isolate_id',
-            'sequence_filename': 'sequence_filename',
             'institution': 'institution',
             'project_number': 'project_number',
             'project_title': 'project_title',
@@ -139,7 +135,6 @@ class TbrMetadata(Model):
 
         self._sequence_id = sequence_id
         self._isolate_id = isolate_id
-        self._sequence_filename = sequence_filename
         self._institution = institution
         self._project_number = project_number
         self._project_title = project_title
@@ -220,29 +215,6 @@ class TbrMetadata(Model):
             raise ValueError("Invalid value for `isolate_id`, must not be `None`")  # noqa: E501
 
         self._isolate_id = isolate_id
-
-    @property
-    def sequence_filename(self):
-        """Gets the sequence_filename of this TbrMetadata.
-
-
-        :return: The sequence_filename of this TbrMetadata.
-        :rtype: str
-        """
-        return self._sequence_filename
-
-    @sequence_filename.setter
-    def sequence_filename(self, sequence_filename):
-        """Sets the sequence_filename of this TbrMetadata.
-
-
-        :param sequence_filename: The sequence_filename of this TbrMetadata.
-        :type sequence_filename: str
-        """
-        if sequence_filename is None:
-            raise ValueError("Invalid value for `sequence_filename`, must not be `None`")  # noqa: E501
-
-        self._sequence_filename = sequence_filename
 
     @property
     def institution(self):

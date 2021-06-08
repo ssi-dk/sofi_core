@@ -5,17 +5,19 @@ type TextInputProps = {
   label: string;
   name: string;
   value: string | number | Date | boolean;
+  isRequired?: boolean;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
 const TextInput = (props: TextInputProps) => {
-  const { name, value, label, onChange } = props;
+  const { name, value, label, isRequired, onChange } = props;
   if (name.endsWith("date")) {
     return (
       <>
-        <FormControl id={name}>
+        <FormControl id={name} isRequired={isRequired}>
           <FormLabel>{label}</FormLabel>
           <Input
+            isRequired={isRequired}
             type="date"
             value={value as string}
             name={name}
@@ -26,7 +28,7 @@ const TextInput = (props: TextInputProps) => {
     );
   }
   return (
-    <FormControl id={name}>
+    <FormControl id={name} isRequired={isRequired}>
       <FormLabel>{label}</FormLabel>
       <Input
         type="text"

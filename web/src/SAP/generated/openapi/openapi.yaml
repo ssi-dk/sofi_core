@@ -364,7 +364,13 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UploadResponse'
-          description: Isolate uploaded successfully. Reports errors.
+          description: Isolate uploaded successfully.
+        "299":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UploadResponse'
+          description: Isolate upload failed. Reports errors.
       tags:
       - upload
       x-openapi-router-controller: web.src.SAP.generated.controllers.upload_controller
@@ -684,8 +690,6 @@ components:
           type: string
         isolate_id:
           type: string
-        sequence_filename:
-          type: string
         institution:
           $ref: '#/components/schemas/Organization'
         project_number:
@@ -716,7 +720,6 @@ components:
       - provided_species
       - received_date
       - run_id
-      - sequence_filename
       - sequence_id
     TbrSpecificMetadata:
       properties:
