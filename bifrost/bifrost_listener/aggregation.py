@@ -81,7 +81,7 @@ def agg_pipeline(changed_ids=None):
                         },
                     }
                 ),
-                "qc_score": removeNullProperty(
+                "qc_final": removeNullProperty(
                     {
                         "$first": {
                             "$filter": {
@@ -94,7 +94,7 @@ def agg_pipeline(changed_ids=None):
                 ),
             },
         },
-        {"$set": {"qc_score": "$qc_score.value"}},
+        {"$set": {"qc_final": "$qc_final.value"}},
         # TODO: Perhaps we should merge on sequence id instead of mongo pseudokey.
         {
             "$merge": {
