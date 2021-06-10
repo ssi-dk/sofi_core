@@ -191,6 +191,10 @@
     "editable": true
   },
   {
+    "field_name": "comment_supplementary",
+    "editable": true
+  },
+  {
     "field_name": "comment_general",
     "organizations": [
       "SSI"

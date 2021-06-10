@@ -11,6 +11,7 @@
 [
   {
     "field_name": "qc_final",
+    "approvable": true,
     "internal_approval_only": true,
     "approves_with": [
       "species_final",
@@ -187,6 +188,10 @@
   },
   {
     "field_name": "comment",
+    "editable": true
+  },
+  {
+    "field_name": "comment_supplementary",
     "editable": true
   },
   {
