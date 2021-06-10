@@ -157,6 +157,14 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
   // Make data table configuration externally visible
   exportDataTable(state);
 
+  const visibleApprovableColumns = React.useMemo(
+    () =>
+      visibleColumns.filter(
+        (x) => approvableColumns.indexOf(x.id as string) > -1
+      ),
+    [visibleColumns, approvableColumns]
+  );
+
   const calcTableSelectionState = React.useCallback(() => {
     const columnCount = approvableColumns.length;
     const count = Object.values(selection).reduce(
@@ -178,11 +186,11 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
         0
       );
       if (count === 0) return { checked: false, indeterminate: false };
-      if (count === approvableColumns.length)
+      if (count === visibleApprovableColumns.length)
         return { checked: true, indeterminate: false };
       return { indeterminate: true, checked: false };
     },
-    [selection, primaryKey, approvableColumns]
+    [selection, primaryKey, visibleApprovableColumns]
   );
 
   const calcColSelectionState = React.useCallback(
