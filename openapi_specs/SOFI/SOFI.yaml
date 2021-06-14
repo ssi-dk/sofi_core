@@ -378,7 +378,13 @@ paths:
                 contentType: application/gzip
       responses:
         '200':
-          description: Isolate uploaded successfully. Reports errors.
+          description: Isolate uploaded successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UploadResponse'
+        '299':
+          description: Isolate upload failed. Reports errors.
           content:
             application/json:
               schema:
@@ -404,7 +410,13 @@ paths:
                 contentType: text/tsv
       responses:
         '200':
-          description: Isolate uploaded successfully. Reports errors.
+          description: Isolate uploaded successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UploadResponse'
+        '299':
+          description: Isolate upload failed. Reports errors.
           content:
             application/json:
               schema:

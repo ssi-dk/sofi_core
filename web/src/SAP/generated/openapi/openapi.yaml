@@ -310,7 +310,13 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UploadResponse'
-          description: Isolate uploaded successfully. Reports errors.
+          description: Isolate uploaded successfully.
+        "299":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UploadResponse'
+          description: Isolate upload failed. Reports errors.
       tags:
       - upload
       x-openapi-router-controller: web.src.SAP.generated.controllers.upload_controller
@@ -337,7 +343,13 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UploadResponse'
-          description: Isolate uploaded successfully. Reports errors.
+          description: Isolate uploaded successfully.
+        "299":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UploadResponse'
+          description: Isolate upload failed. Reports errors.
       tags:
       - upload
       x-openapi-router-controller: web.src.SAP.generated.controllers.upload_controller
