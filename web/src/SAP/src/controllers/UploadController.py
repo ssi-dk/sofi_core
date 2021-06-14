@@ -66,6 +66,7 @@ def multi_upload(user, token_info, metadata_tsv, _files):
             try:
                 if metadata:
                     base_metadata = BaseMetadata.from_dict(metadata)
+                    base_metadata.institution = token_info["institution"]
                     current_errors = validate_metadata(
                         base_metadata, files_for_metadata
                     )
