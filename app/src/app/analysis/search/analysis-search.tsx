@@ -77,7 +77,11 @@ const AnalysisSearch = (props: AnalysisSearchProps) => {
           onSubmit={submit}
         />
         <InputRightElement>
-          <CloseIcon color="gray.400" onClick={onClearButton} />
+          <CloseIcon
+            color="gray.400"
+            onClick={onClearButton}
+            cursor="pointer"
+          />
         </InputRightElement>
       </InputGroup>
       <IconButton

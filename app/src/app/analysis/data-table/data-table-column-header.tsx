@@ -1,14 +1,12 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 import React from "react";
-import { Draggable, Droppable, DroppableProvided } from "react-beautiful-dnd";
 import { Column, ColumnInstance } from "react-table";
 import { jsx } from "@emotion/react";
 import { Tooltip } from "@chakra-ui/react";
 import {
   getColumnStyle,
   headerButton,
-  headerDragClone,
   headerName,
 } from "app/analysis/data-table/data-table.styles";
 import { NotEmpty } from "utils";
@@ -49,112 +47,47 @@ function DataTableColumnHeader<T extends NotEmpty>(
     e.stopPropagation();
   }, []);
 
-  const ColumnHeader = React.useCallback(
-    ({ provided, snapshot, innerRef }) => {
-      return (
-        <div
-          tabIndex={column.index}
-          role="columnheader"
-          ref={innerRef}
-          key={column?.id}
-          {...column.getHeaderProps(column.getSortByToggleProps())}
-          onClick={noop} // Do not sort on header-click -- handled by button
-          onKeyDown={noop}
-        >
-          <div
-            role="tab"
-            {...provided.dragHandleProps}
-            {...provided.draggableProps}
-            css={getColumnStyle(snapshot, provided?.draggableProps?.style)}
-          >
-            {canSelectColumn(column.id) && (
-              <SelectionCheckBox
-                onClick={(e) => {
-                  onSelectCol(column);
-                  e.stopPropagation();
-                }}
-                css={headerButton}
-                {...calcColSelectionState(column)}
-              />
-            )}
-            <Tooltip label={`Internal name: ${column.id}`}>
-              <span css={headerName}>{column.render("Header")}</span>
-            </Tooltip>
-            <button
-              type="button"
-              css={headerButton}
-              onClick={() => column.toggleSortBy(!column.isSortedDesc)}
-              onKeyDown={() => column.toggleSortBy(!column.isSortedDesc)}
-            >
-              {column.isSorted ? (column.isSortedDesc ? " ⯯" : " ⯭") : " ⬍"}
-            </button>
-          </div>
-          {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions */}
-          <div
-            role="separator"
-            onKeyDown={noPropagate}
-            onClick={noPropagate}
-            onMouseUp={doResize}
-            {...column.getResizerProps()}
-          />
-        </div>
-      );
-    },
-    [
-      calcColSelectionState,
-      column,
-      doResize,
-      noPropagate,
-      noop,
-      onSelectCol,
-      canSelectColumn,
-    ]
-  );
-
-  function HeaderClone({ provided, style }) {
-    return (
-      <div
-        {...provided.draggableProps}
-        {...provided.dragHandleProps}
-        ref={provided.innerRef}
-        style={{ ...provided.draggableProps.style, ...style }}
-      >
-        <div css={headerDragClone}>{column.id}</div>
-      </div>
-    );
-  }
-
   return (
-    <Droppable
-      droppableId={column.id}
-      direction="horizontal"
-      mode="virtual"
-      renderClone={(provided, style) => (
-        <HeaderClone provided={provided} style={style} />
-      )}
+    <div
+      tabIndex={column.index}
+      role="columnheader"
+      key={column?.id}
+      {...column.getHeaderProps(column.getSortByToggleProps())}
+      onClick={noop} // Do not sort on header-click -- handled by button
+      onKeyDown={noop}
     >
-      {(providedDroppable: DroppableProvided) => (
-        <div
-          ref={providedDroppable.innerRef}
-          {...providedDroppable.droppableProps}
+      <div role="tab" css={getColumnStyle()}>
+        {canSelectColumn(column.id) && (
+          <SelectionCheckBox
+            onClick={(e) => {
+              onSelectCol(column);
+              e.stopPropagation();
+            }}
+            css={headerButton}
+            {...calcColSelectionState(column)}
+          />
+        )}
+        <Tooltip label={`Internal name: ${column.id}`}>
+          <span css={headerName}>{column.render("Header")}</span>
+        </Tooltip>
+        <button
+          type="button"
+          css={headerButton}
+          onClick={() => column.toggleSortBy(!column.isSortedDesc)}
+          onKeyDown={() => column.toggleSortBy(!column.isSortedDesc)}
         >
-          <Draggable
-            key={column.id}
-            draggableId={column.id}
-            index={columnIndex}
-            isDragDisabled={false}
-          >
-            {(provided, snapshot) => (
-              <ColumnHeader
-                provided={provided}
-                snapshot={snapshot}
-                innerRef={provided.innerRef}
-              />
-            )}
-          </Draggable>
-        </div>
-      )}
-    </Droppable>
+          {column.isSorted ? (column.isSortedDesc ? " ⯯" : " ⯭") : " ⬍"}
+        </button>
+      </div>
+      {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions */}
+      <div
+        role="separator"
+        onKeyDown={noPropagate}
+        onClick={noPropagate}
+        onMouseUp={doResize}
+        {...column.getResizerProps()}
+      />
+    </div>
   );
 }
 

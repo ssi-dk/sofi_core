@@ -31,7 +31,7 @@ import { RootState } from "app/root-reducer";
 import { predicateBuilder, PropFilter, RangeFilter } from "utils";
 import { IfPermission } from "auth/if-permission";
 import { Loading } from "loading";
-import DataTable from "./data-table/data-table";
+import DataTable, { ColumnReordering } from "./data-table/data-table";
 import {
   requestPageOfAnalysis,
   requestColumns,
@@ -56,6 +56,7 @@ import Species from "../data/species.json";
 import Serotypes from "../data/serotypes.json";
 import AnalysisDetails from "./analysis-details/analysis-details-modal";
 import ExportButton from "./export/export-button";
+import { ColumnConfigNode } from "./data-table/column-config-node";
 
 export default function AnalysisPage() {
   const { t } = useTranslation();
@@ -521,6 +522,23 @@ export default function AnalysisPage() {
     <Loading />;
   }
 
+  const [columnOrder, setColumnOrder] = React.useState(undefined);
+  const [columnReorder, setColumnReorder] = React.useState(
+    undefined as ColumnReordering
+  );
+
+  const onReorderColumn = React.useCallback(
+    (sourceIdx: number, destIdx: number, draggableId: string) => {
+      setColumnReorder({
+        sourceIdx,
+        destIdx,
+        targetId: draggableId,
+        timestamp: Date.now(),
+      });
+    },
+    [setColumnReorder]
+  );
+
   const content = (
     <React.Fragment>
       <Box role="navigation" gridColumn="2 / 4" pb={5}>
@@ -563,20 +581,18 @@ export default function AnalysisPage() {
                 {t("Reject")}
               </Button>
             </IfPermission>
-            <ColumnConfigWidget>
-              {columns.map((column) => (
-                <div
-                  key={column.accessor as string}
-                  style={{ marginTop: "5px" }}
-                >
-                  <input
-                    type="checkbox"
-                    checked={checkColumnIsVisible(column.accessor as string)}
-                    onClick={toggleColumn(column.accessor)}
-                  />{" "}
-                  {column.accessor as string}
-                </div>
-              ))}
+            <ColumnConfigWidget onReorder={onReorderColumn}>
+              {(columnOrder || columns.map((x) => x.accessor as string)).map(
+                (column, i) => (
+                  <ColumnConfigNode
+                    key={column}
+                    index={i}
+                    columnName={column}
+                    onChecked={toggleColumn}
+                    isChecked={checkColumnIsVisible(column)}
+                  />
+                )
+              )}
             </ColumnConfigWidget>
             <Flex grow={1} width="100%" />
             <ExportButton
@@ -589,6 +605,8 @@ export default function AnalysisPage() {
         <Box height="calc(100vh - 250px)">
           <DataTable<AnalysisResult>
             columns={columns || []}
+            columnReordering={columnReorder}
+            setNewColumnOrder={setColumnOrder}
             canSelectColumn={canSelectColumn}
             canEditColumn={canEditColumn}
             canApproveColumn={canApproveColumn}
