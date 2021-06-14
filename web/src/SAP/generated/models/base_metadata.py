@@ -19,11 +19,13 @@ class BaseMetadata(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, sequence_id=None, isolate_id=None, institution=None, project_number=None, project_title=None, sampling_date=None, received_date=None, sofi_date=None, run_id=None, public=None, provided_species=None, primary_isolate=None):  # noqa: E501
+    def __init__(self, sequence_id=None, sequence_filename=None, isolate_id=None, institution=None, project_number=None, project_title=None, sampling_date=None, received_date=None, sofi_date=None, run_id=None, public=None, provided_species=None, primary_isolate=None):  # noqa: E501
         """BaseMetadata - a model defined in OpenAPI
 
         :param sequence_id: The sequence_id of this BaseMetadata.  # noqa: E501
         :type sequence_id: str
+        :param sequence_filename: The sequence_filename of this BaseMetadata.  # noqa: E501
+        :type sequence_filename: str
         :param isolate_id: The isolate_id of this BaseMetadata.  # noqa: E501
         :type isolate_id: str
         :param institution: The institution of this BaseMetadata.  # noqa: E501
@@ -49,6 +51,7 @@ class BaseMetadata(Model):
         """
         self.openapi_types = {
             'sequence_id': str,
+            'sequence_filename': str,
             'isolate_id': str,
             'institution': Organization,
             'project_number': float,
@@ -64,6 +67,7 @@ class BaseMetadata(Model):
 
         self.attribute_map = {
             'sequence_id': 'sequence_id',
+            'sequence_filename': 'sequence_filename',
             'isolate_id': 'isolate_id',
             'institution': 'institution',
             'project_number': 'project_number',
@@ -78,6 +82,7 @@ class BaseMetadata(Model):
         }
 
         self._sequence_id = sequence_id
+        self._sequence_filename = sequence_filename
         self._isolate_id = isolate_id
         self._institution = institution
         self._project_number = project_number
@@ -123,6 +128,27 @@ class BaseMetadata(Model):
             raise ValueError("Invalid value for `sequence_id`, must not be `None`")  # noqa: E501
 
         self._sequence_id = sequence_id
+
+    @property
+    def sequence_filename(self):
+        """Gets the sequence_filename of this BaseMetadata.
+
+
+        :return: The sequence_filename of this BaseMetadata.
+        :rtype: str
+        """
+        return self._sequence_filename
+
+    @sequence_filename.setter
+    def sequence_filename(self, sequence_filename):
+        """Sets the sequence_filename of this BaseMetadata.
+
+
+        :param sequence_filename: The sequence_filename of this BaseMetadata.
+        :type sequence_filename: str
+        """
+
+        self._sequence_filename = sequence_filename
 
     @property
     def isolate_id(self):

@@ -54,7 +54,7 @@ def multi_upload(user, token_info, metadata_tsv, _files):
         metadata_map = {item["sequence_filename"]: item for item in metadata_list}
         filenames = [x.filename for x in files]
 
-        for key, metadata in metadata_map.items:
+        for key, metadata in metadata_map.items():
             split_filenames = key.split()
             files_for_metadata = []
             if not all(f in filenames for f in split_filenames):
@@ -80,6 +80,9 @@ def multi_upload(user, token_info, metadata_tsv, _files):
                         )
 
             except Exception as e:
+                import traceback
+
+                print(traceback.format_exc(), file=sys.stderr)
                 errors.append(f"Error with files: {key}, {str(e)}")
                 continue
     except Exception as e:
@@ -103,8 +106,8 @@ def single_upload(user, token_info, metadata, _files):
 
 def validate_metadata(metadata: BaseMetadata, file):
     errors = []
-    if metadata.sequence_filename != file.filename:
-        errors.push("Given filename does not match actual file")
+    if metadata.isolate_id == "":
+        errors.push("Missing isolate id")
     # TODO: Find out what sort of validation is required.
     return errors
 
@@ -116,7 +119,7 @@ def validate_metadata_tsv(metadata_tsv):
 
 
 def upload_response_helper(errors=None):
-    if errors is None:
+    if errors is None or errors == []:
         return UploadResponse(errors=[])
     else:
         # Ununsed error code because of redux-query error fetching is harder than doing this.

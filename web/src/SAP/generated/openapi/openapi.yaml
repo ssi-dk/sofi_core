@@ -688,6 +688,8 @@ components:
       properties:
         sequence_id:
           type: string
+        sequence_filename:
+          type: string
         isolate_id:
           type: string
         institution:

@@ -47,14 +47,16 @@ export default function MultiUploadForm() {
     <VStack>
       <Text>
         Upload multiple sequence files with metadata. Supply a TSV file and
-        select multiple gzipped sequence files to upload.
+        select multiple gzipped sequence files to upload. Make sure to supply
+        sequence filenames seperated by spaces. Example:
+        &quot;sample1_reads_1.fastq.gz sample1_reads_2.fastq.gz&quot;
       </Text>
       <FormControl id="metadata_tsv">
         <FormLabel>Metadata TSV file</FormLabel>
         <Input type="file" onChange={metadataChange} name="metadata_tsv" />
       </FormControl>
       <FormControl id="files">
-        <FormLabel>Gzipped sequences (select multiple)</FormLabel>
+        <FormLabel>Gzipped fastq sequence pairs (select multiple)</FormLabel>
         <Input
           type="file"
           onChange={selectedFilesChange}
