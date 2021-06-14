@@ -1,22 +1,10 @@
 import { css } from "@emotion/react";
 import theme from "app/app.theme";
-import {
-  DraggableStateSnapshot,
-  DraggingStyle,
-  NotDraggingStyle,
-} from "react-beautiful-dnd";
 
-export const getColumnStyle = (
-  { isDragging, isDropAnimating }: DraggableStateSnapshot,
-  draggableStyle: DraggingStyle | NotDraggingStyle
-) =>
+export const getColumnStyle = () =>
   css({
-    ...draggableStyle,
     userSelect: "none",
     // prevent react-beautiful-dnd from blowing columns all over the place
-    ...(!isDragging && { transform: "translate(0,0) !important" }),
-    ...(!isDropAnimating && { transitionDuration: "0.001s" }),
-    ...(isDragging && { transform: "translate(0, 0) !important" }),
     textAlign: "left",
     textOverflow: "ellipsis",
     position: "sticky",
@@ -24,18 +12,6 @@ export const getColumnStyle = (
     justifyContent: "space-between",
     alignItems: "center",
   });
-
-export const headerDragClone = css({
-  fontWeight: "bold",
-  backgroundColor: theme.colors.gray[50],
-  height: "35px",
-  width: "149px",
-  textAlign: "center",
-  border: theme.borders["1px"],
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "space-between",
-});
 
 export const headerButton = css({
   flex: "0 0 16px",

@@ -15,7 +15,6 @@ import {
 import { VariableSizeGrid } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
 import { jsx } from "@emotion/react";
-import { DragDropContext, DropResult } from "react-beautiful-dnd";
 import { Flex, IconButton } from "@chakra-ui/react";
 import { ExternalLinkIcon } from "@chakra-ui/icons";
 import deepmerge from "lodash.merge";
@@ -175,7 +174,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
 
   if (
     columnReordering?.timestamp &&
-    columnReordering.timestamp > (lastColumnReorder.current.timestamp || 1)
+    columnReordering.timestamp > (lastColumnReorder?.current?.timestamp || 1)
   ) {
     currentColOrder.current = columnIds;
     lastColumnReorder.current = { ...columnReordering };
@@ -443,35 +442,6 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
     ]
   );
 
-  const onDragStart = React.useCallback(() => {
-    currentColOrder.current = columnIds;
-  }, [columnIds, currentColOrder]);
-
-  const onDragEnd = React.useCallback(
-    (dragUpdateObj: DropResult) => {
-      if (!dragUpdateObj.destination) {
-        return;
-      }
-
-      const order = [...currentColOrder.current];
-      const sIndex = dragUpdateObj.source.index;
-      const dIndex =
-        dragUpdateObj.destination && dragUpdateObj.destination.index;
-
-      if (typeof sIndex === "number" && typeof dIndex === "number") {
-        order.splice(sIndex, 1);
-        order.splice(dIndex, 0, dragUpdateObj.draggableId);
-        datagridRef.current.resetAfterIndices({
-          columnIndex: dIndex < sIndex ? dIndex : sIndex,
-          rowIndex: 1,
-          shouldForceUpdate: false,
-        });
-        setColumnOrder(order);
-      }
-    },
-    [currentColOrder, setColumnOrder, datagridRef]
-  );
-
   const itemData = React.useMemo(() => {
     return {
       headers: visibleColumns,
@@ -498,26 +468,24 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
       {({ height, width }) => (
         <div css={dtStyle}>
           <div role="table" {...getTableProps()} className="tableWrap">
-            <DragDropContext onDragStart={onDragStart} onDragEnd={onDragEnd}>
-              <div role="rowgroup" {...getTableBodyProps()}>
-                <StickyVariableSizeGrid
-                  itemData={itemData}
-                  rowCount={itemData.rows.length}
-                  height={height}
-                  gridRef={datagridRef}
-                  rowHeight={() => 35}
-                  estimatedRowHeight={35}
-                  columnWidth={getColumnWidth}
-                  estimatedColumnWidth={defaultColumn.width}
-                  overscanRowCount={5}
-                  overscanColumnCount={2}
-                  width={width}
-                  columnCount={visibleColumns.length}
-                >
-                  {RenderCell}
-                </StickyVariableSizeGrid>
-              </div>
-            </DragDropContext>
+            <div role="rowgroup" {...getTableBodyProps()}>
+              <StickyVariableSizeGrid
+                itemData={itemData}
+                rowCount={itemData.rows.length}
+                height={height}
+                gridRef={datagridRef}
+                rowHeight={() => 35}
+                estimatedRowHeight={35}
+                columnWidth={getColumnWidth}
+                estimatedColumnWidth={defaultColumn.width}
+                overscanRowCount={5}
+                overscanColumnCount={2}
+                width={width}
+                columnCount={visibleColumns.length}
+              >
+                {RenderCell}
+              </StickyVariableSizeGrid>
+            </div>
           </div>
         </div>
       )}
