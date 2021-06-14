@@ -29,15 +29,15 @@ class AnalysisResult(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, sequence_id=None, isolate_id=None, sequence_filename=None, institution=None, project_number=None, project_title=None, sampling_date=None, received_date=None, sofi_date=None, run_id=None, public=None, provided_species=None, primary_isolate=None, chr_number=None, cvr_number=None, aut_number=None, product_type=None, product=None, origin_country=None, animal_species=None, sample_info=None, cpr_nr=None, gender=None, name=None, age=None, travel=None, travel_country=None, run_date=None, kma_received_date=None, kma=None, region=None, fud_number=None, cluster_id=None, epi_export=None, resfinder_version=None, date_analysis_sofi=None, date_approved_serotype=None, date_approved_qc=None, date_approved_amr=None, date_approved_st=None, date_approved_toxin=None, date_approved_cluster=None, qc_provided_species=None, qc_genome1x=None, qc_genome10x=None, qc_gsize_diff1x10=None, qc_avg_coverage=None, qc_final=None, qc_num_contigs=None, qc_ambiguous_sites=None, qc_num_reads=None, qc_main_sp_plus_uncl=None, qc_unclassified_reads=None, qc_db_id=None, qc_failed_tests=None, qc_cgmlst_percent=None, cgmlst_schema_salmonella=None, cgmlst_schema_ecoli=None, cgmlst_schema_campylobacter=None, cgmlst_schema_listeria=None, cgmlst_schema_klebsiella=None, subspecies=None, species_final=None, st=None, pathotype=None, pathotype_final=None, sero_enterobase=None, sero_seqsero=None, sero_antigen_seqzero=None, sero_d_tartrate=None, sero_serotype_finder=None, serotype_final=None, adhesion_final=None, virulence_genes=None, toxins_final=None, infection_source=None, resistance_genes=None, amr_profile=None, comment=None, comment_cluster=None, comment_general=None, comment_supplementary=None, comment_qc=None, amr_ami=None, amr_amp=None, amr_azi=None, amr_fep=None, amr_fot=None, amr_f_c=None, amr_fox=None, amr_taz=None, amr_t_c=None, amr_chl=None, amr_cip=None, amr_cli=None, amr_col=None, amr_dap=None, amr_etp=None, amr_ery=None, amr_fus=None, amr_gen=None, amr_imi=None, amr_kan=None, amr_lzd=None, amr_mero=None, amr_mup=None, amr_nal=None, amr_pen=None, amr_syn=None, amr_rif=None, amr_str=None, amr_sul=None, amr_tei=None, amr_trm=None, amr_tet=None, amr_tia=None, amr_tgc=None, amr_tmp=None, amr_van=None):  # noqa: E501
+    def __init__(self, sequence_id=None, sequence_filename=None, isolate_id=None, institution=None, project_number=None, project_title=None, sampling_date=None, received_date=None, sofi_date=None, run_id=None, public=None, provided_species=None, primary_isolate=None, chr_number=None, cvr_number=None, aut_number=None, product_type=None, product=None, origin_country=None, animal_species=None, sample_info=None, cpr_nr=None, gender=None, name=None, age=None, travel=None, travel_country=None, run_date=None, kma_received_date=None, kma=None, region=None, fud_number=None, cluster_id=None, epi_export=None, resfinder_version=None, date_analysis_sofi=None, date_approved_serotype=None, date_approved_qc=None, date_approved_amr=None, date_approved_st=None, date_approved_toxin=None, date_approved_cluster=None, qc_provided_species=None, qc_genome1x=None, qc_genome10x=None, qc_gsize_diff1x10=None, qc_avg_coverage=None, qc_final=None, qc_num_contigs=None, qc_ambiguous_sites=None, qc_num_reads=None, qc_main_sp_plus_uncl=None, qc_unclassified_reads=None, qc_db_id=None, qc_failed_tests=None, qc_cgmlst_percent=None, cgmlst_schema_salmonella=None, cgmlst_schema_ecoli=None, cgmlst_schema_campylobacter=None, cgmlst_schema_listeria=None, cgmlst_schema_klebsiella=None, subspecies=None, species_final=None, st=None, pathotype=None, pathotype_final=None, sero_enterobase=None, sero_seqsero=None, sero_antigen_seqzero=None, sero_d_tartrate=None, sero_serotype_finder=None, serotype_final=None, adhesion_final=None, virulence_genes=None, toxins_final=None, infection_source=None, resistance_genes=None, amr_profile=None, comment=None, comment_cluster=None, comment_general=None, comment_supplementary=None, comment_qc=None, amr_ami=None, amr_amp=None, amr_azi=None, amr_fep=None, amr_fot=None, amr_f_c=None, amr_fox=None, amr_taz=None, amr_t_c=None, amr_chl=None, amr_cip=None, amr_cli=None, amr_col=None, amr_dap=None, amr_etp=None, amr_ery=None, amr_fus=None, amr_gen=None, amr_imi=None, amr_kan=None, amr_lzd=None, amr_mero=None, amr_mup=None, amr_nal=None, amr_pen=None, amr_syn=None, amr_rif=None, amr_str=None, amr_sul=None, amr_tei=None, amr_trm=None, amr_tet=None, amr_tia=None, amr_tgc=None, amr_tmp=None, amr_van=None):  # noqa: E501
         """AnalysisResult - a model defined in OpenAPI
 
         :param sequence_id: The sequence_id of this AnalysisResult.  # noqa: E501
         :type sequence_id: str
-        :param isolate_id: The isolate_id of this AnalysisResult.  # noqa: E501
-        :type isolate_id: str
         :param sequence_filename: The sequence_filename of this AnalysisResult.  # noqa: E501
         :type sequence_filename: str
+        :param isolate_id: The isolate_id of this AnalysisResult.  # noqa: E501
+        :type isolate_id: str
         :param institution: The institution of this AnalysisResult.  # noqa: E501
         :type institution: Organization
         :param project_number: The project_number of this AnalysisResult.  # noqa: E501
@@ -273,8 +273,8 @@ class AnalysisResult(Model):
         """
         self.openapi_types = {
             'sequence_id': str,
-            'isolate_id': str,
             'sequence_filename': str,
+            'isolate_id': str,
             'institution': Organization,
             'project_number': float,
             'project_title': str,
@@ -395,8 +395,8 @@ class AnalysisResult(Model):
 
         self.attribute_map = {
             'sequence_id': 'sequence_id',
-            'isolate_id': 'isolate_id',
             'sequence_filename': 'sequence_filename',
+            'isolate_id': 'isolate_id',
             'institution': 'institution',
             'project_number': 'project_number',
             'project_title': 'project_title',
@@ -516,8 +516,8 @@ class AnalysisResult(Model):
         }
 
         self._sequence_id = sequence_id
-        self._isolate_id = isolate_id
         self._sequence_filename = sequence_filename
+        self._isolate_id = isolate_id
         self._institution = institution
         self._project_number = project_number
         self._project_title = project_title
@@ -670,6 +670,27 @@ class AnalysisResult(Model):
         self._sequence_id = sequence_id
 
     @property
+    def sequence_filename(self):
+        """Gets the sequence_filename of this AnalysisResult.
+
+
+        :return: The sequence_filename of this AnalysisResult.
+        :rtype: str
+        """
+        return self._sequence_filename
+
+    @sequence_filename.setter
+    def sequence_filename(self, sequence_filename):
+        """Sets the sequence_filename of this AnalysisResult.
+
+
+        :param sequence_filename: The sequence_filename of this AnalysisResult.
+        :type sequence_filename: str
+        """
+
+        self._sequence_filename = sequence_filename
+
+    @property
     def isolate_id(self):
         """Gets the isolate_id of this AnalysisResult.
 
@@ -691,29 +712,6 @@ class AnalysisResult(Model):
             raise ValueError("Invalid value for `isolate_id`, must not be `None`")  # noqa: E501
 
         self._isolate_id = isolate_id
-
-    @property
-    def sequence_filename(self):
-        """Gets the sequence_filename of this AnalysisResult.
-
-
-        :return: The sequence_filename of this AnalysisResult.
-        :rtype: str
-        """
-        return self._sequence_filename
-
-    @sequence_filename.setter
-    def sequence_filename(self, sequence_filename):
-        """Sets the sequence_filename of this AnalysisResult.
-
-
-        :param sequence_filename: The sequence_filename of this AnalysisResult.
-        :type sequence_filename: str
-        """
-        if sequence_filename is None:
-            raise ValueError("Invalid value for `sequence_filename`, must not be `None`")  # noqa: E501
-
-        self._sequence_filename = sequence_filename
 
     @property
     def institution(self):

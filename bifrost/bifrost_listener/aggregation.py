@@ -47,7 +47,7 @@ def agg_pipeline(changed_ids=None):
                     "$reduce": {
                         "input": "$categories.paired_reads.summary.data",
                         "initialValue": "",
-                        "in": {"$concat": ["$$value", "$$this", ";"]},
+                        "in": {"$concat": ["$$value", "$$this", " "]},
                     }
                 },
                 "qc_genome1x": "$categories.denovo_assembly.summary.length",

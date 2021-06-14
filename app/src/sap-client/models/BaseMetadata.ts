@@ -35,13 +35,13 @@ export interface BaseMetadata  {
      * @type {string}
      * @memberof BaseMetadata
      */
-    isolate_id: string;
+    sequence_filename?: string;
     /**
      * 
      * @type {string}
      * @memberof BaseMetadata
      */
-    sequence_filename: string;
+    isolate_id: string;
     /**
      * 
      * @type {Organization}
@@ -107,8 +107,8 @@ export interface BaseMetadata  {
 export function BaseMetadataFromJSON(json: any): BaseMetadata {
     return {
         'sequence_id': json['sequence_id'],
+        'sequence_filename': !exists(json, 'sequence_filename') ? undefined : json['sequence_filename'],
         'isolate_id': json['isolate_id'],
-        'sequence_filename': json['sequence_filename'],
         'institution': OrganizationFromJSON(json['institution']),
         'project_number': !exists(json, 'project_number') ? undefined : json['project_number'],
         'project_title': !exists(json, 'project_title') ? undefined : json['project_title'],
@@ -128,8 +128,8 @@ export function BaseMetadataToJSON(value?: BaseMetadata): any {
     }
     return {
         'sequence_id': value.sequence_id,
-        'isolate_id': value.isolate_id,
         'sequence_filename': value.sequence_filename,
+        'isolate_id': value.isolate_id,
         'institution': OrganizationToJSON(value.institution),
         'project_number': value.project_number,
         'project_title': value.project_title,
