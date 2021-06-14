@@ -3,7 +3,10 @@ import sys
 from pathlib import Path
 from ...generated.models.base_metadata import BaseMetadata
 from ...common.config.upload_config import upload_path
-from ..repositories.metadata import upsert_manual_metadata
+from ..repositories.metadata import (
+    upsert_analysis_result_for_upload,
+    upsert_manual_metadata,
+)
 
 
 def upload_metadata_list(metadata_list):
@@ -25,8 +28,11 @@ def check_bulk_isolate_exists(path, sequence_names):
 
 
 def upload_isolate(metadata: BaseMetadata, files):
+    filenames = []
     for file in files:
+        filenames.append(file.filename)
         upload_sequence_file(file, metadata.institution)
+    upsert_analysis_result_for_upload(metadata, filenames)
     upsert_manual_metadata(metadata)
 
 
