@@ -25,7 +25,10 @@ def bulk_metadata(user, token_info, path, metadata_tsv):
     for m in metadata_list:
         assert_authorized_to_edit(token_info, m)
     errors = []
-    sequence_names = [m["sequence_filename"] for m in metadata_list]
+    sequence_names = []
+    for m in metadata_list:
+        sequence_names.extend(m["sequence_filename"].split())
+
     trimmed_path = path.read().decode("utf-8").strip('"').strip()
     existing_sequences, missing_sequences = check_bulk_isolate_exists(
         trimmed_path, sequence_names
