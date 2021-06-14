@@ -1,6 +1,12 @@
 import React from "react";
-import { Input, IconButton, useToast } from "@chakra-ui/react";
-import { SearchIcon } from "@chakra-ui/icons";
+import {
+  Input,
+  InputGroup,
+  InputRightElement,
+  IconButton,
+  useToast,
+} from "@chakra-ui/react";
+import { CloseIcon, SearchIcon } from "@chakra-ui/icons";
 import { AnalysisQuery } from "sap-client";
 import { parse as luceneParse } from "lucene";
 import { recurseTree } from "utils";
@@ -33,15 +39,28 @@ const parseQuery = (input: string, toast) => {
 
 const AnalysisSearch = (props: AnalysisSearchProps) => {
   const { onSubmit } = props;
+  const inputRef = React.useRef<HTMLInputElement>();
   const toast = useToast();
   const [input, setInput] = React.useState("");
   const onInput = React.useCallback((e) => setInput(e.target.value), [
     setInput,
   ]);
+
   const submitQuery = React.useCallback(
-    () => onSubmit({ expression: parseQuery(input, toast) }),
+    (q?: string) => onSubmit({ expression: parseQuery(q || input, toast) }),
     [onSubmit, input, toast]
   );
+
+  const submit = React.useCallback(() => submitQuery(), [submitQuery]);
+
+  const clearInput = React.useCallback(() => setInput(""), [setInput]);
+
+  const onClearButton = React.useCallback(() => {
+    inputRef.current.value = "";
+    clearInput();
+    submitQuery("");
+  }, [clearInput, submitQuery]);
+
   const onEnterKey = React.useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) =>
       (e.key === "Enter" || e.key === "NumpadEnter") && submitQuery(),
@@ -49,17 +68,23 @@ const AnalysisSearch = (props: AnalysisSearchProps) => {
   );
   return (
     <React.Fragment>
-      <Input
-        placeholder={`species_final:"Escherichia coli"`}
-        onInput={onInput}
-        onKeyDown={onEnterKey}
-        onSubmit={submitQuery}
-      />
+      <InputGroup>
+        <Input
+          ref={inputRef}
+          placeholder={`species_final:"Escherichia coli"`}
+          onInput={onInput}
+          onKeyDown={onEnterKey}
+          onSubmit={submit}
+        />
+        <InputRightElement>
+          <CloseIcon color="gray.400" onClick={onClearButton} />
+        </InputRightElement>
+      </InputGroup>
       <IconButton
         aria-label="Search database"
         icon={<SearchIcon />}
         ml="1"
-        onClick={submitQuery}
+        onClick={submit}
       />
     </React.Fragment>
   );
