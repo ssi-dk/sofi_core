@@ -21,11 +21,12 @@ ColumnDict = Dict[str, Union[bool, List[str], str]]
 def gen_default_column(field_name: str) -> ColumnDict:
     return {
         "approvable": False,
+        "internal_approval_only": False,
         "editable": False,
         "pii": False,
         "gdpr": False,
         "organizations": ["FVST", "SSI"],
-        "field_name": field_name,
+        "internal" "field_name": field_name,
         "approves_with": [],
     }
 
@@ -43,6 +44,13 @@ def columns() -> List[Dict[str, str]]:
         for c in config:
             cols.update({c["field_name"]: {**cols[c["field_name"]], **c}})
         return list(cols.values())
+
+
+@functools.lru_cache(maxsize=1)
+def internal_approval_fields() -> List[str]:
+    return [
+        x["field_name"] for x in COLUMN_CONFIG if x.get("internal_approval_only", True)
+    ]
 
 
 @functools.lru_cache(maxsize=1)
