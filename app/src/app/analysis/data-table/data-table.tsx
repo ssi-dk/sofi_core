@@ -28,12 +28,22 @@ import { StickyVariableSizeGrid } from "./sticky-variable-size-grid";
 import DataTableColumnHeader from "./data-table-column-header";
 import "./data-table-cell-styles.css";
 
+export type ColumnReordering =
+  | {
+      sourceIdx: number;
+      destIdx: number;
+      targetId: string;
+      timestamp: number;
+    }
+  | undefined;
+
 export type DataTableSelection<T extends NotEmpty> = {
   [K in IndexableOf<T>]: { [k in IndexableOf<T>]: boolean };
 };
 
 type DataTableProps<T extends NotEmpty> = {
   columns: Column<T>[];
+  setNewColumnOrder: (columnOrder: string[]) => void;
   data: T[];
   primaryKey: keyof T;
   canSelectColumn: (columnName: string) => boolean;
@@ -47,6 +57,7 @@ type DataTableProps<T extends NotEmpty> = {
   view: UserDefinedViewInternal;
   getCellStyle: (rowId: string, columnId: string, value: any) => string;
   getStickyCellStyle: (rowId: string) => string;
+  columnReordering?: ColumnReordering;
   renderCellControl: (
     rowId: string,
     columnId: string,
@@ -63,10 +74,11 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
     }),
     []
   );
-  const noop = React.useCallback(() => {}, []);
 
   const {
     columns,
+    columnReordering,
+    setNewColumnOrder,
     data,
     primaryKey,
     onSelect,
@@ -153,6 +165,33 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
   );
 
   const { columnResizing } = state;
+
+  // Allow parent to control when we reorder our columns
+  const currentColOrder = React.useRef<Array<IdType<T>>>();
+  const lastColumnReorder = React.useRef<ColumnReordering>();
+  const columnIds = React.useMemo(() => allColumns.map((o) => o.id), [
+    allColumns,
+  ]);
+
+  if (
+    columnReordering?.timestamp &&
+    columnReordering.timestamp > (lastColumnReorder.current.timestamp || 1)
+  ) {
+    currentColOrder.current = columnIds;
+    lastColumnReorder.current = { ...columnReordering };
+    const order = [...currentColOrder.current];
+    const { sourceIdx, destIdx, targetId } = columnReordering;
+    order.splice(sourceIdx, 1);
+    order.splice(destIdx, 0, targetId);
+    datagridRef.current.resetAfterIndices({
+      columnIndex: destIdx < sourceIdx ? destIdx : sourceIdx,
+      rowIndex: 1,
+      shouldForceUpdate: false,
+    });
+    setColumnOrder(order);
+    // Inform parent of the new order
+    setNewColumnOrder(order);
+  }
 
   // Make data table configuration externally visible
   exportDataTable(state);
@@ -403,12 +442,6 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
       cellClickHandler,
     ]
   );
-
-  const columnIds = React.useMemo(() => allColumns.map((o) => o.id), [
-    allColumns,
-  ]);
-
-  const currentColOrder = React.useRef<Array<IdType<T>>>();
 
   const onDragStart = React.useCallback(() => {
     currentColOrder.current = columnIds;
