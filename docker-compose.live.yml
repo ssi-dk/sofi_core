@@ -15,6 +15,9 @@ services:
       options:
         max-size: 50m
         max-file: "20"
+    volumes:
+      - ${BIFROST_UPLOAD_DIR}:/tmp/sofi_upload:rw
+
 
   sap_broker_queue:
     image: sekvensanalyseplatform/sap-queue-broker:${SOFI_RELEASE_TAG}
