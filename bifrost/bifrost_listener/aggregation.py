@@ -27,6 +27,8 @@ def agg_pipeline(changed_ids=None):
                 "isolate_id": "$display_name",
                 "sequence_id": "$name",
                 "institution": "$categories.sample_info.summary.institution",
+                "project_number": "$categories.sample_info.summary.project_no",
+                "project_title": "$categories.sample_info.summary.project_title",
                 "qc_detected_species": "$categories.species_detection.summary.detected_species",
                 "qc_provided_species": "$categories.sample_info.summary.provided_species",
                 "species_final": removeNullProperty(

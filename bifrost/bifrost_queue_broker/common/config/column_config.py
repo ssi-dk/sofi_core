@@ -26,7 +26,7 @@ def gen_default_column(field_name: str) -> ColumnDict:
         "pii": False,
         "gdpr": False,
         "organizations": ["FVST", "SSI"],
-        "internal" "field_name": field_name,
+        "field_name": field_name,
         "approves_with": [],
     }
 
