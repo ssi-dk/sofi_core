@@ -6,7 +6,7 @@ from datetime import datetime
 
 @functools.lru_cache(maxsize=1)
 def base_path():
-    return os.environ.get("BIFROST_UPLOAD_DIR")
+    return os.environ.get("SOFI_UPLOAD_DIR")
 
 
 def upload_path(institution):

@@ -1,0 +1,10 @@
+[Unit]
+Description=SOFI filesync service
+
+[Service]
+Type=simple
+Restart=always
+User=fvstsrv
+Group=fvst_ssi_dtu
+WorkingDirectory=/opt/sofi
+ExecStart=/opt/sofi/sofi_filesync.sh
