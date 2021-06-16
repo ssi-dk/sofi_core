@@ -198,6 +198,8 @@ stages:
               docker-compose.live.yml
               Caddyfile
               sofi.service
+              sofi_filesync.service
+              sofi_filesync.sh
               auth/config/**
               auth/pg/pg-init/**
               management_scripts/**
@@ -239,6 +241,10 @@ stages:
                   cd /opt/sofi/
                   sed -i "s/^SOFI_RELEASE_TAG=.*$/SOFI_RELEASE_TAG=`cat tag.txt`/g" .env
                   chmod -R +x /opt/sofi/management_scripts
+                  chmod +x /opt/sofi/sofi_filesync.sh
+                  systemctl disable sofi_filesync.service
+                  cp /opt/sofi/sofi_filesync.service /etc/systemd/system/sofi_filesync.service
+                  systemctl enable sofi_filesync.service
                   systemctl disable sofi.service
                   make install
                   systemctl restart sofi.service
@@ -270,6 +276,10 @@ stages:
                   cd /opt/sofi/
                   sed -i "s/^SOFI_RELEASE_TAG=.*$/SOFI_RELEASE_TAG=`cat tag.txt`/g" .env
                   chmod -R +x /opt/sofi/management_scripts
+                  chmod +x /opt/sofi/sofi_filesync.sh
+                  systemctl disable sofi_filesync.service
+                  cp /opt/sofi/sofi_filesync.service /etc/systemd/system/sofi_filesync.service
+                  systemctl enable sofi_filesync.service
                   systemctl disable sofi.service
                   make install
                   systemctl restart sofi.service
