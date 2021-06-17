@@ -12,5 +12,5 @@ source $DIR/.env
 
 inotifywait -mrq -e modify,create $SOFI_UPLOAD_DIR | while read DIRECTORY EVENT FILE
 do
-   mv $SOFI_UPLOAD_DIR/* $BIFROST_UPLOAD_DIR
+   rsync -arctuz --remove-source-files $SOFI_UPLOAD_DIR/ $BIFROST_UPLOAD_DIR/
 done
