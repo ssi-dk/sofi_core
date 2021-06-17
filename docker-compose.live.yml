@@ -10,6 +10,7 @@ services:
 
   sap_api:
     image: sekvensanalyseplatform/sap-api:${SOFI_RELEASE_TAG}
+    user: ${FVSTSRV_UID}
     logging:
       driver: local
       options:
