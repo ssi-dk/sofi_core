@@ -498,6 +498,7 @@ export default function AnalysisPage() {
                 {columnConfigs[columnId].editable_format === "date" ? (
                   <EditableInput
                     pattern="\d{4}-\d{1,2}-\d{1,2}"
+                    title="Date in yyyy-mm-dd format"
                     height="100%"
                     width="100%"
                   />
