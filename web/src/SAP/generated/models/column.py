@@ -19,13 +19,15 @@ class Column(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, approvable=None, editable=None, pii=None, gdpr=None, organizations=None, field_name=None, approves_with=None):  # noqa: E501
+    def __init__(self, approvable=None, editable=None, editable_format=None, pii=None, gdpr=None, organizations=None, field_name=None, approves_with=None):  # noqa: E501
         """Column - a model defined in OpenAPI
 
         :param approvable: The approvable of this Column.  # noqa: E501
         :type approvable: bool
         :param editable: The editable of this Column.  # noqa: E501
         :type editable: bool
+        :param editable_format: The editable_format of this Column.  # noqa: E501
+        :type editable_format: str
         :param pii: The pii of this Column.  # noqa: E501
         :type pii: bool
         :param gdpr: The gdpr of this Column.  # noqa: E501
@@ -40,6 +42,7 @@ class Column(Model):
         self.openapi_types = {
             'approvable': bool,
             'editable': bool,
+            'editable_format': str,
             'pii': bool,
             'gdpr': bool,
             'organizations': List[Organization],
@@ -50,6 +53,7 @@ class Column(Model):
         self.attribute_map = {
             'approvable': 'approvable',
             'editable': 'editable',
+            'editable_format': 'editable_format',
             'pii': 'pii',
             'gdpr': 'gdpr',
             'organizations': 'organizations',
@@ -59,6 +63,7 @@ class Column(Model):
 
         self._approvable = approvable
         self._editable = editable
+        self._editable_format = editable_format
         self._pii = pii
         self._gdpr = gdpr
         self._organizations = organizations
@@ -121,6 +126,29 @@ class Column(Model):
         """
 
         self._editable = editable
+
+    @property
+    def editable_format(self):
+        """Gets the editable_format of this Column.
+
+        Format for editable fields. Not required.  # noqa: E501
+
+        :return: The editable_format of this Column.
+        :rtype: str
+        """
+        return self._editable_format
+
+    @editable_format.setter
+    def editable_format(self, editable_format):
+        """Sets the editable_format of this Column.
+
+        Format for editable fields. Not required.  # noqa: E501
+
+        :param editable_format: The editable_format of this Column.
+        :type editable_format: str
+        """
+
+        self._editable_format = editable_format
 
     @property
     def pii(self):

@@ -565,6 +565,7 @@ components:
         - approves_with
         approvable: true
         editable: true
+        editable_format: editable_format
         organizations:
         - null
         - null
@@ -577,6 +578,10 @@ components:
         editable:
           description: True if the column can be edited
           type: boolean
+        editable_format:
+          description: Format for editable fields. Not required.
+          nullable: true
+          type: string
         pii:
           description: True if the column should be restricted to viewing only by
             the institution that owns it
