@@ -426,9 +426,15 @@ export default function AnalysisPage() {
 
   const onFreeTextEdit = React.useCallback(
     (rowId: string, field: string) => (val: string) => {
-      submitChange({ [rowId]: { [field]: val } });
+      if (columnConfigs[field].editable_format === "date") {
+        if (val.match(/\d{4}-\d{1,2}-\d{1,2}/) != null) {
+          submitChange({ [rowId]: { [field]: val } });
+        }
+      } else {
+        submitChange({ [rowId]: { [field]: val } });
+      }
     },
-    [submitChange]
+    [columnConfigs, submitChange]
   );
 
   const renderCellControl = React.useCallback(
@@ -489,7 +495,15 @@ export default function AnalysisPage() {
                 onSubmit={onFreeTextEdit(rowId, columnId)}
               >
                 <EditablePreview height="100%" width="100%" />
-                <EditableInput height="100%" width="100%" />
+                {columnConfigs[columnId].editable_format === "date" ? (
+                  <EditableInput
+                    pattern="\d{4}-\d{1,2}-\d{1,2}"
+                    height="100%"
+                    width="100%"
+                  />
+                ) : (
+                  <EditableInput height="100%" width="100%" />
+                )}
               </Editable>
               <Divider borderTop="1px solid black" />
             </Box>
