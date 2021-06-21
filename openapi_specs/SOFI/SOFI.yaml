@@ -502,6 +502,10 @@ components:
         editable:
           description: True if the column can be edited
           type: boolean
+        editable_format:
+          description: Format for editable fields. Not required.
+          type: string
+          nullable: true
         pii:
           description: True if the column should be restricted to viewing only by the institution that owns it
           type: boolean

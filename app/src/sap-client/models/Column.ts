@@ -37,6 +37,12 @@ export interface Column  {
      */
     editable?: boolean;
     /**
+     * Format for editable fields. Not required.
+     * @type {string}
+     * @memberof Column
+     */
+    editable_format?: string;
+    /**
      * True if the column should be restricted to viewing only by the institution that owns it
      * @type {boolean}
      * @memberof Column
@@ -72,6 +78,7 @@ export function ColumnFromJSON(json: any): Column {
     return {
         'approvable': !exists(json, 'approvable') ? undefined : json['approvable'],
         'editable': !exists(json, 'editable') ? undefined : json['editable'],
+        'editable_format': !exists(json, 'editable_format') ? undefined : json['editable_format'],
         'pii': !exists(json, 'pii') ? undefined : json['pii'],
         'gdpr': !exists(json, 'gdpr') ? undefined : json['gdpr'],
         'organizations': !exists(json, 'organizations') ? undefined : (json['organizations'] as Array<any>).map(OrganizationFromJSON),
@@ -87,6 +94,7 @@ export function ColumnToJSON(value?: Column): any {
     return {
         'approvable': value.approvable,
         'editable': value.editable,
+        'editable_format': value.editable_format,
         'pii': value.pii,
         'gdpr': value.gdpr,
         'organizations': value.organizations === undefined ? undefined : (value.organizations as Array<any>).map(OrganizationToJSON),

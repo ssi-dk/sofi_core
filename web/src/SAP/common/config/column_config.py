@@ -23,6 +23,7 @@ def gen_default_column(field_name: str) -> ColumnDict:
         "approvable": False,
         "internal_approval_only": False,
         "editable": False,
+        "editable_format": None,
         "pii": False,
         "gdpr": False,
         "organizations": ["FVST", "SSI"],
