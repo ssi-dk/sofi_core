@@ -3,6 +3,7 @@ version: "3.4"
 x-extra_hosts:
   &default-extra_hosts
   - "sofi_tbr_integration:192.168.113.11"
+  - "sofi_tbr_integration_dev:192.168.113.12"
 
 services:
   sap_app:
