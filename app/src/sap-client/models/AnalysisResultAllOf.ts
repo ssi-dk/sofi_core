@@ -35,6 +35,12 @@ export interface AnalysisResultAllOf  {
      * @type {Date}
      * @memberof AnalysisResultAllOf
      */
+    kma_received_date?: Date;
+    /**
+     * 
+     * @type {Date}
+     * @memberof AnalysisResultAllOf
+     */
     date_analysis_sofi?: Date;
     /**
      * 
@@ -539,6 +545,7 @@ export interface AnalysisResultAllOf  {
 export function AnalysisResultAllOfFromJSON(json: any): AnalysisResultAllOf {
     return {
         'resfinder_version': !exists(json, 'resfinder_version') ? undefined : json['resfinder_version'],
+        'kma_received_date': !exists(json, 'kma_received_date') ? undefined : new Date(json['kma_received_date']),
         'date_analysis_sofi': !exists(json, 'date_analysis_sofi') ? undefined : new Date(json['date_analysis_sofi']),
         'date_approved_serotype': !exists(json, 'date_approved_serotype') ? undefined : new Date(json['date_approved_serotype']),
         'date_approved_qc': !exists(json, 'date_approved_qc') ? undefined : new Date(json['date_approved_qc']),
@@ -632,6 +639,7 @@ export function AnalysisResultAllOfToJSON(value?: AnalysisResultAllOf): any {
     }
     return {
         'resfinder_version': value.resfinder_version,
+        'kma_received_date': value.kma_received_date === undefined ? undefined : value.kma_received_date.toISOString(),
         'date_analysis_sofi': value.date_analysis_sofi === undefined ? undefined : value.date_analysis_sofi.toISOString(),
         'date_approved_serotype': value.date_approved_serotype === undefined ? undefined : value.date_approved_serotype.toISOString(),
         'date_approved_qc': value.date_approved_qc === undefined ? undefined : value.date_approved_qc.toISOString(),

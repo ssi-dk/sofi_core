@@ -974,6 +974,9 @@ components:
       properties:
         resfinder_version:
           type: string
+        kma_received_date:
+          format: date-time
+          type: string
         date_analysis_sofi:
           format: date-time
           type: string
