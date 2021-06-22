@@ -32,7 +32,7 @@ keyUsage = digitalSignature, nonRepudiation, keyEncipherment, dataEncipherment"
 openssl genrsa -out $client_x509_key 2048
 
 # Generate a Certificate Signing Request (csr)
-openssl req -new -key $client_x509_key out $client_csr -subj "/C=DK/ST=Copenhagen/L=Copenhagen/O=Delegate/CN=$hostname"
+openssl req -new -key $client_x509_key -out $client_csr -subj "/C=DK/ST=Copenhagen/L=Copenhagen/O=Delegate/CN=$hostname"
 
 # Using the CA, create client cert based on the CSR
 openssl x509 -passin pass:$password -req -in $client_csr -CA $ca_pem -CAkey $ca_key -CAcreateserial -out $client_crt -days 1024 -sha256 -extfile $client_ext

@@ -24,4 +24,4 @@ openssl req -x509 -passin pass:$password -new -nodes -key $ca_key -sha256 -days 
 openssl x509 -outform der -in $ca_pem -out $ca_crt
 
 # Generate PFX used for IIS
-openssl pkcs12 -passin pass:$password-passout pass:$password-inkey $ca_key -in $ca_pem -export -out $ca_pfx
+openssl pkcs12 -passin pass:$password -passout pass:$password -inkey $ca_key -in $ca_pem -export -out $ca_pfx
