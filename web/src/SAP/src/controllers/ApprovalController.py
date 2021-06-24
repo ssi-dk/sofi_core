@@ -1,3 +1,5 @@
+from typing import Dict
+from web.src.SAP.src.repositories.analysis import update_analysis
 from web.src.SAP.generated.models import Approval, ApprovalRequest, ApprovalStatus
 from ..repositories.approval import (
     find_approvals,
@@ -36,6 +38,19 @@ def create_approval(user, token_info, body: ApprovalRequest):
 
     # Insert approval after matrix has been manipulated
     res = insert_approval(token_info["email"], appr)
+
+    # set the approved timestamps for the sequences
+    timestamp_updates = {}
+    for seq in body.matrix:
+        fields = body.matrix[seq]
+        time_fields = find_approved_categories(fields)
+        seq_update = {}
+        for f in time_fields:
+            seq_update[f] = appr.timestamp
+        timestamp_updates[seq] = seq_update
+
+    update_analysis(timestamp_updates)
+
     return (
         jsonify({"success": appr.to_dict(), "error": errors})
         if res != None
@@ -64,3 +79,22 @@ def full_approval_matrix(user, token_info):
     for a in approvals:
         matrix.update(a["matrix"])
     return jsonify(matrix)
+
+
+def find_approved_categories(fields: Dict[str, ApprovalStatus]):
+    time_fields = []
+    for f in fields:
+        if fields[f] == "approved":
+            if f == "st":
+                time_fields.append("date_approved_st")
+            if f == "qc_final":
+                time_fields.append("date_approved_qc")
+            if f == "serotype_final":
+                time_fields.append("date_approved_serotype")
+            if f == "toxins_final":
+                time_fields.append("date_approved_toxin")
+            if f == "cluster_id":
+                time_fields.append("date_approved_cluster")
+            if f == "amr_profile":
+                time_fields.append("date_approved_amr")
+    return time_fields

@@ -455,7 +455,7 @@ export default function AnalysisPage() {
         return <div />;
       }
       if (
-        columnId.endsWith("date") &&
+        (columnId.startsWith("date") || columnId.endsWith("date")) &&
         value !== undefined &&
         !Number.isNaN(value.getTime())
       ) {
