@@ -85,13 +85,16 @@ def agg_pipeline(changed_ids=None):
                 ),
                 "qc_final": removeNullProperty(
                     {
-                        "$first": {
-                            "$filter": {
-                                "input": "$categories.stamper.summary.tests",
-                                "as": "elem",
-                                "cond": {"$eq": ["$$elem.name", "qc_score"]},
-                            }
-                        }
+                        "$arrayElemAt": [
+                            {
+                                "$filter": {
+                                    "input": "$categories.stamper.summary.tests",
+                                    "as": "elem",
+                                    "cond": {"$eq": ["$$elem.name", "qc_score"]},
+                                }
+                            },
+                            0,
+                        ]
                     }
                 ),
             },
