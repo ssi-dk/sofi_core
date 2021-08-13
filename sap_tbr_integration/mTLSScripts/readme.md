@@ -15,6 +15,16 @@ and
 
 and type in the password for each.
 
+List of files needed for Finn to apply the full thing:
+Client:
+- client_pub_cert_base64.txt
+- clienf.pfx
+- (password in a file)
+Root:
+- SOFI_ROOT.crt
+- SOFI_ROOT.pem
+- SOFI_ROOT.pfx
+
 Make sure that the root certificate is added to server. For CentOS the .crt should be placed in 
 `/etc/pki/ca-trust/source/anchors/` and updated with `update-ca-trust extract`
 Dynamic CA config might need to be enabled with `update-ca-trust force-enable`
