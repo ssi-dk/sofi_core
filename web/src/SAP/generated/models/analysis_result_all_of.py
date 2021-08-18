@@ -19,7 +19,7 @@ class AnalysisResultAllOf(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, resfinder_version=None, kma_received_date=None, date_analysis_sofi=None, date_approved_serotype=None, date_approved_qc=None, date_approved_amr=None, date_approved_st=None, date_approved_toxin=None, date_approved_cluster=None, qc_provided_species=None, qc_genome1x=None, qc_genome10x=None, qc_gsize_diff1x10=None, qc_avg_coverage=None, qc_final=None, qc_num_contigs=None, qc_ambiguous_sites=None, qc_num_reads=None, qc_main_sp_plus_uncl=None, qc_unclassified_reads=None, qc_db_id=None, qc_failed_tests=None, qc_cgmlst_percent=None, cgmlst_schema_salmonella=None, cgmlst_schema_ecoli=None, cgmlst_schema_campylobacter=None, cgmlst_schema_listeria=None, cgmlst_schema_klebsiella=None, subspecies=None, species_final=None, st=None, pathotype=None, pathotype_final=None, sero_enterobase=None, sero_seqsero=None, sero_antigen_seqzero=None, sero_d_tartrate=None, sero_serotype_finder=None, serotype_final=None, adhesion_final=None, virulence_genes=None, toxins_final=None, infection_source=None, resistance_genes=None, amr_profile=None, comment=None, comment_cluster=None, comment_general=None, comment_supplementary=None, comment_qc=None, amr_ami=None, amr_amp=None, amr_azi=None, amr_fep=None, amr_fot=None, amr_f_c=None, amr_fox=None, amr_taz=None, amr_t_c=None, amr_chl=None, amr_cip=None, amr_cli=None, amr_col=None, amr_dap=None, amr_etp=None, amr_ery=None, amr_fus=None, amr_gen=None, amr_imi=None, amr_kan=None, amr_lzd=None, amr_mero=None, amr_mup=None, amr_nal=None, amr_pen=None, amr_syn=None, amr_rif=None, amr_str=None, amr_sul=None, amr_tei=None, amr_trm=None, amr_tet=None, amr_tia=None, amr_tgc=None, amr_tmp=None, amr_van=None):  # noqa: E501
+    def __init__(self, resfinder_version=None, kma_received_date=None, date_analysis_sofi=None, date_approved_serotype=None, date_approved_qc=None, date_approved_amr=None, date_approved_st=None, date_approved_toxin=None, date_approved_cluster=None, qc_genome1x=None, qc_genome10x=None, qc_gsize_diff1x10=None, qc_avg_coverage=None, qc_final=None, qc_num_contigs=None, qc_ambiguous_sites=None, qc_num_reads=None, qc_main_sp_plus_uncl=None, qc_unclassified_reads=None, qc_db_id=None, qc_failed_tests=None, qc_cgmlst_percent=None, cgmlst_schema_salmonella=None, cgmlst_schema_ecoli=None, cgmlst_schema_campylobacter=None, cgmlst_schema_listeria=None, cgmlst_schema_klebsiella=None, subspecies=None, species_final=None, st=None, pathotype=None, pathotype_final=None, sero_enterobase=None, sero_seqsero=None, sero_antigen_seqsero=None, sero_d_tartrate=None, sero_serotype_finder=None, serotype_final=None, adhesion_final=None, virulence_genes=None, toxins_final=None, infection_source=None, resistance_genes=None, amr_profile=None, comment=None, comment_cluster=None, comment_general=None, comment_supplementary=None, comment_qc=None, amr_ami=None, amr_amp=None, amr_azi=None, amr_fep=None, amr_fot=None, amr_f_c=None, amr_fox=None, amr_taz=None, amr_t_c=None, amr_chl=None, amr_cip=None, amr_cli=None, amr_col=None, amr_dap=None, amr_etp=None, amr_ery=None, amr_fus=None, amr_gen=None, amr_imi=None, amr_kan=None, amr_lzd=None, amr_mero=None, amr_mup=None, amr_nal=None, amr_pen=None, amr_syn=None, amr_rif=None, amr_str=None, amr_sul=None, amr_tei=None, amr_trm=None, amr_tet=None, amr_tia=None, amr_tgc=None, amr_tmp=None, amr_van=None):  # noqa: E501
         """AnalysisResultAllOf - a model defined in OpenAPI
 
         :param resfinder_version: The resfinder_version of this AnalysisResultAllOf.  # noqa: E501
@@ -40,8 +40,6 @@ class AnalysisResultAllOf(Model):
         :type date_approved_toxin: datetime
         :param date_approved_cluster: The date_approved_cluster of this AnalysisResultAllOf.  # noqa: E501
         :type date_approved_cluster: datetime
-        :param qc_provided_species: The qc_provided_species of this AnalysisResultAllOf.  # noqa: E501
-        :type qc_provided_species: float
         :param qc_genome1x: The qc_genome1x of this AnalysisResultAllOf.  # noqa: E501
         :type qc_genome1x: float
         :param qc_genome10x: The qc_genome10x of this AnalysisResultAllOf.  # noqa: E501
@@ -92,8 +90,8 @@ class AnalysisResultAllOf(Model):
         :type sero_enterobase: str
         :param sero_seqsero: The sero_seqsero of this AnalysisResultAllOf.  # noqa: E501
         :type sero_seqsero: str
-        :param sero_antigen_seqzero: The sero_antigen_seqzero of this AnalysisResultAllOf.  # noqa: E501
-        :type sero_antigen_seqzero: str
+        :param sero_antigen_seqsero: The sero_antigen_seqsero of this AnalysisResultAllOf.  # noqa: E501
+        :type sero_antigen_seqsero: str
         :param sero_d_tartrate: The sero_d_tartrate of this AnalysisResultAllOf.  # noqa: E501
         :type sero_d_tartrate: str
         :param sero_serotype_finder: The sero_serotype_finder of this AnalysisResultAllOf.  # noqa: E501
@@ -205,7 +203,6 @@ class AnalysisResultAllOf(Model):
             'date_approved_st': datetime,
             'date_approved_toxin': datetime,
             'date_approved_cluster': datetime,
-            'qc_provided_species': float,
             'qc_genome1x': float,
             'qc_genome10x': float,
             'qc_gsize_diff1x10': float,
@@ -231,7 +228,7 @@ class AnalysisResultAllOf(Model):
             'pathotype_final': str,
             'sero_enterobase': str,
             'sero_seqsero': str,
-            'sero_antigen_seqzero': str,
+            'sero_antigen_seqsero': str,
             'sero_d_tartrate': str,
             'sero_serotype_finder': str,
             'serotype_final': str,
@@ -294,7 +291,6 @@ class AnalysisResultAllOf(Model):
             'date_approved_st': 'date_approved_st',
             'date_approved_toxin': 'date_approved_toxin',
             'date_approved_cluster': 'date_approved_cluster',
-            'qc_provided_species': 'qc_provided_species',
             'qc_genome1x': 'qc_genome1x',
             'qc_genome10x': 'qc_genome10x',
             'qc_gsize_diff1x10': 'qc_gsize_diff1x10',
@@ -320,7 +316,7 @@ class AnalysisResultAllOf(Model):
             'pathotype_final': 'pathotype_final',
             'sero_enterobase': 'sero_enterobase',
             'sero_seqsero': 'sero_seqsero',
-            'sero_antigen_seqzero': 'sero_antigen_seqzero',
+            'sero_antigen_seqsero': 'sero_antigen_seqsero',
             'sero_d_tartrate': 'sero_d_tartrate',
             'sero_serotype_finder': 'sero_serotype_finder',
             'serotype_final': 'serotype_final',
@@ -382,7 +378,6 @@ class AnalysisResultAllOf(Model):
         self._date_approved_st = date_approved_st
         self._date_approved_toxin = date_approved_toxin
         self._date_approved_cluster = date_approved_cluster
-        self._qc_provided_species = qc_provided_species
         self._qc_genome1x = qc_genome1x
         self._qc_genome10x = qc_genome10x
         self._qc_gsize_diff1x10 = qc_gsize_diff1x10
@@ -408,7 +403,7 @@ class AnalysisResultAllOf(Model):
         self._pathotype_final = pathotype_final
         self._sero_enterobase = sero_enterobase
         self._sero_seqsero = sero_seqsero
-        self._sero_antigen_seqzero = sero_antigen_seqzero
+        self._sero_antigen_seqsero = sero_antigen_seqsero
         self._sero_d_tartrate = sero_d_tartrate
         self._sero_serotype_finder = sero_serotype_finder
         self._serotype_final = serotype_final
@@ -659,27 +654,6 @@ class AnalysisResultAllOf(Model):
         """
 
         self._date_approved_cluster = date_approved_cluster
-
-    @property
-    def qc_provided_species(self):
-        """Gets the qc_provided_species of this AnalysisResultAllOf.
-
-
-        :return: The qc_provided_species of this AnalysisResultAllOf.
-        :rtype: float
-        """
-        return self._qc_provided_species
-
-    @qc_provided_species.setter
-    def qc_provided_species(self, qc_provided_species):
-        """Sets the qc_provided_species of this AnalysisResultAllOf.
-
-
-        :param qc_provided_species: The qc_provided_species of this AnalysisResultAllOf.
-        :type qc_provided_species: float
-        """
-
-        self._qc_provided_species = qc_provided_species
 
     @property
     def qc_genome1x(self):
@@ -1213,25 +1187,25 @@ class AnalysisResultAllOf(Model):
         self._sero_seqsero = sero_seqsero
 
     @property
-    def sero_antigen_seqzero(self):
-        """Gets the sero_antigen_seqzero of this AnalysisResultAllOf.
+    def sero_antigen_seqsero(self):
+        """Gets the sero_antigen_seqsero of this AnalysisResultAllOf.
 
 
-        :return: The sero_antigen_seqzero of this AnalysisResultAllOf.
+        :return: The sero_antigen_seqsero of this AnalysisResultAllOf.
         :rtype: str
         """
-        return self._sero_antigen_seqzero
+        return self._sero_antigen_seqsero
 
-    @sero_antigen_seqzero.setter
-    def sero_antigen_seqzero(self, sero_antigen_seqzero):
-        """Sets the sero_antigen_seqzero of this AnalysisResultAllOf.
+    @sero_antigen_seqsero.setter
+    def sero_antigen_seqsero(self, sero_antigen_seqsero):
+        """Sets the sero_antigen_seqsero of this AnalysisResultAllOf.
 
 
-        :param sero_antigen_seqzero: The sero_antigen_seqzero of this AnalysisResultAllOf.
-        :type sero_antigen_seqzero: str
+        :param sero_antigen_seqsero: The sero_antigen_seqsero of this AnalysisResultAllOf.
+        :type sero_antigen_seqsero: str
         """
 
-        self._sero_antigen_seqzero = sero_antigen_seqzero
+        self._sero_antigen_seqsero = sero_antigen_seqsero
 
     @property
     def sero_d_tartrate(self):

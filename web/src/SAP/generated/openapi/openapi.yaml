@@ -998,8 +998,6 @@ components:
         date_approved_cluster:
           format: date-time
           type: string
-        qc_provided_species:
-          type: number
         qc_genome1x:
           type: number
         qc_genome10x:
@@ -1054,7 +1052,7 @@ components:
           type: string
         sero_seqsero:
           type: string
-        sero_antigen_seqzero:
+        sero_antigen_seqsero:
           type: string
         sero_d_tartrate:
           type: string
