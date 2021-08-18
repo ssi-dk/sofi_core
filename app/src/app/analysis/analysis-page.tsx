@@ -158,7 +158,7 @@ export default function AnalysisPage() {
   const { hiddenColumns } = view;
 
   const toggleColumn = React.useCallback(
-    (id) => () => dispatch(toggleColumnVisibility(id)),
+    (id) => dispatch(toggleColumnVisibility(id)),
     [dispatch]
   );
 
