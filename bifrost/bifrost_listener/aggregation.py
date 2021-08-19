@@ -77,7 +77,7 @@ def agg_pipeline(changed_ids=None):
                                     ]
                                 },
                             },
-                            "in": "$res.value",
+                            "in": "$$res.value",
                         }
                     }
                 ),
@@ -103,7 +103,7 @@ def agg_pipeline(changed_ids=None):
                                     ]
                                 },
                             },
-                            "in": "$res.value",
+                            "in": "$$res.value",
                         }
                     }
                 ),
