@@ -1,0 +1,6 @@
+{
+  "devDependencies": {
+    "@apidevtools/json-schema-ref-parser": "^9.0.7",
+    "@arkweid/lefthook": "^0.7.2"
+  }
+}

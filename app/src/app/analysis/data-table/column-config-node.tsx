@@ -39,7 +39,7 @@ export const ColumnConfigNode: React.FC<ColumnConfigNodeProps> = ({
           }}
         >
           {":  "}
-          <input type="checkbox" checked={isChecked} onClick={onClick} />{" "}
+          <input type="checkbox" checked={isChecked} onChange={onClick} />{" "}
           {columnName}
         </div>
       )}

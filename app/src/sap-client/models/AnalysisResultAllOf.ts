@@ -83,12 +83,6 @@ export interface AnalysisResultAllOf  {
      * @type {number}
      * @memberof AnalysisResultAllOf
      */
-    qc_provided_species?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof AnalysisResultAllOf
-     */
     qc_genome1x?: number;
     /**
      * 
@@ -239,7 +233,7 @@ export interface AnalysisResultAllOf  {
      * @type {string}
      * @memberof AnalysisResultAllOf
      */
-    sero_antigen_seqzero?: string;
+    sero_antigen_seqsero?: string;
     /**
      * 
      * @type {string}
@@ -553,7 +547,6 @@ export function AnalysisResultAllOfFromJSON(json: any): AnalysisResultAllOf {
         'date_approved_st': !exists(json, 'date_approved_st') ? undefined : new Date(json['date_approved_st']),
         'date_approved_toxin': !exists(json, 'date_approved_toxin') ? undefined : new Date(json['date_approved_toxin']),
         'date_approved_cluster': !exists(json, 'date_approved_cluster') ? undefined : new Date(json['date_approved_cluster']),
-        'qc_provided_species': !exists(json, 'qc_provided_species') ? undefined : json['qc_provided_species'],
         'qc_genome1x': !exists(json, 'qc_genome1x') ? undefined : json['qc_genome1x'],
         'qc_genome10x': !exists(json, 'qc_genome10x') ? undefined : json['qc_genome10x'],
         'qc_gsize_diff1x10': !exists(json, 'qc_gsize_diff1x10') ? undefined : json['qc_gsize_diff1x10'],
@@ -579,7 +572,7 @@ export function AnalysisResultAllOfFromJSON(json: any): AnalysisResultAllOf {
         'pathotype_final': !exists(json, 'pathotype_final') ? undefined : json['pathotype_final'],
         'sero_enterobase': !exists(json, 'sero_enterobase') ? undefined : json['sero_enterobase'],
         'sero_seqsero': !exists(json, 'sero_seqsero') ? undefined : json['sero_seqsero'],
-        'sero_antigen_seqzero': !exists(json, 'sero_antigen_seqzero') ? undefined : json['sero_antigen_seqzero'],
+        'sero_antigen_seqsero': !exists(json, 'sero_antigen_seqsero') ? undefined : json['sero_antigen_seqsero'],
         'sero_d_tartrate': !exists(json, 'sero_d_tartrate') ? undefined : json['sero_d_tartrate'],
         'sero_serotype_finder': !exists(json, 'sero_serotype_finder') ? undefined : json['sero_serotype_finder'],
         'serotype_final': !exists(json, 'serotype_final') ? undefined : json['serotype_final'],
@@ -647,7 +640,6 @@ export function AnalysisResultAllOfToJSON(value?: AnalysisResultAllOf): any {
         'date_approved_st': value.date_approved_st === undefined ? undefined : value.date_approved_st.toISOString(),
         'date_approved_toxin': value.date_approved_toxin === undefined ? undefined : value.date_approved_toxin.toISOString(),
         'date_approved_cluster': value.date_approved_cluster === undefined ? undefined : value.date_approved_cluster.toISOString(),
-        'qc_provided_species': value.qc_provided_species,
         'qc_genome1x': value.qc_genome1x,
         'qc_genome10x': value.qc_genome10x,
         'qc_gsize_diff1x10': value.qc_gsize_diff1x10,
@@ -673,7 +665,7 @@ export function AnalysisResultAllOfToJSON(value?: AnalysisResultAllOf): any {
         'pathotype_final': value.pathotype_final,
         'sero_enterobase': value.sero_enterobase,
         'sero_seqsero': value.sero_seqsero,
-        'sero_antigen_seqzero': value.sero_antigen_seqzero,
+        'sero_antigen_seqsero': value.sero_antigen_seqsero,
         'sero_d_tartrate': value.sero_d_tartrate,
         'sero_serotype_finder': value.sero_serotype_finder,
         'serotype_final': value.serotype_final,

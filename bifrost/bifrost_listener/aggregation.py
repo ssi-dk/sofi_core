@@ -12,10 +12,6 @@ def removeNullProperty(expr):
     - All of AMR
     - resfinder
     - qc action & comment
-    - qc ambiguous sites
-    - unclassified reads: Is it mapping_qc.summary.mapped.reads_unmapped?
-    - qc db id
-    - qc failed tests
     - qc cgMLST%
 """
 
@@ -26,9 +22,12 @@ def agg_pipeline(changed_ids=None):
             "$project": {
                 "isolate_id": "$display_name",
                 "sequence_id": "$name",
+                "run_id": "$categories.sample_info.summary.experiment_name",
                 "institution": "$categories.sample_info.summary.institution",
                 "project_number": "$categories.sample_info.summary.project_no",
                 "project_title": "$categories.sample_info.summary.project_title",
+                "sampling_date": "$metadata.created_at",
+                "sofi_date": "$$NOW",
                 "qc_detected_species": "$categories.species_detection.summary.detected_species",
                 "qc_provided_species": "$categories.sample_info.summary.provided_species",
                 "species_final": removeNullProperty(
@@ -52,6 +51,56 @@ def agg_pipeline(changed_ids=None):
                         "in": {"$concat": ["$$value", "$$this", " "]},
                     }
                 },
+                "sero_enterobase": "$categories.serotype.report.enterobase_serotype1",
+                "sero_seqsero": "$categories.serotype.report.seqsero_serotype",
+                "sero_antigen_seqsero": "$categories.serotype.summary.antigenic_profile",
+                "qc_ambiguous_sites": "$categories.mapping_qc.summary.snps.x10_10%.snps",
+                "qc_unclassified_reads": removeNullProperty(
+                    {
+                        "$getField": {
+                            "field": "value",
+                            "input": {
+                                "$arrayElemAt": [
+                                    {
+                                        "$filter": {
+                                            "input": "$categories.stamper.summary.tests",
+                                            "as": "elem",
+                                            "cond": {
+                                                "$eq": [
+                                                    "$$elem.name",
+                                                    "unclassified_level_ok",
+                                                ]
+                                            },
+                                        }
+                                    },
+                                    0,
+                                ]
+                            },
+                        }
+                    }
+                ),
+                "qc_db_id": removeNullProperty(
+                    {
+                        "$getField": {
+                            "field": "value",
+                            "input": {
+                                "$arrayElemAt": [
+                                    {
+                                        "$filter": {
+                                            "input": "$categories.stamper.summary.tests",
+                                            "as": "elem",
+                                            "cond": {
+                                                "$eq": ["$$elem.name", "species_in_db"]
+                                            },
+                                        }
+                                    },
+                                    0,
+                                ]
+                            },
+                        }
+                    }
+                ),
+                "qc_failed_tests": "$categories.stamper.stamp.reason",
                 "qc_genome1x": "$categories.denovo_assembly.summary.length",
                 "qc_genome10x": "$categories.mapping_qc.summary.values_at_floor_of_depth.x10.length",
                 "qc_gsize_diff1x10": removeNullProperty(
@@ -100,12 +149,11 @@ def agg_pipeline(changed_ids=None):
             },
         },
         {"$set": {"qc_final": "$qc_final.value"}},
-        # TODO: Perhaps we should merge on sequence id instead of mongo pseudokey.
         {
             "$merge": {
                 "into": "sap_analysis_results",
                 "on": "_id",
-                "whenMatched": "merge",
+                "whenMatched": "replace",
             }
         },
     ]
