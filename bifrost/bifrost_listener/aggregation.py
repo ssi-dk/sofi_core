@@ -57,46 +57,53 @@ def agg_pipeline(changed_ids=None):
                 "qc_ambiguous_sites": "$categories.mapping_qc.summary.snps.x10_10%.snps",
                 "qc_unclassified_reads": removeNullProperty(
                     {
-                        "$getField": {
-                            "field": "value",
-                            "input": {
-                                "$arrayElemAt": [
-                                    {
-                                        "$filter": {
-                                            "input": "$categories.stamper.summary.tests",
-                                            "as": "elem",
-                                            "cond": {
-                                                "$eq": [
-                                                    "$$elem.name",
-                                                    "unclassified_level_ok",
-                                                ]
-                                            },
-                                        }
-                                    },
-                                    0,
-                                ]
+                        "$let": {
+                            "vars": {
+                                "res": {
+                                    "$arrayElemAt": [
+                                        {
+                                            "$filter": {
+                                                "input": "$categories.stamper.summary.tests",
+                                                "as": "elem",
+                                                "cond": {
+                                                    "$eq": [
+                                                        "$$elem.name",
+                                                        "unclassified_level_ok",
+                                                    ]
+                                                },
+                                            }
+                                        },
+                                        0,
+                                    ]
+                                },
                             },
+                            "in": "$res.value",
                         }
                     }
                 ),
                 "qc_db_id": removeNullProperty(
                     {
-                        "$getField": {
-                            "field": "value",
-                            "input": {
-                                "$arrayElemAt": [
-                                    {
-                                        "$filter": {
-                                            "input": "$categories.stamper.summary.tests",
-                                            "as": "elem",
-                                            "cond": {
-                                                "$eq": ["$$elem.name", "species_in_db"]
-                                            },
-                                        }
-                                    },
-                                    0,
-                                ]
+                        "$let": {
+                            "vars": {
+                                "res": {
+                                    "$arrayElemAt": [
+                                        {
+                                            "$filter": {
+                                                "input": "$categories.stamper.summary.tests",
+                                                "as": "elem",
+                                                "cond": {
+                                                    "$eq": [
+                                                        "$$elem.name",
+                                                        "species_in_db",
+                                                    ]
+                                                },
+                                            }
+                                        },
+                                        0,
+                                    ]
+                                },
                             },
+                            "in": "$res.value",
                         }
                     }
                 ),
