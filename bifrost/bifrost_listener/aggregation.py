@@ -137,7 +137,7 @@ def agg_pipeline(changed_ids=None):
         {
             "$merge": {
                 "into": "sap_analysis_results",
-                "on": "sequence_id",
+                "on": "_id",
                 "whenMatched": "replace",
             }
         },
