@@ -22,7 +22,7 @@ def agg_pipeline(changed_ids=None):
             "$project": {
                 "isolate_id": "$display_name",
                 "sequence_id": "$name",
-                "run_id": "$categories/sample_info/summary/experiment_name",
+                "run_id": "$categories.sample_info.summary.experiment_name",
                 "institution": "$categories.sample_info.summary.institution",
                 "project_number": "$categories.sample_info.summary.project_no",
                 "project_title": "$categories.sample_info.summary.project_title",
@@ -57,32 +57,47 @@ def agg_pipeline(changed_ids=None):
                 "qc_ambiguous_sites": "$categories.mapping_qc.summary.snps.x10_10%.snps",
                 "qc_unclassified_reads": removeNullProperty(
                     {
-                        "$arrayElemAt": [
-                            {
-                                "$filter": {
-                                    "input": "$categories.stamper.summary.tests",
-                                    "as": "elem",
-                                    "cond": {
-                                        "$eq": ["$$elem.name", "unclassified_level_ok"]
+                        "$getField": {
+                            "field": "value",
+                            "input": {
+                                "$arrayElemAt": [
+                                    {
+                                        "$filter": {
+                                            "input": "$categories.stamper.summary.tests",
+                                            "as": "elem",
+                                            "cond": {
+                                                "$eq": [
+                                                    "$$elem.name",
+                                                    "unclassified_level_ok",
+                                                ]
+                                            },
+                                        }
                                     },
-                                }
+                                    0,
+                                ]
                             },
-                            0,
-                        ]
+                        }
                     }
                 ),
                 "qc_db_id": removeNullProperty(
                     {
-                        "$arrayElemAt": [
-                            {
-                                "$filter": {
-                                    "input": "$categories.stamper.summary.tests",
-                                    "as": "elem",
-                                    "cond": {"$eq": ["$$elem.name", "species_in_db"]},
-                                }
+                        "$getField": {
+                            "field": "value",
+                            "input": {
+                                "$arrayElemAt": [
+                                    {
+                                        "$filter": {
+                                            "input": "$categories.stamper.summary.tests",
+                                            "as": "elem",
+                                            "cond": {
+                                                "$eq": ["$$elem.name", "species_in_db"]
+                                            },
+                                        }
+                                    },
+                                    0,
+                                ]
                             },
-                            0,
-                        ]
+                        }
                     }
                 ),
                 "qc_failed_tests": "$categories.stamper.stamp.reason",
