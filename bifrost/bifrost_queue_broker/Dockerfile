@@ -3,6 +3,9 @@ FROM python:3.9-slim-buster AS base
 COPY requirements.txt .
 RUN pip install -r requirements.txt
 
+COPY usr/local/share/ca-certificates/ usr/local/share/ca-certificates/
+RUN /usr/sbin/update-ca-certificates 
+
 COPY brokers/ /app/brokers/
 COPY common/ /app/common/
 COPY api_clients/ /app/api_clients/
