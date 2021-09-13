@@ -32,7 +32,7 @@ def get_analysis_page(query, page_size, offset, columns, restrict_to_institution
     fetch_pipeline = [
         {
             "$lookup": {
-                "from": "sap_tbr_metadata",
+                "from": TBR_METADATA_COL_NAME,
                 "localField": "isolate_id",
                 "foreignField": "isolate_id",
                 "as": "metadata",
@@ -40,6 +40,36 @@ def get_analysis_page(query, page_size, offset, columns, restrict_to_institution
         },
         # This removes isolates without metadata.
         # {"$match": {"metadata": {"$ne": []}}},
+        {
+            "$replaceRoot": {
+                "newRoot": {
+                    "$mergeObjects": [{"$arrayElemAt": ["$metadata", 0]}, "$$ROOT"]
+                }
+            }
+        },
+        {
+            "$lookup": {
+                "from": LIMS_METADATA_COL_NAME,
+                "localField": "isolate_id",
+                "foreignField": "isolate_id",
+                "as": "metadata",
+            }
+        },
+        {
+            "$replaceRoot": {
+                "newRoot": {
+                    "$mergeObjects": [{"$arrayElemAt": ["$metadata", 0]}, "$$ROOT"]
+                }
+            }
+        },
+        {
+            "$lookup": {
+                "from": MANUAL_METADATA_COL_NAME,
+                "localField": "isolate_id",
+                "foreignField": "isolate_id",
+                "as": "metadata",
+            }
+        },
         {
             "$replaceRoot": {
                 "newRoot": {
