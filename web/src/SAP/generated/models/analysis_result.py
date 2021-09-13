@@ -29,7 +29,7 @@ class AnalysisResult(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, sequence_id=None, sequence_filename=None, isolate_id=None, institution=None, project_number=None, project_title=None, sampling_date=None, received_date=None, sofi_date=None, run_id=None, public=None, provided_species=None, primary_isolate=None, chr_number=None, cvr_number=None, aut_number=None, product_type=None, product=None, origin_country=None, animal_species=None, sample_info=None, cpr_nr=None, gender=None, name=None, age=None, travel=None, travel_country=None, run_date=None, kma_received_date=None, kma=None, region=None, fud_number=None, cluster_id=None, epi_export=None, resfinder_version=None, date_analysis_sofi=None, date_approved_serotype=None, date_approved_qc=None, date_approved_amr=None, date_approved_st=None, date_approved_toxin=None, date_approved_cluster=None, qc_genome1x=None, qc_genome10x=None, qc_gsize_diff1x10=None, qc_avg_coverage=None, qc_final=None, qc_num_contigs=None, qc_ambiguous_sites=None, qc_num_reads=None, qc_main_sp_plus_uncl=None, qc_unclassified_reads=None, qc_db_id=None, qc_failed_tests=None, qc_cgmlst_percent=None, cgmlst_schema_salmonella=None, cgmlst_schema_ecoli=None, cgmlst_schema_campylobacter=None, cgmlst_schema_listeria=None, cgmlst_schema_klebsiella=None, subspecies=None, species_final=None, st=None, pathotype=None, pathotype_final=None, sero_enterobase=None, sero_seqsero=None, sero_antigen_seqsero=None, sero_d_tartrate=None, sero_serotype_finder=None, serotype_final=None, adhesion_final=None, virulence_genes=None, toxins_final=None, infection_source=None, resistance_genes=None, amr_profile=None, comment=None, comment_cluster=None, comment_general=None, comment_supplementary=None, comment_qc=None, amr_ami=None, amr_amp=None, amr_azi=None, amr_fep=None, amr_fot=None, amr_f_c=None, amr_fox=None, amr_taz=None, amr_t_c=None, amr_chl=None, amr_cip=None, amr_cli=None, amr_col=None, amr_dap=None, amr_etp=None, amr_ery=None, amr_fus=None, amr_gen=None, amr_imi=None, amr_kan=None, amr_lzd=None, amr_mero=None, amr_mup=None, amr_nal=None, amr_pen=None, amr_syn=None, amr_rif=None, amr_str=None, amr_sul=None, amr_tei=None, amr_trm=None, amr_tet=None, amr_tia=None, amr_tgc=None, amr_tmp=None, amr_van=None):  # noqa: E501
+    def __init__(self, sequence_id=None, sequence_filename=None, isolate_id=None, institution=None, project_number=None, project_title=None, sampling_date=None, received_date=None, sofi_date=None, run_id=None, public=None, primary_isolate=None, chr_number=None, cvr_number=None, aut_number=None, product_type=None, product=None, origin_country=None, animal_species=None, sample_info=None, cpr_nr=None, gender=None, name=None, age=None, travel=None, travel_country=None, run_date=None, kma_received_date=None, kma=None, region=None, fud_number=None, cluster_id=None, epi_export=None, resfinder_version=None, date_analysis_sofi=None, date_approved_serotype=None, date_approved_qc=None, date_approved_amr=None, date_approved_st=None, date_approved_toxin=None, date_approved_cluster=None, qc_provided_species=None, qc_genome1x=None, qc_genome10x=None, qc_gsize_diff1x10=None, qc_avg_coverage=None, qc_final=None, qc_num_contigs=None, qc_ambiguous_sites=None, qc_num_reads=None, qc_main_sp_plus_uncl=None, qc_unclassified_reads=None, qc_db_id=None, qc_failed_tests=None, qc_cgmlst_percent=None, cgmlst_schema_salmonella=None, cgmlst_schema_ecoli=None, cgmlst_schema_campylobacter=None, cgmlst_schema_listeria=None, cgmlst_schema_klebsiella=None, subspecies=None, species_final=None, st=None, pathotype=None, pathotype_final=None, sero_enterobase=None, sero_seqsero=None, sero_antigen_seqsero=None, sero_d_tartrate=None, sero_serotype_finder=None, serotype_final=None, adhesion_final=None, virulence_genes=None, toxins_final=None, infection_source=None, resistance_genes=None, amr_profile=None, comment=None, comment_cluster=None, comment_general=None, comment_supplementary=None, comment_qc=None, amr_ami=None, amr_amp=None, amr_azi=None, amr_fep=None, amr_fot=None, amr_f_c=None, amr_fox=None, amr_taz=None, amr_t_c=None, amr_chl=None, amr_cip=None, amr_cli=None, amr_col=None, amr_dap=None, amr_etp=None, amr_ery=None, amr_fus=None, amr_gen=None, amr_imi=None, amr_kan=None, amr_lzd=None, amr_mero=None, amr_mup=None, amr_nal=None, amr_pen=None, amr_syn=None, amr_rif=None, amr_str=None, amr_sul=None, amr_tei=None, amr_trm=None, amr_tet=None, amr_tia=None, amr_tgc=None, amr_tmp=None, amr_van=None):  # noqa: E501
         """AnalysisResult - a model defined in OpenAPI
 
         :param sequence_id: The sequence_id of this AnalysisResult.  # noqa: E501
@@ -54,8 +54,6 @@ class AnalysisResult(Model):
         :type run_id: str
         :param public: The public of this AnalysisResult.  # noqa: E501
         :type public: str
-        :param provided_species: The provided_species of this AnalysisResult.  # noqa: E501
-        :type provided_species: str
         :param primary_isolate: The primary_isolate of this AnalysisResult.  # noqa: E501
         :type primary_isolate: bool
         :param chr_number: The chr_number of this AnalysisResult.  # noqa: E501
@@ -116,6 +114,8 @@ class AnalysisResult(Model):
         :type date_approved_toxin: datetime
         :param date_approved_cluster: The date_approved_cluster of this AnalysisResult.  # noqa: E501
         :type date_approved_cluster: datetime
+        :param qc_provided_species: The qc_provided_species of this AnalysisResult.  # noqa: E501
+        :type qc_provided_species: str
         :param qc_genome1x: The qc_genome1x of this AnalysisResult.  # noqa: E501
         :type qc_genome1x: float
         :param qc_genome10x: The qc_genome10x of this AnalysisResult.  # noqa: E501
@@ -281,7 +281,6 @@ class AnalysisResult(Model):
             'sofi_date': datetime,
             'run_id': str,
             'public': str,
-            'provided_species': str,
             'primary_isolate': bool,
             'chr_number': str,
             'cvr_number': str,
@@ -312,6 +311,7 @@ class AnalysisResult(Model):
             'date_approved_st': datetime,
             'date_approved_toxin': datetime,
             'date_approved_cluster': datetime,
+            'qc_provided_species': str,
             'qc_genome1x': float,
             'qc_genome10x': float,
             'qc_gsize_diff1x10': float,
@@ -402,7 +402,6 @@ class AnalysisResult(Model):
             'sofi_date': 'sofi_date',
             'run_id': 'run_id',
             'public': 'public',
-            'provided_species': 'provided_species',
             'primary_isolate': 'primary_isolate',
             'chr_number': 'chr_number',
             'cvr_number': 'cvr_number',
@@ -433,6 +432,7 @@ class AnalysisResult(Model):
             'date_approved_st': 'date_approved_st',
             'date_approved_toxin': 'date_approved_toxin',
             'date_approved_cluster': 'date_approved_cluster',
+            'qc_provided_species': 'qc_provided_species',
             'qc_genome1x': 'qc_genome1x',
             'qc_genome10x': 'qc_genome10x',
             'qc_gsize_diff1x10': 'qc_gsize_diff1x10',
@@ -522,7 +522,6 @@ class AnalysisResult(Model):
         self._sofi_date = sofi_date
         self._run_id = run_id
         self._public = public
-        self._provided_species = provided_species
         self._primary_isolate = primary_isolate
         self._chr_number = chr_number
         self._cvr_number = cvr_number
@@ -553,6 +552,7 @@ class AnalysisResult(Model):
         self._date_approved_st = date_approved_st
         self._date_approved_toxin = date_approved_toxin
         self._date_approved_cluster = date_approved_cluster
+        self._qc_provided_species = qc_provided_species
         self._qc_genome1x = qc_genome1x
         self._qc_genome10x = qc_genome10x
         self._qc_gsize_diff1x10 = qc_gsize_diff1x10
@@ -881,29 +881,6 @@ class AnalysisResult(Model):
         """
 
         self._public = public
-
-    @property
-    def provided_species(self):
-        """Gets the provided_species of this AnalysisResult.
-
-
-        :return: The provided_species of this AnalysisResult.
-        :rtype: str
-        """
-        return self._provided_species
-
-    @provided_species.setter
-    def provided_species(self, provided_species):
-        """Sets the provided_species of this AnalysisResult.
-
-
-        :param provided_species: The provided_species of this AnalysisResult.
-        :type provided_species: str
-        """
-        if provided_species is None:
-            raise ValueError("Invalid value for `provided_species`, must not be `None`")  # noqa: E501
-
-        self._provided_species = provided_species
 
     @property
     def primary_isolate(self):
@@ -1548,6 +1525,27 @@ class AnalysisResult(Model):
         """
 
         self._date_approved_cluster = date_approved_cluster
+
+    @property
+    def qc_provided_species(self):
+        """Gets the qc_provided_species of this AnalysisResult.
+
+
+        :return: The qc_provided_species of this AnalysisResult.
+        :rtype: str
+        """
+        return self._qc_provided_species
+
+    @qc_provided_species.setter
+    def qc_provided_species(self, qc_provided_species):
+        """Sets the qc_provided_species of this AnalysisResult.
+
+
+        :param qc_provided_species: The qc_provided_species of this AnalysisResult.
+        :type qc_provided_species: str
+        """
+
+        self._qc_provided_species = qc_provided_species
 
     @property
     def qc_genome1x(self):

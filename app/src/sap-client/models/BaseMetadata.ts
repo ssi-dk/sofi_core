@@ -92,12 +92,6 @@ export interface BaseMetadata  {
     _public?: string;
     /**
      * 
-     * @type {string}
-     * @memberof BaseMetadata
-     */
-    provided_species: string;
-    /**
-     * 
      * @type {boolean}
      * @memberof BaseMetadata
      */
@@ -117,7 +111,6 @@ export function BaseMetadataFromJSON(json: any): BaseMetadata {
         'sofi_date': !exists(json, 'sofi_date') ? undefined : new Date(json['sofi_date']),
         'run_id': json['run_id'],
         '_public': !exists(json, 'public') ? undefined : json['public'],
-        'provided_species': json['provided_species'],
         'primary_isolate': json['primary_isolate'],
     };
 }
@@ -138,7 +131,6 @@ export function BaseMetadataToJSON(value?: BaseMetadata): any {
         'sofi_date': value.sofi_date === undefined ? undefined : value.sofi_date.toISOString(),
         'run_id': value.run_id,
         'public': value._public,
-        'provided_species': value.provided_species,
         'primary_isolate': value.primary_isolate,
     };
 }

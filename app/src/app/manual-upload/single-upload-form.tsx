@@ -26,7 +26,6 @@ const initialState = {
   received_date: new Date(),
   run_id: "",
   _public: "",
-  provided_species: "",
   primary_isolate: true,
 } as BaseMetadata;
 
@@ -162,12 +161,6 @@ function SingleUploadForm() {
           name="_public"
           // eslint-disable-next-line
           value={metadata._public}
-          onChange={changeState}
-        />
-        <TextInput
-          label="Provided species"
-          name="provided_species"
-          value={metadata.provided_species}
           onChange={changeState}
         />
         <TextInput

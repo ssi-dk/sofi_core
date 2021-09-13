@@ -631,7 +631,6 @@ components:
         - institution
         - received_date
         - run_id
-        - provided_species
         - primary_isolate
       properties:
         sequence_id:
@@ -658,8 +657,6 @@ components:
         run_id:
           type: string
         public:
-          type: string
-        provided_species:
           type: string
         primary_isolate:
           type: boolean
@@ -771,6 +768,8 @@ components:
             date_approved_cluster:
               type: string
               format: date-time
+            qc_provided_species:
+              type: string
             qc_genome1x:
               type: number
             qc_genome10x:
