@@ -24,7 +24,7 @@ createUser(){
 
   echo $actionUrl
 
-  $pw = `uuidgen -r`
+  pw=`uuidgen -r`
 
   # Complete Registration Flow with password method
   curl -k -i -H "Accept: application/json" -H "Content-Type: application/json" \
