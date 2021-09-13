@@ -23,7 +23,7 @@ class MetadataReloadResponse(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, sequence_id=None, sequence_filename=None, isolate_id=None, institution=None, project_number=None, project_title=None, sampling_date=None, received_date=None, sofi_date=None, run_id=None, public=None, provided_species=None, primary_isolate=None, cpr_nr=None, gender=None, name=None, age=None, travel=None, travel_country=None, run_date=None, kma_received_date=None, kma=None, region=None, fud_number=None, cluster_id=None, epi_export=None, chr_number=None, cvr_number=None, aut_number=None, product_type=None, product=None, origin_country=None, animal_species=None, sample_info=None):  # noqa: E501
+    def __init__(self, sequence_id=None, sequence_filename=None, isolate_id=None, institution=None, project_number=None, project_title=None, sampling_date=None, received_date=None, sofi_date=None, run_id=None, public=None, primary_isolate=None, cpr_nr=None, gender=None, name=None, age=None, travel=None, travel_country=None, run_date=None, kma_received_date=None, kma=None, region=None, fud_number=None, cluster_id=None, epi_export=None, chr_number=None, cvr_number=None, aut_number=None, product_type=None, product=None, origin_country=None, animal_species=None, sample_info=None):  # noqa: E501
         """MetadataReloadResponse - a model defined in OpenAPI
 
         :param sequence_id: The sequence_id of this MetadataReloadResponse.  # noqa: E501
@@ -48,8 +48,6 @@ class MetadataReloadResponse(Model):
         :type run_id: str
         :param public: The public of this MetadataReloadResponse.  # noqa: E501
         :type public: str
-        :param provided_species: The provided_species of this MetadataReloadResponse.  # noqa: E501
-        :type provided_species: str
         :param primary_isolate: The primary_isolate of this MetadataReloadResponse.  # noqa: E501
         :type primary_isolate: bool
         :param cpr_nr: The cpr_nr of this MetadataReloadResponse.  # noqa: E501
@@ -107,7 +105,6 @@ class MetadataReloadResponse(Model):
             'sofi_date': datetime,
             'run_id': str,
             'public': str,
-            'provided_species': str,
             'primary_isolate': bool,
             'cpr_nr': str,
             'gender': str,
@@ -144,7 +141,6 @@ class MetadataReloadResponse(Model):
             'sofi_date': 'sofi_date',
             'run_id': 'run_id',
             'public': 'public',
-            'provided_species': 'provided_species',
             'primary_isolate': 'primary_isolate',
             'cpr_nr': 'cpr_nr',
             'gender': 'gender',
@@ -180,7 +176,6 @@ class MetadataReloadResponse(Model):
         self._sofi_date = sofi_date
         self._run_id = run_id
         self._public = public
-        self._provided_species = provided_species
         self._primary_isolate = primary_isolate
         self._cpr_nr = cpr_nr
         self._gender = gender
@@ -455,29 +450,6 @@ class MetadataReloadResponse(Model):
         """
 
         self._public = public
-
-    @property
-    def provided_species(self):
-        """Gets the provided_species of this MetadataReloadResponse.
-
-
-        :return: The provided_species of this MetadataReloadResponse.
-        :rtype: str
-        """
-        return self._provided_species
-
-    @provided_species.setter
-    def provided_species(self, provided_species):
-        """Sets the provided_species of this MetadataReloadResponse.
-
-
-        :param provided_species: The provided_species of this MetadataReloadResponse.
-        :type provided_species: str
-        """
-        if provided_species is None:
-            raise ValueError("Invalid value for `provided_species`, must not be `None`")  # noqa: E501
-
-        self._provided_species = provided_species
 
     @property
     def primary_isolate(self):

@@ -19,7 +19,7 @@ class BaseMetadata(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, sequence_id=None, sequence_filename=None, isolate_id=None, institution=None, project_number=None, project_title=None, sampling_date=None, received_date=None, sofi_date=None, run_id=None, public=None, provided_species=None, primary_isolate=None):  # noqa: E501
+    def __init__(self, sequence_id=None, sequence_filename=None, isolate_id=None, institution=None, project_number=None, project_title=None, sampling_date=None, received_date=None, sofi_date=None, run_id=None, public=None, primary_isolate=None):  # noqa: E501
         """BaseMetadata - a model defined in OpenAPI
 
         :param sequence_id: The sequence_id of this BaseMetadata.  # noqa: E501
@@ -44,8 +44,6 @@ class BaseMetadata(Model):
         :type run_id: str
         :param public: The public of this BaseMetadata.  # noqa: E501
         :type public: str
-        :param provided_species: The provided_species of this BaseMetadata.  # noqa: E501
-        :type provided_species: str
         :param primary_isolate: The primary_isolate of this BaseMetadata.  # noqa: E501
         :type primary_isolate: bool
         """
@@ -61,7 +59,6 @@ class BaseMetadata(Model):
             'sofi_date': datetime,
             'run_id': str,
             'public': str,
-            'provided_species': str,
             'primary_isolate': bool,
         }
 
@@ -77,7 +74,6 @@ class BaseMetadata(Model):
             'sofi_date': 'sofi_date',
             'run_id': 'run_id',
             'public': 'public',
-            'provided_species': 'provided_species',
             'primary_isolate': 'primary_isolate',
         }
 
@@ -92,7 +88,6 @@ class BaseMetadata(Model):
         self._sofi_date = sofi_date
         self._run_id = run_id
         self._public = public
-        self._provided_species = provided_species
         self._primary_isolate = primary_isolate
 
     @classmethod
@@ -346,29 +341,6 @@ class BaseMetadata(Model):
         """
 
         self._public = public
-
-    @property
-    def provided_species(self):
-        """Gets the provided_species of this BaseMetadata.
-
-
-        :return: The provided_species of this BaseMetadata.
-        :rtype: str
-        """
-        return self._provided_species
-
-    @provided_species.setter
-    def provided_species(self, provided_species):
-        """Sets the provided_species of this BaseMetadata.
-
-
-        :param provided_species: The provided_species of this BaseMetadata.
-        :type provided_species: str
-        """
-        if provided_species is None:
-            raise ValueError("Invalid value for `provided_species`, must not be `None`")  # noqa: E501
-
-        self._provided_species = provided_species
 
     @property
     def primary_isolate(self):

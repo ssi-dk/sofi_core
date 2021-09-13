@@ -728,15 +728,12 @@ components:
           type: string
         public:
           type: string
-        provided_species:
-          type: string
         primary_isolate:
           type: boolean
       required:
       - institution
       - isolate_id
       - primary_isolate
-      - provided_species
       - received_date
       - run_id
       - sequence_id
@@ -997,6 +994,8 @@ components:
           type: string
         date_approved_cluster:
           format: date-time
+          type: string
+        qc_provided_species:
           type: string
         qc_genome1x:
           type: number

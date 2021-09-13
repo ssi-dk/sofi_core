@@ -63,12 +63,12 @@ function AnalysisFilter(props: AnalysisFilterProps) {
 
   return (
     <FilterBox title="Analysis filter">
-      <Text>{t("provided_species")}</Text>
+      <Text>{t("qc_provided_species")}</Text>
       <Select
         options={providedSpeciesOptions}
         isMulti
         theme={selectTheme}
-        onChange={onChangeBuilder("provided_species")}
+        onChange={onChangeBuilder("qc_provided_species")}
       />
       <Text mt={2}>{t("serotype_final")}</Text>
       <Select
