@@ -97,12 +97,14 @@ class LIMSRequestBroker(RequestBroker):
 
         if body := request["body"]:
             fields = body.copy()
+            logging.debug(f"Passed fields from approval: {fields}")
 
             mapped_request = {
                 reverse_column_mapping[k]: v
                 for k, v in fields.items()
                 if reverse_column_mapping.normal_get(k)
             }
+            logging.debug(f"Reverse-mapped request: {mapped_request}")
             conn_id, lms_cfg = create_lims_conn_config()
 
             value_set = set(DataFieldName.allowed_values[("value",)].values())
@@ -113,12 +115,13 @@ class LIMSRequestBroker(RequestBroker):
             ]
             with api_clients.lims_client.ApiClient(lms_cfg) as api_client:
                 req = IsolateUpdateRequest(isolate_id=sequence_id, data=data)
+                logging.debug(f"Sending isolate update request to LIMS: {req}")
                 api_instance = isolate_api.IsolateApi(api_client)
                 try:
                     api_response = api_instance.post_actions_update_isolate(
                         isolate_update_request=req
                     )
-                    logging.debug(f"Api responded with: {api_response}")
+                    logging.debug(f"LIMS Api responded with: {api_response}")
                     if (
                         "output" in api_response
                         and "sapresponse" in api_response.output
