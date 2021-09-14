@@ -89,7 +89,7 @@ def main():
 
 
 if __name__ == "__main__":
-    LOGLEVEL = os.environ.get("LOGLEVEL", "INFO").upper()
+    LOGLEVEL = os.environ.get("LOG_LEVEL", "INFO").upper()
     logging.basicConfig(
         format="%(name)s - %(levelname)s - %(message)s",
         stream=sys.stdout,

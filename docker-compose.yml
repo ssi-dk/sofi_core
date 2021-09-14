@@ -25,6 +25,7 @@ services:
       - SOFI_BIFROST_ENCRYPTION_NAME=${SOFI_BIFROST_ENCRYPTION_NAME}
       - SOFI_BIFROST_ENCRYPTION_KEY=${SOFI_BIFROST_ENCRYPTION_KEY}
       - SOFI_UPLOAD_DIR=/tmp
+      - LOG_LEVEL=${LOG_LEVEL}
 
   sap_app:
     expose:
@@ -55,6 +56,7 @@ services:
       - LIMS_API_DATABASEID=${LIMS_API_DATABASEID}
       - LIMS_API_USERNAME=${LIMS_API_USERNAME}
       - LIMS_API_PASSWORD=${LIMS_API_PASSWORD}
+      - LOG_LEVEL=${LOG_LEVEL}
     volumes:
       - ${TBR_CLIENT_KEY}:/app/.certs/client.key:ro
       - ${TBR_CLIENT_CERT}:/app/.certs/client.pem:ro
@@ -68,6 +70,7 @@ services:
       - BIFROST_CONN=${BIFROST_MONGO_CONN}
       - PYTHONDONTWRITEBYTECODE=1
       - PYTHONUNBUFFERED=0
+      - LOG_LEVEL=${LOG_LEVEL}
     restart: on-failure
     depends_on:
       - "sap_api"

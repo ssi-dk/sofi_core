@@ -6,10 +6,12 @@ import time
 from bson.objectid import ObjectId
 from aggregation import agg_pipeline
 
+LOGLEVEL = os.environ.get("LOG_LEVEL", "INFO").upper()
+
 logging.basicConfig(
     format="%(name)s - %(levelname)s - %(message)s",
     stream=sys.stdout,
-    level=logging.DEBUG,
+    level=LOGLEVEL,
 )
 
 logging.info("bifrost_listener starting up")
