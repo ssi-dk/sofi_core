@@ -111,7 +111,7 @@ class LIMSRequestBroker(RequestBroker):
             data = [
                 DataEntry(field_name=DataFieldName(value=k), field_value=str(v))
                 for k, v in mapped_request.items()
-                if k in value_set and v is not None
+                if k in value_set and v is not None and v is not ""
             ]
             with api_clients.lims_client.ApiClient(lms_cfg) as api_client:
                 req = IsolateUpdateRequest(isolate_id=sequence_id, data=data)
