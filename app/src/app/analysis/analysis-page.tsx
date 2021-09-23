@@ -457,9 +457,10 @@ export default function AnalysisPage() {
       if (
         (columnId.startsWith("date") || columnId.endsWith("date")) &&
         value !== undefined &&
-        !Number.isNaN(value.getTime())
+        typeof value?.getTime === "function" &&
+        !Number.isNaN(value?.getTime())
       ) {
-        v = value.toISOString()?.split("T")[0];
+        v = value?.toISOString()?.split("T")[0];
       }
       // cannot edit cells that have already been approved
       if (approvals?.[rowId]?.[columnId] !== ApprovalStatus.approved) {
