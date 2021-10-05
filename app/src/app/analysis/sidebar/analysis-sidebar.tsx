@@ -39,7 +39,7 @@ function AnalysisSidebar(props: AnalysisSidebarProps) {
     [data, sortUnique]
   );
   const projectNrs = React.useMemo(
-    () => sortUnique(data.map((x) => x.project_title)),
+    () => sortUnique(data.map((x) => x.project_number)),
     [data, sortUnique]
   );
   const providedSpecies = React.useMemo(
