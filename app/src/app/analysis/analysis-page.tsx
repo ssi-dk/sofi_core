@@ -495,13 +495,17 @@ export default function AnalysisPage() {
                 submitOnBlur={false}
                 onSubmit={onFreeTextEdit(rowId, columnId)}
               >
-                <EditablePreview height="100%" width="100%" />
+                <EditablePreview
+                  height="100%"
+                  minWidth="400px"
+                  minHeight="22px"
+                />
                 {columnConfigs[columnId].editable_format === "date" ? (
                   <EditableInput
                     pattern="\d{4}-\d{1,2}-\d{1,2}"
                     title="Date in yyyy-mm-dd format"
                     height="100%"
-                    width="100%"
+                    minWidth="100%"
                   />
                 ) : (
                   <EditableInput height="100%" width="100%" />
