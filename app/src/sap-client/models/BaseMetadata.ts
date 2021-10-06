@@ -50,10 +50,10 @@ export interface BaseMetadata  {
     institution: Organization;
     /**
      * 
-     * @type {number}
+     * @type {string}
      * @memberof BaseMetadata
      */
-    project_number?: number;
+    project_number?: string;
     /**
      * 
      * @type {string}

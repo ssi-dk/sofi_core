@@ -35,7 +35,7 @@ class LimsMetadata(Model):
         :param institution: The institution of this LimsMetadata.  # noqa: E501
         :type institution: Organization
         :param project_number: The project_number of this LimsMetadata.  # noqa: E501
-        :type project_number: float
+        :type project_number: str
         :param project_title: The project_title of this LimsMetadata.  # noqa: E501
         :type project_title: str
         :param sampling_date: The sampling_date of this LimsMetadata.  # noqa: E501
@@ -72,7 +72,7 @@ class LimsMetadata(Model):
             'sequence_filename': str,
             'isolate_id': str,
             'institution': Organization,
-            'project_number': float,
+            'project_number': str,
             'project_title': str,
             'sampling_date': datetime,
             'received_date': datetime,
@@ -241,7 +241,7 @@ class LimsMetadata(Model):
 
 
         :return: The project_number of this LimsMetadata.
-        :rtype: float
+        :rtype: str
         """
         return self._project_number
 
@@ -251,7 +251,7 @@ class LimsMetadata(Model):
 
 
         :param project_number: The project_number of this LimsMetadata.
-        :type project_number: float
+        :type project_number: str
         """
 
         self._project_number = project_number

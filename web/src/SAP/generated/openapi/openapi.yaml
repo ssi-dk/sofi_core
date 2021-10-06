@@ -712,7 +712,7 @@ components:
         institution:
           $ref: '#/components/schemas/Organization'
         project_number:
-          type: number
+          type: string
         project_title:
           type: string
         sampling_date:

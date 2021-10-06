@@ -109,6 +109,7 @@ class TBRRequestBroker(RequestBroker):
             ) as api_client:
                 api_instance = isolate_api.IsolateApi(api_client)
                 try:
+                    logging.debug(f"Sending to TBR: {mapped_request}")
                     api_response = api_instance.api_isolate_put(
                         isolate_update=mapped_request
                     )

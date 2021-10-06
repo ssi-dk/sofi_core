@@ -31,7 +31,7 @@ class BaseMetadata(Model):
         :param institution: The institution of this BaseMetadata.  # noqa: E501
         :type institution: Organization
         :param project_number: The project_number of this BaseMetadata.  # noqa: E501
-        :type project_number: float
+        :type project_number: str
         :param project_title: The project_title of this BaseMetadata.  # noqa: E501
         :type project_title: str
         :param sampling_date: The sampling_date of this BaseMetadata.  # noqa: E501
@@ -52,7 +52,7 @@ class BaseMetadata(Model):
             'sequence_filename': str,
             'isolate_id': str,
             'institution': Organization,
-            'project_number': float,
+            'project_number': str,
             'project_title': str,
             'sampling_date': datetime,
             'received_date': datetime,
@@ -197,7 +197,7 @@ class BaseMetadata(Model):
 
 
         :return: The project_number of this BaseMetadata.
-        :rtype: float
+        :rtype: str
         """
         return self._project_number
 
@@ -207,7 +207,7 @@ class BaseMetadata(Model):
 
 
         :param project_number: The project_number of this BaseMetadata.
-        :type project_number: float
+        :type project_number: str
         """
 
         self._project_number = project_number

@@ -20,7 +20,7 @@ import TextInput from "./text-input";
 const initialState = {
   isolate_id: "",
   sequence_id: "",
-  project_number: 2,
+  project_number: "2",
   project_title: "Urgent Inquiries",
   sampling_date: new Date(),
   received_date: new Date(),

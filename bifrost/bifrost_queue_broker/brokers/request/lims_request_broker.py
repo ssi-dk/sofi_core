@@ -94,6 +94,7 @@ class LIMSRequestBroker(RequestBroker):
 
     def approve_fields(self, request):
         sequence_id = request["sequence_id"]
+        isolate_id = request["isolate_id"]
 
         if body := request["body"]:
             fields = body.copy()
@@ -114,10 +115,10 @@ class LIMSRequestBroker(RequestBroker):
                 if k in value_set and v is not None and v is not ""
             ]
             with api_clients.lims_client.ApiClient(lms_cfg) as api_client:
-                req = IsolateUpdateRequest(isolate_id=sequence_id, data=data)
-                logging.debug(f"Sending isolate update request to LIMS: {req}")
+                req = IsolateUpdateRequest(isolate_id=isolate_id, data=data)
                 api_instance = isolate_api.IsolateApi(api_client)
                 try:
+                    logging.debug(f"Sending isolate update request to LIMS: {req}")
                     api_response = api_instance.post_actions_update_isolate(
                         isolate_update_request=req
                     )
