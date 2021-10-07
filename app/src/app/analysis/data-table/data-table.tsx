@@ -52,7 +52,7 @@ type DataTableProps<T extends NotEmpty> = {
   selectionClassName: string;
   approvableColumns: string[];
   onSelect: (sel: DataTableSelection<T>) => void;
-  onDetailsClick: (isolateId: string) => void;
+  onDetailsClick: (isolateId: string, row: Row<T>) => void;
   view: UserDefinedViewInternal;
   getCellStyle: (rowId: string, columnId: string, value: any) => string;
   getStickyCellStyle: (rowId: string) => string;
@@ -374,7 +374,8 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
           </div>
         );
       }
-      const rowId = rows[rowIndex - 1].original[primaryKey];
+      const row = rows[rowIndex - 1];
+      const rowId = row.original[primaryKey];
       const columnId = visibleColumns[columnIndex].id;
       const className =
         columnIndex === 0
@@ -406,7 +407,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
                 <IconButton
                   size="1em"
                   variant="unstyled"
-                  onClick={() => onDetailsClick(rowId)}
+                  onClick={() => onDetailsClick(rowId, row)}
                   aria-label="Search database"
                   icon={<ExternalLinkIcon marginTop="-0.5em" />}
                   ml="1"

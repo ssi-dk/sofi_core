@@ -37,10 +37,17 @@ function DataTableColumnHeader<T extends NotEmpty>(
 
   const noop = React.useCallback(() => {}, []);
 
-  const doResize = React.useCallback(() => onResize(columnIndex), [
-    columnIndex,
-    onResize,
-  ]);
+  const doResize = React.useCallback(() => {
+    onResize(columnIndex);
+    // un-register the global event handler, if it was set
+    document.onmouseup = undefined;
+  }, [columnIndex, onResize]);
+
+  const registerGlobalMouseUpHandler = React.useCallback(() => {
+    // a hack to make sure the mouse-up event for doing the resize gets tracked,
+    // even if the user has moved the mouse outside of the resize-control before releasing
+    document.onmouseup = doResize;
+  }, [doResize]);
 
   const noPropagate = React.useCallback((e) => {
     e.preventDefault();
@@ -83,10 +90,11 @@ function DataTableColumnHeader<T extends NotEmpty>(
       {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions */}
       <div
         role="separator"
-        onKeyDown={noPropagate}
         onClick={noPropagate}
-        onMouseUp={doResize}
+        onKeyDown={noPropagate}
         {...column.getResizerProps()}
+        onMouseDownCapture={registerGlobalMouseUpHandler}
+        onMouseUpCapture={doResize}
       />
     </div>
   );

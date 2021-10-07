@@ -1,14 +1,9 @@
 import React, { useState } from "react";
 import { Button, useToast } from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { useMutation } from "redux-query-react";
 import { MetadataReloadResponse, Organization } from "sap-client";
-import {
-  sequencesFromIsolateId,
-  IsolateWithData,
-} from "../analysis-history-configs";
-import AnalysisHistoryTable from "../analysis-history-table";
 import { reloadMetadataByIsolate } from "./reload-configs";
 
 const getReloadResponse = (state: {

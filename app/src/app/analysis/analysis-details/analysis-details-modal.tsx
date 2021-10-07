@@ -33,18 +33,16 @@ const getAnalysisHistory = (state: {
 
 type AnalysisHistoryProps = {
   isolateId: string;
+  institution: Organization;
   isOpen: boolean;
   onClose: () => void;
 };
 
 const AnalysisHistory = (props: AnalysisHistoryProps) => {
   const { t } = useTranslation();
-  const { isolateId, isOpen, onClose } = props;
+  const { institution, isolateId, isOpen, onClose } = props;
 
   const analysisHistory = useSelector(getAnalysisHistory) ?? {};
-  const institution =
-    (Object.values(analysisHistory).find((x: any) => x.institution) as any)
-      ?.institution ?? Organization.Other;
 
   const [{ isPending, status }, refresh] = useRequest(
     sequencesFromIsolateId(isolateId)
@@ -81,12 +79,10 @@ const AnalysisHistory = (props: AnalysisHistoryProps) => {
           </ModalBody>
 
           <ModalFooter>
-            <IfPermission permission={Permission.approve}>
-              <ReloadMetadataWidget
-                isolateId={isolateId}
-                institution={institution}
-              />
-            </IfPermission>
+            <ReloadMetadataWidget
+              isolateId={isolateId}
+              institution={institution}
+            />
             <Button colorScheme="blue" mr={3} onClick={onClose}>
               {t("Close")}
             </Button>
