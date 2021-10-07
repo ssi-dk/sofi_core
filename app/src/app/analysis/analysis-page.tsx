@@ -13,13 +13,14 @@ import {
   Spinner,
 } from "@chakra-ui/react";
 import { CheckIcon, DragHandleIcon, NotAllowedIcon } from "@chakra-ui/icons";
-import { Column, TableState } from "react-table";
+import { Column, Row, TableState } from "react-table";
 import {
   AnalysisResult,
   ApprovalRequest,
   AnalysisQuery,
   ApprovalStatus,
   Permission,
+  Organization,
 } from "sap-client";
 import { useMutation, useRequest } from "redux-query-react";
 import { useDispatch, useSelector } from "react-redux";
@@ -64,6 +65,9 @@ export default function AnalysisPage() {
   const dispatch = useDispatch();
 
   const [moreInfoIsolate, setMoreInfoIsolate] = useState("");
+  const [moreInfoIsolateInstitution, setMoreInfoIsolateInstitution] = useState(
+    Organization.Other
+  );
   const {
     isOpen: isMoreInfoModalOpen,
     onOpen: onMoreInfoModalOpen,
@@ -531,8 +535,9 @@ export default function AnalysisPage() {
   );
 
   const openDetailsView = React.useCallback(
-    (primaryKey: any) => {
+    (primaryKey: string, row: Row<AnalysisResult>) => {
       setMoreInfoIsolate(primaryKey);
+      setMoreInfoIsolateInstitution(row.original.institution);
       onMoreInfoModalOpen();
     },
     [setMoreInfoIsolate, onMoreInfoModalOpen]
@@ -669,6 +674,7 @@ export default function AnalysisPage() {
   return (
     <React.Fragment>
       <AnalysisDetails
+        institution={moreInfoIsolateInstitution}
         isolateId={moreInfoIsolate}
         isOpen={isMoreInfoModalOpen}
         onClose={onMoreInfoModalClose}
