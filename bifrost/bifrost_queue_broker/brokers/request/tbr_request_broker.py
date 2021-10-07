@@ -99,7 +99,7 @@ class TBRRequestBroker(RequestBroker):
             mapped_request = {
                 reverse_column_mapping[k]: v
                 for k, v in fields.items()
-                if reverse_column_mapping.normal_get(k)
+                if reverse_column_mapping.normal_get(k) and v
             }
             mapped_request["isolate_id"] = isolate_id
             # del mapped_request["sequence_id"]

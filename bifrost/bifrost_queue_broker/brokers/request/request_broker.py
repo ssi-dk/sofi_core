@@ -47,6 +47,7 @@ class RequestBroker(threading.Thread):
                     self.request_callback(record)
                     self.mark_done(record)
                 except BrokerError:
+                    logging.error(f"Failure for record {record}")
                     self.mark_error(record)
 
             except StopIteration:
