@@ -536,7 +536,7 @@ export default function AnalysisPage() {
 
   const openDetailsView = React.useCallback(
     (primaryKey: string, row: Row<AnalysisResult>) => {
-      setMoreInfoIsolate(primaryKey);
+      setMoreInfoIsolate(row.original.isolate_id);
       setMoreInfoIsolateInstitution(row.original.institution);
       onMoreInfoModalOpen();
     },
