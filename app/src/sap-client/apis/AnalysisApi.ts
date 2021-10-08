@@ -51,7 +51,7 @@ export interface SubmitChangesRequest {
 
 
 /**
- * Page through all the analysis in the system (WIP)
+ * Page through all the analysis in the system
  */
 function getAnalysisRaw<T>(requestParameters: GetAnalysisRequest, requestConfig: runtime.TypedQueryConfig<T, PageOfAnalysis> = {}): QueryConfig<T> {
     let queryParameters = null;
@@ -98,7 +98,7 @@ function getAnalysisRaw<T>(requestParameters: GetAnalysisRequest, requestConfig:
 }
 
 /**
-* Page through all the analysis in the system (WIP)
+* Page through all the analysis in the system
 */
 export function getAnalysis<T>(requestParameters: GetAnalysisRequest, requestConfig?: runtime.TypedQueryConfig<T, PageOfAnalysis>): QueryConfig<T> {
     return getAnalysisRaw(requestParameters, requestConfig);
