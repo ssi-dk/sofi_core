@@ -30,11 +30,28 @@ def create_approval(user, token_info, body: ApprovalRequest):
     appr.timestamp = datetime.datetime.now().isoformat()
     appr.status = "submitted"
     appr.id = str(uuid.uuid4())
+
+    # set date_analysis_sofi on approved sequences before sending them for
+    # approval, so the timestamp can be transferred to upstream metadata
+    # services, if needed.
+    analysis_timestamp_updates = {}
+    for seq in body.matrix:
+        seq_update = {"date_analysis_sofi": appr.timestamp}
+        analysis_timestamp_updates[seq] = seq_update
+
+    update_analysis(analysis_timestamp_updates)
+
     errors_tuple = handle_approvals(appr, token_info["institution"])
     errors = []
+    analysis_timestamp_reverts = {}
     for (error_seq_id, error) in errors_tuple:
         del appr.matrix[error_seq_id]
+        analysis_timestamp_reverts[error_seq_id] = {"date_analysis_sofi": None}
         errors.append(error)
+
+    # If any sequences errored out on the metadata service, revert their
+    # date_analysis_sofi timestamp
+    update_analysis(analysis_timestamp_reverts)
 
     # Insert approval after matrix has been manipulated
     res = insert_approval(token_info["email"], appr)
