@@ -32,8 +32,9 @@ const sendJudgement = (params: ApprovalRequest, judgement: ApprovalStatus) => {
       if (!clone.matrix[k][f]) {
         // remove any negatives that showed up due to toggle on/off
         delete clone.matrix[k][f];
+      } else {
+        clone.matrix[k][f] = judgement;
       }
-      clone.matrix[k][f] = judgement;
     }
   }
   // use generated api client as base
