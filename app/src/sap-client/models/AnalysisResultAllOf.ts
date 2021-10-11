@@ -116,6 +116,12 @@ export interface AnalysisResultAllOf  {
     qc_final?: AnalysisResultAllOfQcFinalEnum;
     /**
      * 
+     * @type {string}
+     * @memberof AnalysisResultAllOf
+     */
+    qc_action?: string;
+    /**
+     * 
      * @type {number}
      * @memberof AnalysisResultAllOf
      */
@@ -559,6 +565,7 @@ export function AnalysisResultAllOfFromJSON(json: any): AnalysisResultAllOf {
         'qc_gsize_diff1x10': !exists(json, 'qc_gsize_diff1x10') ? undefined : json['qc_gsize_diff1x10'],
         'qc_avg_coverage': !exists(json, 'qc_avg_coverage') ? undefined : json['qc_avg_coverage'],
         'qc_final': !exists(json, 'qc_final') ? undefined : json['qc_final'],
+        'qc_action': !exists(json, 'qc_action') ? undefined : json['qc_action'],
         'qc_num_contigs': !exists(json, 'qc_num_contigs') ? undefined : json['qc_num_contigs'],
         'qc_ambiguous_sites': !exists(json, 'qc_ambiguous_sites') ? undefined : json['qc_ambiguous_sites'],
         'qc_num_reads': !exists(json, 'qc_num_reads') ? undefined : json['qc_num_reads'],
@@ -653,6 +660,7 @@ export function AnalysisResultAllOfToJSON(value?: AnalysisResultAllOf): any {
         'qc_gsize_diff1x10': value.qc_gsize_diff1x10,
         'qc_avg_coverage': value.qc_avg_coverage,
         'qc_final': value.qc_final,
+        'qc_action': value.qc_action,
         'qc_num_contigs': value.qc_num_contigs,
         'qc_ambiguous_sites': value.qc_ambiguous_sites,
         'qc_num_reads': value.qc_num_reads,

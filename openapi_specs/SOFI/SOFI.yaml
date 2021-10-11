@@ -781,6 +781,8 @@ components:
             qc_final:
               type: string
               enum: ["A", "B", "C"]
+            qc_action:
+              type: string
             qc_num_contigs:
               type: number
             qc_ambiguous_sites:

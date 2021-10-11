@@ -1011,6 +1011,8 @@ components:
           - B
           - C
           type: string
+        qc_action:
+          type: string
         qc_num_contigs:
           type: number
         qc_ambiguous_sites:

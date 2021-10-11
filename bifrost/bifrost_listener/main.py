@@ -67,8 +67,9 @@ def watch_loop():
 
 
 logging.info("bifrost_listener initialized")
-logging.info("Running first aggregation")
+logging.info("Running first aggregation ...")
 db.samples.aggregate(agg_pipeline())
+logging.info("Finished first aggregation.")
 while True:
     try:
         watch_loop()

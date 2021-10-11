@@ -1,0 +1,140 @@
+{"species": "Acinetobacter baumannii", "schema": "abaumannii"}
+{"species": "Achromobacter", "schema": "achromobacter"}
+{"species": "Aeromonas", "schema": "aeromonas"}
+{"species": "Aspergillus fumigatus", "schema": "afumigatus"}
+{"species": "Anaplasma phagocytophilum", "schema": "aphagocytophilum"}
+{"species": "Arcobacter", "schema": "arcobacter"}
+{"species": "Bartonella bacilliformis", "schema": "bbacilliformis"}
+{"species": "Burkholderia cepacia complex", "schema": "bcc"}
+{"species": "Bacillus cereus", "schema": "bcereus"}
+{"species": "Brachyspira hampsonii", "schema": "bhampsonii"}
+{"species": "Bartonella henselae", "schema": "bhenselae"}
+{"species": "Brachyspira hyodysenteriae", "schema": "bhyodysenteriae"}
+{"species": "Brachyspira intermedia", "schema": "bintermedia"}
+{"species": "Bacillus licheniformis", "schema": "blicheniformis"}
+{"species": "Bordetella pertussis", "schema": "bordetella"}
+{"species": "Streptococcus pseudopneumoniae", "schema": "bordetella"}
+{"species": "Borrelia", "schema": "borrelia"}
+{"species": "Brachyspira pilosicoli", "schema": "bpilosicoli"}
+{"species": "Burkholderia pseudomallei", "schema": "bpseudomallei"}
+{"species": "Brachyspira", "schema": "brachyspira"}
+{"species": "Brucella", "schema": "brucella"}
+{"species": "Bacillus subtilis", "schema": "bsubtilis"}
+{"species": "Candida albicans", "schema": "calbicans"}
+{"species": "Campylobacter coli", "schema": "campylobacter"}
+{"species": "Campylobacter jejuni", "schema": "campylobacter"}
+{"species": "Clostridium botulinum", "schema": "cbotulinum"}
+{"species": "Campylobacter concisus", "schema": "cconcisus"}
+{"species": "Campylobacter curvus", "schema": "cconcisus"}
+{"species": "Clostridioides difficile", "schema": "cdifficile"}
+{"species": "Corynebacterium diphtheriae", "schema": "cdiphtheriae"}
+{"species": "Campylobacter fetus", "schema": "cfetus"}
+{"species": "Citrobacter freundii", "schema": "cfreundii"}
+{"species": "Candida glabrata", "schema": "cglabrata"}
+{"species": "Campylobacter helveticu", "schema": "chelveticus"}
+{"species": "Chlamydiales", "schema": "chlamydiales"}
+{"species": "Campylobacter hyointestinalis", "schema": "chyointestinalis"}
+{"species": "Campylobacter insulaenigrae", "schema": "cinsulaenigrae"}
+{"species": "Candidatus Liberibacter solanacearum", "schema": "liberibacter"}
+{"species": "Candida krusei", "schema": "ckrusei"}
+{"species": "Campylobacter lanienae", "schema": "clanienae"}
+{"species": "Campylobacter lari", "schema": "clari"}
+{"species": "Carnobacterium maltaromaticum", "schema": "cmaltaromaticum"}
+{"species": "Cronobacter sakazakii", "schema": "cronobacter"}
+{"species": "Clostridium septicum", "schema": "csepticum"}
+{"species": "Clonorchis sinensis", "schema": "csinensis"}
+{"species": "Campylobacter sputorum", "schema": "csputorum"}
+{"species": "Candida tropicalis", "schema": "ctropicalis"}
+{"species": "Campylobacter upsaliensis", "schema": "cupsaliensis"}
+{"species": "Dichelobacter nodosus", "schema": "dnodosus"}
+{"species": "Enterobacter cloacae", "schema": "ecloacae"}
+{"species": "Escherichia coli", "schema": "ecoli"}
+{"species": "Edwardsiella", "schema": "edwardsiella"}
+{"species": "Enterococcus faecalis", "schema": "efaecalis"}
+{"species": "Enterococcus faecium", "schema": "efaecium"}
+{"species": "Flavobacterium psychrophilum", "schema": "fpsychrophilum"}
+{"species": "Gallibacterium anatis", "schema": "ganatis"}
+{"species": "Helicobacter cinaedi", "schema": "hcinaedi"}
+{"species": "Haemophilus influenzae", "schema": "hinfluenzae"}
+{"species": "Haemophilus parasuis", "schema": "hparasuis"}
+{"species": "Helicobacter pylori", "schema": "hpylori"}
+{"species": "Helicobacter suis", "schema": "hsuis"}
+{"species": "Klebsiella aerogenes", "schema": "kaerogenes"}
+{"species": "Kingella kingae", "schema": "kkingae"}
+{"species": "Klebsiella oxytoca", "schema": "koxytoca"}
+{"species": "Klebsiella pneumoniae", "schema": "kpneumoniae"}
+{"species": "Kudoa septempunctata", "schema": "kseptempunctata"}
+{"species": "Leptospira", "schema": "leptospira"}
+{"species": "Listeria monocytogenes", "schema": "lmonocytogenes"}
+{"species": "Lactobacillus salivarius", "schema": "lsalivarius"}
+{"species": "Mycobacterium abscessus", "schema": "mabscessus"}
+{"species": "Mycoplasma agalactiae", "schema": "magalactiae"}
+{"species": "Mycoplasma bovis", "schema": "mbovis"}
+{"species": "Macrococcus canis", "schema": "mcanis"}
+{"species": "Macrococcus caseolyticus", "schema": "mcaseolyticus"}
+{"species": "Moraxella catarrhalis", "schema": "mcatarrhalis"}
+{"species": "Mannheimia haemolytica", "schema": "mhaemolytica"}
+{"species": "Mycoplasma hyopneumoniae", "schema": "mhyopneumoniae"}
+{"species": "Mycoplasma hyorhinis", "schema": "mhyorhinis"}
+{"species": "Mycoplasma iowae", "schema": "miowae"}
+{"species": "Mycobacterium massiliense", "schema": "mmassiliense"}
+{"species": "Melissococcus plutonius", "schema": "mplutonius"}
+{"species": "Mycoplasma pneumoniae", "schema": "mpneumoniae"}
+{"species": "Mycoplasma synoviae", "schema": "msynoviae"}
+{"species": "Mycobacteria", "schema": "mycobacteria"}
+{"species": "Neisseria gonorrhoeae", "schema": "neisseria"}
+{"species": "Neisseria meningitidis", "schema": "neisseria"}
+{"species": "Ornithobacterium rhinotracheale", "schema": "orhinotracheale"}
+{"species": "Orientia tsutsugamushi", "schema": "otsutsugamushi"}
+{"species": "Propionibacterium acnes", "schema": "pacnes"}
+{"species": "Pseudomonas aeruginosa", "schema": "paeruginosa"}
+{"species": "Photobacterium damselae", "schema": "pdamselae"}
+{"species": "Pseudomonas fluorescens", "schema": "pfluorescens"}
+{"species": "Porphyromonas gingivalis", "schema": "pgingivalis"}
+{"species": "Paenibacillus larvae", "schema": "plarvae"}
+{"species": "Pasteurella multocida", "schema": "pmultocida_multihost"}
+{"species": "Pediococcus pentosaceus", "schema": "ppentosaceus"}
+{"species": "Pseudomonas putida", "schema": "pputida"}
+{"species": "Piscirickettsia salmonis", "schema": "psalmonis"}
+{"species": "Riemerella anatipestifer", "schema": "ranatipestifer"}
+{"species": "Rhodococcus", "schema": "rhodococcus"}
+{"species": "Streptococcus agalactiae", "schema": "sagalactiae"}
+{"species": "Staphylococcus aureus", "schema": "saureus"}
+{"species": "Streptococcus bovis equinus complex_ SBSEC", "schema": "sbsec"}
+{"species": "Streptococcus canis", "schema": "scanis"}
+{"species": "Streptococcus dysgalactiae equisimilis", "schema": "sdysgalactiae"}
+{"species": "Salmonella enterica", "schema": "senterica"}
+{"species": "Staphylococcus epidermidis", "schema": "sepidermidis"}
+{"species": "Streptococcus gallolyticus", "schema": "sgallolyticus"}
+{"species": "Staphylococcus haemolyticus", "schema": "shaemolyticus"}
+{"species": "Stapylococcus hominis", "schema": "shominis"}
+{"species": "Sinorhizobium", "schema": "sinorhizobium"}
+{"species": "Staphylococcus lugdunensis", "schema": "slugdunensis"}
+{"species": "Stenotrophomonas maltophilia", "schema": "smaltophilia"}
+{"species": "Streptococcus oralis", "schema": "soralis"}
+{"species": "Saprolegnia parasitica", "schema": "sparasitica"}
+{"species": "Streptococcus pneumoniae", "schema": "spneumoniae"}
+{"species": "Staphylococcus pseudintermedius", "schema": "spseudintermedius"}
+{"species": "Streptococcus pyogenes", "schema": "spyogenes"}
+{"species": "Streptococcus suis", "schema": "ssuis"}
+{"species": "Streptococcus thermophilus", "schema": "sthermophilus"}
+{"species": "Streptomyces", "schema": "streptomyces"}
+{"species": "Streptococcus uberis", "schema": "suberis"}
+{"species": "Streptococcus zooepidemicus", "schema": "szooepidemicus"}
+{"species": "Taylorella", "schema": "taylorella"}
+{"species": "Taylorella equigenitalis", "schema": "taylorella"}
+{"species": "Tenacibaculum", "schema": "tenacibaculum"}
+{"species": "Treponema pallidum", "schema": "tpallidum"}
+{"species": "Trichomonas vaginalis", "schema": "tvaginalis"}
+{"species": "Ureaplasma", "schema": "ureaplasma"}
+{"species": "Vibrio cholerae", "schema": "vcholerae"}
+{"species": "Vibrio", "schema": "vibrio"}
+{"species": "Vibrio parahaemolyticus", "schema": "vparahaemolyticus"}
+{"species": "Vibrio tapetis", "schema": "vtapetis"}
+{"species": "Vibrio vulnificus", "schema": "vvulnificus"}
+{"species": "Wolbachia", "schema": "wolbachia"}
+{"species": "Xylella fastidiosa", "schema": "xfastidiosa"}
+{"species": "Yersinia aleksiciae", "schema": "yersinia"}
+{"species": "Yersinia enterocolitica", "schema": "yersinia"}
+{"species": "Yersinia pseudotuberculosis", "schema": "ypseudotuberculosis"}
+{"species": "Yersinia ruckeri", "schema": "yruckeri"}

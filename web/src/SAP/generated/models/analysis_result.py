@@ -29,7 +29,7 @@ class AnalysisResult(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, sequence_id=None, sequence_filename=None, isolate_id=None, institution=None, project_number=None, project_title=None, sampling_date=None, received_date=None, sofi_date=None, run_id=None, public=None, primary_isolate=None, chr_number=None, cvr_number=None, aut_number=None, product_type=None, product=None, origin_country=None, animal_species=None, sample_info=None, cpr_nr=None, gender=None, name=None, age=None, travel=None, travel_country=None, run_date=None, kma_received_date=None, kma=None, region=None, fud_number=None, cluster_id=None, epi_export=None, resfinder_version=None, date_analysis_sofi=None, date_approved_serotype=None, date_approved_qc=None, date_approved_amr=None, date_approved_st=None, date_approved_toxin=None, date_approved_cluster=None, qc_provided_species=None, qc_genome1x=None, qc_genome10x=None, qc_gsize_diff1x10=None, qc_avg_coverage=None, qc_final=None, qc_num_contigs=None, qc_ambiguous_sites=None, qc_num_reads=None, qc_main_sp_plus_uncl=None, qc_unclassified_reads=None, qc_db_id=None, qc_failed_tests=None, qc_cgmlst_percent=None, cgmlst_schema_salmonella=None, cgmlst_schema_ecoli=None, cgmlst_schema_campylobacter=None, cgmlst_schema_listeria=None, cgmlst_schema_klebsiella=None, subspecies=None, species_final=None, st=None, pathotype=None, pathotype_final=None, sero_enterobase=None, sero_seqsero=None, sero_antigen_seqsero=None, sero_d_tartrate=None, sero_serotype_finder=None, serotype_final=None, adhesion_final=None, virulence_genes=None, toxins_final=None, infection_source=None, resistance_genes=None, amr_profile=None, comment=None, comment_cluster=None, comment_general=None, comment_supplementary=None, comment_qc=None, amr_ami=None, amr_amp=None, amr_azi=None, amr_fep=None, amr_fot=None, amr_f_c=None, amr_fox=None, amr_taz=None, amr_t_c=None, amr_chl=None, amr_cip=None, amr_cli=None, amr_col=None, amr_dap=None, amr_etp=None, amr_ery=None, amr_fus=None, amr_gen=None, amr_imi=None, amr_kan=None, amr_lzd=None, amr_mero=None, amr_mup=None, amr_nal=None, amr_pen=None, amr_syn=None, amr_rif=None, amr_str=None, amr_sul=None, amr_tei=None, amr_trm=None, amr_tet=None, amr_tia=None, amr_tgc=None, amr_tmp=None, amr_van=None):  # noqa: E501
+    def __init__(self, sequence_id=None, sequence_filename=None, isolate_id=None, institution=None, project_number=None, project_title=None, sampling_date=None, received_date=None, sofi_date=None, run_id=None, public=None, primary_isolate=None, chr_number=None, cvr_number=None, aut_number=None, product_type=None, product=None, origin_country=None, animal_species=None, sample_info=None, cpr_nr=None, gender=None, name=None, age=None, travel=None, travel_country=None, run_date=None, kma_received_date=None, kma=None, region=None, fud_number=None, cluster_id=None, epi_export=None, resfinder_version=None, date_analysis_sofi=None, date_approved_serotype=None, date_approved_qc=None, date_approved_amr=None, date_approved_st=None, date_approved_toxin=None, date_approved_cluster=None, qc_provided_species=None, qc_genome1x=None, qc_genome10x=None, qc_gsize_diff1x10=None, qc_avg_coverage=None, qc_final=None, qc_action=None, qc_num_contigs=None, qc_ambiguous_sites=None, qc_num_reads=None, qc_main_sp_plus_uncl=None, qc_unclassified_reads=None, qc_db_id=None, qc_failed_tests=None, qc_cgmlst_percent=None, cgmlst_schema_salmonella=None, cgmlst_schema_ecoli=None, cgmlst_schema_campylobacter=None, cgmlst_schema_listeria=None, cgmlst_schema_klebsiella=None, subspecies=None, species_final=None, st=None, pathotype=None, pathotype_final=None, sero_enterobase=None, sero_seqsero=None, sero_antigen_seqsero=None, sero_d_tartrate=None, sero_serotype_finder=None, serotype_final=None, adhesion_final=None, virulence_genes=None, toxins_final=None, infection_source=None, resistance_genes=None, amr_profile=None, comment=None, comment_cluster=None, comment_general=None, comment_supplementary=None, comment_qc=None, amr_ami=None, amr_amp=None, amr_azi=None, amr_fep=None, amr_fot=None, amr_f_c=None, amr_fox=None, amr_taz=None, amr_t_c=None, amr_chl=None, amr_cip=None, amr_cli=None, amr_col=None, amr_dap=None, amr_etp=None, amr_ery=None, amr_fus=None, amr_gen=None, amr_imi=None, amr_kan=None, amr_lzd=None, amr_mero=None, amr_mup=None, amr_nal=None, amr_pen=None, amr_syn=None, amr_rif=None, amr_str=None, amr_sul=None, amr_tei=None, amr_trm=None, amr_tet=None, amr_tia=None, amr_tgc=None, amr_tmp=None, amr_van=None):  # noqa: E501
         """AnalysisResult - a model defined in OpenAPI
 
         :param sequence_id: The sequence_id of this AnalysisResult.  # noqa: E501
@@ -126,6 +126,8 @@ class AnalysisResult(Model):
         :type qc_avg_coverage: float
         :param qc_final: The qc_final of this AnalysisResult.  # noqa: E501
         :type qc_final: str
+        :param qc_action: The qc_action of this AnalysisResult.  # noqa: E501
+        :type qc_action: str
         :param qc_num_contigs: The qc_num_contigs of this AnalysisResult.  # noqa: E501
         :type qc_num_contigs: float
         :param qc_ambiguous_sites: The qc_ambiguous_sites of this AnalysisResult.  # noqa: E501
@@ -317,6 +319,7 @@ class AnalysisResult(Model):
             'qc_gsize_diff1x10': float,
             'qc_avg_coverage': float,
             'qc_final': str,
+            'qc_action': str,
             'qc_num_contigs': float,
             'qc_ambiguous_sites': float,
             'qc_num_reads': float,
@@ -438,6 +441,7 @@ class AnalysisResult(Model):
             'qc_gsize_diff1x10': 'qc_gsize_diff1x10',
             'qc_avg_coverage': 'qc_avg_coverage',
             'qc_final': 'qc_final',
+            'qc_action': 'qc_action',
             'qc_num_contigs': 'qc_num_contigs',
             'qc_ambiguous_sites': 'qc_ambiguous_sites',
             'qc_num_reads': 'qc_num_reads',
@@ -558,6 +562,7 @@ class AnalysisResult(Model):
         self._qc_gsize_diff1x10 = qc_gsize_diff1x10
         self._qc_avg_coverage = qc_avg_coverage
         self._qc_final = qc_final
+        self._qc_action = qc_action
         self._qc_num_contigs = qc_num_contigs
         self._qc_ambiguous_sites = qc_ambiguous_sites
         self._qc_num_reads = qc_num_reads
@@ -1657,6 +1662,27 @@ class AnalysisResult(Model):
             )
 
         self._qc_final = qc_final
+
+    @property
+    def qc_action(self):
+        """Gets the qc_action of this AnalysisResult.
+
+
+        :return: The qc_action of this AnalysisResult.
+        :rtype: str
+        """
+        return self._qc_action
+
+    @qc_action.setter
+    def qc_action(self, qc_action):
+        """Sets the qc_action of this AnalysisResult.
+
+
+        :param qc_action: The qc_action of this AnalysisResult.
+        :type qc_action: str
+        """
+
+        self._qc_action = qc_action
 
     @property
     def qc_num_contigs(self):

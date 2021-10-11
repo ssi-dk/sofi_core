@@ -68,7 +68,9 @@ class TBRRequestBroker(RequestBroker):
         with api_clients.tbr_client.ApiClient(get_tbr_configuration()) as api_client:
             api_instance = isolate_api.IsolateApi(api_client)
             try:
+                logging.debug(f"Requesting metadata from TBR for: {isolate_id}")
                 api_response = api_instance.api_isolate_isolate_id_get(isolate_id)
+                logging.debug(f"TBR responded with {api_response}")
                 values = api_response.to_dict()
                 if "isolate_id" in values:
                     del values["isolate_id"]
