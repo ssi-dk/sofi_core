@@ -102,14 +102,30 @@ reverse_lims_column_mapping = immutable_dict(
 
 tbr_column_mappings = immutable_dict(
     {
-        # TBR AMR mappings
+        "serotype": "serotype_final",
+        "st": "st",
+        "clusterId": "cluster_id",
         "test_date": "run_date",
         "kma_date": "kma_received_date",
         "kma_name": "kma",
         "fud_nr": "fud_number",
+        "fudNr": "fud_number",
         "species": "qc_provided_species",
+        "subspecies": "subspecies",
+        "pathotype": "pathotype_final",
+        "adheasion": "adhesion_final",
+        "toxin": "toxins_final",
         "resistensgener": "resistance_genes",
         "ssi_date": "received_date",
+        "dateEpi": "date_epi",
+        "dateApprovedResistens": "date_approved_amr",
+        "dateApprovedSerotype": "date_approved_serotype",
+        "dateApprovedQC": "date_approved_qc",
+        "dateApprovedST": "date_approved_st",
+        "dateApprovedCluster": "date_approved_cluster",
+        "dateApprovedToxin": "date_approved_toxin",
+        # TBR AMR mappings
+        "amrProfile": "amr_profile",
         "amikacin": "amr_ami",
         "ampicillin": "amr_amp",
         "azithromycin": "amr_azi",
