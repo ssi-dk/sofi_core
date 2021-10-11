@@ -41,6 +41,9 @@ lims_column_mapping = immutable_dict(
         "RunID": "run_id",
         "Acc_nr": "public",
         "QC_provided_species": "provided_species",
+        "QC_final": "qc_final",
+        "ST": "st",
+        "Serotype_final": "serotype_final",
         "Primaert_iso": "primary_isolate",
         "Dato_modtagelse": "received_date",
         "CHR": "chr_number",
@@ -51,6 +54,7 @@ lims_column_mapping = immutable_dict(
         "Oprindelsesland": "origin_country",
         "Dyreart": "animal_species",
         "Proeveinfo": "sample_info",
+        "Dato_analyseSAP": "date_analysis_sofi",
         # LIMS resistances
         "AMR_profil": "amr_profil",
         "AMR _ Ami": "amr_ami",

@@ -4,20 +4,35 @@ def removeNullProperty(expr):
 
 """
     From list, we are missing
-    - Subspecies
-    - Serotype*
-    - ST
-    - Pathotype
-    - virulence_genes
     - All of AMR
-    - resfinder
-    - qc action & comment
-    - qc cgMLST%
+
+    PHASE 2:
+    - Pathotype_final
+    - Virulence_genes
+    - Adheasion_final
+    - Toxin_final
+    - AMR_profile
+    - ResFinder_version
+    - QC_cgMLST%
+    - cgMLST skema Salmonella
+    - cgMLST skema E. coli
+    - cgMLST skema Campylobacter
+    - cgMLST skema Listeria
+    - cgMLST skema Klebsiella
+    - Sero_serotype_finder
 """
 
 
 def agg_pipeline(changed_ids=None):
     pipeline = [
+        {
+            "$lookup": {
+                "from": "sofi_species_to_mlstschema_mapping",
+                "localField": "categories.species_detection.summary.species",
+                "foreignField": "species",
+                "as": "mlstlookup",
+            }
+        },
         {
             "$project": {
                 "isolate_id": "$display_name",
@@ -30,6 +45,7 @@ def agg_pipeline(changed_ids=None):
                 "sofi_date": "$$NOW",
                 "qc_detected_species": "$categories.species_detection.summary.detected_species",
                 "qc_provided_species": "$categories.sample_info.summary.provided_species",
+                "subspecies": "$categories.serotype.summary.Subspecies",
                 "species_final": removeNullProperty(
                     {
                         "$cond": {
@@ -51,9 +67,21 @@ def agg_pipeline(changed_ids=None):
                         "in": {"$concat": ["$$value", "$$this", " "]},
                     }
                 },
+                "resistance_genes": {
+                    "$concat": [
+                        "$categories.resistance.summary.genes"
+                        + " "
+                        + "$categories.resistance.summary.point_mutations"
+                    ]
+                },
                 "sero_enterobase": "$categories.serotype.report.enterobase_serotype1",
                 "sero_seqsero": "$categories.serotype.report.seqsero_serotype",
                 "sero_antigen_seqsero": "$categories.serotype.summary.antigenic_profile",
+                "sero_d_tartrate": "$categories.serotype.summary.D-tartrate_pos10",
+                "mlst_schema": {"$arrayElemAt": ["$mlstlookup.schema", 0]},
+                # grabbing whole object for ST, must pluck specific field later
+                "st": "$categories.mlst.summary.sequence_type",
+                "qc_action": "$categories.stamper.stamp.value",
                 "qc_ambiguous_sites": "$categories.mapping_qc.summary.snps.x10_10%.snps",
                 "qc_unclassified_reads": removeNullProperty(
                     {
@@ -156,6 +184,40 @@ def agg_pipeline(changed_ids=None):
             },
         },
         {"$set": {"qc_final": "$qc_final.value"}},
+        # pluck the specific schema from ST based on lookup, and replace it
+        {
+            "$addFields": {
+                "st": {
+                    "$let": {
+                        "vars": {
+                            "res": {
+                                "$arrayElemAt": [
+                                    {
+                                        "$filter": {
+                                            "input": {
+                                                "$map": {
+                                                    "input": {"$objectToArray": "$st"},
+                                                    "in": {
+                                                        "k": "$$this.k",
+                                                        "v": "$$this.v",
+                                                    },
+                                                }
+                                            },
+                                            "as": "elem",
+                                            "cond": {
+                                                "$eq": ["$$elem.k", "$mlst_schema"]
+                                            },
+                                        }
+                                    },
+                                    0,
+                                ]
+                            }
+                        },
+                        "in": "$$res.v",
+                    }
+                }
+            }
+        },
         {
             "$merge": {
                 "into": "sap_analysis_results",

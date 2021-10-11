@@ -7,7 +7,7 @@ from ...src.controllers import AnalysisController
 def get_analysis(user, token_info, paging_token=None, page_size=None):  # noqa: E501
     """get_analysis
 
-    Page through all the analysis in the system (WIP) # noqa: E501
+    Page through all the analysis in the system # noqa: E501
 
     :param paging_token: opaque token to supply to get the next page of isolates
     :type paging_token: str

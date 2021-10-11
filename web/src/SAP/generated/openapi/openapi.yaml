@@ -15,7 +15,7 @@ tags:
 paths:
   /analysis:
     get:
-      description: Page through all the analysis in the system (WIP)
+      description: Page through all the analysis in the system
       operationId: get_analysis
       parameters:
       - description: opaque token to supply to get the next page of isolates
@@ -1010,6 +1010,8 @@ components:
           - A
           - B
           - C
+          type: string
+        qc_action:
           type: string
         qc_num_contigs:
           type: number

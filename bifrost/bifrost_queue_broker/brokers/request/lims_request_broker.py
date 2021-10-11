@@ -72,9 +72,13 @@ class LIMSRequestBroker(RequestBroker):
             api_instance = isolate_api.IsolateApi(api_client)
             try:
                 isolate_get_req = IsolateGetRequest(isolate_id=isolate_id)
+                logging.debug(
+                    f"Requesting metadata from LIMS with request: {isolate_get_req}"
+                )
                 api_response = api_instance.post_actions_get_isolate(
                     isolate_get_request=isolate_get_req
                 )
+                logging.debug(f"LIMS responded with {api_response}")
                 if "output" in api_response and "sapresponse" in api_response.output:
                     values = transform_lims_metadata(api_response)
                     isolate_id = values["isolate_id"]
