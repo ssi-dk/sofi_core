@@ -5,12 +5,15 @@ import {
   InputRightElement,
   IconButton,
   useToast,
+  useDisclosure,
+  InputLeftElement,
 } from "@chakra-ui/react";
-import { CloseIcon, SearchIcon } from "@chakra-ui/icons";
+import { CloseIcon, SearchIcon, QuestionIcon } from "@chakra-ui/icons";
 import { AnalysisQuery } from "sap-client";
 import { parse as luceneParse } from "lucene";
 import { recurseTree } from "utils";
 import { getFieldInternalName } from "app/i18n";
+import SearchHelpModal from "./search-help-modal";
 
 type AnalysisSearchProps = {
   onSubmit: (query: AnalysisQuery) => void;
@@ -66,8 +69,19 @@ const AnalysisSearch = (props: AnalysisSearchProps) => {
       (e.key === "Enter" || e.key === "NumpadEnter") && submitQuery(),
     [submitQuery]
   );
+
+  const {
+    isOpen: isSearchHelpModalOpen,
+    onOpen: onSearchHelpModalOpen,
+    onClose: onSearchHelpModalClose,
+  } = useDisclosure();
+
   return (
     <React.Fragment>
+      <SearchHelpModal
+        isOpen={isSearchHelpModalOpen}
+        onClose={onSearchHelpModalClose}
+      />
       <InputGroup>
         <Input
           ref={inputRef}
@@ -76,6 +90,14 @@ const AnalysisSearch = (props: AnalysisSearchProps) => {
           onKeyDown={onEnterKey}
           onSubmit={submit}
         />
+        <InputLeftElement>
+          <QuestionIcon
+            color="gray.400"
+            onClick={onSearchHelpModalOpen}
+            cursor="pointer"
+          />
+        </InputLeftElement>
+
         <InputRightElement>
           <CloseIcon
             color="gray.400"

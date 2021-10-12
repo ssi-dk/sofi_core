@@ -58,6 +58,7 @@ import Serotypes from "../data/serotypes.json";
 import AnalysisDetails from "./analysis-details/analysis-details-modal";
 import ExportButton from "./export/export-button";
 import { ColumnConfigNode } from "./data-table/column-config-node";
+import SearchHelpModal from "./search/search-help-modal";
 
 export default function AnalysisPage() {
   const { t } = useTranslation();
