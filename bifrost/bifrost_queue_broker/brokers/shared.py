@@ -110,7 +110,7 @@ tbr_column_mappings = immutable_dict(
         "kma_name": "kma",
         "fud_nr": "fud_number",
         "fudNr": "fud_number",
-        "species": "qc_provided_species",
+        "species": "species_final",
         "subspecies": "subspecies",
         "pathotype": "pathotype_final",
         "adheasion": "adhesion_final",
