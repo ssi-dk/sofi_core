@@ -113,7 +113,7 @@ class TBRRequestBroker(RequestBroker):
                 try:
                     logging.debug(f"Sending to TBR: {mapped_request}")
                     api_response = api_instance.api_isolate_put(
-                        isolate_update=mapped_request
+                        isolate_update=mapped_request, _return_http_data_only=False
                     )
                     logging.debug(f"Api responded with: {api_response}")
                 except Exception as e:

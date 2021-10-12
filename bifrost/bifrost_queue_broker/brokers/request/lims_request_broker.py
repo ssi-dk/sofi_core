@@ -124,7 +124,7 @@ class LIMSRequestBroker(RequestBroker):
                 try:
                     logging.debug(f"Sending isolate update request to LIMS: {req}")
                     api_response = api_instance.post_actions_update_isolate(
-                        isolate_update_request=req
+                        isolate_update_request=req, _return_http_data_only=False
                     )
                     logging.debug(f"LIMS Api responded with: {api_response}")
                     if (
