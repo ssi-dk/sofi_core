@@ -43,6 +43,7 @@ lims_column_mapping = immutable_dict(
         "QC_provided_species": "provided_species",
         "QC_final": "qc_final",
         "ST": "st",
+        "Species_final": "species_final",
         "Serotype_final": "serotype_final",
         "Primaert_iso": "primary_isolate",
         "Dato_modtagelse": "received_date",
