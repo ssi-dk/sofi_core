@@ -97,14 +97,16 @@ class TBRRequestBroker(RequestBroker):
 
         if body := request["body"]:
             fields = body.copy()
+            logging.debug(f"Passed fields from approval: {fields}")
 
             mapped_request = {
                 reverse_column_mapping[k]: v
                 for k, v in fields.items()
-                if reverse_column_mapping.normal_get(k) and v
+                if reverse_column_mapping.normal_get(k)
             }
             mapped_request["isolate_id"] = isolate_id
             # del mapped_request["sequence_id"]
+            logging.debug(f"Reverse-mapped request: {mapped_request}")
 
             with api_clients.tbr_client.ApiClient(
                 get_tbr_configuration()
