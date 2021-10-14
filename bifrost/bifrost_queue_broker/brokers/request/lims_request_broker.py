@@ -1,9 +1,6 @@
 import os, sys
 import logging
 
-from bifrost.bifrost_queue_broker.api_clients.lims_client.model.field_status import (
-    FieldStatus,
-)
 from ..shared import (
     BrokerError,
     ProcessingStatus,
@@ -20,6 +17,7 @@ import time
 import api_clients.lims_client
 from api_clients.lims_client.api import connections_api, isolate_api
 from api_clients.lims_client.models import (
+    FieldStatus,
     IsolateGetRequest,
     IsolateGetResponse,
     IsolateUpdateRequest,
@@ -124,7 +122,7 @@ class LIMSRequestBroker(RequestBroker):
                     status=FieldStatus("release"),
                 )
                 for k, v in mapped_request.items()
-                if k in value_set and v is not None and v is not ""
+                if k in value_set and v is not None and v != ""
             ]
             with api_clients.lims_client.ApiClient(lms_cfg) as api_client:
                 req = IsolateUpdateRequest(isolate_id=isolate_id, data=data)
