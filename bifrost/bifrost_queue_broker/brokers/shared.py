@@ -107,7 +107,6 @@ tbr_column_mappings = immutable_dict(
         "st": "st",
         "clusterId": "cluster_id",
         "test_date": "run_date",
-        "kma_date": "kma_received_date",
         "kma_name": "kma",
         "fud_nr": "fud_number",
         "fudNr": "fud_number",

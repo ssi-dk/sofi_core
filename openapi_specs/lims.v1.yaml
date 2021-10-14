@@ -242,7 +242,8 @@ components:
     FieldStatus:
       type: string
       description: Indicates whether or not an analyst has approved the field
-      enum: ["Released", "InProgress"]
+      enum: ["release", "InProgress"]
+
 
     DataFieldName:
       type: string

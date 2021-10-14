@@ -5,25 +5,26 @@
 //
 // It is helpful when editing to change the file extension to .ts and uncomment the lines below:
 //
-//import { AnalysisResult } from "../app/src/sap-client/models/AnalysisResult";
-//import { StrictColumn } from "../app/src/app/types";
+//import { AnalysisResult } from "../../../../../app/src/sap-client/models/AnalysisResult";
+//import { StrictColumn } from "../../../../../app/src/app/types";
 //var typeCheckedColumnConfig: StrictColumn<AnalysisResult>[] =
 [
   {
     "field_name": "qc_final",
     "approvable": true,
-    "internal_approval_only": true,
     "approves_with": [
       "species_final",
       "run_id",
-      "sequence_id"
+      "sequence_id",
+      "date_approved_qc"
     ]
   },
   {
     "field_name": "st",
     "approvable": true,
     "approves_with": [
-      "st"
+      "st",
+      "date_approved_st"
     ]
   },
   {
@@ -31,7 +32,8 @@
     "approvable": true,
     "editable": true,
     "approves_with": [
-      "subspecies"
+      "subspecies",
+      "date_approved_serotype"
     ]
   },
   {
@@ -39,6 +41,7 @@
     "approvable": true,
     "approves_with": [
       "amr_profile",
+      "date_approved_amr",
       "amr_ami",
       "amr_amp",
       "amr_azi",
@@ -79,8 +82,9 @@
   },
   {
     "field_name": "cluster_id",
+    "approves_with": ["date_approved_cluster"],
     "approvable": true,
-    "editable": true
+    "editable": true,
   },
   {
     "field_name": "fud_number",
@@ -107,7 +111,8 @@
     "approvable": true,
     "approves_with": [
       "adhesion_final",
-      "pathotype_final"
+      "pathotype_final",
+      "date_approved_toxin"
     ]
   },
   {
