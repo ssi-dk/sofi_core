@@ -1,5 +1,9 @@
 import os, sys
 import logging
+
+from bifrost.bifrost_queue_broker.api_clients.lims_client.model.field_status import (
+    FieldStatus,
+)
 from ..shared import (
     BrokerError,
     ProcessingStatus,
@@ -117,7 +121,7 @@ class LIMSRequestBroker(RequestBroker):
                 DataEntry(
                     field_name=DataFieldName(value=k),
                     field_value=str(v),
-                    status="release",
+                    status=FieldStatus("release"),
                 )
                 for k, v in mapped_request.items()
                 if k in value_set and v is not None and v is not ""
