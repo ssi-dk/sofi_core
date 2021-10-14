@@ -114,7 +114,11 @@ class LIMSRequestBroker(RequestBroker):
 
             value_set = set(DataFieldName.allowed_values[("value",)].values())
             data = [
-                DataEntry(field_name=DataFieldName(value=k), field_value=str(v))
+                DataEntry(
+                    field_name=DataFieldName(value=k),
+                    field_value=str(v),
+                    status="release",
+                )
                 for k, v in mapped_request.items()
                 if k in value_set and v is not None and v is not ""
             ]

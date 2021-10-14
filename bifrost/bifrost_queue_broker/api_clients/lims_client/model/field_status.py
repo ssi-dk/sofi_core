@@ -51,7 +51,7 @@ class FieldStatus(ModelSimple):
 
     allowed_values = {
         ('value',): {
-            'RELEASED': "Released",
+            'RELEASE': "release",
             'INPROGRESS': "InProgress",
         },
     }
@@ -102,10 +102,10 @@ class FieldStatus(ModelSimple):
         Note that value can be passed either in args or in kwargs, but not in both.
 
         Args:
-            args[0] (str): Indicates whether or not an analyst has approved the field., must be one of ["Released", "InProgress", ]  # noqa: E501
+            args[0] (str): Indicates whether or not an analyst has approved the field., must be one of ["release", "InProgress", ]  # noqa: E501
 
         Keyword Args:
-            value (str): Indicates whether or not an analyst has approved the field., must be one of ["Released", "InProgress", ]  # noqa: E501
+            value (str): Indicates whether or not an analyst has approved the field., must be one of ["release", "InProgress", ]  # noqa: E501
             _check_type (bool): if True, values for parameters in openapi_types
                                 will be type checked and a TypeError will be
                                 raised if the wrong type is input.

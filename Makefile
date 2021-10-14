@@ -114,6 +114,22 @@ ${mkfile_dir}/web/src/services/lims/openapi : ${mkfile_dir}/openapi_specs/lims.v
 		--global-property apiTests=false,apiDocs=false \
 		--global-property modelTests=false,modelDocs=false
 
+${mkfile_dir}/bifrost/bifrost_queue_broker/api_clients/lims_client : ${mkfile_dir}/openapi_specs/lims.v1.yaml
+	# Generate LIMS client for request broker
+	rm -rf ${mkfile_dir}/bifrost/bifrost_queue_broker/api_clients/lims_client
+	docker run --rm -v "${mkfile_dir}:/local" \
+		--user ${mkfile_user} \
+		"openapitools/openapi-generator:cli-v5.0.0" \
+		generate \
+		-i /local/openapi_specs/lims.v1.yaml \
+		-g python \
+		-o /local \
+		--additional-properties packageName=web.src.services.lims.openapi \
+		--additional-properties generateSourceCodeOnly=true \
+		--global-property apiTests=false,apiDocs=false \
+		--global-property modelTests=false,modelDocs=false
+
+
 ${mkfile_dir}/bifrost/bifrost_queue_broker/api_clients/tbr_client : ${mkfile_dir}/openapi_specs/tbr.v1.yaml
 	# Generate TBR client for broker
 	rm -rf ${mkfile_dir}/bifrost/bifrost_queue_broker/api_clients/tbr_client
