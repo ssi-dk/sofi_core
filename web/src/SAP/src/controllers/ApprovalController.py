@@ -31,12 +31,16 @@ def create_approval(user, token_info, body: ApprovalRequest):
     appr.status = "submitted"
     appr.id = str(uuid.uuid4())
 
-    # set date_analysis_sofi on approved sequences before sending them for
-    # approval, so the timestamp can be transferred to upstream metadata
+    # set approval dates on  approved sequences before sending them for
+    # approval, so the timestamps can be transferred to upstream metadata
     # services, if needed.
     analysis_timestamp_updates = {}
     for seq in body.matrix:
+        fields = body.matrix[seq]
+        time_fields = find_approved_categories(fields)
         seq_update = {"date_analysis_sofi": appr.timestamp}
+        for f in time_fields:
+            seq_update[f] = appr.timestamp
         analysis_timestamp_updates[seq] = seq_update
 
     update_analysis(analysis_timestamp_updates)
@@ -55,18 +59,6 @@ def create_approval(user, token_info, body: ApprovalRequest):
 
     # Insert approval after matrix has been manipulated
     res = insert_approval(token_info["email"], appr)
-
-    # set the approved timestamps for the sequences
-    timestamp_updates = {}
-    for seq in body.matrix:
-        fields = body.matrix[seq]
-        time_fields = find_approved_categories(fields)
-        seq_update = {}
-        for f in time_fields:
-            seq_update[f] = appr.timestamp
-        timestamp_updates[seq] = seq_update
-
-    update_analysis(timestamp_updates)
 
     return (
         jsonify({"success": appr.to_dict(), "error": errors})
