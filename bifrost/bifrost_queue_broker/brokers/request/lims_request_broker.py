@@ -145,7 +145,6 @@ class LIMSRequestBroker(RequestBroker):
                                 "success" in api_response.output.sapresponse
                                 and not api_response.output.sapresponse.success
                             )
-                            or api_response.status == "Released"
                         )
                     ):
                         raise BrokerError
