@@ -14,8 +14,6 @@ createUser(){
   clearance=$3
   group=$4
 
-# TODO: access to this endpoint needs to be restricted so its only available from within the sofi local subnet
-
   actionUrl=$(\
     curl -k -s -X GET -H "Accept: application/json" \
       "https://${SOFI_HOSTNAME}:${SOFI_PORT}/.ory/kratos/public/self-service/registration/api" \
@@ -24,14 +22,13 @@ createUser(){
 
   echo $actionUrl
 
-  $pw = `uuidgen -r`
+  pw=`uuidgen -r`
 
   # Complete Registration Flow with password method
   curl -k -i -H "Accept: application/json" -H "Content-Type: application/json" \
        -d '{"traits.email": "'"${email}"'", "password": "'"${pw}"'", "traits.institution": "'"${org}"'", "traits.security-groups": "'"${group}"'", "traits.sofi-data-clearance": "'"${clearance}"'" }' \
        "$actionUrl"
 
-  # TODO: automatically mark email address as verified and initiate a pw reset, instead of having to communicate the pw to the user
   echo -e "Credentials:"
   echo -e "\t${email}"
   echo -e "\t${pw}"
