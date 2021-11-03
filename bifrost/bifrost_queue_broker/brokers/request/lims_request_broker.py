@@ -136,17 +136,9 @@ class LIMSRequestBroker(RequestBroker):
                     if (
                         "output" in api_response
                         and "sapresponse" in api_response.output
-                        and (
-                            (
-                                "succcess" in api_response.output.sapresponse
-                                and not api_response.output.sapresponse.succcess
-                            )
-                            or (
-                                "success" in api_response.output.sapresponse
-                                and not api_response.output.sapresponse.success
-                            )
-                            or api_response.status == "Released"
-                        )
+                        and "succcess"
+                        in api_response.output.sapresponse  # Not a typo, it's with 3 c's in the API
+                        and not api_response.output.sapresponse.succcess
                     ):
                         raise BrokerError
 
