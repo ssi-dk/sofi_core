@@ -50,7 +50,7 @@ def columns() -> List[Dict[str, str]]:
 @functools.lru_cache(maxsize=1)
 def internal_approval_fields() -> List[str]:
     return [
-        x["field_name"] for x in COLUMN_CONFIG if x.get("internal_approval_only", True)
+        x["field_name"] for x in COLUMN_CONFIG if x.get("internal_approval_only", False)
     ]
 
 
