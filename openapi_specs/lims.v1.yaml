@@ -315,6 +315,7 @@ components:
         - Acc_nr
         - QC_provided_species
         - CHR
+        - CVR
         - Aut_nr
         - Produkt_type
         - Produkt

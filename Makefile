@@ -52,6 +52,7 @@ ${mkfile_dir}/.certs/sofi.local.crt : ${mkfile_dir}/.env
 	sudo update-ca-certificates
 
 ${mkfile_dir}/node_modules :
+	yarn install
 	# install lefthook for management of git hooks
 	yarn add -D @arkweid/lefthook
 

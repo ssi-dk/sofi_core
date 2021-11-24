@@ -62,6 +62,7 @@ class MetadataFieldName(ModelSimple):
             'ACC_NR': "Acc_nr",
             'QC_PROVIDED_SPECIES': "QC_provided_species",
             'CHR': "CHR",
+            'CVR': "CVR",
             'AUT_NR': "Aut_nr",
             'PRODUKT_TYPE': "Produkt_type",
             'PRODUKT': "Produkt",
@@ -117,10 +118,10 @@ class MetadataFieldName(ModelSimple):
         Note that value can be passed either in args or in kwargs, but not in both.
 
         Args:
-            args[0] (str):, must be one of ["SekvensId", "Sekvensfilnavn", "Institution", "Projektnr", "Projekttitel", "Dato_proeve", "Dato_modtagelse", "RunID", "Acc_nr", "QC_provided_species", "CHR", "Aut_nr", "Produkt_type", "Produkt", "Oprindelsesland", "Dyreart", "Proeveinfo", ]  # noqa: E501
+            args[0] (str):, must be one of ["SekvensId", "Sekvensfilnavn", "Institution", "Projektnr", "Projekttitel", "Dato_proeve", "Dato_modtagelse", "RunID", "Acc_nr", "QC_provided_species", "CHR", "CVR", "Aut_nr", "Produkt_type", "Produkt", "Oprindelsesland", "Dyreart", "Proeveinfo", ]  # noqa: E501
 
         Keyword Args:
-            value (str):, must be one of ["SekvensId", "Sekvensfilnavn", "Institution", "Projektnr", "Projekttitel", "Dato_proeve", "Dato_modtagelse", "RunID", "Acc_nr", "QC_provided_species", "CHR", "Aut_nr", "Produkt_type", "Produkt", "Oprindelsesland", "Dyreart", "Proeveinfo", ]  # noqa: E501
+            value (str):, must be one of ["SekvensId", "Sekvensfilnavn", "Institution", "Projektnr", "Projekttitel", "Dato_proeve", "Dato_modtagelse", "RunID", "Acc_nr", "QC_provided_species", "CHR", "CVR", "Aut_nr", "Produkt_type", "Produkt", "Oprindelsesland", "Dyreart", "Proeveinfo", ]  # noqa: E501
             _check_type (bool): if True, values for parameters in openapi_types
                                 will be type checked and a TypeError will be
                                 raised if the wrong type is input.
