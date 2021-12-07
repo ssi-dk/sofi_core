@@ -20,11 +20,11 @@
     ]
   },
   {
-    "field_name": "st",
+    "field_name": "st_final",
     "approvable": true,
     "editable": true,
     "approves_with": [
-      "st",
+      "st_final",
       "date_approved_st"
     ]
   },
@@ -85,7 +85,7 @@
     "field_name": "cluster_id",
     "approves_with": ["date_approved_cluster"],
     "approvable": true,
-    "editable": true,
+    "editable": true
   },
   {
     "field_name": "fud_number",

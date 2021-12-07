@@ -42,7 +42,7 @@ lims_column_mapping = immutable_dict(
         "Acc_nr": "public",
         "QC_provided_species": "provided_species",
         "QC_final": "qc_final",
-        "ST": "st",
+        "ST": "st_final",
         "Species_final": "species_final",
         "Subspecies": "subspecies",
         "Adheasion_final": "adhesion_final",
@@ -108,7 +108,7 @@ reverse_lims_column_mapping = immutable_dict(
 tbr_column_mappings = immutable_dict(
     {
         "serotype": "serotype_final",
-        "st": "st",
+        "st": "st_final",
         "cluster_id": "cluster_id",
         "run_id": "run_id",
         "test_date": "run_date",

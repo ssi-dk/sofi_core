@@ -94,7 +94,7 @@ def find_approved_categories(fields: Dict[str, ApprovalStatus]):
     time_fields = []
     for f in fields:
         if fields[f] == "approved":
-            if f == "st":
+            if f == "st_final":
                 time_fields.append("date_approved_st")
             if f == "qc_final":
                 time_fields.append("date_approved_qc")

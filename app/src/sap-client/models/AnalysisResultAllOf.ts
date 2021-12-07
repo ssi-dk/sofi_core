@@ -221,6 +221,12 @@ export interface AnalysisResultAllOf  {
      * @type {string}
      * @memberof AnalysisResultAllOf
      */
+    st_final?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof AnalysisResultAllOf
+     */
     pathotype?: string;
     /**
      * 
@@ -582,6 +588,7 @@ export function AnalysisResultAllOfFromJSON(json: any): AnalysisResultAllOf {
         'subspecies': !exists(json, 'subspecies') ? undefined : json['subspecies'],
         'species_final': !exists(json, 'species_final') ? undefined : json['species_final'],
         'st': !exists(json, 'st') ? undefined : json['st'],
+        'st_final': !exists(json, 'st_final') ? undefined : json['st_final'],
         'pathotype': !exists(json, 'pathotype') ? undefined : json['pathotype'],
         'pathotype_final': !exists(json, 'pathotype_final') ? undefined : json['pathotype_final'],
         'sero_enterobase': !exists(json, 'sero_enterobase') ? undefined : json['sero_enterobase'],
@@ -677,6 +684,7 @@ export function AnalysisResultAllOfToJSON(value?: AnalysisResultAllOf): any {
         'subspecies': value.subspecies,
         'species_final': value.species_final,
         'st': value.st,
+        'st_final': value.st_final,
         'pathotype': value.pathotype,
         'pathotype_final': value.pathotype_final,
         'sero_enterobase': value.sero_enterobase,

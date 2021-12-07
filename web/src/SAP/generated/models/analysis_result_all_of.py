@@ -19,7 +19,7 @@ class AnalysisResultAllOf(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, resfinder_version=None, kma_received_date=None, date_analysis_sofi=None, date_approved_serotype=None, date_approved_qc=None, date_approved_amr=None, date_approved_st=None, date_approved_toxin=None, date_approved_cluster=None, qc_provided_species=None, qc_genome1x=None, qc_genome10x=None, qc_gsize_diff1x10=None, qc_avg_coverage=None, qc_final=None, qc_action=None, qc_num_contigs=None, qc_ambiguous_sites=None, qc_num_reads=None, qc_main_sp_plus_uncl=None, qc_unclassified_reads=None, qc_db_id=None, qc_failed_tests=None, qc_cgmlst_percent=None, cgmlst_schema_salmonella=None, cgmlst_schema_ecoli=None, cgmlst_schema_campylobacter=None, cgmlst_schema_listeria=None, cgmlst_schema_klebsiella=None, subspecies=None, species_final=None, st=None, pathotype=None, pathotype_final=None, sero_enterobase=None, sero_seqsero=None, sero_antigen_seqsero=None, sero_d_tartrate=None, sero_serotype_finder=None, serotype_final=None, adhesion_final=None, virulence_genes=None, toxins_final=None, infection_source=None, resistance_genes=None, amr_profile=None, comment=None, comment_cluster=None, comment_general=None, comment_supplementary=None, comment_qc=None, amr_ami=None, amr_amp=None, amr_azi=None, amr_fep=None, amr_fot=None, amr_f_c=None, amr_fox=None, amr_taz=None, amr_t_c=None, amr_chl=None, amr_cip=None, amr_cli=None, amr_col=None, amr_dap=None, amr_etp=None, amr_ery=None, amr_fus=None, amr_gen=None, amr_imi=None, amr_kan=None, amr_lzd=None, amr_mero=None, amr_mup=None, amr_nal=None, amr_pen=None, amr_syn=None, amr_rif=None, amr_str=None, amr_sul=None, amr_tei=None, amr_trm=None, amr_tet=None, amr_tia=None, amr_tgc=None, amr_tmp=None, amr_van=None):  # noqa: E501
+    def __init__(self, resfinder_version=None, kma_received_date=None, date_analysis_sofi=None, date_approved_serotype=None, date_approved_qc=None, date_approved_amr=None, date_approved_st=None, date_approved_toxin=None, date_approved_cluster=None, qc_provided_species=None, qc_genome1x=None, qc_genome10x=None, qc_gsize_diff1x10=None, qc_avg_coverage=None, qc_final=None, qc_action=None, qc_num_contigs=None, qc_ambiguous_sites=None, qc_num_reads=None, qc_main_sp_plus_uncl=None, qc_unclassified_reads=None, qc_db_id=None, qc_failed_tests=None, qc_cgmlst_percent=None, cgmlst_schema_salmonella=None, cgmlst_schema_ecoli=None, cgmlst_schema_campylobacter=None, cgmlst_schema_listeria=None, cgmlst_schema_klebsiella=None, subspecies=None, species_final=None, st=None, st_final=None, pathotype=None, pathotype_final=None, sero_enterobase=None, sero_seqsero=None, sero_antigen_seqsero=None, sero_d_tartrate=None, sero_serotype_finder=None, serotype_final=None, adhesion_final=None, virulence_genes=None, toxins_final=None, infection_source=None, resistance_genes=None, amr_profile=None, comment=None, comment_cluster=None, comment_general=None, comment_supplementary=None, comment_qc=None, amr_ami=None, amr_amp=None, amr_azi=None, amr_fep=None, amr_fot=None, amr_f_c=None, amr_fox=None, amr_taz=None, amr_t_c=None, amr_chl=None, amr_cip=None, amr_cli=None, amr_col=None, amr_dap=None, amr_etp=None, amr_ery=None, amr_fus=None, amr_gen=None, amr_imi=None, amr_kan=None, amr_lzd=None, amr_mero=None, amr_mup=None, amr_nal=None, amr_pen=None, amr_syn=None, amr_rif=None, amr_str=None, amr_sul=None, amr_tei=None, amr_trm=None, amr_tet=None, amr_tia=None, amr_tgc=None, amr_tmp=None, amr_van=None):  # noqa: E501
         """AnalysisResultAllOf - a model defined in OpenAPI
 
         :param resfinder_version: The resfinder_version of this AnalysisResultAllOf.  # noqa: E501
@@ -86,6 +86,8 @@ class AnalysisResultAllOf(Model):
         :type species_final: str
         :param st: The st of this AnalysisResultAllOf.  # noqa: E501
         :type st: str
+        :param st_final: The st_final of this AnalysisResultAllOf.  # noqa: E501
+        :type st_final: str
         :param pathotype: The pathotype of this AnalysisResultAllOf.  # noqa: E501
         :type pathotype: str
         :param pathotype_final: The pathotype_final of this AnalysisResultAllOf.  # noqa: E501
@@ -230,6 +232,7 @@ class AnalysisResultAllOf(Model):
             'subspecies': str,
             'species_final': str,
             'st': str,
+            'st_final': str,
             'pathotype': str,
             'pathotype_final': str,
             'sero_enterobase': str,
@@ -320,6 +323,7 @@ class AnalysisResultAllOf(Model):
             'subspecies': 'subspecies',
             'species_final': 'species_final',
             'st': 'st',
+            'st_final': 'st_final',
             'pathotype': 'pathotype',
             'pathotype_final': 'pathotype_final',
             'sero_enterobase': 'sero_enterobase',
@@ -409,6 +413,7 @@ class AnalysisResultAllOf(Model):
         self._subspecies = subspecies
         self._species_final = species_final
         self._st = st
+        self._st_final = st_final
         self._pathotype = pathotype
         self._pathotype_final = pathotype_final
         self._sero_enterobase = sero_enterobase
@@ -1153,6 +1158,27 @@ class AnalysisResultAllOf(Model):
         """
 
         self._st = st
+
+    @property
+    def st_final(self):
+        """Gets the st_final of this AnalysisResultAllOf.
+
+
+        :return: The st_final of this AnalysisResultAllOf.
+        :rtype: str
+        """
+        return self._st_final
+
+    @st_final.setter
+    def st_final(self, st_final):
+        """Sets the st_final of this AnalysisResultAllOf.
+
+
+        :param st_final: The st_final of this AnalysisResultAllOf.
+        :type st_final: str
+        """
+
+        self._st_final = st_final
 
     @property
     def pathotype(self):

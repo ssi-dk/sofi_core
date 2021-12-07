@@ -815,6 +815,8 @@ components:
               type: string
             st:
               type: string
+            st_final:
+              type: string
             pathotype:
               type: string
             pathotype_final:
