@@ -222,9 +222,9 @@ def agg_pipeline(changed_ids=None):
             "$set": {
                 "st_final": {
                     "$cond": {
-                        "if": {"$isNumber": "$st"},
-                        "then": "$st",
-                        "else": None,
+                        "if": {"$regexMatch": {"input": "$st", "regex": "\\*"}},
+                        "then": None,
+                        "else": "$st",
                     },
                 }
             }
