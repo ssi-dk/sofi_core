@@ -25,8 +25,10 @@ def structure_operator(operator, left, right):
 
 def check_for_wildcard(termm: str):
     term = f"{termm}"
-    if "*" in term:
-        terms = [x for x in term.split("*") if x != ""]
+    # Do not treat escaped asterisk '\*' as a wildcard
+    termIgnoreEscaped = term.replace("\\*", "★")
+    if "*" in termIgnoreEscaped:
+        terms = [x.replace("★", "*") for x in termIgnoreEscaped.split("*") if x != ""]
         escaped = list(map(re.escape, terms))
         # since regex matches on anything within the value, we do not need to put in the wildcard
         # if we do need to, we can reenable this and perhaps pin with ^ or $
@@ -34,7 +36,7 @@ def check_for_wildcard(termm: str):
         regex_pattern = "".join(escaped)
         return {"$regex": regex_pattern, "$options": "i"}
 
-    escaped = re.escape(term)
+    escaped = re.escape(termIgnoreEscaped.replace("★", "*"))
     search = "^" + escaped + "$"
     return {"$regex": search, "$options": "i"}
 

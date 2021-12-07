@@ -160,6 +160,22 @@ const SearchHelpModal = (props: SearchHelpModalProps) => {
                       </small>
                     </p>
                   </ListItem>
+                  <ListItem>
+                    <p>
+                      Sometimes special symbols used in the search syntax are
+                      also present in the text you want to search on. In that
+                      case, you can &apos;escape&apos; that character by
+                      prefixing it with <code>\</code>.
+                    </p>
+                    <code>institution:fvst st:15\*</code>
+                    <p>
+                      <small>
+                        Gives results where the ST is specifically
+                        &quot;15*&quot; (15 star), while <code>st:15*</code>{" "}
+                        would also return ST values 15, 152, 157, etc.
+                      </small>
+                    </p>
+                  </ListItem>
                 </List>
               </Box>
             </div>
