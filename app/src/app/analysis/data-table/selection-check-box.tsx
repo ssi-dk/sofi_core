@@ -1,5 +1,3 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
 import React, { DetailedHTMLProps, forwardRef, useEffect } from "react";
 import { css, jsx } from "@emotion/react";
 

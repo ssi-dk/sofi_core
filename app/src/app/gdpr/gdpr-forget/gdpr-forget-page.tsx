@@ -1,6 +1,3 @@
-/** @jsxRuntime classic */
-/** @jsxFrag React.Fragment */
-/** @jsx jsx */
 import React, { ChangeEvent, useState } from "react";
 import {
   Input,

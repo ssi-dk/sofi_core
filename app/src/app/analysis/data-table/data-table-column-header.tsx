@@ -1,5 +1,3 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
 import React from "react";
 import { Column, ColumnInstance } from "react-table";
 import { jsx } from "@emotion/react";

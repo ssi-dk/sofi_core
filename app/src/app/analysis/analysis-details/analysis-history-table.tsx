@@ -1,6 +1,3 @@
-/** @jsxRuntime classic */
-/** @jsxFrag React.Fragment */
-/** @jsx jsx */
 import React from "react";
 import { ScrollSync, ScrollSyncNode } from "scroll-sync-react";
 import { Text, List, ListIcon, ListItem } from "@chakra-ui/react";
