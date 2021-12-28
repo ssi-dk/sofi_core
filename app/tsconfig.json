@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "types": ["@emotion/core", "webpack-env"],
+    "types": ["@compiled/react", "webpack-env"],
     "target": "es5",
     "downlevelIteration": true,
     "importHelpers": true,
@@ -27,7 +27,7 @@
     "isolatedModules": true,
     "noEmit": true,
     "baseUrl": "src",
-    "jsx": "preserve"
+    "jsx": "react-jsx"
   },
   "include": [
     "src"

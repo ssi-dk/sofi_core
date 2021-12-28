@@ -1,3 +1,4 @@
+/** @jsxImportSource @compiled/react */
 import React, { ChangeEvent, useState } from "react";
 import {
   Input,
@@ -9,11 +10,8 @@ import {
   Flex,
   Box,
 } from "@chakra-ui/react";
-import { jsx } from "@emotion/react";
-import {
-  rightPane,
-  inputForm,
-} from "app/gdpr/gdpr-extract/gdpr-extract-styles";
+import { css } from "@compiled/react";
+import { rightPane, inputForm } from "./gdpr-extract-styles";
 import { ExtractDataFromPiRequest, PersonalIdentifierType } from "sap-client";
 import { requestAsync } from "redux-query";
 import { useRequest } from "redux-query-react";

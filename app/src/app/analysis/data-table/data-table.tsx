@@ -12,17 +12,16 @@ import {
 } from "react-table";
 import { VariableSizeGrid } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
-import { jsx } from "@emotion/react";
 import { Flex, IconButton } from "@chakra-ui/react";
 import { ExternalLinkIcon } from "@chakra-ui/icons";
 import deepmerge from "lodash.merge";
 import { UserDefinedViewInternal } from "models";
-import dtStyle from "app/analysis/data-table/data-table.styles";
 import { IndexableOf, NotEmpty } from "utils";
 import SelectionCheckBox from "./selection-check-box";
 import { exportDataTable } from "./table-spy";
 import { StickyVariableSizeGrid } from "./sticky-variable-size-grid";
 import DataTableColumnHeader from "./data-table-column-header";
+import "./data-table.css";
 import "./data-table-cell-styles.css";
 
 export type ColumnReordering =
@@ -375,16 +374,18 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
       const row = rows[rowIndex - 1];
       const rowId = row.original[primaryKey];
       const columnId = visibleColumns[columnIndex].id;
-      const className =
+      let className =
         columnIndex === 0
           ? getStickyCellStyle(rowId)
-          : isInSelection(rowId, columnId)
-          ? selectionClassName
           : getCellStyle(
               rowId,
               columnId,
               rows[rowIndex - 1].original[columnId]
             );
+
+      if (isInSelection(rowId, columnId)) {
+        className = `${className} ${selectionClassName}`;
+      }
 
       return (
         // eslint-disable-next-line jsx-a11y/click-events-have-key-events
@@ -465,7 +466,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
   return (
     <AutoSizer>
       {({ height, width }) => (
-        <div css={dtStyle}>
+        <div className="sofi-data-table">
           <div role="table" {...getTableProps()} className="tableWrap">
             <div role="rowgroup" {...getTableBodyProps()}>
               <StickyVariableSizeGrid

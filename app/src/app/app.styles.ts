@@ -1,4 +1,4 @@
-import { css } from "@emotion/react";
+import { css } from "@compiled/react";
 import apptheme from "app/app.theme";
 
 export const flex = css({

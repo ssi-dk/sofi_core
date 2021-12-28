@@ -1,24 +1,24 @@
-import { css } from "@emotion/react";
-import { theme } from "@chakra-ui/react";
+// Theme values cannot be statically evaluated
+const gray = "#EDF2F7"; // theme.colors.gray[100];
 
-export const tableBorders = css({
+export const tableBorders = {
   border: "1px solid gray",
   width: "250px",
   maxWidth: "250px",
   minWidth: "250px",
-});
+};
 
-export const overflowWrapper = css({
+export const overflowWrapper = {
   overflowX: "auto",
-});
+};
 
-export const tableStyle = css({
+export const tableStyle = {
   borderCollapse: "collapse",
   borderStyle: "hidden",
   "th:nth-of-type(odd)": {
-    background: theme.colors.gray[100],
+    background: gray,
   },
   "td:nth-of-type(odd)": {
-    background: theme.colors.gray[100],
+    background: gray,
   },
-});
+};

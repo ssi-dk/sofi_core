@@ -1,12 +1,9 @@
+/** @jsxImportSource @compiled/react */
 import React from "react";
 import { Column, ColumnInstance } from "react-table";
-import { jsx } from "@emotion/react";
+import "@compiled/react";
 import { Tooltip } from "@chakra-ui/react";
-import {
-  getColumnStyle,
-  headerButton,
-  headerName,
-} from "app/analysis/data-table/data-table.styles";
+import { columnStyle, headerButton, headerName } from "./data-table-styles";
 import { NotEmpty } from "utils";
 import SelectionCheckBox from "./selection-check-box";
 
@@ -62,7 +59,7 @@ function DataTableColumnHeader<T extends NotEmpty>(
       onClick={noop} // Do not sort on header-click -- handled by button
       onKeyDown={noop}
     >
-      <div role="tab" css={getColumnStyle()}>
+      <div role="tab" css={columnStyle}>
         {canSelectColumn(column.id) && (
           <SelectionCheckBox
             onClick={(e) => {

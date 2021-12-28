@@ -1,11 +1,9 @@
-import { css } from "@emotion/react";
-
-export const inputForm = css({
+export const inputForm = {
   alignSelf: "flex-start",
-});
+};
 
-export const rightPane = css({
+export const rightPane = {
   boxSizing: "border-box",
   height: "100%",
   width: "100%",
-});
+};

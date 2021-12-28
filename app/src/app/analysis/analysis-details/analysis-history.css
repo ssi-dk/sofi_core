@@ -1,0 +1,24 @@
+sofi-table-border {
+  border: 1px solid gray;
+  width: 250px;
+  max-width: 250px;
+  min-width: 250px;
+}
+
+sofi-overflow-wrapper {
+  overflow-x: auto;
+}
+
+sofi-table-style {
+  border-collapse: collapse;
+  border-style: hidden;
+}
+
+
+sofi-table-style th:nth-of-type(odd) {
+  background: #EDF2F7;
+}
+
+sofi-table-style td:nth-of-type(odd) {
+  background: #EDF2F7;
+}

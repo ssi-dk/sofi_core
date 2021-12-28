@@ -1,6 +1,6 @@
-import { css } from "@emotion/react";
+import { css } from "@compiled/react";
 
-export const inputForm = css({
+export const inputForm = {
   width: "30rem",
   paddingTop: "1rem",
-});
+};

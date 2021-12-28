@@ -1,10 +1,11 @@
+/** @jsxImportSource @compiled/react */
 import React, { DetailedHTMLProps, forwardRef, useEffect } from "react";
-import { css, jsx } from "@emotion/react";
+import "@compiled/react";
 
-const checkboxStyle = css({
+const checkboxStyle = {
   marginLeft: "5px",
   marginRight: "5px",
-});
+};
 
 type SelectionCheckBoxProps = DetailedHTMLProps<
   React.InputHTMLAttributes<HTMLInputElement>,

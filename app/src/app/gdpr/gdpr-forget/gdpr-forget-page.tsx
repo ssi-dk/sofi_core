@@ -1,3 +1,4 @@
+/** @jsxImportSource @compiled/react */
 import React, { ChangeEvent, useState } from "react";
 import {
   Input,
@@ -7,7 +8,7 @@ import {
   useToast,
   useDisclosure,
 } from "@chakra-ui/react";
-import { jsx } from "@emotion/react";
+import "@compiled/react";
 import { ExtractDataFromPiRequest, PersonalIdentifierType } from "sap-client";
 import { useMutation } from "redux-query-react";
 import { useDispatch, useSelector } from "react-redux";

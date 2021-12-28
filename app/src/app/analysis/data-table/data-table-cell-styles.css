@@ -1,4 +1,4 @@
-.approvingCell,
+div[role=cell].approvingCell,
 .cell,
 .stickyCell,
 .rejectedCell,
@@ -15,49 +15,12 @@
   align-items: center;
 }
 
-.cell {
-  background-color: #fff;
-  border-left: 1px dashed rgba(0, 0, 0, 0.1);
-}
-
-.stickyCell {
-  border-right: 2px solid rgba(0, 0, 0, 0.05);
-  border-bottom: 2px solid rgba(0, 0, 0, 0.05);
-  background-color: #fff;
-  font-weight: bold;
-  /*    filter: drop-shadow(2px 0px 1px rgba(0,0,0,0.5))*/
-}
-
-.approvingCell {
-  border: 1px solid transparent;
-  font-weight: bold;
-  background-color: #faf089;
-}
-
-.unapprovedCell {
-  border: 1px solid transparent;
-  background-color: #90cdf4;
-  border-left: 1px dashed rgba(0, 0, 0, 0.1);
-}
-
-.rejectedCell {
-  border: 1px solid transparent;
-  background-color: #feb2b2;
-  border-left: 1px dashed rgba(0, 0, 0, 0.1);
-}
-
-.emptyCell {
-  border: 1px solid transparent;
-  background-color: #f7f9fb;
-  border-left: 1px dashed rgba(0, 0, 0, 0.1);
-}
-
 @keyframes ants {
   to {
     background-position: 100% 100%;
   }
 }
-.selectedCell {
+div[role=cell].selectedCell {
   border: 1px solid transparent;
   margin: 0px;
   background: linear-gradient(#fff, #fff) padding-box,
@@ -72,3 +35,60 @@
   animation: ants 10s linear infinite;
   font-weight: bold;
 }
+
+
+div[role=cell].cell {
+  background-color: #fff;
+  border-left: 1px dashed rgba(0, 0, 0, 0.1);
+}
+
+div[role=cell].stickyCell {
+  border-right: 2px solid rgba(0, 0, 0, 0.05);
+  border-bottom: 2px solid rgba(0, 0, 0, 0.05);
+  background-color: #fff;
+  font-weight: bold;
+  /*    filter: drop-shadow(2px 0px 1px rgba(0,0,0,0.5))*/
+}
+
+div[role=cell].stickyCell.unapprovedCell {
+  border-right: 2px solid rgba(0, 0, 0, 0.05);
+  border-bottom: 2px solid rgba(0, 0, 0, 0.05);
+}
+
+div[role=cell].unapprovedCell.selectedCell {
+  background-color: #90cdf4;
+  background: linear-gradient(#90cdf4, #90cdf4) padding-box,
+    repeating-linear-gradient(
+        -45deg,
+        #000,
+        #000 25%,
+        transparent 0,
+        transparent 50%
+      )
+      0/0.6em 0.6em;
+}
+
+div[role=cell].approvingCell {
+  border: 1px solid transparent;
+  font-weight: bold;
+  background-color: #faf089;
+}
+
+div[role=cell].unapprovedCell {
+  border: 1px solid transparent;
+  background-color: #90cdf4;
+  border-left: 1px dashed rgba(0, 0, 0, 0.1);
+}
+
+div[role=cell].rejectedCell {
+  border: 1px solid transparent;
+  background-color: #feb2b2;
+  border-left: 1px dashed rgba(0, 0, 0, 0.1);
+}
+
+div[role=cell].emptyCell {
+  border: 1px solid transparent;
+  background-color: #f7f9fb;
+  border-left: 1px dashed rgba(0, 0, 0, 0.1);
+}
+

@@ -1,5 +1,5 @@
 import React, { ChangeEvent, useState } from "react";
-import { jsx } from "@emotion/react";
+import "@compiled/react";
 import {
   Tabs,
   TabList,

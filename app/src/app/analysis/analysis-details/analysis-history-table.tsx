@@ -1,15 +1,11 @@
 import React from "react";
 import { ScrollSync, ScrollSyncNode } from "scroll-sync-react";
 import { Text, List, ListIcon, ListItem } from "@chakra-ui/react";
-import { jsx } from "@emotion/react";
+import "@compiled/react";
 import { ChevronRightIcon } from "@chakra-ui/icons";
 import { AnalysisResult } from "sap-client";
-import {
-  tableStyle,
-  tableBorders,
-  overflowWrapper,
-} from "./analysis-history-table-styles";
 import { IsolateWithData } from "./analysis-history-configs";
+import "./analysis-history.css";
 
 type SequenceListItemProps = {
   sequenceId: string;
@@ -50,12 +46,12 @@ class IsolateListItem extends React.Component<
         </Text>
         {this.state.expanded && (
           <ScrollSyncNode group={group} key={this.props.sequenceId}>
-            <div css={overflowWrapper}>
-              <table css={tableStyle}>
+            <div className="sofi-overflow-wrapper">
+              <table className="sofi-table-style">
                 <thead>
                   <tr>
                     {Object.keys(this.props.analysisData).map((col) => (
-                      <th css={tableBorders} key={`h_${col}`}>
+                      <th className="sofi-table-border" key={`h_${col}`}>
                         {col}
                       </th>
                     ))}
@@ -65,7 +61,7 @@ class IsolateListItem extends React.Component<
                 <tbody>
                   <tr>
                     {Object.keys(this.props.analysisData).map((col) => (
-                      <td css={tableBorders} key={`d_${col}`}>
+                      <td className="sofi-table-border" key={`d_${col}`}>
                         {JSON.stringify(this.props.analysisData[col])}
                       </td>
                     ))}

@@ -1,5 +1,5 @@
 import React from "react";
-import { Global } from "@emotion/react";
+import "@compiled/react";
 import { ChakraProvider } from "@chakra-ui/react";
 import { Route } from "react-router";
 import { CacheSwitch, CacheRoute } from "react-router-cache-route";
@@ -14,11 +14,11 @@ import ManualUploadPage from "./manual-upload/manual-upload-page";
 import GdprPage from "./gdpr/gdpr";
 import Tree from "./comparative-analysis/phylo/phylo";
 import ComparativeAnalysis from "./comparative-analysis/comparative-analysis";
+import "./style-reset.css";
 
 export default function App() {
   return (
     <ChakraProvider theme={appTheme}>
-      <Global styles={globalCss} />
       <CacheSwitch>
         <Route
           path="/manual-upload"
