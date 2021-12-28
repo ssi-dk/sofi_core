@@ -516,7 +516,7 @@ export default function AnalysisPage() {
                   <EditableInput height="100%" width="100%" />
                 )}
               </Editable>
-              <Divider borderTop="1px solid black" />
+              <hr />
             </Box>
           );
         }
