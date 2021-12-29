@@ -54,7 +54,7 @@ function DataTableColumnHeader<T extends NotEmpty>(
       tabIndex={column.index}
       role="columnheader"
       key={column?.id}
-      {...column.getHeaderProps(column.getSortByToggleProps())}
+      {...(column.getHeaderProps(column.getSortByToggleProps()) as any)}
       title={undefined} // hides the "Toggle SortBy" tooltip
       onClick={noop} // Do not sort on header-click -- handled by button
       onKeyDown={noop}

@@ -467,8 +467,8 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
     <AutoSizer>
       {({ height, width }) => (
         <div className="sofi-data-table">
-          <div role="table" {...getTableProps()} className="tableWrap">
-            <div role="rowgroup" {...getTableBodyProps()}>
+          <div role="table" {...(getTableProps() as any)} className="tableWrap">
+            <div role="rowgroup" {...(getTableBodyProps() as any)}>
               <StickyVariableSizeGrid
                 itemData={itemData}
                 rowCount={itemData.rows.length}

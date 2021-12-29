@@ -34,7 +34,12 @@ const SelectionCheckBox = forwardRef(
     }, [resolvedRef, indeterminate, checked, visible]);
 
     return (
-      <input css={checkboxStyle} type="checkbox" ref={resolvedRef} {...rest} />
+      <input
+        css={checkboxStyle}
+        type="checkbox"
+        ref={resolvedRef}
+        {...(rest as any)}
+      />
     );
   }
 );
