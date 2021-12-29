@@ -57,10 +57,6 @@ stages:
           imageNameRelease: '$(dockerId)/sap-web:latest'
 
         steps:
-        - task: NodeTool@0 
-          inputs:
-            versionSpec: '14.17.x' # replace this value with the version that you need for your project
-
         - script: docker build -f Dockerfile -t $(imageName) .
           displayName: 'Docker build and test'
           workingDirectory: app
