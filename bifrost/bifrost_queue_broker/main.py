@@ -85,7 +85,12 @@ def main():
     for t in threads:
         t.join()
 
-    logging.info("All threads exited.")
+    while True:
+        for thread in threads:
+            if not thread.is_alive():
+                # die so that orchestrator can restart us
+                logging.info("Exiting due to thread death.")
+                sys.exit()
 
 
 if __name__ == "__main__":
