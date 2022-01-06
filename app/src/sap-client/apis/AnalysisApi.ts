@@ -18,6 +18,9 @@ import {
     AnalysisQuery,
     AnalysisQueryFromJSON,
     AnalysisQueryToJSON,
+    AnalysisResult,
+    AnalysisResultFromJSON,
+    AnalysisResultToJSON,
     Column,
     ColumnFromJSON,
     ColumnToJSON,
@@ -35,6 +38,10 @@ import {
 export interface GetAnalysisRequest {
     pagingToken?: string;
     pageSize?: number;
+}
+
+export interface GetSequenceByIdRequest {
+    sequenceId: string;
 }
 
 export interface ReloadMetadataRequest {
@@ -145,6 +152,59 @@ function getColumnsRaw<T>( requestConfig: runtime.TypedQueryConfig<T, Array<Colu
 */
 export function getColumns<T>( requestConfig?: runtime.TypedQueryConfig<T, Array<Column>>): QueryConfig<T> {
     return getColumnsRaw( requestConfig);
+}
+
+/**
+ * Get an individual analysis result by sequence_id
+ */
+function getSequenceByIdRaw<T>(requestParameters: GetSequenceByIdRequest, requestConfig: runtime.TypedQueryConfig<T, AnalysisResult> = {}): QueryConfig<T> {
+    if (requestParameters.sequenceId === null || requestParameters.sequenceId === undefined) {
+        throw new runtime.RequiredError('sequenceId','Required parameter requestParameters.sequenceId was null or undefined when calling getSequenceById.');
+    }
+
+    let queryParameters = null;
+
+    queryParameters = {};
+
+
+    if (requestParameters.sequenceId !== undefined) {
+        queryParameters['sequence_id'] = requestParameters.sequenceId;
+    }
+
+    const headerParameters : runtime.HttpHeaders = {};
+
+
+    const { meta = {} } = requestConfig;
+
+    meta.authType = ['bearer'];
+    const config: QueryConfig<T> = {
+        url: `${runtime.Configuration.basePath}/analysis/by_id`,
+        meta,
+        update: requestConfig.update,
+        queryKey: requestConfig.queryKey,
+        optimisticUpdate: requestConfig.optimisticUpdate,
+        force: requestConfig.force,
+        rollback: requestConfig.rollback,
+        options: {
+            method: 'GET',
+            headers: headerParameters,
+        },
+        body: queryParameters,
+    };
+
+    const { transform: requestTransform } = requestConfig;
+    if (requestTransform) {
+        config.transform = (body: ResponseBody, text: ResponseBody) => requestTransform(AnalysisResultFromJSON(body), text);
+    }
+
+    return config;
+}
+
+/**
+* Get an individual analysis result by sequence_id
+*/
+export function getSequenceById<T>(requestParameters: GetSequenceByIdRequest, requestConfig?: runtime.TypedQueryConfig<T, AnalysisResult>): QueryConfig<T> {
+    return getSequenceByIdRaw(requestParameters, requestConfig);
 }
 
 /**

@@ -3,24 +3,24 @@
   max-width: 100%;
 }
 
-div[role=table] {
+div[role="table"] {
   border-spacing: 0;
 }
 
-div[role=row] {
-  border-bottom: 1px solid rgba(0,0,0,0.05);
+div[role="row"] {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
 }
 
-div[role=row]:last-child td {
+div[role="row"]:last-child td {
   border-bottom: 0;
 }
 
-div[role=rowgroup] {
-  border-bottom: 2px solid rgba(0,0,0,0.05);
+div[role="rowgroup"] {
+  border-bottom: 2px solid rgba(0, 0, 0, 0.05);
   width: 100%;
 }
 
-div[role=separator] {
+div[role="separator"] {
   position: absolute;
   display: inline-block;
   right: 0;
@@ -29,14 +29,14 @@ div[role=separator] {
   height: 100%;
 }
 
-[role=columnheader] {
-   padding-left: 1ch;
+[role="columnheader"] {
+  padding-left: 1ch;
   background-color: #fff;
   display: flex;
   align-items: center;
   font-weight: bold;
-  border-bottom: 2px solid rgba(0,0,0,0.05);
-  border-right: 2px solid rgba(0,0,0,0.05);
+  border-bottom: 2px solid rgba(0, 0, 0, 0.05);
+  border-right: 2px solid rgba(0, 0, 0, 0.05);
   height: 100%;
   user-select: none;
   /* general cell style */
@@ -48,17 +48,16 @@ div[role=separator] {
   text-overflow: ellipsis;
 }
 
-
 /* "collapsed" cells should be as small as possible */
-[role=columnheader].collapse {
+[role="columnheader"].collapse {
   width: 0.0000000001%;
 }
 
-[role=columnheader]:last-child {
+[role="columnheader"]:last-child {
 }
 
-div[role=cell] {
-/* general cell style */
+div[role="cell"] {
+  /* general cell style */
   width: 1%;
   overflow: hidden;
   white-space: nowrap;
@@ -67,7 +66,7 @@ div[role=cell] {
   text-overflow: ellipsis;
 }
 
-div[role=cell]:last-child {
+div[role="cell"]:last-child {
 }
 
 .sofi-data-table .tableWrap {

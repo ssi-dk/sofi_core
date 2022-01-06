@@ -13,6 +13,8 @@ import {
   submitChanges,
   ApprovalStatus,
   SubmitChangesRequest,
+  GetSequenceByIdRequest,
+  getSequenceById,
 } from "sap-client";
 import { getUrl } from "service";
 import { arrayToNormalizedHashmap } from "utils";
@@ -29,6 +31,27 @@ type NormalizedColumnCollection = { [K: string]: Column };
 
 export type ColumnSlice = {
   columns: NormalizedColumnCollection;
+};
+
+export const requestAnalysis = (params: GetSequenceByIdRequest) => {
+  const base = getSequenceById<AnalysisSlice>(params);
+  base.url = getUrl(base.url);
+  base.transform = (response: AnalysisResult) => ({
+    analysis: response
+      ? arrayToNormalizedHashmap(
+          [AnalysisResultFromJSON(response)],
+          "sequence_id"
+        )
+      : {},
+  });
+  base.update = {
+    analysis: (oldValue, newValue) => ({
+      ...oldValue,
+      ...newValue,
+    }),
+  };
+  base.force = true;
+  return base;
 };
 
 // query config for retrieving a page of analysis

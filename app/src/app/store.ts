@@ -7,6 +7,7 @@ import { createBrowserHistory } from "history";
 import createRootReducer, { RootState } from "./root-reducer";
 import { jwtMiddleware } from "middleware/jwt-middleware";
 import { pagingMiddleware } from "middleware/paging-middleware";
+import { postApprovalRefreshMiddleware } from "middleware/post-approval-refresh-middleware";
 
 // selectors
 export const getQueries = (state: RootState) => state.queries;
@@ -18,6 +19,7 @@ const store = configureStore({
   reducer: createRootReducer(history),
   middleware: [
     ...getDefaultMiddleware({ serializableCheck: false }),
+    postApprovalRefreshMiddleware,
     pagingMiddleware,
     jwtMiddleware,
     queryMiddleware(superagentInterface, getQueries, getEntities),

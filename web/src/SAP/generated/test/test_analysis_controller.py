@@ -6,6 +6,7 @@ from flask import json
 from six import BytesIO
 
 from web.src.SAP.generated.models.analysis_query import AnalysisQuery  # noqa: E501
+from web.src.SAP.generated.models.analysis_result import AnalysisResult  # noqa: E501
 from web.src.SAP.generated.models.column import Column  # noqa: E501
 from web.src.SAP.generated.models.metadata_reload_request import MetadataReloadRequest  # noqa: E501
 from web.src.SAP.generated.models.metadata_reload_response import MetadataReloadResponse  # noqa: E501
@@ -48,6 +49,24 @@ class TestAnalysisController(BaseTestCase):
             '/api/analysis/columns',
             method='GET',
             headers=headers)
+        self.assert200(response,
+                       'Response body is : ' + response.data.decode('utf-8'))
+
+    def test_get_sequence_by_id(self):
+        """Test case for get_sequence_by_id
+
+        
+        """
+        query_string = [('sequence_id', 'sequence_id_example')]
+        headers = { 
+            'Accept': 'application/json',
+            'Authorization': 'Bearer special-key',
+        }
+        response = self.client.open(
+            '/api/analysis/by_id',
+            method='GET',
+            headers=headers,
+            query_string=query_string)
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
 

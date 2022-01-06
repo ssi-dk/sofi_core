@@ -14,11 +14,10 @@ sofi-table-style {
   border-style: hidden;
 }
 
-
 sofi-table-style th:nth-of-type(odd) {
-  background: #EDF2F7;
+  background: #edf2f7;
 }
 
 sofi-table-style td:nth-of-type(odd) {
-  background: #EDF2F7;
+  background: #edf2f7;
 }

@@ -28,6 +28,18 @@ def get_columns(user, token_info):  # noqa: E501
     """
     return AnalysisController.get_columns(user, token_info)
 
+def get_sequence_by_id(user, token_info, sequence_id):  # noqa: E501
+    """get_sequence_by_id
+
+    Get an individual analysis result by sequence_id # noqa: E501
+
+    :param sequence_id: sequence_id of analysis result
+    :type sequence_id: str
+
+    :rtype: AnalysisResult
+    """
+    return AnalysisController.get_sequence_by_id(user, token_info, sequence_id)
+
 def reload_metadata(user, token_info, body=None):  # noqa: E501
     """reload_metadata
 

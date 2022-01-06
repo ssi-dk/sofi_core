@@ -78,6 +78,29 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PageOfAnalysis'
+              
+  /analysis/by_id:
+    get:
+      description: Get an individual analysis result by sequence_id
+      operationId: get_sequence_by_id
+      x-openapi-router-controller: web.src.SAP.generated.controllers.analysis_controller
+      tags:
+        - analysis
+      parameters:
+        - name: sequence_id
+          in: query
+          required: true
+          schema:
+            type: string
+          description: sequence_id of analysis result
+      responses:
+        '200':
+          description: Analysis
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SingleAnalysisResult'
+
   /analysis/columns:
     get:
       description: Get column metadata, scoped to authenticated user
@@ -427,6 +450,9 @@ components:
     Organization:
       type: string
       enum: [SSI, FVST, Other]
+
+    SingleAnalysisResult:
+      $ref: '#/components/schemas/AnalysisResult'
 
     PageOfAnalysis:
       required:

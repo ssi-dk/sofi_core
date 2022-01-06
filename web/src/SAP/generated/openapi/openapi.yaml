@@ -65,6 +65,29 @@ paths:
       - analysis
       x-openapi-router-controller: web.src.SAP.generated.controllers.analysis_controller
       x-codegen-request-body-name: query
+  /analysis/by_id:
+    get:
+      description: Get an individual analysis result by sequence_id
+      operationId: get_sequence_by_id
+      parameters:
+      - description: sequence_id of analysis result
+        explode: true
+        in: query
+        name: sequence_id
+        required: true
+        schema:
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SingleAnalysisResult'
+          description: Analysis
+      tags:
+      - analysis
+      x-openapi-router-controller: web.src.SAP.generated.controllers.analysis_controller
   /analysis/changes:
     post:
       description: Submit a batch of analysis data changes
@@ -442,6 +465,8 @@ components:
       - FVST
       - Other
       type: string
+    SingleAnalysisResult:
+      $ref: '#/components/schemas/AnalysisResult'
     PageOfAnalysis:
       example:
         paging_token: paging_token

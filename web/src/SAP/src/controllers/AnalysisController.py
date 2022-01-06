@@ -1,6 +1,7 @@
 import base64
 import json
 import sys
+from flask import abort
 from typing import Any, Dict
 from web.src.SAP.generated.models.analysis_query import AnalysisQuery
 from werkzeug.exceptions import Forbidden
@@ -35,6 +36,24 @@ def parse_paging_token(token):
 def render_paging_token(page_size, query, offset):
     body = {"page_size": int(page_size), "query": query, "offset": int(offset)}
     return str(base64.b64encode(json.dumps(body).encode("utf8")), encoding="utf8")
+
+
+def get_sequence_by_id(user, token_info, sequence_id):
+    assert_user_has("search", token_info)
+    row = get_single_analysis(sequence_id)
+    if row is None:
+        abort(404)
+    if (
+        token_info["sofi-data-clearance"] == "own-institution"
+        and token_info["institution"] != row["institution"]
+    ):
+        abort(404)
+    allowed_cols = authorized_columns(token_info)
+    for key, _ in list(row.items()):
+        # Only return columns user is allowed to see
+        if not key in allowed_cols:
+            del row[key]
+    return jsonify(row)
 
 
 def get_analysis(user, token_info, paging_token, page_size):

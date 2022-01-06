@@ -1,4 +1,4 @@
-div[role=cell].approvingCell,
+div[role="cell"].approvingCell,
 .cell,
 .stickyCell,
 .rejectedCell,
@@ -20,7 +20,7 @@ div[role=cell].approvingCell,
     background-position: 100% 100%;
   }
 }
-div[role=cell].selectedCell {
+div[role="cell"].selectedCell {
   border: 1px solid transparent;
   margin: 0px;
   background: linear-gradient(#fff, #fff) padding-box,
@@ -36,13 +36,12 @@ div[role=cell].selectedCell {
   font-weight: bold;
 }
 
-
-div[role=cell].cell {
+div[role="cell"].cell {
   background-color: #fff;
   border-left: 1px dashed rgba(0, 0, 0, 0.1);
 }
 
-div[role=cell].stickyCell {
+div[role="cell"].stickyCell {
   border-right: 2px solid rgba(0, 0, 0, 0.05);
   border-bottom: 2px solid rgba(0, 0, 0, 0.05);
   background-color: #fff;
@@ -50,12 +49,12 @@ div[role=cell].stickyCell {
   /*    filter: drop-shadow(2px 0px 1px rgba(0,0,0,0.5))*/
 }
 
-div[role=cell].stickyCell.unapprovedCell {
+div[role="cell"].stickyCell.unapprovedCell {
   border-right: 2px solid rgba(0, 0, 0, 0.05);
   border-bottom: 2px solid rgba(0, 0, 0, 0.05);
 }
 
-div[role=cell].unapprovedCell.selectedCell {
+div[role="cell"].unapprovedCell.selectedCell {
   background-color: #90cdf4;
   background: linear-gradient(#90cdf4, #90cdf4) padding-box,
     repeating-linear-gradient(
@@ -68,27 +67,26 @@ div[role=cell].unapprovedCell.selectedCell {
       0/0.6em 0.6em;
 }
 
-div[role=cell].approvingCell {
+div[role="cell"].approvingCell {
   border: 1px solid transparent;
   font-weight: bold;
   background-color: #faf089;
 }
 
-div[role=cell].unapprovedCell {
+div[role="cell"].unapprovedCell {
   border: 1px solid transparent;
   background-color: #90cdf4;
   border-left: 1px dashed rgba(0, 0, 0, 0.1);
 }
 
-div[role=cell].rejectedCell {
+div[role="cell"].rejectedCell {
   border: 1px solid transparent;
   background-color: #feb2b2;
   border-left: 1px dashed rgba(0, 0, 0, 0.1);
 }
 
-div[role=cell].emptyCell {
+div[role="cell"].emptyCell {
   border: 1px solid transparent;
   background-color: #f7f9fb;
   border-left: 1px dashed rgba(0, 0, 0, 0.1);
 }
-
