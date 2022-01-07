@@ -106,4 +106,7 @@ def find_approved_categories(fields: Dict[str, ApprovalStatus]):
                 time_fields.append("date_approved_cluster")
             if f == "amr_profile":
                 time_fields.append("date_approved_amr")
+            if f == "epi_export":
+                time_fields.append("epi_export")
+
     return time_fields
