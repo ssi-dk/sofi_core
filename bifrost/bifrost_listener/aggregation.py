@@ -76,6 +76,20 @@ def agg_pipeline(changed_ids=None):
                 },
                 "sero_enterobase": "$categories.serotype.report.enterobase_serotype1",
                 "sero_seqsero": "$categories.serotype.report.seqsero_serotype",
+                "serotype_final": removeNullProperty(
+                    {
+                        "$cond": {
+                            "if": {
+                                "$eq": [
+                                    "$categories.serotype.report.enterobase_serotype1",
+                                    "$categories.serotype.report.seqsero_serotype",
+                                ],
+                            },
+                            "then": "$categories.serotype.report.seqsero_serotype",
+                            "else": None,
+                        },
+                    }
+                ),
                 "sero_antigen_seqsero": "$categories.serotype.summary.antigenic_profile",
                 "sero_d_tartrate": "$categories.serotype.summary.D-tartrate_pos10",
                 "mlst_schema": {"$arrayElemAt": ["$mlstlookup.schema", 0]},
