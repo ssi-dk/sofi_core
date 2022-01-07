@@ -46,7 +46,7 @@
     "@typescript-eslint/eslint-plugin": "^5.0.0",
     "@typescript-eslint/parser": "^5.0.0",
     "@welldone-software/why-did-you-render": "^6.0.0-rc.1",
-    "axios": "^0.21.1",
+    "axios": "^0.21.2",
     "biojs-io-newick": "^1.5.0",
     "camelcase-keys": "^6.2.2",
     "connected-react-router": "^6.8.0",
