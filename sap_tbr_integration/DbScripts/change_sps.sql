@@ -9,6 +9,7 @@ GO
 
 CREATE PROCEDURE [FVST_DTU].[UpdateIsolate](
         @IsolateId [nvarchar](14),
+        @RunID [nvarchar](50),
         @Serotype [nvarchar](50) NULL,
         @ST [smallint] NULL,
         @FudNr [nvarchar](10) NULL,
@@ -71,6 +72,7 @@ BEGIN
         SET
             Serotype = IsNull(@Serotype, Serotype),
             ST = IsNull(@ST, ST),
+            RunID = IsNull(@RunID, RunID),
             FUDNR = IsNull(@FudNr, FUDNR),
             ClusterID = IsNull(@ClusterId, ClusterID),
             Species = IsNull(@Species, Species),

@@ -5,6 +5,7 @@ namespace DG.SAP.TBRIntegration.Models
     public class IsolateUpdate: ISapMasterData
     {
         public string IsolateId { get; set; }
+        public string RunId { get; set; }
         public string Serotype { get; set; }
         public int? ST { get; set; }
         public string FudNr { get; set; }

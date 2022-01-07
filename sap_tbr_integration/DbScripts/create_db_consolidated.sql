@@ -578,6 +578,7 @@ GO
 
 CREATE PROCEDURE [FVST_DTU].[UpdateIsolate](
         @IsolateId [nvarchar](14),
+        @RunID [nvarchar](50),
         @Serotype [nvarchar](50) NULL,
         @ST [smallint] NULL,
         @FudNr [nvarchar](10) NULL,
@@ -631,7 +632,8 @@ CREATE PROCEDURE [FVST_DTU].[UpdateIsolate](
         @DateApprovedQC [datetime] NULL,
         @DateApprovedST [datetime] NULL,
         @DateApprovedCluster [datetime] NULL,
-        @DateApprovedToxin [datetime] NULL
+        @DateApprovedToxin [datetime] NULL,
+        @DateEpi [datetime] NULL
 )
 AS
 BEGIN
@@ -639,6 +641,7 @@ BEGIN
         SET
             Serotype = IsNull(@Serotype, Serotype),
             ST = IsNull(@ST, ST),
+            RunID = IsNull(@RunID, RunID),
             FUDNR = IsNull(@FudNr, FUDNR),
             ClusterID = IsNull(@ClusterId, ClusterID),
             Species = IsNull(@Species, Species),
@@ -651,6 +654,7 @@ BEGIN
             Dato_godkendt_ST = IsNull(@DateApprovedST, Dato_godkendt_ST),
             Dato_godkendt_toxin = IsNull(@DateApprovedToxin, Dato_godkendt_toxin),
             Dato_godkendt_cluster = IsNull(@DateApprovedCluster, Dato_godkendt_cluster)
+            Dato_Epi = IsNull(@DateEpi, Dato_Epi)
         WHERE isolatnr = @IsolateId
 
         UPDATE FVST_DTU.vw_GenoRes_SAP
