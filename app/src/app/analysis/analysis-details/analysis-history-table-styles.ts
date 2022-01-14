@@ -13,8 +13,8 @@ export const overflowWrapper = {
 };
 
 export const tableStyle = {
-  borderCollapse: "collapse",
-  borderStyle: "hidden",
+  "border-collapse": "collapse",
+  "border-style": "hidden",
   "th:nth-of-type(odd)": {
     background: gray,
   },

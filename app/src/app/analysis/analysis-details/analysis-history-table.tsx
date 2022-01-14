@@ -62,7 +62,9 @@ class IsolateListItem extends React.Component<
                   <tr>
                     {Object.keys(this.props.analysisData).map((col) => (
                       <td className="sofi-table-border" key={`d_${col}`}>
-                        {JSON.stringify(this.props.analysisData[col])}
+                        {typeof this.props.analysisData[col] === "string"
+                          ? this.props.analysisData[col]
+                          : JSON.stringify(this.props.analysisData[col])}
                       </td>
                     ))}
                   </tr>
