@@ -994,6 +994,9 @@ components:
       type: object
     AnalysisResult_allOf:
       properties:
+        latest_for_isolate:
+          description: sequence_id of latest result with this same isolate_id
+          type: string
         resfinder_version:
           type: string
         kma_received_date:

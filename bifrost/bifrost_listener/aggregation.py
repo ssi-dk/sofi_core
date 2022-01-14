@@ -33,6 +33,20 @@ def agg_pipeline(changed_ids=None):
                 "as": "mlstlookup",
             }
         },
+        # Find all the sequences for the same isolate, and sort them such that the
+        # latest sequence is at the start of the 'siblings' array
+        {
+            "$lookup": {
+                "from": "samples",
+                "let": {"iso_id": "$display_name"},
+                "pipeline": [
+                    {"$match": {"$expr": {"$eq": ["$display_name", "$$iso_id"]}}},
+                    {"$sort": {"_id": -1}},
+                    {"$project": {"sequence_id": "$name"}},
+                ],
+                "as": "siblings",
+            }
+        },
         {
             "$project": {
                 "isolate_id": "$display_name",
@@ -93,6 +107,8 @@ def agg_pipeline(changed_ids=None):
                 "sero_antigen_seqsero": "$categories.serotype.summary.antigenic_profile",
                 "sero_d_tartrate": "$categories.serotype.summary.D-tartrate_pos10",
                 "mlst_schema": {"$arrayElemAt": ["$mlstlookup.schema", 0]},
+                # "siblings": "$siblings",
+                "latest_for_isolate": {"$arrayElemAt": ["$siblings.sequence_id", 0]},
                 # grabbing whole object for ST, must pluck specific field later
                 "st": "$categories.mlst.summary.sequence_type",
                 "qc_action": "$categories.stamper.stamp.value",

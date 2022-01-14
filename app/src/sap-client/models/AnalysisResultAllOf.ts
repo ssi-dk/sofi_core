@@ -25,6 +25,12 @@ import {
  */
 export interface AnalysisResultAllOf  {
     /**
+     * sequence_id of latest result with this same isolate_id
+     * @type {string}
+     * @memberof AnalysisResultAllOf
+     */
+    latest_for_isolate?: string;
+    /**
      * 
      * @type {string}
      * @memberof AnalysisResultAllOf
@@ -556,6 +562,7 @@ export interface AnalysisResultAllOf  {
 
 export function AnalysisResultAllOfFromJSON(json: any): AnalysisResultAllOf {
     return {
+        'latest_for_isolate': !exists(json, 'latest_for_isolate') ? undefined : json['latest_for_isolate'],
         'resfinder_version': !exists(json, 'resfinder_version') ? undefined : json['resfinder_version'],
         'kma_received_date': !exists(json, 'kma_received_date') ? undefined : new Date(json['kma_received_date']),
         'date_analysis_sofi': !exists(json, 'date_analysis_sofi') ? undefined : new Date(json['date_analysis_sofi']),
@@ -652,6 +659,7 @@ export function AnalysisResultAllOfToJSON(value?: AnalysisResultAllOf): any {
         return undefined;
     }
     return {
+        'latest_for_isolate': value.latest_for_isolate,
         'resfinder_version': value.resfinder_version,
         'kma_received_date': value.kma_received_date === undefined ? undefined : value.kma_received_date.toISOString(),
         'date_analysis_sofi': value.date_analysis_sofi === undefined ? undefined : value.date_analysis_sofi.toISOString(),

@@ -37,7 +37,7 @@ When running in the dev environment, a default user account is created,
  which you can use for signing into the application.
 
 Username: `admin@fvst.dk`
-Password: `delegate21`
+Password: `Delegate21!`
 
 ## Local dev running
 Create virtual env, install dependencies

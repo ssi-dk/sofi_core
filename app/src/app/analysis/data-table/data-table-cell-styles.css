@@ -67,12 +67,6 @@ div[role="cell"].unapprovedCell.selectedCell {
       0/0.6em 0.6em;
 }
 
-div[role="cell"].approvingCell {
-  border: 1px solid transparent;
-  font-weight: bold;
-  background-color: #faf089;
-}
-
 div[role="cell"].unapprovedCell {
   border: 1px solid transparent;
   background-color: #90cdf4;
@@ -89,4 +83,18 @@ div[role="cell"].emptyCell {
   border: 1px solid transparent;
   background-color: #f7f9fb;
   border-left: 1px dashed rgba(0, 0, 0, 0.1);
+}
+
+div[role="cell"].isLatest::before {
+  content: "*";
+  font-size: 20px;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+div[role="cell"].approvingCell {
+  border: 1px solid transparent;
+  font-weight: bold;
+  background-color: #faf089 !important;
 }

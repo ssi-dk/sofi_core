@@ -7,7 +7,7 @@ set -euo pipefail
 # Inits a Registration Flow
 sleep 5s
 
-pw="delegate21"
+pw="Delegate21!"
 
 createUser(){
   # params

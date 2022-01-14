@@ -385,11 +385,14 @@ export default function AnalysisPage() {
   );
 
   const getStickyCellStyle = React.useCallback(
-    (rowId: string) => {
+    (rowId: string, rowData: any) => {
       const approvedCells = Object.keys(approvals[rowId] || {}).length;
+      const isLatestSequence =
+        rowData.values.sequence_id === rowData.values.latest_for_isolate;
+      const baseClasses = `stickyCell ${isLatestSequence ? "isLatest" : ""}`;
       return approvableColumns.length - approvedCells >= 5
-        ? "unapprovedCell stickyCell"
-        : "stickyCell";
+        ? `${baseClasses} unapprovedCell`
+        : baseClasses;
     },
     [approvals, approvableColumns]
   );

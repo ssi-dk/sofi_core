@@ -5,6 +5,10 @@ sofi-table-border {
   min-width: 250px;
 }
 
+sofi-table-border:nth-of-type(odd) {
+  background: #edf2f7;
+}
+
 sofi-overflow-wrapper {
   overflow-x: auto;
 }

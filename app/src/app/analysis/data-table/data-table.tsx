@@ -52,7 +52,7 @@ type DataTableProps<T extends NotEmpty> = {
   onDetailsClick: (isolateId: string, row: Row<T>) => void;
   view: UserDefinedViewInternal;
   getCellStyle: (rowId: string, columnId: string, value: any) => string;
-  getStickyCellStyle: (rowId: string) => string;
+  getStickyCellStyle: (rowId: string, rowData: any) => string;
   columnReordering?: ColumnReordering;
   renderCellControl: (
     rowId: string,
@@ -376,7 +376,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
       const columnId = visibleColumns[columnIndex].id;
       let className =
         columnIndex === 0
-          ? getStickyCellStyle(rowId)
+          ? getStickyCellStyle(rowId, row)
           : getCellStyle(
               rowId,
               columnId,

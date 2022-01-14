@@ -29,7 +29,7 @@ class AnalysisResult(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, sequence_id=None, sequence_filename=None, isolate_id=None, institution=None, project_number=None, project_title=None, sampling_date=None, received_date=None, sofi_date=None, run_id=None, public=None, primary_isolate=None, chr_number=None, cvr_number=None, aut_number=None, product_type=None, product=None, origin_country=None, animal_species=None, sample_info=None, cpr_nr=None, gender=None, name=None, age=None, travel=None, travel_country=None, run_date=None, kma_received_date=None, kma=None, region=None, fud_number=None, cluster_id=None, epi_export=None, resfinder_version=None, date_analysis_sofi=None, date_approved_serotype=None, date_approved_qc=None, date_approved_amr=None, date_approved_st=None, date_approved_toxin=None, date_approved_cluster=None, qc_provided_species=None, qc_genome1x=None, qc_genome10x=None, qc_gsize_diff1x10=None, qc_avg_coverage=None, qc_final=None, qc_action=None, qc_num_contigs=None, qc_ambiguous_sites=None, qc_num_reads=None, qc_main_sp_plus_uncl=None, qc_unclassified_reads=None, qc_db_id=None, qc_failed_tests=None, qc_cgmlst_percent=None, cgmlst_schema_salmonella=None, cgmlst_schema_ecoli=None, cgmlst_schema_campylobacter=None, cgmlst_schema_listeria=None, cgmlst_schema_klebsiella=None, subspecies=None, species_final=None, st=None, st_final=None, pathotype=None, pathotype_final=None, sero_enterobase=None, sero_seqsero=None, sero_antigen_seqsero=None, sero_d_tartrate=None, sero_serotype_finder=None, serotype_final=None, adhesion_final=None, virulence_genes=None, toxins_final=None, infection_source=None, resistance_genes=None, amr_profile=None, comment=None, comment_cluster=None, comment_general=None, comment_supplementary=None, comment_qc=None, amr_ami=None, amr_amp=None, amr_azi=None, amr_fep=None, amr_fot=None, amr_f_c=None, amr_fox=None, amr_taz=None, amr_t_c=None, amr_chl=None, amr_cip=None, amr_cli=None, amr_col=None, amr_dap=None, amr_etp=None, amr_ery=None, amr_fus=None, amr_gen=None, amr_imi=None, amr_kan=None, amr_lzd=None, amr_mero=None, amr_mup=None, amr_nal=None, amr_pen=None, amr_syn=None, amr_rif=None, amr_str=None, amr_sul=None, amr_tei=None, amr_trm=None, amr_tet=None, amr_tia=None, amr_tgc=None, amr_tmp=None, amr_van=None):  # noqa: E501
+    def __init__(self, sequence_id=None, sequence_filename=None, isolate_id=None, institution=None, project_number=None, project_title=None, sampling_date=None, received_date=None, sofi_date=None, run_id=None, public=None, primary_isolate=None, chr_number=None, cvr_number=None, aut_number=None, product_type=None, product=None, origin_country=None, animal_species=None, sample_info=None, cpr_nr=None, gender=None, name=None, age=None, travel=None, travel_country=None, run_date=None, kma_received_date=None, kma=None, region=None, fud_number=None, cluster_id=None, epi_export=None, latest_for_isolate=None, resfinder_version=None, date_analysis_sofi=None, date_approved_serotype=None, date_approved_qc=None, date_approved_amr=None, date_approved_st=None, date_approved_toxin=None, date_approved_cluster=None, qc_provided_species=None, qc_genome1x=None, qc_genome10x=None, qc_gsize_diff1x10=None, qc_avg_coverage=None, qc_final=None, qc_action=None, qc_num_contigs=None, qc_ambiguous_sites=None, qc_num_reads=None, qc_main_sp_plus_uncl=None, qc_unclassified_reads=None, qc_db_id=None, qc_failed_tests=None, qc_cgmlst_percent=None, cgmlst_schema_salmonella=None, cgmlst_schema_ecoli=None, cgmlst_schema_campylobacter=None, cgmlst_schema_listeria=None, cgmlst_schema_klebsiella=None, subspecies=None, species_final=None, st=None, st_final=None, pathotype=None, pathotype_final=None, sero_enterobase=None, sero_seqsero=None, sero_antigen_seqsero=None, sero_d_tartrate=None, sero_serotype_finder=None, serotype_final=None, adhesion_final=None, virulence_genes=None, toxins_final=None, infection_source=None, resistance_genes=None, amr_profile=None, comment=None, comment_cluster=None, comment_general=None, comment_supplementary=None, comment_qc=None, amr_ami=None, amr_amp=None, amr_azi=None, amr_fep=None, amr_fot=None, amr_f_c=None, amr_fox=None, amr_taz=None, amr_t_c=None, amr_chl=None, amr_cip=None, amr_cli=None, amr_col=None, amr_dap=None, amr_etp=None, amr_ery=None, amr_fus=None, amr_gen=None, amr_imi=None, amr_kan=None, amr_lzd=None, amr_mero=None, amr_mup=None, amr_nal=None, amr_pen=None, amr_syn=None, amr_rif=None, amr_str=None, amr_sul=None, amr_tei=None, amr_trm=None, amr_tet=None, amr_tia=None, amr_tgc=None, amr_tmp=None, amr_van=None):  # noqa: E501
         """AnalysisResult - a model defined in OpenAPI
 
         :param sequence_id: The sequence_id of this AnalysisResult.  # noqa: E501
@@ -98,6 +98,8 @@ class AnalysisResult(Model):
         :type cluster_id: str
         :param epi_export: The epi_export of this AnalysisResult.  # noqa: E501
         :type epi_export: str
+        :param latest_for_isolate: The latest_for_isolate of this AnalysisResult.  # noqa: E501
+        :type latest_for_isolate: str
         :param resfinder_version: The resfinder_version of this AnalysisResult.  # noqa: E501
         :type resfinder_version: str
         :param date_analysis_sofi: The date_analysis_sofi of this AnalysisResult.  # noqa: E501
@@ -307,6 +309,7 @@ class AnalysisResult(Model):
             'fud_number': str,
             'cluster_id': str,
             'epi_export': str,
+            'latest_for_isolate': str,
             'resfinder_version': str,
             'date_analysis_sofi': datetime,
             'date_approved_serotype': datetime,
@@ -430,6 +433,7 @@ class AnalysisResult(Model):
             'fud_number': 'fud_number',
             'cluster_id': 'cluster_id',
             'epi_export': 'epi_export',
+            'latest_for_isolate': 'latest_for_isolate',
             'resfinder_version': 'resfinder_version',
             'date_analysis_sofi': 'date_analysis_sofi',
             'date_approved_serotype': 'date_approved_serotype',
@@ -552,6 +556,7 @@ class AnalysisResult(Model):
         self._fud_number = fud_number
         self._cluster_id = cluster_id
         self._epi_export = epi_export
+        self._latest_for_isolate = latest_for_isolate
         self._resfinder_version = resfinder_version
         self._date_analysis_sofi = date_analysis_sofi
         self._date_approved_serotype = date_approved_serotype
@@ -1367,6 +1372,29 @@ class AnalysisResult(Model):
         """
 
         self._epi_export = epi_export
+
+    @property
+    def latest_for_isolate(self):
+        """Gets the latest_for_isolate of this AnalysisResult.
+
+        sequence_id of latest result with this same isolate_id  # noqa: E501
+
+        :return: The latest_for_isolate of this AnalysisResult.
+        :rtype: str
+        """
+        return self._latest_for_isolate
+
+    @latest_for_isolate.setter
+    def latest_for_isolate(self, latest_for_isolate):
+        """Sets the latest_for_isolate of this AnalysisResult.
+
+        sequence_id of latest result with this same isolate_id  # noqa: E501
+
+        :param latest_for_isolate: The latest_for_isolate of this AnalysisResult.
+        :type latest_for_isolate: str
+        """
+
+        self._latest_for_isolate = latest_for_isolate
 
     @property
     def resfinder_version(self):

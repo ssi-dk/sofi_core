@@ -768,6 +768,9 @@ components:
           required:
             - isolate_id
           properties:
+            latest_for_isolate:
+              type: string
+              description: sequence_id of latest result with this same isolate_id
             resfinder_version:
               type: string
             kma_received_date:
