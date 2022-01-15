@@ -57,7 +57,7 @@ stages:
           imageNameRelease: '$(dockerId)/sap-web:latest'
 
         steps:
-        - script: docker build -f Dockerfile -t $(imageName) .
+        - script: docker build -f ./web/Dockerfile -t $(imageName) ./web
           displayName: 'Docker build and test'
           workingDirectory: app
 
