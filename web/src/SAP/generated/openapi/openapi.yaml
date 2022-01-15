@@ -845,18 +845,38 @@ components:
       required:
       - tree
       type: object
+    UploadMetadataFields:
+      description: Corresponds to fields of the metadata.tsv file for initiating an
+        execution of the analysis tool pipeline
+      properties:
+        sample_id:
+          type: string
+        provided_species:
+          type: string
+        group:
+          type: string
+        experiment_name:
+          type: string
+        sequence_run_date:
+          format: date-time
+          type: string
+        sofi_sequence_id:
+          type: string
+        project_no:
+          type: string
+        project_title:
+          type: string
+      type: object
     SingleUploadRequest:
       properties:
         metadata:
-          $ref: '#/components/schemas/BaseMetadata'
+          format: binary
+          type: string
         files:
           items:
             format: binary
             type: string
           type: array
-      required:
-      - files
-      - metadata
       type: object
     MultiUploadRequest:
       properties:

@@ -2,7 +2,7 @@ version: '3.4'
 services:
   sap_api:
     build: 
-      context: .
+      context: ./web
       target: final
     environment:
     # don't litter host with pyc files; we always want latest state from file

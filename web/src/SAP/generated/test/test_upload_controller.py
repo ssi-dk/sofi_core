@@ -5,7 +5,6 @@ import unittest
 from flask import json
 from six import BytesIO
 
-from web.src.SAP.generated.models.base_metadata import BaseMetadata  # noqa: E501
 from web.src.SAP.generated.models.upload_response import UploadResponse  # noqa: E501
 from .test import BaseTestCase
 
@@ -68,7 +67,7 @@ class TestUploadController(BaseTestCase):
             'Content-Type': 'multipart/form-data',
             'Authorization': 'Bearer special-key',
         }
-        data = dict(metadata={}
+        data = dict(metadata=(BytesIO(b'some file data'), 'file.txt')
                     files=(BytesIO(b'some file data'), 'file.txt'))
         response = self.client.open(
             '/api/upload/single_upload',

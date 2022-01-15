@@ -1,21 +1,20 @@
 FROM tiangolo/meinheld-gunicorn-flask:python3.8 AS base
 
-COPY web/requirements.txt .
+COPY ["requirements.txt", "/app/"]
 RUN pip install -r requirements.txt
 
-COPY openapi_specs /app/openapi_specs/
-
-COPY ["web/main.py", "web/start.sh", "web/gunicorn_conf.py", "/app/"]
-COPY "web/permission-config.jsonc" "/app/"
-COPY web/src /app/web/src
+COPY ["main.py", "start.sh", "gunicorn_conf.py", "/app/"]
+COPY "permission-config.jsonc" "/app/"
+COPY src /app/web/src
+COPY openapi_specs /app/openapi_specs
 RUN chmod +x start.sh
 
 FROM base AS testingbase
-COPY ["web/test-requirements.txt", "/app/"]
+COPY ["test-requirements.txt", "/app/"]
 RUN pip install -r test-requirements.txt
 
 FROM testingbase AS testing
-COPY web/tests /app/tests
+COPY tests /app/tests
 LABEL test=true
 RUN pytest -rx tests --junitxml=junit.xml; exit 0
 

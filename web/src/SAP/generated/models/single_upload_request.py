@@ -6,10 +6,8 @@ from datetime import date, datetime  # noqa: F401
 from typing import List, Dict  # noqa: F401
 
 from web.src.SAP.generated.models.base_model_ import Model
-from web.src.SAP.generated.models.base_metadata import BaseMetadata
 from web.src.SAP.generated import util
 
-from web.src.SAP.generated.models.base_metadata import BaseMetadata  # noqa: E501
 
 class SingleUploadRequest(Model):
 
@@ -23,12 +21,12 @@ class SingleUploadRequest(Model):
         """SingleUploadRequest - a model defined in OpenAPI
 
         :param metadata: The metadata of this SingleUploadRequest.  # noqa: E501
-        :type metadata: BaseMetadata
+        :type metadata: file
         :param files: The files of this SingleUploadRequest.  # noqa: E501
         :type files: List[file]
         """
         self.openapi_types = {
-            'metadata': BaseMetadata,
+            'metadata': file,
             'files': List[file],
         }
 
@@ -57,7 +55,7 @@ class SingleUploadRequest(Model):
 
 
         :return: The metadata of this SingleUploadRequest.
-        :rtype: BaseMetadata
+        :rtype: file
         """
         return self._metadata
 
@@ -67,10 +65,8 @@ class SingleUploadRequest(Model):
 
 
         :param metadata: The metadata of this SingleUploadRequest.
-        :type metadata: BaseMetadata
+        :type metadata: file
         """
-        if metadata is None:
-            raise ValueError("Invalid value for `metadata`, must not be `None`")  # noqa: E501
 
         self._metadata = metadata
 
@@ -92,7 +88,5 @@ class SingleUploadRequest(Model):
         :param files: The files of this SingleUploadRequest.
         :type files: List[file]
         """
-        if files is None:
-            raise ValueError("Invalid value for `files`, must not be `None`")  # noqa: E501
 
         self._files = files

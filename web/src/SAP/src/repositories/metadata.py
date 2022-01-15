@@ -4,6 +4,7 @@ import pymongo
 import logging
 import json
 from web.src.SAP.generated.models import BaseMetadata, Organization
+from web.src.SAP.generated.models.upload_metadata_fields import UploadMetadataFields
 from ...common.database import (
     ANALYSIS_COL_NAME,
     get_connection,
@@ -15,19 +16,21 @@ from ...common.database import (
 import sys
 
 
-def upsert_analysis_result_for_upload(metadata: BaseMetadata, filenames: List[str]):
+def upsert_analysis_result_for_upload(
+    metadata: UploadMetadataFields, filenames: List[str], institution
+):
     conn = get_connection()
     mydb = conn[DB_NAME]
     metadata_col = mydb[ANALYSIS_COL_NAME]
     metadata_col.update_one(
         {
-            "isolate_id": metadata.isolate_id,
+            "isolate_id": metadata.sample_id,
         },
         {
             "$set": {
-                "sequence_id": metadata.sequence_id,
-                "isolate_id": metadata.isolate_id,
-                "institution": metadata.institution,
+                "sequence_id": metadata.sofi_sequence_id,
+                "isolate_id": metadata.sample_id,
+                "institution": institution,
                 "manually_uploaded": True,
                 "sequence_filename": " ".join(filenames),
             }
@@ -36,12 +39,12 @@ def upsert_analysis_result_for_upload(metadata: BaseMetadata, filenames: List[st
     )
 
 
-def upsert_manual_metadata(metadata: BaseMetadata):
+def upsert_manual_metadata(metadata: UploadMetadataFields):
     conn = get_connection()
     mydb = conn[DB_NAME]
     metadata_col = mydb[MANUAL_METADATA_COL_NAME]
     metadata_col.update_one(
-        {"isolate_id": metadata.isolate_id}, {"$set": metadata.to_dict()}, upsert=True
+        {"isolate_id": metadata.sample_id}, {"$set": metadata.to_dict()}, upsert=True
     )
 
 

@@ -1,0 +1,554 @@
+openapi: 3.0.0
+info:
+  title: lims
+  version: '1.0'
+  description: LIMS web service
+  contact:
+    name: LimsMock
+servers:
+  - url: 'http://localhost:4010/lims'
+paths:
+  /actions/GetIsolate:
+    post:
+      security:
+        - cookieAuth: []
+      summary: Get isolate
+      operationId: post-actions-GetIsolate
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IsolateGetResponse'
+              examples:
+                example:
+                  value:
+                    output:
+                      sapresponse:
+                        isolateId: abcx
+                        isolateApproved: false
+                        metadata:
+                          - metaFieldName: Projektnr
+                            metaFieldValue: test-project-123
+                          - metaFieldName: Projekttitel
+                            metaFieldValue: test-project
+                          - metaFieldName: Dato_proeve
+                            metaFieldValue: 14-09-2020
+                          - metaFieldName: Dato_modtagelse
+                            metaFieldValue: 14-09-2020
+                          - metaFieldName: Produkt_type
+                            metaFieldValue: test-produkt-type
+                          - metaFieldName: Produkt
+                            metaFieldValue: test-product
+                          - metaFieldName: Dyreart
+                            metaFieldValue: test-animal
+                        data:
+                          - fieldName: Species_final
+                            fieldValue: value2
+                            status: InProgress
+                          - fieldName: Serotype_final
+                            fieldValue: value3
+                            status: InProgress
+                          - fieldName: ST
+                            fieldValue: value4
+                            status: InProgress
+                          - fieldName: Virulensgener
+                            fieldValue: value5
+                            status: InProgress
+                          - fieldName: Dato_analyseSAP
+                            fieldValue: ""
+                            status: InProgress
+                          - fieldName: "AMR _ Amp"
+                            fieldValue: ""
+                            status: InProgress
+                        succcess: true
+                    code: 200
+                    message: Action GetIsolate executed successfully
+                    status: OK
+      description: Get isolate information
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IsolateGetRequest'
+            examples:
+              example:
+                value:
+                  isolateId: abcx
+        description: Isolate Id to fetch information for
+      tags:
+        - isolate
+  /actions/UpdateIsolate:
+    post:
+      security:
+        - cookieAuth: []
+      summary: Update isolate
+      operationId: post-actions-UpdateIsolate
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IsolateUpdateResponse'
+              examples:
+                example:
+                  value:
+                    output:
+                      sapresponse:
+                        succcess: true
+                    code: 200
+                    message: Action UpdateIsolate executed successfully
+                    status: OK
+        '409':
+          description: Conflict - Isolate is not in OPEN state
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IsolateUpdateRequest'
+            examples:
+              example:
+                value:
+                  isolateId: abcx
+                  data:
+                    - fieldName: species
+                      fieldValue: value2
+                    - fieldName: AMRgener
+                      fieldValue: value6
+        description: Isolate update
+      description: Update isolate information
+      tags:
+        - isolate
+  '/connections/{connectionId}':
+    get:
+      security:
+        - cookieAuth: []
+      summary: Check connection
+      tags:
+        - connections
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+              examples:
+                example:
+                  value:
+                    code: 200
+                    message: Connection fvstlims|admin198020663280 checked
+                    status: OK
+      operationId: get-connections
+      description: Check connection
+      parameters: []
+    delete:
+      security:
+        - cookieAuth: []
+      summary: Delete connection
+      operationId: delete-connections
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+              examples:
+                example:
+                  value:
+                    code: 200
+                    message: Connection fvstlims|admin1013035459275 cleared
+                    status: OK
+      description: Delete connection
+      tags:
+        - connections
+    put:
+      security:
+        - cookieAuth: []
+      summary: ''
+      operationId: put-connections
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+              examples:
+                example:
+                  value:
+                    code: 200
+                    message: Connection fvstlims|admin198020663280 refreshed
+                    status: OK
+      description: Refreshes connection
+      tags:
+        - connections
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+    parameters:
+      - schema:
+          type: string
+          example: fvstlims|admin719456522586
+        name: connectionId
+        in: path
+        required: true
+  /connections:
+    post:
+      security: []
+      summary: ''
+      operationId: post-connections
+      responses:
+        '201':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConnectionCreateResponse'
+              examples:
+                example:
+                  value:
+                    code: 201
+                    message: Connection fvstlims|admin719456522586 created
+                    connections:
+                      connectionid: fvstlims|admin719456522586
+                    status: Created
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+                example: 'connectionid=FVSTLIMS|admin5653995501376'
+      description: Create connection
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConnectionCreateRequest'
+            examples:
+              example:
+                value:
+                  databaseid: db1
+                  username: admin
+                  password: admin
+      tags:
+        - connections
+components:
+  schemas:
+    FieldStatus:
+      type: string
+      description: Indicates whether or not an analyst has approved the field
+      enum: ["release", "InProgress", "Released"]
+
+
+    DataFieldName:
+      type: string
+      enum: 
+        - "Species_final"
+        - "Subspecies"
+        - "Serotype_final"
+        - "Sero_enterobase"
+        - "Sero_seqSero"
+        - "Sero_Antigen_seqSero"
+        - "Sero_D-tartrate"
+        - "Serotype_finder"
+        - "ST"
+        - "Pathotype_final"
+        - "Virulensgener"
+        - "Adheasion_final"
+        - "Toxin_final"
+        - "Dato_analyseSAP"
+        - "SekvensId"
+        - "AMR_profil"
+        - "AMR _ Ami"
+        - "AMR _ Amp"
+        - "AMR _ Azi"
+        - "AMR _ Fep"
+        - "AMR _ Fot"
+        - "AMR _ F/C"
+        - "AMR _ Fox"
+        - "AMR _ Taz"
+        - "AMR _ T/C"
+        - "AMR _ Chl"
+        - "AMR _ Cip"
+        - "AMR _ Cli"
+        - "AMR _ Col"
+        - "AMR _ Dap"
+        - "AMR _ Etp"
+        - "AMR _ Ery"
+        - "AMR _ Fus"
+        - "AMR _ Gen"
+        - "AMR _ Imi"
+        - "AMR _ Kan"
+        - "AMR _ Lzd"
+        - "AMR _ Mero"
+        - "AMR _ Mup"
+        - "AMR _ Nal"
+        - "AMR _ Pen"
+        - "AMR _ Syn"
+        - "AMR _ Rif"
+        - "AMR _ Str"
+        - "AMR _ Sul"
+        - "AMR _ Tei"
+        - "AMR _ Trm"
+        - "AMR _ Tet"
+        - "AMR _ Tia"
+        - "AMR _ Tgc"
+        - "AMR _Tmp "
+        - "AMR _ Van"
+
+    MetadataFieldName:
+      type: string
+      enum:
+        - SekvensId
+        - Sekvensfilnavn
+        - Institution
+        - Projektnr
+        - Projekttitel
+        - Dato_proeve
+        - Dato_modtagelse
+        - RunID
+        - Acc_nr
+        - QC_provided_species
+        - CHR
+        - CVR
+        - Aut_nr
+        - Produkt_type
+        - Produkt
+        - Oprindelsesland
+        - Dyreart
+        - Proeveinfo
+
+    DataEntry:
+      title: DataEntry
+      type: object
+      properties:
+        fieldName:
+          $ref: "#/components/schemas/DataFieldName"
+        fieldValue:
+          type: string
+        status:
+          $ref: "#/components/schemas/FieldStatus"
+      x-examples:
+        example:
+          fieldName: species
+          fieldValue: value2
+      description: Data entry
+    MetaDataEntry:
+      title: MetaDataEntry
+      type: object
+      properties:
+        metaFieldName:
+          $ref: "#/components/schemas/MetadataFieldName"
+        metaFieldValue:
+          type: string
+      x-examples:
+        example:
+          metaFieldName: dyreart
+          metaFieldValue: test-animal
+      description: Meta data entry
+    IsolateGetResponse:
+      title: IsolateGetResponse
+      type: object
+      x-examples:
+        example:
+          output:
+            sapresponse:
+              isolateId: abcx
+              isolateApproved: false
+              metadata:
+                - metaFieldName: projektnummer
+                  metaFieldValue: test-project-123
+                - metaFieldName: projekttitel
+                  metaFieldValue: test-project
+                - metaFieldName: datoudtagning
+                  metaFieldValue: 14-09-2020
+                - metaFieldName: datomodtagelse
+                  metaFieldValue: 14-09-2020
+                - metaFieldName: produkttype
+                  metaFieldValue: test-produkt-type
+                - metaFieldName: produkt
+                  metaFieldValue: test-product
+                - metaFieldName: dyreart
+                  metaFieldValue: test-animal
+              data:
+                - fieldName: Agens bakterie
+                  fieldValue: value1
+                - fieldName: species
+                  fieldValue: value2
+                - fieldName: serotype
+                  fieldValue: value3
+                - fieldName: STtype
+                  fieldValue: value4
+                - fieldName: virulensgener
+                  fieldValue: value5
+                - fieldName: AMRgener
+                  fieldValue: value6
+                - fieldName: resfinder version
+                  fieldValue: value7
+                - fieldName: RunId
+                  fieldValue: value8
+                - fieldName: sekvensID
+                  fieldValue: value9
+              succcess: true
+              success: true
+          code: 200
+          message: Action GetIsolate executed successfully
+          status: OK
+      description: Isolate get response
+      properties:
+        output:
+          type: object
+          properties:
+            sapresponse:
+              type: object
+              properties:
+                isolateId:
+                  type: string
+                isolateApproved:
+                  type: boolean
+                data:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/DataEntry'
+                metadata:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/MetaDataEntry'
+                message:
+                  type: string
+                success:
+                  nullable: true
+                  type: boolean
+                succcess:
+                  nullable: true
+                  type: boolean
+        code:
+          type: number
+        message:
+          type: string
+        status:
+          type: string
+    IsolateGetRequest:
+      title: IsolateGetRequest
+      type: object
+      properties:
+        isolateId:
+          type: string
+      x-examples:
+        example:
+          isolateId: abcx
+      description: Isolate get request
+    IsolateUpdateRequest:
+      title: IsolateUpdateRequest
+      type: object
+      properties:
+        isolateId:
+          type: string
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/DataEntry'
+      description: Isolate update request
+      x-examples:
+        example:
+          isolateId: abcx
+          data:
+            - fieldName: species
+              fieldValue: value2
+            - fieldName: AMRgener
+              fieldValue: value6
+    IsolateUpdateResponse:
+      title: IsolateUpdateResponse
+      type: object
+      description: Isolate update response
+      x-examples:
+        example:
+          output:
+            sapresponse:
+              succcess: true
+          message: Action UpdateIsolate executed successfully
+      properties:
+        code:
+          type: number
+        message:
+          type: string
+        status:
+          type: string
+        output:
+          type: object
+          properties:
+            sapresponse:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                succcess:
+                  type: boolean
+                message:
+                  type: string
+    MessageResponse:
+      title: MessageResponse
+      type: object
+      properties:
+        code:
+          type: number
+        message:
+          type: string
+        status:
+          type: string
+      description: Message response
+      x-examples:
+        example:
+          message: Some message
+    ConnectionCreateRequest:
+      title: ConnectionCreateRequest
+      type: object
+      description: Connection create request
+      x-examples:
+        example:
+          databaseid: fvstlims
+          username: admin
+          password: admin
+      properties:
+        databaseid:
+          type: string
+        username:
+          type: string
+        password:
+          type: string
+    ConnectionCreateResponse:
+      title: ConnectionCreateResponse
+      type: object
+      properties:
+        code:
+          type: number
+        message:
+          type: string
+        connections:
+          type: object
+          properties:
+            connectionid:
+              type: string
+        status:
+          type: string
+      x-examples:
+        example:
+          code: 201
+          message: Connection fvstlims|admin719456522586 created
+          connections:
+            connectionid: fvstlims|admin719456522586
+          status: Created
+      description: Connection create response
+  securitySchemes: 
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: connectionid
+tags:
+  - name: isolate
+  - name: connections

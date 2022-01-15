@@ -24,6 +24,7 @@ export * from './QueryOperator';
 export * from './Resistance';
 export * from './TbrMetadata';
 export * from './TbrSpecificMetadata';
+export * from './UploadMetadataFields';
 export * from './UploadResponse';
 export * from './UserDefinedView';
 export * from './UserDefinedViewColumnResizing';

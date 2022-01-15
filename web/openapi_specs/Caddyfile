@@ -1,0 +1,11 @@
+:4099 {
+	route /lims/* {
+		uri strip_prefix /lims
+		reverse_proxy lims_integration:4021
+	}
+
+	route /sap/* {
+		uri strip_prefix /sap
+		reverse_proxy sap_mock:4011
+	}
+}

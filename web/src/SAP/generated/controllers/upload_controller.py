@@ -31,18 +31,15 @@ def multi_upload(user, token_info, metadata_tsv, files):  # noqa: E501
     """
     return UploadController.multi_upload(user, token_info, metadata_tsv, files)
 
-def single_upload(user, token_info, metadata, files):  # noqa: E501
+def single_upload(user, token_info, metadata=None, files=None):  # noqa: E501
     """single_upload
 
     Manually upload isolate with metadata # noqa: E501
 
     :param metadata: 
-    :type metadata: dict | bytes
+    :type metadata: str
     :param files: 
 
     :rtype: UploadResponse
     """
-    if connexion.request.is_json:
-        from ..models import BaseMetadata
-        metadata = BaseMetadata.from_dict(connexion.request.get_json())  # noqa: E501
     return UploadController.single_upload(user, token_info, metadata, files)

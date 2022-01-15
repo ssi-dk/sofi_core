@@ -1,0 +1,542 @@
+openapi: 3.0.1
+info:
+  title: SAP TBR Integration
+  description: TBR integration for SAP
+  version: v1
+paths:
+  '/api/Isolate/{isolateId}':
+    get:
+      tags:
+        - Isolate
+      parameters:
+        - name: isolateId
+          in: path
+          required: true
+          schema:
+            type: string
+            nullable: true
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Isolate'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Isolate'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+  /api/Isolate:
+    put:
+      tags:
+        - Isolate
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IsolateUpdate'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: boolean
+            application/problem+json:
+              schema:
+                type: boolean
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+  /api/Isolate/ChangedIsolates:
+    post:
+      tags:
+        - Isolate
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/RowVersion'
+              nullable: true
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Isolate'
+            application/problem+json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Isolate'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+components:
+  schemas:
+    Isolate:
+      type: object
+      properties:
+        isolateId:
+          type: string
+          nullable: true
+        runId:
+          type: string
+          nullable: true
+        testDate:
+          type: string
+          format: date-time
+          nullable: true
+        ssiDate:
+          type: string
+          format: date-time
+          nullable: true
+        cprNr:
+          type: string
+          nullable: true
+        name:
+          type: string
+          nullable: true
+        primaryIsolate:
+          type: boolean
+          nullable: true
+        kmaDate:
+          type: string
+          format: date-time
+          nullable: true
+        kmaName:
+          type: string
+          nullable: true
+        gender:
+          type: string
+          nullable: true
+        age:
+          type: integer
+          format: int32
+          nullable: true
+        travel:
+          type: string
+          nullable: true
+        travelCountry:
+          type: string
+          nullable: true
+        region:
+          type: string
+          nullable: true
+        serotype:
+          type: string
+          nullable: true
+        st:
+          type: integer
+          format: int32
+          nullable: true
+        fudNr:
+          type: string
+          nullable: true
+        clusterId:
+          type: string
+          nullable: true
+        species:
+          type: string
+          nullable: true
+        subspecies:
+          type: string
+          nullable: true
+        pathotype:
+          type: string
+          nullable: true
+        adheasion:
+          type: string
+          nullable: true
+        toxin:
+          type: string
+          nullable: true
+        resistensgener:
+          type: string
+          nullable: true
+        amrProfile:
+          type: string
+          nullable: true
+        amikacin:
+          type: string
+          nullable: true
+        ampicillin:
+          type: string
+          nullable: true
+        azithromycin:
+          type: string
+          nullable: true
+        cefepime:
+          type: string
+          nullable: true
+        cefotaxime:
+          type: string
+          nullable: true
+        cefotaximeClavulanat:
+          type: string
+          nullable: true
+        cefoxitin:
+          type: string
+          nullable: true
+        ceftazidime:
+          type: string
+          nullable: true
+        ceftazidimeClavulanat:
+          type: string
+          nullable: true
+        chloramphenicol:
+          type: string
+          nullable: true
+        ciprofloxacin:
+          type: string
+          nullable: true
+        clindamycin:
+          type: string
+          nullable: true
+        colistin:
+          type: string
+          nullable: true
+        daptomycin:
+          type: string
+          nullable: true
+        ertapenem:
+          type: string
+          nullable: true
+        erythromycin:
+          type: string
+          nullable: true
+        fusidinsyre:
+          type: string
+          nullable: true
+        gentamicin:
+          type: string
+          nullable: true
+        imipenem:
+          type: string
+          nullable: true
+        kanamycin:
+          type: string
+          nullable: true
+        linezolid:
+          type: string
+          nullable: true
+        meropenem:
+          type: string
+          nullable: true
+        mupirocin:
+          type: string
+          nullable: true
+        nalidixan:
+          type: string
+          nullable: true
+        penicillin:
+          type: string
+          nullable: true
+        ceftazidimeClavulanatn:
+          type: string
+          nullable: true
+        rifampin:
+          type: string
+          nullable: true
+        streptomycin:
+          type: string
+          nullable: true
+        sulfamethoxazole:
+          type: string
+          nullable: true
+        teicoplanin:
+          type: string
+          nullable: true
+        temocilin:
+          type: string
+          nullable: true
+        tetracyklin:
+          type: string
+          nullable: true
+        tiamulin:
+          type: string
+          nullable: true
+        tigecycline:
+          type: string
+          nullable: true
+        trimethoprim:
+          type: string
+          nullable: true
+        vancomycin:
+          type: string
+          nullable: true
+        resfinderVersion:
+          type: string
+          nullable: true
+        dateApprovedResistens:
+          type: string
+          format: date-time
+          nullable: true
+        dateApprovedSerotype:
+          type: string
+          format: date-time
+          nullable: true
+        dateApprovedQC:
+          type: string
+          format: date-time
+          nullable: true
+        dateApprovedST:
+          type: string
+          format: date-time
+          nullable: true
+        dateApprovedToxin:
+          type: string
+          format: date-time
+          nullable: true
+        dateApprovedCluster:
+          type: string
+          format: date-time
+          nullable: true
+        dateEpi:
+          type: string
+          format: date-time
+          nullable: true
+        rowVer:
+          type: integer
+          format: int64
+      additionalProperties: false
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type: string
+          nullable: true
+        title:
+          type: string
+          nullable: true
+        status:
+          type: integer
+          format: int32
+          nullable: true
+        detail:
+          type: string
+          nullable: true
+        instance:
+          type: string
+          nullable: true
+      additionalProperties:
+        type: object
+        additionalProperties: false
+    IsolateUpdate:
+      type: object
+      properties:
+        isolateId:
+          type: string
+          nullable: true
+        runId:
+          type: string
+          nullable: true
+        serotype:
+          type: string
+          nullable: true
+        st:
+          type: integer
+          format: int32
+          nullable: true
+        fudNr:
+          type: string
+          nullable: true
+        clusterId:
+          type: string
+          nullable: true
+        species:
+          type: string
+          nullable: true
+        subspecies:
+          type: string
+          nullable: true
+        pathotype:
+          type: string
+          nullable: true
+        adheasion:
+          type: string
+          nullable: true
+        toxin:
+          type: string
+          nullable: true
+        resistensgener:
+          type: string
+          nullable: true
+        amrProfile:
+          type: string
+          nullable: true
+        amikacin:
+          type: string
+          nullable: true
+        ampicillin:
+          type: string
+          nullable: true
+        azithromycin:
+          type: string
+          nullable: true
+        cefepime:
+          type: string
+          nullable: true
+        cefotaxime:
+          type: string
+          nullable: true
+        cefotaximeClavulanat:
+          type: string
+          nullable: true
+        cefoxitin:
+          type: string
+          nullable: true
+        ceftazidime:
+          type: string
+          nullable: true
+        ceftazidimeClavulanat:
+          type: string
+          nullable: true
+        chloramphenicol:
+          type: string
+          nullable: true
+        ciprofloxacin:
+          type: string
+          nullable: true
+        clindamycin:
+          type: string
+          nullable: true
+        colistin:
+          type: string
+          nullable: true
+        daptomycin:
+          type: string
+          nullable: true
+        ertapenem:
+          type: string
+          nullable: true
+        erythromycin:
+          type: string
+          nullable: true
+        fusidinsyre:
+          type: string
+          nullable: true
+        gentamicin:
+          type: string
+          nullable: true
+        imipenem:
+          type: string
+          nullable: true
+        kanamycin:
+          type: string
+          nullable: true
+        linezolid:
+          type: string
+          nullable: true
+        meropenem:
+          type: string
+          nullable: true
+        mupirocin:
+          type: string
+          nullable: true
+        nalidixan:
+          type: string
+          nullable: true
+        penicillin:
+          type: string
+          nullable: true
+        ceftazidimeClavulanatn:
+          type: string
+          nullable: true
+        rifampin:
+          type: string
+          nullable: true
+        streptomycin:
+          type: string
+          nullable: true
+        sulfamethoxazole:
+          type: string
+          nullable: true
+        teicoplanin:
+          type: string
+          nullable: true
+        temocilin:
+          type: string
+          nullable: true
+        tetracyklin:
+          type: string
+          nullable: true
+        tiamulin:
+          type: string
+          nullable: true
+        tigecycline:
+          type: string
+          nullable: true
+        trimethoprim:
+          type: string
+          nullable: true
+        vancomycin:
+          type: string
+          nullable: true
+        resfinderVersion:
+          type: string
+          nullable: true
+        dateApprovedResistens:
+          type: string
+          format: date-time
+          nullable: true
+        dateApprovedSerotype:
+          type: string
+          format: date-time
+          nullable: true
+        dateApprovedQC:
+          type: string
+          format: date-time
+          nullable: true
+        dateApprovedST:
+          type: string
+          format: date-time
+          nullable: true
+        dateApprovedToxin:
+          type: string
+          format: date-time
+          nullable: true
+        dateApprovedCluster:
+          type: string
+          format: date-time
+          nullable: true
+        dateEpi:
+          type: string
+          format: date-time
+          nullable: true
+      additionalProperties: false
+    RowVersion:
+      type: object
+      properties:
+        isolateId:
+          type: string
+          nullable: true
+        rowVer:
+          type: integer
+          format: int64
+      additionalProperties: false

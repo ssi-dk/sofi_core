@@ -8,31 +8,36 @@ import {
   FormControl,
   useToast,
 } from "@chakra-ui/react";
-import { BaseMetadata } from "sap-client/models/BaseMetadata";
-import { Organization } from "sap-client/models/Organization";
 import { SingleUploadRequest } from "sap-client/apis/UploadApi";
 import { Loading } from "loading";
 import { useMutation } from "redux-query-react";
 import { useTranslation } from "react-i18next";
 import { uploadIsolateFile } from "./manual-upload-configs";
 import TextInput from "./text-input";
+import Species from "../data/species.json";
+import CreatableSelect from "react-select/creatable";
+import { UploadMetadataFields } from "sap-client";
 
 const initialState = {
-  isolate_id: "",
-  sequence_id: "",
-  project_number: "2",
+  sample_id: "",
+  sofi_sequence_id: "",
+  project_no: "2",
+  provided_species: "",
   project_title: "Urgent Inquiries",
-  sampling_date: new Date(),
-  received_date: new Date(),
-  run_id: "",
-  _public: "",
-  primary_isolate: true,
-} as BaseMetadata;
+  sequence_run_date: new Date(),
+  group: "",
+  experiment_name: "",
+} as UploadMetadataFields;
 
 function SingleUploadForm() {
   const [formDisabled, setFormDisabled] = useState(true);
   const { t } = useTranslation();
   const toast = useToast();
+
+  const speciesOptions = React.useMemo(
+    () => Species.map((x) => ({ label: x, value: x })),
+    []
+  );
 
   const [
     { isPending, status },
@@ -70,10 +75,16 @@ function SingleUploadForm() {
   const changeState = React.useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const { value, name } = e.target;
-      setMetadata({
-        ...metadata,
-        [name]: value,
-      });
+      const meta = { ...metadata, [name]: value };
+      setMetadata(meta);
+    },
+    [setMetadata, metadata]
+  );
+
+  const changeOptionState = React.useCallback(
+    (newValue: any) => {
+      const meta = { ...metadata, provided_species: newValue.value };
+      setMetadata(meta);
     },
     [setMetadata, metadata]
   );
@@ -97,7 +108,7 @@ function SingleUploadForm() {
     (e) => {
       e.preventDefault();
       doUpload({
-        metadata,
+        metadata: metadata as any,
         files: selectedFiles,
       });
     },
@@ -113,22 +124,40 @@ function SingleUploadForm() {
         <TextInput
           isRequired
           label="Isolate ID"
-          name="isolate_id"
-          value={metadata.isolate_id}
+          name="sample_id"
+          value={metadata.sample_id}
           onChange={changeState}
         />
         <TextInput
           isRequired
           label="Sequence ID"
-          name="sequence_id"
-          value={metadata.sequence_id}
+          name="sofi_sequence_id"
+          value={metadata.sofi_sequence_id}
           onChange={changeState}
         />
         <TextInput
           isRequired
+          label="Experiment Name"
+          name="experiment_name"
+          value={metadata.experiment_name}
+          onChange={changeState}
+        />
+        <div style={{ width: "100%" }}>
+          Provided Species
+          <CreatableSelect
+            isClearable={false}
+            defaultValue={{ label: "", value: "" }}
+            options={speciesOptions}
+            onChange={changeOptionState}
+            menuPortalTarget={document.body}
+            menuShouldScrollIntoView={false}
+          />
+        </div>
+        <TextInput
+          isRequired
           label="Project Number"
-          name="project_number"
-          value={metadata.project_number}
+          name="project_no"
+          value={metadata.project_no}
           onChange={changeState}
         />
         <TextInput
@@ -139,34 +168,15 @@ function SingleUploadForm() {
           onChange={changeState}
         />
         <TextInput
+          label="Group"
+          name="group"
+          value={metadata.group}
+          onChange={changeState}
+        />
+        <TextInput
           label="Sampling Date"
-          name="sampling_date"
-          value={metadata.sampling_date}
-          onChange={changeState}
-        />
-        <TextInput
-          label="Received Date"
-          name="received_date"
-          value={metadata.received_date}
-          onChange={changeState}
-        />
-        <TextInput
-          label="Run id"
-          name="run_id"
-          value={metadata.run_id}
-          onChange={changeState}
-        />
-        <TextInput
-          label="Public"
-          name="_public"
-          // eslint-disable-next-line
-          value={metadata._public}
-          onChange={changeState}
-        />
-        <TextInput
-          label="Primary isolate?"
-          name="primary_isolate"
-          value={metadata.primary_isolate}
+          name="sequence_run_date"
+          value={metadata.sequence_run_date}
           onChange={changeState}
         />
         <FormControl id="files" isRequired>

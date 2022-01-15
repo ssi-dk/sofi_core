@@ -32,6 +32,7 @@ from .resistance import Resistance
 from .single_upload_request import SingleUploadRequest
 from .tbr_metadata import TbrMetadata
 from .tbr_specific_metadata import TbrSpecificMetadata
+from .upload_metadata_fields import UploadMetadataFields
 from .upload_response import UploadResponse
 from .user_defined_view import UserDefinedView
 from .user_defined_view_column_resizing import UserDefinedViewColumnResizing

@@ -1,0 +1,27 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "AnalysisQuery",
+  "type": "object",
+  "properties": {
+    "paging_token": {
+      "type": "string",
+      "description": "opaque token to supply to get the next page of isolates",
+      "format": "byte",
+      "nullable": true
+    },
+    "page_size": {
+      "type": "integer",
+      "default": 100,
+      "nullable": true
+    },
+    "max_results": {
+      "type": "integer",
+      "default": 128,
+      "nullable": true
+    },
+    "query_expression": {
+      "type": "object",
+      "$ref": "./query_expression.json"
+    }
+  }
+}

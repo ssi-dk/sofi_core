@@ -1,6 +1,8 @@
 import requests
 import csv
 from io import StringIO
+
+from web.src.SAP.generated.models.upload_metadata_fields import UploadMetadataFields
 from ...generated.models.base_metadata import BaseMetadata
 from ...generated.models.upload_response import UploadResponse
 from ..services.upload_service import (
@@ -35,7 +37,7 @@ def bulk_metadata(user, token_info, path, metadata_tsv):
     )
     if existing_sequences:
         try:
-            metadata = [BaseMetadata.from_dict(m) for m in metadata_list]
+            metadata = [UploadMetadataFields.from_dict(m) for m in metadata_list]
             upload_metadata_list(metadata)
         except Exception as e:
             errors.append(f"Error: {str(e)}")
@@ -68,14 +70,17 @@ def multi_upload(user, token_info, metadata_tsv, _files):
 
             try:
                 if metadata:
-                    base_metadata = BaseMetadata.from_dict(metadata)
-                    base_metadata.institution = token_info["institution"]
+                    base_metadata = UploadMetadataFields.from_dict(metadata)
                     current_errors = validate_metadata(
                         base_metadata, files_for_metadata
                     )
                     if authorized_to_edit(token_info, base_metadata):
                         if not current_errors:
-                            upload_isolate(base_metadata, files_for_metadata)
+                            upload_isolate(
+                                base_metadata,
+                                files_for_metadata,
+                                token_info["institution"],
+                            )
                         else:
                             errors.extend(current_errors)
                     else:
@@ -97,12 +102,15 @@ def multi_upload(user, token_info, metadata_tsv, _files):
 
 def single_upload(user, token_info, metadata, _files):
     assert_user_has("approve", token_info)
-    base_metadata: BaseMetadata = BaseMetadata.from_dict(json.loads(metadata.read()))
+    base_metadata: UploadMetadataFields = UploadMetadataFields.from_dict(
+        json.loads(metadata.read())
+    )
+    print("single_upload:", file=sys.stderr)
+    print(base_metadata, file=sys.stderr)
     assert_authorized_to_edit(token_info, base_metadata.to_dict())
     try:
-        base_metadata.institution = token_info["institution"]
         files = request.files.getlist("files")
-        upload_isolate(base_metadata, files)
+        upload_isolate(base_metadata, files, token_info["institution"])
         return upload_response_helper()
     except Exception as e:
         return upload_response_helper([e.args[0]])

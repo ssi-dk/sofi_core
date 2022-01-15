@@ -1,0 +1,198 @@
+{
+  "$schema": "http:.json-schema.org/draft-07/schema#",
+  "title": "AnalysisResult",
+  "type": "object",
+  "allOf": [
+    {
+      "$ref": "./base_metadata.json"
+    },
+    {
+      "$ref": "./lims_specific_metadata.json"
+    },
+    {
+      "$ref": "./tbr_specific_metadata.json"
+    },
+    {
+      "type": "object",
+      "required": ["_id", "isolate_id"],
+      "properties": {
+        "_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "resfinder_version": {
+          "type": "string"
+        },
+        "qc_provided_species": {
+          "type": "number"
+        },
+        "qc_genome1x": {
+          "type": "number"
+        },
+        "qc_genome10x": {
+          "type": "number"
+        },
+        "qc_gsize_diff1x10": {
+          "type": "number"
+        },
+        "qc_avg_coverage": {
+          "type": "number"
+        },
+        "qc_final": {
+          "type": "string",
+          "enum": ["A", "B", "C"]
+        },
+        "subspecies": {
+          "type": "string"
+        },
+        "species_final": {
+          "type": "string"
+        },
+        "st": {
+          "type": "string"
+        },
+        "pathotype": {
+          "type": "string"
+        },
+        "pathotype_final": {
+          "type": "string"
+        },
+        "serotype": {
+          "type": "string"
+        },
+        "serotype_final": {
+          "type": "string"
+        },
+        "adhesion": {
+          "type": "string"
+        },
+        "adhesion_final": {
+          "type": "string"
+        },
+        "toxins": {
+          "type": "string"
+        },
+        "toxins_final": {
+          "type": "string"
+        },
+        "infection_source": {
+          "type": "string"
+        },
+        "resistance_genes": {
+          "type": "string"
+        },
+        "amr_profile": {
+          "type": "string"
+        },
+        "amr_ami": {
+          "$ref": "./resistance.json"
+        },
+        "amr_amp": {
+          "$ref": "./resistance.json"
+        },
+        "amr_azi": {
+          "$ref": "./resistance.json"
+        },
+        "amr_fep": {
+          "$ref": "./resistance.json"
+        },
+        "amr_fot": {
+          "$ref": "./resistance.json"
+        },
+        "amr_f_c": {
+          "$ref": "./resistance.json"
+        },
+        "amr_fox": {
+          "$ref": "./resistance.json"
+        },
+        "amr_taz": {
+          "$ref": "./resistance.json"
+        },
+        "amr_t_c": {
+          "$ref": "./resistance.json"
+        },
+        "amr_chl": {
+          "$ref": "./resistance.json"
+        },
+        "amr_cip": {
+          "$ref": "./resistance.json"
+        },
+        "amr_cli": {
+          "$ref": "./resistance.json"
+        },
+        "amr_col": {
+          "$ref": "./resistance.json"
+        },
+        "amr_dap": {
+          "$ref": "./resistance.json"
+        },
+        "amr_etp": {
+          "$ref": "./resistance.json"
+        },
+        "amr_ery": {
+          "$ref": "./resistance.json"
+        },
+        "amr_fus": {
+          "$ref": "./resistance.json"
+        },
+        "amr_gen": {
+          "$ref": "./resistance.json"
+        },
+        "amr_imi": {
+          "$ref": "./resistance.json"
+        },
+        "amr_kan": {
+          "$ref": "./resistance.json"
+        },
+        "amr_lzd": {
+          "$ref": "./resistance.json"
+        },
+        "amr_mero": {
+          "$ref": "./resistance.json"
+        },
+        "amr_mup": {
+          "$ref": "./resistance.json"
+        },
+        "amr_nal": {
+          "$ref": "./resistance.json"
+        },
+        "amr_pen": {
+          "$ref": "./resistance.json"
+        },
+        "amr_syn": {
+          "$ref": "./resistance.json"
+        },
+        "amr_rif": {
+          "$ref": "./resistance.json"
+        },
+        "amr_str": {
+          "$ref": "./resistance.json"
+        },
+        "amr_sul": {
+          "$ref": "./resistance.json"
+        },
+        "amr_tei": {
+          "$ref": "./resistance.json"
+        },
+        "amr_trm": {
+          "$ref": "./resistance.json"
+        },
+        "amr_tet": {
+          "$ref": "./resistance.json"
+        },
+        "amr_tia": {
+          "$ref": "./resistance.json"
+        },
+        "amr_tgc": {
+          "$ref": "./resistance.json"
+        },
+        "amr_tmp": {
+          "$ref": "./resistance.json"
+        },
+        "amr_van": {
+          "$ref": "./resistance.json"
+        }
+      }
+    }
+  ]
+}

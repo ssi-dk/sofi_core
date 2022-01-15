@@ -15,9 +15,6 @@
 import { HttpMethods, QueryConfig, ResponseBody, ResponseText } from 'redux-query';
 import * as runtime from '../runtime';
 import {
-    BaseMetadata,
-    BaseMetadataFromJSON,
-    BaseMetadataToJSON,
     UploadResponse,
     UploadResponseFromJSON,
     UploadResponseToJSON,
@@ -34,8 +31,8 @@ export interface MultiUploadRequest {
 }
 
 export interface SingleUploadRequest {
-    metadata: BaseMetadata;
-    files: Array<Blob>;
+    metadata?: Blob;
+    files?: Array<Blob>;
 }
 
 
@@ -163,14 +160,6 @@ export function multiUpload<T>(requestParameters: MultiUploadRequest, requestCon
  * Manually upload isolate with metadata
  */
 function singleUploadRaw<T>(requestParameters: SingleUploadRequest, requestConfig: runtime.TypedQueryConfig<T, UploadResponse> = {}): QueryConfig<T> {
-    if (requestParameters.metadata === null || requestParameters.metadata === undefined) {
-        throw new runtime.RequiredError('metadata','Required parameter requestParameters.metadata was null or undefined when calling singleUpload.');
-    }
-
-    if (requestParameters.files === null || requestParameters.files === undefined) {
-        throw new runtime.RequiredError('files','Required parameter requestParameters.files was null or undefined when calling singleUpload.');
-    }
-
     let queryParameters = null;
 
 
