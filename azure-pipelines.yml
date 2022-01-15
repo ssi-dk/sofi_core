@@ -19,6 +19,7 @@ stages:
         steps:
         - script: docker build -f Dockerfile -t $(imageName) .
           displayName: 'Docker build and test'
+          workingDirectory: web
 
         - script: |
             export id=$(docker images --filter "label=test=true" -q | head -1)
@@ -57,7 +58,7 @@ stages:
           imageNameRelease: '$(dockerId)/sap-web:latest'
 
         steps:
-        - script: docker build -f ./web/Dockerfile -t $(imageName) ./web
+        - script: docker build -f Dockerfile -t $(imageName) .
           displayName: 'Docker build and test'
           workingDirectory: app
 
