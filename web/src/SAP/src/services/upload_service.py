@@ -29,7 +29,6 @@ def check_bulk_isolate_exists(path, sequence_names):
 
 
 def upload_isolate(metadata: UploadMetadataFields, files, institution):
-    print("upload_isolate:", file=sys.stderr)
     filenames = []
     for file in files:
         filenames.append(file.filename)
@@ -50,7 +49,6 @@ def upload_sequence_file(file, institution):
 
 
 def upload_metadata_file(metadata: UploadMetadataFields, filenames, institution):
-    print("upload_metadata_file:", file=sys.stderr)
     path = upload_path(institution)
     headers = [
         "SampleID",
@@ -64,10 +62,6 @@ def upload_metadata_file(metadata: UploadMetadataFields, filenames, institution)
         "filenames" "institution",
     ]
     filename_str = "/".join(filenames)
-    print("metadata:", file=sys.stderr)
-    print(metadata, file=sys.stderr)
-    print("filenames:", file=sys.stderr)
-    print(filename_str, file=sys.stderr)
     line = "\t".join(
         [
             metadata.sample_id,
@@ -82,12 +76,8 @@ def upload_metadata_file(metadata: UploadMetadataFields, filenames, institution)
             institution,
         ]
     )
-    print("line", file=sys.stderr)
-    print(line, file=sys.stderr)
     Path(path).mkdir(parents=True, exist_ok=True)
-    print("made dir", file=sys.stderr)
     with open(path + "/sofi_metadata.tsv", "w") as tsvfile:
-        print("opened file", file=sys.stderr)
         tsvfile.write("\t".join(headers))
         tsvfile.write("\n")
         tsvfile.write(line)

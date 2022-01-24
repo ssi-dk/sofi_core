@@ -224,10 +224,10 @@ export interface AnalysisResultAllOf  {
     st?: string;
     /**
      * 
-     * @type {string}
+     * @type {number}
      * @memberof AnalysisResultAllOf
      */
-    st_final?: string;
+    st_final?: number;
     /**
      * 
      * @type {string}

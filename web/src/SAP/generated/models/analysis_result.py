@@ -163,7 +163,7 @@ class AnalysisResult(Model):
         :param st: The st of this AnalysisResult.  # noqa: E501
         :type st: str
         :param st_final: The st_final of this AnalysisResult.  # noqa: E501
-        :type st_final: str
+        :type st_final: int
         :param pathotype: The pathotype of this AnalysisResult.  # noqa: E501
         :type pathotype: str
         :param pathotype_final: The pathotype_final of this AnalysisResult.  # noqa: E501
@@ -341,7 +341,7 @@ class AnalysisResult(Model):
             'subspecies': str,
             'species_final': str,
             'st': str,
-            'st_final': str,
+            'st_final': int,
             'pathotype': str,
             'pathotype_final': str,
             'sero_enterobase': str,
@@ -2059,7 +2059,7 @@ class AnalysisResult(Model):
 
 
         :return: The st_final of this AnalysisResult.
-        :rtype: str
+        :rtype: int
         """
         return self._st_final
 
@@ -2069,7 +2069,7 @@ class AnalysisResult(Model):
 
 
         :param st_final: The st_final of this AnalysisResult.
-        :type st_final: str
+        :type st_final: int
         """
 
         self._st_final = st_final

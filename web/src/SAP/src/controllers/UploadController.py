@@ -105,8 +105,6 @@ def single_upload(user, token_info, metadata, _files):
     base_metadata: UploadMetadataFields = UploadMetadataFields.from_dict(
         json.loads(metadata.read())
     )
-    print("single_upload:", file=sys.stderr)
-    print(base_metadata, file=sys.stderr)
     assert_authorized_to_edit(token_info, base_metadata.to_dict())
     try:
         files = request.files.getlist("files")

@@ -1094,7 +1094,7 @@ components:
         st:
           type: string
         st_final:
-          type: string
+          type: integer
         pathotype:
           type: string
         pathotype_final:
