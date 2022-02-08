@@ -16,6 +16,7 @@ type DataTableColumnHeaderProps<T extends NotEmpty> = {
   canSelectColumn: (column: string) => boolean;
   onSelectCol: (column: Column<T>) => void;
   onResize: (columnIndex: number) => void;
+  onSort: ({ column: string, ascending: boolean }) => void;
 };
 
 function DataTableColumnHeader<T extends NotEmpty>(
@@ -28,6 +29,7 @@ function DataTableColumnHeader<T extends NotEmpty>(
     canSelectColumn,
     onSelectCol,
     onResize,
+    onSort,
   } = props;
 
   const noop = React.useCallback(() => {}, []);
@@ -48,6 +50,10 @@ function DataTableColumnHeader<T extends NotEmpty>(
     e.preventDefault();
     e.stopPropagation();
   }, []);
+
+  const toggleSortHandler = React.useCallback(() => {
+    onSort({ column: column.id, ascending: !column.isSortedDesc });
+  }, [column, onSort]);
 
   return (
     <div
@@ -76,8 +82,8 @@ function DataTableColumnHeader<T extends NotEmpty>(
         <button
           type="button"
           css={headerButton}
-          onClick={() => column.toggleSortBy(!column.isSortedDesc)}
-          onKeyDown={() => column.toggleSortBy(!column.isSortedDesc)}
+          onClick={toggleSortHandler}
+          onKeyDown={toggleSortHandler}
         >
           {column.isSorted ? (column.isSortedDesc ? " ⯯" : " ⯭") : " ⬍"}
         </button>

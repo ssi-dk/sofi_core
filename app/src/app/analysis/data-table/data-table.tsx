@@ -40,6 +40,7 @@ export type DataTableSelection<T extends NotEmpty> = {
 type DataTableProps<T extends NotEmpty> = {
   columns: Column<T>[];
   setNewColumnOrder: (columnOrder: string[]) => void;
+  setColumnSort: ({ column: string, ascending: boolean }) => void;
   data: T[];
   primaryKey: keyof T;
   canSelectColumn: (columnName: string) => boolean;
@@ -54,6 +55,7 @@ type DataTableProps<T extends NotEmpty> = {
   getCellStyle: (rowId: string, columnId: string, value: any) => string;
   getStickyCellStyle: (rowId: string, rowData: any) => string;
   columnReordering?: ColumnReordering;
+  columnSort?: { column: string; ascending: boolean };
   renderCellControl: (
     rowId: string,
     columnId: string,
@@ -74,7 +76,9 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
   const {
     columns,
     columnReordering,
+    columnSort,
     setNewColumnOrder,
+    setColumnSort,
     data,
     primaryKey,
     onSelect,
@@ -187,6 +191,20 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
     setColumnOrder(order);
     // Inform parent of the new order
     setNewColumnOrder(order);
+  }
+
+  if (columnSort) {
+    const c = visibleColumns.filter((x) => x.id == columnSort.column)[0];
+    if (columnSort.ascending) {
+      if (!c.isSorted) {
+        c.toggleSortBy(columnSort.ascending);
+      }
+    }
+    if (!columnSort.ascending) {
+      if (!c.isSorted && !c.isSortedDesc) {
+        c.toggleSortBy(columnSort.ascending);
+      }
+    }
   }
 
   // Make data table configuration externally visible
@@ -366,6 +384,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
               calcColSelectionState={calcColSelectionState}
               canSelectColumn={canSelectColumn}
               onSelectCol={onSelectCol}
+              onSort={setColumnSort}
               onResize={onColumnResize}
             />
           </div>

@@ -558,6 +558,8 @@ export default function AnalysisPage() {
     undefined as ColumnReordering
   );
 
+  const [columnSort, setColumnSort] = React.useState(undefined);
+
   const onReorderColumn = React.useCallback(
     (sourceIdx: number, destIdx: number, draggableId: string) => {
       setColumnReorder({
@@ -637,7 +639,9 @@ export default function AnalysisPage() {
           <DataTable<AnalysisResult>
             columns={columns || []}
             columnReordering={columnReorder}
+            columnSort={columnSort}
             setNewColumnOrder={setColumnOrder}
+            setColumnSort={setColumnSort}
             canSelectColumn={canSelectColumn}
             canEditColumn={canEditColumn}
             canApproveColumn={canApproveColumn}
