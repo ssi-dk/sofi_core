@@ -444,6 +444,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
     [
       rows,
       selectionClassName,
+      setColumnSort,
       visibleColumns,
       primaryKey,
       calcColSelectionState,
