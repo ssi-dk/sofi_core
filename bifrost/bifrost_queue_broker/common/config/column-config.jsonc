@@ -193,6 +193,10 @@
     "editable": true
   },
   {
+    "field_name": "comment_qc",
+    "editable": true
+  },
+  {
     "field_name": "comment_supplementary",
     "editable": true
   },
