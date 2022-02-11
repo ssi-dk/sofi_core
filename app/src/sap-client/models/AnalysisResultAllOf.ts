@@ -41,7 +41,7 @@ export interface AnalysisResultAllOf  {
      * @type {Date}
      * @memberof AnalysisResultAllOf
      */
-    kma_received_date?: Date;
+    date_received_kma?: Date;
     /**
      * 
      * @type {Date}
@@ -564,7 +564,7 @@ export function AnalysisResultAllOfFromJSON(json: any): AnalysisResultAllOf {
     return {
         'latest_for_isolate': !exists(json, 'latest_for_isolate') ? undefined : json['latest_for_isolate'],
         'resfinder_version': !exists(json, 'resfinder_version') ? undefined : json['resfinder_version'],
-        'kma_received_date': !exists(json, 'kma_received_date') ? undefined : new Date(json['kma_received_date']),
+        'date_received_kma': !exists(json, 'date_received_kma') ? undefined : new Date(json['date_received_kma']),
         'date_analysis_sofi': !exists(json, 'date_analysis_sofi') ? undefined : new Date(json['date_analysis_sofi']),
         'date_approved_serotype': !exists(json, 'date_approved_serotype') ? undefined : new Date(json['date_approved_serotype']),
         'date_approved_qc': !exists(json, 'date_approved_qc') ? undefined : new Date(json['date_approved_qc']),
@@ -661,7 +661,7 @@ export function AnalysisResultAllOfToJSON(value?: AnalysisResultAllOf): any {
     return {
         'latest_for_isolate': value.latest_for_isolate,
         'resfinder_version': value.resfinder_version,
-        'kma_received_date': value.kma_received_date === undefined ? undefined : value.kma_received_date.toISOString(),
+        'date_received_kma': value.date_received_kma === undefined ? undefined : value.date_received_kma.toISOString(),
         'date_analysis_sofi': value.date_analysis_sofi === undefined ? undefined : value.date_analysis_sofi.toISOString(),
         'date_approved_serotype': value.date_approved_serotype === undefined ? undefined : value.date_approved_serotype.toISOString(),
         'date_approved_qc': value.date_approved_qc === undefined ? undefined : value.date_approved_qc.toISOString(),

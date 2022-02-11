@@ -740,13 +740,13 @@ components:
           type: string
         project_title:
           type: string
-        sampling_date:
+        date_sample:
           format: date-time
           type: string
-        received_date:
+        date_received:
           format: date-time
           type: string
-        sofi_date:
+        date_sofi:
           format: date-time
           type: string
         run_id:
@@ -756,10 +756,10 @@ components:
         primary_isolate:
           type: boolean
       required:
+      - date_received
       - institution
       - isolate_id
       - primary_isolate
-      - received_date
       - run_id
       - sequence_id
     TbrSpecificMetadata:
@@ -783,10 +783,10 @@ components:
         travel_country:
           type: string
           x-faker: address.country
-        run_date:
+        date_run:
           format: date-time
           type: string
-        kma_received_date:
+        date_received_kma:
           format: date-time
           type: string
         kma:
@@ -797,7 +797,7 @@ components:
           type: string
         cluster_id:
           type: string
-        epi_export:
+        date_epi:
           type: string
       required:
       - run_date
@@ -1019,7 +1019,7 @@ components:
           type: string
         resfinder_version:
           type: string
-        kma_received_date:
+        date_received_kma:
           format: date-time
           type: string
         date_analysis_sofi:

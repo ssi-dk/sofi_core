@@ -59,13 +59,13 @@ export interface TbrSpecificMetadata  {
      * @type {Date}
      * @memberof TbrSpecificMetadata
      */
-    run_date: Date;
+    date_run?: Date;
     /**
      * 
      * @type {Date}
      * @memberof TbrSpecificMetadata
      */
-    kma_received_date?: Date;
+    date_received_kma?: Date;
     /**
      * 
      * @type {string}
@@ -95,7 +95,7 @@ export interface TbrSpecificMetadata  {
      * @type {string}
      * @memberof TbrSpecificMetadata
      */
-    epi_export?: string;
+    date_epi?: string;
 }
 
 export function TbrSpecificMetadataFromJSON(json: any): TbrSpecificMetadata {
@@ -106,13 +106,13 @@ export function TbrSpecificMetadataFromJSON(json: any): TbrSpecificMetadata {
         'age': !exists(json, 'age') ? undefined : json['age'],
         'travel': !exists(json, 'travel') ? undefined : json['travel'],
         'travel_country': !exists(json, 'travel_country') ? undefined : json['travel_country'],
-        'run_date': new Date(json['run_date']),
-        'kma_received_date': !exists(json, 'kma_received_date') ? undefined : new Date(json['kma_received_date']),
+        'date_run': !exists(json, 'date_run') ? undefined : new Date(json['date_run']),
+        'date_received_kma': !exists(json, 'date_received_kma') ? undefined : new Date(json['date_received_kma']),
         'kma': !exists(json, 'kma') ? undefined : json['kma'],
         'region': !exists(json, 'region') ? undefined : json['region'],
         'fud_number': !exists(json, 'fud_number') ? undefined : json['fud_number'],
         'cluster_id': !exists(json, 'cluster_id') ? undefined : json['cluster_id'],
-        'epi_export': !exists(json, 'epi_export') ? undefined : json['epi_export'],
+        'date_epi': !exists(json, 'date_epi') ? undefined : json['date_epi'],
     };
 }
 
@@ -127,13 +127,13 @@ export function TbrSpecificMetadataToJSON(value?: TbrSpecificMetadata): any {
         'age': value.age,
         'travel': value.travel,
         'travel_country': value.travel_country,
-        'run_date': value.run_date.toISOString(),
-        'kma_received_date': value.kma_received_date === undefined ? undefined : value.kma_received_date.toISOString(),
+        'date_run': value.date_run === undefined ? undefined : value.date_run.toISOString(),
+        'date_received_kma': value.date_received_kma === undefined ? undefined : value.date_received_kma.toISOString(),
         'kma': value.kma,
         'region': value.region,
         'fud_number': value.fud_number,
         'cluster_id': value.cluster_id,
-        'epi_export': value.epi_export,
+        'date_epi': value.date_epi,
     };
 }
 

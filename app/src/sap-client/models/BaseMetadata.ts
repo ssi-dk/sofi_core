@@ -65,19 +65,19 @@ export interface BaseMetadata  {
      * @type {Date}
      * @memberof BaseMetadata
      */
-    sampling_date?: Date;
+    date_sample?: Date;
     /**
      * 
      * @type {Date}
      * @memberof BaseMetadata
      */
-    received_date: Date;
+    date_received: Date;
     /**
      * 
      * @type {Date}
      * @memberof BaseMetadata
      */
-    sofi_date?: Date;
+    date_sofi?: Date;
     /**
      * 
      * @type {string}
@@ -106,9 +106,9 @@ export function BaseMetadataFromJSON(json: any): BaseMetadata {
         'institution': OrganizationFromJSON(json['institution']),
         'project_number': !exists(json, 'project_number') ? undefined : json['project_number'],
         'project_title': !exists(json, 'project_title') ? undefined : json['project_title'],
-        'sampling_date': !exists(json, 'sampling_date') ? undefined : new Date(json['sampling_date']),
-        'received_date': new Date(json['received_date']),
-        'sofi_date': !exists(json, 'sofi_date') ? undefined : new Date(json['sofi_date']),
+        'date_sample': !exists(json, 'date_sample') ? undefined : new Date(json['date_sample']),
+        'date_received': new Date(json['date_received']),
+        'date_sofi': !exists(json, 'date_sofi') ? undefined : new Date(json['date_sofi']),
         'run_id': json['run_id'],
         '_public': !exists(json, 'public') ? undefined : json['public'],
         'primary_isolate': json['primary_isolate'],
@@ -126,9 +126,9 @@ export function BaseMetadataToJSON(value?: BaseMetadata): any {
         'institution': OrganizationToJSON(value.institution),
         'project_number': value.project_number,
         'project_title': value.project_title,
-        'sampling_date': value.sampling_date === undefined ? undefined : value.sampling_date.toISOString(),
-        'received_date': value.received_date.toISOString(),
-        'sofi_date': value.sofi_date === undefined ? undefined : value.sofi_date.toISOString(),
+        'date_sample': value.date_sample === undefined ? undefined : value.date_sample.toISOString(),
+        'date_received': value.date_received.toISOString(),
+        'date_sofi': value.date_sofi === undefined ? undefined : value.date_sofi.toISOString(),
         'run_id': value.run_id,
         'public': value._public,
         'primary_isolate': value.primary_isolate,

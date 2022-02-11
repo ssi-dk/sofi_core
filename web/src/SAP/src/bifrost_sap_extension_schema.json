@@ -8,7 +8,7 @@
           "sequence_id",
           "sequence_filename",
           "institution",
-          "received_date",
+          "date_received",
           "run_id",
           "provided_species",
           "primary_isolate"
@@ -36,10 +36,10 @@
           "project_title": {
             "type": "string"
           },
-          "sampling_date": {
+          "date_sample": {
             "type": "string"
           },
-          "received_date": {
+          "date_received": {
             "type": "string"
           },
           "run_id": {
@@ -60,7 +60,7 @@
           "cluster_id": {
             "type": "string"
           },
-          "epi_export": {
+          "date_epi": {
             "type": "string"
           }
         }
@@ -80,7 +80,7 @@
         },
         {
           "required": [
-            "run_date"
+            "date_run"
           ],
           "properties": {
             "cpr": {
@@ -108,7 +108,7 @@
             "run_date": {
               "type": "string"
             },
-            "kma_received_date": {
+            "date_received_kma": {
               "type": "string"
             },
             "kma": {

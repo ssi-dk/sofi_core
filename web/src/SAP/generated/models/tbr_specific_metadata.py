@@ -17,7 +17,7 @@ class TbrSpecificMetadata(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, cpr_nr=None, gender=None, name=None, age=None, travel=None, travel_country=None, run_date=None, kma_received_date=None, kma=None, region=None, fud_number=None, cluster_id=None, epi_export=None):  # noqa: E501
+    def __init__(self, cpr_nr=None, gender=None, name=None, age=None, travel=None, travel_country=None, date_run=None, date_received_kma=None, kma=None, region=None, fud_number=None, cluster_id=None, date_epi=None):  # noqa: E501
         """TbrSpecificMetadata - a model defined in OpenAPI
 
         :param cpr_nr: The cpr_nr of this TbrSpecificMetadata.  # noqa: E501
@@ -32,10 +32,10 @@ class TbrSpecificMetadata(Model):
         :type travel: str
         :param travel_country: The travel_country of this TbrSpecificMetadata.  # noqa: E501
         :type travel_country: str
-        :param run_date: The run_date of this TbrSpecificMetadata.  # noqa: E501
-        :type run_date: datetime
-        :param kma_received_date: The kma_received_date of this TbrSpecificMetadata.  # noqa: E501
-        :type kma_received_date: datetime
+        :param date_run: The date_run of this TbrSpecificMetadata.  # noqa: E501
+        :type date_run: datetime
+        :param date_received_kma: The date_received_kma of this TbrSpecificMetadata.  # noqa: E501
+        :type date_received_kma: datetime
         :param kma: The kma of this TbrSpecificMetadata.  # noqa: E501
         :type kma: str
         :param region: The region of this TbrSpecificMetadata.  # noqa: E501
@@ -44,8 +44,8 @@ class TbrSpecificMetadata(Model):
         :type fud_number: str
         :param cluster_id: The cluster_id of this TbrSpecificMetadata.  # noqa: E501
         :type cluster_id: str
-        :param epi_export: The epi_export of this TbrSpecificMetadata.  # noqa: E501
-        :type epi_export: str
+        :param date_epi: The date_epi of this TbrSpecificMetadata.  # noqa: E501
+        :type date_epi: str
         """
         self.openapi_types = {
             'cpr_nr': str,
@@ -54,13 +54,13 @@ class TbrSpecificMetadata(Model):
             'age': int,
             'travel': str,
             'travel_country': str,
-            'run_date': datetime,
-            'kma_received_date': datetime,
+            'date_run': datetime,
+            'date_received_kma': datetime,
             'kma': str,
             'region': str,
             'fud_number': str,
             'cluster_id': str,
-            'epi_export': str,
+            'date_epi': str,
         }
 
         self.attribute_map = {
@@ -70,13 +70,13 @@ class TbrSpecificMetadata(Model):
             'age': 'age',
             'travel': 'travel',
             'travel_country': 'travel_country',
-            'run_date': 'run_date',
-            'kma_received_date': 'kma_received_date',
+            'date_run': 'date_run',
+            'date_received_kma': 'date_received_kma',
             'kma': 'kma',
             'region': 'region',
             'fud_number': 'fud_number',
             'cluster_id': 'cluster_id',
-            'epi_export': 'epi_export',
+            'date_epi': 'date_epi',
         }
 
         self._cpr_nr = cpr_nr
@@ -85,13 +85,13 @@ class TbrSpecificMetadata(Model):
         self._age = age
         self._travel = travel
         self._travel_country = travel_country
-        self._run_date = run_date
-        self._kma_received_date = kma_received_date
+        self._date_run = date_run
+        self._date_received_kma = date_received_kma
         self._kma = kma
         self._region = region
         self._fud_number = fud_number
         self._cluster_id = cluster_id
-        self._epi_export = epi_export
+        self._date_epi = date_epi
 
     @classmethod
     def from_dict(cls, dikt):
@@ -241,48 +241,46 @@ class TbrSpecificMetadata(Model):
         self._travel_country = travel_country
 
     @property
-    def run_date(self):
-        """Gets the run_date of this TbrSpecificMetadata.
+    def date_run(self):
+        """Gets the date_run of this TbrSpecificMetadata.
 
 
-        :return: The run_date of this TbrSpecificMetadata.
+        :return: The date_run of this TbrSpecificMetadata.
         :rtype: datetime
         """
-        return self._run_date
+        return self._date_run
 
-    @run_date.setter
-    def run_date(self, run_date):
-        """Sets the run_date of this TbrSpecificMetadata.
+    @date_run.setter
+    def date_run(self, date_run):
+        """Sets the date_run of this TbrSpecificMetadata.
 
 
-        :param run_date: The run_date of this TbrSpecificMetadata.
-        :type run_date: datetime
+        :param date_run: The date_run of this TbrSpecificMetadata.
+        :type date_run: datetime
         """
-        if run_date is None:
-            raise ValueError("Invalid value for `run_date`, must not be `None`")  # noqa: E501
 
-        self._run_date = run_date
+        self._date_run = date_run
 
     @property
-    def kma_received_date(self):
-        """Gets the kma_received_date of this TbrSpecificMetadata.
+    def date_received_kma(self):
+        """Gets the date_received_kma of this TbrSpecificMetadata.
 
 
-        :return: The kma_received_date of this TbrSpecificMetadata.
+        :return: The date_received_kma of this TbrSpecificMetadata.
         :rtype: datetime
         """
-        return self._kma_received_date
+        return self._date_received_kma
 
-    @kma_received_date.setter
-    def kma_received_date(self, kma_received_date):
-        """Sets the kma_received_date of this TbrSpecificMetadata.
+    @date_received_kma.setter
+    def date_received_kma(self, date_received_kma):
+        """Sets the date_received_kma of this TbrSpecificMetadata.
 
 
-        :param kma_received_date: The kma_received_date of this TbrSpecificMetadata.
-        :type kma_received_date: datetime
+        :param date_received_kma: The date_received_kma of this TbrSpecificMetadata.
+        :type date_received_kma: datetime
         """
 
-        self._kma_received_date = kma_received_date
+        self._date_received_kma = date_received_kma
 
     @property
     def kma(self):
@@ -369,22 +367,22 @@ class TbrSpecificMetadata(Model):
         self._cluster_id = cluster_id
 
     @property
-    def epi_export(self):
-        """Gets the epi_export of this TbrSpecificMetadata.
+    def date_epi(self):
+        """Gets the date_epi of this TbrSpecificMetadata.
 
 
-        :return: The epi_export of this TbrSpecificMetadata.
+        :return: The date_epi of this TbrSpecificMetadata.
         :rtype: str
         """
-        return self._epi_export
+        return self._date_epi
 
-    @epi_export.setter
-    def epi_export(self, epi_export):
-        """Sets the epi_export of this TbrSpecificMetadata.
+    @date_epi.setter
+    def date_epi(self, date_epi):
+        """Sets the date_epi of this TbrSpecificMetadata.
 
 
-        :param epi_export: The epi_export of this TbrSpecificMetadata.
-        :type epi_export: str
+        :param date_epi: The date_epi of this TbrSpecificMetadata.
+        :type date_epi: str
         """
 
-        self._epi_export = epi_export
+        self._date_epi = date_epi

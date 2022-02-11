@@ -463,9 +463,7 @@ export default function AnalysisPage() {
         return <div />;
       }
       if (
-        (columnId.startsWith("date") ||
-          columnId.endsWith("date") ||
-          columnId == "epi_export") &&
+        (columnId.startsWith("date") || columnId.endsWith("date")) &&
         value !== undefined &&
         typeof value?.getTime === "function" &&
         !Number.isNaN(value?.getTime())

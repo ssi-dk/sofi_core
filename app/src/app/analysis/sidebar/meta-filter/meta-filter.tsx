@@ -151,18 +151,18 @@ function MetaFilter(props: MetaFilterProps) {
 
   return (
     <FilterBox title="Metadata filter">
-      <Text>{t("sampling_date")}</Text>
+      <Text>{t("date_sample")}</Text>
       <Flex>
         <DatePicker
           selectedDate={sampledStartDate}
           isClearable
-          onChange={onDateChange("sampling_date", "min", setSampledStartDate)}
+          onChange={onDateChange("date_sample", "min", setSampledStartDate)}
           placeholderText={t("From")}
         />
         <DatePicker
           selectedDate={sampledEndDate}
           isClearable
-          onChange={onDateChange("sampling_date", "max", setSampledEndDate)}
+          onChange={onDateChange("date_sample", "max", setSampledEndDate)}
           placeholderText={t("To")}
         />
       </Flex>
@@ -198,13 +198,13 @@ function MetaFilter(props: MetaFilterProps) {
         <DatePicker
           selectedDate={receivedStartDate}
           isClearable
-          onChange={onDateChange("received_date", "min", setReceivedStartDate)}
+          onChange={onDateChange("date_received", "min", setReceivedStartDate)}
           placeholderText={t("From")}
         />
         <DatePicker
           selectedDate={receivedEndDate}
           isClearable
-          onChange={onDateChange("received_date", "max", setReceivedEndDate)}
+          onChange={onDateChange("date_received", "max", setReceivedEndDate)}
           placeholderText={t("To")}
         />
       </Flex>

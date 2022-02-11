@@ -3,8 +3,7 @@ def removeNullProperty(expr):
 
 
 """
-    From list, we are missing
-    - All of AMR
+    From list, we are missing:
 
     PHASE 2:
     - Pathotype_final
@@ -55,8 +54,8 @@ def agg_pipeline(changed_ids=None):
                 "institution": "$categories.sample_info.summary.institution",
                 "project_number": "$categories.sample_info.summary.project_no",
                 "project_title": "$categories.sample_info.summary.project_title",
-                "sampling_date": "$metadata.created_at",
-                "sofi_date": "$$NOW",
+                "date_sample": "$metadata.created_at",
+                "date_sofi": "$$NOW",
                 "qc_detected_species": "$categories.species_detection.summary.detected_species",
                 "qc_provided_species": "$categories.sample_info.summary.provided_species",
                 "subspecies": "$categories.serotype.summary.Subspecies",
@@ -109,7 +108,7 @@ def agg_pipeline(changed_ids=None):
                 "mlst_schema": {"$arrayElemAt": ["$mlstlookup.schema", 0]},
                 # "siblings": "$siblings",
                 "latest_for_isolate": {"$arrayElemAt": ["$siblings.sequence_id", 0]},
-                # grabbing whole object for ST, must pluck specific field later
+                # grabbing whole object for ST, must pluck specific field later in the pipeline
                 "st": "$categories.mlst.summary.sequence_type",
                 "qc_action": "$categories.stamper.stamp.value",
                 "qc_ambiguous_sites": "$categories.mapping_qc.summary.snps.x10_10%.snps",

@@ -19,15 +19,15 @@ class AnalysisResultAllOf(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, latest_for_isolate=None, resfinder_version=None, kma_received_date=None, date_analysis_sofi=None, date_approved_serotype=None, date_approved_qc=None, date_approved_amr=None, date_approved_st=None, date_approved_toxin=None, date_approved_cluster=None, qc_provided_species=None, qc_genome1x=None, qc_genome10x=None, qc_gsize_diff1x10=None, qc_avg_coverage=None, qc_final=None, qc_action=None, qc_num_contigs=None, qc_ambiguous_sites=None, qc_num_reads=None, qc_main_sp_plus_uncl=None, qc_unclassified_reads=None, qc_db_id=None, qc_failed_tests=None, qc_cgmlst_percent=None, cgmlst_schema_salmonella=None, cgmlst_schema_ecoli=None, cgmlst_schema_campylobacter=None, cgmlst_schema_listeria=None, cgmlst_schema_klebsiella=None, subspecies=None, species_final=None, st=None, st_final=None, pathotype=None, pathotype_final=None, sero_enterobase=None, sero_seqsero=None, sero_antigen_seqsero=None, sero_d_tartrate=None, sero_serotype_finder=None, serotype_final=None, adhesion_final=None, virulence_genes=None, toxins_final=None, infection_source=None, resistance_genes=None, amr_profile=None, comment=None, comment_cluster=None, comment_general=None, comment_supplementary=None, comment_qc=None, amr_ami=None, amr_amp=None, amr_azi=None, amr_fep=None, amr_fot=None, amr_f_c=None, amr_fox=None, amr_taz=None, amr_t_c=None, amr_chl=None, amr_cip=None, amr_cli=None, amr_col=None, amr_dap=None, amr_etp=None, amr_ery=None, amr_fus=None, amr_gen=None, amr_imi=None, amr_kan=None, amr_lzd=None, amr_mero=None, amr_mup=None, amr_nal=None, amr_pen=None, amr_syn=None, amr_rif=None, amr_str=None, amr_sul=None, amr_tei=None, amr_trm=None, amr_tet=None, amr_tia=None, amr_tgc=None, amr_tmp=None, amr_van=None):  # noqa: E501
+    def __init__(self, latest_for_isolate=None, resfinder_version=None, date_received_kma=None, date_analysis_sofi=None, date_approved_serotype=None, date_approved_qc=None, date_approved_amr=None, date_approved_st=None, date_approved_toxin=None, date_approved_cluster=None, qc_provided_species=None, qc_genome1x=None, qc_genome10x=None, qc_gsize_diff1x10=None, qc_avg_coverage=None, qc_final=None, qc_action=None, qc_num_contigs=None, qc_ambiguous_sites=None, qc_num_reads=None, qc_main_sp_plus_uncl=None, qc_unclassified_reads=None, qc_db_id=None, qc_failed_tests=None, qc_cgmlst_percent=None, cgmlst_schema_salmonella=None, cgmlst_schema_ecoli=None, cgmlst_schema_campylobacter=None, cgmlst_schema_listeria=None, cgmlst_schema_klebsiella=None, subspecies=None, species_final=None, st=None, st_final=None, pathotype=None, pathotype_final=None, sero_enterobase=None, sero_seqsero=None, sero_antigen_seqsero=None, sero_d_tartrate=None, sero_serotype_finder=None, serotype_final=None, adhesion_final=None, virulence_genes=None, toxins_final=None, infection_source=None, resistance_genes=None, amr_profile=None, comment=None, comment_cluster=None, comment_general=None, comment_supplementary=None, comment_qc=None, amr_ami=None, amr_amp=None, amr_azi=None, amr_fep=None, amr_fot=None, amr_f_c=None, amr_fox=None, amr_taz=None, amr_t_c=None, amr_chl=None, amr_cip=None, amr_cli=None, amr_col=None, amr_dap=None, amr_etp=None, amr_ery=None, amr_fus=None, amr_gen=None, amr_imi=None, amr_kan=None, amr_lzd=None, amr_mero=None, amr_mup=None, amr_nal=None, amr_pen=None, amr_syn=None, amr_rif=None, amr_str=None, amr_sul=None, amr_tei=None, amr_trm=None, amr_tet=None, amr_tia=None, amr_tgc=None, amr_tmp=None, amr_van=None):  # noqa: E501
         """AnalysisResultAllOf - a model defined in OpenAPI
 
         :param latest_for_isolate: The latest_for_isolate of this AnalysisResultAllOf.  # noqa: E501
         :type latest_for_isolate: str
         :param resfinder_version: The resfinder_version of this AnalysisResultAllOf.  # noqa: E501
         :type resfinder_version: str
-        :param kma_received_date: The kma_received_date of this AnalysisResultAllOf.  # noqa: E501
-        :type kma_received_date: datetime
+        :param date_received_kma: The date_received_kma of this AnalysisResultAllOf.  # noqa: E501
+        :type date_received_kma: datetime
         :param date_analysis_sofi: The date_analysis_sofi of this AnalysisResultAllOf.  # noqa: E501
         :type date_analysis_sofi: datetime
         :param date_approved_serotype: The date_approved_serotype of this AnalysisResultAllOf.  # noqa: E501
@@ -204,7 +204,7 @@ class AnalysisResultAllOf(Model):
         self.openapi_types = {
             'latest_for_isolate': str,
             'resfinder_version': str,
-            'kma_received_date': datetime,
+            'date_received_kma': datetime,
             'date_analysis_sofi': datetime,
             'date_approved_serotype': datetime,
             'date_approved_qc': datetime,
@@ -296,7 +296,7 @@ class AnalysisResultAllOf(Model):
         self.attribute_map = {
             'latest_for_isolate': 'latest_for_isolate',
             'resfinder_version': 'resfinder_version',
-            'kma_received_date': 'kma_received_date',
+            'date_received_kma': 'date_received_kma',
             'date_analysis_sofi': 'date_analysis_sofi',
             'date_approved_serotype': 'date_approved_serotype',
             'date_approved_qc': 'date_approved_qc',
@@ -387,7 +387,7 @@ class AnalysisResultAllOf(Model):
 
         self._latest_for_isolate = latest_for_isolate
         self._resfinder_version = resfinder_version
-        self._kma_received_date = kma_received_date
+        self._date_received_kma = date_received_kma
         self._date_analysis_sofi = date_analysis_sofi
         self._date_approved_serotype = date_approved_serotype
         self._date_approved_qc = date_approved_qc
@@ -531,25 +531,25 @@ class AnalysisResultAllOf(Model):
         self._resfinder_version = resfinder_version
 
     @property
-    def kma_received_date(self):
-        """Gets the kma_received_date of this AnalysisResultAllOf.
+    def date_received_kma(self):
+        """Gets the date_received_kma of this AnalysisResultAllOf.
 
 
-        :return: The kma_received_date of this AnalysisResultAllOf.
+        :return: The date_received_kma of this AnalysisResultAllOf.
         :rtype: datetime
         """
-        return self._kma_received_date
+        return self._date_received_kma
 
-    @kma_received_date.setter
-    def kma_received_date(self, kma_received_date):
-        """Sets the kma_received_date of this AnalysisResultAllOf.
+    @date_received_kma.setter
+    def date_received_kma(self, date_received_kma):
+        """Sets the date_received_kma of this AnalysisResultAllOf.
 
 
-        :param kma_received_date: The kma_received_date of this AnalysisResultAllOf.
-        :type kma_received_date: datetime
+        :param date_received_kma: The date_received_kma of this AnalysisResultAllOf.
+        :type date_received_kma: datetime
         """
 
-        self._kma_received_date = kma_received_date
+        self._date_received_kma = date_received_kma
 
     @property
     def date_analysis_sofi(self):

@@ -93,7 +93,7 @@
     "approvable": true
   },
   {
-    "field_name": "epi_export",
+    "field_name": "date_epi",
     "editable": true,
     "editable_format": "date",
     "approvable": true

@@ -23,7 +23,7 @@ class TbrMetadata(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, sequence_id=None, sequence_filename=None, isolate_id=None, institution=None, project_number=None, project_title=None, sampling_date=None, received_date=None, sofi_date=None, run_id=None, public=None, primary_isolate=None, cpr_nr=None, gender=None, name=None, age=None, travel=None, travel_country=None, run_date=None, kma_received_date=None, kma=None, region=None, fud_number=None, cluster_id=None, epi_export=None):  # noqa: E501
+    def __init__(self, sequence_id=None, sequence_filename=None, isolate_id=None, institution=None, project_number=None, project_title=None, date_sample=None, date_received=None, date_sofi=None, run_id=None, public=None, primary_isolate=None, cpr_nr=None, gender=None, name=None, age=None, travel=None, travel_country=None, date_run=None, date_received_kma=None, kma=None, region=None, fud_number=None, cluster_id=None, date_epi=None):  # noqa: E501
         """TbrMetadata - a model defined in OpenAPI
 
         :param sequence_id: The sequence_id of this TbrMetadata.  # noqa: E501
@@ -38,12 +38,12 @@ class TbrMetadata(Model):
         :type project_number: str
         :param project_title: The project_title of this TbrMetadata.  # noqa: E501
         :type project_title: str
-        :param sampling_date: The sampling_date of this TbrMetadata.  # noqa: E501
-        :type sampling_date: datetime
-        :param received_date: The received_date of this TbrMetadata.  # noqa: E501
-        :type received_date: datetime
-        :param sofi_date: The sofi_date of this TbrMetadata.  # noqa: E501
-        :type sofi_date: datetime
+        :param date_sample: The date_sample of this TbrMetadata.  # noqa: E501
+        :type date_sample: datetime
+        :param date_received: The date_received of this TbrMetadata.  # noqa: E501
+        :type date_received: datetime
+        :param date_sofi: The date_sofi of this TbrMetadata.  # noqa: E501
+        :type date_sofi: datetime
         :param run_id: The run_id of this TbrMetadata.  # noqa: E501
         :type run_id: str
         :param public: The public of this TbrMetadata.  # noqa: E501
@@ -62,10 +62,10 @@ class TbrMetadata(Model):
         :type travel: str
         :param travel_country: The travel_country of this TbrMetadata.  # noqa: E501
         :type travel_country: str
-        :param run_date: The run_date of this TbrMetadata.  # noqa: E501
-        :type run_date: datetime
-        :param kma_received_date: The kma_received_date of this TbrMetadata.  # noqa: E501
-        :type kma_received_date: datetime
+        :param date_run: The date_run of this TbrMetadata.  # noqa: E501
+        :type date_run: datetime
+        :param date_received_kma: The date_received_kma of this TbrMetadata.  # noqa: E501
+        :type date_received_kma: datetime
         :param kma: The kma of this TbrMetadata.  # noqa: E501
         :type kma: str
         :param region: The region of this TbrMetadata.  # noqa: E501
@@ -74,8 +74,8 @@ class TbrMetadata(Model):
         :type fud_number: str
         :param cluster_id: The cluster_id of this TbrMetadata.  # noqa: E501
         :type cluster_id: str
-        :param epi_export: The epi_export of this TbrMetadata.  # noqa: E501
-        :type epi_export: str
+        :param date_epi: The date_epi of this TbrMetadata.  # noqa: E501
+        :type date_epi: str
         """
         self.openapi_types = {
             'sequence_id': str,
@@ -84,9 +84,9 @@ class TbrMetadata(Model):
             'institution': Organization,
             'project_number': str,
             'project_title': str,
-            'sampling_date': datetime,
-            'received_date': datetime,
-            'sofi_date': datetime,
+            'date_sample': datetime,
+            'date_received': datetime,
+            'date_sofi': datetime,
             'run_id': str,
             'public': str,
             'primary_isolate': bool,
@@ -96,13 +96,13 @@ class TbrMetadata(Model):
             'age': int,
             'travel': str,
             'travel_country': str,
-            'run_date': datetime,
-            'kma_received_date': datetime,
+            'date_run': datetime,
+            'date_received_kma': datetime,
             'kma': str,
             'region': str,
             'fud_number': str,
             'cluster_id': str,
-            'epi_export': str,
+            'date_epi': str,
         }
 
         self.attribute_map = {
@@ -112,9 +112,9 @@ class TbrMetadata(Model):
             'institution': 'institution',
             'project_number': 'project_number',
             'project_title': 'project_title',
-            'sampling_date': 'sampling_date',
-            'received_date': 'received_date',
-            'sofi_date': 'sofi_date',
+            'date_sample': 'date_sample',
+            'date_received': 'date_received',
+            'date_sofi': 'date_sofi',
             'run_id': 'run_id',
             'public': 'public',
             'primary_isolate': 'primary_isolate',
@@ -124,13 +124,13 @@ class TbrMetadata(Model):
             'age': 'age',
             'travel': 'travel',
             'travel_country': 'travel_country',
-            'run_date': 'run_date',
-            'kma_received_date': 'kma_received_date',
+            'date_run': 'date_run',
+            'date_received_kma': 'date_received_kma',
             'kma': 'kma',
             'region': 'region',
             'fud_number': 'fud_number',
             'cluster_id': 'cluster_id',
-            'epi_export': 'epi_export',
+            'date_epi': 'date_epi',
         }
 
         self._sequence_id = sequence_id
@@ -139,9 +139,9 @@ class TbrMetadata(Model):
         self._institution = institution
         self._project_number = project_number
         self._project_title = project_title
-        self._sampling_date = sampling_date
-        self._received_date = received_date
-        self._sofi_date = sofi_date
+        self._date_sample = date_sample
+        self._date_received = date_received
+        self._date_sofi = date_sofi
         self._run_id = run_id
         self._public = public
         self._primary_isolate = primary_isolate
@@ -151,13 +151,13 @@ class TbrMetadata(Model):
         self._age = age
         self._travel = travel
         self._travel_country = travel_country
-        self._run_date = run_date
-        self._kma_received_date = kma_received_date
+        self._date_run = date_run
+        self._date_received_kma = date_received_kma
         self._kma = kma
         self._region = region
         self._fud_number = fud_number
         self._cluster_id = cluster_id
-        self._epi_export = epi_export
+        self._date_epi = date_epi
 
     @classmethod
     def from_dict(cls, dikt):
@@ -303,69 +303,69 @@ class TbrMetadata(Model):
         self._project_title = project_title
 
     @property
-    def sampling_date(self):
-        """Gets the sampling_date of this TbrMetadata.
+    def date_sample(self):
+        """Gets the date_sample of this TbrMetadata.
 
 
-        :return: The sampling_date of this TbrMetadata.
+        :return: The date_sample of this TbrMetadata.
         :rtype: datetime
         """
-        return self._sampling_date
+        return self._date_sample
 
-    @sampling_date.setter
-    def sampling_date(self, sampling_date):
-        """Sets the sampling_date of this TbrMetadata.
+    @date_sample.setter
+    def date_sample(self, date_sample):
+        """Sets the date_sample of this TbrMetadata.
 
 
-        :param sampling_date: The sampling_date of this TbrMetadata.
-        :type sampling_date: datetime
+        :param date_sample: The date_sample of this TbrMetadata.
+        :type date_sample: datetime
         """
 
-        self._sampling_date = sampling_date
+        self._date_sample = date_sample
 
     @property
-    def received_date(self):
-        """Gets the received_date of this TbrMetadata.
+    def date_received(self):
+        """Gets the date_received of this TbrMetadata.
 
 
-        :return: The received_date of this TbrMetadata.
+        :return: The date_received of this TbrMetadata.
         :rtype: datetime
         """
-        return self._received_date
+        return self._date_received
 
-    @received_date.setter
-    def received_date(self, received_date):
-        """Sets the received_date of this TbrMetadata.
+    @date_received.setter
+    def date_received(self, date_received):
+        """Sets the date_received of this TbrMetadata.
 
 
-        :param received_date: The received_date of this TbrMetadata.
-        :type received_date: datetime
+        :param date_received: The date_received of this TbrMetadata.
+        :type date_received: datetime
         """
-        if received_date is None:
-            raise ValueError("Invalid value for `received_date`, must not be `None`")  # noqa: E501
+        if date_received is None:
+            raise ValueError("Invalid value for `date_received`, must not be `None`")  # noqa: E501
 
-        self._received_date = received_date
+        self._date_received = date_received
 
     @property
-    def sofi_date(self):
-        """Gets the sofi_date of this TbrMetadata.
+    def date_sofi(self):
+        """Gets the date_sofi of this TbrMetadata.
 
 
-        :return: The sofi_date of this TbrMetadata.
+        :return: The date_sofi of this TbrMetadata.
         :rtype: datetime
         """
-        return self._sofi_date
+        return self._date_sofi
 
-    @sofi_date.setter
-    def sofi_date(self, sofi_date):
-        """Sets the sofi_date of this TbrMetadata.
+    @date_sofi.setter
+    def date_sofi(self, date_sofi):
+        """Sets the date_sofi of this TbrMetadata.
 
 
-        :param sofi_date: The sofi_date of this TbrMetadata.
-        :type sofi_date: datetime
+        :param date_sofi: The date_sofi of this TbrMetadata.
+        :type date_sofi: datetime
         """
 
-        self._sofi_date = sofi_date
+        self._date_sofi = date_sofi
 
     @property
     def run_id(self):
@@ -571,48 +571,46 @@ class TbrMetadata(Model):
         self._travel_country = travel_country
 
     @property
-    def run_date(self):
-        """Gets the run_date of this TbrMetadata.
+    def date_run(self):
+        """Gets the date_run of this TbrMetadata.
 
 
-        :return: The run_date of this TbrMetadata.
+        :return: The date_run of this TbrMetadata.
         :rtype: datetime
         """
-        return self._run_date
+        return self._date_run
 
-    @run_date.setter
-    def run_date(self, run_date):
-        """Sets the run_date of this TbrMetadata.
+    @date_run.setter
+    def date_run(self, date_run):
+        """Sets the date_run of this TbrMetadata.
 
 
-        :param run_date: The run_date of this TbrMetadata.
-        :type run_date: datetime
+        :param date_run: The date_run of this TbrMetadata.
+        :type date_run: datetime
         """
-        if run_date is None:
-            raise ValueError("Invalid value for `run_date`, must not be `None`")  # noqa: E501
 
-        self._run_date = run_date
+        self._date_run = date_run
 
     @property
-    def kma_received_date(self):
-        """Gets the kma_received_date of this TbrMetadata.
+    def date_received_kma(self):
+        """Gets the date_received_kma of this TbrMetadata.
 
 
-        :return: The kma_received_date of this TbrMetadata.
+        :return: The date_received_kma of this TbrMetadata.
         :rtype: datetime
         """
-        return self._kma_received_date
+        return self._date_received_kma
 
-    @kma_received_date.setter
-    def kma_received_date(self, kma_received_date):
-        """Sets the kma_received_date of this TbrMetadata.
+    @date_received_kma.setter
+    def date_received_kma(self, date_received_kma):
+        """Sets the date_received_kma of this TbrMetadata.
 
 
-        :param kma_received_date: The kma_received_date of this TbrMetadata.
-        :type kma_received_date: datetime
+        :param date_received_kma: The date_received_kma of this TbrMetadata.
+        :type date_received_kma: datetime
         """
 
-        self._kma_received_date = kma_received_date
+        self._date_received_kma = date_received_kma
 
     @property
     def kma(self):
@@ -699,22 +697,22 @@ class TbrMetadata(Model):
         self._cluster_id = cluster_id
 
     @property
-    def epi_export(self):
-        """Gets the epi_export of this TbrMetadata.
+    def date_epi(self):
+        """Gets the date_epi of this TbrMetadata.
 
 
-        :return: The epi_export of this TbrMetadata.
+        :return: The date_epi of this TbrMetadata.
         :rtype: str
         """
-        return self._epi_export
+        return self._date_epi
 
-    @epi_export.setter
-    def epi_export(self, epi_export):
-        """Sets the epi_export of this TbrMetadata.
+    @date_epi.setter
+    def date_epi(self, date_epi):
+        """Sets the date_epi of this TbrMetadata.
 
 
-        :param epi_export: The epi_export of this TbrMetadata.
-        :type epi_export: str
+        :param date_epi: The date_epi of this TbrMetadata.
+        :type date_epi: str
         """
 
-        self._epi_export = epi_export
+        self._date_epi = date_epi

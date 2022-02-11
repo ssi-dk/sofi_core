@@ -23,7 +23,7 @@ class MetadataReloadResponse(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, sequence_id=None, sequence_filename=None, isolate_id=None, institution=None, project_number=None, project_title=None, sampling_date=None, received_date=None, sofi_date=None, run_id=None, public=None, primary_isolate=None, cpr_nr=None, gender=None, name=None, age=None, travel=None, travel_country=None, run_date=None, kma_received_date=None, kma=None, region=None, fud_number=None, cluster_id=None, epi_export=None, chr_number=None, cvr_number=None, aut_number=None, product_type=None, product=None, origin_country=None, animal_species=None, sample_info=None):  # noqa: E501
+    def __init__(self, sequence_id=None, sequence_filename=None, isolate_id=None, institution=None, project_number=None, project_title=None, date_sample=None, date_received=None, date_sofi=None, run_id=None, public=None, primary_isolate=None, cpr_nr=None, gender=None, name=None, age=None, travel=None, travel_country=None, date_run=None, date_received_kma=None, kma=None, region=None, fud_number=None, cluster_id=None, date_epi=None, chr_number=None, cvr_number=None, aut_number=None, product_type=None, product=None, origin_country=None, animal_species=None, sample_info=None):  # noqa: E501
         """MetadataReloadResponse - a model defined in OpenAPI
 
         :param sequence_id: The sequence_id of this MetadataReloadResponse.  # noqa: E501
@@ -38,12 +38,12 @@ class MetadataReloadResponse(Model):
         :type project_number: str
         :param project_title: The project_title of this MetadataReloadResponse.  # noqa: E501
         :type project_title: str
-        :param sampling_date: The sampling_date of this MetadataReloadResponse.  # noqa: E501
-        :type sampling_date: datetime
-        :param received_date: The received_date of this MetadataReloadResponse.  # noqa: E501
-        :type received_date: datetime
-        :param sofi_date: The sofi_date of this MetadataReloadResponse.  # noqa: E501
-        :type sofi_date: datetime
+        :param date_sample: The date_sample of this MetadataReloadResponse.  # noqa: E501
+        :type date_sample: datetime
+        :param date_received: The date_received of this MetadataReloadResponse.  # noqa: E501
+        :type date_received: datetime
+        :param date_sofi: The date_sofi of this MetadataReloadResponse.  # noqa: E501
+        :type date_sofi: datetime
         :param run_id: The run_id of this MetadataReloadResponse.  # noqa: E501
         :type run_id: str
         :param public: The public of this MetadataReloadResponse.  # noqa: E501
@@ -62,10 +62,10 @@ class MetadataReloadResponse(Model):
         :type travel: str
         :param travel_country: The travel_country of this MetadataReloadResponse.  # noqa: E501
         :type travel_country: str
-        :param run_date: The run_date of this MetadataReloadResponse.  # noqa: E501
-        :type run_date: datetime
-        :param kma_received_date: The kma_received_date of this MetadataReloadResponse.  # noqa: E501
-        :type kma_received_date: datetime
+        :param date_run: The date_run of this MetadataReloadResponse.  # noqa: E501
+        :type date_run: datetime
+        :param date_received_kma: The date_received_kma of this MetadataReloadResponse.  # noqa: E501
+        :type date_received_kma: datetime
         :param kma: The kma of this MetadataReloadResponse.  # noqa: E501
         :type kma: str
         :param region: The region of this MetadataReloadResponse.  # noqa: E501
@@ -74,8 +74,8 @@ class MetadataReloadResponse(Model):
         :type fud_number: str
         :param cluster_id: The cluster_id of this MetadataReloadResponse.  # noqa: E501
         :type cluster_id: str
-        :param epi_export: The epi_export of this MetadataReloadResponse.  # noqa: E501
-        :type epi_export: str
+        :param date_epi: The date_epi of this MetadataReloadResponse.  # noqa: E501
+        :type date_epi: str
         :param chr_number: The chr_number of this MetadataReloadResponse.  # noqa: E501
         :type chr_number: str
         :param cvr_number: The cvr_number of this MetadataReloadResponse.  # noqa: E501
@@ -100,9 +100,9 @@ class MetadataReloadResponse(Model):
             'institution': Organization,
             'project_number': str,
             'project_title': str,
-            'sampling_date': datetime,
-            'received_date': datetime,
-            'sofi_date': datetime,
+            'date_sample': datetime,
+            'date_received': datetime,
+            'date_sofi': datetime,
             'run_id': str,
             'public': str,
             'primary_isolate': bool,
@@ -112,13 +112,13 @@ class MetadataReloadResponse(Model):
             'age': int,
             'travel': str,
             'travel_country': str,
-            'run_date': datetime,
-            'kma_received_date': datetime,
+            'date_run': datetime,
+            'date_received_kma': datetime,
             'kma': str,
             'region': str,
             'fud_number': str,
             'cluster_id': str,
-            'epi_export': str,
+            'date_epi': str,
             'chr_number': str,
             'cvr_number': str,
             'aut_number': str,
@@ -136,9 +136,9 @@ class MetadataReloadResponse(Model):
             'institution': 'institution',
             'project_number': 'project_number',
             'project_title': 'project_title',
-            'sampling_date': 'sampling_date',
-            'received_date': 'received_date',
-            'sofi_date': 'sofi_date',
+            'date_sample': 'date_sample',
+            'date_received': 'date_received',
+            'date_sofi': 'date_sofi',
             'run_id': 'run_id',
             'public': 'public',
             'primary_isolate': 'primary_isolate',
@@ -148,13 +148,13 @@ class MetadataReloadResponse(Model):
             'age': 'age',
             'travel': 'travel',
             'travel_country': 'travel_country',
-            'run_date': 'run_date',
-            'kma_received_date': 'kma_received_date',
+            'date_run': 'date_run',
+            'date_received_kma': 'date_received_kma',
             'kma': 'kma',
             'region': 'region',
             'fud_number': 'fud_number',
             'cluster_id': 'cluster_id',
-            'epi_export': 'epi_export',
+            'date_epi': 'date_epi',
             'chr_number': 'chr_number',
             'cvr_number': 'cvr_number',
             'aut_number': 'aut_number',
@@ -171,9 +171,9 @@ class MetadataReloadResponse(Model):
         self._institution = institution
         self._project_number = project_number
         self._project_title = project_title
-        self._sampling_date = sampling_date
-        self._received_date = received_date
-        self._sofi_date = sofi_date
+        self._date_sample = date_sample
+        self._date_received = date_received
+        self._date_sofi = date_sofi
         self._run_id = run_id
         self._public = public
         self._primary_isolate = primary_isolate
@@ -183,13 +183,13 @@ class MetadataReloadResponse(Model):
         self._age = age
         self._travel = travel
         self._travel_country = travel_country
-        self._run_date = run_date
-        self._kma_received_date = kma_received_date
+        self._date_run = date_run
+        self._date_received_kma = date_received_kma
         self._kma = kma
         self._region = region
         self._fud_number = fud_number
         self._cluster_id = cluster_id
-        self._epi_export = epi_export
+        self._date_epi = date_epi
         self._chr_number = chr_number
         self._cvr_number = cvr_number
         self._aut_number = aut_number
@@ -343,69 +343,69 @@ class MetadataReloadResponse(Model):
         self._project_title = project_title
 
     @property
-    def sampling_date(self):
-        """Gets the sampling_date of this MetadataReloadResponse.
+    def date_sample(self):
+        """Gets the date_sample of this MetadataReloadResponse.
 
 
-        :return: The sampling_date of this MetadataReloadResponse.
+        :return: The date_sample of this MetadataReloadResponse.
         :rtype: datetime
         """
-        return self._sampling_date
+        return self._date_sample
 
-    @sampling_date.setter
-    def sampling_date(self, sampling_date):
-        """Sets the sampling_date of this MetadataReloadResponse.
+    @date_sample.setter
+    def date_sample(self, date_sample):
+        """Sets the date_sample of this MetadataReloadResponse.
 
 
-        :param sampling_date: The sampling_date of this MetadataReloadResponse.
-        :type sampling_date: datetime
+        :param date_sample: The date_sample of this MetadataReloadResponse.
+        :type date_sample: datetime
         """
 
-        self._sampling_date = sampling_date
+        self._date_sample = date_sample
 
     @property
-    def received_date(self):
-        """Gets the received_date of this MetadataReloadResponse.
+    def date_received(self):
+        """Gets the date_received of this MetadataReloadResponse.
 
 
-        :return: The received_date of this MetadataReloadResponse.
+        :return: The date_received of this MetadataReloadResponse.
         :rtype: datetime
         """
-        return self._received_date
+        return self._date_received
 
-    @received_date.setter
-    def received_date(self, received_date):
-        """Sets the received_date of this MetadataReloadResponse.
+    @date_received.setter
+    def date_received(self, date_received):
+        """Sets the date_received of this MetadataReloadResponse.
 
 
-        :param received_date: The received_date of this MetadataReloadResponse.
-        :type received_date: datetime
+        :param date_received: The date_received of this MetadataReloadResponse.
+        :type date_received: datetime
         """
-        if received_date is None:
-            raise ValueError("Invalid value for `received_date`, must not be `None`")  # noqa: E501
+        if date_received is None:
+            raise ValueError("Invalid value for `date_received`, must not be `None`")  # noqa: E501
 
-        self._received_date = received_date
+        self._date_received = date_received
 
     @property
-    def sofi_date(self):
-        """Gets the sofi_date of this MetadataReloadResponse.
+    def date_sofi(self):
+        """Gets the date_sofi of this MetadataReloadResponse.
 
 
-        :return: The sofi_date of this MetadataReloadResponse.
+        :return: The date_sofi of this MetadataReloadResponse.
         :rtype: datetime
         """
-        return self._sofi_date
+        return self._date_sofi
 
-    @sofi_date.setter
-    def sofi_date(self, sofi_date):
-        """Sets the sofi_date of this MetadataReloadResponse.
+    @date_sofi.setter
+    def date_sofi(self, date_sofi):
+        """Sets the date_sofi of this MetadataReloadResponse.
 
 
-        :param sofi_date: The sofi_date of this MetadataReloadResponse.
-        :type sofi_date: datetime
+        :param date_sofi: The date_sofi of this MetadataReloadResponse.
+        :type date_sofi: datetime
         """
 
-        self._sofi_date = sofi_date
+        self._date_sofi = date_sofi
 
     @property
     def run_id(self):
@@ -611,48 +611,46 @@ class MetadataReloadResponse(Model):
         self._travel_country = travel_country
 
     @property
-    def run_date(self):
-        """Gets the run_date of this MetadataReloadResponse.
+    def date_run(self):
+        """Gets the date_run of this MetadataReloadResponse.
 
 
-        :return: The run_date of this MetadataReloadResponse.
+        :return: The date_run of this MetadataReloadResponse.
         :rtype: datetime
         """
-        return self._run_date
+        return self._date_run
 
-    @run_date.setter
-    def run_date(self, run_date):
-        """Sets the run_date of this MetadataReloadResponse.
+    @date_run.setter
+    def date_run(self, date_run):
+        """Sets the date_run of this MetadataReloadResponse.
 
 
-        :param run_date: The run_date of this MetadataReloadResponse.
-        :type run_date: datetime
+        :param date_run: The date_run of this MetadataReloadResponse.
+        :type date_run: datetime
         """
-        if run_date is None:
-            raise ValueError("Invalid value for `run_date`, must not be `None`")  # noqa: E501
 
-        self._run_date = run_date
+        self._date_run = date_run
 
     @property
-    def kma_received_date(self):
-        """Gets the kma_received_date of this MetadataReloadResponse.
+    def date_received_kma(self):
+        """Gets the date_received_kma of this MetadataReloadResponse.
 
 
-        :return: The kma_received_date of this MetadataReloadResponse.
+        :return: The date_received_kma of this MetadataReloadResponse.
         :rtype: datetime
         """
-        return self._kma_received_date
+        return self._date_received_kma
 
-    @kma_received_date.setter
-    def kma_received_date(self, kma_received_date):
-        """Sets the kma_received_date of this MetadataReloadResponse.
+    @date_received_kma.setter
+    def date_received_kma(self, date_received_kma):
+        """Sets the date_received_kma of this MetadataReloadResponse.
 
 
-        :param kma_received_date: The kma_received_date of this MetadataReloadResponse.
-        :type kma_received_date: datetime
+        :param date_received_kma: The date_received_kma of this MetadataReloadResponse.
+        :type date_received_kma: datetime
         """
 
-        self._kma_received_date = kma_received_date
+        self._date_received_kma = date_received_kma
 
     @property
     def kma(self):
@@ -739,25 +737,25 @@ class MetadataReloadResponse(Model):
         self._cluster_id = cluster_id
 
     @property
-    def epi_export(self):
-        """Gets the epi_export of this MetadataReloadResponse.
+    def date_epi(self):
+        """Gets the date_epi of this MetadataReloadResponse.
 
 
-        :return: The epi_export of this MetadataReloadResponse.
+        :return: The date_epi of this MetadataReloadResponse.
         :rtype: str
         """
-        return self._epi_export
+        return self._date_epi
 
-    @epi_export.setter
-    def epi_export(self, epi_export):
-        """Sets the epi_export of this MetadataReloadResponse.
+    @date_epi.setter
+    def date_epi(self, date_epi):
+        """Sets the date_epi of this MetadataReloadResponse.
 
 
-        :param epi_export: The epi_export of this MetadataReloadResponse.
-        :type epi_export: str
+        :param date_epi: The date_epi of this MetadataReloadResponse.
+        :type date_epi: str
         """
 
-        self._epi_export = epi_export
+        self._date_epi = date_epi
 
     @property
     def chr_number(self):

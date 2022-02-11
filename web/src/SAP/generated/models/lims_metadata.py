@@ -23,7 +23,7 @@ class LimsMetadata(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, sequence_id=None, sequence_filename=None, isolate_id=None, institution=None, project_number=None, project_title=None, sampling_date=None, received_date=None, sofi_date=None, run_id=None, public=None, primary_isolate=None, chr_number=None, cvr_number=None, aut_number=None, product_type=None, product=None, origin_country=None, animal_species=None, sample_info=None):  # noqa: E501
+    def __init__(self, sequence_id=None, sequence_filename=None, isolate_id=None, institution=None, project_number=None, project_title=None, date_sample=None, date_received=None, date_sofi=None, run_id=None, public=None, primary_isolate=None, chr_number=None, cvr_number=None, aut_number=None, product_type=None, product=None, origin_country=None, animal_species=None, sample_info=None):  # noqa: E501
         """LimsMetadata - a model defined in OpenAPI
 
         :param sequence_id: The sequence_id of this LimsMetadata.  # noqa: E501
@@ -38,12 +38,12 @@ class LimsMetadata(Model):
         :type project_number: str
         :param project_title: The project_title of this LimsMetadata.  # noqa: E501
         :type project_title: str
-        :param sampling_date: The sampling_date of this LimsMetadata.  # noqa: E501
-        :type sampling_date: datetime
-        :param received_date: The received_date of this LimsMetadata.  # noqa: E501
-        :type received_date: datetime
-        :param sofi_date: The sofi_date of this LimsMetadata.  # noqa: E501
-        :type sofi_date: datetime
+        :param date_sample: The date_sample of this LimsMetadata.  # noqa: E501
+        :type date_sample: datetime
+        :param date_received: The date_received of this LimsMetadata.  # noqa: E501
+        :type date_received: datetime
+        :param date_sofi: The date_sofi of this LimsMetadata.  # noqa: E501
+        :type date_sofi: datetime
         :param run_id: The run_id of this LimsMetadata.  # noqa: E501
         :type run_id: str
         :param public: The public of this LimsMetadata.  # noqa: E501
@@ -74,9 +74,9 @@ class LimsMetadata(Model):
             'institution': Organization,
             'project_number': str,
             'project_title': str,
-            'sampling_date': datetime,
-            'received_date': datetime,
-            'sofi_date': datetime,
+            'date_sample': datetime,
+            'date_received': datetime,
+            'date_sofi': datetime,
             'run_id': str,
             'public': str,
             'primary_isolate': bool,
@@ -97,9 +97,9 @@ class LimsMetadata(Model):
             'institution': 'institution',
             'project_number': 'project_number',
             'project_title': 'project_title',
-            'sampling_date': 'sampling_date',
-            'received_date': 'received_date',
-            'sofi_date': 'sofi_date',
+            'date_sample': 'date_sample',
+            'date_received': 'date_received',
+            'date_sofi': 'date_sofi',
             'run_id': 'run_id',
             'public': 'public',
             'primary_isolate': 'primary_isolate',
@@ -119,9 +119,9 @@ class LimsMetadata(Model):
         self._institution = institution
         self._project_number = project_number
         self._project_title = project_title
-        self._sampling_date = sampling_date
-        self._received_date = received_date
-        self._sofi_date = sofi_date
+        self._date_sample = date_sample
+        self._date_received = date_received
+        self._date_sofi = date_sofi
         self._run_id = run_id
         self._public = public
         self._primary_isolate = primary_isolate
@@ -278,69 +278,69 @@ class LimsMetadata(Model):
         self._project_title = project_title
 
     @property
-    def sampling_date(self):
-        """Gets the sampling_date of this LimsMetadata.
+    def date_sample(self):
+        """Gets the date_sample of this LimsMetadata.
 
 
-        :return: The sampling_date of this LimsMetadata.
+        :return: The date_sample of this LimsMetadata.
         :rtype: datetime
         """
-        return self._sampling_date
+        return self._date_sample
 
-    @sampling_date.setter
-    def sampling_date(self, sampling_date):
-        """Sets the sampling_date of this LimsMetadata.
+    @date_sample.setter
+    def date_sample(self, date_sample):
+        """Sets the date_sample of this LimsMetadata.
 
 
-        :param sampling_date: The sampling_date of this LimsMetadata.
-        :type sampling_date: datetime
+        :param date_sample: The date_sample of this LimsMetadata.
+        :type date_sample: datetime
         """
 
-        self._sampling_date = sampling_date
+        self._date_sample = date_sample
 
     @property
-    def received_date(self):
-        """Gets the received_date of this LimsMetadata.
+    def date_received(self):
+        """Gets the date_received of this LimsMetadata.
 
 
-        :return: The received_date of this LimsMetadata.
+        :return: The date_received of this LimsMetadata.
         :rtype: datetime
         """
-        return self._received_date
+        return self._date_received
 
-    @received_date.setter
-    def received_date(self, received_date):
-        """Sets the received_date of this LimsMetadata.
+    @date_received.setter
+    def date_received(self, date_received):
+        """Sets the date_received of this LimsMetadata.
 
 
-        :param received_date: The received_date of this LimsMetadata.
-        :type received_date: datetime
+        :param date_received: The date_received of this LimsMetadata.
+        :type date_received: datetime
         """
-        if received_date is None:
-            raise ValueError("Invalid value for `received_date`, must not be `None`")  # noqa: E501
+        if date_received is None:
+            raise ValueError("Invalid value for `date_received`, must not be `None`")  # noqa: E501
 
-        self._received_date = received_date
+        self._date_received = date_received
 
     @property
-    def sofi_date(self):
-        """Gets the sofi_date of this LimsMetadata.
+    def date_sofi(self):
+        """Gets the date_sofi of this LimsMetadata.
 
 
-        :return: The sofi_date of this LimsMetadata.
+        :return: The date_sofi of this LimsMetadata.
         :rtype: datetime
         """
-        return self._sofi_date
+        return self._date_sofi
 
-    @sofi_date.setter
-    def sofi_date(self, sofi_date):
-        """Sets the sofi_date of this LimsMetadata.
+    @date_sofi.setter
+    def date_sofi(self, date_sofi):
+        """Sets the date_sofi of this LimsMetadata.
 
 
-        :param sofi_date: The sofi_date of this LimsMetadata.
-        :type sofi_date: datetime
+        :param date_sofi: The date_sofi of this LimsMetadata.
+        :type date_sofi: datetime
         """
 
-        self._sofi_date = sofi_date
+        self._date_sofi = date_sofi
 
     @property
     def run_id(self):
