@@ -66,13 +66,13 @@ def structure_leaf(node, is_negated):
         if isinstance(coerced, str):
             return {field: {"$not": check_for_wildcard(coerced)}}
         else:
-            return {field: {"$ne": coerced}}
+            return {field: {"$ne": {"$in": [coerced, node.term]}}}
     else:
         if isinstance(coerced, str):
             res = {field: check_for_wildcard(coerced)}
             return res
         else:
-            return {field: coerced}
+            return {field: {"$in": [coerced, node.term]}}
 
 
 def is_negated_op(node):
