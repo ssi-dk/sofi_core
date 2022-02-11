@@ -51,6 +51,7 @@ def agg_pipeline(changed_ids=None):
                 "isolate_id": "$display_name",
                 "sequence_id": "$categories.sample_info.summary.sofi_sequence_id",
                 "run_id": "$categories.sample_info.summary.experiment_name",
+                "run_date": "$categories.summary.sample_info.sequence_run_date",
                 "institution": "$categories.sample_info.summary.institution",
                 "project_number": "$categories.sample_info.summary.project_no",
                 "project_title": "$categories.sample_info.summary.project_title",
