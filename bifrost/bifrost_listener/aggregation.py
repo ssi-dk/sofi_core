@@ -57,6 +57,7 @@ def agg_pipeline(changed_ids=None):
                 "project_title": "$categories.sample_info.summary.project_title",
                 "date_sample": "$metadata.created_at",
                 "date_sofi": "$$NOW",
+                "date_analysis_sofi": "$$NOW",
                 "qc_detected_species": "$categories.species_detection.summary.detected_species",
                 "qc_provided_species": "$categories.sample_info.summary.provided_species",
                 "subspecies": "$categories.serotype.summary.Subspecies",
