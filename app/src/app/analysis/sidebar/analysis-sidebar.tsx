@@ -18,10 +18,10 @@ function AnalysisSidebar(props: AnalysisSidebarProps) {
     (items: string[]) => Array.from(new Set(items)).sort(),
     []
   );
-  const sts = React.useMemo(() => sortUnique(data.map((x) => x.st)), [
-    data,
-    sortUnique,
-  ]);
+  const sts = React.useMemo(
+    () => sortUnique(data.map((x) => `${x.st_final}`)),
+    [data, sortUnique]
+  );
   const serotypes = React.useMemo(
     () => sortUnique(data.map((x) => x.serotype_final)),
     [data, sortUnique]

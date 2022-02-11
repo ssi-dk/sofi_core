@@ -77,12 +77,12 @@ function AnalysisFilter(props: AnalysisFilterProps) {
         theme={selectTheme}
         onChange={onChangeBuilder("serotype_final")}
       />
-      <Text mt={2}>{t("st")}</Text>
+      <Text mt={2}>{t("st_final")}</Text>
       <Select
         options={stOptions}
         isMulti
         theme={selectTheme}
-        onChange={onChangeBuilder("st")}
+        onChange={onChangeBuilder("st_final")}
       />
     </FilterBox>
   );
