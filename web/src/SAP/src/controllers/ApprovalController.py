@@ -18,6 +18,9 @@ from web.src.SAP.src.security.permission_check import assert_user_has
 from ..services.queue_service import post_and_await_approval
 
 
+APPROVABLE_CATEGORY_COUNT = 7
+
+
 def get_approvals(user, token_info):
     return jsonify(find_approvals(token_info["email"]))
 
@@ -38,7 +41,9 @@ def create_approval(user, token_info, body: ApprovalRequest):
     for seq in body.matrix:
         fields = body.matrix[seq]
         time_fields = find_approved_categories(fields)
-        seq_update = {}
+        # if all categories
+        if len(time_fields) == APPROVABLE_CATEGORY_COUNT:
+            seq_update = {"date_analysis_sofi": appr.timestamp}
         for f in time_fields:
             seq_update[f] = appr.timestamp
         analysis_timestamp_updates[seq] = seq_update
@@ -50,6 +55,7 @@ def create_approval(user, token_info, body: ApprovalRequest):
     analysis_timestamp_reverts = {}
     for (error_seq_id, error) in errors_tuple:
         del appr.matrix[error_seq_id]
+        analysis_timestamp_reverts[error_seq_id] = {"date_analysis_sofi": None}
         errors.append(error)
 
     # If any sequences errored out on the metadata service, revert their
@@ -105,7 +111,7 @@ def find_approved_categories(fields: Dict[str, ApprovalStatus]):
                 time_fields.append("date_approved_cluster")
             if f == "amr_profile":
                 time_fields.append("date_approved_amr")
-            if f == "epi_export":
-                time_fields.append("epi_export")
+            if f == "date_epi":
+                time_fields.append("date_epi")
 
     return time_fields
