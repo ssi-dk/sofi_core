@@ -464,11 +464,16 @@ export default function AnalysisPage() {
       }
       if (
         (columnId.startsWith("date") || columnId.endsWith("date")) &&
-        value !== undefined &&
-        typeof value?.getTime === "function" &&
-        !Number.isNaN(value?.getTime())
+        value !== undefined
       ) {
-        v = value?.toISOString()?.split("T")[0];
+        if (
+          typeof value?.getTime === "function" &&
+          !Number.isNaN(value?.getTime())
+        ) {
+          v = value?.toISOString()?.split("T")[0];
+        } else {
+          v = value?.split("T")[0];
+        }
       }
       // cannot edit cells that have already been approved
       if (approvals?.[rowId]?.[columnId] !== ApprovalStatus.approved) {
