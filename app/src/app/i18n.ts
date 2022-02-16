@@ -5,6 +5,13 @@ import { AnalysisResult } from "sap-client";
 import { isTemplateExpression } from "typescript";
 import { invertMap } from "utils";
 
+/**
+ * This configuration controls the display names for individual fields.
+ * Top-level keys "da", "en", etc. are for different language codes.
+ * Underneath each language code is a set of key-value pairs, where the
+ * left-side is the internal name of the field and the right side is the
+ * desired field display name for the language.
+ */
 const fieldDisplayNames = {
   da: {
     public: "Acc_nr",
@@ -70,6 +77,7 @@ const fieldDisplayNames = {
     sero_d_tartrate: "Sero_D-tartrate",
     sero_serotype_finder: "Sero_serotype_finder",
     st: "ST",
+    st_final: "ST_final",
     pathotype_final: "Pathotype_final",
     virulence_genes: "Virulence_genes",
     adhesion_final: "Adheasion_final",
@@ -149,6 +157,9 @@ const fieldDisplayNames = {
 
 const analysisType: AnalysisResult = {} as AnalysisResult;
 
+/**
+ * Same as fieldDisplayNames, but for all other portions of the UI.
+ */
 const resources = {
   da: {
     translation: {
@@ -202,12 +213,12 @@ const resources = {
       MetadataNotReloaded: "Metadata ikke genindlæst",
       IsolateMetadataNotReloadedFor:
         "Grundet fejl er metadata ikke genindlæst for isolat",
-
       // field name translations
       ...fieldDisplayNames.da,
     },
-
-    en: {
+  },
+  en: {
+    translation: {
       // field name translations
       ...fieldDisplayNames.en,
     },
@@ -219,6 +230,7 @@ i18n
   .init({
     resources,
     lng: "en",
+    debug: true,
 
     keySeparator: false, // we do not use keys in form messages.welcome
 

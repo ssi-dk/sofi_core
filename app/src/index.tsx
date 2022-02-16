@@ -5,6 +5,8 @@ import { Provider } from "react-redux";
 import { Provider as ReduxQueryProvider } from "redux-query-react";
 import { ConnectedRouter } from "connected-react-router";
 import store, { getQueries, history } from "app/store";
+import i18n from "app/i18n";
+import { I18nextProvider } from "react-i18next";
 
 function render() {
   const App = require("./app/app").default;
@@ -12,7 +14,9 @@ function render() {
     <Provider store={store}>
       <ConnectedRouter history={history}>
         <ReduxQueryProvider queriesSelector={getQueries}>
-          <App />
+          <I18nextProvider i18n={i18n}>
+            <App />
+          </I18nextProvider>
         </ReduxQueryProvider>
       </ConnectedRouter>
     </Provider>,

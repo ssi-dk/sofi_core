@@ -15,6 +15,7 @@ import GdprPage from "./gdpr/gdpr";
 import Tree from "./comparative-analysis/phylo/phylo";
 import ComparativeAnalysis from "./comparative-analysis/comparative-analysis";
 import "./style-reset.css";
+import i18n from "./i18n";
 
 export default function App() {
   return (

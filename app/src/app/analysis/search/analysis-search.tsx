@@ -23,7 +23,6 @@ const parseQuery = (input: string, toast) => {
   try {
     const ast = luceneParse(input);
     recurseTree(ast, (x) => {
-      console.log(x);
       if (x["field"]) {
         // date fields might be represented as datetimes in the db, so do a
         // wildcard to discard the time component

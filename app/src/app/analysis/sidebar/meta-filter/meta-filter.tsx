@@ -193,7 +193,7 @@ function MetaFilter(props: MetaFilterProps) {
           />
         </Flex>
       </Flex>
-      <Text mt={2}>{t("received_date")}</Text>
+      <Text mt={2}>{t("date_received")}</Text>
       <Flex>
         <DatePicker
           selectedDate={receivedStartDate}
@@ -239,7 +239,7 @@ function MetaFilter(props: MetaFilterProps) {
         level={DataClearance.cross_institution}
         institution={Organization.SSI}
       >
-        <Text mt={2}>{t("cpr")}</Text>
+        <Text mt={2}>{t("cpr_nr")}</Text>
         <Select
           options={cprOptions}
           isMulti
