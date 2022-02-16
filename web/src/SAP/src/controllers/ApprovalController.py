@@ -38,6 +38,7 @@ def create_approval(user, token_info, body: ApprovalRequest):
     # approval, so the timestamps can be transferred to upstream metadata
     # services, if needed.
     analysis_timestamp_updates = {}
+    seq_update = {}
     for seq in body.matrix:
         fields = body.matrix[seq]
         time_fields = find_approved_categories(fields)

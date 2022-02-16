@@ -92,7 +92,7 @@ export const fetchApprovalMatrix = () => {
   base.transform = (response: ApprovalMatrix) => ({ approvalMatrix: response });
 
   base.update = {
-    approvalMatrix: (_, newValue) => newValue,
+    approvalMatrix: (oldValue, newValue) => ({ ...oldValue, ...newValue }),
   };
   base.force = true;
   return base;
