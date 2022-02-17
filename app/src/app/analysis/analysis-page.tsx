@@ -60,6 +60,10 @@ import ExportButton from "./export/export-button";
 import { ColumnConfigNode } from "./data-table/column-config-node";
 import SearchHelpModal from "./search/search-help-modal";
 
+// When the fields in this array are 'approved', a given sequence is rendered
+// as 'approved' also.
+const PRIMARY_APPROVAL_FIELDS = ["st_final", "qc_final", "serotype_final"];
+
 export default function AnalysisPage() {
   const { t } = useTranslation();
   const toast = useToast();
@@ -365,19 +369,22 @@ export default function AnalysisPage() {
       if (!canApproveColumn(columnId)) {
         return "cell";
       }
-      if (
-        approvals &&
-        approvals[rowId] &&
-        approvals[rowId][columnId] === ApprovalStatus.approved
-      ) {
-        return "cell";
-      }
-      if (
-        approvals &&
-        approvals[rowId] &&
-        approvals[rowId][columnId] === ApprovalStatus.rejected
-      ) {
-        return "rejectedCell";
+      if (approvals && approvals[rowId]) {
+        // sequence_id changes color depending on if specific fields are approved
+        if (columnId === "sequence_id") {
+          let sequence_style = "cell";
+          PRIMARY_APPROVAL_FIELDS.forEach((f) => {
+            if (approvals[rowId][f] !== ApprovalStatus.approved)
+              sequence_style = "unapprovedCell";
+          });
+          return sequence_style;
+        }
+        if (approvals[rowId][columnId] === ApprovalStatus.approved) {
+          return "cell";
+        }
+        if (approvals[rowId][columnId] === ApprovalStatus.rejected) {
+          return "rejectedCell";
+        }
       }
       return "unapprovedCell";
     },
@@ -386,15 +393,11 @@ export default function AnalysisPage() {
 
   const getStickyCellStyle = React.useCallback(
     (rowId: string, rowData: any) => {
-      const approvedCells = Object.keys(approvals[rowId] || {}).length;
       const isLatestSequence =
         rowData.values.sequence_id === rowData.values.latest_for_isolate;
-      const baseClasses = `stickyCell ${isLatestSequence ? "isLatest" : ""}`;
-      return approvableColumns.length - approvedCells >= 5
-        ? `${baseClasses} unapprovedCell`
-        : baseClasses;
+      return `stickyCell ${isLatestSequence ? "isLatest" : ""}`;
     },
-    [approvals, approvableColumns]
+    []
   );
 
   const speciesOptions = React.useMemo(

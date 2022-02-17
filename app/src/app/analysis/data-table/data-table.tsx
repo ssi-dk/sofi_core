@@ -393,14 +393,16 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
       const row = rows[rowIndex - 1];
       const rowId = row.original[primaryKey];
       const columnId = visibleColumns[columnIndex].id;
+      const cellStyle = getCellStyle(
+        rowId,
+        columnId,
+        rows[rowIndex - 1].original[columnId]
+      );
+
       let className =
         columnIndex === 0
-          ? getStickyCellStyle(rowId, row)
-          : getCellStyle(
-              rowId,
-              columnId,
-              rows[rowIndex - 1].original[columnId]
-            );
+          ? `${getStickyCellStyle(rowId, row)} ${cellStyle}`
+          : cellStyle;
 
       if (isInSelection(rowId, columnId)) {
         className = `${className} ${selectionClassName}`;
