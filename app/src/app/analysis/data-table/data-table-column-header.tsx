@@ -76,8 +76,10 @@ function DataTableColumnHeader<T extends NotEmpty>(
             {...calcColSelectionState(column)}
           />
         )}
-        <Tooltip label={`Internal name: ${column.id}`}>
-          <span css={headerName}>{column.render("Header")}</span>
+        <Tooltip placement="top" label={`Internal name: ${column.id}`}>
+          <div>
+            <span css={headerName}>{column.render("Header")}</span>
+          </div>
         </Tooltip>
         <button
           type="button"
