@@ -372,12 +372,12 @@ export default function AnalysisPage() {
       if (approvals && approvals[rowId]) {
         // sequence_id changes color depending on if specific fields are approved
         if (columnId === "sequence_id") {
-          let sequence_style = "cell";
+          let sequenceStyle = "cell";
           PRIMARY_APPROVAL_FIELDS.forEach((f) => {
             if (approvals[rowId][f] !== ApprovalStatus.approved)
-              sequence_style = "unapprovedCell";
+              sequenceStyle = "unapprovedCell";
           });
-          return sequence_style;
+          return sequenceStyle;
         }
         if (approvals[rowId][columnId] === ApprovalStatus.approved) {
           return "cell";

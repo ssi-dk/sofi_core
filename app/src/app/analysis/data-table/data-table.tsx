@@ -94,14 +94,11 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
     renderCellControl,
     view,
   } = props;
-  const [selection, setSelection] = React.useState({} as DataTableSelection<T>);
+  let selection = React.useRef({} as DataTableSelection<T>);
 
-  const isInSelection = React.useCallback(
-    (rowId, columnId) => {
-      return selection[rowId] && selection[rowId][columnId];
-    },
-    [selection]
-  );
+  const isInSelection = React.useCallback((rowId, columnId) => {
+    return selection.current[rowId] && selection.current[rowId][columnId];
+  }, []);
 
   const [lastView, setLastView] = useState(view);
 
@@ -125,21 +122,21 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
   const onSelectCell = React.useCallback(
     (rowId, columnId) => {
       const incSel = {
-        ...selection,
+        ...selection.current,
         [rowId]: {
-          ...(selection[rowId] || {}),
+          ...(selection.current[rowId] || {}),
           [columnId]: !isInSelection(rowId, columnId),
         },
       };
       getDependentColumns(columnId).forEach((v) => {
         incSel[rowId][v as string] = !(
-          selection[rowId] && selection[rowId][columnId]
+          selection.current[rowId] && selection.current[rowId][columnId]
         );
       });
-      setSelection(incSel);
+      selection.current = incSel;
       onSelect(incSel);
     },
-    [onSelect, isInSelection, selection, getDependentColumns]
+    [onSelect, isInSelection, getDependentColumns]
   );
 
   const {
@@ -218,9 +215,32 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
     [visibleColumns, approvableColumns]
   );
 
+  // Narrow selection to the currently visible columns
+  React.useEffect(() => {
+    if (selection.current) {
+      const selectionClone = { ...selection.current };
+      let needsNarrow = false;
+      Object.keys(selection.current)
+        .filter((x) => typeof x === "string")
+        .map((r) => {
+          Object.keys(selection.current[r]).map((k) => {
+            if (visibleApprovableColumns.map((c) => c.id).indexOf(k) < 0) {
+              needsNarrow = true;
+              console.log(selectionClone[r][k]);
+              selectionClone[r] = { ...selectionClone[r], [k]: false };
+            }
+          });
+        });
+      if (needsNarrow) {
+        console.log("narrowing");
+        selection.current = selectionClone;
+      }
+    }
+  }, [visibleApprovableColumns]);
+
   const calcTableSelectionState = React.useCallback(() => {
     const columnCount = approvableColumns.length;
-    const count = Object.values(selection).reduce(
+    const count = Object.values(selection.current).reduce(
       (acc: number, val) =>
         acc + Object.values(val).reduce((a, v) => (v ? a + 1 : a), 0),
       0
@@ -229,11 +249,11 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
     if (count === columnCount * rows.length)
       return { checked: true, indeterminate: false };
     return { indeterminate: true, checked: false };
-  }, [selection, rows, approvableColumns]);
+  }, [rows, approvableColumns]);
 
   const calcRowSelectionState = React.useCallback(
     (row: Row<T>) => {
-      const r = selection[row.original[primaryKey]] || {};
+      const r = selection.current[row.original[primaryKey]] || {};
       const count = Object.values(r).reduce(
         (acc: number, val) => (val ? acc + 1 : acc),
         0
@@ -243,18 +263,20 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
         return { checked: true, indeterminate: false };
       return { indeterminate: true, checked: false };
     },
-    [selection, primaryKey, visibleApprovableColumns]
+    [primaryKey, visibleApprovableColumns]
   );
 
   const calcColSelectionState = React.useCallback(
     (col: Column<T>) => {
-      const c = Object.values(selection).filter((x) => x[col.id] === true);
+      const c = Object.values(selection.current).filter(
+        (x) => x[col.id] === true
+      );
       if (c.length === 0) return { checked: false, indeterminate: false };
       if (c.length === rows.length)
         return { checked: true, indeterminate: false };
       return { indeterminate: true, checked: false, visible: true };
     },
-    [selection, rows]
+    [rows]
   );
 
   const onSelectRow = React.useCallback(
@@ -268,13 +290,12 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
         .filter((x) => canApproveColumn(x.accessor as string))
         .map((x) => ({ [x.accessor as string]: !checked }))
         .reduce((acc, val) => ({ ...acc, ...val }), []);
-      const incSel = { ...selection, [id]: { ...cols } };
-      setSelection(incSel);
+      const incSel = { ...selection.current, [id]: { ...cols } };
+      selection.current = incSel;
       onSelect(incSel);
     },
     [
       onSelect,
-      selection,
       primaryKey,
       columns,
       visibleColumns,
@@ -298,25 +319,26 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
       const sel = rows
         .map((r) => ({
           [r.original[primaryKey]]: {
-            ...selection[r.original[primaryKey]],
+            ...selection.current[r.original[primaryKey]],
             [col.id as string]: !checked,
           },
         }))
         .reduce((acc, val) => ({ ...acc, ...val }));
-      const incSel = { ...selection, ...sel };
+      const incSel = { ...selection.current, ...sel };
       getDependentColumns(col.id).forEach((c) => {
         rows
           .map((r) => r.original[primaryKey])
           .forEach((r: string) => {
-            incSel[r][c as string] = !(selection[r] && selection[r][c]);
+            incSel[r][c as string] = !(
+              selection.current[r] && selection.current[r][c]
+            );
           });
       });
-      setSelection(incSel);
+      selection.current = incSel;
       onSelect(incSel);
       onColumnResize(0);
     },
     [
-      selection,
       primaryKey,
       rows,
       calcColSelectionState,
@@ -334,17 +356,10 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
     const sel = rows
       .map((r) => ({ [r.original[primaryKey]]: allCols }))
       .reduce((acc, val) => ({ ...acc, ...val }));
-    const incSel = { ...selection, ...sel };
-    setSelection(incSel);
+    const incSel = { ...selection.current, ...sel };
+    selection.current = incSel;
     onSelect(incSel);
-  }, [
-    selection,
-    primaryKey,
-    rows,
-    approvableColumns,
-    calcTableSelectionState,
-    onSelect,
-  ]);
+  }, [primaryKey, rows, approvableColumns, calcTableSelectionState, onSelect]);
 
   const rowClickHandler = React.useCallback(
     (row) => (e) => {
