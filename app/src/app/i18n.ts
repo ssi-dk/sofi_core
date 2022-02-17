@@ -230,12 +230,12 @@ i18n
   .init({
     resources,
     lng: "en",
-    debug: true,
+    //debug: true, // prints translation misses to the console
 
     keySeparator: false, // we do not use keys in form messages.welcome
 
     interpolation: {
-      escapeValue: false, // react already safe from xss
+      escapeValue: false, // react already does xss escapes
     },
   });
 
