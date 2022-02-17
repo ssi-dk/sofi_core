@@ -683,7 +683,7 @@ components:
           type: string
         run_id:
           type: string
-        public:
+        public_number:
           type: string
         primary_isolate:
           type: boolean

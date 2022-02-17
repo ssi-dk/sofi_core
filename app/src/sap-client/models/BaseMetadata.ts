@@ -89,7 +89,7 @@ export interface BaseMetadata  {
      * @type {string}
      * @memberof BaseMetadata
      */
-    _public?: string;
+    public_number?: string;
     /**
      * 
      * @type {boolean}
@@ -110,7 +110,7 @@ export function BaseMetadataFromJSON(json: any): BaseMetadata {
         'date_received': new Date(json['date_received']),
         'date_sofi': !exists(json, 'date_sofi') ? undefined : new Date(json['date_sofi']),
         'run_id': json['run_id'],
-        '_public': !exists(json, 'public') ? undefined : json['public'],
+        'public_number': !exists(json, 'public_number') ? undefined : json['public_number'],
         'primary_isolate': json['primary_isolate'],
     };
 }
@@ -130,7 +130,7 @@ export function BaseMetadataToJSON(value?: BaseMetadata): any {
         'date_received': value.date_received.toISOString(),
         'date_sofi': value.date_sofi === undefined ? undefined : value.date_sofi.toISOString(),
         'run_id': value.run_id,
-        'public': value._public,
+        'public_number': value.public_number,
         'primary_isolate': value.primary_isolate,
     };
 }

@@ -14,7 +14,7 @@ import { invertMap } from "utils";
  */
 const fieldDisplayNames = {
   da: {
-    public: "Acc_nr",
+    public_number: "Acc_nr",
     received_date: "Modtagedato",
     sampling_date: "Prøvetagningsdato",
     institution: "Institution",
@@ -42,7 +42,7 @@ const fieldDisplayNames = {
     date_sample: "Date_sample",
     date_received: "Date_received",
     run_id: "Run_ID",
-    public: "Acc_no.",
+    public_number: "Acc_no.",
     provided_species: "QC_provided_species",
     chr_number: "CHR_no.",
     aut_number: "Aut_no.",

@@ -23,7 +23,7 @@ class LimsMetadata(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, sequence_id=None, sequence_filename=None, isolate_id=None, institution=None, project_number=None, project_title=None, date_sample=None, date_received=None, date_sofi=None, run_id=None, public=None, primary_isolate=None, chr_number=None, cvr_number=None, aut_number=None, product_type=None, product=None, origin_country=None, animal_species=None, sample_info=None):  # noqa: E501
+    def __init__(self, sequence_id=None, sequence_filename=None, isolate_id=None, institution=None, project_number=None, project_title=None, date_sample=None, date_received=None, date_sofi=None, run_id=None, public_number=None, primary_isolate=None, chr_number=None, cvr_number=None, aut_number=None, product_type=None, product=None, origin_country=None, animal_species=None, sample_info=None):  # noqa: E501
         """LimsMetadata - a model defined in OpenAPI
 
         :param sequence_id: The sequence_id of this LimsMetadata.  # noqa: E501
@@ -46,8 +46,8 @@ class LimsMetadata(Model):
         :type date_sofi: datetime
         :param run_id: The run_id of this LimsMetadata.  # noqa: E501
         :type run_id: str
-        :param public: The public of this LimsMetadata.  # noqa: E501
-        :type public: str
+        :param public_number: The public_number of this LimsMetadata.  # noqa: E501
+        :type public_number: str
         :param primary_isolate: The primary_isolate of this LimsMetadata.  # noqa: E501
         :type primary_isolate: bool
         :param chr_number: The chr_number of this LimsMetadata.  # noqa: E501
@@ -78,7 +78,7 @@ class LimsMetadata(Model):
             'date_received': datetime,
             'date_sofi': datetime,
             'run_id': str,
-            'public': str,
+            'public_number': str,
             'primary_isolate': bool,
             'chr_number': str,
             'cvr_number': str,
@@ -101,7 +101,7 @@ class LimsMetadata(Model):
             'date_received': 'date_received',
             'date_sofi': 'date_sofi',
             'run_id': 'run_id',
-            'public': 'public',
+            'public_number': 'public_number',
             'primary_isolate': 'primary_isolate',
             'chr_number': 'chr_number',
             'cvr_number': 'cvr_number',
@@ -123,7 +123,7 @@ class LimsMetadata(Model):
         self._date_received = date_received
         self._date_sofi = date_sofi
         self._run_id = run_id
-        self._public = public
+        self._public_number = public_number
         self._primary_isolate = primary_isolate
         self._chr_number = chr_number
         self._cvr_number = cvr_number
@@ -366,25 +366,25 @@ class LimsMetadata(Model):
         self._run_id = run_id
 
     @property
-    def public(self):
-        """Gets the public of this LimsMetadata.
+    def public_number(self):
+        """Gets the public_number of this LimsMetadata.
 
 
-        :return: The public of this LimsMetadata.
+        :return: The public_number of this LimsMetadata.
         :rtype: str
         """
-        return self._public
+        return self._public_number
 
-    @public.setter
-    def public(self, public):
-        """Sets the public of this LimsMetadata.
+    @public_number.setter
+    def public_number(self, public_number):
+        """Sets the public_number of this LimsMetadata.
 
 
-        :param public: The public of this LimsMetadata.
-        :type public: str
+        :param public_number: The public_number of this LimsMetadata.
+        :type public_number: str
         """
 
-        self._public = public
+        self._public_number = public_number
 
     @property
     def primary_isolate(self):

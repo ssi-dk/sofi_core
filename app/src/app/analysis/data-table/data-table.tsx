@@ -226,13 +226,11 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
           Object.keys(selection.current[r]).map((k) => {
             if (visibleApprovableColumns.map((c) => c.id).indexOf(k) < 0) {
               needsNarrow = true;
-              console.log(selectionClone[r][k]);
               selectionClone[r] = { ...selectionClone[r], [k]: false };
             }
           });
         });
       if (needsNarrow) {
-        console.log("narrowing");
         selection.current = selectionClone;
       }
     }
