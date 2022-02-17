@@ -94,9 +94,14 @@ def agg_pipeline(changed_ids=None):
                     {
                         "$cond": {
                             "if": {
-                                "$eq": [
-                                    "$categories.serotype.report.enterobase_serotype1",
+                                "$and": [
                                     "$categories.serotype.report.seqsero_serotype",
+                                    {
+                                        "$eq": [
+                                            "$categories.serotype.report.enterobase_serotype1",
+                                            "$categories.serotype.report.seqsero_serotype",
+                                        ]
+                                    },
                                 ],
                             },
                             "then": "$categories.serotype.report.seqsero_serotype",
