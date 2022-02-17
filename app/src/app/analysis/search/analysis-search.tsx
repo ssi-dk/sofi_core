@@ -27,7 +27,7 @@ const parseQuery = (input: string, toast) => {
         // date fields might be represented as datetimes in the db, so do a
         // wildcard to discard the time component
         if (x["field"].startsWith("date_")) {
-          if (!x["term"].contains("*")) {
+          if (!(x["term"].indexOf("*") > 0)) {
             x["term"] = `${x["term"]}*`;
           }
         }
