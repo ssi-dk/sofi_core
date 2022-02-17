@@ -39,7 +39,7 @@ lims_column_mapping = immutable_dict(
         "Dato_proeve": "date_sample",
         "Dato_modtagelse": "date_received",
         "RunID": "run_id",
-        "Acc_nr": "public",
+        "Acc_nr": "public_number",
         "QC_provided_species": "provided_species",
         "QC_final": "qc_final",
         "ST": "st_final",

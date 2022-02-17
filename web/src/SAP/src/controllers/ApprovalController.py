@@ -1,5 +1,5 @@
 from typing import Dict
-from web.src.SAP.src.repositories.analysis import update_analysis
+from web.src.SAP.src.repositories.analysis import get_single_analysis, update_analysis
 from web.src.SAP.generated.models import Approval, ApprovalRequest, ApprovalStatus
 from ..repositories.approval import (
     find_approvals,
@@ -41,7 +41,12 @@ def create_approval(user, token_info, body: ApprovalRequest):
     seq_update = {}
     for seq in body.matrix:
         fields = body.matrix[seq]
-        time_fields = find_approved_categories(fields)
+        # find dates that were already approved, for incremental approval case.
+        existing_seq = get_single_analysis(seq)
+        for f in existing_seq:
+            existing_seq[f] = "approved"
+        existing_seq.update(fields)
+        time_fields = find_approved_categories(existing_seq)
         # if all categories
         if len(time_fields) == APPROVABLE_CATEGORY_COUNT:
             seq_update = {"date_analysis_sofi": appr.timestamp}
