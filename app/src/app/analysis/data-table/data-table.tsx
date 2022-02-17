@@ -94,7 +94,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
     renderCellControl,
     view,
   } = props;
-  let selection = React.useRef({} as DataTableSelection<T>);
+  const selection = React.useRef({} as DataTableSelection<T>);
 
   const isInSelection = React.useCallback((rowId, columnId) => {
     return selection.current[rowId] && selection.current[rowId][columnId];
