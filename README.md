@@ -12,6 +12,25 @@ In order to build and run locally, you will need the following utilities:
 * docker-compose
 
 # Running
+
+On the first run, you'll need to install the dependencies for the web app:
+
+```shell
+pushd ./app && yarn install && popd
+```
+
+When running locally, you need a correctly figured .env file.
+
+Start by copying the .env.local.example file and make any adjustments you need.
+
+Of particular importance is the SOFI_HOSTNAME and SOFI_PORT, as well as the
+ TLS_CERT_PATH and TLS_KEY_PATH.
+ 
+Regarding the TLS_CERT and TLS_KEY, it is important that the certificate be a
+ ‘real’ certificate signed by a trusted CA. You can use Let’s Encrypt for this purpose.
+
+The SOFI_HOSTNAME must match your certificate.
+
 To run locally using `docker-compose`, execute:
 
 ```shell
@@ -28,7 +47,7 @@ The relevant env variables are `SOFI_SCHEME`, `SOFI_HOSTNAME`, and `SOFI_PORT`.
 Make sure to edit your `/etc/hosts` file (`c:\windows\system32\drivers\etc\hosts` on Windows) and include the line:
 
 ```
-127.0.0.1	sofi.localhost
+127.0.0.1	dev.sofi-platform.dk
 ```
 
 Setting `SOFI_HOSTNAME` to `localhost` or `127.0.0.1` is not currently supported.
