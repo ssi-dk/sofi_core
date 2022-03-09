@@ -4,6 +4,7 @@
 
 In order to build and run locally, you will need the following utilities:
 
+* node v14
 * bash
 * make
 * pip3
