@@ -263,6 +263,7 @@ components:
         - "Toxin_final"
         - "Dato_analyseSAP"
         - "SekvensId"
+        - "ResfinderVersion"
         - "AMR_profil"
         - "AMR _ Ami"
         - "AMR _ Amp"

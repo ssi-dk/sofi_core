@@ -60,6 +60,7 @@ lims_column_mapping = immutable_dict(
         "Dyreart": "animal_species",
         "Proeveinfo": "sample_info",
         "Dato_analyseSAP": "date_analysis_sofi",
+        "ResfinderVersion": "resfinder_version",
         # LIMS resistances
         "AMR_profil": "amr_profil",
         "AMR _ Ami": "amr_ami",
