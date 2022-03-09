@@ -103,6 +103,42 @@ class DataFieldName(ModelSimple):
             'AMR___TGC': "AMR _ Tgc",
             'AMR__TMP_': "AMR _Tmp ",
             'AMR___VAN': "AMR _ Van",
+            'AMR_AMI': "AMR_Ami",
+            'AMR_AMP': "AMR_Amp",
+            'AMR_AZI': "AMR_Azi",
+            'AMR_FEP': "AMR_Fep",
+            'AMR_FOT': "AMR_Fot",
+            'AMR_F/C': "AMR_F/C",
+            'AMR_FOX': "AMR_Fox",
+            'AMR_TAZ': "AMR_Taz",
+            'AMR_T/C': "AMR_T/C",
+            'AMR_CHL': "AMR_Chl",
+            'AMR_CIP': "AMR_Cip",
+            'AMR_CLI': "AMR_Cli",
+            'AMR_COL': "AMR_Col",
+            'AMR_DAP': "AMR_Dap",
+            'AMR_ETP': "AMR_Etp",
+            'AMR_ERY': "AMR_Ery",
+            'AMR_FUS': "AMR_Fus",
+            'AMR_GEN': "AMR_Gen",
+            'AMR_IMI': "AMR_Imi",
+            'AMR_KAN': "AMR_Kan",
+            'AMR_LZD': "AMR_Lzd",
+            'AMR_MERO': "AMR_Mero",
+            'AMR_MUP': "AMR_Mup",
+            'AMR_NAL': "AMR_Nal",
+            'AMR_PEN': "AMR_Pen",
+            'AMR_SYN': "AMR_Syn",
+            'AMR_RIF': "AMR_Rif",
+            'AMR_STR': "AMR_Str",
+            'AMR_SUL': "AMR_Sul",
+            'AMR_TEI': "AMR_Tei",
+            'AMR_TRM': "AMR_Trm",
+            'AMR_TET': "AMR_Tet",
+            'AMR_TIA': "AMR_Tia",
+            'AMR_TGC': "AMR_Tgc",
+            'AMR_TMP': "AMR_Tmp",
+            'AMR_VAN': "AMR_Van",
         },
     }
 
@@ -152,10 +188,10 @@ class DataFieldName(ModelSimple):
         Note that value can be passed either in args or in kwargs, but not in both.
 
         Args:
-            args[0] (str):, must be one of ["Species_final", "Subspecies", "Serotype_final", "Sero_enterobase", "Sero_seqSero", "Sero_Antigen_seqSero", "Sero_D-tartrate", "Serotype_finder", "ST", "Pathotype_final", "Virulensgener", "Adheasion_final", "Toxin_final", "Dato_analyseSAP", "SekvensId", "AMR_profil", "AMR _ Ami", "AMR _ Amp", "AMR _ Azi", "AMR _ Fep", "AMR _ Fot", "AMR _ F/C", "AMR _ Fox", "AMR _ Taz", "AMR _ T/C", "AMR _ Chl", "AMR _ Cip", "AMR _ Cli", "AMR _ Col", "AMR _ Dap", "AMR _ Etp", "AMR _ Ery", "AMR _ Fus", "AMR _ Gen", "AMR _ Imi", "AMR _ Kan", "AMR _ Lzd", "AMR _ Mero", "AMR _ Mup", "AMR _ Nal", "AMR _ Pen", "AMR _ Syn", "AMR _ Rif", "AMR _ Str", "AMR _ Sul", "AMR _ Tei", "AMR _ Trm", "AMR _ Tet", "AMR _ Tia", "AMR _ Tgc", "AMR _Tmp ", "AMR _ Van", ]  # noqa: E501
+            args[0] (str):, must be one of ["Species_final", "Subspecies", "Serotype_final", "Sero_enterobase", "Sero_seqSero", "Sero_Antigen_seqSero", "Sero_D-tartrate", "Serotype_finder", "ST", "Pathotype_final", "Virulensgener", "Adheasion_final", "Toxin_final", "Dato_analyseSAP", "SekvensId", "AMR_profil", "AMR _ Ami", "AMR _ Amp", "AMR _ Azi", "AMR _ Fep", "AMR _ Fot", "AMR _ F/C", "AMR _ Fox", "AMR _ Taz", "AMR _ T/C", "AMR _ Chl", "AMR _ Cip", "AMR _ Cli", "AMR _ Col", "AMR _ Dap", "AMR _ Etp", "AMR _ Ery", "AMR _ Fus", "AMR _ Gen", "AMR _ Imi", "AMR _ Kan", "AMR _ Lzd", "AMR _ Mero", "AMR _ Mup", "AMR _ Nal", "AMR _ Pen", "AMR _ Syn", "AMR _ Rif", "AMR _ Str", "AMR _ Sul", "AMR _ Tei", "AMR _ Trm", "AMR _ Tet", "AMR _ Tia", "AMR _ Tgc", "AMR _Tmp ", "AMR _ Van", "AMR_Ami", "AMR_Amp", "AMR_Azi", "AMR_Fep", "AMR_Fot", "AMR_F/C", "AMR_Fox", "AMR_Taz", "AMR_T/C", "AMR_Chl", "AMR_Cip", "AMR_Cli", "AMR_Col", "AMR_Dap", "AMR_Etp", "AMR_Ery", "AMR_Fus", "AMR_Gen", "AMR_Imi", "AMR_Kan", "AMR_Lzd", "AMR_Mero", "AMR_Mup", "AMR_Nal", "AMR_Pen", "AMR_Syn", "AMR_Rif", "AMR_Str", "AMR_Sul", "AMR_Tei", "AMR_Trm", "AMR_Tet", "AMR_Tia", "AMR_Tgc", "AMR_Tmp", "AMR_Van", ]  # noqa: E501
 
         Keyword Args:
-            value (str):, must be one of ["Species_final", "Subspecies", "Serotype_final", "Sero_enterobase", "Sero_seqSero", "Sero_Antigen_seqSero", "Sero_D-tartrate", "Serotype_finder", "ST", "Pathotype_final", "Virulensgener", "Adheasion_final", "Toxin_final", "Dato_analyseSAP", "SekvensId", "AMR_profil", "AMR _ Ami", "AMR _ Amp", "AMR _ Azi", "AMR _ Fep", "AMR _ Fot", "AMR _ F/C", "AMR _ Fox", "AMR _ Taz", "AMR _ T/C", "AMR _ Chl", "AMR _ Cip", "AMR _ Cli", "AMR _ Col", "AMR _ Dap", "AMR _ Etp", "AMR _ Ery", "AMR _ Fus", "AMR _ Gen", "AMR _ Imi", "AMR _ Kan", "AMR _ Lzd", "AMR _ Mero", "AMR _ Mup", "AMR _ Nal", "AMR _ Pen", "AMR _ Syn", "AMR _ Rif", "AMR _ Str", "AMR _ Sul", "AMR _ Tei", "AMR _ Trm", "AMR _ Tet", "AMR _ Tia", "AMR _ Tgc", "AMR _Tmp ", "AMR _ Van", ]  # noqa: E501
+            value (str):, must be one of ["Species_final", "Subspecies", "Serotype_final", "Sero_enterobase", "Sero_seqSero", "Sero_Antigen_seqSero", "Sero_D-tartrate", "Serotype_finder", "ST", "Pathotype_final", "Virulensgener", "Adheasion_final", "Toxin_final", "Dato_analyseSAP", "SekvensId", "AMR_profil", "AMR _ Ami", "AMR _ Amp", "AMR _ Azi", "AMR _ Fep", "AMR _ Fot", "AMR _ F/C", "AMR _ Fox", "AMR _ Taz", "AMR _ T/C", "AMR _ Chl", "AMR _ Cip", "AMR _ Cli", "AMR _ Col", "AMR _ Dap", "AMR _ Etp", "AMR _ Ery", "AMR _ Fus", "AMR _ Gen", "AMR _ Imi", "AMR _ Kan", "AMR _ Lzd", "AMR _ Mero", "AMR _ Mup", "AMR _ Nal", "AMR _ Pen", "AMR _ Syn", "AMR _ Rif", "AMR _ Str", "AMR _ Sul", "AMR _ Tei", "AMR _ Trm", "AMR _ Tet", "AMR _ Tia", "AMR _ Tgc", "AMR _Tmp ", "AMR _ Van", "AMR_Ami", "AMR_Amp", "AMR_Azi", "AMR_Fep", "AMR_Fot", "AMR_F/C", "AMR_Fox", "AMR_Taz", "AMR_T/C", "AMR_Chl", "AMR_Cip", "AMR_Cli", "AMR_Col", "AMR_Dap", "AMR_Etp", "AMR_Ery", "AMR_Fus", "AMR_Gen", "AMR_Imi", "AMR_Kan", "AMR_Lzd", "AMR_Mero", "AMR_Mup", "AMR_Nal", "AMR_Pen", "AMR_Syn", "AMR_Rif", "AMR_Str", "AMR_Sul", "AMR_Tei", "AMR_Trm", "AMR_Tet", "AMR_Tia", "AMR_Tgc", "AMR_Tmp", "AMR_Van", ]  # noqa: E501
             _check_type (bool): if True, values for parameters in openapi_types
                                 will be type checked and a TypeError will be
                                 raised if the wrong type is input.
