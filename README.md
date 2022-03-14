@@ -36,7 +36,7 @@ This guide is for running the project using WSL2 in Windows.
       default=<use-name>
       ```
  
-You're now set to continue with [Running](#Running), below there's additional notes to consider:
+You're now set to continue with [Running](#running), below there's additional notes to consider:
  
 #### Database permission
 
