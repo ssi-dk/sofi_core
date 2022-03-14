@@ -69,9 +69,11 @@ class TBRRequestBroker(RequestBroker):
         with api_clients.tbr_client.ApiClient(get_tbr_configuration()) as api_client:
             api_instance = isolate_api.IsolateApi(api_client)
             try:
-                logging.debug(f"Requesting metadata from TBR for: {isolate_id}")
+                logging.debug(
+                    f"Requesting metadata from TBR for: {isolate_id}", file=sys.stderr
+                )
                 api_response = api_instance.api_isolate_isolate_id_get(isolate_id)
-                logging.debug(f"TBR responded with {api_response}")
+                logging.debug(f"TBR responded with {api_response}", file=sys.stderr)
                 response_dict = api_response.to_dict()
                 if "isolate_id" in response_dict:
                     del response_dict["isolate_id"]
@@ -81,6 +83,8 @@ class TBRRequestBroker(RequestBroker):
                     for k, v in response_dict.items()
                     if column_mapping.normal_get(k)
                 }
+
+                logging.debug(f"TBR mapped result: {values}", file=sys.stderr)
 
                 encrypt_dict(self.encryption_client, values, pii_columns())
 
