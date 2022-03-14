@@ -4,8 +4,8 @@ import logging
 from ..shared import (
     BrokerError,
     ProcessingStatus,
-    tbr_column_mappings as column_mapping,
-    reverse_tbr_column_mapping as reverse_column_mapping,
+    tbr_to_sofi_column_mappings as column_mapping,
+    sofi_to_tbr_column_mapping as reverse_column_mapping,
 )
 from ..tbr_conn import get_tbr_configuration
 from .request_broker import RequestBroker
@@ -75,7 +75,12 @@ class TBRRequestBroker(RequestBroker):
                 if "isolate_id" in values:
                     del values["isolate_id"]
 
-                values = {column_mapping[k]: v for k, v in values.items()}
+                values = {
+                    column_mapping[k]: v
+                    for k, v in values.items()
+                    if column_mapping.normal_get(k)
+                }
+
                 encrypt_dict(self.encryption_client, values, pii_columns())
 
                 # TODO: make sure this hardocded collection name is correct, or take form env variables.

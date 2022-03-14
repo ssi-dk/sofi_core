@@ -143,24 +143,36 @@ reverse_lims_column_mapping = immutable_dict(
     (v, k) for k, v in lims_column_mapping.items()
 )
 
-tbr_column_mappings = immutable_dict(
+tbr_to_sofi_column_mappings = immutable_dict(
+    {
+        "ssi_date": "date_received",
+        "test_date": "date_sample",
+        "kma_name": "kma",
+        "kma_date": "date_received_kma",
+        "cpr_nr": "cpr_nr",
+        "primary_isolate": "primary_isolate",
+        "gender": "gender",
+        "age": "age",
+        "travel_country": "travel_country",
+        "region": "region",
+        "travel": "travel",
+    }
+)
+
+sofi_to_tbr_column_mappings = immutable_dict(
     {
         "serotype": "serotype_final",
         "st": "st_final",
         "cluster_id": "cluster_id",
         "run_id": "run_id",
-        "ssi_date": "date_received",
-        "test_date": "date_sample",
         "fud_nr": "fud_number",
-        "kma_name": "kma",
-        "kma_date": "date_received_kma",
+        "date_epi": "date_epi",
         "species": "species_final",
         "subspecies": "subspecies",
         "pathotype": "pathotype_final",
         "adheasion": "adhesion_final",
         "toxin": "toxins_final",
         "resistensgener": "resistance_genes",
-        "date_epi": "date_epi",
         "resfinder_version": "resfinder_version",
         "date_approved_resistens": "date_approved_amr",
         "date_approved_serotype": "date_approved_serotype",
@@ -209,6 +221,10 @@ tbr_column_mappings = immutable_dict(
     }
 )
 
-reverse_tbr_column_mapping = immutable_dict(
-    (v, k) for k, v in tbr_column_mappings.items()
+reverse_tbr_to_sofi_column_mapping = immutable_dict(
+    (v, k) for k, v in tbr_to_sofi_column_mappings.items()
+)
+
+reverse_sofi_to_tbr_column_mapping = immutable_dict(
+    (v, k) for k, v in sofi_to_tbr_column_mappings.items()
 )
