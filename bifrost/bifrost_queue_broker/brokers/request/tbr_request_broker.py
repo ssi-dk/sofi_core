@@ -63,6 +63,7 @@ class TBRRequestBroker(RequestBroker):
             self.data_lock.release()
 
     def fetch_and_update_isolate_metadata(self, request):
+        logging.debug(f"TBR isolate_id request: {request}")
         isolate_id = request["isolate_id"]
 
         with api_clients.tbr_client.ApiClient(get_tbr_configuration()) as api_client:
@@ -71,13 +72,13 @@ class TBRRequestBroker(RequestBroker):
                 logging.debug(f"Requesting metadata from TBR for: {isolate_id}")
                 api_response = api_instance.api_isolate_isolate_id_get(isolate_id)
                 logging.debug(f"TBR responded with {api_response}")
-                values = api_response.to_dict()
-                if "isolate_id" in values:
-                    del values["isolate_id"]
+                response_dict = api_response.to_dict()
+                if "isolate_id" in response_dict:
+                    del response_dict["isolate_id"]
 
                 values = {
                     column_mapping[k]: v
-                    for k, v in values.items()
+                    for k, v in response_dict.items()
                     if column_mapping.normal_get(k)
                 }
 
