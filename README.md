@@ -12,33 +12,32 @@ In order to build and run locally, you will need the following utilities:
 * docker
 * docker-compose
 
-### Windows extras
-This project is developed in a linux (Ubuntu 21.04) environment, and it is supposed be in production in a linux environment. To get the best developer experience, follow these pre-requisistes to set up your Windows WSL development environment.
+### Extra Windows pre-requisites
+This guide is for running the project using WSL2 in Windows.
 
-Simply follow the guide here: [https://docs.microsoft.com/en-us/windows/wsl/setup/environment#get-started](https://docs.microsoft.com/en-us/windows/wsl/setup/environment#get-started)
-This includes:
-* Docker for desktop - with WSL2 integration
-* WSL2
+1. Follow this guide [https://docs.microsoft.com/en-us/windows/wsl/setup/environment#get-started](https://docs.microsoft.com/en-us/windows/wsl/setup/environment#get-started)
 
-#### Default WSL2 user
+   This includes:
+      * Docker for desktop - with WSL2 integration
+      * WSL2
 
-Normally running as root is bad, and we will avoid this, as it creates unexpected behavior.
-
-Start by creating your user, adding it to sudo group and change to that user:
-
-```
-adduser <user-name>
-usermod -aG sudo <user-name>
-su <use-name>
-```
-
-Now the user is created, and you are logged into that user. To set this as a default user, you can add/edit the file `/etc/wsl.conf` to:
-```
-[user]
-default=<use-name>
-```
-
-
+2. Create your own user
+   
+   We want to avoid using root, it can create unexpected behavior.
+   1. Start by creating your user, adding it to sudo group and change to that user 
+      ```
+      adduser <user-name>
+      usermod -aG sudo <user-name>
+      su <use-name>
+      ```
+   2. Now the user is created, and you are logged into that user. To set this as a default user, you can add/edit the file `/etc/wsl.conf` to:
+      ```
+      [user]
+      default=<use-name>
+      ```
+ 
+You're now set to continue with [Running](#Running), below there's additional notes to consider:
+ 
 #### Database permission
 
 Ensure that `auth/pg/pgdata/` and `bifrost/bifrsot_db/data/` are owned by `<user-name>`. 
