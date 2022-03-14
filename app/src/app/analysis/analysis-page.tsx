@@ -241,7 +241,7 @@ export default function AnalysisPage() {
   const isJudgedCell = React.useCallback(
     (rowId: string, columnName: string) => {
       if (!approvals[rowId]) {
-        return true;
+        return false;
       }
       return (
         approvals[rowId][columnName] == ApprovalStatus.approved ||

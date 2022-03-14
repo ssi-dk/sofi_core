@@ -318,7 +318,9 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
   const onSelectCol = React.useCallback(
     (col: Column<T>) => {
       const { checked } = calcColSelectionState(col);
+      console.log(rows);
       const sel = rows
+        .filter((r) => !isJudgedCell(r.original[primaryKey], col.id as string))
         .map((r) => ({
           [r.original[primaryKey]]: {
             ...selection.current[r.original[primaryKey]],
@@ -331,9 +333,11 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
         rows
           .map((r) => r.original[primaryKey])
           .forEach((r: string) => {
-            incSel[r][c as string] = !(
-              selection.current[r] && selection.current[r][c]
-            );
+            if (incSel[r]) {
+              incSel[r][c as string] = !(
+                selection.current[r] && selection.current[r][c]
+              );
+            }
           });
       });
       selection.current = incSel;
@@ -345,6 +349,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
       rows,
       calcColSelectionState,
       onSelect,
+      isJudgedCell,
       getDependentColumns,
       onColumnResize,
     ]
