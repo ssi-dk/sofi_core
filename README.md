@@ -12,6 +12,47 @@ In order to build and run locally, you will need the following utilities:
 * docker
 * docker-compose
 
+### Windows extras
+This project is developed in a linux (Ubuntu 21.04) environment, and it is supposed be in production in a linux environment. To get the best developer experience, follow these pre-requisistes to set up your Windows WSL development environment.
+
+Simply follow the guide here: [https://docs.microsoft.com/en-us/windows/wsl/setup/environment#get-started](https://docs.microsoft.com/en-us/windows/wsl/setup/environment#get-started)
+This includes:
+* Docker for desktop - with WSL2 integration
+* WSL2
+
+#### Default WSL2 user
+
+Normally running as root is bad, and we will avoid this, as it creates unexpected behavior.
+
+Start by creating your user, adding it to sudo group and change to that user:
+
+```
+adduser <user-name>
+usermod -aG sudo <user-name>
+su <use-name>
+```
+
+Now the user is created, and you are logged into that user. To set this as a default user, you can add/edit the file `/etc/wsl.conf` to:
+```
+[user]
+default=<use-name>
+```
+
+
+#### Database permission
+
+Ensure that `auth/pg/pgdata/` and `bifrost/bifrsot_db/data/` are owned by `<user-name>`. 
+
+#### Project placement
+
+You have to store the project, i.e. clone the repo, to the WSL2 filesystem and **NOT** the Windows filesystem. The Windows filesystem is emulated and the user permission file causes unexpected behavior. 
+
+E.g. clone the repo to `/home/<user-name>/git/`. This is placed in the `git` directory within your linux users home directory.
+
+#### Host file
+Latter in this `README.md` you will have to add something to your host file, this must be added in both the WSL2 hosts file and the Windows hosts file.
+
+
 # Running
 
 On the first run, you'll need to install the dependencies for the web app:
@@ -20,7 +61,7 @@ On the first run, you'll need to install the dependencies for the web app:
 pushd ./app && yarn install && popd
 ```
 
-When running locally, you need a correctly figured .env file.
+When running locally, you need a correctly figured .env file. (_this includes generating or in another way getting the necessary `.crt` and `.pem` files_)
 
 Start by copying the .env.local.example file and make any adjustments you need.
 
