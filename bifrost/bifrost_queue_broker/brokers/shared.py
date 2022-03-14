@@ -152,6 +152,8 @@ tbr_column_mappings = immutable_dict(
         "ssi_date": "date_received",
         "test_date": "date_sample",
         "fud_nr": "fud_number",
+        "kma_name": "kma",
+        "kma_date": "date_received_kma",
         "species": "species_final",
         "subspecies": "subspecies",
         "pathotype": "pathotype_final",

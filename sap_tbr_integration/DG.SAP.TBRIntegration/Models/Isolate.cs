@@ -8,7 +8,6 @@ namespace DG.SAP.TBRIntegration.Models
     public class Isolate: ISapMasterData
     {
         public string IsolateId { get; set; }
-        public string RunId { get; set; }
         public DateTime? TestDate { get; set; }
         public DateTime? SsiDate { get; set; }
         public string CprNr { get; set; }
@@ -22,6 +21,7 @@ namespace DG.SAP.TBRIntegration.Models
         public string TravelCountry { get; set; }
         public string Region { get; set; }
         // Values for which SAP is Master
+        public string RunId { get; set; }
         public string Serotype { get; set; }
         public int? ST { get; set; }
         public string FudNr { get; set; }
