@@ -238,6 +238,19 @@ export default function AnalysisPage() {
     [approvableColumns]
   );
 
+  const isJudgedCell = React.useCallback(
+    (rowId: string, columnName: string) => {
+      if (!approvals[rowId]) {
+        return true;
+      }
+      return (
+        approvals[rowId][columnName] == ApprovalStatus.approved ||
+        approvals[rowId][columnName] == ApprovalStatus.rejected
+      );
+    },
+    [approvals]
+  );
+
   const canEditColumn = React.useCallback(
     (columnName: string) => {
       return columnConfigs[columnName]?.editable;
@@ -651,6 +664,7 @@ export default function AnalysisPage() {
             canSelectColumn={canSelectColumn}
             canEditColumn={canEditColumn}
             canApproveColumn={canApproveColumn}
+            isJudgedCell={isJudgedCell}
             approvableColumns={approvableColumns}
             getDependentColumns={getDependentColumns}
             getCellStyle={getCellStyle}

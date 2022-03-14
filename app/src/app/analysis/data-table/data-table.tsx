@@ -45,6 +45,7 @@ type DataTableProps<T extends NotEmpty> = {
   primaryKey: keyof T;
   canSelectColumn: (columnName: string) => boolean;
   canApproveColumn: (columnName: string) => boolean;
+  isJudgedCell: (rowId: string, columnName: string) => boolean;
   canEditColumn: (columnName: string) => boolean;
   getDependentColumns: (columnName: keyof T) => Array<keyof T>;
   selectionClassName: string;
@@ -88,6 +89,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
     approvableColumns,
     canSelectColumn,
     canApproveColumn,
+    isJudgedCell,
     getDependentColumns,
     getCellStyle,
     getStickyCellStyle,
@@ -286,6 +288,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
         .filter((x) => typeof x.accessor === "string")
         .filter((x) => visibleCols.indexOf(x.accessor as string) >= 0)
         .filter((x) => canApproveColumn(x.accessor as string))
+        .filter((x) => !isJudgedCell(id, x.accessor as string))
         .map((x) => ({ [x.accessor as string]: !checked }))
         .reduce((acc, val) => ({ ...acc, ...val }), []);
       const incSel = { ...selection.current, [id]: { ...cols } };
@@ -297,6 +300,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
       primaryKey,
       columns,
       visibleColumns,
+      isJudgedCell,
       calcRowSelectionState,
       canApproveColumn,
     ]
