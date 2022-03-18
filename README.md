@@ -12,6 +12,46 @@ In order to build and run locally, you will need the following utilities:
 * docker
 * docker-compose
 
+### Extra Windows pre-requisites
+This guide is for running the project using WSL2 in Windows.
+
+1. Follow this guide [https://docs.microsoft.com/en-us/windows/wsl/setup/environment#get-started](https://docs.microsoft.com/en-us/windows/wsl/setup/environment#get-started)
+
+   This includes:
+      * Docker for desktop - with WSL2 integration
+      * WSL2
+
+2. Create your own user
+   
+   We want to avoid using root, it can create unexpected behavior.
+   1. Start by creating your user, adding it to sudo group and change to that user 
+      ```
+      adduser <user-name>
+      usermod -aG sudo <user-name>
+      su <use-name>
+      ```
+   2. Now the user is created, and you are logged into that user. To set this as a default user, you can add/edit the file `/etc/wsl.conf` to:
+      ```
+      [user]
+      default=<use-name>
+      ```
+ 
+You're now set to continue with [Running](#running), below there's additional notes to consider:
+ 
+#### Database permission
+
+Ensure that `auth/pg/pgdata/` and `bifrost/bifrsot_db/data/` are owned by `<user-name>`. 
+
+#### Project placement
+
+You have to store the project, i.e. clone the repo, to the WSL2 filesystem and **NOT** the Windows filesystem. The Windows filesystem is emulated and the user permission file causes unexpected behavior. 
+
+E.g. clone the repo to `/home/<user-name>/git/`. This is placed in the `git` directory within your linux users home directory.
+
+#### Host file
+Latter in this `README.md` you will have to add something to your host file, this must be added in both the WSL2 hosts file and the Windows hosts file.
+
+
 # Running
 
 On the first run, you'll need to install the dependencies for the web app:
@@ -102,3 +142,8 @@ The seeding only occurs when the database is first created, so to force the chan
 ```shell
 make clean && make run
 ```
+
+
+## Project Structure
+
+Consult `docs/`.
