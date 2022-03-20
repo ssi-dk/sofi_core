@@ -11,7 +11,6 @@ from ..tbr_conn import get_tbr_configuration
 from .request_broker import RequestBroker
 from common.database import encrypt_dict, get_connection
 from common.config.column_config import pii_columns
-from dateutil import parser
 
 # TBR API imports
 import time

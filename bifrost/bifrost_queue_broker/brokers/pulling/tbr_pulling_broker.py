@@ -4,7 +4,11 @@ import time
 import pymongo
 import threading
 from pymongo import CursorType
-from ..shared import BrokerError, yield_chunks, tbr_column_mappings as column_mapping
+from ..shared import (
+    BrokerError,
+    yield_chunks,
+    tbr_to_sofi_column_mapping as column_mapping,
+)
 from ..tbr_conn import get_tbr_configuration
 from common.database import (
     encrypt_dict,
