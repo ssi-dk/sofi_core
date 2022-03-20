@@ -150,6 +150,27 @@
     ]
   },
   {
+    "field_name": "travel",
+    "pii": true,
+    "organizations": [
+      "SSI"
+    ]
+  },
+  {
+    "field_name": "travel_country",
+    "pii": true,
+    "organizations": [
+      "SSI"
+    ]
+  },
+  {
+    "field_name": "kma",
+    "pii": true,
+    "organizations": [
+      "SSI"
+    ]
+  },
+  {
     "field_name": "cvr_number",
     "pii": true,
     "gdpr": true,
@@ -202,6 +223,7 @@
   },
   {
     "field_name": "comment_general",
+    "pii": true,
     "organizations": [
       "SSI"
     ],
