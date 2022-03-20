@@ -40,6 +40,7 @@ services:
   sap_broker_queue:
     container_name: bifrost_queue_broker
     user: ${CURRENT_UID}
+    restart: on-failure
     environment:
       - PYTHONDONTWRITEBYTECODE=1
       - PYTHONUNBUFFERED=0
