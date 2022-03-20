@@ -41,7 +41,11 @@ def agg_pipeline(changed_ids=None):
                 "pipeline": [
                     {"$match": {"$expr": {"$eq": ["$display_name", "$$iso_id"]}}},
                     {"$sort": {"_id": -1}},
-                    {"$project": {"sequence_id": "$name"}},
+                    {
+                        "$project": {
+                            "sequence_id": "$categories.sample_info.summary.sofi_sequence_id"
+                        }
+                    },
                 ],
                 "as": "siblings",
             }
@@ -56,7 +60,7 @@ def agg_pipeline(changed_ids=None):
                 "project_number": "$categories.sample_info.summary.project_no",
                 "project_title": "$categories.sample_info.summary.project_title",
                 "date_sofi": "$metadata.created_at",
-                "date_analysis_sofi": "$metadata.created_at",  # TODO: SCC confirm
+                "date_analysis_sofi": "$metadata.created_at",  # TODO: Susanne confirm
                 "qc_detected_species": "$categories.species_detection.summary.detected_species",
                 "qc_provided_species": "$categories.sample_info.summary.provided_species",
                 "subspecies": "$categories.serotype.summary.Subspecies",
