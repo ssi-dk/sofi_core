@@ -143,7 +143,7 @@ reverse_lims_column_mapping = immutable_dict(
     (v, k) for k, v in lims_column_mapping.items()
 )
 
-tbr_to_sofi_column_mappings = immutable_dict(
+tbr_to_sofi_column_mapping = immutable_dict(
     {
         "ssi_date": "date_received",
         "test_date": "date_sample",
@@ -159,7 +159,7 @@ tbr_to_sofi_column_mappings = immutable_dict(
     }
 )
 
-sofi_to_tbr_column_mappings = immutable_dict(
+sofi_to_tbr_column_mapping = immutable_dict(
     {
         "serotype": "serotype_final",
         "st": "st_final",
@@ -222,9 +222,9 @@ sofi_to_tbr_column_mappings = immutable_dict(
 )
 
 reverse_tbr_to_sofi_column_mapping = immutable_dict(
-    (v, k) for k, v in tbr_to_sofi_column_mappings.items()
+    (v, k) for k, v in tbr_to_sofi_column_mapping.items()
 )
 
 reverse_sofi_to_tbr_column_mapping = immutable_dict(
-    (v, k) for k, v in sofi_to_tbr_column_mappings.items()
+    (v, k) for k, v in sofi_to_tbr_column_mapping.items()
 )
