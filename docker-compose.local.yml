@@ -88,8 +88,8 @@ services:
         - ./bifrost/bifrost_db/data/log/:/var/log/mongodb/
     ports:
         - "27017:27017"
-#    expose:
-#      - 27017
+    expose:
+      - 27017
 #    extra_hosts:
 #      bifrost_db: 127.0.0.1
 #    healthcheck:
