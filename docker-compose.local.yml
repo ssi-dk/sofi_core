@@ -92,11 +92,11 @@ services:
       - 27017
     extra_hosts:
       - "bifrost_db:127.0.0.1"
-#    healthcheck:
+    healthcheck:
       # causes replicaset to initialize as a side effect
-#      test: "test $$(echo \"rs.initiate{ _id: 'rs0', version: 1, members: [{ _id: 0, host : 'bifrost_db:27017' }]}).ok || rs.status().ok\" | mongo --quiet) -eq 1"
-#      interval: 60s
-#      start_period: 15s
+      test: "test $$(echo \"rs.initiate{ _id: 'rs0', version: 1, members: [{ _id: 0, host : 'bifrost_db:27017' }]}).ok || rs.status().ok\" | mongo --quiet) -eq 1"
+      interval: 60s
+      start_period: 15s
 
   hydra:
     environment:
