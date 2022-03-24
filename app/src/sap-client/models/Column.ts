@@ -55,6 +55,12 @@ export interface Column  {
      */
     gdpr?: boolean;
     /**
+     * True if the column is programmatically calculated by SOFI. Such columns can be approvable in the sense of being transferred to a metadata service as part of an approval, but should not be thought of as \'selectable\' or capable of any user-side manipulation. 
+     * @type {boolean}
+     * @memberof Column
+     */
+    computed?: boolean;
+    /**
      * List of organizations/institutions who \'own\' or should have unrestricted access to this field
      * @type {Array<Organization>}
      * @memberof Column
@@ -81,6 +87,7 @@ export function ColumnFromJSON(json: any): Column {
         'editable_format': !exists(json, 'editable_format') ? undefined : json['editable_format'],
         'pii': !exists(json, 'pii') ? undefined : json['pii'],
         'gdpr': !exists(json, 'gdpr') ? undefined : json['gdpr'],
+        'computed': !exists(json, 'computed') ? undefined : json['computed'],
         'organizations': !exists(json, 'organizations') ? undefined : (json['organizations'] as Array<any>).map(OrganizationFromJSON),
         'field_name': !exists(json, 'field_name') ? undefined : json['field_name'],
         'approves_with': !exists(json, 'approves_with') ? undefined : json['approves_with'],
@@ -97,6 +104,7 @@ export function ColumnToJSON(value?: Column): any {
         'editable_format': value.editable_format,
         'pii': value.pii,
         'gdpr': value.gdpr,
+        'computed': value.computed,
         'organizations': value.organizations === undefined ? undefined : (value.organizations as Array<any>).map(OrganizationToJSON),
         'field_name': value.field_name,
         'approves_with': value.approves_with,

@@ -5,6 +5,10 @@
 {$SOFI_HOSTNAME} {
     tls /etc/sofi.crt /etc/sofi.pem
 
+    @localrequest {
+        remote_ip 127.0.0.1 172.18.0.0/24
+    }
+
     route /api/* {
         reverse_proxy sap_api:6000
     }
@@ -12,6 +16,11 @@
     route /.ory/kratos/public/* {
         uri strip_prefix /.ory/kratos/public
         reverse_proxy kratos:4433
+    }
+
+    route /.ory/kratos/public/self-service/registration/* {
+        uri strip_prefix /.ory/kratos/public
+        reverse_proxy @localrequest kratos:4433
     }
 
     route /ss/* {

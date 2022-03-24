@@ -539,6 +539,12 @@ components:
         gdpr:
           description: True if the column should be treated as a 'gdpr' column, subject to more strict auditing/logging
           type: boolean
+        computed:
+          description: >
+            True if the column is programmatically calculated by SOFI.
+            Such columns can be approvable in the sense of being transferred to a metadata service as part of an approval,
+            but should not be thought of as 'selectable' or capable of any user-side manipulation.
+          type: boolean
         organizations:
           type: array
           description: List of organizations/institutions who 'own' or should have unrestricted access to this field

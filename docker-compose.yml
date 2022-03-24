@@ -15,6 +15,7 @@ services:
     command: ["/bin/sh", "-c", "/app/start.sh"]
     depends_on:
       - "hydra"
+    restart: on-failure
 
     environment:
       - APP_MODULE=wsgi:app
