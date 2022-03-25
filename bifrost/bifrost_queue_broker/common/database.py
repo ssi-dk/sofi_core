@@ -1,5 +1,7 @@
 import os, sys
 import binascii
+import logging
+
 from typing import Dict
 
 from pymongo import MongoClient, mongo_client
@@ -76,6 +78,11 @@ def get_connection(with_enc=False):
                 BIFROST_MONGO_CONN, auto_encryption_opts=auto_encryption_opts
             )
         )
+
+        if not client.is_primary:
+            logging.debug("MongoDB client is not primary - getting the primary client")
+            client = client.primary
+
         coll = client.test.coll
 
         # First time key setup. Index creation in mongo is idempotent
