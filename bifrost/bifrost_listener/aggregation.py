@@ -174,7 +174,7 @@ def agg_pipeline(changed_ids=None):
                         }
                     }
                 ),
-                "qc_failed_tests": "$categories.stamper.stamp.reason",
+                "qc_failed_tests": "$categories.stamper.summary.reason",
                 "qc_genome1x": "$categories.denovo_assembly.summary.length",
                 "qc_genome10x": "$categories.mapping_qc.summary.values_at_floor_of_depth.x10.length",
                 "qc_gsize_diff1x10": removeNullProperty(

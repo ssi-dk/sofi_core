@@ -16,6 +16,7 @@ services:
     depends_on:
       - "hydra"
       - "bifrost_db"
+    restart: on-failure
 
     environment:
       - APP_MODULE=wsgi:app

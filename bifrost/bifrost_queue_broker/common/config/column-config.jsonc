@@ -83,7 +83,9 @@
   },
   {
     "field_name": "cluster_id",
-    "approves_with": ["date_approved_cluster"],
+    "approves_with": [
+      "date_approved_cluster"
+    ],
     "approvable": true,
     "editable": true
   },
@@ -228,5 +230,33 @@
       "SSI"
     ],
     "editable": true
+  },
+  {
+    "field_name": "date_approved_qc",
+    "computed": true
+  },
+  {
+    "field_name": "date_approved_st",
+    "computed": true
+  },
+  {
+    "field_name": "date_approved_serotype",
+    "computed": true
+  },
+  {
+    "field_name": "date_approved_amr",
+    "computed": true
+  },
+  {
+    "field_name": "date_approved_cluster",
+    "computed": true
+  },
+  {
+    "field_name": "date_approved_toxin",
+    "computed": true
+  },
+  {
+    "field_name": "date_analysis_sofi",
+    "computed": true
   }
 ]

@@ -139,7 +139,11 @@ class TBRPullingBroker(threading.Thread):
         for isolate in updated_isolates:
             values = isolate.to_dict()
             isolate_id = values["isolate_id"]
-            values = {column_mapping[k]: v for k, v in values.items()}
+            values = {
+                column_mapping[k]: v
+                for k, v in values.items()
+                if column_mapping.normal_get(k)
+            }
 
             encrypt_dict(self.encryption_client, values, pii_columns())
 

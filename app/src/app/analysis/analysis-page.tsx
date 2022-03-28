@@ -178,7 +178,10 @@ export default function AnalysisPage() {
 
   const canSelectColumn = React.useCallback(
     (columnName: string) => {
-      return columnConfigs[columnName]?.approvable;
+      return (
+        columnConfigs[columnName]?.approvable &&
+        !columnConfigs[columnName]?.computed
+      );
     },
     [columnConfigs]
   );
@@ -253,7 +256,10 @@ export default function AnalysisPage() {
 
   const canEditColumn = React.useCallback(
     (columnName: string) => {
-      return columnConfigs[columnName]?.editable;
+      return (
+        columnConfigs[columnName]?.editable &&
+        !columnConfigs[columnName]?.computed
+      );
     },
     [columnConfigs]
   );
@@ -263,7 +269,7 @@ export default function AnalysisPage() {
       return (
         columnConfigs[columnName]?.approves_with ??
         ([] as Array<keyof AnalysisResult>)
-      );
+      ).filter((x: keyof AnalysisResult) => !columnConfigs[x].computed);
     },
     [columnConfigs]
   );
