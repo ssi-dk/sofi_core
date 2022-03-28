@@ -1,0 +1,22 @@
+[36mbifrost_db             |[0m /usr/local/bin/docker-entrypoint.sh: running /docker-entrypoint-initdb.d/10_restore_dev_db.sh
+[36mbifrost_db             |[0m
+[36mbifrost_db             |[0m /usr/local/bin/docker-entrypoint.sh: running /docker-entrypoint-initdb.d/20_restore_dummy_db.sh
+[36mbifrost_db             |[0m
+[36mbifrost_db             |[0m /usr/local/bin/docker-entrypoint.sh: ignoring /docker-entrypoint-initdb.d/README.md
+[36mbifrost_db             |[0m
+[36mbifrost_db             |[0m /usr/local/bin/docker-entrypoint.sh: ignoring /docker-entrypoint-initdb.d/analysis.generated.jsonl
+[36mbifrost_db             |[0m
+[36mbifrost_db             |[0m /usr/local/bin/docker-entrypoint.sh: ignoring /docker-entrypoint-initdb.d/bifrost_test.archive.gz
+[36mbifrost_db             |[0m
+[36mbifrost_db             |[0m /usr/local/bin/docker-entrypoint.sh: ignoring /docker-entrypoint-initdb.d/generated.jsonl
+[36mbifrost_db             |[0m
+[36mbifrost_db             |[0m /usr/local/bin/docker-entrypoint.sh: ignoring /docker-entrypoint-initdb.d/lims.generated.jsonl
+[36mbifrost_db             |[0m
+[35mpostgresd_1            |[0m ERROR:  relation "courier_messages" does not exist at character 216
+[35mpostgresd_1            |[0m STATEMENT:  SELECT courier_messages.body, courier_messages.created_at, courier_messages.id, courier_messages.recipient, courier_messages.status, courier_messages.subject, courier_messages.type, courier_messages.updated_at FROM courier_messages AS courier_messages WHERE status != $1 ORDER BY created_at ASC LIMIT 10
+[36mbifrost_db             |[0m /usr/local/bin/docker-entrypoint.sh: ignoring /docker-entrypoint-initdb.d/samples.jsonl
+[36mbifrost_db             |[0m
+[36mbifrost_db             |[0m /usr/local/bin/docker-entrypoint.sh: ignoring /docker-entrypoint-initdb.d/species_to_mlstschema_mapping.jsonl
+[36mbifrost_db             |[0m
+[36mbifrost_db             |[0m /usr/local/bin/docker-entrypoint.sh: ignoring /docker-entrypoint-initdb.d/tbr.generated.jsonl
+[36mbifrost_db             |[0m
