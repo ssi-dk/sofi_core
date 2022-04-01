@@ -5,6 +5,8 @@ RUN pip install -r requirements.txt
 
 COPY .. .
 
-CMD [ "python", "-m", "unittest", "AggregationPipelineTest.py" ]
+#CMD [ "python", "-m", "unittest", "AggregationPipelineTest.py" ]
+
+ENTRYPOINT ["python", "-m", "unittest"]
 
 FROM base AS final

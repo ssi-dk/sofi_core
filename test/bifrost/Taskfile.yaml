@@ -14,19 +14,25 @@ tasks:
       - defer: rm -rf ./initdb.d
       - docker build . -t sofi_test:latest
     sources:
-      - ./*
+      - ./*.py
 
-  test_bifrost:
-    deps:
-      - build
+#    deps: # They run in parallel
+  test-bifrost:
+#      - build
     cmds:
+      - task: build
       - cmd: docker-compose up -d
         silent: true
       - defer: docker-compose down -v
         silent: false
-      - docker run -it --rm --name python_unit_test --network bifrost_test_default sofi_test:latest
+      - docker run -it --rm --name python_unit_test --network bifrost_test_default sofi_test:latest AggregationPipelineTest.py
+      - cmd: docker-compose down -v
+        silent: false
+      - cmd: docker-compose up -d
+        silent: true
+      - docker run -it --rm --name python_unit_test --network bifrost_test_default sofi_test:latest AggregationResultTest.py
 
   default:
     cmds:
-      - task: test_bifrost
+      - task: test-bifrost
     silent: true

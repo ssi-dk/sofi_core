@@ -1,5 +1,8 @@
+import json
 import unittest
 import pymongo
+
+from bson.objectid import ObjectId
 
 from aggregation import agg_pipeline
 
@@ -21,6 +24,14 @@ class TestBifrostListener(unittest.TestCase):
 
         self.db = self.client.get_database()
 
+        samples = self.db["samples"]
+        samples.aggregate(agg_pipeline())
+
+        self.sap_analysis_results = self.db["sap_analysis_results"]
+
+        with (open("data/sap_analysis_results.json")) as results:
+            self.expected_results = json.load(results)
+
     def tearDown(self) -> None:
         """
         Ensures the connection is closed for good practice
@@ -29,24 +40,36 @@ class TestBifrostListener(unittest.TestCase):
         """
         self.client.close()
 
-    def testAggregationPipeline(self):
+    def testResultSize(self):
         """
-        Tests aggregation pipeline does not result in error and the results
 
         Returns: None
         """
-        samples = self.db["samples"]
-        samples.aggregate(agg_pipeline())
-
-        sap_analysis_results = self.db["sap_analysis_results"]
-
-        results_content = sap_analysis_results.find()
+        results_content = self.sap_analysis_results.find()
 
         self.assertEqual(
             len(list(results_content)),
             5,
             "Expects sap_analysis_results to contain 5 documents",
         )
+
+    def testResultContent(self):
+        """
+
+        Returns:
+        """
+        for expected in self.expected_results:
+            actual = self.sap_analysis_results.find_one(
+                {"_id": ObjectId(expected["_id"]["$oid"])}
+            )
+
+            self.assertIsNotNone(actual)
+            self.maxDiff = None
+            self.assertEqual(
+                expected,
+                actual,
+                "Expects the two to have the same properties and values",
+            )
 
 
 if __name__ == "__main__":
