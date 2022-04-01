@@ -1,0 +1,32 @@
+# https://taskfile.dev
+
+version: '3'
+
+vars:
+  GREETING: Hello, World!
+
+tasks:
+  build:
+    cmds:
+      - cp ../../bifrost/bifrost_listener/aggregation.py .
+      - defer: rm aggregation.py
+      - cp -r ../../bifrost/bifrost_db/initdb.d/ ./initdb.d
+      - defer: rm -rf ./initdb.d
+      - docker build . -t sofi_test:latest
+    sources:
+      - ./*
+
+  test_bifrost:
+    deps:
+      - build
+    cmds:
+      - cmd: docker-compose up -d
+        silent: true
+      - defer: docker-compose down -v
+        silent: false
+      - docker run -it --rm --name python_unit_test --network bifrost_test_default sofi_test:latest
+
+  default:
+    cmds:
+      - task: test_bifrost
+    silent: true
