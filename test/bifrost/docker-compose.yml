@@ -1,0 +1,34 @@
+version: '3.9'
+
+services:
+#  unit_test:
+#    image: sofi_test:latest
+#    container_name: bifrost_listener_unit_tests
+#    depends_on:
+#      - bifrost_db
+
+  bifrost_db:
+    image: mongo:4.4.2
+    command: --replSet rs0
+    container_name: bifrost_unit_test_db
+    restart: always
+    user: ${CURRENT_UID}
+    environment:
+      MONGO_INITDB_DATABASE: bifrost_test
+    volumes:
+      - ./../../bifrost/bifrost_db/initdb.d/:/docker-entrypoint-initdb.d/
+    ports:
+      - "27017:27017"
+    expose:
+      - 27017
+    extra_hosts:
+      - "bifrost_db:127.0.0.1"
+    healthcheck:
+      # causes replicaset to initialize as a side effect
+      test: "test $$(mongo bifrost_test --eval \"rs.status().ok\" --quiet) -eq 1 -a $$(mongo bifrost_test --eval \"rs.status().set\" --quiet) = rs0"
+      interval: 60s
+      start_period: 15s
+
+networks:
+  default:
+    name: bifrost_test_default
