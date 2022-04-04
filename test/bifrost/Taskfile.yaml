@@ -7,6 +7,8 @@ vars:
 
 tasks:
   build:
+    summary: |
+      Builds the testing Docker image
     cmds:
       - cp ../../bifrost/bifrost_listener/aggregation.py .
       - defer: rm aggregation.py
@@ -14,25 +16,40 @@ tasks:
       - defer: rm -rf ./initdb.d
       - docker build . -t sofi_test:latest
     sources:
-      - ./*.py
+      - ./*
 
-#    deps: # They run in parallel
-  test-bifrost:
-#      - build
+  test-agg-pipeline:
+    summary: |
+      Runs the tests for the aggregation pipeline
     cmds:
+        # We want build to run and complete before running tests
       - task: build
       - cmd: docker-compose up -d
-        silent: true
       - defer: docker-compose down -v
-        silent: false
       - docker run -it --rm --name python_unit_test --network bifrost_test_default sofi_test:latest AggregationPipelineTest.py
-      - cmd: docker-compose down -v
-        silent: false
+
+  test-agg-result:
+    summary: |
+      Runs the test for the aggregation result collection
+    cmds:
+      # We want build to run and complete before running tests
+      - task: build
       - cmd: docker-compose up -d
-        silent: true
+      - defer: docker-compose down -v
       - docker run -it --rm --name python_unit_test --network bifrost_test_default sofi_test:latest AggregationResultTest.py
 
-  default:
+  test-utility:
+    summary: |
+      Runs test for utility functions
     cmds:
-      - task: test-bifrost
+      # We want build to run and complete before running tests
+      - task: build
+      - docker run -it --rm --name python_unit_test sofi_test:latest BsonObjectComparisonTest.py
+
+  default:
+    summary: |
+      Runs every test
+    cmds:
+      - task: test-agg-pipeline
+      - task: test-agg-result
     silent: true

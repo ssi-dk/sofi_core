@@ -6,8 +6,10 @@ from bson.objectid import ObjectId
 
 from aggregation import agg_pipeline
 
+from BsonObjectComparison import compare
 
-class TestBifrostListener(unittest.TestCase):
+
+class AggregationResultTest(unittest.TestCase):
     """
     Test Fixture
     """
@@ -65,11 +67,11 @@ class TestBifrostListener(unittest.TestCase):
 
             self.assertIsNotNone(actual)
             self.maxDiff = None
-            self.assertEqual(
-                expected,
-                actual,
-                "Expects the two to have the same properties and values",
-            )
+
+            compare_result = compare(expected, actual)
+
+            if len(compare_result) > 0:
+                self.fail(compare_result)
 
 
 if __name__ == "__main__":

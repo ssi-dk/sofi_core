@@ -1,12 +1,6 @@
 version: '3.9'
 
 services:
-#  unit_test:
-#    image: sofi_test:latest
-#    container_name: bifrost_listener_unit_tests
-#    depends_on:
-#      - bifrost_db
-
   bifrost_db:
     image: mongo:4.4.2
     command: --replSet rs0

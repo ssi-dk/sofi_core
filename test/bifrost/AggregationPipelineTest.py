@@ -4,7 +4,7 @@ import pymongo
 from aggregation import agg_pipeline
 
 
-class TestBifrostListener(unittest.TestCase):
+class AggregationPipelineTest(unittest.TestCase):
     """
     Test Fixture
     """
