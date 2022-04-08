@@ -4,9 +4,9 @@ services:
   bifrost_db:
     image: mongo:4.4.2
     command: --replSet rs0
-    container_name: bifrost_unit_test_db
+    container_name: bifrost_db
     restart: always
-    user: ${CURRENT_UID}
+#    user: ${CURRENT_UID}
     environment:
       MONGO_INITDB_DATABASE: bifrost_test
     volumes:
@@ -18,7 +18,6 @@ services:
     extra_hosts:
       - "bifrost_db:127.0.0.1"
     healthcheck:
-      # causes replicaset to initialize as a side effect
       test: "test $$(mongo bifrost_test --eval \"rs.status().ok\" --quiet) -eq 1 -a $$(mongo bifrost_test --eval \"rs.status().set\" --quiet) = rs0"
       interval: 60s
       start_period: 15s
