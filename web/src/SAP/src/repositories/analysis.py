@@ -4,11 +4,13 @@ import pymongo
 import logging
 import json
 from web.src.SAP.generated.models import AnalysisResult
+from ...common.config.column_config import pii_columns
 from ...common.database import (
     LIMS_METADATA_COL_NAME,
     MANUAL_METADATA_COL_NAME,
     TBR_METADATA_COL_NAME,
     get_connection,
+    encrypt_dict,
     DB_NAME,
     ANALYSIS_COL_NAME,
 )
@@ -22,11 +24,11 @@ def remove_id(item):
 
 # TODO: only select the latest document pr. isolate id.
 def get_analysis_page(query, page_size, offset, columns, restrict_to_institution):
-    conn = get_connection()
+    conn, encryption_client = get_connection(with_enc=True)
+    q = encrypt_dict(encryption_client, query, pii_columns())
     if restrict_to_institution:
-        query["institution"] = restrict_to_institution
+        q["institution"] = restrict_to_institution
     column_projection = {x: 1 for x in columns}
-    # print(column_projection, file=sys.stderr)
     mydb = conn[DB_NAME]
     samples = mydb[ANALYSIS_COL_NAME]
     fetch_pipeline = [
@@ -77,7 +79,7 @@ def get_analysis_page(query, page_size, offset, columns, restrict_to_institution
                 }
             }
         },
-        {"$match": query},
+        {"$match": q},
         {"$sort": {"_id": pymongo.DESCENDING}},
         {"$unset": ["_id", "metadata"]},
         {"$skip": offset},
@@ -91,11 +93,12 @@ def get_analysis_page(query, page_size, offset, columns, restrict_to_institution
 
 
 def get_analysis_count(query):
-    conn = get_connection()
+    conn, encryption_client = get_connection(with_enc=True)
     mydb = conn[DB_NAME]
     samples = mydb[ANALYSIS_COL_NAME]
+    q = encrypt_dict(encryption_client, query, pii_columns())
 
-    return samples.find(query).count()
+    return samples.find(q).count()
 
 
 def update_analysis(change):

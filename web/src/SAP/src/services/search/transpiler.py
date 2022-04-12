@@ -1,7 +1,7 @@
 from .visitor import on, when
 import re
 import sys
-
+from ....common.config.column_config import pii_columns
 from ....generated.models.query_expression import (
     QueryExpression,
     QueryOperand,
@@ -23,7 +23,11 @@ def structure_operator(operator, left, right):
         return {IMPLICIT_OP: [left, right]}
 
 
-def check_for_wildcard(termm: str):
+def check_for_wildcard(field: str, termm: str):
+    # pii columns are encrypted and have to be searched on exact matches --
+    # skip any alteration of the term or syntax tree
+    if field in pii_columns():
+        return termm
     term = f"{termm}"
     # Do not treat escaped asterisk '\*' as a wildcard
     termIgnoreEscaped = term.replace("\\*", "★")
@@ -64,12 +68,12 @@ def structure_leaf(node, is_negated):
     coerced = coerce_term(node.term)
     if is_negated:
         if isinstance(coerced, str):
-            return {field: {"$not": check_for_wildcard(coerced)}}
+            return {field: {"$not": check_for_wildcard(field, coerced)}}
         else:
             return {field: {"$ne": {"$in": [coerced, node.term]}}}
     else:
         if isinstance(coerced, str):
-            res = {field: check_for_wildcard(coerced)}
+            res = {field: check_for_wildcard(field, coerced)}
             return res
         else:
             return {field: {"$in": [coerced, node.term]}}

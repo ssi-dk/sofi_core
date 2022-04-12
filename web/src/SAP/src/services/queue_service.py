@@ -24,6 +24,8 @@ def post_and_await_reload(isolate_id, institution):
     req_id = refresh_metadata(isolate_id, institution)
     return_status = await_update_loop(req_id)
     print(return_status, file=sys.stderr)
+    # TODO UNDO
+    #    return None
     if return_status == ProcessingStatus.DONE.value:
         metadata = fetch_metadata(isolate_id, institution)
         metadata.pop("_id", None)
@@ -47,6 +49,8 @@ def post_and_await_approval(sequence_id, field_mask, user_institution):
     isolate_id = data.get("isolate_id")
 
     print(data, file=sys.stderr)
+    # TODO UNDO
+    #    return None
 
     req_id = approve_data(isolate_id, sequence_id, fields, institution)
     return_status = await_update_loop(req_id)

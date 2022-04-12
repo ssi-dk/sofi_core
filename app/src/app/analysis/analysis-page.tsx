@@ -90,8 +90,10 @@ export default function AnalysisPage() {
     Object.values(s.entities.analysis ?? {})
   ) as AnalysisResult[];
 
-  const totalCount = useSelector<RootState>(
-    (s) => s.entities.analysisTotalCount
+  const totalCount = useSelector<RootState>((s) =>
+    s.entities.analysisTotalCount !== 0
+      ? s.entities.analysisTotalCount
+      : Object.keys(s.entities.analysis).length
   ) as number;
 
   const columnConfigs = useSelector<RootState>(
