@@ -153,6 +153,7 @@ tbr_to_sofi_column_mapping = immutable_dict(
         "primary_isolate": "primary_isolate",
         "gender": "gender",
         "age": "age",
+        "name": "name",
         "travel_country": "travel_country",
         "region": "region",
         "travel": "travel",
