@@ -15,26 +15,20 @@
     "approves_with": [
       "species_final",
       "run_id",
-      "sequence_id",
-      "date_approved_qc"
+      "sequence_id"
     ]
   },
   {
     "field_name": "st_final",
     "approvable": true,
-    "editable": true,
-    "approves_with": [
-      "st_final",
-      "date_approved_st"
-    ]
+    "editable": true
   },
   {
     "field_name": "serotype_final",
     "approvable": true,
     "editable": true,
     "approves_with": [
-      "subspecies",
-      "date_approved_serotype"
+      "subspecies"
     ]
   },
   {
@@ -42,7 +36,6 @@
     "approvable": true,
     "approves_with": [
       "amr_profile",
-      "date_approved_amr",
       "amr_ami",
       "amr_amp",
       "amr_azi",
@@ -83,9 +76,6 @@
   },
   {
     "field_name": "cluster_id",
-    "approves_with": [
-      "date_approved_cluster"
-    ],
     "approvable": true,
     "editable": true
   },
@@ -113,8 +103,7 @@
     "approvable": true,
     "approves_with": [
       "adhesion_final",
-      "pathotype_final",
-      "date_approved_toxin"
+      "pathotype_final"
     ]
   },
   {

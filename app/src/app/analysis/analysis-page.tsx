@@ -228,6 +228,7 @@ export default function AnalysisPage() {
           .concat(
             Object.values(columnConfigs || {})
               .filter((c) => c?.approvable)
+              .filter((c) => !c?.computed)
               .map((c) => c?.field_name)
           )
           .filter((x) => x !== undefined)
