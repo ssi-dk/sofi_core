@@ -1,8 +1,9 @@
 from typing import Dict
-from web.src.SAP.src.repositories.analysis import get_single_analysis, update_analysis
+from web.src.SAP.src.repositories.analysis import update_analysis
 from web.src.SAP.generated.models import Approval, ApprovalRequest, ApprovalStatus
 from ..repositories.approval import (
     find_approvals,
+    get_approval_matrix,
     revoke_approval,
     insert_approval,
     find_all_active_approvals,
@@ -18,7 +19,7 @@ from web.src.SAP.src.security.permission_check import assert_user_has
 from ..services.queue_service import post_and_await_approval
 
 
-APPROVABLE_CATEGORY_COUNT = 7
+APPROVABLE_CATEGORY_COUNT = 6
 
 
 def get_approvals(user, token_info):
@@ -42,11 +43,10 @@ def create_approval(user, token_info, body: ApprovalRequest):
     for seq in body.matrix:
         fields = body.matrix[seq]
         # find dates that were already approved, for incremental approval case.
-        existing_seq = get_single_analysis(seq)
-        for f in existing_seq:
-            existing_seq[f] = "approved"
-        existing_seq.update(fields)
-        time_fields = find_approved_categories(existing_seq)
+        existing_matrix = get_approval_matrix(seq)
+
+        existing_matrix.update(fields)
+        time_fields = find_approved_categories(existing_matrix)
         # if all categories
         if len(time_fields) == APPROVABLE_CATEGORY_COUNT:
             seq_update = {"date_analysis_sofi": appr.timestamp}
@@ -117,7 +117,5 @@ def find_approved_categories(fields: Dict[str, ApprovalStatus]):
                 time_fields.append("date_approved_cluster")
             if f == "amr_profile":
                 time_fields.append("date_approved_amr")
-            if f == "date_epi":
-                time_fields.append("date_epi")
 
     return time_fields
