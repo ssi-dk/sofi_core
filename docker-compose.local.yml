@@ -19,8 +19,9 @@ services:
       context: ./bifrost/bifrost_queue_broker
       dockerfile: Dockerfile
     depends_on:
-      - "bifrost_db"
       - "sap_api"
+      - "bifrost_db"
+
 
   bifrost_listener:
     build:

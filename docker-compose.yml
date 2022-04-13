@@ -15,7 +15,6 @@ services:
     command: ["/bin/sh", "-c", "/app/start.sh"]
     depends_on:
       - "hydra"
-      - "bifrost_db"
     restart: on-failure
 
     environment:
@@ -65,8 +64,6 @@ services:
       - ${TBR_CLIENT_CERT}:/app/.certs/client.pem:ro
       - ${TBR_ROOT_CA}:/app/.certs/SOFI_ROOT.pem:ro
     extra_hosts: *default-extra_hosts
-    depends_on:
-      - "bifrost_db"
 
   bifrost_listener:
     container_name: bifrost_listener
