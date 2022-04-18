@@ -6,7 +6,7 @@ import bson
 
 
 class BsonObjectComparisonTest(unittest.TestCase):
-    def test_date(self):
+    def test_date_equal(self):
         self.assertEqual(
             [],
             BsonObjectComparison.compare(
@@ -15,6 +15,7 @@ class BsonObjectComparisonTest(unittest.TestCase):
             ),
         )
 
+    def test_date_not_equal(self):
         self.assertEqual(
             1,
             len(
@@ -25,7 +26,7 @@ class BsonObjectComparisonTest(unittest.TestCase):
             ),
         )
 
-    def test_object_id(self):
+    def test_object_id_equal(self):
         self.assertEqual(
             [],
             BsonObjectComparison.compare(
@@ -34,12 +35,13 @@ class BsonObjectComparisonTest(unittest.TestCase):
             ),
         )
 
+    def test_object_id_not_equal(self):
         self.assertEqual(
             1,
             len(
                 BsonObjectComparison.compare(
                     {"_id": bson.ObjectId("6211e8bc207a1f796ec0b69d")},
-                    {"_id": {"$oid": "6211e8bc207a1f796ec0a69d"}},
+                    {"_id": {"$oid": "6211e8bc207a1f796ec0b69a"}},
                 )
             ),
         )

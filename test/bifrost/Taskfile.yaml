@@ -43,8 +43,6 @@ tasks:
     cmds:
       # We want build to run and complete before running tests
       - task: build
-      - task: db:up
-      - defer: { task: db:down }
       - docker run -it --rm --name python_unit_test sofi_test:latest BsonObjectComparisonTest.py
 
   default:
@@ -52,6 +50,6 @@ tasks:
       Runs every test
     cmds:
       - task: test:agg-pipeline
-#      - task: test:agg-result
-#      - task: test:utility
+      - task: test:utility
+      - task: test:agg-result
     silent: true
