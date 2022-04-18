@@ -40,8 +40,14 @@ tasks:
       Runs test for utility functions
     cmds:
       # We want build to run and complete before running tests
+      # The tests are run one-by-one due to an odd error occuring.
+      # Replicate the error by: 1) Running all test 2) Remove test_date_not_equal and run them all again.
+      # 1) test_object_id_equal fails. 2) No test fails, which does not make sense.
       - task: build
-      - docker run -it --rm --name python_unit_test sofi_test:latest BsonObjectComparisonTest.py
+      - docker run -it --rm --name python_unit_test sofi_test:latest BsonObjectComparisonTest.BsonObjectComparisonTest.test_date_equal
+      - docker run -it --rm --name python_unit_test sofi_test:latest BsonObjectComparisonTest.BsonObjectComparisonTest.test_date_not_equal
+      - docker run -it --rm --name python_unit_test sofi_test:latest BsonObjectComparisonTest.BsonObjectComparisonTest.test_object_id_equal
+      - docker run -it --rm --name python_unit_test sofi_test:latest BsonObjectComparisonTest.BsonObjectComparisonTest.test_object_id_not_equal
 
   default:
     summary: |
