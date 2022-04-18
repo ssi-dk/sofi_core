@@ -50,6 +50,6 @@ tasks:
       Runs every test
     cmds:
       - task: test:agg-pipeline
-      - task: test:utility
       - task: test:agg-result
+      - task: test:utility
     silent: true
