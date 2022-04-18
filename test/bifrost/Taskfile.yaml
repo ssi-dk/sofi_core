@@ -8,8 +8,6 @@ tasks:
       - cp ../../bifrost/bifrost_listener/aggregation.py .
       - defer: rm aggregation.py
       - docker build . -t sofi_test:latest
-    sources:
-      - ./*
 
   db:up:
     - docker-compose -f {{.CLI_ARGS}}/docker-compose.test-aggregation.yml up -d
