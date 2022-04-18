@@ -10,7 +10,7 @@ services:
     environment:
       MONGO_INITDB_DATABASE: bifrost_test
     volumes:
-      - ./../../bifrost/bifrost_db/initdb.d/:/docker-entrypoint-initdb.d/
+      - ./bifrost/bifrost_db/initdb.d/:/docker-entrypoint-initdb.d/
     ports:
       - "27017:27017"
     expose:

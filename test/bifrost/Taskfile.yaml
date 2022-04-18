@@ -1,9 +1,4 @@
-# https://taskfile.dev
-
 version: '3'
-
-dotenv:
-  - '.env'
 
 tasks:
   build:
@@ -12,44 +7,51 @@ tasks:
     cmds:
       - cp ../../bifrost/bifrost_listener/aggregation.py .
       - defer: rm aggregation.py
-      - cp -r ../../bifrost/bifrost_db/initdb.d/ ./initdb.d
-      - defer: rm -rf ./initdb.d
       - docker build . -t sofi_test:latest
     sources:
       - ./*
 
-  test-agg-pipeline:
+  db:up:
+    - docker-compose -f {{.CLI_ARGS}}/docker-compose.test-aggregation.yml up -d
+
+  db:down:
+    - docker-compose -f {{.CLI_ARGS}}/docker-compose.test-aggregation.yml down -v
+
+  test:agg-pipeline:
     summary: |
       Runs the tests for the aggregation pipeline
     cmds:
-        # We want build to run and complete before running tests
+      # We want build to run and complete before running tests
       - task: build
-      - cmd: docker-compose up -d
-      - defer: docker-compose down -v
+      - task: db:up
+      - defer: { task: db:down }
       - docker run -it --rm --name python_unit_test --network bifrost_test_default sofi_test:latest AggregationPipelineTest.py
 
-  test-agg-result:
+  test:agg-result:
     summary: |
       Runs the test for the aggregation result collection
     cmds:
       # We want build to run and complete before running tests
       - task: build
-      - cmd: docker-compose up -d
-      - defer: docker-compose down -v
+      - task: db:up
+      - defer: { task: db:down }
       - docker run -it --rm --name python_unit_test --network bifrost_test_default sofi_test:latest AggregationResultTest.py
 
-  test-utility:
+  test:utility:
     summary: |
       Runs test for utility functions
     cmds:
       # We want build to run and complete before running tests
       - task: build
+      - task: db:up
+      - defer: { task: db:down }
       - docker run -it --rm --name python_unit_test sofi_test:latest BsonObjectComparisonTest.py
 
   default:
     summary: |
       Runs every test
     cmds:
-      - task: test-agg-pipeline
-      - task: test-agg-result
+      - task: test:agg-pipeline
+#      - task: test:agg-result
+#      - task: test:utility
     silent: true
