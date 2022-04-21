@@ -28,6 +28,7 @@ from .personal_identifier_type import PersonalIdentifierType
 from .query_expression import QueryExpression
 from .query_operand import QueryOperand
 from .query_operator import QueryOperator
+from .query_range_inclusivity import QueryRangeInclusivity
 from .resistance import Resistance
 from .single_upload_request import SingleUploadRequest
 from .tbr_metadata import TbrMetadata

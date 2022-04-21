@@ -506,13 +506,22 @@ components:
       - OR NOT
       - <implicit>
       type: string
+    QueryRangeInclusivity:
+      enum:
+      - left
+      - right
+      - both
+      - none
+      type: string
     QueryOperand:
       example:
+        term_max: term_max
         field: field
         left: '{}'
         prefix: prefix
         term: term
         right: '{}'
+        term_min: term_min
       properties:
         operator:
           $ref: '#/components/schemas/QueryOperator'
@@ -523,6 +532,15 @@ components:
         field:
           type: string
         term:
+          nullable: true
+          type: string
+        inclusive:
+          $ref: '#/components/schemas/QueryRangeInclusivity'
+        term_min:
+          nullable: true
+          type: string
+        term_max:
+          nullable: true
           type: string
         prefix:
           nullable: true
@@ -531,17 +549,21 @@ components:
     QueryExpression:
       example:
         left:
+          term_max: term_max
           field: field
           left: '{}'
           prefix: prefix
           term: term
           right: '{}'
+          term_min: term_min
         right:
+          term_max: term_max
           field: field
           left: '{}'
           prefix: prefix
           term: term
           right: '{}'
+          term_min: term_min
       properties:
         left:
           $ref: '#/components/schemas/QueryOperand'
@@ -555,17 +577,21 @@ components:
         paging_token: paging_token
         expression:
           left:
+            term_max: term_max
             field: field
             left: '{}'
             prefix: prefix
             term: term
             right: '{}'
+            term_min: term_min
           right:
+            term_max: term_max
             field: field
             left: '{}'
             prefix: prefix
             term: term
             right: '{}'
+            term_min: term_min
         filters: '{}'
         page_size: 0
       properties:

@@ -478,6 +478,10 @@ components:
       type: string
       enum: ["AND", "OR", "AND NOT", "OR NOT", "<implicit>"]
 
+    QueryRangeInclusivity:
+      type: string
+      enum: ["left", "right", "both", "none"]
+
     QueryOperand:
       type: object
       properties:
@@ -490,6 +494,16 @@ components:
         field:
           type: string
         term:
+          nullable: true
+          type: string
+        inclusive:
+          $ref: "#/components/schemas/QueryRangeInclusivity"
+          nullable: true
+        term_min:
+          nullable: true
+          type: string
+        term_max:
+          nullable: true
           type: string
         prefix:
           nullable: true

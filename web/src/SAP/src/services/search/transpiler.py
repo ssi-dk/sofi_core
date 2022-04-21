@@ -1,6 +1,7 @@
 from .visitor import on, when
 import re
 import sys
+from datetime import datetime, timedelta
 from ....common.config.column_config import pii_columns
 from ....generated.models.query_expression import (
     QueryExpression,
@@ -58,25 +59,47 @@ def coerce_term(term: str):
         try:
             return float(term)
         except Exception:
+            pass
+        try:
+            return datetime.fromisoformat(term)
+        except Exception:
             raise
     except Exception:
         return term
 
 
+def structure_wildcard(field, node):
+    coerced = coerce_term(node.term)
+    if isinstance(coerced, str):
+        return check_for_wildcard(field, coerced)
+    elif isinstance(coerced, datetime):
+        return {"$gte": coerced, "$lte": coerced + timedelta(days=1)}
+    else:
+        return {"$in": [coerced, node.term]}
+
+
+def structure_ranged(field, node):
+    min_op = "$gte" if node.inclusive == "left" or node.inclusive == "both" else "$gt"
+    max_op = "$lte" if node.inclusive == "right" or node.inclusive == "both" else "$lt"
+    if node.term_min == "*":
+        return {max_op: node.term_max}
+    if node.term_max == "*":
+        return {min_op: node.term_min}
+    return {min_op: node.term_min, max_op: node.term_max}
+
+
 def structure_leaf(node, is_negated):
     field = node.field if node.field != "<implicit>" else IMPLICIT_FIELD
-    coerced = coerce_term(node.term)
+    dispatch = structure_wildcard
+    # presence of inclusivity denotes a range-based query
+    if node.inclusive:
+        dispatch = structure_ranged
+    res = dispatch(field, node)
+    print("leaf node:", res, file=sys.stderr, flush=True)
     if is_negated:
-        if isinstance(coerced, str):
-            return {field: {"$not": check_for_wildcard(field, coerced)}}
-        else:
-            return {field: {"$ne": {"$in": [coerced, node.term]}}}
+        return {field: {"$not": res}}
     else:
-        if isinstance(coerced, str):
-            res = {field: check_for_wildcard(field, coerced)}
-            return res
-        else:
-            return {field: {"$in": [coerced, node.term]}}
+        return {field: res}
 
 
 def is_negated_op(node):

@@ -96,6 +96,6 @@ div[role="cell"].isLatest::before {
 div[role="cell"].approvingCell {
   border: 1px solid transparent;
   font-weight: bold;
-/*  background-color: #faf089 !important; */
+  /*  background-color: #faf089 !important; */
   box-shadow: inset 0 0 100px rgba(250, 250, 100, 0.8);
 }

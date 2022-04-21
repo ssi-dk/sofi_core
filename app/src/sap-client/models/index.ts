@@ -21,6 +21,7 @@ export * from './PersonalIdentifierType';
 export * from './QueryExpression';
 export * from './QueryOperand';
 export * from './QueryOperator';
+export * from './QueryRangeInclusivity';
 export * from './Resistance';
 export * from './TbrMetadata';
 export * from './TbrSpecificMetadata';
