@@ -11,6 +11,7 @@ from ..shared import (
 )
 from ..tbr_conn import get_tbr_configuration
 from common.database import (
+    coerce_dates,
     encrypt_dict,
     get_connection,
 )
@@ -145,6 +146,7 @@ class TBRPullingBroker(threading.Thread):
                 if column_mapping.normal_get(k)
             }
 
+            coerce_dates(values)
             encrypt_dict(self.encryption_client, values, pii_columns())
 
             update_query = pymongo.UpdateOne(

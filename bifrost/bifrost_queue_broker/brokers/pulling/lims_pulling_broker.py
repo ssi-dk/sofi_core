@@ -7,6 +7,7 @@ from pymongo import CursorType
 from ..shared import BrokerError, yield_chunks
 from ..lims_conn import *
 from common.database import (
+    coerce_dates,
     encrypt_dict,
     get_connection,
 )
@@ -140,6 +141,7 @@ class LIMSPullingBroker(threading.Thread):
         result = []
         for values in metadata_batch:
             isolate_id = values["isolate_id"]
+            coerce_dates(values)
             encrypt_dict(self.encryption_client, values, pii_columns())
 
             update_query = pymongo.UpdateOne(

@@ -4,6 +4,7 @@ import logging
 
 from typing import Dict
 
+from dateutil import parser
 from pymongo import MongoClient, mongo_client
 from pymongo.encryption import Algorithm, ClientEncryption
 from pymongo.encryption_options import AutoEncryptionOpts
@@ -148,6 +149,15 @@ def encrypt_dict(encryption_client: ClientEncryption, val, filter_list=None):
             Algorithm.AEAD_AES_256_CBC_HMAC_SHA_512_Deterministic,
             key_alt_name=ENCRYPTION_KEY_NAME,
         ),
+        filter_list,
+    )
+
+
+def coerce_dates(val):
+    filter_list = filter(lambda k: k.startswith("date_"), val.keys())
+    return recursive_replace(
+        val,
+        lambda v: parser.parse(v) if v else None,
         filter_list,
     )
 
