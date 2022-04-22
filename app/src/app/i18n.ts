@@ -145,6 +145,7 @@ const fieldDisplayNames = {
     qc_main_sp_plus_uncl: "QC_main_sp_plus_uncl",
     qc_unclassified_reads: "QC_unclassified_reads",
     qc_db_id: "QC_DB_ID",
+    qc_db_id2: "QC_DB_ID2",
     qc_failed_tests: "QC_failed_tests",
     qc_cgmlst_percent: "QC_cgMLST%",
     cgmlst_schema_salmonella: "cgMLST skema Salmonella",

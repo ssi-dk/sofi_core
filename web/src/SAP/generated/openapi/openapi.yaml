@@ -1104,6 +1104,8 @@ components:
           type: number
         qc_db_id:
           type: string
+        qc_db_id2:
+          type: string
         qc_failed_tests:
           type: string
         qc_cgmlst_percent:

@@ -1,5 +1,6 @@
 import unittest
 import pymongo
+from bson.json_util import dumps
 
 from aggregation import agg_pipeline
 

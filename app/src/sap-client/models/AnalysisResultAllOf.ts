@@ -167,6 +167,12 @@ export interface AnalysisResultAllOf  {
      * @type {string}
      * @memberof AnalysisResultAllOf
      */
+    qc_db_id2?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof AnalysisResultAllOf
+     */
     qc_failed_tests?: string;
     /**
      * 
@@ -585,6 +591,7 @@ export function AnalysisResultAllOfFromJSON(json: any): AnalysisResultAllOf {
         'qc_main_sp_plus_uncl': !exists(json, 'qc_main_sp_plus_uncl') ? undefined : json['qc_main_sp_plus_uncl'],
         'qc_unclassified_reads': !exists(json, 'qc_unclassified_reads') ? undefined : json['qc_unclassified_reads'],
         'qc_db_id': !exists(json, 'qc_db_id') ? undefined : json['qc_db_id'],
+        'qc_db_id2': !exists(json, 'qc_db_id2') ? undefined : json['qc_db_id2'],
         'qc_failed_tests': !exists(json, 'qc_failed_tests') ? undefined : json['qc_failed_tests'],
         'qc_cgmlst_percent': !exists(json, 'qc_cgmlst_percent') ? undefined : json['qc_cgmlst_percent'],
         'cgmlst_schema_salmonella': !exists(json, 'cgmlst_schema_salmonella') ? undefined : json['cgmlst_schema_salmonella'],
@@ -682,6 +689,7 @@ export function AnalysisResultAllOfToJSON(value?: AnalysisResultAllOf): any {
         'qc_main_sp_plus_uncl': value.qc_main_sp_plus_uncl,
         'qc_unclassified_reads': value.qc_unclassified_reads,
         'qc_db_id': value.qc_db_id,
+        'qc_db_id2': value.qc_db_id2,
         'qc_failed_tests': value.qc_failed_tests,
         'qc_cgmlst_percent': value.qc_cgmlst_percent,
         'cgmlst_schema_salmonella': value.cgmlst_schema_salmonella,
