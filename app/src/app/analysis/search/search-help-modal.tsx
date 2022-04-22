@@ -176,6 +176,37 @@ const SearchHelpModal = (props: SearchHelpModalProps) => {
                       </small>
                     </p>
                   </ListItem>
+                  <ListItem>
+                    <p>
+                      It's possible to search over a range of dates, both
+                      inclusive and exclusive. Use square-brackets (
+                      <code>[ TO ]</code>) when a term should be inclusive. Use
+                      curly-brackets (<code>&#123; TO &#125;</code>) when a term
+                      should be exclusive. It's possible to mix them, such that
+                      one side of the range is inclusive while the other is not.
+                    </p>
+                    <code>date_epi:[2022-02-22 TO 2022-04-14&#125;</code>
+                    <p>
+                      <small>
+                        Gives results where the Epi export date is 2022-02-22 or
+                        later, but not on 2022-04-14 or later.
+                      </small>
+                    </p>
+                  </ListItem>
+                  <ListItem>
+                    <p>
+                      Search is also possible over open-ended ranges. Use{" "}
+                      <code>*</code> for the end of the range that should not be
+                      limited.
+                    </p>
+                    <code>date_approved_st:[2021-05-10 TO *]</code>
+                    <p>
+                      <small>
+                        Gives results where st approval date is 2021-05-10 or
+                        later.
+                      </small>
+                    </p>
+                  </ListItem>
                 </List>
               </Box>
             </div>
