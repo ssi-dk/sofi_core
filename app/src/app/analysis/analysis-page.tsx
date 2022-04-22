@@ -219,6 +219,14 @@ export default function AnalysisPage() {
     data,
   ]);
 
+  const primaryApprovalColumns = React.useMemo(
+    () =>
+      Object.values(columnConfigs || {})
+        .filter((c) => c?.approvable)
+        .map((c) => c?.field_name as string),
+    [columnConfigs]
+  );
+
   const approvableColumns = React.useMemo(
     () => [
       ...new Set(
@@ -235,6 +243,13 @@ export default function AnalysisPage() {
       ),
     ],
     [columnConfigs]
+  );
+
+  const isPrimaryApprovalColumn = React.useCallback(
+    (columnName: string) => {
+      return primaryApprovalColumns.indexOf(columnName) >= 0;
+    },
+    [primaryApprovalColumns]
   );
 
   const canApproveColumn = React.useCallback(
@@ -382,7 +397,12 @@ export default function AnalysisPage() {
 
   const getCellStyle = React.useCallback(
     (rowId: string, columnId: string, value: any) => {
-      if (value !== 0 && value !== false && !value) {
+      if (
+        value !== 0 &&
+        value !== false &&
+        !value &&
+        !isPrimaryApprovalColumn(columnId)
+      ) {
         return "emptyCell";
       }
       if (`${value}` === "Invalid Date") {
@@ -410,7 +430,7 @@ export default function AnalysisPage() {
       }
       return "unapprovedCell";
     },
-    [approvals, canApproveColumn]
+    [approvals, canApproveColumn, isPrimaryApprovalColumn]
   );
 
   const getStickyCellStyle = React.useCallback(
