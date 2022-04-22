@@ -1,6 +1,8 @@
 import datetime
 
+import json
 import bson
+from bson.json_util import dumps
 
 
 def compare(obj1: {}, obj2: {}, errors=[]):
@@ -44,4 +46,8 @@ def __compare_with_bson(v1, v2):
         return {"$oid": str(v1)} == v2
 
     if isinstance(v1, datetime.datetime):
-        return "$date" in v2 and v1.strftime("%Y-%m-%dT%H:%M:%S") in v2["$date"]
+        print("v1", v1)
+        print("v2", v2)
+        print("dem dumpz", dumps(v1))
+        print("wew", json.loads(dumps(v1)))
+        return "$date" in v2 and v2["$date"] == json.loads(dumps(v1))["$date"]

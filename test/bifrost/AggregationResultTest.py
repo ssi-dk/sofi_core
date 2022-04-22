@@ -51,8 +51,8 @@ class AggregationResultTest(unittest.TestCase):
 
         self.assertEqual(
             len(list(results_content)),
-            5,
-            "Expects sap_analysis_results to contain 5 documents",
+            15,
+            "Expects sap_analysis_results to contain 15 documents",
         )
 
     def testResultContent(self):

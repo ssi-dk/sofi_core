@@ -1,14 +1,52 @@
 [
   {
     "_id": {
+      "$oid": "6211e8bc207a1f796ec0b691"
+    },
+    "date_analysis_sofi": {
+      "$date": 1645340860000
+    },
+    "date_run": {
+      "$date": 1645142400000
+    },
+    "date_sofi": {
+      "$date": 1645340860000
+    },
+    "institution": "FVST",
+    "isolate_id": "22002333_MW-CAMPY",
+    "latest_for_isolate": "22002333_MW-CAMPY_run310",
+    "mlst_schema": "campylobacter",
+    "qc_action": "OK",
+    "qc_ambiguous_sites": 122,
+    "qc_avg_coverage": 244.31206175868724,
+    "qc_db_id": "Campylobacter jejuni",
+    "qc_detected_species": "Campylobacter jejuni",
+    "qc_final": "A",
+    "qc_genome10x": 1649776,
+    "qc_genome1x": 1649776,
+    "qc_gsize_diff1x10": 0,
+    "qc_main_sp_plus_uncl": 0.9959360772616296,
+    "qc_num_contigs": 22,
+    "qc_num_reads": 0,
+    "qc_provided_species": null,
+    "qc_unclassified_reads": 0.01629629228628812,
+    "resistance_genes": null,
+    "run_id": "Run310",
+    "sequence_filename": "/home/projects/fvst_ssi_dtu/test_data/output/fvst/2022/Run310/samples/22002333-MW-CAMPY-run310_S24_L001_R2_001.fastq.gz /home/projects/fvst_ssi_dtu/test_data/output/fvst/2022/Run310/samples/22002333-MW-CAMPY-run310_S24_L001_R1_001.fastq.gz ",
+    "sequence_id": "22002333_MW-CAMPY_run310"
+  },
+  {
+    "_id": {
       "$oid": "6211e8bc207a1f796ec0b69f"
     },
     "date_analysis_sofi": {
-      "$date": "2022-02-20T07:07:40.000Z"
+      "$date": 1645340860000
     },
-    "date_run": "2022-02-18",
+    "date_run": {
+      "$date": 1645142400000
+    },
     "date_sofi": {
-      "$date": "2022-02-20T07:07:40.000Z"
+      "$date": 1645340860000
     },
     "institution": "FVST",
     "isolate_id": "22005368_MW-ESCEC",
@@ -37,52 +75,16 @@
   },
   {
     "_id": {
-      "$oid": "6211e8bc207a1f796ec0b69d"
-    },
-    "date_analysis_sofi": {
-      "$date": "2022-02-20T07:07:40.000Z"
-    },
-    "date_run": "2022-02-18",
-    "date_sofi": {
-      "$date": "2022-02-20T07:07:40.000Z"
-    },
-    "institution": "FVST",
-    "isolate_id": "22006997_MW-SAL",
-    "latest_for_isolate": "22006997_MW-SAL_run310",
-    "mlst_schema": "senterica",
-    "qc_action": "OK",
-    "qc_ambiguous_sites": 1043,
-    "qc_avg_coverage": 129.99936734090448,
-    "qc_db_id": "Salmonella enterica",
-    "qc_detected_species": "Salmonella enterica",
-    "qc_final": "A",
-    "qc_genome10x": 5012178,
-    "qc_genome1x": 5012178,
-    "qc_gsize_diff1x10": 0,
-    "qc_main_sp_plus_uncl": 0.9802407855281998,
-    "qc_num_contigs": 74,
-    "qc_num_reads": 0,
-    "qc_provided_species": null,
-    "qc_unclassified_reads": 0.03328560737257752,
-    "resistance_genes": null,
-    "run_id": "Run310",
-    "sequence_filename": "/home/projects/fvst_ssi_dtu/test_data/output/fvst/2022/Run310/samples/22006997-MW-SAL-run310_S3_L001_R1_001.fastq.gz /home/projects/fvst_ssi_dtu/test_data/output/fvst/2022/Run310/samples/22006997-MW-SAL-run310_S3_L001_R2_001.fastq.gz ",
-    "sequence_id": "22006997_MW-SAL_run310",
-    "sero_d_tartrate": "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCGAC",
-    "st": "34",
-    "st_final": "34",
-    "subspecies": "enterica"
-  },
-  {
-    "_id": {
       "$oid": "6211e8bc207a1f796ec0b692"
     },
     "date_analysis_sofi": {
-      "$date": "2022-02-20T07:07:40.000Z"
+      "$date": 1645340860000
     },
-    "date_run": "2022-02-18",
+    "date_run": {
+      "$date": 1645142400000
+    },
     "date_sofi": {
-      "$date": "2022-02-20T07:07:40.000Z"
+      "$date": 1645340860000
     },
     "institution": "FVST",
     "isolate_id": "22006820_MW-SAL",
@@ -113,48 +115,52 @@
   },
   {
     "_id": {
-      "$oid": "6211e8bc207a1f796ec0b691"
+      "$oid": "624ff9d344f55bfcfbb6f36f"
     },
     "date_analysis_sofi": {
-      "$date": "2022-02-20T07:07:40.000Z"
+      "$date": 1649408467000
     },
-    "date_run": "2022-02-18",
+    "date_run": {
+      "$date": 1648771200000
+    },
     "date_sofi": {
-      "$date": "2022-02-20T07:07:40.000Z"
+      "$date": 1649408467000
     },
-    "institution": "FVST",
-    "isolate_id": "22002333_MW-CAMPY",
-    "latest_for_isolate": "22002333_MW-CAMPY_run310",
-    "mlst_schema": "campylobacter",
-    "qc_action": "OK",
-    "qc_ambiguous_sites": 122,
-    "qc_avg_coverage": 244.31206175868724,
-    "qc_db_id": "Campylobacter jejuni",
-    "qc_detected_species": "Campylobacter jejuni",
-    "qc_final": "A",
-    "qc_genome10x": 1649776,
-    "qc_genome1x": 1649776,
+    "institution": "SSI",
+    "isolate_id": "2010F00048",
+    "latest_for_isolate": "2010F00048_N_WGS_900_SSI",
+    "project_number": 1,
+    "project_title": "Surveillance",
+    "qc_action": "supplying lab",
+    "qc_ambiguous_sites": 3117,
+    "qc_avg_coverage": 59.36116896124839,
+    "qc_db_id": "Shigella sonnei",
+    "qc_detected_species": "Shigella sonnei",
+    "qc_final": "B",
+    "qc_genome10x": 4484768,
+    "qc_genome1x": 4484768,
     "qc_gsize_diff1x10": 0,
-    "qc_main_sp_plus_uncl": 0.9959360772616296,
-    "qc_num_contigs": 22,
+    "qc_main_sp_plus_uncl": 0.9328229552698162,
+    "qc_num_contigs": 442,
     "qc_num_reads": 0,
-    "qc_provided_species": null,
-    "qc_unclassified_reads": 0.01629629228628812,
+    "qc_provided_species": "Escherichia coli",
+    "qc_unclassified_reads": 0.04971629386710623,
     "resistance_genes": null,
-    "run_id": "Run310",
-    "sequence_filename": "/home/projects/fvst_ssi_dtu/test_data/output/fvst/2022/Run310/samples/22002333-MW-CAMPY-run310_S24_L001_R2_001.fastq.gz /home/projects/fvst_ssi_dtu/test_data/output/fvst/2022/Run310/samples/22002333-MW-CAMPY-run310_S24_L001_R1_001.fastq.gz ",
-    "sequence_id": "22002333_MW-CAMPY_run310"
+    "sequence_filename": "/home/projects/fvst_ssi_dtu/test_data/output/ssi/2022/220408_M05458_0581_N_WGS_900_CNG9V/samples/2010F00048_S99_L999_R1_001.fastq.gz /home/projects/fvst_ssi_dtu/test_data/output/ssi/2022/220408_M05458_0581_N_WGS_900_CNG9V/samples/2010F00048_S99_L999_R2_001.fastq.gz ",
+    "sequence_id": "2010F00048_N_WGS_900_SSI"
   },
   {
     "_id": {
       "$oid": "6211e8bc207a1f796ec0b6a0"
     },
     "date_analysis_sofi": {
-      "$date": "2022-02-20T07:07:40.000Z"
+      "$date": 1645340860000
     },
-    "date_run": "2022-02-18",
+    "date_run": {
+      "$date": 1645142400000
+    },
     "date_sofi": {
-      "$date": "2022-02-20T07:07:40.000Z"
+      "$date": 1645340860000
     },
     "institution": "FVST",
     "isolate_id": "22005982_MW-SAL",
@@ -181,6 +187,405 @@
     "sero_d_tartrate": "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCACCC",
     "st": "11",
     "st_final": "11",
+    "subspecies": "enterica"
+  },
+  {
+    "_id": {
+      "$oid": "6211e8bc207a1f796ec0b69d"
+    },
+    "date_analysis_sofi": {
+      "$date": 1645340860000
+    },
+    "date_run": {
+      "$date": 1645142400000
+    },
+    "date_sofi": {
+      "$date": 1645340860000
+    },
+    "institution": "FVST",
+    "isolate_id": "22006997_MW-SAL",
+    "latest_for_isolate": "22006997_MW-SAL_run310",
+    "mlst_schema": "senterica",
+    "qc_action": "OK",
+    "qc_ambiguous_sites": 1043,
+    "qc_avg_coverage": 129.99936734090448,
+    "qc_db_id": "Salmonella enterica",
+    "qc_detected_species": "Salmonella enterica",
+    "qc_final": "A",
+    "qc_genome10x": 5012178,
+    "qc_genome1x": 5012178,
+    "qc_gsize_diff1x10": 0,
+    "qc_main_sp_plus_uncl": 0.9802407855281998,
+    "qc_num_contigs": 74,
+    "qc_num_reads": 0,
+    "qc_provided_species": null,
+    "qc_unclassified_reads": 0.03328560737257752,
+    "resistance_genes": null,
+    "run_id": "Run310",
+    "sequence_filename": "/home/projects/fvst_ssi_dtu/test_data/output/fvst/2022/Run310/samples/22006997-MW-SAL-run310_S3_L001_R1_001.fastq.gz /home/projects/fvst_ssi_dtu/test_data/output/fvst/2022/Run310/samples/22006997-MW-SAL-run310_S3_L001_R2_001.fastq.gz ",
+    "sequence_id": "22006997_MW-SAL_run310",
+    "sero_d_tartrate": "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCGAC",
+    "st": "34",
+    "st_final": "34",
+    "subspecies": "enterica"
+  },
+  {
+    "_id": {
+      "$oid": "624ff9d344f55bfcfbb6f370"
+    },
+    "date_analysis_sofi": {
+      "$date": 1649408467000
+    },
+    "date_run": {
+      "$date": 1648771200000
+    },
+    "date_sofi": {
+      "$date": 1649408467000
+    },
+    "institution": "SSI",
+    "isolate_id": "2009W00347",
+    "latest_for_isolate": "2009W00347_N_WGS_900_SSI",
+    "mlst_schema": "ecoli",
+    "project_number": 1,
+    "project_title": "Surveillance",
+    "qc_action": "supplying lab",
+    "qc_ambiguous_sites": 7520,
+    "qc_avg_coverage": 32.60618095739085,
+    "qc_db_id": "Escherichia coli",
+    "qc_detected_species": "Escherichia coli",
+    "qc_final": "A",
+    "qc_genome10x": 5360820,
+    "qc_genome1x": 5360820,
+    "qc_gsize_diff1x10": 0,
+    "qc_main_sp_plus_uncl": 0.9750228682331316,
+    "qc_num_contigs": 277,
+    "qc_num_reads": 0,
+    "qc_provided_species": "Escherichia coli",
+    "qc_unclassified_reads": 0.10835722035807614,
+    "resistance_genes": null,
+    "sequence_filename": "/home/projects/fvst_ssi_dtu/test_data/output/ssi/2022/220408_M05458_0581_N_WGS_900_CNG9V/samples/2009W00347_S99_L999_R1_001.fastq.gz /home/projects/fvst_ssi_dtu/test_data/output/ssi/2022/220408_M05458_0581_N_WGS_900_CNG9V/samples/2009W00347_S99_L999_R2_001.fastq.gz ",
+    "sequence_id": "2009W00347_N_WGS_900_SSI",
+    "species_final": "Escherichia coli",
+    "st": "6274",
+    "st_final": "6274"
+  },
+  {
+    "_id": {
+      "$oid": "624ff9d344f55bfcfbb6f372"
+    },
+    "date_analysis_sofi": {
+      "$date": 1649408467000
+    },
+    "date_run": {
+      "$date": 1648771200000
+    },
+    "date_sofi": {
+      "$date": 1649408467000
+    },
+    "institution": "SSI",
+    "isolate_id": "2009T00315",
+    "latest_for_isolate": "2009T00315_N_WGS_900_SSI",
+    "mlst_schema": "yersinia",
+    "project_number": 1,
+    "project_title": "Surveillance",
+    "qc_action": "OK",
+    "qc_ambiguous_sites": 1819,
+    "qc_avg_coverage": 126.32131225534813,
+    "qc_db_id": "Yersinia enterocolitica",
+    "qc_detected_species": "Yersinia enterocolitica",
+    "qc_final": "A",
+    "qc_genome10x": 4477025,
+    "qc_genome1x": 4477025,
+    "qc_gsize_diff1x10": 0,
+    "qc_main_sp_plus_uncl": 0.9924803982409137,
+    "qc_num_contigs": 191,
+    "qc_num_reads": 0,
+    "qc_provided_species": "Salmonella enterica",
+    "qc_unclassified_reads": 0.03682975111434658,
+    "resistance_genes": null,
+    "sequence_filename": "/home/projects/fvst_ssi_dtu/test_data/output/ssi/2022/220408_M05458_0581_N_WGS_900_CNG9V/samples/2009T00315_S99_L999_R1_001.fastq.gz /home/projects/fvst_ssi_dtu/test_data/output/ssi/2022/220408_M05458_0581_N_WGS_900_CNG9V/samples/2009T00315_S99_L999_R2_001.fastq.gz ",
+    "sequence_id": "2009T00315_N_WGS_900_SSI"
+  },
+  {
+    "_id": {
+      "$oid": "624ff9d344f55bfcfbb6f375"
+    },
+    "date_analysis_sofi": {
+      "$date": 1649408467000
+    },
+    "date_run": {
+      "$date": 1648771200000
+    },
+    "date_sofi": {
+      "$date": 1649408467000
+    },
+    "institution": "SSI",
+    "isolate_id": "2009T00362",
+    "latest_for_isolate": "2009T00362_N_WGS_900_SSI",
+    "mlst_schema": "senterica",
+    "project_number": 1,
+    "project_title": "Surveillance",
+    "qc_action": "OK",
+    "qc_ambiguous_sites": 792,
+    "qc_avg_coverage": 74.28283393143774,
+    "qc_db_id": "Salmonella enterica",
+    "qc_detected_species": "Salmonella enterica",
+    "qc_final": "A",
+    "qc_genome10x": 4787846,
+    "qc_genome1x": 4799608,
+    "qc_gsize_diff1x10": 11762,
+    "qc_main_sp_plus_uncl": 0.9947211005437189,
+    "qc_num_contigs": 94,
+    "qc_num_reads": 0,
+    "qc_provided_species": "Salmonella enterica",
+    "qc_unclassified_reads": 0.06114983484759931,
+    "resistance_genes": null,
+    "sequence_filename": "/home/projects/fvst_ssi_dtu/test_data/output/ssi/2022/220408_M05458_0581_N_WGS_900_CNG9V/samples/2009T00362_S99_L999_R1_001.fastq.gz /home/projects/fvst_ssi_dtu/test_data/output/ssi/2022/220408_M05458_0581_N_WGS_900_CNG9V/samples/2009T00362_S99_L999_R2_001.fastq.gz ",
+    "sequence_id": "2009T00362_N_WGS_900_SSI",
+    "sero_d_tartrate": "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCGCC",
+    "species_final": "Salmonella enterica",
+    "st": "321",
+    "st_final": "321",
+    "subspecies": "enterica"
+  },
+  {
+    "_id": {
+      "$oid": "624ff9d344f55bfcfbb6f36c"
+    },
+    "date_analysis_sofi": {
+      "$date": 1649408467000
+    },
+    "date_run": {
+      "$date": 1648771200000
+    },
+    "date_sofi": {
+      "$date": 1649408467000
+    },
+    "institution": "SSI",
+    "isolate_id": "2010F00006",
+    "latest_for_isolate": "2010F00006_N_WGS_900_SSI",
+    "mlst_schema": "campylobacter",
+    "project_number": 1,
+    "project_title": "Surveillance",
+    "qc_action": "OK",
+    "qc_ambiguous_sites": 707,
+    "qc_avg_coverage": 142.95764338606352,
+    "qc_db_id": "Campylobacter jejuni",
+    "qc_detected_species": "Campylobacter jejuni",
+    "qc_final": "C",
+    "qc_genome10x": 1605268,
+    "qc_genome1x": 1606101,
+    "qc_gsize_diff1x10": 833,
+    "qc_main_sp_plus_uncl": 0.9987083551931178,
+    "qc_num_contigs": 296,
+    "qc_num_reads": 0,
+    "qc_provided_species": "Campylobacter jejuni",
+    "qc_unclassified_reads": 0.12233093310343487,
+    "resistance_genes": null,
+    "sequence_filename": "/home/projects/fvst_ssi_dtu/test_data/output/ssi/2022/220408_M05458_0581_N_WGS_900_CNG9V/samples/2010F00006_S99_L999_R1_001.fastq.gz /home/projects/fvst_ssi_dtu/test_data/output/ssi/2022/220408_M05458_0581_N_WGS_900_CNG9V/samples/2010F00006_S99_L999_R2_001.fastq.gz ",
+    "sequence_id": "2010F00006_N_WGS_900_SSI",
+    "species_final": "Campylobacter jejuni"
+  },
+  {
+    "_id": {
+      "$oid": "624ff9d344f55bfcfbb6f36d"
+    },
+    "date_analysis_sofi": {
+      "$date": 1649408467000
+    },
+    "date_run": {
+      "$date": 1648771200000
+    },
+    "date_sofi": {
+      "$date": 1649408467000
+    },
+    "institution": "SSI",
+    "isolate_id": "2009T00385",
+    "latest_for_isolate": "2009T00385_N_WGS_900_SSI",
+    "mlst_schema": "campylobacter",
+    "project_number": 1,
+    "project_title": "Surveillance",
+    "qc_action": "supplying lab",
+    "qc_ambiguous_sites": 287,
+    "qc_avg_coverage": 172.20366869096773,
+    "qc_db_id": "Campylobacter jejuni",
+    "qc_detected_species": "Campylobacter jejuni",
+    "qc_final": "A",
+    "qc_genome10x": 1691448,
+    "qc_genome1x": 1691448,
+    "qc_gsize_diff1x10": 0,
+    "qc_main_sp_plus_uncl": 0.9917616856503615,
+    "qc_num_contigs": 32,
+    "qc_num_reads": 0,
+    "qc_provided_species": "Campylobacter jejuni",
+    "qc_unclassified_reads": 0.24055720581128912,
+    "resistance_genes": null,
+    "sequence_filename": "/home/projects/fvst_ssi_dtu/test_data/output/ssi/2022/220408_M05458_0581_N_WGS_900_CNG9V/samples/2009T00385_S99_L999_R1_001.fastq.gz /home/projects/fvst_ssi_dtu/test_data/output/ssi/2022/220408_M05458_0581_N_WGS_900_CNG9V/samples/2009T00385_S99_L999_R2_001.fastq.gz ",
+    "sequence_id": "2009T00385_N_WGS_900_SSI",
+    "species_final": "Campylobacter jejuni"
+  },
+  {
+    "_id": {
+      "$oid": "624ff9d344f55bfcfbb6f373"
+    },
+    "date_analysis_sofi": {
+      "$date": 1649408467000
+    },
+    "date_run": {
+      "$date": 1648771200000
+    },
+    "date_sofi": {
+      "$date": 1649408467000
+    },
+    "institution": "SSI",
+    "isolate_id": "2009T00235",
+    "latest_for_isolate": "2009T00235_N_WGS_900_SSI",
+    "mlst_schema": "senterica",
+    "project_number": 1,
+    "project_title": "Surveillance",
+    "qc_action": "OK",
+    "qc_ambiguous_sites": 5055,
+    "qc_avg_coverage": 50.78009367048676,
+    "qc_db_id": "Salmonella enterica",
+    "qc_detected_species": "Salmonella enterica",
+    "qc_final": "A",
+    "qc_genome10x": 4773969,
+    "qc_genome1x": 4773969,
+    "qc_gsize_diff1x10": 0,
+    "qc_main_sp_plus_uncl": 0.9975581306750664,
+    "qc_num_contigs": 46,
+    "qc_num_reads": 0,
+    "qc_provided_species": "Salmonella enterica",
+    "qc_unclassified_reads": 0.054785415413646586,
+    "resistance_genes": null,
+    "sequence_filename": "/home/projects/fvst_ssi_dtu/test_data/output/ssi/2022/220408_M05458_0581_N_WGS_900_CNG9V/samples/2009T00235_S99_L999_R1_001.fastq.gz /home/projects/fvst_ssi_dtu/test_data/output/ssi/2022/220408_M05458_0581_N_WGS_900_CNG9V/samples/2009T00235_S99_L999_R2_001.fastq.gz ",
+    "sequence_id": "2009T00235_N_WGS_900_SSI",
+    "sero_d_tartrate": "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC",
+    "species_final": "Salmonella enterica",
+    "st": "11",
+    "st_final": "11",
+    "subspecies": "enterica"
+  },
+  {
+    "_id": {
+      "$oid": "624ff9d344f55bfcfbb6f36e"
+    },
+    "date_analysis_sofi": {
+      "$date": 1649408467000
+    },
+    "date_run": {
+      "$date": 1648771200000
+    },
+    "date_sofi": {
+      "$date": 1649408467000
+    },
+    "institution": "SSI",
+    "isolate_id": "2006S00231",
+    "latest_for_isolate": "2006S00231_N_WGS_900_SSI",
+    "mlst_schema": "yersinia",
+    "project_number": 1,
+    "project_title": "Surveillance",
+    "qc_action": "OK",
+    "qc_ambiguous_sites": 4652,
+    "qc_avg_coverage": 71.81696353043392,
+    "qc_db_id": "Yersinia enterocolitica",
+    "qc_detected_species": "Yersinia enterocolitica",
+    "qc_final": "A",
+    "qc_genome10x": 4450361,
+    "qc_genome1x": 4450807,
+    "qc_gsize_diff1x10": 446,
+    "qc_main_sp_plus_uncl": 0.9980617025832647,
+    "qc_num_contigs": 265,
+    "qc_num_reads": 0,
+    "qc_provided_species": "Yersinia enterocolitica",
+    "qc_unclassified_reads": 0.01762901250780482,
+    "resistance_genes": null,
+    "sequence_filename": "/home/projects/fvst_ssi_dtu/test_data/output/ssi/2022/220408_M05458_0581_N_WGS_900_CNG9V/samples/2006S00231_S99_L999_R1_001.fastq.gz /home/projects/fvst_ssi_dtu/test_data/output/ssi/2022/220408_M05458_0581_N_WGS_900_CNG9V/samples/2006S00231_S99_L999_R2_001.fastq.gz ",
+    "sequence_id": "2006S00231_N_WGS_900_SSI",
+    "species_final": "Yersinia enterocolitica"
+  },
+  {
+    "_id": {
+      "$oid": "624ff9d344f55bfcfbb6f374"
+    },
+    "date_analysis_sofi": {
+      "$date": 1649408467000
+    },
+    "date_run": {
+      "$date": 1648771200000
+    },
+    "date_sofi": {
+      "$date": 1649408467000
+    },
+    "institution": "SSI",
+    "isolate_id": "2009W00149",
+    "latest_for_isolate": "2009W00149_N_WGS_900_SSI",
+    "mlst_schema": "senterica",
+    "project_number": 1,
+    "project_title": "Surveillance",
+    "qc_action": "OK",
+    "qc_ambiguous_sites": 4306,
+    "qc_avg_coverage": 68.39754425824503,
+    "qc_db_id": "Salmonella enterica",
+    "qc_detected_species": "Salmonella enterica",
+    "qc_final": "A",
+    "qc_genome10x": 4694549,
+    "qc_genome1x": 4694549,
+    "qc_gsize_diff1x10": 0,
+    "qc_main_sp_plus_uncl": 0.9951492653520089,
+    "qc_num_contigs": 42,
+    "qc_num_reads": 0,
+    "qc_provided_species": "Salmonella enterica",
+    "qc_unclassified_reads": 0.05584924648278229,
+    "resistance_genes": null,
+    "sequence_filename": "/home/projects/fvst_ssi_dtu/test_data/output/ssi/2022/220408_M05458_0581_N_WGS_900_CNG9V/samples/2009W00149_S99_L999_R1_001.fastq.gz /home/projects/fvst_ssi_dtu/test_data/output/ssi/2022/220408_M05458_0581_N_WGS_900_CNG9V/samples/2009W00149_S99_L999_R2_001.fastq.gz ",
+    "sequence_id": "2009W00149_N_WGS_900_SSI",
+    "sero_d_tartrate": "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCTA",
+    "species_final": "Salmonella enterica",
+    "st": "11",
+    "st_final": "11",
+    "subspecies": "enterica"
+  },
+  {
+    "_id": {
+      "$oid": "624ff9d344f55bfcfbb6f371"
+    },
+    "date_analysis_sofi": {
+      "$date": 1649408467000
+    },
+    "date_run": {
+      "$date": 1648771200000
+    },
+    "date_sofi": {
+      "$date": 1649408467000
+    },
+    "institution": "SSI",
+    "isolate_id": "2009T00243",
+    "latest_for_isolate": "2009T00243_N_WGS_900_SSI",
+    "mlst_schema": "senterica",
+    "project_number": 1,
+    "project_title": "Surveillance",
+    "qc_action": "OK",
+    "qc_ambiguous_sites": 227,
+    "qc_avg_coverage": 101.4419253176706,
+    "qc_db_id": "Salmonella enterica",
+    "qc_detected_species": "Salmonella enterica",
+    "qc_final": "A",
+    "qc_genome10x": 4665682,
+    "qc_genome1x": 4665682,
+    "qc_gsize_diff1x10": 0,
+    "qc_main_sp_plus_uncl": 0.9946058461235862,
+    "qc_num_contigs": 27,
+    "qc_num_reads": 0,
+    "qc_provided_species": "Salmonella enterica",
+    "qc_unclassified_reads": 0.08692096209455366,
+    "resistance_genes": null,
+    "sequence_filename": "/home/projects/fvst_ssi_dtu/test_data/output/ssi/2022/220408_M05458_0581_N_WGS_900_CNG9V/samples/2009T00243_S99_L999_R1_001.fastq.gz /home/projects/fvst_ssi_dtu/test_data/output/ssi/2022/220408_M05458_0581_N_WGS_900_CNG9V/samples/2009T00243_S99_L999_R2_001.fastq.gz ",
+    "sequence_id": "2009T00243_N_WGS_900_SSI",
+    "sero_d_tartrate": "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC",
+    "species_final": "Salmonella enterica",
+    "st": "93",
+    "st_final": "93",
     "subspecies": "enterica"
   }
 ]
