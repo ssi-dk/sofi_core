@@ -31,7 +31,7 @@ def create_approval(user, token_info, body: ApprovalRequest):
     appr = Approval()
     appr.matrix = body.matrix
     appr.approver = user
-    appr.timestamp = datetime.datetime.now().isoformat()
+    appr.timestamp = datetime.datetime.now()
     appr.status = "submitted"
     appr.id = str(uuid.uuid4())
 
