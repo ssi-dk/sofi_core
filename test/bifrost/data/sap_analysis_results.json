@@ -3,9 +3,6 @@
     "_id": {
       "$oid": "6211e8bc207a1f796ec0b691"
     },
-    "date_analysis_sofi": {
-      "$date": 1645340860000
-    },
     "date_run": {
       "$date": 1645142400000
     },
@@ -38,9 +35,6 @@
   {
     "_id": {
       "$oid": "6211e8bc207a1f796ec0b69f"
-    },
-    "date_analysis_sofi": {
-      "$date": 1645340860000
     },
     "date_run": {
       "$date": 1645142400000
@@ -76,9 +70,6 @@
   {
     "_id": {
       "$oid": "6211e8bc207a1f796ec0b692"
-    },
-    "date_analysis_sofi": {
-      "$date": 1645340860000
     },
     "date_run": {
       "$date": 1645142400000
@@ -117,9 +108,6 @@
     "_id": {
       "$oid": "624ff9d344f55bfcfbb6f36f"
     },
-    "date_analysis_sofi": {
-      "$date": 1649408467000
-    },
     "date_run": {
       "$date": 1648771200000
     },
@@ -152,9 +140,6 @@
   {
     "_id": {
       "$oid": "6211e8bc207a1f796ec0b6a0"
-    },
-    "date_analysis_sofi": {
-      "$date": 1645340860000
     },
     "date_run": {
       "$date": 1645142400000
@@ -193,9 +178,6 @@
     "_id": {
       "$oid": "6211e8bc207a1f796ec0b69d"
     },
-    "date_analysis_sofi": {
-      "$date": 1645340860000
-    },
     "date_run": {
       "$date": 1645142400000
     },
@@ -232,9 +214,6 @@
   {
     "_id": {
       "$oid": "624ff9d344f55bfcfbb6f370"
-    },
-    "date_analysis_sofi": {
-      "$date": 1649408467000
     },
     "date_run": {
       "$date": 1648771200000
@@ -273,9 +252,6 @@
     "_id": {
       "$oid": "624ff9d344f55bfcfbb6f372"
     },
-    "date_analysis_sofi": {
-      "$date": 1649408467000
-    },
     "date_run": {
       "$date": 1648771200000
     },
@@ -309,9 +285,6 @@
   {
     "_id": {
       "$oid": "624ff9d344f55bfcfbb6f375"
-    },
-    "date_analysis_sofi": {
-      "$date": 1649408467000
     },
     "date_run": {
       "$date": 1648771200000
@@ -352,9 +325,6 @@
     "_id": {
       "$oid": "624ff9d344f55bfcfbb6f36c"
     },
-    "date_analysis_sofi": {
-      "$date": 1649408467000
-    },
     "date_run": {
       "$date": 1648771200000
     },
@@ -390,9 +360,6 @@
     "_id": {
       "$oid": "624ff9d344f55bfcfbb6f36d"
     },
-    "date_analysis_sofi": {
-      "$date": 1649408467000
-    },
     "date_run": {
       "$date": 1648771200000
     },
@@ -427,9 +394,6 @@
   {
     "_id": {
       "$oid": "624ff9d344f55bfcfbb6f373"
-    },
-    "date_analysis_sofi": {
-      "$date": 1649408467000
     },
     "date_run": {
       "$date": 1648771200000
@@ -470,9 +434,6 @@
     "_id": {
       "$oid": "624ff9d344f55bfcfbb6f36e"
     },
-    "date_analysis_sofi": {
-      "$date": 1649408467000
-    },
     "date_run": {
       "$date": 1648771200000
     },
@@ -507,9 +468,6 @@
   {
     "_id": {
       "$oid": "624ff9d344f55bfcfbb6f374"
-    },
-    "date_analysis_sofi": {
-      "$date": 1649408467000
     },
     "date_run": {
       "$date": 1648771200000
@@ -549,9 +507,6 @@
   {
     "_id": {
       "$oid": "624ff9d344f55bfcfbb6f371"
-    },
-    "date_analysis_sofi": {
-      "$date": 1649408467000
     },
     "date_run": {
       "$date": 1648771200000

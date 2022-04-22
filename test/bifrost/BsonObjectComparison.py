@@ -46,8 +46,4 @@ def __compare_with_bson(v1, v2):
         return {"$oid": str(v1)} == v2
 
     if isinstance(v1, datetime.datetime):
-        print("v1", v1)
-        print("v2", v2)
-        print("dem dumpz", dumps(v1))
-        print("wew", json.loads(dumps(v1)))
         return "$date" in v2 and v2["$date"] == json.loads(dumps(v1))["$date"]

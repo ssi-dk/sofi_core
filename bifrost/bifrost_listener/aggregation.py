@@ -62,9 +62,6 @@ def agg_pipeline(changed_ids=None):
                 "project_number": "$categories.sample_info.summary.project_no",
                 "project_title": "$categories.sample_info.summary.project_title",
                 "date_sofi": {"$toDate": "$metadata.created_at"},
-                "date_analysis_sofi": {
-                    "$toDate": "$metadata.created_at"
-                },  # TODO: Susanne confirm
                 "qc_detected_species": "$categories.species_detection.summary.detected_species",
                 "qc_provided_species": "$categories.sample_info.summary.provided_species",
                 "subspecies": "$categories.serotype.summary.Subspecies",
