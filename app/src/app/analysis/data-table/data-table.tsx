@@ -23,6 +23,7 @@ import { StickyVariableSizeGrid } from "./sticky-variable-size-grid";
 import DataTableColumnHeader from "./data-table-column-header";
 import "./data-table.css";
 import "./data-table-cell-styles.css";
+import { setSelection } from "../analysis-selection-configs";
 
 export type ColumnReordering =
   | {
@@ -218,7 +219,11 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
   );
 
   // Narrow selection to the currently visible columns
+
+  const doingRerenderForNarrowing = React.useRef(false);
+
   React.useEffect(() => {
+    if (doingRerenderForNarrowing.current) return;
     if (selection.current) {
       const selectionClone = { ...selection.current };
       let needsNarrow = false;
@@ -234,9 +239,11 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
         });
       if (needsNarrow) {
         selection.current = selectionClone;
+        doingRerenderForNarrowing.current = true;
+        onSelect(selection.current as DataTableSelection<any>);
       }
     }
-  }, [visibleApprovableColumns]);
+  }, [visibleApprovableColumns, doingRerenderForNarrowing, onSelect]);
 
   const calcTableSelectionState = React.useCallback(() => {
     const columnCount = approvableColumns.length;
