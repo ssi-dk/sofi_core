@@ -1,0 +1,59 @@
+version: '3'
+
+tasks:
+  build:
+    summary: |
+      Builds the testing Docker image
+    cmds:
+      - cp ../../bifrost/bifrost_listener/aggregation.py .
+      - defer: rm aggregation.py
+      - docker build . -t sofi_test:latest
+
+  db:up:
+    - docker-compose -f {{.CLI_ARGS}}/docker-compose.test-aggregation.yml up -d
+
+  db:down:
+    - docker-compose -f {{.CLI_ARGS}}/docker-compose.test-aggregation.yml down -v
+
+  test:agg-pipeline:
+    summary: |
+      Runs the tests for the aggregation pipeline
+    cmds:
+      # We want build to run and complete before running tests
+      - task: build
+      - task: db:up
+      - defer: { task: db:down }
+      - docker run -it --rm --name python_unit_test --network bifrost_test_default sofi_test:latest AggregationPipelineTest.py
+
+  test:agg-result:
+    summary: |
+      Runs the test for the aggregation result collection
+    cmds:
+      # We want build to run and complete before running tests
+      - task: build
+      - task: db:up
+      - defer: { task: db:down }
+      - docker run -it --rm --name python_unit_test --network bifrost_test_default sofi_test:latest AggregationResultTest.py
+
+  test:utility:
+    summary: |
+      Runs test for utility functions
+    cmds:
+      # We want build to run and complete before running tests
+      # The tests are run one-by-one due to an odd error occuring.
+      # Replicate the error by: 1) Running all test 2) Remove test_date_not_equal and run them all again.
+      # 1) test_object_id_equal fails. 2) No test fails, which does not make sense.
+      - task: build
+      - docker run -it --rm --name python_unit_test sofi_test:latest BsonObjectComparisonTest.BsonObjectComparisonTest.test_date_equal
+      - docker run -it --rm --name python_unit_test sofi_test:latest BsonObjectComparisonTest.BsonObjectComparisonTest.test_date_not_equal
+      - docker run -it --rm --name python_unit_test sofi_test:latest BsonObjectComparisonTest.BsonObjectComparisonTest.test_object_id_equal
+      - docker run -it --rm --name python_unit_test sofi_test:latest BsonObjectComparisonTest.BsonObjectComparisonTest.test_object_id_not_equal
+
+  default:
+    summary: |
+      Runs every test
+    cmds:
+      - task: test:agg-pipeline
+      - task: test:agg-result
+      - task: test:utility
+    silent: true

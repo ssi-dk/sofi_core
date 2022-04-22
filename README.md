@@ -11,6 +11,7 @@ In order to build and run locally, you will need the following utilities:
 * yarn
 * docker
 * docker-compose
+* [task](https://taskfile.dev) (Used for running tests)
 
 ### Extra Windows pre-requisites
 This guide is for running the project using WSL2 in Windows.

@@ -1,0 +1,18 @@
+version: '3'
+
+dotenv:
+  - '.env'
+
+includes:
+  agg-pipeline-test:
+    taskfile: test/bifrost
+    dir: test/bifrost
+
+
+tasks:
+  test-all:
+    - task: agg-pipeline-test:default
+
+  default:
+    cmds:
+      - task: test-all
