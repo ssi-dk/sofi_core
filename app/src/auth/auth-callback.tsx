@@ -8,7 +8,12 @@ import {
   AuthorizationNotifier,
   FetchRequestor,
 } from "@openid/appauth";
-import { Environment, setAccessToken, setRefreshToken } from "auth/environment";
+import {
+  clearIsLoggingIn,
+  Environment,
+  setAccessToken,
+  setRefreshToken,
+} from "auth/environment";
 import { useToast } from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
 import { Loading } from "loading";
@@ -61,6 +66,7 @@ export const Callback = (props: {
           );
           setAccessToken(tokenResp.idToken);
           setRefreshToken(tokenResp.refreshToken);
+          clearIsLoggingIn();
 
           const profile = await fetch(
             `${Environment.openIdConnectUrl}${Environment.userInfoEndpoint}`,

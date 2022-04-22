@@ -10,7 +10,13 @@ import { useTranslation } from "react-i18next";
 import { Loading } from "loading";
 import { requestUserInfo } from "app/user/user-query-configs";
 import { useRequest } from "redux-query-react";
-import { Environment, getAccessToken } from "./environment";
+import {
+  clearIsLoggingIn,
+  Environment,
+  getAccessToken,
+  getIsLoggingIn,
+  setIsLoggingIn,
+} from "./environment";
 
 export const Authorize = (props: { children: React.ReactNode }) => {
   const toast = useToast();
@@ -23,6 +29,7 @@ export const Authorize = (props: { children: React.ReactNode }) => {
     Environment.crypto
   );
   const redirect = () => {
+    setIsLoggingIn();
     AuthorizationServiceConfiguration.fetchFromIssuer(
       Environment.openIdConnectUrl,
       new FetchRequestor()
@@ -46,6 +53,7 @@ export const Authorize = (props: { children: React.ReactNode }) => {
           duration: null,
           isClosable: true,
         });
+        clearIsLoggingIn();
       });
   };
 
@@ -58,7 +66,7 @@ export const Authorize = (props: { children: React.ReactNode }) => {
     return <React.Fragment>{props.children}</React.Fragment>;
   }
 
-  if (!isLoggedIn()) {
+  if (!isLoggedIn() && !getIsLoggingIn()) {
     redirect();
   }
 
