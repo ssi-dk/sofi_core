@@ -62,6 +62,7 @@ def agg_pipeline(changed_ids=None):
                 "project_number": "$categories.sample_info.summary.project_no",
                 "project_title": "$categories.sample_info.summary.project_title",
                 "date_sofi": {"$toDate": "$metadata.created_at"},
+                "date_analysis_sofi": {"$toDate": "$metadata.created_at"},
                 "qc_detected_species": "$categories.species_detection.summary.detected_species",
                 "qc_provided_species": "$categories.sample_info.summary.provided_species",
                 "subspecies": "$categories.serotype.summary.Subspecies",
@@ -121,6 +122,37 @@ def agg_pipeline(changed_ids=None):
                 "latest_for_isolate": {"$arrayElemAt": ["$siblings.sequence_id", 0]},
                 # grabbing whole object for ST, must pluck specific field later in the pipeline
                 "st": "$categories.mlst.summary.sequence_type",
+                "st_alleles": removeNullProperty(
+                    {
+                        "$let": {
+                            "vars": {
+                                "res": {
+                                    "$arrayElemAt": [
+                                        {
+                                            "$filter": {
+                                                "input": "$categories.mlst.report.data",
+                                                "as": "elem",
+                                                "cond": {
+                                                    "$eq": [
+                                                        "$$elem.db",
+                                                        {
+                                                            "$arrayElemAt": [
+                                                                "$mlstlookup.schema",
+                                                                0,
+                                                            ]
+                                                        },
+                                                    ]
+                                                },
+                                            }
+                                        },
+                                        0,
+                                    ]
+                                },
+                            },
+                            "in": "$$res.alleles",
+                        }
+                    }
+                ),
                 "qc_action": "$categories.stamper.stamp.value",
                 "qc_ambiguous_sites": "$categories.mapping_qc.summary.snps.x10_10%.snps",
                 "qc_unclassified_reads": removeNullProperty(
@@ -176,7 +208,6 @@ def agg_pipeline(changed_ids=None):
                     }
                 ),
                 "qc_db_id2": "$categories.species_detection.summary.name_classified_species_2",
-                #                "qc_failed_tests": "$categories.stamper.summary.reason",
                 "qc_failed_tests": removeNullProperty(
                     {
                         "$let": {

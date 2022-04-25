@@ -78,6 +78,7 @@ const fieldDisplayNames = {
     sero_serotype_finder: "Sero_serotype_finder",
     st: "ST",
     st_final: "ST_final",
+    st_alleles: "ST_alleles",
     pathotype_final: "Pathotype_final",
     virulence_genes: "Virulence_genes",
     adhesion_final: "Adheasion_final",

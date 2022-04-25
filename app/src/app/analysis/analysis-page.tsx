@@ -509,7 +509,12 @@ export default function AnalysisPage() {
       if (v === "Invalid Date") {
         return <div />;
       }
-      if (
+      // specific dates with timestamps
+      if (columnId === "date_sofi" || columnId == "date_analysis_sofi") {
+        v = value?.toISOString();
+      }
+      // any other dates
+      else if (
         (columnId.startsWith("date") || columnId.endsWith("date")) &&
         value !== undefined
       ) {
@@ -530,6 +535,16 @@ export default function AnalysisPage() {
               acc += ", ";
             }
             acc += `${x.display_name}: ${x.reason}`;
+          });
+          v = acc;
+        }
+        if (columnId === "st_alleles") {
+          let acc = "";
+          Object.keys(value).map((k) => {
+            if (acc !== "") {
+              acc += ", ";
+            }
+            acc += `${k}: ${value[k]}`;
           });
           v = acc;
         }

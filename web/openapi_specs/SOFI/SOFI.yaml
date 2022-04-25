@@ -868,6 +868,8 @@ components:
               type: string
             st_final:
               type: integer
+            st_alleles:
+              type: object
             pathotype:
               type: string
             pathotype_final:
