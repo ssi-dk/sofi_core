@@ -182,36 +182,6 @@ export interface AnalysisResultAllOf  {
     qc_cgmlst_percent?: number;
     /**
      * 
-     * @type {object}
-     * @memberof AnalysisResultAllOf
-     */
-    cgmlst_schema_salmonella?: object;
-    /**
-     * 
-     * @type {object}
-     * @memberof AnalysisResultAllOf
-     */
-    cgmlst_schema_ecoli?: object;
-    /**
-     * 
-     * @type {object}
-     * @memberof AnalysisResultAllOf
-     */
-    cgmlst_schema_campylobacter?: object;
-    /**
-     * 
-     * @type {object}
-     * @memberof AnalysisResultAllOf
-     */
-    cgmlst_schema_listeria?: object;
-    /**
-     * 
-     * @type {object}
-     * @memberof AnalysisResultAllOf
-     */
-    cgmlst_schema_klebsiella?: object;
-    /**
-     * 
      * @type {string}
      * @memberof AnalysisResultAllOf
      */
@@ -564,6 +534,36 @@ export interface AnalysisResultAllOf  {
      * @memberof AnalysisResultAllOf
      */
     amr_van?: Resistance;
+    /**
+     * 
+     * @type {object}
+     * @memberof AnalysisResultAllOf
+     */
+    cgmlst_schema_salmonella?: object;
+    /**
+     * 
+     * @type {object}
+     * @memberof AnalysisResultAllOf
+     */
+    cgmlst_schema_ecoli?: object;
+    /**
+     * 
+     * @type {object}
+     * @memberof AnalysisResultAllOf
+     */
+    cgmlst_schema_campylobacter?: object;
+    /**
+     * 
+     * @type {object}
+     * @memberof AnalysisResultAllOf
+     */
+    cgmlst_schema_listeria?: object;
+    /**
+     * 
+     * @type {object}
+     * @memberof AnalysisResultAllOf
+     */
+    cgmlst_schema_klebsiella?: object;
 }
 
 export function AnalysisResultAllOfFromJSON(json: any): AnalysisResultAllOf {
@@ -594,11 +594,6 @@ export function AnalysisResultAllOfFromJSON(json: any): AnalysisResultAllOf {
         'qc_db_id2': !exists(json, 'qc_db_id2') ? undefined : json['qc_db_id2'],
         'qc_failed_tests': !exists(json, 'qc_failed_tests') ? undefined : json['qc_failed_tests'],
         'qc_cgmlst_percent': !exists(json, 'qc_cgmlst_percent') ? undefined : json['qc_cgmlst_percent'],
-        'cgmlst_schema_salmonella': !exists(json, 'cgmlst_schema_salmonella') ? undefined : json['cgmlst_schema_salmonella'],
-        'cgmlst_schema_ecoli': !exists(json, 'cgmlst_schema_ecoli') ? undefined : json['cgmlst_schema_ecoli'],
-        'cgmlst_schema_campylobacter': !exists(json, 'cgmlst_schema_campylobacter') ? undefined : json['cgmlst_schema_campylobacter'],
-        'cgmlst_schema_listeria': !exists(json, 'cgmlst_schema_listeria') ? undefined : json['cgmlst_schema_listeria'],
-        'cgmlst_schema_klebsiella': !exists(json, 'cgmlst_schema_klebsiella') ? undefined : json['cgmlst_schema_klebsiella'],
         'subspecies': !exists(json, 'subspecies') ? undefined : json['subspecies'],
         'species_final': !exists(json, 'species_final') ? undefined : json['species_final'],
         'st': !exists(json, 'st') ? undefined : json['st'],
@@ -658,6 +653,11 @@ export function AnalysisResultAllOfFromJSON(json: any): AnalysisResultAllOf {
         'amr_tgc': !exists(json, 'amr_tgc') ? undefined : ResistanceFromJSON(json['amr_tgc']),
         'amr_tmp': !exists(json, 'amr_tmp') ? undefined : ResistanceFromJSON(json['amr_tmp']),
         'amr_van': !exists(json, 'amr_van') ? undefined : ResistanceFromJSON(json['amr_van']),
+        'cgmlst_schema_salmonella': !exists(json, 'cgmlst_schema_salmonella') ? undefined : json['cgmlst_schema_salmonella'],
+        'cgmlst_schema_ecoli': !exists(json, 'cgmlst_schema_ecoli') ? undefined : json['cgmlst_schema_ecoli'],
+        'cgmlst_schema_campylobacter': !exists(json, 'cgmlst_schema_campylobacter') ? undefined : json['cgmlst_schema_campylobacter'],
+        'cgmlst_schema_listeria': !exists(json, 'cgmlst_schema_listeria') ? undefined : json['cgmlst_schema_listeria'],
+        'cgmlst_schema_klebsiella': !exists(json, 'cgmlst_schema_klebsiella') ? undefined : json['cgmlst_schema_klebsiella'],
     };
 }
 
@@ -692,11 +692,6 @@ export function AnalysisResultAllOfToJSON(value?: AnalysisResultAllOf): any {
         'qc_db_id2': value.qc_db_id2,
         'qc_failed_tests': value.qc_failed_tests,
         'qc_cgmlst_percent': value.qc_cgmlst_percent,
-        'cgmlst_schema_salmonella': value.cgmlst_schema_salmonella,
-        'cgmlst_schema_ecoli': value.cgmlst_schema_ecoli,
-        'cgmlst_schema_campylobacter': value.cgmlst_schema_campylobacter,
-        'cgmlst_schema_listeria': value.cgmlst_schema_listeria,
-        'cgmlst_schema_klebsiella': value.cgmlst_schema_klebsiella,
         'subspecies': value.subspecies,
         'species_final': value.species_final,
         'st': value.st,
@@ -756,6 +751,11 @@ export function AnalysisResultAllOfToJSON(value?: AnalysisResultAllOf): any {
         'amr_tgc': ResistanceToJSON(value.amr_tgc),
         'amr_tmp': ResistanceToJSON(value.amr_tmp),
         'amr_van': ResistanceToJSON(value.amr_van),
+        'cgmlst_schema_salmonella': value.cgmlst_schema_salmonella,
+        'cgmlst_schema_ecoli': value.cgmlst_schema_ecoli,
+        'cgmlst_schema_campylobacter': value.cgmlst_schema_campylobacter,
+        'cgmlst_schema_listeria': value.cgmlst_schema_listeria,
+        'cgmlst_schema_klebsiella': value.cgmlst_schema_klebsiella,
     };
 }
 

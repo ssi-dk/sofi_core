@@ -1110,16 +1110,6 @@ components:
           type: string
         qc_cgmlst_percent:
           type: number
-        cgmlst_schema_salmonella:
-          type: object
-        cgmlst_schema_ecoli:
-          type: object
-        cgmlst_schema_campylobacter:
-          type: object
-        cgmlst_schema_listeria:
-          type: object
-        cgmlst_schema_klebsiella:
-          type: object
         subspecies:
           type: string
         species_final:
@@ -1238,6 +1228,16 @@ components:
           $ref: '#/components/schemas/Resistance'
         amr_van:
           $ref: '#/components/schemas/Resistance'
+        cgmlst_schema_salmonella:
+          type: object
+        cgmlst_schema_ecoli:
+          type: object
+        cgmlst_schema_campylobacter:
+          type: object
+        cgmlst_schema_listeria:
+          type: object
+        cgmlst_schema_klebsiella:
+          type: object
       required:
       - isolate_id
       type: object
