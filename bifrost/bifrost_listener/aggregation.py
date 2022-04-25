@@ -284,9 +284,9 @@ def agg_pipeline(changed_ids=None):
             "$set": {
                 "st_final": {
                     "$cond": {
-                        "if": {"$regexMatch": {"input": "$st", "regex": "\\*"}},
-                        "then": None,
-                        "else": "$st",
+                        "if": {"$regexMatch": {"input": "$st", "regex": "^\d+$"}},
+                        "then": "$st",
+                        "else": None,
                     },
                 }
             }
