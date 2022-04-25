@@ -22,6 +22,16 @@ from ..services.queue_service import post_and_await_approval
 APPROVABLE_CATEGORY_COUNT = 6
 
 
+def deep_merge(source, destination):
+    for key, value in source.items():
+        if isinstance(value, dict):
+            node = destination.setdefault(key, {})
+            deep_merge(value, node)
+        else:
+            destination[key] = value
+    return destination
+
+
 def get_approvals(user, token_info):
     return jsonify(find_approvals(token_info["email"]))
 
@@ -56,12 +66,16 @@ def create_approval(user, token_info, body: ApprovalRequest):
 
     update_analysis(analysis_timestamp_updates)
 
-    errors_tuple = handle_approvals(appr, token_info["institution"])
+    # TODO UNDO
+    errors_tuple = []
+    # errors_tuple = handle_approvals(appr, token_info["institution"])
     errors = []
     analysis_timestamp_reverts = {}
     for (error_seq_id, error) in errors_tuple:
         del appr.matrix[error_seq_id]
-        analysis_timestamp_reverts[error_seq_id] = {"date_analysis_sofi": None}
+        analysis_timestamp_reverts[error_seq_id] = {
+            "date_analysis_sofi": None,
+        }
         errors.append(error)
 
     # If any sequences errored out on the metadata service, revert their
@@ -97,7 +111,8 @@ def full_approval_matrix(user, token_info):
     approvals = find_all_active_approvals()
     matrix = {}
     for a in approvals:
-        matrix.update(a["matrix"])
+        deep_merge(a["matrix"], matrix)
+    #        matrix.update(a["matrix"])
     return jsonify(matrix)
 
 
