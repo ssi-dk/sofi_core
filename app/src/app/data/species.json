@@ -1,13 +1,46 @@
 [
-  "Bacillus cereus",
-  "Campylobacter coli",
-  "Campylobacter jejuni",
-  "Clostridium perfringens",
-  "Escherichia coli",
-  "Listeria monocytogenes",
-  "Salmonella enterica",
-  "Shigella sonnei",
-  "Shigella flexneri",
-  "Staphylococcus aureus",
-  "Yersinia enterocolitica"
+  {
+    "name": "Bacillus cereus",
+    "requires_serotype": false
+  },
+  {
+    "name": "Campylobacter coli",
+    "requires_serotype": false
+  },
+  {
+    "name": "Campylobacter jejuni",
+    "requires_serotype": false
+  },
+  {
+    "name": "Clostridium perfringens",
+    "requires_serotype": false
+  },
+  {
+    "name": "Escherichia coli",
+    "requires_serotype": true
+  },
+  {
+    "name": "Listeria monocytogenes",
+    "requires_serotype": false
+  },
+  {
+    "name": "Salmonella enterica",
+    "requires_serotype": true
+  },
+  {
+    "name": "Shigella sonnei",
+    "requires_serotype": false
+  },
+  {
+    "name": "Shigella flexneri",
+    "requires_serotype": false
+  },
+  {
+    "name": "Staphylococcus aureus",
+    "requires_serotype": false
+  },
+  {
+    "name": "Yersinia enterocolitica",
+    "requires_serotype": false
+  }
 ]

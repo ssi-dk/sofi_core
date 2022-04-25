@@ -9,12 +9,10 @@ import {
   EditableInput,
   useDisclosure,
   Skeleton,
-  Divider,
   Spinner,
-  NumberInput,
 } from "@chakra-ui/react";
 import { CheckIcon, DragHandleIcon, NotAllowedIcon } from "@chakra-ui/icons";
-import { Column, Row, TableState } from "react-table";
+import { Column, Row } from "react-table";
 import {
   AnalysisResult,
   ApprovalRequest,
@@ -59,12 +57,11 @@ import Serotypes from "../data/serotypes.json";
 import AnalysisDetails from "./analysis-details/analysis-details-modal";
 import ExportButton from "./export/export-button";
 import { ColumnConfigNode } from "./data-table/column-config-node";
-import SearchHelpModal from "./search/search-help-modal";
 import { AnalysisResultAllOfQcFailedTests } from "sap-client/models/AnalysisResultAllOfQcFailedTests";
 
 // When the fields in this array are 'approved', a given sequence is rendered
 // as 'approved' also.
-const PRIMARY_APPROVAL_FIELDS = ["st_final", "qc_final", "serotype_final"];
+const PRIMARY_APPROVAL_FIELDS = ["st_final", "qc_final"];
 
 export default function AnalysisPage() {
   const { t } = useTranslation();
@@ -398,7 +395,7 @@ export default function AnalysisPage() {
   ]);
 
   const getCellStyle = React.useCallback(
-    (rowId: string, columnId: string, value: any) => {
+    (rowId: string, columnId: string, value: any, cell: any) => {
       if (
         value !== 0 &&
         value !== false &&
@@ -421,6 +418,17 @@ export default function AnalysisPage() {
             if (approvals[rowId][f] !== ApprovalStatus.approved)
               sequenceStyle = "unapprovedCell";
           });
+          // Some species require serotype to also be provided before the sequence can be considered 'approved'
+          const species = Species.find(
+            (x) => x["name"] === cell["species_final"]
+          );
+          if (
+            species &&
+            species["requires_serotype"] &&
+            approvals[rowId]["serotype_final"] !== ApprovalStatus.approved
+          ) {
+            sequenceStyle = "unapprovedCell";
+          }
           return sequenceStyle;
         }
         if (approvals[rowId][columnId] === ApprovalStatus.approved) {
@@ -444,9 +452,11 @@ export default function AnalysisPage() {
     []
   );
 
+  const speciesNames = React.useMemo(() => Species.map((x) => x["name"]), []);
+
   const speciesOptions = React.useMemo(
-    () => Species.map((x) => ({ label: x, value: x })),
-    []
+    () => speciesNames.map((x) => ({ label: x, value: x })),
+    [speciesNames]
   );
 
   const serotypeOptions = React.useMemo(
