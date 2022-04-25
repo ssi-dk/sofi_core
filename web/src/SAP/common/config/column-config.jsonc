@@ -21,6 +21,7 @@
   {
     "field_name": "st_final",
     "approvable": true,
+    "editable_format": "number",
     "editable": true
   },
   {

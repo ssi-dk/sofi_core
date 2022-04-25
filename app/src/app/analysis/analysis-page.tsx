@@ -11,6 +11,7 @@ import {
   Skeleton,
   Divider,
   Spinner,
+  NumberInput,
 } from "@chakra-ui/react";
 import { CheckIcon, DragHandleIcon, NotAllowedIcon } from "@chakra-ui/icons";
 import { Column, Row, TableState } from "react-table";
@@ -577,6 +578,13 @@ export default function AnalysisPage() {
                     title="Date in yyyy-mm-dd format"
                     height="100%"
                     minWidth="100%"
+                  />
+                ) : columnConfigs[columnId].editable_format === "number" ? (
+                  <EditableInput
+                    pattern="\d+"
+                    type="numeric"
+                    height="100%"
+                    width="100%"
                   />
                 ) : (
                   <EditableInput height="100%" width="100%" />
