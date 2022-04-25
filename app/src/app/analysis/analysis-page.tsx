@@ -59,6 +59,7 @@ import AnalysisDetails from "./analysis-details/analysis-details-modal";
 import ExportButton from "./export/export-button";
 import { ColumnConfigNode } from "./data-table/column-config-node";
 import SearchHelpModal from "./search/search-help-modal";
+import { AnalysisResultAllOfQcFailedTests } from "sap-client/models/AnalysisResultAllOfQcFailedTests";
 
 // When the fields in this array are 'approved', a given sequence is rendered
 // as 'approved' also.
@@ -518,6 +519,18 @@ export default function AnalysisPage() {
           v = value?.toISOString()?.split("T")[0];
         } else {
           v = value?.split("T")[0];
+        }
+      } else if (typeof value === "object") {
+        v = `${JSON.stringify(value)}`;
+        if (columnId === "qc_failed_tests") {
+          let acc = "";
+          (value as Array<AnalysisResultAllOfQcFailedTests>).map((x) => {
+            if (acc !== "") {
+              acc += ", ";
+            }
+            acc += `${x.display_name}: ${x.reason}`;
+          });
+          v = acc;
         }
       }
       // cannot edit cells that have already been approved

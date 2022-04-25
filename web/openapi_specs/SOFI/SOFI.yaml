@@ -848,7 +848,16 @@ components:
             qc_db_id2:
               type: string
             qc_failed_tests:
-              type: string
+              type: array
+              items:
+                type: object
+                properties:
+                  name:
+                    type: string
+                  display_name:
+                    type: string
+                  reason:
+                    type: string
             qc_cgmlst_percent:
               type: number
             subspecies:

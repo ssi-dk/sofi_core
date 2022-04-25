@@ -1043,6 +1043,15 @@ components:
           - submitted
           type: string
       type: object
+    AnalysisResult_allOf_qc_failed_tests:
+      properties:
+        name:
+          type: string
+        display_name:
+          type: string
+        reason:
+          type: string
+      type: object
     AnalysisResult_allOf:
       properties:
         latest_for_isolate:
@@ -1107,7 +1116,9 @@ components:
         qc_db_id2:
           type: string
         qc_failed_tests:
-          type: string
+          items:
+            $ref: '#/components/schemas/AnalysisResult_allOf_qc_failed_tests'
+          type: array
         qc_cgmlst_percent:
           type: number
         subspecies:

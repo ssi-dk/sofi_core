@@ -13,6 +13,9 @@
 
 import { exists, mapValues } from '../runtime';
 import {
+    AnalysisResultAllOfQcFailedTests,
+    AnalysisResultAllOfQcFailedTestsFromJSON,
+    AnalysisResultAllOfQcFailedTestsToJSON,
     Resistance,
     ResistanceFromJSON,
     ResistanceToJSON,
@@ -170,10 +173,10 @@ export interface AnalysisResultAllOf  {
     qc_db_id2?: string;
     /**
      * 
-     * @type {string}
+     * @type {Array<AnalysisResultAllOfQcFailedTests>}
      * @memberof AnalysisResultAllOf
      */
-    qc_failed_tests?: string;
+    qc_failed_tests?: Array<AnalysisResultAllOfQcFailedTests>;
     /**
      * 
      * @type {number}
@@ -592,7 +595,7 @@ export function AnalysisResultAllOfFromJSON(json: any): AnalysisResultAllOf {
         'qc_unclassified_reads': !exists(json, 'qc_unclassified_reads') ? undefined : json['qc_unclassified_reads'],
         'qc_db_id': !exists(json, 'qc_db_id') ? undefined : json['qc_db_id'],
         'qc_db_id2': !exists(json, 'qc_db_id2') ? undefined : json['qc_db_id2'],
-        'qc_failed_tests': !exists(json, 'qc_failed_tests') ? undefined : json['qc_failed_tests'],
+        'qc_failed_tests': !exists(json, 'qc_failed_tests') ? undefined : (json['qc_failed_tests'] as Array<any>).map(AnalysisResultAllOfQcFailedTestsFromJSON),
         'qc_cgmlst_percent': !exists(json, 'qc_cgmlst_percent') ? undefined : json['qc_cgmlst_percent'],
         'subspecies': !exists(json, 'subspecies') ? undefined : json['subspecies'],
         'species_final': !exists(json, 'species_final') ? undefined : json['species_final'],
@@ -690,7 +693,7 @@ export function AnalysisResultAllOfToJSON(value?: AnalysisResultAllOf): any {
         'qc_unclassified_reads': value.qc_unclassified_reads,
         'qc_db_id': value.qc_db_id,
         'qc_db_id2': value.qc_db_id2,
-        'qc_failed_tests': value.qc_failed_tests,
+        'qc_failed_tests': value.qc_failed_tests === undefined ? undefined : (value.qc_failed_tests as Array<any>).map(AnalysisResultAllOfQcFailedTestsToJSON),
         'qc_cgmlst_percent': value.qc_cgmlst_percent,
         'subspecies': value.subspecies,
         'species_final': value.species_final,

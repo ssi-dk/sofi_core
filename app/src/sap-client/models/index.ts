@@ -1,6 +1,7 @@
 export * from './AnalysisQuery';
 export * from './AnalysisResult';
 export * from './AnalysisResultAllOf';
+export * from './AnalysisResultAllOfQcFailedTests';
 export * from './Approval';
 export * from './ApprovalAllOf';
 export * from './ApprovalRequest';

@@ -6,9 +6,11 @@ from datetime import date, datetime  # noqa: F401
 from typing import List, Dict  # noqa: F401
 
 from web.src.SAP.generated.models.base_model_ import Model
+from web.src.SAP.generated.models.analysis_result_all_of_qc_failed_tests import AnalysisResultAllOfQcFailedTests
 from web.src.SAP.generated.models.resistance import Resistance
 from web.src.SAP.generated import util
 
+from web.src.SAP.generated.models.analysis_result_all_of_qc_failed_tests import AnalysisResultAllOfQcFailedTests  # noqa: E501
 from web.src.SAP.generated.models.resistance import Resistance  # noqa: E501
 
 class AnalysisResultAllOf(Model):
@@ -71,7 +73,7 @@ class AnalysisResultAllOf(Model):
         :param qc_db_id2: The qc_db_id2 of this AnalysisResultAllOf.  # noqa: E501
         :type qc_db_id2: str
         :param qc_failed_tests: The qc_failed_tests of this AnalysisResultAllOf.  # noqa: E501
-        :type qc_failed_tests: str
+        :type qc_failed_tests: List[AnalysisResultAllOfQcFailedTests]
         :param qc_cgmlst_percent: The qc_cgmlst_percent of this AnalysisResultAllOf.  # noqa: E501
         :type qc_cgmlst_percent: float
         :param subspecies: The subspecies of this AnalysisResultAllOf.  # noqa: E501
@@ -228,7 +230,7 @@ class AnalysisResultAllOf(Model):
             'qc_unclassified_reads': float,
             'qc_db_id': str,
             'qc_db_id2': str,
-            'qc_failed_tests': str,
+            'qc_failed_tests': List[AnalysisResultAllOfQcFailedTests],
             'qc_cgmlst_percent': float,
             'subspecies': str,
             'species_final': str,
@@ -1009,7 +1011,7 @@ class AnalysisResultAllOf(Model):
 
 
         :return: The qc_failed_tests of this AnalysisResultAllOf.
-        :rtype: str
+        :rtype: List[AnalysisResultAllOfQcFailedTests]
         """
         return self._qc_failed_tests
 
@@ -1019,7 +1021,7 @@ class AnalysisResultAllOf(Model):
 
 
         :param qc_failed_tests: The qc_failed_tests of this AnalysisResultAllOf.
-        :type qc_failed_tests: str
+        :type qc_failed_tests: List[AnalysisResultAllOfQcFailedTests]
         """
 
         self._qc_failed_tests = qc_failed_tests
