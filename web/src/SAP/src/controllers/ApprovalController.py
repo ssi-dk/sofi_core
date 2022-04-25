@@ -49,11 +49,17 @@ def create_approval(user, token_info, body: ApprovalRequest):
     seq_update = {}
     for seq in body.matrix:
         fields = body.matrix[seq]
+
         # find dates that were already approved, for incremental approval case.
         existing_matrix = get_approval_matrix(seq)
 
         existing_matrix.update(fields)
         time_fields = find_approved_categories(body.matrix[seq])
+
+        # When approving date_epi, automatically generate the timestamp
+        if fields["date_epi"]:
+            seq_update["date_epi"] = appr.timestamp
+            time_fields += "date_epi"
         for f in time_fields:
             seq_update[f] = appr.timestamp
         analysis_timestamp_updates[seq] = seq_update

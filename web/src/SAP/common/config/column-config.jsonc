@@ -87,7 +87,6 @@
   },
   {
     "field_name": "date_epi",
-    "editable_format": "date",
     "approvable": true
   },
   {
