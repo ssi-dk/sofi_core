@@ -19,9 +19,6 @@ from web.src.SAP.src.security.permission_check import assert_user_has
 from ..services.queue_service import post_and_await_approval
 
 
-APPROVABLE_CATEGORY_COUNT = 6
-
-
 def deep_merge(source, destination):
     for key, value in source.items():
         if isinstance(value, dict):
@@ -56,26 +53,21 @@ def create_approval(user, token_info, body: ApprovalRequest):
         existing_matrix = get_approval_matrix(seq)
 
         existing_matrix.update(fields)
-        time_fields = find_approved_categories(existing_matrix)
-        # if all categories
-        if len(time_fields) == APPROVABLE_CATEGORY_COUNT:
-            seq_update = {"date_analysis_sofi": appr.timestamp}
+        time_fields = find_approved_categories(body.matrix[seq])
         for f in time_fields:
             seq_update[f] = appr.timestamp
         analysis_timestamp_updates[seq] = seq_update
 
     update_analysis(analysis_timestamp_updates)
 
-    # TODO UNDO
-    errors_tuple = []
-    # errors_tuple = handle_approvals(appr, token_info["institution"])
+    errors_tuple = handle_approvals(appr, token_info["institution"])
     errors = []
     analysis_timestamp_reverts = {}
     for (error_seq_id, error) in errors_tuple:
+        time_fields = find_approved_categories(appr.matrix[error_seq_id])
+        for f in time_fields:
+            analysis_timestamp_reverts[error_seq_id] = {f: None}
         del appr.matrix[error_seq_id]
-        analysis_timestamp_reverts[error_seq_id] = {
-            "date_analysis_sofi": None,
-        }
         errors.append(error)
 
     # If any sequences errored out on the metadata service, revert their
@@ -112,7 +104,6 @@ def full_approval_matrix(user, token_info):
     matrix = {}
     for a in approvals:
         deep_merge(a["matrix"], matrix)
-    #        matrix.update(a["matrix"])
     return jsonify(matrix)
 
 
