@@ -114,9 +114,9 @@ class TBRRequestBroker(RequestBroker):
             }
             mapped_request["isolate_id"] = isolate_id
             # if st is present, it needs to be converted to an integer
-            st = mapped_request.get("st_final")
+            st = mapped_request.get("st")
             if st and st.strip():
-                mapped_request["st_final"] = int(st)
+                mapped_request["st"] = int(st)
             # del mapped_request["sequence_id"]
             logging.debug(f"Reverse-mapped request: {mapped_request}")
 
