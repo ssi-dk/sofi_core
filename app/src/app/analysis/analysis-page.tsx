@@ -520,8 +520,10 @@ export default function AnalysisPage() {
         return <div />;
       }
       // specific dates with timestamps
-      if (columnId === "date_sofi" || columnId == "date_analysis_sofi") {
-        v = value?.toISOString();
+      if (columnId === "date_sofi" || columnId === "date_analysis_sofi") {
+        if (value && value.toISOString) {
+          v = value?.toISOString();
+        }
       }
       // any other dates
       else if (
