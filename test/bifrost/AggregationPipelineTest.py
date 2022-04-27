@@ -45,8 +45,8 @@ class AggregationPipelineTest(unittest.TestCase):
 
         self.assertEqual(
             len(list(results_content)),
-            15,
-            "Expects sap_analysis_results to contain 15 documents",
+            16,
+            "Expects sap_analysis_results to contain 16 documents",
         )
 
 
