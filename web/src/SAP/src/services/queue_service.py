@@ -48,6 +48,10 @@ def post_and_await_approval(sequence_id, field_mask, user_institution):
     institution = data.get("institution", user_institution)
     isolate_id = data.get("isolate_id")
 
+    # For LIMS, date_analysis_sofi should always be implicitly included
+    if institution == "FVST":
+        fields["date_analysis_sofi"] = data.get("date_analysis_sofi")
+
     print(data, file=sys.stderr)
     # TODO UNDO
     #    return None
