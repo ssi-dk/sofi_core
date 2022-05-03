@@ -19,7 +19,11 @@
     }
 
     route /.ory/kratos/public/self-service/registration/* {
+        basicauth {
+            SOFI {env.SOFI_HASH}
+        }
         uri strip_prefix /.ory/kratos/public
+        header -Authorization
         reverse_proxy @localrequest kratos:4433
     }
 

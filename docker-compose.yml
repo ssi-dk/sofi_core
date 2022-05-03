@@ -84,10 +84,11 @@ services:
           - ${SOFI_HOSTNAME}
     container_name: ${SOFI_HOSTNAME}
     hostname: ${SOFI_HOSTNAME}
-    image: caddy:2.2.0-alpine
+    image: caddy:2.5.0-alpine
     environment:
       SOFI_HOSTNAME: ${SOFI_HOSTNAME}
       SOFI_PORT: ${SOFI_PORT}
+      SOFI_HASH: ${SOFI_HASH}
     ports:
       - "${SOFI_PORT}:443"
     command:

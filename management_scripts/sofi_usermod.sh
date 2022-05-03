@@ -7,37 +7,37 @@ SRCDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 # sourced .env to get hostname and port
 source "$SRCDIR/../.env"
 
-createUser(){
+updateUser(){
   # params
   email=$1
   org=$2
   clearance=$3
   group=$4
 
-  actionUrl=$(\
-    curl -k -s -X GET -H "Accept: application/json" \
-      --user "SOFI:${SECRETS_SYSTEM}" \
-      "https://${SOFI_HOSTNAME}:${SOFI_PORT}/.ory/kratos/public/self-service/registration/api" \
-      | jq -r '.methods.password.config.action'\
-  )
+  # internal IP of the kratos admin API
+  ENDPOINT="http://0.0.0.0:4434"
 
-  echo $actionUrl
+  userId=$(docker exec sofi_kratos_1 kratos identities list -e $ENDPOINT -f json | \
+    jq -cr "[ .[] | select(.traits.email==\"$email\")][0].id")
+  
+  [ "$userId" = "null" ] && { echo "User with email '$email' could not be found." ; exit 1; }
 
-  pw=`uuidgen -r`
+  traits=$(jq -n --arg email "$email" --arg org "$org" --arg clearance "$clearance" --arg group "$group" '{
+    "email": $email,
+    "institution": $org,
+    "security-groups": [$group],
+    "sofi-data-clearance": $clearance
+  }')
 
-  # Complete Registration Flow with password method
-  curl -k -i -H "Accept: application/json" -H "Content-Type: application/json" \
-       --user "SOFI:${SECRETS_SYSTEM}" \
-       -d '{"traits.email": "'"${email}"'", "password": "'"${pw}"'", "traits.institution": "'"${org}"'", "traits.security-groups": "'"${group}"'", "traits.sofi-data-clearance": "'"${clearance}"'" }' \
-       "$actionUrl"
+  PGPASSWORD=$PG_SECRET
+  query="UPDATE \"public\".\"identities\" SET traits = '$traits' WHERE id = '$userId'"
 
-  echo -e "Credentials:"
-  echo -e "\t${email}"
-  echo -e "\t${pw}"
+  docker exec -it -u root sofi_postgresd_1 psql -U pguser -w -d "kratos" \
+  -c "$query"
 }
 
 display_usage() { 
-  echo "This script invites a user to SOFI by email." 
+  echo "This script modifies a user's permissions to SOFI." 
   echo -e "\nUsage: $0 <email-address> <organization> <data-clearance> <group>" 
   echo -e "\n\t<organization> can be one of:"
   echo -e "\t\tFVST"
@@ -67,4 +67,4 @@ then
   exit 0
 fi 
 
-createUser $1 $2 $3 $4
+updateUser $1 $2 $3 $4
