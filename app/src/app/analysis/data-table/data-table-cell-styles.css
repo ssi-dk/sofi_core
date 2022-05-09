@@ -85,7 +85,7 @@ div[role="cell"].emptyCell {
   border-left: 1px dashed rgba(0, 0, 0, 0.1);
 }
 
-div[role="cell"].isLatest::before {
+div[role="cell"].isNotLatest::before {
   content: "*";
   font-size: 20px;
   position: absolute;

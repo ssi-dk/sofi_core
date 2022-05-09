@@ -445,9 +445,9 @@ export default function AnalysisPage() {
 
   const getStickyCellStyle = React.useCallback(
     (rowId: string, rowData: any) => {
-      const isLatestSequence =
-        rowData.values.sequence_id === rowData.values.latest_for_isolate;
-      return `stickyCell ${isLatestSequence ? "isLatest" : ""}`;
+      const isNotLatestSequence =
+        rowData.values.sequence_id !== rowData.values.latest_for_isolate;
+      return `stickyCell ${isNotLatestSequence ? "isNotLatest" : ""}`;
     },
     []
   );
