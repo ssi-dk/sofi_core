@@ -42,6 +42,7 @@ class AggregationPipelineTest(unittest.TestCase):
         sap_analysis_results = self.db["sap_analysis_results"]
 
         results_content = sap_analysis_results.find()
+        # print(dumps(results_content))
 
         self.assertEqual(
             len(list(results_content)),
