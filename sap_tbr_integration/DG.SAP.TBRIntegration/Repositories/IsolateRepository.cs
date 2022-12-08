@@ -34,20 +34,13 @@ namespace DG.SAP.TBRIntegration.Repositories
 
         public async Task<bool> UpdateIsolate(IsolateUpdate isolateUpdate)
         {
-            await using var connection = new SqlConnection(_connectionString);
-            try
-            {
-                await connection.ExecuteAsync(
-                    "FVST_DTU.UpdateIsolate", 
-                    isolateUpdate, 
-                    commandType: CommandType.StoredProcedure
-                );
-                return true;
-            }
-            catch (Exception e)
-            {
-                return false;
-            }
+            await using var connection = new SqlConnection(_connectionString);            
+            await connection.ExecuteAsync(
+                "FVST_DTU.UpdateIsolate", 
+                isolateUpdate, 
+                commandType: CommandType.StoredProcedure
+            );
+            return true;
         }
 
         public async Task<Isolate> GetIsolate(string isolateId)
