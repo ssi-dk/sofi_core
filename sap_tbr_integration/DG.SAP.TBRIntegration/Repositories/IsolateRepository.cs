@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Dapper;
 using DG.SAP.TBRIntegration.Models;
 using DG.SAP.TBRIntegration.Options;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
 namespace DG.SAP.TBRIntegration.Repositories
@@ -14,32 +15,44 @@ namespace DG.SAP.TBRIntegration.Repositories
     public class IsolateRepository : IIsolateRepository
     {
         private readonly string _connectionString;
+        private readonly ILogger<IsolateRepository> logger;
 
-        public IsolateRepository(string connectionString)
+        public IsolateRepository(string connectionString, ILogger<IsolateRepository> logger)
         {
             _connectionString = connectionString;
+            this.logger = logger;
         }
 
-        public IsolateRepository(DatabaseOptions options) : this(
+        public IsolateRepository(DatabaseOptions options, ILogger<IsolateRepository> logger) : this(
             new SqlConnectionStringBuilder
             {
                 DataSource = options.DataSource,
                 UserID = options.UserId,
                 Password = options.Password,
                 InitialCatalog = options.Database
-            }.ConnectionString
+            }.ConnectionString,
+            logger
         )
         {
         }
 
         public async Task<bool> UpdateIsolate(IsolateUpdate isolateUpdate)
         {
-            await using var connection = new SqlConnection(_connectionString);            
-            await connection.ExecuteAsync(
-                "FVST_DTU.UpdateIsolate", 
-                isolateUpdate, 
-                commandType: CommandType.StoredProcedure
-            );
+            logger.LogInformation($"Trying to update with data {JsonConvert.SerializeObject(isolateUpdate)}");
+            try
+            {
+                await using var connection = new SqlConnection(_connectionString);
+                var res = await connection.ExecuteAsync(
+                    "FVST_DTU.UpdateIsolate",
+                    isolateUpdate,
+                    commandType: CommandType.StoredProcedure
+                );
+            }
+            catch(Exception e)
+            {
+                logger.LogError(e.ToString());
+                return false;
+            }
             return true;
         }
 

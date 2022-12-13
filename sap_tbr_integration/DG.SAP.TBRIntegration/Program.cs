@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.EventLog;
 
 namespace DG.SAP.TBRIntegration
 {
@@ -21,6 +22,15 @@ namespace DG.SAP.TBRIntegration
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
+                }).ConfigureLogging((hosting, logging)=>
+                {
+                    logging.ClearProviders();
+                    logging.AddConfiguration(hosting.Configuration.GetSection("Logging"));
+                    logging.AddEventLog(new EventLogSettings()
+                    {
+                        SourceName = "TBR.SAP.Integration",                        
+                    });
+                    logging.AddConsole();
                 });
     }
 }
