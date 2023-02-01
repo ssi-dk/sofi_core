@@ -30,8 +30,9 @@ tbr_configuration = api_clients.tbr_client.Configuration(host=tbr_api_url)
 
 
 class TBRRequestBroker(RequestBroker):
-    def __init__(self, data_lock, queue_col_name, tbr_col_name, db):
+    def __init__(self, data_lock, queue_col_name, tbr_col_name, thread_timeout, db):
         self.data_lock = data_lock
+        self.thread_timeout = thread_timeout
         self.broker_name = "TBR Broker"
         self.find_matcher = {"status": ProcessingStatus.WAITING.value, "service": "TBR"}
         self.db = db
@@ -49,7 +50,12 @@ class TBRRequestBroker(RequestBroker):
 
     # This function gets called with the body of every TBR request from the queue.
     def handle_tbr_request(self, request):
-        self.data_lock.acquire()
+        thread_acquired = self.data_lock.acquire(timeout=self.thread_timeout)
+        if not thread_acquired:
+            logging.warning(
+                f"{self.broker_name} Failed to acquire thread before {self.thread_timeout} seconds timeout"
+            )
+            return
         try:
             if "isolate_id" in request and "request_type" in request:
                 # TODO: Typed request types, and general annotations everywhere..
