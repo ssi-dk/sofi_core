@@ -39,6 +39,13 @@ def main():
     QUEUE_COLLECTION_NAME = os.environ.get(
         "BIFROST_MONGO_QUEUE_COLLECTION", "sap_broker_queue"
     )
+    PULLING_THREAD_ACQUIRE_TIMEOUT = os.environ.get(
+        "BIFROST_PULLING_THREAD_ACQUIRE_TIMEOUT", 300
+    )
+    REQUEST_THREAD_ACQUIRE_TIMEOUT = os.environ.get(
+        "BIFROST_REQUEST_THREAD_ACQUIRE_TIMEOUT",
+        PULLING_THREAD_ACQUIRE_TIMEOUT + 2,  # Release locks with a minor offset
+    )
 
     conn, enc = get_connection(with_enc=True)
     db = conn[DB_NAME]
@@ -54,20 +61,33 @@ def main():
 
     # Some of the brokers take different arguments other than the db and collection. Partially apply these.
     tbr_requests = partial(
-        TBRRequestBroker, TBR_data_lock, QUEUE_COLLECTION_NAME, TBR_COLLECTION_NAME
+        TBRRequestBroker,
+        TBR_data_lock,
+        QUEUE_COLLECTION_NAME,
+        TBR_COLLECTION_NAME,
+        REQUEST_THREAD_ACQUIRE_TIMEOUT,
     )
     tbr_puller = partial(
-        TBRPullingBroker, TBR_data_lock, TBR_COLLECTION_NAME, ANALYSIS_COLLECTION_NAME
+        TBRPullingBroker,
+        TBR_data_lock,
+        TBR_COLLECTION_NAME,
+        ANALYSIS_COLLECTION_NAME,
+        PULLING_THREAD_ACQUIRE_TIMEOUT,
     )
 
     lims_requests = partial(
-        LIMSRequestBroker, LIMS_data_lock, QUEUE_COLLECTION_NAME, LIMS_COLLECTION_NAME
+        LIMSRequestBroker,
+        LIMS_data_lock,
+        QUEUE_COLLECTION_NAME,
+        LIMS_COLLECTION_NAME,
+        REQUEST_THREAD_ACQUIRE_TIMEOUT,
     )
     lims_puller = partial(
         LIMSPullingBroker,
         LIMS_data_lock,
         LIMS_COLLECTION_NAME,
         ANALYSIS_COLLECTION_NAME,
+        PULLING_THREAD_ACQUIRE_TIMEOUT,
     )
 
     # Which brokers to start up as seperate threads.

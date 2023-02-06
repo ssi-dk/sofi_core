@@ -30,8 +30,9 @@ from api_clients.lims_client.models import (
 
 
 class LIMSRequestBroker(RequestBroker):
-    def __init__(self, data_lock, queue_col_name, lims_col_name, db):
+    def __init__(self, data_lock, queue_col_name, lims_col_name, thread_timeout, db):
         self.data_lock = data_lock
+        self.thread_timeout = thread_timeout
         self.broker_name = "LIMS Broker"
         self.find_matcher = {
             "status": ProcessingStatus.WAITING.value,
@@ -52,7 +53,12 @@ class LIMSRequestBroker(RequestBroker):
 
     # This function gets called with the body of every LIMS request from the queue.
     def handle_lims_request(self, request):
-        self.data_lock.acquire()
+        thread_acquired = self.data_lock.acquire(timeout=self.thread_timeout)
+        if not thread_acquired:
+            logging.warning(
+                f"{self.broker_name} Failed to acquire thread before {self.thread_timeout} seconds timeout"
+            )
+            return
         try:
             if "isolate_id" in request and "request_type" in request:
                 # TODO: Typed request types, and general annotations everywhere..

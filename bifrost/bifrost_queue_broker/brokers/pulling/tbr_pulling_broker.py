@@ -27,13 +27,16 @@ from api_clients.tbr_client.models import Isolate, RowVersion
 
 
 class TBRPullingBroker(threading.Thread):
-    def __init__(self, data_lock, tbr_col_name, analysis_view_col_name, db):
+    def __init__(
+        self, data_lock, tbr_col_name, analysis_view_col_name, thread_timeout, db
+    ):
         super(TBRPullingBroker, self).__init__()
         self.data_lock = data_lock
         self.db = db
         self.analysis_col = db[analysis_view_col_name]
         self.metadata_col = db[tbr_col_name]
         self.stop = threading.Event()
+        self.thread_timeout = thread_timeout
         self.broker_name = "TBR Pulling broker"
         _, enc = get_connection(with_enc=True)
         self.encryption_client = enc
@@ -47,7 +50,12 @@ class TBRPullingBroker(threading.Thread):
         first_run = True
         while first_run or not self.stop.wait(interval):
             first_run = False
-            self.data_lock.acquire()
+            thread_acquired = self.data_lock.acquire(timeout=self.thread_timeout)
+            if not thread_acquired:
+                logging.warning(
+                    f"{self.broker_name} Failed to acquire thread before {self.thread_timeout} seconds timeout"
+                )
+                continue
             try:
                 self.run_sync_job()
             except:
