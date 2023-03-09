@@ -56,13 +56,28 @@ def agg_pipeline(changed_ids=None):
                 "sequence_id": "$categories.sample_info.summary.sofi_sequence_id",
                 "run_id": "$categories.sample_info.summary.experiment_name",
                 "date_run": {
-                    "$toDate": "$categories.sample_info.summary.sequence_run_date"
+                    "$dateToString": {
+                        "date": {
+                            "$toDate": "$categories.sample_info.summary.sequence_run_date"
+                        },
+                        "format": "%Y-%m-%d",
+                    }
                 },
                 "institution": "$categories.sample_info.summary.institution",
                 "project_number": "$categories.sample_info.summary.project_no",
                 "project_title": "$categories.sample_info.summary.project_title",
-                "date_sofi": {"$toDate": "$metadata.created_at"},
-                "date_analysis_sofi": {"$toDate": "$metadata.created_at"},
+                "date_sofi": {
+                    "$dateToString": {
+                        "date": {"$toDate": "$metadata.created_at"},
+                        "format": "%Y-%m-%d",
+                    }
+                },
+                "date_analysis_sofi": {
+                    "$dateToString": {
+                        "date": {"$toDate": "$metadata.created_at"},
+                        "format": "%Y-%m-%d",
+                    }
+                },
                 "qc_detected_species": "$categories.species_detection.summary.detected_species",
                 "qc_provided_species": "$categories.sample_info.summary.provided_species",
                 "subspecies": "$categories.serotype.summary.Subspecies",
