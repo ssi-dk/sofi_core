@@ -3,15 +3,9 @@
     "_id": {
       "$oid": "6211e8bc207a1f796ec0b691"
     },
-    "date_analysis_sofi": {
-      "$date": 1645340860000
-    },
-    "date_run": {
-      "$date": 1645142400000
-    },
-    "date_sofi": {
-      "$date": 1645340860000
-    },
+    "date_analysis_sofi": "2022-02-20",
+    "date_run": "2022-02-18",
+    "date_sofi": "2022-02-20",
     "institution": "FVST",
     "isolate_id": "22002333_MW-CAMPY",
     "latest_for_isolate": "22002333_MW-CAMPY_run310",
@@ -42,15 +36,9 @@
     "_id": {
       "$oid": "6211e8bc207a1f796ec0b69f"
     },
-    "date_analysis_sofi": {
-      "$date": 1645340860000
-    },
-    "date_run": {
-      "$date": 1645142400000
-    },
-    "date_sofi": {
-      "$date": 1645340860000
-    },
+    "date_analysis_sofi": "2022-02-20",
+    "date_run": "2022-02-18",
+    "date_sofi": "2022-02-20",
     "institution": "FVST",
     "isolate_id": "22005368_MW-ESCEC",
     "latest_for_isolate": "22005368_MW-ESCEC_run310",
@@ -91,15 +79,9 @@
     "_id": {
       "$oid": "624ff9d344f55bfcfbb6f36c"
     },
-    "date_analysis_sofi": {
-      "$date": 1649408467000
-    },
-    "date_run": {
-      "$date": 1648771200000
-    },
-    "date_sofi": {
-      "$date": 1649408467000
-    },
+    "date_analysis_sofi": "2022-04-08",
+    "date_run": "2022-04-01",
+    "date_sofi": "2022-04-08",
     "institution": "SSI",
     "isolate_id": "2010F00006",
     "latest_for_isolate": "2010F00006_N_WGS_900_SSI",
@@ -142,15 +124,9 @@
     "_id": {
       "$oid": "624ff9d344f55bfcfbb6f36d"
     },
-    "date_analysis_sofi": {
-      "$date": 1649408467000
-    },
-    "date_run": {
-      "$date": 1648771200000
-    },
-    "date_sofi": {
-      "$date": 1649408467000
-    },
+    "date_analysis_sofi": "2022-04-08",
+    "date_run": "2022-04-01",
+    "date_sofi": "2022-04-08",
     "institution": "SSI",
     "isolate_id": "2009T00385",
     "latest_for_isolate": "2009T00385_N_WGS_900_SSI",
@@ -202,15 +178,9 @@
     "_id": {
       "$oid": "6211e8bc207a1f796ec0b69d"
     },
-    "date_analysis_sofi": {
-      "$date": 1645340860000
-    },
-    "date_run": {
-      "$date": 1645142400000
-    },
-    "date_sofi": {
-      "$date": 1645340860000
-    },
+    "date_analysis_sofi": "2022-02-20",
+    "date_run": "2022-02-18",
+    "date_sofi": "2022-02-20",
     "institution": "FVST",
     "isolate_id": "22006997_MW-SAL",
     "latest_for_isolate": "22006997_MW-SAL_run310",
@@ -253,15 +223,9 @@
     "_id": {
       "$oid": "624ff9d344f55bfcfbb6f36e"
     },
-    "date_analysis_sofi": {
-      "$date": 1649408467000
-    },
-    "date_run": {
-      "$date": 1648771200000
-    },
-    "date_sofi": {
-      "$date": 1649408467000
-    },
+    "date_analysis_sofi": "2022-04-08",
+    "date_run": "2022-04-01",
+    "date_sofi": "2022-04-08",
     "institution": "SSI",
     "isolate_id": "2006S00231",
     "latest_for_isolate": "2006S00231_N_WGS_900_SSI",
@@ -294,15 +258,9 @@
     "_id": {
       "$oid": "624ff9d344f55bfcfbb6f370"
     },
-    "date_analysis_sofi": {
-      "$date": 1649408467000
-    },
-    "date_run": {
-      "$date": 1648771200000
-    },
-    "date_sofi": {
-      "$date": 1649408467000
-    },
+    "date_analysis_sofi": "2022-04-08",
+    "date_run": "2022-04-01",
+    "date_sofi": "2022-04-08",
     "institution": "SSI",
     "isolate_id": "2009W00347",
     "latest_for_isolate": "2009W00347_N_WGS_900_SSI",
@@ -354,15 +312,9 @@
     "_id": {
       "$oid": "624ff9d344f55bfcfbb6f36f"
     },
-    "date_analysis_sofi": {
-      "$date": 1649408467000
-    },
-    "date_run": {
-      "$date": 1648771200000
-    },
-    "date_sofi": {
-      "$date": 1649408467000
-    },
+    "date_analysis_sofi": "2022-04-08",
+    "date_run": "2022-04-01",
+    "date_sofi": "2022-04-08",
     "institution": "SSI",
     "isolate_id": "2010F00048",
     "latest_for_isolate": "2010F00048_N_WGS_900_SSI",
@@ -418,15 +370,9 @@
     "_id": {
       "$oid": "624ff9d344f55bfcfbb6f372"
     },
-    "date_analysis_sofi": {
-      "$date": 1649408467000
-    },
-    "date_run": {
-      "$date": 1648771200000
-    },
-    "date_sofi": {
-      "$date": 1649408467000
-    },
+    "date_analysis_sofi": "2022-04-08",
+    "date_run": "2022-04-01",
+    "date_sofi": "2022-04-08",
     "institution": "SSI",
     "isolate_id": "2009T00315",
     "latest_for_isolate": "2009T00315_N_WGS_900_SSI",
@@ -458,15 +404,9 @@
     "_id": {
       "$oid": "624ff9d344f55bfcfbb6f371"
     },
-    "date_analysis_sofi": {
-      "$date": 1649408467000
-    },
-    "date_run": {
-      "$date": 1648771200000
-    },
-    "date_sofi": {
-      "$date": 1649408467000
-    },
+    "date_analysis_sofi": "2022-04-08",
+    "date_run": "2022-04-01",
+    "date_sofi": "2022-04-08",
     "institution": "SSI",
     "isolate_id": "2009T00243",
     "latest_for_isolate": "2009T00243_N_WGS_900_SSI",
@@ -511,15 +451,9 @@
     "_id": {
       "$oid": "6211e8bc207a1f796ec0b6a0"
     },
-    "date_analysis_sofi": {
-      "$date": 1645340860000
-    },
-    "date_run": {
-      "$date": 1645142400000
-    },
-    "date_sofi": {
-      "$date": 1645340860000
-    },
+    "date_analysis_sofi": "2022-02-20",
+    "date_run": "2022-02-18",
+    "date_sofi": "2022-02-20",
     "institution": "FVST",
     "isolate_id": "22005982_MW-SAL",
     "latest_for_isolate": "22005982_MW-SAL_run310",
@@ -562,15 +496,9 @@
     "_id": {
       "$oid": "6211e8bc207a1f796ec0b692"
     },
-    "date_analysis_sofi": {
-      "$date": 1645340860000
-    },
-    "date_run": {
-      "$date": 1645142400000
-    },
-    "date_sofi": {
-      "$date": 1645340860000
-    },
+    "date_analysis_sofi": "2022-02-20",
+    "date_run": "2022-02-18",
+    "date_sofi": "2022-02-20",
     "institution": "FVST",
     "isolate_id": "22006820_MW-SAL",
     "latest_for_isolate": "22006820_MW-SAL_run310",
@@ -613,15 +541,9 @@
     "_id": {
       "$oid": "624ff9d344f55bfcfbb6f374"
     },
-    "date_analysis_sofi": {
-      "$date": 1649408467000
-    },
-    "date_run": {
-      "$date": 1648771200000
-    },
-    "date_sofi": {
-      "$date": 1649408467000
-    },
+    "date_analysis_sofi": "2022-04-08",
+    "date_run": "2022-04-01",
+    "date_sofi": "2022-04-08",
     "institution": "SSI",
     "isolate_id": "2009W00149",
     "latest_for_isolate": "2009W00149_N_WGS_900_SSI",
@@ -666,15 +588,9 @@
     "_id": {
       "$oid": "624ff9d344f55bfcfbb6f375"
     },
-    "date_analysis_sofi": {
-      "$date": 1649408467000
-    },
-    "date_run": {
-      "$date": 1648771200000
-    },
-    "date_sofi": {
-      "$date": 1649408467000
-    },
+    "date_analysis_sofi": "2022-04-08",
+    "date_run": "2022-04-01",
+    "date_sofi": "2022-04-08",
     "institution": "SSI",
     "isolate_id": "2009T00362",
     "latest_for_isolate": "2009T00362_N_WGS_900_SSI",
@@ -719,15 +635,9 @@
     "_id": {
       "$oid": "6183e7ae7ee26b542166eccb"
     },
-    "date_analysis_sofi": {
-      "$date": 1636034478000
-    },
-    "date_run": {
-      "$date": 1482192000000
-    },
-    "date_sofi": {
-      "$date": 1636034478000
-    },
+    "date_analysis_sofi": "2021-11-04",
+    "date_run": "2016-12-20",
+    "date_sofi": "2021-11-04",
     "institution": "SSI",
     "isolate_id": "2006W00176",
     "latest_for_isolate": "2006W00176_M1_WGS_56_SSI",
@@ -786,15 +696,9 @@
     "_id": {
       "$oid": "624ff9d344f55bfcfbb6f373"
     },
-    "date_analysis_sofi": {
-      "$date": 1649408467000
-    },
-    "date_run": {
-      "$date": 1648771200000
-    },
-    "date_sofi": {
-      "$date": 1649408467000
-    },
+    "date_analysis_sofi": "2022-04-08",
+    "date_run": "2022-04-01",
+    "date_sofi": "2022-04-08",
     "institution": "SSI",
     "isolate_id": "2009T00235",
     "latest_for_isolate": "2009T00235_N_WGS_900_SSI",
