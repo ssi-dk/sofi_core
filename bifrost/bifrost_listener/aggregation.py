@@ -261,7 +261,7 @@ def agg_pipeline(changed_ids=None):
                 ),
                 "qc_avg_coverage": "$categories.denovo_assembly.summary.depth",
                 "qc_num_contigs": "$categories.denovo_assembly.summary.contigs",
-                "qc_num_reads": "$categories.denovo_assembly.summary.number_of_reads",
+                "qc_num_reads": "$categories.size_check.summary.num_of_reads",
                 "qc_main_sp_plus_uncl": removeNullProperty(
                     {
                         "$let": {
