@@ -2,6 +2,9 @@ const coerce = (x: any) => {
   if (!x && x !== 0 && x !== false) {
     return "";
   }
+  if (x instanceof Date) {
+    return `${x.getFullYear()}-${x.getMonth()}-${x.getDay()}`;
+  }
   return x;
 };
 
