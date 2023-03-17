@@ -172,27 +172,36 @@ def agg_pipeline(changed_ids=None):
                 "qc_ambiguous_sites": "$categories.mapping_qc.summary.snps.x10_10%.snps",
                 "qc_unclassified_reads": removeNullProperty(
                     {
-                        "$let": {
-                            "vars": {
-                                "res": {
-                                    "$arrayElemAt": [
-                                        {
-                                            "$filter": {
-                                                "input": "$categories.stamper.summary.tests",
-                                                "as": "elem",
-                                                "cond": {
-                                                    "$eq": [
-                                                        "$$elem.name",
-                                                        "unclassified_level_ok",
+                        {
+                            "$round": {
+                                "$multiply": [
+                                    100,
+                                    {
+                                        "$let": {
+                                            "vars": {
+                                                "res": {
+                                                    "$arrayElemAt": [
+                                                        {
+                                                            "$filter": {
+                                                                "input": "$categories.stamper.summary.tests",
+                                                                "as": "elem",
+                                                                "cond": {
+                                                                    "$eq": [
+                                                                        "$$elem.name",
+                                                                        "unclassified_level_ok",
+                                                                    ]
+                                                                },
+                                                            }
+                                                        },
+                                                        0,
                                                     ]
                                                 },
-                                            }
-                                        },
-                                        0,
-                                    ]
-                                },
-                            },
-                            "in": "$$res.value",
+                                            },
+                                            "in": "$$res.value",
+                                        }
+                                    },
+                                ]
+                            }
                         }
                     }
                 ),
@@ -264,15 +273,22 @@ def agg_pipeline(changed_ids=None):
                 "qc_num_reads": "$categories.size_check.summary.num_of_reads",
                 "qc_main_sp_plus_uncl": removeNullProperty(
                     {
-                        "$let": {
-                            "vars": {
-                                "main_sp": "$categories.species_detection.summary.percent_classified_species_1",
-                                "uncl": "$categories.species_detection.summary.percent_unclassified",
-                            },
-                            "in": {
-                                "$add": ["$$main_sp", "$$uncl"],
-                            },
-                        },
+                        "$round": {
+                            "$multiply": [
+                                100,
+                                {
+                                    "$let": {
+                                        "vars": {
+                                            "main_sp": "$categories.species_detection.summary.percent_classified_species_1",
+                                            "uncl": "$categories.species_detection.summary.percent_unclassified",
+                                        },
+                                        "in": {
+                                            "$add": ["$$main_sp", "$$uncl"],
+                                        },
+                                    }
+                                },
+                            ]
+                        }
                     }
                 ),
                 "qc_final": removeNullProperty(
