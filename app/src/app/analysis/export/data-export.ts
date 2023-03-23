@@ -3,7 +3,8 @@ const coerce = (x: any) => {
     return "";
   }
   if (x instanceof Date) {
-    return `${x.getFullYear()}-${x.getMonth()}-${x.getDay()}`;
+    // Fancy libraries could be used, but this will do the trick just fine
+    return x.toISOString().split("T")[0];
   }
   return x;
 };
