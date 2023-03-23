@@ -2,6 +2,10 @@ const coerce = (x: any) => {
   if (!x && x !== 0 && x !== false) {
     return "";
   }
+  if (x instanceof Date) {
+    // Fancy libraries could be used, but this will do the trick just fine
+    return x.toISOString().split("T")[0];
+  }
   return x;
 };
 
