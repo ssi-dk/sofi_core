@@ -154,39 +154,29 @@ def agg_pipeline(changed_ids=None):
                     }
                 ),
                 "qc_action": "$categories.stamper.stamp.value",
-                "qc_ambiguous_sites": "$categories.mapping_qc.summary.snps.x10_10%.snps",
                 "qc_unclassified_reads": removeNullProperty(
                     {
-                        {
-                            "$round": {
-                                "$multiply": [
-                                    100,
-                                    {
-                                        "$let": {
-                                            "vars": {
-                                                "res": {
-                                                    "$arrayElemAt": [
-                                                        {
-                                                            "$filter": {
-                                                                "input": "$categories.stamper.summary.tests",
-                                                                "as": "elem",
-                                                                "cond": {
-                                                                    "$eq": [
-                                                                        "$$elem.name",
-                                                                        "unclassified_level_ok",
-                                                                    ]
-                                                                },
-                                                            }
-                                                        },
-                                                        0,
+                        "$let": {
+                            "vars": {
+                                "res": {
+                                    "$arrayElemAt": [
+                                        {
+                                            "$filter": {
+                                                "input": "$categories.stamper.summary.tests",
+                                                "as": "elem",
+                                                "cond": {
+                                                    "$eq": [
+                                                        "$$elem.name",
+                                                        "unclassified_level_ok",
                                                     ]
                                                 },
-                                            },
-                                            "in": "$$res.value",
-                                        }
-                                    },
-                                ]
-                            }
+                                            }
+                                        },
+                                        0,
+                                    ]
+                                },
+                            },
+                            "in": "$$res.value",
                         }
                     }
                 ),
