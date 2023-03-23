@@ -154,6 +154,7 @@ def agg_pipeline(changed_ids=None):
                     }
                 ),
                 "qc_action": "$categories.stamper.stamp.value",
+                "qc_ambiguous_sites": "$categories.mapping_qc.summary.snps.x10_10%.snps",
                 "qc_unclassified_reads": removeNullProperty(
                     {
                         "$let": {
@@ -248,22 +249,15 @@ def agg_pipeline(changed_ids=None):
                 "qc_num_reads": "$categories.size_check.summary.num_of_reads",
                 "qc_main_sp_plus_uncl": removeNullProperty(
                     {
-                        "$round": {
-                            "$multiply": [
-                                100,
-                                {
-                                    "$let": {
-                                        "vars": {
-                                            "main_sp": "$categories.species_detection.summary.percent_classified_species_1",
-                                            "uncl": "$categories.species_detection.summary.percent_unclassified",
-                                        },
-                                        "in": {
-                                            "$add": ["$$main_sp", "$$uncl"],
-                                        },
-                                    }
-                                },
-                            ]
-                        }
+                        "$let": {
+                            "vars": {
+                                "main_sp": "$categories.species_detection.summary.percent_classified_species_1",
+                                "uncl": "$categories.species_detection.summary.percent_unclassified",
+                            },
+                            "in": {
+                                "$add": ["$$main_sp", "$$uncl"],
+                            },
+                        },
                     }
                 ),
                 "qc_final": removeNullProperty(
