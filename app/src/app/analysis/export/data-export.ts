@@ -1,12 +1,20 @@
-const coerce = (x: any) => {
-  if (!x && x !== 0 && x !== false) {
+import { AnalysisResultAllOfQcFailedTests } from "../../../sap-client";
+
+const transform = (value: any, key: string | number | symbol) => {
+  if (!value && value !== 0 && value !== false) {
     return "";
   }
-  if (x instanceof Date) {
+  if (value instanceof Date) {
     // Fancy libraries could be used, but this will do the trick just fine
-    return x.toISOString().split("T")[0];
+    return value.toISOString().split("T")[0];
   }
-  return x;
+
+  if (key === "qc_failed_tests") {
+    if (value instanceof Array && value.length > 0) {
+      return "Warning";
+    }
+  }
+  return value;
 };
 
 export function convertToCsv<T>(
@@ -23,7 +31,8 @@ export function convertToCsv<T>(
   const res = str.concat(
     `${data
       .map(
-        (x) => `${keys.map((k) => `${coerce(x[k])}${delimiter}`).join("")}\r\n`
+        (x) =>
+          `${keys.map((k) => `${transform(x[k], k)}${delimiter}`).join("")}\r\n`
       )
       .join("")}\r\n`
   );
