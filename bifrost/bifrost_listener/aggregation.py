@@ -249,15 +249,25 @@ def agg_pipeline(changed_ids=None):
                 "qc_num_reads": "$categories.size_check.summary.num_of_reads",
                 "qc_main_sp_plus_uncl": removeNullProperty(
                     {
-                        "$let": {
-                            "vars": {
-                                "main_sp": "$categories.species_detection.summary.percent_classified_species_1",
-                                "uncl": "$categories.species_detection.summary.percent_unclassified",
+                        "$round": [
+                            {
+                                "$multiply": [
+                                    100,
+                                    {
+                                        "$let": {
+                                            "vars": {
+                                                "main_sp": "$categories.species_detection.summary.percent_classified_species_1",
+                                                "uncl": "$categories.species_detection.summary.percent_unclassified",
+                                            },
+                                            "in": {
+                                                "$add": ["$$main_sp", "$$uncl"],
+                                            },
+                                        }
+                                    },
+                                ],
                             },
-                            "in": {
-                                "$add": ["$$main_sp", "$$uncl"],
-                            },
-                        },
+                            2,
+                        ]
                     }
                 ),
                 "qc_final": removeNullProperty(
