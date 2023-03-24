@@ -526,7 +526,10 @@ export default function AnalysisPage() {
         }
       }
       // any other dates
-      else if (
+      else if (value instanceof Date) {
+        // Fancy libraries could be used, but this will do the trick just fine
+        v = value.toISOString().split("T")[0];
+      } else if (
         (columnId.startsWith("date") || columnId.endsWith("date")) &&
         value !== undefined
       ) {
