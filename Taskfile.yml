@@ -7,6 +7,8 @@ includes:
   agg-pipeline-test:
     taskfile: test/bifrost
     dir: test/bifrost
+  tunnel:
+    taskfile: Taskfile.tunnel.yml
 
 
 tasks:

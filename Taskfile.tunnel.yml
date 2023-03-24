@@ -1,0 +1,23 @@
+version: '3'
+# sudo journalctl --unit=sofi.service --since=today -f
+tasks:
+  sofi-test-shell:
+    description: "Add username after task, such as `task sofi -- thyste`"
+    cmds:
+      - ssh -o ServerAliveInterval=60 -J thyste@ssh.computerome.dk thyste@foodwebdev.opr.computerome.dk
+    interactive: true
+
+  sofi-test:
+    description: "Add username after task, such as `task sofi -- thyste`"
+    cmds:
+      - sudo ssh -o ServerAliveInterval=60 -J {{ .CLI_ARGS }}@ssh.computerome.dk -N {{ .CLI_ARGS }}@foodwebdev.opr.computerome.dk -L 443:localhost:443
+
+  bifrost-test:
+    description: "Add username after task, such as `task bifrost-test -- thyste`"
+    cmds:
+      - sudo ssh -o ServerAliveInterval=60 -J {{ .CLI_ARGS }}@ssh.computerome.dk -N {{ .CLI_ARGS }}@fooddbdev.opr.computerome.dk -L 27018:localhost:27017
+
+  bifrost-prod:
+    description: "Add username after task, such as `task bifrost-prod -- thyste`"
+    cmds:
+      - sudo ssh -o ServerAliveInterval=60 -J {{ .CLI_ARGS }}@ssh.computerome.dk -N {{ .CLI_ARGS }}@fooddb.opr.computerome.dk -L 27019:localhost:27017
