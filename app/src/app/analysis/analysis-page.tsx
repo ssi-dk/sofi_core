@@ -530,7 +530,8 @@ export default function AnalysisPage() {
         // Fancy libraries could be used, but this will do the trick just fine
         v = value.toISOString().split("T")[0];
       } else if (
-        (columnId.startsWith("date") || columnId.endsWith("date")) &&
+        (columnId.toLowerCase().startsWith("date") ||
+          columnId.toLowerCase().endsWith("date")) &&
         value !== undefined
       ) {
         if (
