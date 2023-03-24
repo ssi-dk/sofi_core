@@ -56,28 +56,13 @@ def agg_pipeline(changed_ids=None):
                 "sequence_id": "$categories.sample_info.summary.sofi_sequence_id",
                 "run_id": "$categories.sample_info.summary.experiment_name",
                 "date_run": {
-                    "$dateToString": {
-                        "date": {
-                            "$toDate": "$categories.sample_info.summary.sequence_run_date"
-                        },
-                        "format": "%Y-%m-%d",
-                    }
+                    "$toDate": "$categories.sample_info.summary.sequence_run_date"
                 },
                 "institution": "$categories.sample_info.summary.institution",
                 "project_number": "$categories.sample_info.summary.project_no",
                 "project_title": "$categories.sample_info.summary.project_title",
-                "date_sofi": {
-                    "$dateToString": {
-                        "date": {"$toDate": "$metadata.created_at"},
-                        "format": "%Y-%m-%d",
-                    }
-                },
-                "date_analysis_sofi": {
-                    "$dateToString": {
-                        "date": {"$toDate": "$metadata.created_at"},
-                        "format": "%Y-%m-%d",
-                    }
-                },
+                "date_sofi": {"$toDate": "$metadata.created_at"},
+                "date_analysis_sofi": {"$toDate": "$metadata.created_at"},
                 "qc_detected_species": "$categories.species_detection.summary.detected_species",
                 "qc_provided_species": "$categories.sample_info.summary.provided_species",
                 "subspecies": "$categories.serotype.summary.Subspecies",
@@ -172,28 +157,38 @@ def agg_pipeline(changed_ids=None):
                 "qc_ambiguous_sites": "$categories.mapping_qc.summary.snps.x10_10%.snps",
                 "qc_unclassified_reads": removeNullProperty(
                     {
-                        "$let": {
-                            "vars": {
-                                "res": {
-                                    "$arrayElemAt": [
-                                        {
-                                            "$filter": {
-                                                "input": "$categories.stamper.summary.tests",
-                                                "as": "elem",
-                                                "cond": {
-                                                    "$eq": [
-                                                        "$$elem.name",
-                                                        "unclassified_level_ok",
+                        "$round": [
+                            {
+                                "$multiply": [
+                                    {
+                                        "$let": {
+                                            "vars": {
+                                                "res": {
+                                                    "$arrayElemAt": [
+                                                        {
+                                                            "$filter": {
+                                                                "input": "$categories.stamper.summary.tests",
+                                                                "as": "elem",
+                                                                "cond": {
+                                                                    "$eq": [
+                                                                        "$$elem.name",
+                                                                        "unclassified_level_ok",
+                                                                    ]
+                                                                },
+                                                            }
+                                                        },
+                                                        0,
                                                     ]
                                                 },
-                                            }
-                                        },
-                                        0,
-                                    ]
-                                },
+                                            },
+                                            "in": "$$res.value",
+                                        }
+                                    },
+                                    100,
+                                ]
                             },
-                            "in": "$$res.value",
-                        }
+                            2,
+                        ]
                     }
                 ),
                 "qc_db_id": removeNullProperty(
@@ -261,18 +256,28 @@ def agg_pipeline(changed_ids=None):
                 ),
                 "qc_avg_coverage": "$categories.denovo_assembly.summary.depth",
                 "qc_num_contigs": "$categories.denovo_assembly.summary.contigs",
-                "qc_num_reads": "$categories.denovo_assembly.summary.number_of_reads",
+                "qc_num_reads": "$categories.size_check.summary.num_of_reads",
                 "qc_main_sp_plus_uncl": removeNullProperty(
                     {
-                        "$let": {
-                            "vars": {
-                                "main_sp": "$categories.species_detection.summary.percent_classified_species_1",
-                                "uncl": "$categories.species_detection.summary.percent_unclassified",
+                        "$round": [
+                            {
+                                "$multiply": [
+                                    100,
+                                    {
+                                        "$let": {
+                                            "vars": {
+                                                "main_sp": "$categories.species_detection.summary.percent_classified_species_1",
+                                                "uncl": "$categories.species_detection.summary.percent_unclassified",
+                                            },
+                                            "in": {
+                                                "$add": ["$$main_sp", "$$uncl"],
+                                            },
+                                        }
+                                    },
+                                ],
                             },
-                            "in": {
-                                "$add": ["$$main_sp", "$$uncl"],
-                            },
-                        },
+                            2,
+                        ]
                     }
                 ),
                 "qc_final": removeNullProperty(
