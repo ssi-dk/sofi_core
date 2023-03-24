@@ -519,15 +519,13 @@ export default function AnalysisPage() {
       if (v === "Invalid Date") {
         return <div />;
       }
-      // specific dates with timestamps
-      if (columnId === "date_sofi" || columnId === "date_analysis_sofi") {
-        if (value && value.toISOString) {
-          v = value?.toISOString();
-        }
-      }
       // any other dates
-      else if (
-        (columnId.startsWith("date") || columnId.endsWith("date")) &&
+      else if (value instanceof Date) {
+        // Fancy libraries could be used, but this will do the trick just fine
+        v = value.toISOString().split("T")[0];
+      } else if (
+        (columnId.toLowerCase().startsWith("date") ||
+          columnId.toLowerCase().endsWith("date")) &&
         value !== undefined
       ) {
         if (
