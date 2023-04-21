@@ -21,6 +21,18 @@ const transform = (value: any, key: string | number | symbol) => {
       return "Warning";
     }
   }
+
+  if (key == "st_alleles") {
+    let acc = "";
+    Object.keys(value).map((k) => {
+      if (acc !== "") {
+        acc += ", ";
+      }
+      acc += `${k}: ${value[k]}`;
+    });
+    return acc;
+  }
+
   return value;
 };
 
