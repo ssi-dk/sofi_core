@@ -9,7 +9,7 @@ deleteUser(){
   # params
   email=$1
 
-  id=`docker exec sap_kratos_1 kratos identities list --format json -e $ENDPOINT | \
+  id=`docker exec sofi_kratos_1 kratos identities list --format json -e $ENDPOINT | \
       jq -r "map(select(.recovery_addresses[].value == \"$email\")) | .[].id"`
   echo "User '$email' located with id '$id'"
   docker exec sofi_kratos_1 kratos identities delete $id -e $ENDPOINT
