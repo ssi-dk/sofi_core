@@ -357,7 +357,7 @@ export default function AnalysisPage() {
    * case if qc_final is in the selection, then the three other fields must also be in the selection. #104595
    * @param selection1 Selected columns from view
    */
-  const preApproveSelection = React.useCallback(() => {
+  const approveSelection = React.useCallback(() => {
     setNeedsApproveNotify(true);
 
     const errorObject: ErrorObject = {};
@@ -387,13 +387,9 @@ export default function AnalysisPage() {
       setErrors(errorObject);
       setError(true);
     } else {
-      approveSelection();
+      doApproval({ matrix: selection as any });
     }
-  }, [selection, setNeedsApproveNotify]);
-
-  const approveSelection = React.useCallback(() => {
-    doApproval({ matrix: selection as any });
-  }, [selection, doApproval]);
+  }, [selection, doApproval, setNeedsApproveNotify]);
 
   const rejectSelection = React.useCallback(() => {
     setNeedsRejectNotify(true);
@@ -772,7 +768,7 @@ export default function AnalysisPage() {
                 leftIcon={<CheckIcon />}
                 margin="4px"
                 disabled={!pageState.isNarrowed}
-                onClick={preApproveSelection}
+                onClick={approveSelection}
               >
                 {t("Approve")}
               </Button>
