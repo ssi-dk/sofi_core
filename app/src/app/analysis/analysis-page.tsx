@@ -396,7 +396,7 @@ export default function AnalysisPage() {
     if (!preCheckApproval(selection as SelectionType)) {
       doApproval({ matrix: selection as any });
     }
-  }, [selection, doApproval, setNeedsApproveNotify]);
+  }, [selection, doApproval, setNeedsApproveNotify, preCheckApproval]);
 
   const rejectSelection = React.useCallback(() => {
     setNeedsRejectNotify(true);
