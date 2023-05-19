@@ -395,7 +395,7 @@ export default function AnalysisPage() {
     setNeedsRejectNotify(true);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     doRejection({ matrix: selection as any });
-  }, [selection, doRejection, setNeedsRejectNotify]);
+  }, [selection, doRejection, setNeedsRejectNotify, getDependentColumns]);
 
   // Display approval toasts
   React.useMemo(() => {
