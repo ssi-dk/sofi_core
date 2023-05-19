@@ -389,13 +389,13 @@ export default function AnalysisPage() {
     } else {
       doApproval({ matrix: selection as any });
     }
-  }, [selection, doApproval, setNeedsApproveNotify]);
+  }, [selection, doApproval, setNeedsApproveNotify, getDependentColumns]);
 
   const rejectSelection = React.useCallback(() => {
     setNeedsRejectNotify(true);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     doRejection({ matrix: selection as any });
-  }, [selection, doRejection, setNeedsRejectNotify, getDependentColumns]);
+  }, [selection, doRejection, setNeedsRejectNotify]);
 
   // Display approval toasts
   React.useMemo(() => {
