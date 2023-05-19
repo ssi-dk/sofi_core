@@ -329,6 +329,27 @@ export default function AnalysisPage() {
     [setPageState, pageState]
   );
 
+  React.useEffect(() => {
+    if (error) {
+      const stringyfied = Object.entries(errors).reduceRight((acc, [k, v]) => {
+        return Object.entries(v).reduceRight((accp, [kp, vp]) => {
+          return (
+            accp +
+            `\n\tColumn '${kp}' needs ${vp} to be included in the selection.`
+          );
+        }, acc + `\nSequence '${k}': `);
+      }, "");
+      toast({
+        title: t("Cannot approve when dependent fields are missing"),
+        description: stringyfied,
+        status: "error",
+        duration: null,
+        isClosable: true,
+      });
+      setNeedsApproveNotify(false);
+    }
+  }, [error, errors, toast, t]);
+
   /**
    * Check that every selected field does not "approve" with fields not present in selection.
    *
@@ -336,10 +357,12 @@ export default function AnalysisPage() {
    * case if qc_final is in the selection, then the three other fields must also be in the selection. #104595
    * @param selection1 Selected columns from view
    */
-  const preCheckApproval = (selection1: SelectionType) => {
+  const preApproveSelection = React.useCallback(() => {
+    setNeedsApproveNotify(true);
+
     const errorObject: ErrorObject = {};
 
-    for (const [sequenceId, sequenceSelection] of Object.entries(selection1)) {
+    for (const [sequenceId, sequenceSelection] of Object.entries(selection)) {
       const approvedFields = Object.entries(sequenceSelection)
         .filter(([k, v], i) => v)
         .map(([k, v], i) => k);
@@ -363,40 +386,14 @@ export default function AnalysisPage() {
     if (Object.keys(errorObject).length > 0) {
       setErrors(errorObject);
       setError(true);
-
-      return true;
+    } else {
+      approveSelection();
     }
-
-    return false;
-  };
-
-  React.useEffect(() => {
-    if (error) {
-      const stringyfied = Object.entries(errors).reduceRight((acc, [k, v]) => {
-        return Object.entries(v).reduceRight((accp, [kp, vp]) => {
-          return (
-            accp +
-            `\n\tColumn '${kp}' needs ${vp} to be included in the selection.`
-          );
-        }, acc + `\nSequence '${k}': `);
-      }, "");
-      toast({
-        title: t("Cannot approve when dependent fields are missing"),
-        description: stringyfied,
-        status: "error",
-        duration: null,
-        isClosable: true,
-      });
-      setNeedsApproveNotify(false);
-    }
-  }, [error, errors, toast, t]);
+  }, [selection, setNeedsApproveNotify]);
 
   const approveSelection = React.useCallback(() => {
-    setNeedsApproveNotify(true);
-    if (!preCheckApproval(selection as SelectionType)) {
-      doApproval({ matrix: selection as any });
-    }
-  }, [selection, doApproval, setNeedsApproveNotify, preCheckApproval]);
+    doApproval({ matrix: selection as any });
+  }, [selection, doApproval]);
 
   const rejectSelection = React.useCallback(() => {
     setNeedsRejectNotify(true);
@@ -775,7 +772,7 @@ export default function AnalysisPage() {
                 leftIcon={<CheckIcon />}
                 margin="4px"
                 disabled={!pageState.isNarrowed}
-                onClick={approveSelection}
+                onClick={preApproveSelection}
               >
                 {t("Approve")}
               </Button>
