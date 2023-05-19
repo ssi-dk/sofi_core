@@ -337,8 +337,7 @@ export default function AnalysisPage() {
    * @param selection1 Selected columns from view
    */
   const preCheckApproval = (selection1: SelectionType) => {
-    const errors1: ErrorObject = {};
-    let error1 = false;
+    const errorObject: ErrorObject = {};
 
     for (const [sequenceId, sequenceSelection] of Object.entries(selection1)) {
       const approvedFields = Object.entries(sequenceSelection)
@@ -348,26 +347,27 @@ export default function AnalysisPage() {
         const needed = getDependentColumns(field as keyof AnalysisResult);
         for (const e of needed) {
           if (!approvedFields.some((x) => x === e)) {
-            error1 = true;
-            if (errors1[sequenceId] === undefined) {
-              errors1[sequenceId] = {};
+            if (errorObject[sequenceId] === undefined) {
+              errorObject[sequenceId] = {};
             }
-            if (errors1[sequenceId][field] === undefined) {
-              errors1[sequenceId][field] = `'${e}'`;
+            if (errorObject[sequenceId][field] === undefined) {
+              errorObject[sequenceId][field] = `'${e}'`;
             } else {
-              errors1[sequenceId][field] += `, '${e}'`;
+              errorObject[sequenceId][field] += `, '${e}'`;
             }
           }
         }
       });
     }
 
-    if (error1) {
-      setErrors(errors1);
+    if (Object.keys(errorObject).length > 0) {
+      setErrors(errorObject);
       setError(true);
+
+      return true;
     }
 
-    return error1;
+    return false;
   };
 
   React.useEffect(() => {
