@@ -59,7 +59,7 @@ def create_approval(user, token_info, body: ApprovalRequest):
         # When approving date_epi, automatically generate the timestamp
         if fields.get("date_epi", False):
             seq_update["date_epi"] = appr.timestamp
-            time_fields += "date_epi"
+            time_fields.append("date_epi")
         for f in time_fields:
             seq_update[f] = appr.timestamp
             appr.matrix[seq][f] = ApprovalStatus.APPROVED
