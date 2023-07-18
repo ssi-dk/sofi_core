@@ -70,7 +70,7 @@ def create_approval(user, token_info, body: ApprovalRequest):
     errors_tuple = handle_approvals(appr, token_info["institution"])
     errors = []
     analysis_timestamp_reverts = {}
-    for (error_seq_id, error) in errors_tuple:
+    for error_seq_id, error in errors_tuple:
         time_fields = find_approved_categories(appr.matrix[error_seq_id])
         for f in time_fields:
             analysis_timestamp_reverts[error_seq_id] = {f: None}
