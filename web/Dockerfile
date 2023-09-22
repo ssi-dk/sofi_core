@@ -1,4 +1,4 @@
-FROM tiangolo/meinheld-gunicorn-flask:python3.8 AS base
+FROM tiangolo/meinheld-gunicorn-flask:python3.8-2023-06-19@sha256:d5e0957705c1d74e6f6b5bbfb7145bad3f9487a5bee8cdfbaef68250d9bb9f1f AS base
 
 COPY ["requirements.txt", "/app/"]
 RUN pip install -r requirements.txt
