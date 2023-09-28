@@ -19,7 +19,7 @@ class Column(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, approvable=None, editable=None, editable_format=None, pii=None, gdpr=None, organizations=None, field_name=None, approves_with=None):  # noqa: E501
+    def __init__(self, approvable=None, editable=None, editable_format=None, pii=None, gdpr=None, computed=None, organizations=None, field_name=None, approves_with=None):  # noqa: E501
         """Column - a model defined in OpenAPI
 
         :param approvable: The approvable of this Column.  # noqa: E501
@@ -32,6 +32,8 @@ class Column(Model):
         :type pii: bool
         :param gdpr: The gdpr of this Column.  # noqa: E501
         :type gdpr: bool
+        :param computed: The computed of this Column.  # noqa: E501
+        :type computed: bool
         :param organizations: The organizations of this Column.  # noqa: E501
         :type organizations: List[Organization]
         :param field_name: The field_name of this Column.  # noqa: E501
@@ -45,6 +47,7 @@ class Column(Model):
             'editable_format': str,
             'pii': bool,
             'gdpr': bool,
+            'computed': bool,
             'organizations': List[Organization],
             'field_name': str,
             'approves_with': List[str],
@@ -56,6 +59,7 @@ class Column(Model):
             'editable_format': 'editable_format',
             'pii': 'pii',
             'gdpr': 'gdpr',
+            'computed': 'computed',
             'organizations': 'organizations',
             'field_name': 'field_name',
             'approves_with': 'approves_with',
@@ -66,6 +70,7 @@ class Column(Model):
         self._editable_format = editable_format
         self._pii = pii
         self._gdpr = gdpr
+        self._computed = computed
         self._organizations = organizations
         self._field_name = field_name
         self._approves_with = approves_with
@@ -195,6 +200,29 @@ class Column(Model):
         """
 
         self._gdpr = gdpr
+
+    @property
+    def computed(self):
+        """Gets the computed of this Column.
+
+        True if the column is programmatically calculated by SOFI. Such columns can be approvable in the sense of being transferred to a metadata service as part of an approval, but should not be thought of as 'selectable' or capable of any user-side manipulation.   # noqa: E501
+
+        :return: The computed of this Column.
+        :rtype: bool
+        """
+        return self._computed
+
+    @computed.setter
+    def computed(self, computed):
+        """Sets the computed of this Column.
+
+        True if the column is programmatically calculated by SOFI. Such columns can be approvable in the sense of being transferred to a metadata service as part of an approval, but should not be thought of as 'selectable' or capable of any user-side manipulation.   # noqa: E501
+
+        :param computed: The computed of this Column.
+        :type computed: bool
+        """
+
+        self._computed = computed
 
     @property
     def organizations(self):

@@ -17,7 +17,7 @@ stages:
           imageNameRelease: '$(dockerId)/sap-api:latest'
 
         steps:
-        - script: docker build -f Dockerfile -t $(imageName) .
+        - script: DOCKER_BUILDKIT=0 docker build -f Dockerfile -t $(imageName) .
           displayName: 'Docker build and test'
           workingDirectory: web
 
@@ -58,7 +58,7 @@ stages:
           imageNameRelease: '$(dockerId)/sap-web:latest'
 
         steps:
-        - script: docker build -f Dockerfile -t $(imageName) .
+        - script: DOCKER_BUILDKIT=0 docker build -f Dockerfile -t $(imageName) .
           displayName: 'Docker build and test'
           workingDirectory: app
 
@@ -99,7 +99,7 @@ stages:
           listenerImageNameRelease: '$(dockerId)/bifrost-listener:latest'
 
         steps:
-        - script: docker build -f ./bifrost_listener/Dockerfile -t $(listenerImageName) ./bifrost_listener
+        - script: DOCKER_BUILDKIT=0 docker build -f ./bifrost_listener/Dockerfile -t $(listenerImageName) ./bifrost_listener
           displayName: 'Docker build and test listener'
           workingDirectory: bifrost
 
@@ -123,7 +123,7 @@ stages:
           brokerImageNameRelease: '$(dockerId)/sap-queue-broker:latest'
 
         steps:
-        - script: docker build -f ./bifrost_queue_broker/Dockerfile -t $(brokerImageName) ./bifrost_queue_broker
+        - script: DOCKER_BUILDKIT=0 docker build -f ./bifrost_queue_broker/Dockerfile -t $(brokerImageName) ./bifrost_queue_broker
           displayName: 'Docker build and test broker'
           workingDirectory: bifrost
 
@@ -164,7 +164,7 @@ stages:
           imageNameRelease: '$(dockerId)/auth-selfservice-ui:latest'
 
         steps:
-        - script: docker build -f Dockerfile -t $(imageName) .
+        - script: DOCKER_BUILDKIT=0 docker build -f Dockerfile -t $(imageName) .
           displayName: 'Docker build and test'
           workingDirectory: auth
 

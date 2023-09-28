@@ -7,9 +7,11 @@ from typing import List, Dict  # noqa: F401
 
 from web.src.SAP.generated.models.base_model_ import Model
 from web.src.SAP.generated.models.query_operator import QueryOperator
+from web.src.SAP.generated.models.query_range_inclusivity import QueryRangeInclusivity
 from web.src.SAP.generated import util
 
 from web.src.SAP.generated.models.query_operator import QueryOperator  # noqa: E501
+from web.src.SAP.generated.models.query_range_inclusivity import QueryRangeInclusivity  # noqa: E501
 
 class QueryOperand(Model):
 
@@ -19,7 +21,7 @@ class QueryOperand(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, operator=None, left=None, right=None, field=None, term=None, prefix=None):  # noqa: E501
+    def __init__(self, operator=None, left=None, right=None, field=None, term=None, inclusive=None, term_min=None, term_max=None, prefix=None):  # noqa: E501
         """QueryOperand - a model defined in OpenAPI
 
         :param operator: The operator of this QueryOperand.  # noqa: E501
@@ -32,6 +34,12 @@ class QueryOperand(Model):
         :type field: str
         :param term: The term of this QueryOperand.  # noqa: E501
         :type term: str
+        :param inclusive: The inclusive of this QueryOperand.  # noqa: E501
+        :type inclusive: QueryRangeInclusivity
+        :param term_min: The term_min of this QueryOperand.  # noqa: E501
+        :type term_min: str
+        :param term_max: The term_max of this QueryOperand.  # noqa: E501
+        :type term_max: str
         :param prefix: The prefix of this QueryOperand.  # noqa: E501
         :type prefix: str
         """
@@ -41,6 +49,9 @@ class QueryOperand(Model):
             'right': object,
             'field': str,
             'term': str,
+            'inclusive': QueryRangeInclusivity,
+            'term_min': str,
+            'term_max': str,
             'prefix': str,
         }
 
@@ -50,6 +61,9 @@ class QueryOperand(Model):
             'right': 'right',
             'field': 'field',
             'term': 'term',
+            'inclusive': 'inclusive',
+            'term_min': 'term_min',
+            'term_max': 'term_max',
             'prefix': 'prefix',
         }
 
@@ -58,6 +72,9 @@ class QueryOperand(Model):
         self._right = right
         self._field = field
         self._term = term
+        self._inclusive = inclusive
+        self._term_min = term_min
+        self._term_max = term_max
         self._prefix = prefix
 
     @classmethod
@@ -175,6 +192,69 @@ class QueryOperand(Model):
         """
 
         self._term = term
+
+    @property
+    def inclusive(self):
+        """Gets the inclusive of this QueryOperand.
+
+
+        :return: The inclusive of this QueryOperand.
+        :rtype: QueryRangeInclusivity
+        """
+        return self._inclusive
+
+    @inclusive.setter
+    def inclusive(self, inclusive):
+        """Sets the inclusive of this QueryOperand.
+
+
+        :param inclusive: The inclusive of this QueryOperand.
+        :type inclusive: QueryRangeInclusivity
+        """
+
+        self._inclusive = inclusive
+
+    @property
+    def term_min(self):
+        """Gets the term_min of this QueryOperand.
+
+
+        :return: The term_min of this QueryOperand.
+        :rtype: str
+        """
+        return self._term_min
+
+    @term_min.setter
+    def term_min(self, term_min):
+        """Sets the term_min of this QueryOperand.
+
+
+        :param term_min: The term_min of this QueryOperand.
+        :type term_min: str
+        """
+
+        self._term_min = term_min
+
+    @property
+    def term_max(self):
+        """Gets the term_max of this QueryOperand.
+
+
+        :return: The term_max of this QueryOperand.
+        :rtype: str
+        """
+        return self._term_max
+
+    @term_max.setter
+    def term_max(self, term_max):
+        """Sets the term_max of this QueryOperand.
+
+
+        :param term_max: The term_max of this QueryOperand.
+        :type term_max: str
+        """
+
+        self._term_max = term_max
 
     @property
     def prefix(self):

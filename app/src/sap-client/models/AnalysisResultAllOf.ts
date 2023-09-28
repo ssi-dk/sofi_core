@@ -13,6 +13,9 @@
 
 import { exists, mapValues } from '../runtime';
 import {
+    AnalysisResultAllOfQcFailedTests,
+    AnalysisResultAllOfQcFailedTestsFromJSON,
+    AnalysisResultAllOfQcFailedTestsToJSON,
     Resistance,
     ResistanceFromJSON,
     ResistanceToJSON,
@@ -167,43 +170,19 @@ export interface AnalysisResultAllOf  {
      * @type {string}
      * @memberof AnalysisResultAllOf
      */
-    qc_failed_tests?: string;
+    qc_db_id2?: string;
+    /**
+     * 
+     * @type {Array<AnalysisResultAllOfQcFailedTests>}
+     * @memberof AnalysisResultAllOf
+     */
+    qc_failed_tests?: Array<AnalysisResultAllOfQcFailedTests>;
     /**
      * 
      * @type {number}
      * @memberof AnalysisResultAllOf
      */
     qc_cgmlst_percent?: number;
-    /**
-     * 
-     * @type {object}
-     * @memberof AnalysisResultAllOf
-     */
-    cgmlst_schema_salmonella?: object;
-    /**
-     * 
-     * @type {object}
-     * @memberof AnalysisResultAllOf
-     */
-    cgmlst_schema_ecoli?: object;
-    /**
-     * 
-     * @type {object}
-     * @memberof AnalysisResultAllOf
-     */
-    cgmlst_schema_campylobacter?: object;
-    /**
-     * 
-     * @type {object}
-     * @memberof AnalysisResultAllOf
-     */
-    cgmlst_schema_listeria?: object;
-    /**
-     * 
-     * @type {object}
-     * @memberof AnalysisResultAllOf
-     */
-    cgmlst_schema_klebsiella?: object;
     /**
      * 
      * @type {string}
@@ -228,6 +207,12 @@ export interface AnalysisResultAllOf  {
      * @memberof AnalysisResultAllOf
      */
     st_final?: number;
+    /**
+     * 
+     * @type {object}
+     * @memberof AnalysisResultAllOf
+     */
+    st_alleles?: object;
     /**
      * 
      * @type {string}
@@ -558,6 +543,36 @@ export interface AnalysisResultAllOf  {
      * @memberof AnalysisResultAllOf
      */
     amr_van?: Resistance;
+    /**
+     * 
+     * @type {object}
+     * @memberof AnalysisResultAllOf
+     */
+    cgmlst_schema_salmonella?: object;
+    /**
+     * 
+     * @type {object}
+     * @memberof AnalysisResultAllOf
+     */
+    cgmlst_schema_ecoli?: object;
+    /**
+     * 
+     * @type {object}
+     * @memberof AnalysisResultAllOf
+     */
+    cgmlst_schema_campylobacter?: object;
+    /**
+     * 
+     * @type {object}
+     * @memberof AnalysisResultAllOf
+     */
+    cgmlst_schema_listeria?: object;
+    /**
+     * 
+     * @type {object}
+     * @memberof AnalysisResultAllOf
+     */
+    cgmlst_schema_klebsiella?: object;
 }
 
 export function AnalysisResultAllOfFromJSON(json: any): AnalysisResultAllOf {
@@ -585,17 +600,14 @@ export function AnalysisResultAllOfFromJSON(json: any): AnalysisResultAllOf {
         'qc_main_sp_plus_uncl': !exists(json, 'qc_main_sp_plus_uncl') ? undefined : json['qc_main_sp_plus_uncl'],
         'qc_unclassified_reads': !exists(json, 'qc_unclassified_reads') ? undefined : json['qc_unclassified_reads'],
         'qc_db_id': !exists(json, 'qc_db_id') ? undefined : json['qc_db_id'],
-        'qc_failed_tests': !exists(json, 'qc_failed_tests') ? undefined : json['qc_failed_tests'],
+        'qc_db_id2': !exists(json, 'qc_db_id2') ? undefined : json['qc_db_id2'],
+        'qc_failed_tests': !exists(json, 'qc_failed_tests') ? undefined : (json['qc_failed_tests'] as Array<any>).map(AnalysisResultAllOfQcFailedTestsFromJSON),
         'qc_cgmlst_percent': !exists(json, 'qc_cgmlst_percent') ? undefined : json['qc_cgmlst_percent'],
-        'cgmlst_schema_salmonella': !exists(json, 'cgmlst_schema_salmonella') ? undefined : json['cgmlst_schema_salmonella'],
-        'cgmlst_schema_ecoli': !exists(json, 'cgmlst_schema_ecoli') ? undefined : json['cgmlst_schema_ecoli'],
-        'cgmlst_schema_campylobacter': !exists(json, 'cgmlst_schema_campylobacter') ? undefined : json['cgmlst_schema_campylobacter'],
-        'cgmlst_schema_listeria': !exists(json, 'cgmlst_schema_listeria') ? undefined : json['cgmlst_schema_listeria'],
-        'cgmlst_schema_klebsiella': !exists(json, 'cgmlst_schema_klebsiella') ? undefined : json['cgmlst_schema_klebsiella'],
         'subspecies': !exists(json, 'subspecies') ? undefined : json['subspecies'],
         'species_final': !exists(json, 'species_final') ? undefined : json['species_final'],
         'st': !exists(json, 'st') ? undefined : json['st'],
         'st_final': !exists(json, 'st_final') ? undefined : json['st_final'],
+        'st_alleles': !exists(json, 'st_alleles') ? undefined : json['st_alleles'],
         'pathotype': !exists(json, 'pathotype') ? undefined : json['pathotype'],
         'pathotype_final': !exists(json, 'pathotype_final') ? undefined : json['pathotype_final'],
         'sero_enterobase': !exists(json, 'sero_enterobase') ? undefined : json['sero_enterobase'],
@@ -651,6 +663,11 @@ export function AnalysisResultAllOfFromJSON(json: any): AnalysisResultAllOf {
         'amr_tgc': !exists(json, 'amr_tgc') ? undefined : ResistanceFromJSON(json['amr_tgc']),
         'amr_tmp': !exists(json, 'amr_tmp') ? undefined : ResistanceFromJSON(json['amr_tmp']),
         'amr_van': !exists(json, 'amr_van') ? undefined : ResistanceFromJSON(json['amr_van']),
+        'cgmlst_schema_salmonella': !exists(json, 'cgmlst_schema_salmonella') ? undefined : json['cgmlst_schema_salmonella'],
+        'cgmlst_schema_ecoli': !exists(json, 'cgmlst_schema_ecoli') ? undefined : json['cgmlst_schema_ecoli'],
+        'cgmlst_schema_campylobacter': !exists(json, 'cgmlst_schema_campylobacter') ? undefined : json['cgmlst_schema_campylobacter'],
+        'cgmlst_schema_listeria': !exists(json, 'cgmlst_schema_listeria') ? undefined : json['cgmlst_schema_listeria'],
+        'cgmlst_schema_klebsiella': !exists(json, 'cgmlst_schema_klebsiella') ? undefined : json['cgmlst_schema_klebsiella'],
     };
 }
 
@@ -682,17 +699,14 @@ export function AnalysisResultAllOfToJSON(value?: AnalysisResultAllOf): any {
         'qc_main_sp_plus_uncl': value.qc_main_sp_plus_uncl,
         'qc_unclassified_reads': value.qc_unclassified_reads,
         'qc_db_id': value.qc_db_id,
-        'qc_failed_tests': value.qc_failed_tests,
+        'qc_db_id2': value.qc_db_id2,
+        'qc_failed_tests': value.qc_failed_tests === undefined ? undefined : (value.qc_failed_tests as Array<any>).map(AnalysisResultAllOfQcFailedTestsToJSON),
         'qc_cgmlst_percent': value.qc_cgmlst_percent,
-        'cgmlst_schema_salmonella': value.cgmlst_schema_salmonella,
-        'cgmlst_schema_ecoli': value.cgmlst_schema_ecoli,
-        'cgmlst_schema_campylobacter': value.cgmlst_schema_campylobacter,
-        'cgmlst_schema_listeria': value.cgmlst_schema_listeria,
-        'cgmlst_schema_klebsiella': value.cgmlst_schema_klebsiella,
         'subspecies': value.subspecies,
         'species_final': value.species_final,
         'st': value.st,
         'st_final': value.st_final,
+        'st_alleles': value.st_alleles,
         'pathotype': value.pathotype,
         'pathotype_final': value.pathotype_final,
         'sero_enterobase': value.sero_enterobase,
@@ -748,6 +762,11 @@ export function AnalysisResultAllOfToJSON(value?: AnalysisResultAllOf): any {
         'amr_tgc': ResistanceToJSON(value.amr_tgc),
         'amr_tmp': ResistanceToJSON(value.amr_tmp),
         'amr_van': ResistanceToJSON(value.amr_van),
+        'cgmlst_schema_salmonella': value.cgmlst_schema_salmonella,
+        'cgmlst_schema_ecoli': value.cgmlst_schema_ecoli,
+        'cgmlst_schema_campylobacter': value.cgmlst_schema_campylobacter,
+        'cgmlst_schema_listeria': value.cgmlst_schema_listeria,
+        'cgmlst_schema_klebsiella': value.cgmlst_schema_klebsiella,
     };
 }
 

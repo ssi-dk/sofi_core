@@ -41,7 +41,11 @@ def agg_pipeline(changed_ids=None):
                 "pipeline": [
                     {"$match": {"$expr": {"$eq": ["$display_name", "$$iso_id"]}}},
                     {"$sort": {"_id": -1}},
-                    {"$project": {"sequence_id": "$name"}},
+                    {
+                        "$project": {
+                            "sequence_id": "$categories.sample_info.summary.sofi_sequence_id"
+                        }
+                    },
                 ],
                 "as": "siblings",
             }
@@ -51,12 +55,14 @@ def agg_pipeline(changed_ids=None):
                 "isolate_id": "$display_name",
                 "sequence_id": "$categories.sample_info.summary.sofi_sequence_id",
                 "run_id": "$categories.sample_info.summary.experiment_name",
-                "date_run": "$categories.sample_info.summary.sequence_run_date",
+                "date_run": {
+                    "$toDate": "$categories.sample_info.summary.sequence_run_date"
+                },
                 "institution": "$categories.sample_info.summary.institution",
                 "project_number": "$categories.sample_info.summary.project_no",
                 "project_title": "$categories.sample_info.summary.project_title",
-                "date_sofi": "$metadata.created_at",
-                "date_analysis_sofi": "$metadata.created_at",  # TODO: SCC confirm
+                "date_sofi": {"$toDate": "$metadata.created_at"},
+                "date_analysis_sofi": {"$toDate": "$metadata.created_at"},
                 "qc_detected_species": "$categories.species_detection.summary.detected_species",
                 "qc_provided_species": "$categories.sample_info.summary.provided_species",
                 "subspecies": "$categories.serotype.summary.Subspecies",
@@ -116,9 +122,7 @@ def agg_pipeline(changed_ids=None):
                 "latest_for_isolate": {"$arrayElemAt": ["$siblings.sequence_id", 0]},
                 # grabbing whole object for ST, must pluck specific field later in the pipeline
                 "st": "$categories.mlst.summary.sequence_type",
-                "qc_action": "$categories.stamper.stamp.value",
-                "qc_ambiguous_sites": "$categories.mapping_qc.summary.snps.x10_10%.snps",
-                "qc_unclassified_reads": removeNullProperty(
+                "st_alleles": removeNullProperty(
                     {
                         "$let": {
                             "vars": {
@@ -126,12 +130,17 @@ def agg_pipeline(changed_ids=None):
                                     "$arrayElemAt": [
                                         {
                                             "$filter": {
-                                                "input": "$categories.stamper.summary.tests",
+                                                "input": "$categories.mlst.report.data",
                                                 "as": "elem",
                                                 "cond": {
                                                     "$eq": [
-                                                        "$$elem.name",
-                                                        "unclassified_level_ok",
+                                                        "$$elem.db",
+                                                        {
+                                                            "$arrayElemAt": [
+                                                                "$mlstlookup.schema",
+                                                                0,
+                                                            ]
+                                                        },
                                                     ]
                                                 },
                                             }
@@ -140,8 +149,46 @@ def agg_pipeline(changed_ids=None):
                                     ]
                                 },
                             },
-                            "in": "$$res.value",
+                            "in": "$$res.alleles",
                         }
+                    }
+                ),
+                "qc_action": "$categories.stamper.stamp.value",
+                "qc_ambiguous_sites": "$categories.mapping_qc.summary.snps.x10_10%.snps",
+                "qc_unclassified_reads": removeNullProperty(
+                    {
+                        "$round": [
+                            {
+                                "$multiply": [
+                                    {
+                                        "$let": {
+                                            "vars": {
+                                                "res": {
+                                                    "$arrayElemAt": [
+                                                        {
+                                                            "$filter": {
+                                                                "input": "$categories.stamper.summary.tests",
+                                                                "as": "elem",
+                                                                "cond": {
+                                                                    "$eq": [
+                                                                        "$$elem.name",
+                                                                        "unclassified_level_ok",
+                                                                    ]
+                                                                },
+                                                            }
+                                                        },
+                                                        0,
+                                                    ]
+                                                },
+                                            },
+                                            "in": "$$res.value",
+                                        }
+                                    },
+                                    100,
+                                ]
+                            },
+                            2,
+                        ]
                     }
                 ),
                 "qc_db_id": removeNullProperty(
@@ -170,7 +217,28 @@ def agg_pipeline(changed_ids=None):
                         }
                     }
                 ),
-                "qc_failed_tests": "$categories.stamper.stamp.reason",
+                "qc_db_id2": "$categories.species_detection.summary.name_classified_species_2",
+                "qc_failed_tests": removeNullProperty(
+                    {
+                        "$let": {
+                            "vars": {
+                                "res": {
+                                    "$filter": {
+                                        "input": "$categories.stamper.summary.tests",
+                                        "as": "elem",
+                                        "cond": {
+                                            "$ne": [
+                                                "$$elem.status",
+                                                "pass",
+                                            ]
+                                        },
+                                    }
+                                },
+                            },
+                            "in": "$$res",
+                        }
+                    }
+                ),
                 "qc_genome1x": "$categories.denovo_assembly.summary.length",
                 "qc_genome10x": "$categories.mapping_qc.summary.values_at_floor_of_depth.x10.length",
                 "qc_gsize_diff1x10": removeNullProperty(
@@ -188,18 +256,28 @@ def agg_pipeline(changed_ids=None):
                 ),
                 "qc_avg_coverage": "$categories.denovo_assembly.summary.depth",
                 "qc_num_contigs": "$categories.denovo_assembly.summary.contigs",
-                "qc_num_reads": "$categories.denovo_assembly.summary.number_of_reads",
+                "qc_num_reads": "$categories.size_check.summary.num_of_reads",
                 "qc_main_sp_plus_uncl": removeNullProperty(
                     {
-                        "$let": {
-                            "vars": {
-                                "main_sp": "$categories.species_detection.summary.percent_classified_species_1",
-                                "uncl": "$categories.species_detection.summary.percent_unclassified",
+                        "$round": [
+                            {
+                                "$multiply": [
+                                    100,
+                                    {
+                                        "$let": {
+                                            "vars": {
+                                                "main_sp": "$categories.species_detection.summary.percent_classified_species_1",
+                                                "uncl": "$categories.species_detection.summary.percent_unclassified",
+                                            },
+                                            "in": {
+                                                "$add": ["$$main_sp", "$$uncl"],
+                                            },
+                                        }
+                                    },
+                                ],
                             },
-                            "in": {
-                                "$add": ["$$main_sp", "$$uncl"],
-                            },
-                        },
+                            2,
+                        ]
                     }
                 ),
                 "qc_final": removeNullProperty(
@@ -257,9 +335,9 @@ def agg_pipeline(changed_ids=None):
             "$set": {
                 "st_final": {
                     "$cond": {
-                        "if": {"$regexMatch": {"input": "$st", "regex": "\\*"}},
-                        "then": None,
-                        "else": "$st",
+                        "if": {"$regexMatch": {"input": "$st", "regex": "^\d+$"}},
+                        "then": "$st",
+                        "else": None,
                     },
                 }
             }

@@ -1,0 +1,20 @@
+version: '3'
+
+dotenv:
+  - '.env'
+
+includes:
+  agg-pipeline-test:
+    taskfile: test/bifrost
+    dir: test/bifrost
+  tunnel:
+    taskfile: Taskfile.tunnel.yml
+
+
+tasks:
+  test-all:
+    - task: agg-pipeline-test:default
+
+  default:
+    cmds:
+      - task: test-all

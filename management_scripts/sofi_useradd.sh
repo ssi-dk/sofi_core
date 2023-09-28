@@ -16,6 +16,7 @@ createUser(){
 
   actionUrl=$(\
     curl -k -s -X GET -H "Accept: application/json" \
+      --user "SOFI:${SECRETS_SYSTEM}" \
       "https://${SOFI_HOSTNAME}:${SOFI_PORT}/.ory/kratos/public/self-service/registration/api" \
       | jq -r '.methods.password.config.action'\
   )
@@ -26,6 +27,7 @@ createUser(){
 
   # Complete Registration Flow with password method
   curl -k -i -H "Accept: application/json" -H "Content-Type: application/json" \
+       --user "SOFI:${SECRETS_SYSTEM}" \
        -d '{"traits.email": "'"${email}"'", "password": "'"${pw}"'", "traits.institution": "'"${org}"'", "traits.security-groups": "'"${group}"'", "traits.sofi-data-clearance": "'"${clearance}"'" }' \
        "$actionUrl"
 

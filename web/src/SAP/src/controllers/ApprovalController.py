@@ -1,8 +1,9 @@
 from typing import Dict
-from web.src.SAP.src.repositories.analysis import get_single_analysis, update_analysis
+from web.src.SAP.src.repositories.analysis import update_analysis
 from web.src.SAP.generated.models import Approval, ApprovalRequest, ApprovalStatus
 from ..repositories.approval import (
     find_approvals,
+    get_approval_matrix,
     revoke_approval,
     insert_approval,
     find_all_active_approvals,
@@ -18,7 +19,14 @@ from web.src.SAP.src.security.permission_check import assert_user_has
 from ..services.queue_service import post_and_await_approval
 
 
-APPROVABLE_CATEGORY_COUNT = 7
+def deep_merge(source, destination):
+    for key, value in source.items():
+        if isinstance(value, dict):
+            node = destination.setdefault(key, {})
+            deep_merge(value, node)
+        else:
+            destination[key] = value
+    return destination
 
 
 def get_approvals(user, token_info):
@@ -30,7 +38,7 @@ def create_approval(user, token_info, body: ApprovalRequest):
     appr = Approval()
     appr.matrix = body.matrix
     appr.approver = user
-    appr.timestamp = datetime.datetime.now().isoformat()
+    appr.timestamp = datetime.datetime.now()
     appr.status = "submitted"
     appr.id = str(uuid.uuid4())
 
@@ -41,17 +49,20 @@ def create_approval(user, token_info, body: ApprovalRequest):
     seq_update = {}
     for seq in body.matrix:
         fields = body.matrix[seq]
+
         # find dates that were already approved, for incremental approval case.
-        existing_seq = get_single_analysis(seq)
-        for f in existing_seq:
-            existing_seq[f] = "approved"
-        existing_seq.update(fields)
-        time_fields = find_approved_categories(existing_seq)
-        # if all categories
-        if len(time_fields) == APPROVABLE_CATEGORY_COUNT:
-            seq_update = {"date_analysis_sofi": appr.timestamp}
+        existing_matrix = get_approval_matrix(seq)
+
+        existing_matrix.update(fields)
+        time_fields = find_approved_categories(body.matrix[seq])
+
+        # When approving date_epi, automatically generate the timestamp
+        if fields.get("date_epi", False):
+            seq_update["date_epi"] = appr.timestamp
+            time_fields.append("date_epi")
         for f in time_fields:
             seq_update[f] = appr.timestamp
+            appr.matrix[seq][f] = ApprovalStatus.APPROVED
         analysis_timestamp_updates[seq] = seq_update
 
     update_analysis(analysis_timestamp_updates)
@@ -59,9 +70,11 @@ def create_approval(user, token_info, body: ApprovalRequest):
     errors_tuple = handle_approvals(appr, token_info["institution"])
     errors = []
     analysis_timestamp_reverts = {}
-    for (error_seq_id, error) in errors_tuple:
+    for error_seq_id, error in errors_tuple:
+        time_fields = find_approved_categories(appr.matrix[error_seq_id])
+        for f in time_fields:
+            analysis_timestamp_reverts[error_seq_id] = {f: None}
         del appr.matrix[error_seq_id]
-        analysis_timestamp_reverts[error_seq_id] = {"date_analysis_sofi": None}
         errors.append(error)
 
     # If any sequences errored out on the metadata service, revert their
@@ -97,7 +110,7 @@ def full_approval_matrix(user, token_info):
     approvals = find_all_active_approvals()
     matrix = {}
     for a in approvals:
-        matrix.update(a["matrix"])
+        deep_merge(a["matrix"], matrix)
     return jsonify(matrix)
 
 
@@ -117,7 +130,5 @@ def find_approved_categories(fields: Dict[str, ApprovalStatus]):
                 time_fields.append("date_approved_cluster")
             if f == "amr_profile":
                 time_fields.append("date_approved_amr")
-            if f == "date_epi":
-                time_fields.append("date_epi")
 
     return time_fields

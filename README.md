@@ -11,6 +11,7 @@ In order to build and run locally, you will need the following utilities:
 * yarn
 * docker
 * docker-compose
+* [task](https://taskfile.dev) (Used for running tests)
 
 ### Extra Windows pre-requisites
 This guide is for running the project using WSL2 in Windows.
@@ -60,7 +61,7 @@ On the first run, you'll need to install the dependencies for the web app:
 pushd ./app && yarn install && popd
 ```
 
-When running locally, you need a correctly figured .env file.
+When running locally, you need a correctly figured .env file. (_this includes generating or in another way getting the necessary `.crt` and `.pem` files_)
 
 Start by copying the .env.local.example file and make any adjustments you need.
 
@@ -147,3 +148,19 @@ make clean && make run
 ## Project Structure
 
 Consult `docs/`.
+
+# Update certificate
+
+1. Acquire the new certificate.
+    
+    _The certificate might not have the full chain, which will result in errors in SOFI, because SOFI cannot look up intermediate certificate, they must exist in the certificate file (`.crt`). This is done by getting the intermediate certificates and pasting them into the plaintext certificate file (`.crt`)._ 
+
+2. Determine their location on the server, this can found by inspecting the `.env` file and looking for `TLS_CERT_PATH` or `TLS_KEY_PATH`.
+    
+    _The current locations is `/opt/sofi/.certs`_.
+
+3. Move the certificates to the server and dispose the old certificates and ensure their names are correct.
+
+4. Restart `sofi.service` by executing `systemctl restart sofi.service` and following the prompts.
+
+5. Verify chances by inspecting the logs, `journalctl -u sofi.service -f`, and check the website in the browser.

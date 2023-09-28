@@ -101,18 +101,22 @@ class TestAnalysisController(BaseTestCase):
   "paging_token" : "paging_token",
   "expression" : {
     "left" : {
+      "term_max" : "term_max",
       "field" : "field",
       "left" : "{}",
       "prefix" : "prefix",
       "term" : "term",
-      "right" : "{}"
+      "right" : "{}",
+      "term_min" : "term_min"
     },
     "right" : {
+      "term_max" : "term_max",
       "field" : "field",
       "left" : "{}",
       "prefix" : "prefix",
       "term" : "term",
-      "right" : "{}"
+      "right" : "{}",
+      "term_min" : "term_min"
     }
   },
   "filters" : "{}",

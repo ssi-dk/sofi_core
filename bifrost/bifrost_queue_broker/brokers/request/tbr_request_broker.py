@@ -4,8 +4,8 @@ import logging
 from ..shared import (
     BrokerError,
     ProcessingStatus,
-    tbr_to_sofi_column_mappings as column_mapping,
-    sofi_to_tbr_column_mapping as reverse_column_mapping,
+    tbr_to_sofi_column_mapping as column_mapping,
+    reverse_sofi_to_tbr_column_mapping as reverse_column_mapping,
 )
 from ..tbr_conn import get_tbr_configuration
 from .request_broker import RequestBroker
@@ -30,8 +30,9 @@ tbr_configuration = api_clients.tbr_client.Configuration(host=tbr_api_url)
 
 
 class TBRRequestBroker(RequestBroker):
-    def __init__(self, data_lock, queue_col_name, tbr_col_name, db):
+    def __init__(self, data_lock, queue_col_name, tbr_col_name, thread_timeout, db):
         self.data_lock = data_lock
+        self.thread_timeout = thread_timeout
         self.broker_name = "TBR Broker"
         self.find_matcher = {"status": ProcessingStatus.WAITING.value, "service": "TBR"}
         self.db = db
@@ -49,7 +50,12 @@ class TBRRequestBroker(RequestBroker):
 
     # This function gets called with the body of every TBR request from the queue.
     def handle_tbr_request(self, request):
-        self.data_lock.acquire()
+        thread_acquired = self.data_lock.acquire(timeout=self.thread_timeout)
+        if not thread_acquired:
+            logging.warning(
+                f"{self.broker_name} Failed to acquire thread before {self.thread_timeout} seconds timeout"
+            )
+            return
         try:
             if "isolate_id" in request and "request_type" in request:
                 # TODO: Typed request types, and general annotations everywhere..
@@ -69,11 +75,9 @@ class TBRRequestBroker(RequestBroker):
         with api_clients.tbr_client.ApiClient(get_tbr_configuration()) as api_client:
             api_instance = isolate_api.IsolateApi(api_client)
             try:
-                logging.debug(
-                    f"Requesting metadata from TBR for: {isolate_id}", file=sys.stderr
-                )
+                logging.debug(f"Requesting metadata from TBR for: {isolate_id}")
                 api_response = api_instance.api_isolate_isolate_id_get(isolate_id)
-                logging.debug(f"TBR responded with {api_response}", file=sys.stderr)
+                logging.debug(f"TBR responded with {api_response}")
                 response_dict = api_response.to_dict()
                 if "isolate_id" in response_dict:
                     del response_dict["isolate_id"]
@@ -84,7 +88,7 @@ class TBRRequestBroker(RequestBroker):
                     if column_mapping.normal_get(k)
                 }
 
-                logging.debug(f"TBR mapped result: {values}", file=sys.stderr)
+                logging.debug(f"TBR mapped result: {values}")
 
                 encrypt_dict(self.encryption_client, values, pii_columns())
 

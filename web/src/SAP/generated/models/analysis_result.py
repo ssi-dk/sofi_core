@@ -7,6 +7,7 @@ from typing import List, Dict  # noqa: F401
 
 from web.src.SAP.generated.models.base_model_ import Model
 from web.src.SAP.generated.models.analysis_result_all_of import AnalysisResultAllOf
+from web.src.SAP.generated.models.analysis_result_all_of_qc_failed_tests import AnalysisResultAllOfQcFailedTests
 from web.src.SAP.generated.models.base_metadata import BaseMetadata
 from web.src.SAP.generated.models.lims_specific_metadata import LimsSpecificMetadata
 from web.src.SAP.generated.models.organization import Organization
@@ -15,6 +16,7 @@ from web.src.SAP.generated.models.tbr_specific_metadata import TbrSpecificMetada
 from web.src.SAP.generated import util
 
 from web.src.SAP.generated.models.analysis_result_all_of import AnalysisResultAllOf  # noqa: E501
+from web.src.SAP.generated.models.analysis_result_all_of_qc_failed_tests import AnalysisResultAllOfQcFailedTests  # noqa: E501
 from web.src.SAP.generated.models.base_metadata import BaseMetadata  # noqa: E501
 from web.src.SAP.generated.models.lims_specific_metadata import LimsSpecificMetadata  # noqa: E501
 from web.src.SAP.generated.models.organization import Organization  # noqa: E501
@@ -29,7 +31,7 @@ class AnalysisResult(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, sequence_id=None, sequence_filename=None, isolate_id=None, institution=None, project_number=None, project_title=None, date_sample=None, date_received=None, date_sofi=None, run_id=None, public_number=None, primary_isolate=None, chr_number=None, cvr_number=None, aut_number=None, product_type=None, product=None, origin_country=None, animal_species=None, sample_info=None, cpr_nr=None, gender=None, name=None, age=None, travel=None, travel_country=None, date_run=None, date_received_kma=None, kma=None, region=None, fud_number=None, cluster_id=None, date_epi=None, latest_for_isolate=None, resfinder_version=None, date_analysis_sofi=None, date_approved_serotype=None, date_approved_qc=None, date_approved_amr=None, date_approved_st=None, date_approved_toxin=None, date_approved_cluster=None, qc_provided_species=None, qc_genome1x=None, qc_genome10x=None, qc_gsize_diff1x10=None, qc_avg_coverage=None, qc_final=None, qc_action=None, qc_num_contigs=None, qc_ambiguous_sites=None, qc_num_reads=None, qc_main_sp_plus_uncl=None, qc_unclassified_reads=None, qc_db_id=None, qc_failed_tests=None, qc_cgmlst_percent=None, cgmlst_schema_salmonella=None, cgmlst_schema_ecoli=None, cgmlst_schema_campylobacter=None, cgmlst_schema_listeria=None, cgmlst_schema_klebsiella=None, subspecies=None, species_final=None, st=None, st_final=None, pathotype=None, pathotype_final=None, sero_enterobase=None, sero_seqsero=None, sero_antigen_seqsero=None, sero_d_tartrate=None, sero_serotype_finder=None, serotype_final=None, adhesion_final=None, virulence_genes=None, toxins_final=None, infection_source=None, resistance_genes=None, amr_profile=None, comment=None, comment_cluster=None, comment_general=None, comment_supplementary=None, comment_qc=None, amr_ami=None, amr_amp=None, amr_azi=None, amr_fep=None, amr_fot=None, amr_f_c=None, amr_fox=None, amr_taz=None, amr_t_c=None, amr_chl=None, amr_cip=None, amr_cli=None, amr_col=None, amr_dap=None, amr_etp=None, amr_ery=None, amr_fus=None, amr_gen=None, amr_imi=None, amr_kan=None, amr_lzd=None, amr_mero=None, amr_mup=None, amr_nal=None, amr_pen=None, amr_syn=None, amr_rif=None, amr_str=None, amr_sul=None, amr_tei=None, amr_trm=None, amr_tet=None, amr_tia=None, amr_tgc=None, amr_tmp=None, amr_van=None):  # noqa: E501
+    def __init__(self, sequence_id=None, sequence_filename=None, isolate_id=None, institution=None, project_number=None, project_title=None, date_sample=None, date_received=None, date_sofi=None, run_id=None, public_number=None, primary_isolate=None, chr_number=None, cvr_number=None, aut_number=None, product_type=None, product=None, origin_country=None, animal_species=None, sample_info=None, cpr_nr=None, gender=None, name=None, age=None, travel=None, travel_country=None, date_run=None, date_received_kma=None, kma=None, region=None, fud_number=None, cluster_id=None, date_epi=None, latest_for_isolate=None, resfinder_version=None, date_analysis_sofi=None, date_approved_serotype=None, date_approved_qc=None, date_approved_amr=None, date_approved_st=None, date_approved_toxin=None, date_approved_cluster=None, qc_provided_species=None, qc_genome1x=None, qc_genome10x=None, qc_gsize_diff1x10=None, qc_avg_coverage=None, qc_final=None, qc_action=None, qc_num_contigs=None, qc_ambiguous_sites=None, qc_num_reads=None, qc_main_sp_plus_uncl=None, qc_unclassified_reads=None, qc_db_id=None, qc_db_id2=None, qc_failed_tests=None, qc_cgmlst_percent=None, subspecies=None, species_final=None, st=None, st_final=None, st_alleles=None, pathotype=None, pathotype_final=None, sero_enterobase=None, sero_seqsero=None, sero_antigen_seqsero=None, sero_d_tartrate=None, sero_serotype_finder=None, serotype_final=None, adhesion_final=None, virulence_genes=None, toxins_final=None, infection_source=None, resistance_genes=None, amr_profile=None, comment=None, comment_cluster=None, comment_general=None, comment_supplementary=None, comment_qc=None, amr_ami=None, amr_amp=None, amr_azi=None, amr_fep=None, amr_fot=None, amr_f_c=None, amr_fox=None, amr_taz=None, amr_t_c=None, amr_chl=None, amr_cip=None, amr_cli=None, amr_col=None, amr_dap=None, amr_etp=None, amr_ery=None, amr_fus=None, amr_gen=None, amr_imi=None, amr_kan=None, amr_lzd=None, amr_mero=None, amr_mup=None, amr_nal=None, amr_pen=None, amr_syn=None, amr_rif=None, amr_str=None, amr_sul=None, amr_tei=None, amr_trm=None, amr_tet=None, amr_tia=None, amr_tgc=None, amr_tmp=None, amr_van=None, cgmlst_schema_salmonella=None, cgmlst_schema_ecoli=None, cgmlst_schema_campylobacter=None, cgmlst_schema_listeria=None, cgmlst_schema_klebsiella=None):  # noqa: E501
         """AnalysisResult - a model defined in OpenAPI
 
         :param sequence_id: The sequence_id of this AnalysisResult.  # noqa: E501
@@ -142,20 +144,12 @@ class AnalysisResult(Model):
         :type qc_unclassified_reads: float
         :param qc_db_id: The qc_db_id of this AnalysisResult.  # noqa: E501
         :type qc_db_id: str
+        :param qc_db_id2: The qc_db_id2 of this AnalysisResult.  # noqa: E501
+        :type qc_db_id2: str
         :param qc_failed_tests: The qc_failed_tests of this AnalysisResult.  # noqa: E501
-        :type qc_failed_tests: str
+        :type qc_failed_tests: List[AnalysisResultAllOfQcFailedTests]
         :param qc_cgmlst_percent: The qc_cgmlst_percent of this AnalysisResult.  # noqa: E501
         :type qc_cgmlst_percent: float
-        :param cgmlst_schema_salmonella: The cgmlst_schema_salmonella of this AnalysisResult.  # noqa: E501
-        :type cgmlst_schema_salmonella: object
-        :param cgmlst_schema_ecoli: The cgmlst_schema_ecoli of this AnalysisResult.  # noqa: E501
-        :type cgmlst_schema_ecoli: object
-        :param cgmlst_schema_campylobacter: The cgmlst_schema_campylobacter of this AnalysisResult.  # noqa: E501
-        :type cgmlst_schema_campylobacter: object
-        :param cgmlst_schema_listeria: The cgmlst_schema_listeria of this AnalysisResult.  # noqa: E501
-        :type cgmlst_schema_listeria: object
-        :param cgmlst_schema_klebsiella: The cgmlst_schema_klebsiella of this AnalysisResult.  # noqa: E501
-        :type cgmlst_schema_klebsiella: object
         :param subspecies: The subspecies of this AnalysisResult.  # noqa: E501
         :type subspecies: str
         :param species_final: The species_final of this AnalysisResult.  # noqa: E501
@@ -164,6 +158,8 @@ class AnalysisResult(Model):
         :type st: str
         :param st_final: The st_final of this AnalysisResult.  # noqa: E501
         :type st_final: int
+        :param st_alleles: The st_alleles of this AnalysisResult.  # noqa: E501
+        :type st_alleles: object
         :param pathotype: The pathotype of this AnalysisResult.  # noqa: E501
         :type pathotype: str
         :param pathotype_final: The pathotype_final of this AnalysisResult.  # noqa: E501
@@ -274,6 +270,16 @@ class AnalysisResult(Model):
         :type amr_tmp: Resistance
         :param amr_van: The amr_van of this AnalysisResult.  # noqa: E501
         :type amr_van: Resistance
+        :param cgmlst_schema_salmonella: The cgmlst_schema_salmonella of this AnalysisResult.  # noqa: E501
+        :type cgmlst_schema_salmonella: object
+        :param cgmlst_schema_ecoli: The cgmlst_schema_ecoli of this AnalysisResult.  # noqa: E501
+        :type cgmlst_schema_ecoli: object
+        :param cgmlst_schema_campylobacter: The cgmlst_schema_campylobacter of this AnalysisResult.  # noqa: E501
+        :type cgmlst_schema_campylobacter: object
+        :param cgmlst_schema_listeria: The cgmlst_schema_listeria of this AnalysisResult.  # noqa: E501
+        :type cgmlst_schema_listeria: object
+        :param cgmlst_schema_klebsiella: The cgmlst_schema_klebsiella of this AnalysisResult.  # noqa: E501
+        :type cgmlst_schema_klebsiella: object
         """
         self.openapi_types = {
             'sequence_id': str,
@@ -331,17 +337,14 @@ class AnalysisResult(Model):
             'qc_main_sp_plus_uncl': float,
             'qc_unclassified_reads': float,
             'qc_db_id': str,
-            'qc_failed_tests': str,
+            'qc_db_id2': str,
+            'qc_failed_tests': List[AnalysisResultAllOfQcFailedTests],
             'qc_cgmlst_percent': float,
-            'cgmlst_schema_salmonella': object,
-            'cgmlst_schema_ecoli': object,
-            'cgmlst_schema_campylobacter': object,
-            'cgmlst_schema_listeria': object,
-            'cgmlst_schema_klebsiella': object,
             'subspecies': str,
             'species_final': str,
             'st': str,
             'st_final': int,
+            'st_alleles': object,
             'pathotype': str,
             'pathotype_final': str,
             'sero_enterobase': str,
@@ -397,6 +400,11 @@ class AnalysisResult(Model):
             'amr_tgc': Resistance,
             'amr_tmp': Resistance,
             'amr_van': Resistance,
+            'cgmlst_schema_salmonella': object,
+            'cgmlst_schema_ecoli': object,
+            'cgmlst_schema_campylobacter': object,
+            'cgmlst_schema_listeria': object,
+            'cgmlst_schema_klebsiella': object,
         }
 
         self.attribute_map = {
@@ -455,17 +463,14 @@ class AnalysisResult(Model):
             'qc_main_sp_plus_uncl': 'qc_main_sp_plus_uncl',
             'qc_unclassified_reads': 'qc_unclassified_reads',
             'qc_db_id': 'qc_db_id',
+            'qc_db_id2': 'qc_db_id2',
             'qc_failed_tests': 'qc_failed_tests',
             'qc_cgmlst_percent': 'qc_cgmlst_percent',
-            'cgmlst_schema_salmonella': 'cgmlst_schema_salmonella',
-            'cgmlst_schema_ecoli': 'cgmlst_schema_ecoli',
-            'cgmlst_schema_campylobacter': 'cgmlst_schema_campylobacter',
-            'cgmlst_schema_listeria': 'cgmlst_schema_listeria',
-            'cgmlst_schema_klebsiella': 'cgmlst_schema_klebsiella',
             'subspecies': 'subspecies',
             'species_final': 'species_final',
             'st': 'st',
             'st_final': 'st_final',
+            'st_alleles': 'st_alleles',
             'pathotype': 'pathotype',
             'pathotype_final': 'pathotype_final',
             'sero_enterobase': 'sero_enterobase',
@@ -521,6 +526,11 @@ class AnalysisResult(Model):
             'amr_tgc': 'amr_tgc',
             'amr_tmp': 'amr_tmp',
             'amr_van': 'amr_van',
+            'cgmlst_schema_salmonella': 'cgmlst_schema_salmonella',
+            'cgmlst_schema_ecoli': 'cgmlst_schema_ecoli',
+            'cgmlst_schema_campylobacter': 'cgmlst_schema_campylobacter',
+            'cgmlst_schema_listeria': 'cgmlst_schema_listeria',
+            'cgmlst_schema_klebsiella': 'cgmlst_schema_klebsiella',
         }
 
         self._sequence_id = sequence_id
@@ -578,17 +588,14 @@ class AnalysisResult(Model):
         self._qc_main_sp_plus_uncl = qc_main_sp_plus_uncl
         self._qc_unclassified_reads = qc_unclassified_reads
         self._qc_db_id = qc_db_id
+        self._qc_db_id2 = qc_db_id2
         self._qc_failed_tests = qc_failed_tests
         self._qc_cgmlst_percent = qc_cgmlst_percent
-        self._cgmlst_schema_salmonella = cgmlst_schema_salmonella
-        self._cgmlst_schema_ecoli = cgmlst_schema_ecoli
-        self._cgmlst_schema_campylobacter = cgmlst_schema_campylobacter
-        self._cgmlst_schema_listeria = cgmlst_schema_listeria
-        self._cgmlst_schema_klebsiella = cgmlst_schema_klebsiella
         self._subspecies = subspecies
         self._species_final = species_final
         self._st = st
         self._st_final = st_final
+        self._st_alleles = st_alleles
         self._pathotype = pathotype
         self._pathotype_final = pathotype_final
         self._sero_enterobase = sero_enterobase
@@ -644,6 +651,11 @@ class AnalysisResult(Model):
         self._amr_tgc = amr_tgc
         self._amr_tmp = amr_tmp
         self._amr_van = amr_van
+        self._cgmlst_schema_salmonella = cgmlst_schema_salmonella
+        self._cgmlst_schema_ecoli = cgmlst_schema_ecoli
+        self._cgmlst_schema_campylobacter = cgmlst_schema_campylobacter
+        self._cgmlst_schema_listeria = cgmlst_schema_listeria
+        self._cgmlst_schema_klebsiella = cgmlst_schema_klebsiella
 
     @classmethod
     def from_dict(cls, dikt):
@@ -1842,12 +1854,33 @@ class AnalysisResult(Model):
         self._qc_db_id = qc_db_id
 
     @property
+    def qc_db_id2(self):
+        """Gets the qc_db_id2 of this AnalysisResult.
+
+
+        :return: The qc_db_id2 of this AnalysisResult.
+        :rtype: str
+        """
+        return self._qc_db_id2
+
+    @qc_db_id2.setter
+    def qc_db_id2(self, qc_db_id2):
+        """Sets the qc_db_id2 of this AnalysisResult.
+
+
+        :param qc_db_id2: The qc_db_id2 of this AnalysisResult.
+        :type qc_db_id2: str
+        """
+
+        self._qc_db_id2 = qc_db_id2
+
+    @property
     def qc_failed_tests(self):
         """Gets the qc_failed_tests of this AnalysisResult.
 
 
         :return: The qc_failed_tests of this AnalysisResult.
-        :rtype: str
+        :rtype: List[AnalysisResultAllOfQcFailedTests]
         """
         return self._qc_failed_tests
 
@@ -1857,7 +1890,7 @@ class AnalysisResult(Model):
 
 
         :param qc_failed_tests: The qc_failed_tests of this AnalysisResult.
-        :type qc_failed_tests: str
+        :type qc_failed_tests: List[AnalysisResultAllOfQcFailedTests]
         """
 
         self._qc_failed_tests = qc_failed_tests
@@ -1882,111 +1915,6 @@ class AnalysisResult(Model):
         """
 
         self._qc_cgmlst_percent = qc_cgmlst_percent
-
-    @property
-    def cgmlst_schema_salmonella(self):
-        """Gets the cgmlst_schema_salmonella of this AnalysisResult.
-
-
-        :return: The cgmlst_schema_salmonella of this AnalysisResult.
-        :rtype: object
-        """
-        return self._cgmlst_schema_salmonella
-
-    @cgmlst_schema_salmonella.setter
-    def cgmlst_schema_salmonella(self, cgmlst_schema_salmonella):
-        """Sets the cgmlst_schema_salmonella of this AnalysisResult.
-
-
-        :param cgmlst_schema_salmonella: The cgmlst_schema_salmonella of this AnalysisResult.
-        :type cgmlst_schema_salmonella: object
-        """
-
-        self._cgmlst_schema_salmonella = cgmlst_schema_salmonella
-
-    @property
-    def cgmlst_schema_ecoli(self):
-        """Gets the cgmlst_schema_ecoli of this AnalysisResult.
-
-
-        :return: The cgmlst_schema_ecoli of this AnalysisResult.
-        :rtype: object
-        """
-        return self._cgmlst_schema_ecoli
-
-    @cgmlst_schema_ecoli.setter
-    def cgmlst_schema_ecoli(self, cgmlst_schema_ecoli):
-        """Sets the cgmlst_schema_ecoli of this AnalysisResult.
-
-
-        :param cgmlst_schema_ecoli: The cgmlst_schema_ecoli of this AnalysisResult.
-        :type cgmlst_schema_ecoli: object
-        """
-
-        self._cgmlst_schema_ecoli = cgmlst_schema_ecoli
-
-    @property
-    def cgmlst_schema_campylobacter(self):
-        """Gets the cgmlst_schema_campylobacter of this AnalysisResult.
-
-
-        :return: The cgmlst_schema_campylobacter of this AnalysisResult.
-        :rtype: object
-        """
-        return self._cgmlst_schema_campylobacter
-
-    @cgmlst_schema_campylobacter.setter
-    def cgmlst_schema_campylobacter(self, cgmlst_schema_campylobacter):
-        """Sets the cgmlst_schema_campylobacter of this AnalysisResult.
-
-
-        :param cgmlst_schema_campylobacter: The cgmlst_schema_campylobacter of this AnalysisResult.
-        :type cgmlst_schema_campylobacter: object
-        """
-
-        self._cgmlst_schema_campylobacter = cgmlst_schema_campylobacter
-
-    @property
-    def cgmlst_schema_listeria(self):
-        """Gets the cgmlst_schema_listeria of this AnalysisResult.
-
-
-        :return: The cgmlst_schema_listeria of this AnalysisResult.
-        :rtype: object
-        """
-        return self._cgmlst_schema_listeria
-
-    @cgmlst_schema_listeria.setter
-    def cgmlst_schema_listeria(self, cgmlst_schema_listeria):
-        """Sets the cgmlst_schema_listeria of this AnalysisResult.
-
-
-        :param cgmlst_schema_listeria: The cgmlst_schema_listeria of this AnalysisResult.
-        :type cgmlst_schema_listeria: object
-        """
-
-        self._cgmlst_schema_listeria = cgmlst_schema_listeria
-
-    @property
-    def cgmlst_schema_klebsiella(self):
-        """Gets the cgmlst_schema_klebsiella of this AnalysisResult.
-
-
-        :return: The cgmlst_schema_klebsiella of this AnalysisResult.
-        :rtype: object
-        """
-        return self._cgmlst_schema_klebsiella
-
-    @cgmlst_schema_klebsiella.setter
-    def cgmlst_schema_klebsiella(self, cgmlst_schema_klebsiella):
-        """Sets the cgmlst_schema_klebsiella of this AnalysisResult.
-
-
-        :param cgmlst_schema_klebsiella: The cgmlst_schema_klebsiella of this AnalysisResult.
-        :type cgmlst_schema_klebsiella: object
-        """
-
-        self._cgmlst_schema_klebsiella = cgmlst_schema_klebsiella
 
     @property
     def subspecies(self):
@@ -2071,6 +1999,27 @@ class AnalysisResult(Model):
         """
 
         self._st_final = st_final
+
+    @property
+    def st_alleles(self):
+        """Gets the st_alleles of this AnalysisResult.
+
+
+        :return: The st_alleles of this AnalysisResult.
+        :rtype: object
+        """
+        return self._st_alleles
+
+    @st_alleles.setter
+    def st_alleles(self, st_alleles):
+        """Sets the st_alleles of this AnalysisResult.
+
+
+        :param st_alleles: The st_alleles of this AnalysisResult.
+        :type st_alleles: object
+        """
+
+        self._st_alleles = st_alleles
 
     @property
     def pathotype(self):
@@ -3226,3 +3175,108 @@ class AnalysisResult(Model):
         """
 
         self._amr_van = amr_van
+
+    @property
+    def cgmlst_schema_salmonella(self):
+        """Gets the cgmlst_schema_salmonella of this AnalysisResult.
+
+
+        :return: The cgmlst_schema_salmonella of this AnalysisResult.
+        :rtype: object
+        """
+        return self._cgmlst_schema_salmonella
+
+    @cgmlst_schema_salmonella.setter
+    def cgmlst_schema_salmonella(self, cgmlst_schema_salmonella):
+        """Sets the cgmlst_schema_salmonella of this AnalysisResult.
+
+
+        :param cgmlst_schema_salmonella: The cgmlst_schema_salmonella of this AnalysisResult.
+        :type cgmlst_schema_salmonella: object
+        """
+
+        self._cgmlst_schema_salmonella = cgmlst_schema_salmonella
+
+    @property
+    def cgmlst_schema_ecoli(self):
+        """Gets the cgmlst_schema_ecoli of this AnalysisResult.
+
+
+        :return: The cgmlst_schema_ecoli of this AnalysisResult.
+        :rtype: object
+        """
+        return self._cgmlst_schema_ecoli
+
+    @cgmlst_schema_ecoli.setter
+    def cgmlst_schema_ecoli(self, cgmlst_schema_ecoli):
+        """Sets the cgmlst_schema_ecoli of this AnalysisResult.
+
+
+        :param cgmlst_schema_ecoli: The cgmlst_schema_ecoli of this AnalysisResult.
+        :type cgmlst_schema_ecoli: object
+        """
+
+        self._cgmlst_schema_ecoli = cgmlst_schema_ecoli
+
+    @property
+    def cgmlst_schema_campylobacter(self):
+        """Gets the cgmlst_schema_campylobacter of this AnalysisResult.
+
+
+        :return: The cgmlst_schema_campylobacter of this AnalysisResult.
+        :rtype: object
+        """
+        return self._cgmlst_schema_campylobacter
+
+    @cgmlst_schema_campylobacter.setter
+    def cgmlst_schema_campylobacter(self, cgmlst_schema_campylobacter):
+        """Sets the cgmlst_schema_campylobacter of this AnalysisResult.
+
+
+        :param cgmlst_schema_campylobacter: The cgmlst_schema_campylobacter of this AnalysisResult.
+        :type cgmlst_schema_campylobacter: object
+        """
+
+        self._cgmlst_schema_campylobacter = cgmlst_schema_campylobacter
+
+    @property
+    def cgmlst_schema_listeria(self):
+        """Gets the cgmlst_schema_listeria of this AnalysisResult.
+
+
+        :return: The cgmlst_schema_listeria of this AnalysisResult.
+        :rtype: object
+        """
+        return self._cgmlst_schema_listeria
+
+    @cgmlst_schema_listeria.setter
+    def cgmlst_schema_listeria(self, cgmlst_schema_listeria):
+        """Sets the cgmlst_schema_listeria of this AnalysisResult.
+
+
+        :param cgmlst_schema_listeria: The cgmlst_schema_listeria of this AnalysisResult.
+        :type cgmlst_schema_listeria: object
+        """
+
+        self._cgmlst_schema_listeria = cgmlst_schema_listeria
+
+    @property
+    def cgmlst_schema_klebsiella(self):
+        """Gets the cgmlst_schema_klebsiella of this AnalysisResult.
+
+
+        :return: The cgmlst_schema_klebsiella of this AnalysisResult.
+        :rtype: object
+        """
+        return self._cgmlst_schema_klebsiella
+
+    @cgmlst_schema_klebsiella.setter
+    def cgmlst_schema_klebsiella(self, cgmlst_schema_klebsiella):
+        """Sets the cgmlst_schema_klebsiella of this AnalysisResult.
+
+
+        :param cgmlst_schema_klebsiella: The cgmlst_schema_klebsiella of this AnalysisResult.
+        :type cgmlst_schema_klebsiella: object
+        """
+
+        self._cgmlst_schema_klebsiella = cgmlst_schema_klebsiella

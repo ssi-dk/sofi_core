@@ -5,7 +5,7 @@ x-extra_hosts:
   - "sofi_tbr_integration:192.168.113.11"
   - "sofi_tbr_integration_dev:192.168.113.12"
   - "fvstlimsapp01t.prod.sitad.dk:192.168.65.3"
-  - "fvstlimsapp01p.prod.sitad.dk:192.168.63.1"
+  - "fvstlimsapp01p.prod.sitad.dk:192.168.65.1"
 
 services:
   sap_app:

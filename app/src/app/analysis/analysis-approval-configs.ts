@@ -1,3 +1,4 @@
+import { deepmerge } from "deepmerge-ts";
 import {
   createApproval,
   ApprovalRequest,
@@ -50,7 +51,7 @@ const sendJudgement = (params: ApprovalRequest, judgement: ApprovalStatus) => {
   // define the update strategy for our state
   base.update = {
     approvals: (oldValue, newValue) => [...newValue, ...(oldValue || [])],
-    approvalMatrix: (oldValue, newValue) => ({ ...oldValue, ...newValue }),
+    approvalMatrix: (oldValue, newValue) => deepmerge(oldValue, newValue),
     approvalErrors: (_, newValue) => newValue,
   };
   base.force = true;
@@ -92,7 +93,7 @@ export const fetchApprovalMatrix = () => {
   base.transform = (response: ApprovalMatrix) => ({ approvalMatrix: response });
 
   base.update = {
-    approvalMatrix: (oldValue, newValue) => ({ ...oldValue, ...newValue }),
+    approvalMatrix: (oldValue, newValue) => deepmerge(oldValue, newValue),
   };
   base.force = true;
   return base;

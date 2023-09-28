@@ -7,6 +7,7 @@ from pymongo import CursorType
 from ..shared import BrokerError, yield_chunks
 from ..lims_conn import *
 from common.database import (
+    coerce_dates,
     encrypt_dict,
     get_connection,
 )
@@ -25,13 +26,16 @@ from api_clients.lims_client.models import (
 
 
 class LIMSPullingBroker(threading.Thread):
-    def __init__(self, data_lock, lims_col_name, analysis_view_col_name, db):
+    def __init__(
+        self, data_lock, lims_col_name, analysis_view_col_name, thread_timeout, db
+    ):
         super(LIMSPullingBroker, self).__init__()
         self.data_lock = data_lock
         self.db = db
         self.analysis_col = db[analysis_view_col_name]
         self.metadata_col = db[lims_col_name]
         self.stop = threading.Event()
+        self.thread_timeout = thread_timeout
         self.broker_name = "LIMS Pulling broker"
         _, enc = get_connection(with_enc=True)
         self.encryption_client = enc
@@ -45,7 +49,12 @@ class LIMSPullingBroker(threading.Thread):
         first_run = True
         while first_run or not self.stop.wait(interval):
             first_run = False
-            self.data_lock.acquire()
+            thread_acquired = self.data_lock.acquire(timeout=self.thread_timeout)
+            if not thread_acquired:
+                logging.warning(
+                    f"{self.broker_name} Failed to acquire thread before {self.thread_timeout} seconds timeout"
+                )
+                continue
             try:
                 self.run_sync_job()
             except:
@@ -140,6 +149,7 @@ class LIMSPullingBroker(threading.Thread):
         result = []
         for values in metadata_batch:
             isolate_id = values["isolate_id"]
+            coerce_dates(values)
             encrypt_dict(self.encryption_client, values, pii_columns())
 
             update_query = pymongo.UpdateOne(

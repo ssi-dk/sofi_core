@@ -48,7 +48,8 @@ namespace DG.SAP.TBRIntegration
         private void LoadDependencies(IServiceCollection services)
         {
             var dbOptions = Configuration.GetSection("database").Get<DatabaseOptions>();
-            services.AddSingleton<IIsolateRepository>(provider => new IsolateRepository(dbOptions));
+            
+            services.AddSingleton<IIsolateRepository>(provider => new IsolateRepository(dbOptions, provider.GetService<ILogger<IsolateRepository>>()));
         }
         
         private void LoadMockDependencies(IServiceCollection services)

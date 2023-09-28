@@ -50,6 +50,7 @@
     "biojs-io-newick": "^1.5.0",
     "camelcase-keys": "^6.2.2",
     "connected-react-router": "^6.8.0",
+    "deepmerge-ts": "^4.0.3",
     "eslint": "^7.0.0",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-config-airbnb-typescript": "^16.1.0",

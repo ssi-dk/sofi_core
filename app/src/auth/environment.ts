@@ -15,6 +15,7 @@ export const Environment = {
 
 const AccessTokenKey = "id_token";
 const RefreshTokenKey = "refresh_token";
+const ProgressTokenKey = "is_logging_in";
 
 export const getAccessToken = () => {
   return localStorage.getItem(AccessTokenKey);
@@ -38,6 +39,18 @@ export const clearAccessToken = (token: string) => {
 
 export const clearRefreshToken = (token: string) => {
   localStorage.removeItem(RefreshTokenKey);
+};
+
+export const setIsLoggingIn = () => {
+  localStorage.setItem(ProgressTokenKey, "");
+};
+
+export const getIsLoggingIn = () => {
+  return localStorage.getItem(ProgressTokenKey) === "";
+};
+
+export const clearIsLoggingIn = () => {
+  localStorage.removeItem(ProgressTokenKey);
 };
 
 export const logout = () => {

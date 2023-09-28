@@ -9,11 +9,10 @@ import {
   EditableInput,
   useDisclosure,
   Skeleton,
-  Divider,
   Spinner,
 } from "@chakra-ui/react";
 import { CheckIcon, DragHandleIcon, NotAllowedIcon } from "@chakra-ui/icons";
-import { Column, Row, TableState } from "react-table";
+import { Column, Row } from "react-table";
 import {
   AnalysisResult,
   ApprovalRequest,
@@ -58,11 +57,11 @@ import Serotypes from "../data/serotypes.json";
 import AnalysisDetails from "./analysis-details/analysis-details-modal";
 import ExportButton from "./export/export-button";
 import { ColumnConfigNode } from "./data-table/column-config-node";
-import SearchHelpModal from "./search/search-help-modal";
+import { AnalysisResultAllOfQcFailedTests } from "sap-client/models/AnalysisResultAllOfQcFailedTests";
 
 // When the fields in this array are 'approved', a given sequence is rendered
 // as 'approved' also.
-const PRIMARY_APPROVAL_FIELDS = ["st_final", "qc_final", "serotype_final"];
+const PRIMARY_APPROVAL_FIELDS = ["st_final", "qc_final"];
 
 export default function AnalysisPage() {
   const { t } = useTranslation();
@@ -90,8 +89,10 @@ export default function AnalysisPage() {
     Object.values(s.entities.analysis ?? {})
   ) as AnalysisResult[];
 
-  const totalCount = useSelector<RootState>(
-    (s) => s.entities.analysisTotalCount
+  const totalCount = useSelector<RootState>((s) =>
+    s.entities.analysisTotalCount !== 0
+      ? s.entities.analysisTotalCount
+      : Object.keys(s.entities.analysis).length
   ) as number;
 
   const columnConfigs = useSelector<RootState>(
@@ -178,7 +179,10 @@ export default function AnalysisPage() {
 
   const canSelectColumn = React.useCallback(
     (columnName: string) => {
-      return columnConfigs[columnName]?.approvable;
+      return (
+        columnConfigs[columnName]?.approvable &&
+        !columnConfigs[columnName]?.computed
+      );
     },
     [columnConfigs]
   );
@@ -214,6 +218,14 @@ export default function AnalysisPage() {
     data,
   ]);
 
+  const primaryApprovalColumns = React.useMemo(
+    () =>
+      Object.values(columnConfigs || {})
+        .filter((c) => c?.approvable)
+        .map((c) => c?.field_name as string),
+    [columnConfigs]
+  );
+
   const approvableColumns = React.useMemo(
     () => [
       ...new Set(
@@ -223,12 +235,20 @@ export default function AnalysisPage() {
           .concat(
             Object.values(columnConfigs || {})
               .filter((c) => c?.approvable)
+              .filter((c) => !c?.computed)
               .map((c) => c?.field_name)
           )
           .filter((x) => x !== undefined)
       ),
     ],
     [columnConfigs]
+  );
+
+  const isPrimaryApprovalColumn = React.useCallback(
+    (columnName: string) => {
+      return primaryApprovalColumns.indexOf(columnName) >= 0;
+    },
+    [primaryApprovalColumns]
   );
 
   const canApproveColumn = React.useCallback(
@@ -253,7 +273,10 @@ export default function AnalysisPage() {
 
   const canEditColumn = React.useCallback(
     (columnName: string) => {
-      return columnConfigs[columnName]?.editable;
+      return (
+        columnConfigs[columnName]?.editable &&
+        !columnConfigs[columnName]?.computed
+      );
     },
     [columnConfigs]
   );
@@ -263,7 +286,7 @@ export default function AnalysisPage() {
       return (
         columnConfigs[columnName]?.approves_with ??
         ([] as Array<keyof AnalysisResult>)
-      );
+      ).filter((x: keyof AnalysisResult) => !columnConfigs[x].computed);
     },
     [columnConfigs]
   );
@@ -372,8 +395,13 @@ export default function AnalysisPage() {
   ]);
 
   const getCellStyle = React.useCallback(
-    (rowId: string, columnId: string, value: any) => {
-      if (value !== 0 && value !== false && !value) {
+    (rowId: string, columnId: string, value: any, cell: any) => {
+      if (
+        value !== 0 &&
+        value !== false &&
+        !value &&
+        !isPrimaryApprovalColumn(columnId)
+      ) {
         return "emptyCell";
       }
       if (`${value}` === "Invalid Date") {
@@ -390,6 +418,17 @@ export default function AnalysisPage() {
             if (approvals[rowId][f] !== ApprovalStatus.approved)
               sequenceStyle = "unapprovedCell";
           });
+          // Some species require serotype to also be provided before the sequence can be considered 'approved'
+          const species = Species.find(
+            (x) => x["name"] === cell["species_final"]
+          );
+          if (
+            species &&
+            species["requires_serotype"] &&
+            approvals[rowId]["serotype_final"] !== ApprovalStatus.approved
+          ) {
+            sequenceStyle = "unapprovedCell";
+          }
           return sequenceStyle;
         }
         if (approvals[rowId][columnId] === ApprovalStatus.approved) {
@@ -401,21 +440,23 @@ export default function AnalysisPage() {
       }
       return "unapprovedCell";
     },
-    [approvals, canApproveColumn]
+    [approvals, canApproveColumn, isPrimaryApprovalColumn]
   );
 
   const getStickyCellStyle = React.useCallback(
     (rowId: string, rowData: any) => {
-      const isLatestSequence =
-        rowData.values.sequence_id === rowData.values.latest_for_isolate;
-      return `stickyCell ${isLatestSequence ? "isLatest" : ""}`;
+      const isNotLatestSequence =
+        rowData.values.sequence_id !== rowData.values.latest_for_isolate;
+      return `stickyCell ${isNotLatestSequence ? "isNotLatest" : ""}`;
     },
     []
   );
 
+  const speciesNames = React.useMemo(() => Species.map((x) => x["name"]), []);
+
   const speciesOptions = React.useMemo(
-    () => Species.map((x) => ({ label: x, value: x })),
-    []
+    () => speciesNames.map((x) => ({ label: x, value: x })),
+    [speciesNames]
   );
 
   const serotypeOptions = React.useMemo(
@@ -478,8 +519,13 @@ export default function AnalysisPage() {
       if (v === "Invalid Date") {
         return <div />;
       }
-      if (
-        (columnId.startsWith("date") || columnId.endsWith("date")) &&
+      // any other dates
+      else if (value instanceof Date) {
+        // Fancy libraries could be used, but this will do the trick just fine
+        v = value.toISOString().split("T")[0];
+      } else if (
+        (columnId.toLowerCase().startsWith("date") ||
+          columnId.toLowerCase().endsWith("date")) &&
         value !== undefined
       ) {
         if (
@@ -489,6 +535,28 @@ export default function AnalysisPage() {
           v = value?.toISOString()?.split("T")[0];
         } else {
           v = value?.split("T")[0];
+        }
+      } else if (typeof value === "object") {
+        v = `${JSON.stringify(value)}`;
+        if (columnId === "qc_failed_tests") {
+          let acc = "";
+          (value as Array<AnalysisResultAllOfQcFailedTests>).map((x) => {
+            if (acc !== "") {
+              acc += ", ";
+            }
+            acc += `${x.display_name}: ${x.reason}`;
+          });
+          v = acc;
+        }
+        if (columnId === "st_alleles") {
+          let acc = "";
+          Object.keys(value).map((k) => {
+            if (acc !== "") {
+              acc += ", ";
+            }
+            acc += `${k}: ${value[k]}`;
+          });
+          v = acc;
         }
       }
       // cannot edit cells that have already been approved
@@ -535,6 +603,13 @@ export default function AnalysisPage() {
                     title="Date in yyyy-mm-dd format"
                     height="100%"
                     minWidth="100%"
+                  />
+                ) : columnConfigs[columnId].editable_format === "number" ? (
+                  <EditableInput
+                    pattern="\d+"
+                    type="numeric"
+                    height="100%"
+                    width="100%"
                   />
                 ) : (
                   <EditableInput height="100%" width="100%" />

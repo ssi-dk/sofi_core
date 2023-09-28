@@ -34,9 +34,11 @@ function SingleUploadForm() {
   const { t } = useTranslation();
   const toast = useToast();
 
+  const speciesNames = React.useMemo(() => Species.map((x) => x["name"]), []);
+
   const speciesOptions = React.useMemo(
-    () => Species.map((x) => ({ label: x, value: x })),
-    []
+    () => speciesNames.map((x) => ({ label: x, value: x })),
+    [speciesNames]
   );
 
   const [

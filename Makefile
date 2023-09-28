@@ -19,7 +19,7 @@ clean:
 	rm -rf ${mkfile_dir}/web/src/SAP/generated/
 	rm -rf ${mkfile_dir}/sap_tbr_integration/DG.SAP.TBRIntegration/bin/
 	rm -rf ${mkfile_dir}/sap_tbr_integration/DG.SAP.TBRIntegration/obj/
-	docker-compose -f ${mkfile_dir}/docker-compose.yml -f ${mkfile_dir}/docker-compose.local.yml rm
+	docker-compose -f ${mkfile_dir}/docker-compose.yml -f ${mkfile_dir}/docker-compose.local.yml rm -v
 
 merge_common: $(shell find ${mkfile_dir}/bifrost/bifrost_queue_broker/common/ -type f) $(shell find ${mkfile_dir}/web/src/SAP/common/ -type f) $(shell find ${mkfile_dir}/openapi_specs/ -type f) $(shell find ${mkfile_dir}/web/openapi_specs/ -type f)
 	${mkfile_dir}/merge_common.sh ${mkfile_dir}/bifrost/bifrost_queue_broker/common  ${mkfile_dir}/web/src/SAP/common
@@ -172,6 +172,9 @@ install:
 		cp ${mkfile_dir}/sofi.service /etc/systemd/system/sofi.service
 		systemctl enable sofi.service
 		# Execute 'systemctl start sofi.service' to launch
+
+test-all:
+	task test-all -- ${mkfile_dir}
 
 RUN_DEPS := merge_common ${mkfile_dir}/app/src/sap-client ${mkfile_dir}/web/src/SAP/generated 
 RUN_DEPS += ${mkfile_dir}/web/src/services/lims/openapi ${mkfile_dir}/app/node_modules/

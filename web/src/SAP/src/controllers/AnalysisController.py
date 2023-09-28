@@ -133,6 +133,7 @@ def search_analysis(user, token_info, query: AnalysisQuery):
         authorized_columns(token_info),
         institution_filter,
     )
+
     count = get_analysis_count(token["query"])
     new_token = (
         None

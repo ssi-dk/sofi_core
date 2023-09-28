@@ -506,13 +506,22 @@ components:
       - OR NOT
       - <implicit>
       type: string
+    QueryRangeInclusivity:
+      enum:
+      - left
+      - right
+      - both
+      - none
+      type: string
     QueryOperand:
       example:
+        term_max: term_max
         field: field
         left: '{}'
         prefix: prefix
         term: term
         right: '{}'
+        term_min: term_min
       properties:
         operator:
           $ref: '#/components/schemas/QueryOperator'
@@ -523,6 +532,15 @@ components:
         field:
           type: string
         term:
+          nullable: true
+          type: string
+        inclusive:
+          $ref: '#/components/schemas/QueryRangeInclusivity'
+        term_min:
+          nullable: true
+          type: string
+        term_max:
+          nullable: true
           type: string
         prefix:
           nullable: true
@@ -531,17 +549,21 @@ components:
     QueryExpression:
       example:
         left:
+          term_max: term_max
           field: field
           left: '{}'
           prefix: prefix
           term: term
           right: '{}'
+          term_min: term_min
         right:
+          term_max: term_max
           field: field
           left: '{}'
           prefix: prefix
           term: term
           right: '{}'
+          term_min: term_min
       properties:
         left:
           $ref: '#/components/schemas/QueryOperand'
@@ -555,17 +577,21 @@ components:
         paging_token: paging_token
         expression:
           left:
+            term_max: term_max
             field: field
             left: '{}'
             prefix: prefix
             term: term
             right: '{}'
+            term_min: term_min
           right:
+            term_max: term_max
             field: field
             left: '{}'
             prefix: prefix
             term: term
             right: '{}'
+            term_min: term_min
         filters: '{}'
         page_size: 0
       properties:
@@ -588,6 +614,7 @@ components:
         approves_with:
         - approves_with
         - approves_with
+        computed: true
         approvable: true
         editable: true
         editable_format: editable_format
@@ -614,6 +641,10 @@ components:
         gdpr:
           description: True if the column should be treated as a 'gdpr' column, subject
             to more strict auditing/logging
+          type: boolean
+        computed:
+          description: |
+            True if the column is programmatically calculated by SOFI. Such columns can be approvable in the sense of being transferred to a metadata service as part of an approval, but should not be thought of as 'selectable' or capable of any user-side manipulation.
           type: boolean
         organizations:
           description: List of organizations/institutions who 'own' or should have
@@ -1012,6 +1043,15 @@ components:
           - submitted
           type: string
       type: object
+    AnalysisResult_allOf_qc_failed_tests:
+      properties:
+        name:
+          type: string
+        display_name:
+          type: string
+        reason:
+          type: string
+      type: object
     AnalysisResult_allOf:
       properties:
         latest_for_isolate:
@@ -1073,20 +1113,14 @@ components:
           type: number
         qc_db_id:
           type: string
-        qc_failed_tests:
+        qc_db_id2:
           type: string
+        qc_failed_tests:
+          items:
+            $ref: '#/components/schemas/AnalysisResult_allOf_qc_failed_tests'
+          type: array
         qc_cgmlst_percent:
           type: number
-        cgmlst_schema_salmonella:
-          type: object
-        cgmlst_schema_ecoli:
-          type: object
-        cgmlst_schema_campylobacter:
-          type: object
-        cgmlst_schema_listeria:
-          type: object
-        cgmlst_schema_klebsiella:
-          type: object
         subspecies:
           type: string
         species_final:
@@ -1095,6 +1129,8 @@ components:
           type: string
         st_final:
           type: integer
+        st_alleles:
+          type: object
         pathotype:
           type: string
         pathotype_final:
@@ -1205,6 +1241,16 @@ components:
           $ref: '#/components/schemas/Resistance'
         amr_van:
           $ref: '#/components/schemas/Resistance'
+        cgmlst_schema_salmonella:
+          type: object
+        cgmlst_schema_ecoli:
+          type: object
+        cgmlst_schema_campylobacter:
+          type: object
+        cgmlst_schema_listeria:
+          type: object
+        cgmlst_schema_klebsiella:
+          type: object
       required:
       - isolate_id
       type: object

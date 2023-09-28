@@ -142,3 +142,5 @@ dmypy.json
 
 package.json
 yarn.lock
+
+.task

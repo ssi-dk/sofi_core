@@ -16,6 +16,9 @@ import {
     QueryOperator,
     QueryOperatorFromJSON,
     QueryOperatorToJSON,
+    QueryRangeInclusivity,
+    QueryRangeInclusivityFromJSON,
+    QueryRangeInclusivityToJSON,
 } from './';
 
 /**
@@ -56,6 +59,24 @@ export interface QueryOperand  {
     term?: string;
     /**
      * 
+     * @type {QueryRangeInclusivity}
+     * @memberof QueryOperand
+     */
+    inclusive?: QueryRangeInclusivity;
+    /**
+     * 
+     * @type {string}
+     * @memberof QueryOperand
+     */
+    term_min?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof QueryOperand
+     */
+    term_max?: string;
+    /**
+     * 
      * @type {string}
      * @memberof QueryOperand
      */
@@ -69,6 +90,9 @@ export function QueryOperandFromJSON(json: any): QueryOperand {
         'right': !exists(json, 'right') ? undefined : json['right'],
         'field': !exists(json, 'field') ? undefined : json['field'],
         'term': !exists(json, 'term') ? undefined : json['term'],
+        'inclusive': !exists(json, 'inclusive') ? undefined : QueryRangeInclusivityFromJSON(json['inclusive']),
+        'term_min': !exists(json, 'term_min') ? undefined : json['term_min'],
+        'term_max': !exists(json, 'term_max') ? undefined : json['term_max'],
         'prefix': !exists(json, 'prefix') ? undefined : json['prefix'],
     };
 }
@@ -83,6 +107,9 @@ export function QueryOperandToJSON(value?: QueryOperand): any {
         'right': value.right,
         'field': value.field,
         'term': value.term,
+        'inclusive': QueryRangeInclusivityToJSON(value.inclusive),
+        'term_min': value.term_min,
+        'term_max': value.term_max,
         'prefix': value.prefix,
     };
 }

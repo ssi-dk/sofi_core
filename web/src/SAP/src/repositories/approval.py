@@ -2,6 +2,7 @@ import pymongo
 import logging
 import json
 from web.src.SAP.generated.models import Approval
+from web.src.SAP.generated.models.approval_status import ApprovalStatus
 from ...common.database import get_connection, DB_NAME, APPROVALS_COL_NAME
 import sys
 
@@ -27,6 +28,37 @@ def find_approvals(user: str):
             approvals.find({"approver": user}).sort("timestamp", pymongo.DESCENDING),
         )
     )
+
+
+def find_approvals_by_sequence_id(sequence_id: str):
+    conn = get_connection()
+    mydb = conn[DB_NAME]
+    approvals = mydb[APPROVALS_COL_NAME]
+
+    return list(
+        map(
+            remove_id,
+            approvals.find({f"matrix.{sequence_id}": {"$exists": 1}}).sort(
+                "timestamp", pymongo.ASCENDING
+            ),
+        )
+    )
+
+
+def check_active_approval(approval: Approval):
+    return approval["status"] == "submitted"
+
+
+def get_approval_matrix(sequence_id: str):
+    approvals = find_approvals_by_sequence_id(sequence_id)
+    if len(approvals) == 0 or not approvals:
+        return {}
+    matrices = list(
+        map(lambda x: x["matrix"], filter(check_active_approval, approvals))
+    )
+    if len(matrices) == 0 or not matrices:
+        return {}
+    return {k: v for d in matrices for k, v in d.items()}[sequence_id]
 
 
 def insert_approval(username: str, approval: Approval):

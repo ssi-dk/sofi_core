@@ -1,6 +1,7 @@
 export * from './AnalysisQuery';
 export * from './AnalysisResult';
 export * from './AnalysisResultAllOf';
+export * from './AnalysisResultAllOfQcFailedTests';
 export * from './Approval';
 export * from './ApprovalAllOf';
 export * from './ApprovalRequest';
@@ -21,6 +22,7 @@ export * from './PersonalIdentifierType';
 export * from './QueryExpression';
 export * from './QueryOperand';
 export * from './QueryOperator';
+export * from './QueryRangeInclusivity';
 export * from './Resistance';
 export * from './TbrMetadata';
 export * from './TbrSpecificMetadata';

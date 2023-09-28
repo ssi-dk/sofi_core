@@ -1,7 +1,10 @@
 import os, sys
 import binascii
+import logging
+
 from typing import Dict
 
+from dateutil import parser
 from pymongo import MongoClient, mongo_client
 from pymongo.encryption import Algorithm, ClientEncryption
 from pymongo.encryption_options import AutoEncryptionOpts
@@ -76,6 +79,11 @@ def get_connection(with_enc=False):
                 BIFROST_MONGO_CONN, auto_encryption_opts=auto_encryption_opts
             )
         )
+
+        if not client.is_primary:
+            logging.debug("MongoDB client is not primary - getting the primary client")
+            client = client.primary
+
         coll = client.test.coll
 
         # First time key setup. Index creation in mongo is idempotent
@@ -110,27 +118,48 @@ def get_connection(with_enc=False):
             return CONNECTION
 
 
-def encrypt_dict(encryption_client: ClientEncryption, dikt: Dict, filter_list=None):
+def recursive_replace(data, replacement_fn, filter_list=None, filtered_parent=False):
+    # If no filter_list is provided, then assume all leaf nodes in tree must be replaced
+    do_filter = not filter_list or filtered_parent
+    if isinstance(data, (dict, list)):
+        for k, v in data.items() if isinstance(data, dict) else enumerate(data):
+            # If a key in the filter_list is seen at any node in the tree, leaf values
+            # underneath that node must be replaced
+            if k in filter_list:
+                do_filter = True
+            if (not (isinstance(v, (dict, list)))) and do_filter:
+                try:
+                    replacement_text = replacement_fn(v)
+                    data[k] = replacement_text
+                except:
+                    pass
+            else:
+                data[k] = recursive_replace(v, replacement_fn, filter_list, do_filter)
+    return data
+
+
+def encrypt_dict(encryption_client: ClientEncryption, val, filter_list=None):
     """
-    Encrypt fields of a dict, possible filtered by a an array as kwarg "filter"
+    Encrypt fields of a dict, possibly filtered by an array as kwarg "filter"
     """
-    if filter_list is not None:
-        for filter_item in filter_list:
-            if filter_item in dikt:
-                encrypted_field = encryption_client.encrypt(
-                    dikt[filter_item],
-                    Algorithm.AEAD_AES_256_CBC_HMAC_SHA_512_Deterministic,
-                    key_alt_name=ENCRYPTION_KEY_NAME,
-                )
-                dikt[filter_item] = encrypted_field
-    else:
-        for key, value in dikt.items():
-            encrypted_field = encryption_client.encrypt(
-                value,
-                Algorithm.AEAD_AES_256_CBC_HMAC_SHA_512_Deterministic,
-                key_alt_name=ENCRYPTION_KEY_NAME,
-            )
-            dikt[key] = encrypted_field
+    return recursive_replace(
+        val,
+        lambda v: encryption_client.encrypt(
+            v,
+            Algorithm.AEAD_AES_256_CBC_HMAC_SHA_512_Deterministic,
+            key_alt_name=ENCRYPTION_KEY_NAME,
+        ),
+        filter_list,
+    )
+
+
+def coerce_dates(val):
+    filter_list = filter(lambda k: k.startswith("date_"), val.keys())
+    return recursive_replace(
+        val,
+        lambda v: parser.parse(v) if v else None,
+        filter_list,
+    )
 
 
 def yield_chunks(cursor, chunk_size=200):
