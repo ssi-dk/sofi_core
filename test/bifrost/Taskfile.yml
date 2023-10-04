@@ -4,10 +4,16 @@ tasks:
   build:
     summary: |
       Builds the testing Docker image
+      
+      Needs project root path as CLI arg, `task build -- <path>`.
     cmds:
       - cp ../../bifrost/bifrost_listener/aggregation.py .
       - defer: rm aggregation.py
       - docker build . -t sofi_test:latest
+
+    preconditions:
+      - sh: test $(echo "{{.CLI_ARGS}}" | wc --m) -ge 1
+        msg: "Path to root must be provided as cli args using `-- <path>`"
 
   db:up:
     - docker-compose -f {{.CLI_ARGS}}/docker-compose.test-aggregation.yml up -d
