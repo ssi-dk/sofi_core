@@ -63,6 +63,20 @@ import { AnalysisResultAllOfQcFailedTests } from "sap-client/models/AnalysisResu
 // as 'approved' also.
 const PRIMARY_APPROVAL_FIELDS = ["st_final", "qc_final"];
 
+type SelectionList = {
+  [field: string]: boolean;
+};
+
+type SelectionType = {
+  [sequence_id: string]: SelectionList;
+};
+
+type ErrorObject = {
+  [sequence_id: string]: {
+    [field: string]: string;
+  };
+};
+
 export default function AnalysisPage() {
   const { t } = useTranslation();
   const toast = useToast();
@@ -82,6 +96,9 @@ export default function AnalysisPage() {
   const [{ isPending, isFinished }] = useRequest({
     ...requestPageOfAnalysis({ pageSize: 100 }, false),
   });
+
+  const [errors, setErrors] = React.useState<ErrorObject>();
+  const [error, setError] = React.useState<boolean>();
 
   useRequest({ ...fetchApprovalMatrix() });
   // TODO: Figure out how to make this strongly typed
@@ -312,11 +329,67 @@ export default function AnalysisPage() {
     [setPageState, pageState]
   );
 
+  React.useEffect(() => {
+    if (error) {
+      const stringyfied = Object.entries(errors).reduceRight((acc, [k, v]) => {
+        return Object.entries(v).reduceRight((accp, [kp, vp]) => {
+          return (
+            accp +
+            `\n\tColumn '${kp}' needs ${vp} to be included in the selection.`
+          );
+        }, acc + `\nSequence '${k}': `);
+      }, "");
+      toast({
+        title: t("Cannot approve when dependent fields are missing"),
+        description: stringyfied,
+        status: "error",
+        duration: null,
+        isClosable: true,
+      });
+      setNeedsApproveNotify(false);
+    }
+  }, [error, errors, toast, t]);
+
+  /**
+   * Check that every selected field does not "approve" with fields not present in selection.
+   *
+   * Some fields are "approved" with other fields. E.g., qc_final with species_final, run_id and sequence_id. In this
+   * case if qc_final is in the selection, then the three other fields must also be in the selection. #104595
+   * @param selection1 Selected columns from view
+   */
   const approveSelection = React.useCallback(() => {
     setNeedsApproveNotify(true);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    doApproval({ matrix: selection as any });
-  }, [selection, doApproval, setNeedsApproveNotify]);
+
+    const errorObject: ErrorObject = {};
+
+    for (const [sequenceId, sequenceSelection] of Object.entries(selection)) {
+      const approvedFields = Object.entries(sequenceSelection)
+        .filter(([k, v], i) => v)
+        .map(([k, v], i) => k);
+      approvedFields.forEach((field) => {
+        const needed = getDependentColumns(field as keyof AnalysisResult);
+        for (const e of needed) {
+          if (!approvedFields.some((x) => x === e)) {
+            if (errorObject[sequenceId] === undefined) {
+              errorObject[sequenceId] = {};
+            }
+            if (errorObject[sequenceId][field] === undefined) {
+              errorObject[sequenceId][field] = `'${e}'`;
+            } else {
+              errorObject[sequenceId][field] += `, '${e}'`;
+            }
+          }
+        }
+      });
+    }
+
+    if (Object.keys(errorObject).length > 0) {
+      setErrors(errorObject);
+      setError(true);
+    } else {
+      doApproval({ matrix: selection as any });
+    }
+  }, [selection, doApproval, setNeedsApproveNotify, getDependentColumns]);
 
   const rejectSelection = React.useCallback(() => {
     setNeedsRejectNotify(true);
