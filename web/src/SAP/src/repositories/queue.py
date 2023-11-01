@@ -28,7 +28,7 @@ def approve_data(isolate_id, sequence_id, fields, institution):
 
 
 def await_update_loop(object_id):
-    max_tries = 10
+    max_tries = 20
     conn = get_connection()
     mydb = conn[DB_NAME]
     queue = mydb[QUEUE_COL_NAME]
@@ -36,7 +36,7 @@ def await_update_loop(object_id):
     waiting_statuses = [ProcessingStatus.WAITING, ProcessingStatus.PROCESSING]
     while max_tries != 0 or result and (result["status"] in waiting_statuses):
         result = queue.find_one({"_id": object_id})
-        time.sleep(0.2)
+        time.sleep(0.4)
         max_tries -= 1
 
     return result["status"]
