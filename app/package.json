@@ -68,7 +68,7 @@
     "lodash.clonedeep": "^4.5.0",
     "lodash.merge": "^4.6.2",
     "lucene": "^2.1.1",
-    "luxon": "^1.26.0",
+    "luxon": "^1.28.1",
     "node-sass": "^4.0.0",
     "pan-zoom": "^3.5.2",
     "prettier": "^2.2.1",
