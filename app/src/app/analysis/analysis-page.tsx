@@ -11,7 +11,12 @@ import {
   Skeleton,
   Spinner,
 } from "@chakra-ui/react";
-import { CheckIcon, DragHandleIcon, NotAllowedIcon } from "@chakra-ui/icons";
+import {
+  CheckIcon,
+  DragHandleIcon,
+  InfoIcon,
+  NotAllowedIcon,
+} from "@chakra-ui/icons";
 import { Column, Row } from "react-table";
 import {
   AnalysisResult,
@@ -320,6 +325,9 @@ export default function AnalysisPage() {
   const [needsApproveNotify, setNeedsApproveNotify] = useState(true);
   const [needsRejectNotify, setNeedsRejectNotify] = useState(true);
 
+  // Test Toast State
+  const [testToast, setTestToast] = useState(false);
+
   const onNarrowHandler = React.useCallback(
     () =>
       setPageState({
@@ -396,6 +404,25 @@ export default function AnalysisPage() {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     doRejection({ matrix: selection as any });
   }, [selection, doRejection, setNeedsRejectNotify]);
+
+  // Test toast function
+  const testSelection = React.useCallback(() => {
+    setTestToast(true);
+  }, []);
+
+  // Display health toasts
+  React.useMemo(() => {
+    if (testToast) {
+      toast({
+        title: t("Test Toast"),
+        description: t("This is a test"),
+        status: "info",
+        duration: 3000,
+        isClosable: true,
+      });
+      setTestToast(false);
+    }
+  }, [t, testToast, toast]);
 
   // Display approval toasts
   React.useMemo(() => {
@@ -779,6 +806,14 @@ export default function AnalysisPage() {
                 onClick={rejectSelection}
               >
                 {t("Reject")}
+              </Button>
+              <Button
+                leftIcon={<InfoIcon />}
+                margin="4px"
+                // disabled={!pageState.isNarrowed}
+                onClick={testSelection}
+              >
+                {t("Test")}
               </Button>
             </IfPermission>
             <ColumnConfigWidget onReorder={onReorderColumn}>
