@@ -297,6 +297,21 @@ paths:
       tags:
       - gdpr
       x-openapi-router-controller: web.src.SAP.generated.controllers.gdpr_controller
+  /health:
+    get:
+      operationId: system_health
+      parameters: []
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+          description: OK
+      tags:
+      - health
+      x-openapi-router-controller: web.src.SAP.generated.controllers.health_controller
+      x-codegen-request-body-name: query
   /me:
     get:
       description: Describe the current user and their permissions
@@ -608,6 +623,21 @@ components:
           $ref: '#/components/schemas/QueryExpression'
         filters:
           type: object
+    HealthResponse:
+      enum:
+      - Healthy
+      - Degraded
+      - Down
+      type: string
+    HealthStatus:
+      properties:
+        lims:
+          $ref: '#/components/schemas/HealthResponse'
+        tbr:
+          $ref: '#/components/schemas/HealthResponse'
+        bifrost:
+          $ref: '#/components/schemas/HealthResponse'
+      type: object
     Column:
       example:
         pii: true

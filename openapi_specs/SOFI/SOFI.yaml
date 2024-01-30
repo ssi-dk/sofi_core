@@ -445,6 +445,23 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UploadResponse'
+  /health:
+    get:
+      description: ''
+      operationId: system_health
+      x-openapi-router-controller: web.src.SAP.generated.controllers.health_controller
+      x-codegen-request-body-name: query
+      tags:
+        - health
+      parameters: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+
 
 components:
   schemas:
@@ -534,6 +551,23 @@ components:
           $ref: "#/components/schemas/QueryExpression"
         filters:
           type: object
+
+    HealthResponse:
+      type: string
+      enum: [Healthy, Degraded, Down]
+
+    HealthStatus:
+      type: object
+      properties:
+        lims:
+          type: string
+          $ref: "#/components/schemas/HealthResponse"
+        tbr:
+          type: string
+          $ref: "#/components/schemas/HealthResponse"
+        bifrost:
+          type: string
+          $ref: "#/components/schemas/HealthResponse"
 
     Column:
       properties:

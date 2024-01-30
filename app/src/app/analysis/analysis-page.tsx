@@ -25,6 +25,7 @@ import {
   ApprovalStatus,
   Permission,
   Organization,
+  HealthResponse,
 } from "sap-client";
 import { useMutation, useRequest } from "redux-query-react";
 import { useDispatch, useSelector } from "react-redux";
@@ -43,6 +44,8 @@ import {
   ColumnSlice,
   searchPageOfAnalysis,
   updateAnalysis,
+  healthRequest,
+  HealthSlice,
 } from "./analysis-query-configs";
 import HalfHolyGrailLayout from "../../layouts/half-holy-grail";
 import AnalysisSidebar from "./sidebar/analysis-sidebar";
@@ -161,6 +164,7 @@ export default function AnalysisPage() {
 
   const selection = useSelector<RootState>((s) => s.selection.selection);
   const approvals = useSelector<RootState>((s) => s.entities.approvalMatrix);
+  const health = useSelector<RootState>((s) => s.entities.health);
   const view = useSelector<RootState>(
     (s) => s.view.view
   ) as UserDefinedViewInternal;
@@ -186,6 +190,15 @@ export default function AnalysisPage() {
     },
     [dispatch]
   );
+
+  // Health endpoint test
+  const onHealthTest = React.useCallback(() => {
+    dispatch(
+      requestAsync({
+        ...healthRequest(),
+      })
+    );
+  }, [dispatch]);
 
   const { hiddenColumns } = view;
 
@@ -407,22 +420,25 @@ export default function AnalysisPage() {
 
   // Test toast function
   const testSelection = React.useCallback(() => {
-    setTestToast(true);
-  }, []);
+    onHealthTest();
+    if (health) {
+      setTestToast(true);
+    }
+  }, [onHealthTest, health]);
 
   // Display health toasts
   React.useMemo(() => {
     if (testToast) {
       toast({
         title: t("Test Toast"),
-        description: t("This is a test"),
+        description: t("" + health),
         status: "info",
         duration: 3000,
         isClosable: true,
       });
       setTestToast(false);
     }
-  }, [t, testToast, toast]);
+  }, [t, testToast, toast, health]);
 
   // Display approval toasts
   React.useMemo(() => {

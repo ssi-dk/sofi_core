@@ -12,6 +12,8 @@ mkfile_dir := $(subst /Makefile,,$(mkfile_path))
 all: clean merge_common build
 
 clean:
+	rm -rf ${mkfile_dir}/web/src/api_clients
+	rm -rf ${mkfile_dir}/app/src/sap-client
 	rm -rf ${mkfile_dir}/bifrost/bifrost_db/data/db/*
 	rm -rf ${mkfile_dir}/bifrost/bifrost_queue_broker/api_clients/tbr_client/
 	rm -rf ${mkfile_dir}/bifrost/bifrost_queue_broker/api_clients/lims_client/
@@ -23,6 +25,7 @@ clean:
 
 merge_common: $(shell find ${mkfile_dir}/bifrost/bifrost_queue_broker/common/ -type f) $(shell find ${mkfile_dir}/web/src/SAP/common/ -type f) $(shell find ${mkfile_dir}/openapi_specs/ -type f) $(shell find ${mkfile_dir}/web/openapi_specs/ -type f)
 	${mkfile_dir}/merge_common.sh ${mkfile_dir}/bifrost/bifrost_queue_broker/common  ${mkfile_dir}/web/src/SAP/common
+	${mkfile_dir}/merge_common.sh ${mkfile_dir}/bifrost/bifrost_queue_broker/api_clients  ${mkfile_dir}/api_clients
 	${mkfile_dir}/merge_common.sh ${mkfile_dir}/openapi_specs ${mkfile_dir}/web/openapi_specs
 
 ${mkfile_dir}/.env : ${mkfile_dir}/.env.local.example
@@ -101,55 +104,11 @@ ${mkfile_dir}/web/src/SAP/generated : $(shell find ${mkfile_dir}/openapi_specs/S
 	rm -rf "${mkfile_dir}/web/src/SAP/generated"
 	mv "${mkfile_dir}/web/src/SAP/web/src/SAP/generated" "${mkfile_dir}/web/src/SAP/generated"
 
-${mkfile_dir}/web/src/services/lims/openapi : ${mkfile_dir}/openapi_specs/lims.v1.yaml
-	# Generate LIMS client for flask api
-	rm -rf ${mkfile_dir}/web/src/services/lims/openapi
-	docker run --rm -v "${mkfile_dir}:/local" \
-		--user ${mkfile_user} \
-		"openapitools/openapi-generator:cli-v5.0.0" \
-		generate \
-		-i /local/openapi_specs/lims.v1.yaml \
-		-g python \
-		-o /local \
-		--additional-properties packageName=web.src.services.lims.openapi \
-		--additional-properties generateSourceCodeOnly=true \
-		--global-property apiTests=false,apiDocs=false \
-		--global-property modelTests=false,modelDocs=false
 
 ${mkfile_dir}/bifrost/bifrost_queue_broker/api_clients/lims_client : ${mkfile_dir}/openapi_specs/lims.v1.yaml
 	# Generate LIMS client for request broker
 	rm -rf ${mkfile_dir}/bifrost/bifrost_queue_broker/api_clients/lims_client
-	docker run --rm -v "${mkfile_dir}:/local" \
-		--user ${mkfile_user} \
-		"openapitools/openapi-generator:cli-v5.0.0" \
-		generate \
-		-i /local/openapi_specs/lims.v1.yaml \
-		-g python \
-		-o /local \
-		--additional-properties packageName=web.src.services.lims.openapi \
-		--additional-properties generateSourceCodeOnly=true \
-		--global-property apiTests=false,apiDocs=false \
-		--global-property modelTests=false,modelDocs=false
-
-
-${mkfile_dir}/bifrost/bifrost_queue_broker/api_clients/tbr_client : ${mkfile_dir}/openapi_specs/tbr.v1.yaml
-	# Generate TBR client for broker
-	rm -rf ${mkfile_dir}/bifrost/bifrost_queue_broker/api_clients/tbr_client
-	docker run --rm -v "${mkfile_dir}:/local" \
-		--user ${mkfile_user} \
-		"openapitools/openapi-generator:cli-v5.0.0" \
-		generate \
-		-i /local/openapi_specs/tbr.v1.yaml \
-		-g python \
-		-o /local/bifrost/bifrost_queue_broker \
-		--additional-properties packageName=api_clients.tbr_client \
-		--additional-properties generateSourceCodeOnly=true \
-		--global-property apiTests=false,apiDocs=false \
-		--global-property modelTests=false,modelDocs=false
-
-${mkfile_dir}/bifrost/bifrost_queue_broker/api_clients/lims_client : ${mkfile_dir}/openapi_specs/lims.v1.yaml
-	# Generate LIMS client for broker
-	rm -rf ${mkfile_dir}/bifrost/bifrost_queue_broker/api_clients/lims_client
+	rm -rf ${mkfile_dir}/web/src/api_clients/lims_client
 	docker run --rm -v "${mkfile_dir}:/local" \
 		--user ${mkfile_user} \
 		"openapitools/openapi-generator:cli-v5.0.0" \
@@ -158,6 +117,23 @@ ${mkfile_dir}/bifrost/bifrost_queue_broker/api_clients/lims_client : ${mkfile_di
 		-g python \
 		-o /local/bifrost/bifrost_queue_broker \
 		--additional-properties packageName=api_clients.lims_client \
+		--additional-properties generateSourceCodeOnly=true \
+		--global-property apiTests=false,apiDocs=false \
+		--global-property modelTests=false,modelDocs=false
+
+
+${mkfile_dir}/bifrost/bifrost_queue_broker/api_clients/tbr_client : ${mkfile_dir}/openapi_specs/tbr.v1.yaml
+	# Generate TBR client for broker
+	rm -rf ${mkfile_dir}/bifrost/bifrost_queue_broker/api_clients/tbr_client
+	rm -rf ${mkfile_dir}/web/src/api_clients/tbr_client
+	docker run --rm -v "${mkfile_dir}:/local" \
+		--user ${mkfile_user} \
+		"openapitools/openapi-generator:cli-v5.0.0" \
+		generate \
+		-i /local/openapi_specs/tbr.v1.yaml \
+		-g python \
+		-o /local/bifrost/bifrost_queue_broker \
+		--additional-properties packageName=api_clients.tbr_client \
 		--additional-properties generateSourceCodeOnly=true \
 		--global-property apiTests=false,apiDocs=false \
 		--global-property modelTests=false,modelDocs=false
@@ -176,10 +152,11 @@ install:
 test-all:
 	task test-all -- ${mkfile_dir}
 
-RUN_DEPS := merge_common ${mkfile_dir}/app/src/sap-client ${mkfile_dir}/web/src/SAP/generated 
+RUN_DEPS := ${mkfile_dir}/app/src/sap-client ${mkfile_dir}/web/src/SAP/generated 
 RUN_DEPS += ${mkfile_dir}/web/src/services/lims/openapi ${mkfile_dir}/app/node_modules/
 RUN_DEPS += ${mkfile_dir}/bifrost/bifrost_queue_broker/api_clients/tbr_client 
 RUN_DEPS += ${mkfile_dir}/bifrost/bifrost_queue_broker/api_clients/lims_client 
+RUN_DEPS += merge_common
 RUN_DEPS += ${mkfile_dir}/.env
 RUN_DEPS += lefthook
 

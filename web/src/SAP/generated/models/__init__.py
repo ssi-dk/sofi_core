@@ -15,6 +15,8 @@ from .base_metadata import BaseMetadata
 from .bulk_upload_request import BulkUploadRequest
 from .column import Column
 from .data_clearance import DataClearance
+from .health_response import HealthResponse
+from .health_status import HealthStatus
 from .lims_metadata import LimsMetadata
 from .lims_specific_metadata import LimsSpecificMetadata
 from .metadata_reload_request import MetadataReloadRequest

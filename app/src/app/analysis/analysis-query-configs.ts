@@ -15,6 +15,8 @@ import {
   SubmitChangesRequest,
   GetSequenceByIdRequest,
   getSequenceById,
+  systemHealth,
+  HealthResponse,
 } from "sap-client";
 import { getUrl } from "service";
 import { arrayToNormalizedHashmap } from "utils";
@@ -164,5 +166,25 @@ export const updateAnalysis = (change: SubmitChangesBody) => {
     },
   };
   base.force = true;
+  return base;
+};
+
+export type HealthSlice = {
+  health: HealthResponse;
+};
+
+export const healthRequest = () => {
+  const base = systemHealth<HealthSlice>();
+
+  base.url = getUrl(base.url);
+
+  base.transform = (response: HealthResponse) => ({ health: response });
+
+  base.update = {
+    health: (_, newValue) => newValue,
+  };
+
+  base.force = true;
+
   return base;
 };

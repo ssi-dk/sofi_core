@@ -9,6 +9,8 @@ export * from './ApprovalStatus';
 export * from './BaseMetadata';
 export * from './Column';
 export * from './DataClearance';
+export * from './HealthResponse';
+export * from './HealthStatus';
 export * from './LimsMetadata';
 export * from './LimsSpecificMetadata';
 export * from './MetadataReloadRequest';
