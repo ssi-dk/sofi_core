@@ -1,19 +1,22 @@
 import os, sys
-from ...api_clients.lims_client.api import connections_api
+
+# from ...api_clients.lims_client.api import connections_api
 
 from flask import abort
 from flask.json import jsonify
 
-lims_api_url = os.environ.get("LIMS_API_URL")
-lims_api_databaseid = os.environ.get("LIMS_API_DATABASEID")
-lims_api_username = os.environ.get("LIMS_API_USERNAME")
-lims_api_password = os.environ.get("LIMS_API_PASSWORD")
+# lims_api_url = os.environ.get("LIMS_API_URL")
+# lims_api_databaseid = os.environ.get("LIMS_API_DATABASEID")
+# lims_api_username = os.environ.get("LIMS_API_USERNAME")
+# lims_api_password = os.environ.get("LIMS_API_PASSWORD")
 
-lims_configuration = api_clients.lims_client.Configuration(host=lims_api_url)
+# lims_configuration = api_clients.lims_client.Configuration(host=lims_api_url)
 
 
 def system_health(user, token):
     status = {}
+    return jsonify(status)
+
     # with api_clients.tbr_client.ApiClient(get_tbr_configuration()) as api_client:
     #         api_instance = isolate_api.IsolateApi(api_client)
     #         try:
@@ -48,33 +51,32 @@ def system_health(user, token):
     #             )
     #             raise BrokerError
     # connection_id = None
-    with api_clients.lims_client.ApiClient(lims_configuration) as api_client:
-        # Create an instance of the API class
-        conn_create_instance = connections_api.ConnectionsApi(api_client)
-        conn_req = ConnectionCreateRequest(
-            databaseid=lims_api_databaseid,
-            username=lims_api_username,
-            password=lims_api_password,
-        )
-        connection_id = None
-        try:
-            api_response: ConnectionCreateResponse = (
-                conn_create_instance.post_connections(
-                    connection_create_request=conn_req
-                )
-            )
-            connection_id = api_response.connections.connectionid
-        except api_clients.lims_client.ApiException as e:
-            print("Exception when creating connection: %s\n" % e)
-            status["lims"] = False
 
-        # lms_cfg = api_clients.lims_client.Configuration(
-        #     host=lims_api_url, api_key={"cookieAuth": f"connectionid={connection_id}"}
-        # )
+    # with api_clients.lims_client.ApiClient(lims_configuration) as api_client:
+    #     # Create an instance of the API class
+    #     conn_create_instance = connections_api.ConnectionsApi(api_client)
+    #     conn_req = ConnectionCreateRequest(
+    #         databaseid=lims_api_databaseid,
+    #         username=lims_api_username,
+    #         password=lims_api_password,
+    #     )
+    #     connection_id = None
+    #     try:
+    #         api_response: ConnectionCreateResponse = (
+    #             conn_create_instance.post_connections(
+    #                 connection_create_request=conn_req
+    #             )
+    #         )
+    #         connection_id = api_response.connections.connectionid
+    #     except api_clients.lims_client.ApiException as e:
+    #         print("Exception when creating connection: %s\n" % e)
+    #         status["lims"] = False
 
-        if connection_id != None:
-            status["lims"] = True
-        else:
-            status["lims"] = False
+    #     # lms_cfg = api_clients.lims_client.Configuration(
+    #     #     host=lims_api_url, api_key={"cookieAuth": f"connectionid={connection_id}"}
+    #     # )
 
-    return jsonify(status)
+    #     if connection_id != None:
+    #         status["lims"] = True
+    #     else:
+    #         status["lims"] = False
