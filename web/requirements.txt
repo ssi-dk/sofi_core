@@ -15,7 +15,7 @@ python-dotenv==0.15.0
 pymongo==3.11.0
 pymongocrypt==1.1.0
 commentjson==0.9.0
-cryptography==3.3.1
+cryptography==42.0.0
 python-jose[cryptography]
 six>=1.9
 jwcrypto >= 0.8
