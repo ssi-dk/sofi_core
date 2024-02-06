@@ -1,5 +1,5 @@
 
-SHELL := /bin/bash
+SHELL := /usr/bin/env bash
 
 mkfile_u := $(shell id -u)
 mkfile_g := $(shell id -g)
@@ -53,14 +53,7 @@ ${mkfile_dir}/.certs/sofi.local.crt : ${mkfile_dir}/.env
 	sudo update-ca-certificates
 
 ${mkfile_dir}/node_modules :
-	yarn install
-	# install lefthook for management of git hooks
-	yarn add -D @arkweid/lefthook
-
-lefthook : ${mkfile_dir}/node_modules
-	# install autoformatting tools: prettier, black
-	yarn exec lefthook install
-	pip3 install black
+	npx yarn install
 
 # unused target for now
 ${mkfile_dir}/openapi_specs/SOFI/SOFI_merged.yaml : $(shell find ${mkfile_dir}/openapi_specs/SOFI/ -type f)
@@ -83,7 +76,7 @@ ${mkfile_dir}/app/src/sap-client : $(shell find ${mkfile_dir}/openapi_specs/SOFI
 		-o /mnt/app/src/sap-client
 	cp -r "${mkfile_dir}/app/src/sap-client/src/"* "${mkfile_dir}/app/src/sap-client"
 	rm -rf "${mkfile_dir}/app/src/sap-client/src/"
-	yarn --cwd "${mkfile_dir}/app/" prettier --write src/
+	npx yarn --cwd "${mkfile_dir}/app/" prettier --write src/
 
 ${mkfile_dir}/web/src/SAP/generated : $(shell find ${mkfile_dir}/openapi_specs/SOFI/ -type f)
 	# Generate flask api
@@ -163,7 +156,7 @@ ${mkfile_dir}/bifrost/bifrost_queue_broker/api_clients/lims_client : ${mkfile_di
 		--global-property modelTests=false,modelDocs=false
 
 ${mkfile_dir}/app/node_modules/ : ${mkfile_dir}/app/package.json
-	pushd ${mkfile_dir}/app && yarn install
+	pushd ${mkfile_dir}/app && npx yarn install
 
 build: ${mkfile_dir}/app/src/sap-client ${mkfile_dir}/web/src/SAP/generated ${mkfile_dir}/web/src/services/lims/openapi
 	CURRENT_UID=${mkfile_user} docker-compose build --no-cache
@@ -181,7 +174,6 @@ RUN_DEPS += ${mkfile_dir}/web/src/services/lims/openapi ${mkfile_dir}/app/node_m
 RUN_DEPS += ${mkfile_dir}/bifrost/bifrost_queue_broker/api_clients/tbr_client 
 RUN_DEPS += ${mkfile_dir}/bifrost/bifrost_queue_broker/api_clients/lims_client 
 RUN_DEPS += ${mkfile_dir}/.env
-RUN_DEPS += lefthook
 
 run: $(RUN_DEPS)
 	CURRENT_UID=${mkfile_user} docker-compose -f ${mkfile_dir}/docker-compose.yml -f ${mkfile_dir}/docker-compose.local.yml up --build $(ARGS)
