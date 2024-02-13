@@ -31,7 +31,10 @@ import { RootState } from "app/root-reducer";
 import { predicateBuilder, PropFilter, RangeFilter } from "utils";
 import { IfPermission } from "auth/if-permission";
 import { Loading } from "loading";
-import DataTable, { ColumnReordering } from "./data-table/data-table";
+import DataTable, {
+  ColumnReordering,
+  DataTableSelection,
+} from "./data-table/data-table";
 import {
   requestPageOfAnalysis,
   requestColumns,
@@ -798,6 +801,7 @@ export default function AnalysisPage() {
             <ExportButton
               data={filteredData}
               columns={columns.map((x) => x.accessor) as any}
+              selection={selection as DataTableSelection<AnalysisResult>}
             />
           </Flex>
         )}
