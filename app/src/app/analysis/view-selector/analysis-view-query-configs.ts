@@ -73,9 +73,17 @@ export const addUserViewMutation = (view: UserDefinedViewInternal) => {
     userDefinedView: convertedView,
   });
   base.url = getUrl(base.url);
-  base.transform = (response) => transformIn(response) as any;
+  base.transform = (response) => {
+    return {
+      userViews: [response],
+    };
+  };
+
   base.update = {
-    userViews: (oldViews) => [...oldViews, view],
+    userViews: (oldViews, newValue) => [
+      ...oldViews,
+      ...newValue.map((x) => transformIn(x)),
+    ],
   };
   base.force = true;
   return base;

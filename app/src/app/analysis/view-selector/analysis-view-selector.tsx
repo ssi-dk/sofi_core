@@ -64,8 +64,28 @@ const AnalysisViewSelector = () => {
     async (event) => {
       const { value } = event;
       if (value === addViewValue) {
-        const viewName = prompt("View name");
+        let viewName = prompt("View name");
         if (viewName) {
+          const nameAlreadyExists = userViews.some(
+            (newView) => newView.name === viewName
+          );
+          if (nameAlreadyExists) {
+            const pattern = `${viewName}_`;
+            const matchingViews = userViews.filter((newView) =>
+              newView.name.startsWith(pattern)
+            );
+
+            const numbers = matchingViews
+              .map((newView) => {
+                const numberPart = newView.name.slice(pattern.length);
+                return parseInt(numberPart, 10);
+              })
+              .filter((number) => !isNaN(number));
+
+            const nextNumber = Math.max(...numbers, 0) + 1;
+            viewName += `_${nextNumber}`;
+          }
+
           const tableState = spyDataTable();
           const newView = { ...tableState, name: viewName };
           await addView(newView);
@@ -84,7 +104,7 @@ const AnalysisViewSelector = () => {
         dispatch(setView(value));
       }
     },
-    [dispatch, addView, deleteView, t, view]
+    [dispatch, addView, deleteView, t, view, userViews]
   );
 
   const value = React.useMemo(() => ({ label: view.name, value: view }), [
