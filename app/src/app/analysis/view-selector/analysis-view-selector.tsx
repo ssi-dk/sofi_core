@@ -46,7 +46,6 @@ const AnalysisViewSelector = () => {
   const view = useSelector<RootState>(
     (s) => s.view.view
   ) as UserDefinedViewInternal;
-
   const viewReq = React.useMemo(
     () => ({
       ...requestUserViews(),
@@ -65,20 +64,20 @@ const AnalysisViewSelector = () => {
     async (event) => {
       const { value } = event;
       if (value === addViewValue) {
-        var viewName = prompt("View name");
+        let viewName = prompt("View name");
         if (viewName) {
           const nameAlreadyExists = userViews.some(
-            (view) => view.name === viewName
+            (newView) => newView.name === viewName
           );
           if (nameAlreadyExists) {
             const pattern = `${viewName}_`;
-            const matchingViews = userViews.filter((view) =>
-              view.name.startsWith(pattern)
+            const matchingViews = userViews.filter((newView) =>
+              newView.name.startsWith(pattern)
             );
 
             const numbers = matchingViews
-              .map((view) => {
-                const numberPart = view.name.slice(pattern.length);
+              .map((newView) => {
+                const numberPart = newView.name.slice(pattern.length);
                 return parseInt(numberPart, 10);
               })
               .filter((number) => !isNaN(number));
