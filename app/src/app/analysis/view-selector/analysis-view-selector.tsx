@@ -13,6 +13,7 @@ import {
 } from "./analysis-view-query-configs";
 import { defaultViews, setView } from "./analysis-view-selection-config";
 import { spyDataTable } from "../data-table/table-spy";
+import { UserDefinedView } from "sap-client";
 
 const AnalysisViewSelector = () => {
   const { t } = useTranslation();
@@ -46,6 +47,10 @@ const AnalysisViewSelector = () => {
   const view = useSelector<RootState>(
     (s) => s.view.view
   ) as UserDefinedViewInternal;
+  const mostRecentlyCreatedView = useSelector<RootState>(
+    (s) => s.entities.mostRecentlyCreatedView
+  ) as UserDefinedView;
+
   const viewReq = React.useMemo(
     () => ({
       ...requestUserViews(),
@@ -64,8 +69,28 @@ const AnalysisViewSelector = () => {
     async (event) => {
       const { value } = event;
       if (value === addViewValue) {
-        const viewName = prompt("View name");
+        var viewName = prompt("View name");
         if (viewName) {
+          const nameAlreadyExists = userViews.some(
+            (view) => view.name === viewName
+          );
+          if (nameAlreadyExists) {
+            const pattern = `${viewName}_`;
+            const matchingViews = userViews.filter((view) =>
+              view.name.startsWith(pattern)
+            );
+
+            const numbers = matchingViews
+              .map((view) => {
+                const numberPart = view.name.slice(pattern.length);
+                return parseInt(numberPart, 10);
+              })
+              .filter((number) => !isNaN(number));
+
+            const nextNumber = Math.max(...numbers, 0) + 1;
+            viewName += `_${nextNumber}`;
+          }
+
           const tableState = spyDataTable();
           const newView = { ...tableState, name: viewName };
           await addView(newView);
@@ -84,7 +109,7 @@ const AnalysisViewSelector = () => {
         dispatch(setView(value));
       }
     },
-    [dispatch, addView, deleteView, t, view]
+    [dispatch, addView, deleteView, t, view, userViews]
   );
 
   const value = React.useMemo(() => ({ label: view.name, value: view }), [

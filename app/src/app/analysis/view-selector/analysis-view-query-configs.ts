@@ -11,6 +11,7 @@ import { getUrl } from "service";
 
 type UserDefinedViews = {
   userViews: UserDefinedView[];
+  mostRecentlyCreatedView: UserDefinedView;
 };
 
 // Make sure required keys are defined, just in case
@@ -73,9 +74,20 @@ export const addUserViewMutation = (view: UserDefinedViewInternal) => {
     userDefinedView: convertedView,
   });
   base.url = getUrl(base.url);
-  base.transform = (response) => transformIn(response) as any;
+  base.transform = (response) => {
+    console.log("Response: ", transformIn(response));
+    return {
+      userViews: [response],
+      mostRecentlyCreatedView: response,
+    };
+  };
+
   base.update = {
-    userViews: (oldViews) => [...oldViews, view],
+    userViews: (oldViews, newValue) => [
+      ...oldViews,
+      ...newValue.map((x) => transformIn(x)),
+    ],
+    mostRecentlyCreatedView: (oldValue, newValue) => transformIn(newValue),
   };
   base.force = true;
   return base;
