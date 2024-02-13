@@ -13,7 +13,6 @@ import {
 } from "./analysis-view-query-configs";
 import { defaultViews, setView } from "./analysis-view-selection-config";
 import { spyDataTable } from "../data-table/table-spy";
-import { UserDefinedView } from "sap-client";
 
 const AnalysisViewSelector = () => {
   const { t } = useTranslation();
@@ -47,9 +46,6 @@ const AnalysisViewSelector = () => {
   const view = useSelector<RootState>(
     (s) => s.view.view
   ) as UserDefinedViewInternal;
-  const mostRecentlyCreatedView = useSelector<RootState>(
-    (s) => s.entities.mostRecentlyCreatedView
-  ) as UserDefinedView;
 
   const viewReq = React.useMemo(
     () => ({
