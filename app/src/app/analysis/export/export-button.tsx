@@ -40,7 +40,7 @@ const ExportButton = (props: ExportButtonProps) => {
 
     const tsv = convertToCsv<AnalysisResult>(exportData, columnsToExport, "\t");
     downloadFile(tsv, "sofi-export.tsv");
-  }, [data, columns, selection]);
+  }, [data, columns, selection, exportData]);
 
   return (
     <IconButton
