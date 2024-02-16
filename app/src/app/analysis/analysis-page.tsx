@@ -122,6 +122,7 @@ export default function AnalysisPage() {
         (k) =>
           ({
             accessor: k,
+            sortType: k.endsWith('date') ? 'datetime' : 'alphanumeric',
             Header: t(k),
           } as Column<AnalysisResult>)
       ),
