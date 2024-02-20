@@ -1,5 +1,5 @@
 from typing import Dict
-from web.src.SAP.src.repositories.analysis import update_analysis
+from web.src.SAP.src.repositories.analysis import (get_single_analysis, update_analysis)
 from web.src.SAP.generated.models import Approval, ApprovalRequest, ApprovalStatus
 from ..repositories.approval import (
     find_approvals,
@@ -15,7 +15,7 @@ import sys
 import datetime
 import uuid
 import logging
-from web.src.SAP.src.security.permission_check import assert_user_has
+from web.src.SAP.src.security.permission_check import (assert_user_has, assert_authorized_to_edit)
 from ..services.queue_service import post_and_await_approval
 
 
@@ -35,6 +35,11 @@ def get_approvals(user, token_info):
 
 def create_approval(user, token_info, body: ApprovalRequest):
     assert_user_has("approve", token_info)
+    
+    for sid in body.matrix.keys():
+        s = get_single_analysis(sid)
+        assert_authorized_to_edit(token_info, s)
+
     appr = Approval()
     appr.matrix = body.matrix
     appr.approver = user
