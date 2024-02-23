@@ -21,6 +21,9 @@ clean:
 	rm -rf ${mkfile_dir}/sap_tbr_integration/DG.SAP.TBRIntegration/obj/
 	docker-compose -f ${mkfile_dir}/docker-compose.yml -f ${mkfile_dir}/docker-compose.local.yml rm -v
 
+clean-data:
+	docker volume rm `docker volume ls -qf dangling=true | xargs`
+	
 merge_common: $(shell find ${mkfile_dir}/bifrost/bifrost_queue_broker/common/ -type f) $(shell find ${mkfile_dir}/web/src/SAP/common/ -type f) $(shell find ${mkfile_dir}/openapi_specs/ -type f) $(shell find ${mkfile_dir}/web/openapi_specs/ -type f)
 	${mkfile_dir}/merge_common.sh ${mkfile_dir}/bifrost/bifrost_queue_broker/common  ${mkfile_dir}/web/src/SAP/common
 	${mkfile_dir}/merge_common.sh ${mkfile_dir}/openapi_specs ${mkfile_dir}/web/openapi_specs
