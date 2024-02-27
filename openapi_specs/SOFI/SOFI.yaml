@@ -445,10 +445,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UploadResponse'
-  /health:
+  /health_ext_lims:
     get:
       description: ''
-      operationId: system_health
+      operationId: health_ext_lims
       x-openapi-router-controller: web.src.SAP.generated.controllers.health_controller
       x-codegen-request-body-name: query
       tags:
@@ -462,6 +462,22 @@ paths:
               schema:
                 $ref: '#/components/schemas/HealthResponse'
 
+  /health_ext_tbr:
+    get:
+      description:  ''
+      operationId: health_ext_tbr
+      x-openapi-router-controller: web.src.SAP.generated.controllers.health_controller
+      x-codegen-request-body-name: query
+      tags:
+        - health
+      parameters: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
 
 components:
   schemas:
@@ -553,21 +569,40 @@ components:
           type: object
 
     HealthResponse:
-      type: string
-      enum: [Healthy, Degraded, Down]
-
-    HealthStatus:
       type: object
       properties:
-        lims:
+        data:
+          type: object
+        description:
           type: string
-          $ref: "#/components/schemas/HealthResponse"
-        tbr:
+        exception:
+          $ref: "#/components/schemas/Exception"
+        status:
+          $ref: "#/components/schemas/HealthStatus"
+      required: ["status", "description"]
+
+    Exception:
+      type: object
+      properties:
+        source:
           type: string
-          $ref: "#/components/schemas/HealthResponse"
-        bifrost:
+        message:
           type: string
-          $ref: "#/components/schemas/HealthResponse"
+        stackTrace:
+          type: string
+        data:
+          type: object
+        targetSite:
+          type: string
+        helpLink:
+          type: string
+        innerException:
+          $ref: "#/components/schemas/Exception"
+      required: ["message"]
+
+    HealthStatus:
+      type: string
+      enum: ["Unhealthy", "Degraded", "Healthy"]
 
     Column:
       properties:

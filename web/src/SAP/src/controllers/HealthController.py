@@ -1,16 +1,56 @@
-import os, sys
+import os, sys, requests
 
 # from ...api_clients.lims_client.api import connections_api
+from requests.exceptions import ConnectionError
+from ...generated.models.health_status import HealthStatus
 
+# from SAP.web.src.SAP.generated.models.health_status import HealthStatus
 from flask import abort
 from flask.json import jsonify
 
-# lims_api_url = os.environ.get("LIMS_API_URL")
-# lims_api_databaseid = os.environ.get("LIMS_API_DATABASEID")
-# lims_api_username = os.environ.get("LIMS_API_USERNAME")
-# lims_api_password = os.environ.get("LIMS_API_PASSWORD")
+lims_api_url = os.environ.get("LIMS_API_URL")
+lims_api_databaseid = os.environ.get("LIMS_API_DATABASEID")
+lims_api_username = os.environ.get("LIMS_API_USERNAME")
+lims_api_password = os.environ.get("LIMS_API_PASSWORD")
+
+tbr_api_url = os.environ.get("TBR_API_URL")
+tbr_api_key = os.environ.get("TBR_CLIENT_KEY")
+tbr_api_cert = os.environ.get("TBR_CLIENT_CERT")
+tbr_api_root = os.environ.get("TBR_ROOT_CA")
 
 # lims_configuration = api_clients.lims_client.Configuration(host=lims_api_url)
+
+
+def health_ext_lims(user, token):
+    payload = {
+        "databaseid": lims_api_databaseid,
+        "username": lims_api_username,
+        "password": lims_api_password,
+    }
+    try:
+        r = requests.get(lims_api_url, data=payload)
+        if r.ok:
+            return jsonify({"message": "OK", "status": HealthStatus.HEALTHY})
+        else:
+            return jsonify({"message": "Error", "status": HealthStatus.UNHEALTHY})
+    except ConnectionError:
+        return jsonify({"message": "Error", "status": HealthStatus.UNHEALTHY}), 500
+    except Exception:
+        return jsonify({"message": "Error", "status": HealthStatus.UNHEALTHY})
+
+
+def health_ext_tbr(user, token):
+    url = f"{tbr_api_url}/index.html"
+    try:
+        r = requests.get(url, verify=tbr_api_root, cert=(tbr_api_cert, tbr_api_key))
+        if r.ok:
+            return jsonify({"message": "OK", "status": HealthStatus.HEALTHY})
+        else:
+            return jsonify({"message": "Error", "status": HealthStatus.UNHEALTHY})
+    except ConnectionError:
+        return jsonify({"message": "Error", "status": HealthStatus.UNHEALTHY}), 500
+    except Exception:
+        return jsonify({"message": "Error", "status": HealthStatus.UNHEALTHY})
 
 
 def system_health(user, token):

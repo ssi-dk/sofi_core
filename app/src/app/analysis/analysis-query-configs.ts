@@ -15,7 +15,8 @@ import {
   SubmitChangesRequest,
   GetSequenceByIdRequest,
   getSequenceById,
-  systemHealth,
+  healthExtLims,
+  healthExtTbr,
   HealthResponse,
 } from "sap-client";
 import { getUrl } from "service";
@@ -169,16 +170,21 @@ export const updateAnalysis = (change: SubmitChangesBody) => {
   return base;
 };
 
+type HealthEndpoints = "lims" | "tbr";
+
 export type HealthSlice = {
-  health: HealthResponse;
+  health: { [K in HealthEndpoints]: HealthResponse };
 };
 
-export const healthRequest = () => {
-  const base = systemHealth<HealthSlice>();
+export const healthRequest = (endpoint: HealthEndpoints) => {
+  const base =
+    endpoint === "lims"
+      ? healthExtLims<HealthSlice>()
+      : healthExtTbr<HealthSlice>();
 
   base.url = getUrl(base.url);
 
-  base.transform = (response: HealthResponse) => ({ health: response });
+  base.transform = (response: HealthResponse) => ({ [endpoint]: response });
 
   base.update = {
     health: (_, newValue) => newValue,
@@ -186,5 +192,6 @@ export const healthRequest = () => {
 
   base.force = true;
 
+  console.log(base);
   return base;
 };

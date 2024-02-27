@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Flex,
@@ -27,7 +27,7 @@ import {
   Organization,
   HealthResponse,
 } from "sap-client";
-import { useMutation, useRequest } from "redux-query-react";
+import { useMutation, useRequest, useRequests } from "redux-query-react";
 import { useDispatch, useSelector } from "react-redux";
 import { requestAsync } from "redux-query";
 import { useTranslation } from "react-i18next";
@@ -195,10 +195,23 @@ export default function AnalysisPage() {
   const onHealthTest = React.useCallback(() => {
     dispatch(
       requestAsync({
-        ...healthRequest(),
+        ...healthRequest("lims"),
       })
     );
+    dispatch(
+      requestAsync({
+        ...healthRequest("tbr"),
+      })
+    );
+    console.log(health);
   }, [dispatch]);
+
+  useEffect(() => {
+    console.log(health);
+    if (health) {
+      console.log(health);
+    }
+  }, [health]);
 
   const { hiddenColumns } = view;
 
@@ -421,6 +434,7 @@ export default function AnalysisPage() {
   // Test toast function
   const testSelection = React.useCallback(() => {
     onHealthTest();
+    console.log(health);
     if (health) {
       setTestToast(true);
     }
