@@ -26,6 +26,7 @@ import {
   Permission,
   Organization,
   HealthResponse,
+  HealthStatus,
 } from "sap-client";
 import { useMutation, useRequest, useRequests } from "redux-query-react";
 import { useDispatch, useSelector } from "react-redux";
@@ -164,7 +165,9 @@ export default function AnalysisPage() {
 
   const selection = useSelector<RootState>((s) => s.selection.selection);
   const approvals = useSelector<RootState>((s) => s.entities.approvalMatrix);
-  const health = useSelector<RootState>((s) => s.entities.health);
+  const health = useSelector<RootState>(
+    (s) => s.entities.health
+  ) as HealthSlice;
   const view = useSelector<RootState>(
     (s) => s.view.view
   ) as UserDefinedViewInternal;
@@ -191,8 +194,7 @@ export default function AnalysisPage() {
     [dispatch]
   );
 
-  // Health endpoint test
-  const onHealthTest = React.useCallback(() => {
+  useEffect(() => {
     dispatch(
       requestAsync({
         ...healthRequest("lims"),
@@ -203,15 +205,38 @@ export default function AnalysisPage() {
         ...healthRequest("tbr"),
       })
     );
-    console.log(health);
   }, [dispatch]);
 
   useEffect(() => {
-    console.log(health);
+    let messages = [];
     if (health) {
-      console.log(health);
+      if (health.hasOwnProperty("lims") && health.hasOwnProperty("tbr")) {
+        if (health["tbr"] && health["tbr"].status == HealthStatus.Unhealthy) {
+          messages.push("Could not connect to TBR.");
+        }
+        if (health["lims"] && health["lims"].status == HealthStatus.Unhealthy) {
+          messages.push("Could not connect to LIMS.");
+        }
+      }
+
+      if (messages.length > 0) {
+        const description = (
+          <>
+            {messages.map((message, index) => (
+              <div key={index}>{message}</div>
+            ))}
+          </>
+        );
+        toast({
+          title: "Error in service connection(s):",
+          description,
+          status: "warning",
+          duration: null,
+          isClosable: true,
+        });
+      }
     }
-  }, [health]);
+  }, [health, toast]);
 
   const { hiddenColumns } = view;
 
@@ -351,9 +376,6 @@ export default function AnalysisPage() {
   const [needsApproveNotify, setNeedsApproveNotify] = useState(true);
   const [needsRejectNotify, setNeedsRejectNotify] = useState(true);
 
-  // Test Toast State
-  const [testToast, setTestToast] = useState(false);
-
   const onNarrowHandler = React.useCallback(
     () =>
       setPageState({
@@ -430,29 +452,6 @@ export default function AnalysisPage() {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     doRejection({ matrix: selection as any });
   }, [selection, doRejection, setNeedsRejectNotify]);
-
-  // Test toast function
-  const testSelection = React.useCallback(() => {
-    onHealthTest();
-    console.log(health);
-    if (health) {
-      setTestToast(true);
-    }
-  }, [onHealthTest, health]);
-
-  // Display health toasts
-  React.useMemo(() => {
-    if (testToast) {
-      toast({
-        title: t("Test Toast"),
-        description: t("" + health),
-        status: "info",
-        duration: 3000,
-        isClosable: true,
-      });
-      setTestToast(false);
-    }
-  }, [t, testToast, toast, health]);
 
   // Display approval toasts
   React.useMemo(() => {
@@ -836,14 +835,6 @@ export default function AnalysisPage() {
                 onClick={rejectSelection}
               >
                 {t("Reject")}
-              </Button>
-              <Button
-                leftIcon={<InfoIcon />}
-                margin="4px"
-                // disabled={!pageState.isNarrowed}
-                onClick={testSelection}
-              >
-                {t("Test")}
               </Button>
             </IfPermission>
             <ColumnConfigWidget onReorder={onReorderColumn}>

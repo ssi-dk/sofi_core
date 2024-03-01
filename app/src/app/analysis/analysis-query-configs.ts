@@ -173,7 +173,7 @@ export const updateAnalysis = (change: SubmitChangesBody) => {
 type HealthEndpoints = "lims" | "tbr";
 
 export type HealthSlice = {
-  health: { [K in HealthEndpoints]: HealthResponse };
+  health: { [K: string]: HealthResponse };
 };
 
 export const healthRequest = (endpoint: HealthEndpoints) => {
@@ -184,14 +184,17 @@ export const healthRequest = (endpoint: HealthEndpoints) => {
 
   base.url = getUrl(base.url);
 
-  base.transform = (response: HealthResponse) => ({ [endpoint]: response });
+  base.transform = (response: HealthResponse) => ({
+    health: { [endpoint]: response },
+  });
 
   base.update = {
-    health: (_, newValue) => newValue,
+    health: (oldValue, newValue) => {
+      return merge({}, cloneDeep(oldValue), newValue);
+    },
   };
 
   base.force = true;
 
-  console.log(base);
   return base;
 };
