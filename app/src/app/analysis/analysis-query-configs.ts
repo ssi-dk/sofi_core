@@ -12,7 +12,6 @@ import {
   searchAnalysis,
   submitChanges,
   ApprovalStatus,
-  SubmitChangesRequest,
   GetSequenceByIdRequest,
   getSequenceById,
   healthExtLims,
@@ -195,6 +194,5 @@ export const healthRequest = (endpoint: HealthEndpoints) => {
   };
 
   base.force = true;
-
   return base;
 };

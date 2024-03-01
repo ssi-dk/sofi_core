@@ -11,12 +11,7 @@ import {
   Skeleton,
   Spinner,
 } from "@chakra-ui/react";
-import {
-  CheckIcon,
-  DragHandleIcon,
-  InfoIcon,
-  NotAllowedIcon,
-} from "@chakra-ui/icons";
+import { CheckIcon, DragHandleIcon, NotAllowedIcon } from "@chakra-ui/icons";
 import { Column, Row } from "react-table";
 import {
   AnalysisResult,
@@ -25,10 +20,9 @@ import {
   ApprovalStatus,
   Permission,
   Organization,
-  HealthResponse,
   HealthStatus,
 } from "sap-client";
-import { useMutation, useRequest, useRequests } from "redux-query-react";
+import { useMutation, useRequest } from "redux-query-react";
 import { useDispatch, useSelector } from "react-redux";
 import { requestAsync } from "redux-query";
 import { useTranslation } from "react-i18next";
