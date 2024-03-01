@@ -30,13 +30,13 @@ def health_ext_lims(user, token):
     try:
         r = requests.get(lims_api_url, data=payload)
         if r.ok:
-            return jsonify({"message": "OK", "status": HealthStatus.HEALTHY})
+            return jsonify({"description": "OK", "status": HealthStatus.HEALTHY})
         else:
-            return jsonify({"message": "Error", "status": HealthStatus.UNHEALTHY})
+            return jsonify({"description": "Error", "status": HealthStatus.UNHEALTHY})
     except ConnectionError:
-        return jsonify({"message": "Error", "status": HealthStatus.UNHEALTHY}), 500
+        return jsonify({"description": "Error", "status": HealthStatus.UNHEALTHY}), 200
     except Exception:
-        return jsonify({"message": "Error", "status": HealthStatus.UNHEALTHY})
+        return jsonify({"description": "Error", "status": HealthStatus.UNHEALTHY})
 
 
 def health_ext_tbr(user, token):
@@ -44,13 +44,13 @@ def health_ext_tbr(user, token):
     try:
         r = requests.get(url, verify=tbr_api_root, cert=(tbr_api_cert, tbr_api_key))
         if r.ok:
-            return jsonify({"message": "OK", "status": HealthStatus.HEALTHY})
+            return jsonify({"description": "OK", "status": HealthStatus.HEALTHY})
         else:
-            return jsonify({"message": "Error", "status": HealthStatus.UNHEALTHY})
+            return jsonify({"description": "Error", "status": HealthStatus.UNHEALTHY})
     except ConnectionError:
-        return jsonify({"message": "Error", "status": HealthStatus.UNHEALTHY}), 500
+        return jsonify({"description": "Error", "status": HealthStatus.UNHEALTHY}), 200
     except Exception:
-        return jsonify({"message": "Error", "status": HealthStatus.UNHEALTHY})
+        return jsonify({"description": "Error", "status": HealthStatus.UNHEALTHY})
 
 
 def system_health(user, token):
