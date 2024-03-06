@@ -125,7 +125,12 @@ export default function AnalysisPage() {
         (k) =>
           ({
             accessor: k,
-            sortType: k.endsWith('date') ? 'datetime' : 'alphanumeric',
+            sortType: !k.startsWith("date") ? 'alphanumeric' : (a, b, column) => {
+              const aDate = a.original[column]?.getTime() ?? 0;
+              const bDate = b.original[column]?.getTime() ?? 0;
+              
+              return aDate - bDate;
+            },
             Header: t(k),
           } as Column<AnalysisResult>)
       ),
