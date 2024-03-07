@@ -445,6 +445,39 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UploadResponse'
+  /health_ext_lims:
+    get:
+      description: ''
+      operationId: health_ext_lims
+      x-openapi-router-controller: web.src.SAP.generated.controllers.health_controller
+      x-codegen-request-body-name: query
+      tags:
+        - health
+      parameters: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+
+  /health_ext_tbr:
+    get:
+      description:  ''
+      operationId: health_ext_tbr
+      x-openapi-router-controller: web.src.SAP.generated.controllers.health_controller
+      x-codegen-request-body-name: query
+      tags:
+        - health
+      parameters: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
 
 components:
   schemas:
@@ -534,6 +567,42 @@ components:
           $ref: "#/components/schemas/QueryExpression"
         filters:
           type: object
+
+    HealthResponse:
+      type: object
+      properties:
+        data:
+          type: object
+        description:
+          type: string
+        exception:
+          $ref: "#/components/schemas/Exception"
+        status:
+          $ref: "#/components/schemas/HealthStatus"
+      required: ["status", "description"]
+
+    Exception:
+      type: object
+      properties:
+        source:
+          type: string
+        message:
+          type: string
+        stackTrace:
+          type: string
+        data:
+          type: object
+        targetSite:
+          type: string
+        helpLink:
+          type: string
+        innerException:
+          $ref: "#/components/schemas/Exception"
+      required: ["message"]
+
+    HealthStatus:
+      type: string
+      enum: ["Unhealthy", "Degraded", "Healthy"]
 
     Column:
       properties:

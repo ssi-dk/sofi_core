@@ -172,7 +172,7 @@ install:
 test-all:
 	task test-all -- ${mkfile_dir}
 
-RUN_DEPS := merge_common ${mkfile_dir}/app/src/sap-client ${mkfile_dir}/web/src/SAP/generated 
+RUN_DEPS := merge_common ${mkfile_dir}/app/src/sap-client ${mkfile_dir}/web/src/SAP/generated  
 RUN_DEPS += ${mkfile_dir}/web/src/services/lims/openapi ${mkfile_dir}/app/node_modules/
 RUN_DEPS += ${mkfile_dir}/bifrost/bifrost_queue_broker/api_clients/tbr_client 
 RUN_DEPS += ${mkfile_dir}/bifrost/bifrost_queue_broker/api_clients/lims_client 

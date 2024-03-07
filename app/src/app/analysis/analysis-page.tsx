@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Flex,
@@ -20,6 +20,7 @@ import {
   ApprovalStatus,
   Permission,
   Organization,
+  HealthStatus,
 } from "sap-client";
 import { useMutation, useRequest } from "redux-query-react";
 import { useDispatch, useSelector } from "react-redux";
@@ -41,6 +42,8 @@ import {
   ColumnSlice,
   searchPageOfAnalysis,
   updateAnalysis,
+  healthRequest,
+  HealthSlice,
 } from "./analysis-query-configs";
 import HalfHolyGrailLayout from "../../layouts/half-holy-grail";
 import AnalysisSidebar from "./sidebar/analysis-sidebar";
@@ -160,6 +163,9 @@ export default function AnalysisPage() {
 
   const selection = useSelector<RootState>((s) => s.selection.selection);
   const approvals = useSelector<RootState>((s) => s.entities.approvalMatrix);
+  const health = useSelector<RootState>(
+    (s) => s.entities.health
+  ) as HealthSlice;
   const view = useSelector<RootState>(
     (s) => s.view.view
   ) as UserDefinedViewInternal;
@@ -185,6 +191,50 @@ export default function AnalysisPage() {
     },
     [dispatch]
   );
+
+  useEffect(() => {
+    dispatch(
+      requestAsync({
+        ...healthRequest("lims"),
+      })
+    );
+    dispatch(
+      requestAsync({
+        ...healthRequest("tbr"),
+      })
+    );
+  }, [dispatch]);
+
+  useEffect(() => {
+    const messages = [];
+    if (health) {
+      if (health.hasOwnProperty("lims") && health.hasOwnProperty("tbr")) {
+        if (health["tbr"] && health["tbr"].status == HealthStatus.Unhealthy) {
+          messages.push("Could not connect to TBR.");
+        }
+        if (health["lims"] && health["lims"].status == HealthStatus.Unhealthy) {
+          messages.push("Could not connect to LIMS.");
+        }
+      }
+
+      if (messages.length > 0) {
+        const description = (
+          <>
+            {messages.map((message, index) => (
+              <div key={index}>{message}</div>
+            ))}
+          </>
+        );
+        toast({
+          title: "Error in service connection(s):",
+          description,
+          status: "warning",
+          duration: null,
+          isClosable: true,
+        });
+      }
+    }
+  }, [health, toast]);
 
   const { hiddenColumns } = view;
 

@@ -297,6 +297,36 @@ paths:
       tags:
       - gdpr
       x-openapi-router-controller: web.src.SAP.generated.controllers.gdpr_controller
+  /health_ext_lims:
+    get:
+      operationId: health_ext_lims
+      parameters: []
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+          description: OK
+      tags:
+      - health
+      x-openapi-router-controller: web.src.SAP.generated.controllers.health_controller
+      x-codegen-request-body-name: query
+  /health_ext_tbr:
+    get:
+      operationId: health_ext_tbr
+      parameters: []
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+          description: OK
+      tags:
+      - health
+      x-openapi-router-controller: web.src.SAP.generated.controllers.health_controller
+      x-codegen-request-body-name: query
   /me:
     get:
       description: Describe the current user and their permissions
@@ -608,6 +638,62 @@ components:
           $ref: '#/components/schemas/QueryExpression'
         filters:
           type: object
+    HealthResponse:
+      example:
+        exception:
+          helpLink: helpLink
+          data: '{}'
+          targetSite: targetSite
+          source: source
+          stackTrace: stackTrace
+          message: message
+        data: '{}'
+        description: description
+      properties:
+        data:
+          type: object
+        description:
+          type: string
+        exception:
+          $ref: '#/components/schemas/Exception'
+        status:
+          $ref: '#/components/schemas/HealthStatus'
+      required:
+      - description
+      - status
+      type: object
+    Exception:
+      example:
+        helpLink: helpLink
+        data: '{}'
+        targetSite: targetSite
+        source: source
+        stackTrace: stackTrace
+        message: message
+      properties:
+        source:
+          type: string
+        message:
+          type: string
+        stackTrace:
+          type: string
+        data:
+          type: object
+        targetSite:
+          type: string
+        helpLink:
+          type: string
+        innerException:
+          $ref: '#/components/schemas/Exception'
+      required:
+      - message
+      type: object
+    HealthStatus:
+      enum:
+      - Unhealthy
+      - Degraded
+      - Healthy
+      type: string
     Column:
       example:
         pii: true

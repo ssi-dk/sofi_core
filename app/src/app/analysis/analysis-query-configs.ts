@@ -12,9 +12,11 @@ import {
   searchAnalysis,
   submitChanges,
   ApprovalStatus,
-  SubmitChangesRequest,
   GetSequenceByIdRequest,
   getSequenceById,
+  healthExtLims,
+  healthExtTbr,
+  HealthResponse,
 } from "sap-client";
 import { getUrl } from "service";
 import { arrayToNormalizedHashmap } from "utils";
@@ -163,6 +165,34 @@ export const updateAnalysis = (change: SubmitChangesBody) => {
       return merge({}, cloneDeep(oldValue), newValue);
     },
   };
+  base.force = true;
+  return base;
+};
+
+type HealthEndpoints = "lims" | "tbr";
+
+export type HealthSlice = {
+  health: { [K: string]: HealthResponse };
+};
+
+export const healthRequest = (endpoint: HealthEndpoints) => {
+  const base =
+    endpoint === "lims"
+      ? healthExtLims<HealthSlice>()
+      : healthExtTbr<HealthSlice>();
+
+  base.url = getUrl(base.url);
+
+  base.transform = (response: HealthResponse) => ({
+    health: { [endpoint]: response },
+  });
+
+  base.update = {
+    health: (oldValue, newValue) => {
+      return merge({}, cloneDeep(oldValue), newValue);
+    },
+  };
+
   base.force = true;
   return base;
 };
