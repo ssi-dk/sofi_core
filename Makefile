@@ -12,8 +12,6 @@ mkfile_dir := $(subst /Makefile,,$(mkfile_path))
 all: clean merge_common build
 
 clean:
-	rm -rf ${mkfile_dir}/web/src/api_clients
-	rm -rf ${mkfile_dir}/app/src/sap-client
 	rm -rf ${mkfile_dir}/bifrost/bifrost_db/data/db/*
 	rm -rf ${mkfile_dir}/bifrost/bifrost_queue_broker/api_clients/tbr_client/
 	rm -rf ${mkfile_dir}/bifrost/bifrost_queue_broker/api_clients/lims_client/
