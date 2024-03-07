@@ -297,9 +297,24 @@ paths:
       tags:
       - gdpr
       x-openapi-router-controller: web.src.SAP.generated.controllers.gdpr_controller
-  /health:
+  /health_ext_lims:
     get:
-      operationId: system_health
+      operationId: health_ext_lims
+      parameters: []
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+          description: OK
+      tags:
+      - health
+      x-openapi-router-controller: web.src.SAP.generated.controllers.health_controller
+      x-codegen-request-body-name: query
+  /health_ext_tbr:
+    get:
+      operationId: health_ext_tbr
       parameters: []
       responses:
         "200":
@@ -624,20 +639,61 @@ components:
         filters:
           type: object
     HealthResponse:
-      enum:
-      - Healthy
-      - Degraded
-      - Down
-      type: string
-    HealthStatus:
+      example:
+        exception:
+          helpLink: helpLink
+          data: '{}'
+          targetSite: targetSite
+          source: source
+          stackTrace: stackTrace
+          message: message
+        data: '{}'
+        description: description
       properties:
-        lims:
-          $ref: '#/components/schemas/HealthResponse'
-        tbr:
-          $ref: '#/components/schemas/HealthResponse'
-        bifrost:
-          $ref: '#/components/schemas/HealthResponse'
+        data:
+          type: object
+        description:
+          type: string
+        exception:
+          $ref: '#/components/schemas/Exception'
+        status:
+          $ref: '#/components/schemas/HealthStatus'
+      required:
+      - description
+      - status
       type: object
+    Exception:
+      example:
+        helpLink: helpLink
+        data: '{}'
+        targetSite: targetSite
+        source: source
+        stackTrace: stackTrace
+        message: message
+      properties:
+        source:
+          type: string
+        message:
+          type: string
+        stackTrace:
+          type: string
+        data:
+          type: object
+        targetSite:
+          type: string
+        helpLink:
+          type: string
+        innerException:
+          $ref: '#/components/schemas/Exception'
+      required:
+      - message
+      type: object
+    HealthStatus:
+      enum:
+      - Unhealthy
+      - Degraded
+      - Healthy
+      type: string
     Column:
       example:
         pii: true
