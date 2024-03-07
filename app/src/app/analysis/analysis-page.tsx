@@ -202,7 +202,7 @@ export default function AnalysisPage() {
   }, [dispatch]);
 
   useEffect(() => {
-    let messages = [];
+    const messages = [];
     if (health) {
       if (health.hasOwnProperty("lims") && health.hasOwnProperty("tbr")) {
         if (health["tbr"] && health["tbr"].status == HealthStatus.Unhealthy) {
