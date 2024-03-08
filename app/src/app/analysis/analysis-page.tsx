@@ -107,10 +107,15 @@ export default function AnalysisPage() {
   const [error, setError] = React.useState<boolean>();
 
   useRequest({ ...fetchApprovalMatrix() });
+
+  const rootStateData = useSelector<RootState>((s) =>
+    s.entities.analysis
+  );
+
   // TODO: Figure out how to make this strongly typed
-  const data = useSelector<RootState>((s) =>
-    Object.values(s.entities.analysis ?? {})
-  ) as AnalysisResult[];
+  const data = React.useMemo(() => {
+    return Object.values(rootStateData ?? {}) as AnalysisResult[];
+  },[rootStateData]) ;
 
   const totalCount = useSelector<RootState>((s) =>
     s.entities.analysisTotalCount !== 0
@@ -798,6 +803,10 @@ export default function AnalysisPage() {
     [setColumnReorder]
   );
 
+  const onSelectCallback = React.useCallback((sel) => 
+    dispatch(setSelection(sel)),
+    [dispatch]);
+
   const content = (
     <React.Fragment>
       <Box role="navigation" gridColumn="2 / 4" pb={5}>
@@ -887,7 +896,7 @@ export default function AnalysisPage() {
             selectionClassName={
               pageState.isNarrowed ? "approvingCell" : "selectedCell"
             }
-            onSelect={(sel) => dispatch(setSelection(sel))}
+            onSelect={onSelectCallback}
             onDetailsClick={openDetailsView}
             view={view}
           />
