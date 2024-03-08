@@ -151,7 +151,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
     state,
     getTableProps,
     getTableBodyProps,
-    visibleColumns,
+    visibleColumns: visibleColumnInstances,
     rows,
     prepareRow,
     allColumns,
@@ -168,6 +168,17 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
     useColumnOrder,
     useSortBy
   );
+
+  // NOTE:
+  // visibleColumns from useTable seems to be recalculated often, hence this
+  // state and effect to handle memorization:
+  const [visibleColumns, setVisibleColumns] = React.useState<Array<string>>([]);
+  React.useEffect(() => {
+    const hiddenColumnIds = view.hiddenColumns;
+    const allColumnIds = columns.map(c => String(c.accessor));
+    const newVisibleColumns = allColumnIds.filter(c => hiddenColumnIds.indexOf(c) === -1);
+    setVisibleColumns(newVisibleColumns);
+  }, [view, columns]);
 
   const { columnResizing } = state;
 
@@ -199,7 +210,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
   }
 
   if (columnSort) {
-    const c = visibleColumns.filter((x) => x.id == columnSort.column)[0];
+    const c = visibleColumnInstances.filter((x) => x.id == columnSort.column)[0];
     if (columnSort.ascending) {
       if (!c.isSorted) {
         c.toggleSortBy(columnSort.ascending);
@@ -218,17 +229,13 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
   const visibleApprovableColumns = React.useMemo(
     () =>
       visibleColumns.filter(
-        (x) => approvableColumns.indexOf(x.id as string) > -1
+        (x) => approvableColumns.indexOf(x) > -1
       ),
     [visibleColumns, approvableColumns]
   );
 
   // Narrow selection to the currently visible columns
-
-  const doingRerenderForNarrowing = React.useRef(false);
-
   React.useEffect(() => {
-    if (doingRerenderForNarrowing.current) return;
     if (selection.current) {
       const selectionClone = { ...selection.current };
       let needsNarrow = false;
@@ -236,7 +243,8 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
         .filter((x) => typeof x === "string")
         .map((r) => {
           Object.keys(selection.current[r]).map((k) => {
-            if (visibleApprovableColumns.map((c) => c.id).indexOf(k) < 0) {
+            if (visibleApprovableColumns.indexOf(k) < 0 && 
+                selectionClone[r][k]) {
               needsNarrow = true;
               selectionClone[r] = { ...selectionClone[r], [k]: false };
             }
@@ -244,11 +252,11 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
         });
       if (needsNarrow) {
         selection.current = selectionClone;
-        doingRerenderForNarrowing.current = true;
         onSelect(selection.current as DataTableSelection<any>);
       }
     }
-  }, [visibleApprovableColumns, doingRerenderForNarrowing, onSelect]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [visibleApprovableColumns, onSelect, selection.current]);
 
   const calcTableSelectionState = React.useCallback(() => {
     const columnCount = approvableColumns.length;
@@ -294,11 +302,10 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
   const onSelectRow = React.useCallback(
     (row: Row<T>) => {
       const { checked } = calcRowSelectionState(row);
-      const visibleCols = visibleColumns.map((x) => x.id);
       const id = row.original[primaryKey];
       const cols = columns
         .filter((x) => typeof x.accessor === "string")
-        .filter((x) => visibleCols.indexOf(x.accessor as string) >= 0)
+        .filter((x) => visibleColumns.indexOf(x.accessor as string) >= 0)
         .filter((x) => canApproveColumn(x.accessor as string))
         .filter((x) => !isJudgedCell(id, x.accessor as string))
         .map((x) => ({ [x.accessor as string]: !checked }))
@@ -330,7 +337,6 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
   const onSelectCol = React.useCallback(
     (col: Column<T>) => {
       const { checked } = calcColSelectionState(col);
-      console.log(rows);
       const sel = rows
         .filter((r) => !isJudgedCell(r.original[primaryKey], col.id as string))
         .map((r) => ({
@@ -408,7 +414,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
       // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
       if (rowIndex === 0) {
         // we are the header 'row'
-        const col = visibleColumns[columnIndex];
+        const col = visibleColumnInstances[columnIndex];
         if (!col) return <div />;
         return (
           <div style={style}>
@@ -426,7 +432,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
       }
       const row = rows[rowIndex - 1];
       const rowId = row.original[primaryKey];
-      const columnId = visibleColumns[columnIndex].id;
+      const columnId = visibleColumnInstances[columnIndex].id;
       const cellStyle = getCellStyle(
         rowId,
         columnId,
@@ -482,7 +488,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
       rows,
       selectionClassName,
       setColumnSort,
-      visibleColumns,
+      visibleColumnInstances,
       primaryKey,
       calcColSelectionState,
       calcRowSelectionState,
@@ -501,22 +507,22 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
 
   const itemData = React.useMemo(() => {
     return {
-      headers: visibleColumns,
+      headers: visibleColumnInstances,
       rows: [...[{}], ...rows],
       prepareRow,
     };
-  }, [visibleColumns, rows, prepareRow]);
+  }, [visibleColumnInstances, rows, prepareRow]);
 
   const getColumnWidth = React.useCallback(
     (colIndex) => {
-      const col = visibleColumns[colIndex];
+      const col = visibleColumnInstances[colIndex];
       if (!col) return defaultColumn.width;
       if (!columnResizing.columnWidths[col.id]) {
         return defaultColumn.width;
       }
       return columnResizing.columnWidths[col.id];
     },
-    [columnResizing, defaultColumn.width, visibleColumns]
+    [columnResizing, defaultColumn.width, visibleColumnInstances]
   );
 
   // Render the UI for your table
@@ -538,7 +544,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
                 overscanRowCount={5}
                 overscanColumnCount={2}
                 width={width}
-                columnCount={visibleColumns.length}
+                columnCount={visibleColumnInstances.length}
               >
                 {RenderCell}
               </StickyVariableSizeGrid>
