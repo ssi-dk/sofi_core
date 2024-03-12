@@ -32,15 +32,19 @@ def assert_user_has(permission: str, token_info: Dict[str, str]):
 
 
 def authorized_to_edit(token_info: Dict[str, str], metadata: Dict[str, Any]):
+    # User must have the approve claim to do modifications
     if not user_has("approve", token_info):
         return False
+    # When user's not from the same institution as the sample, they can't modify it
+    if not token_info["institution"] == metadata["institution"]:
+        return False
+    # User needs 'L2' or higher clearance to modify data
     if token_info["sofi-data-clearance"] == "all":
         return True
     if token_info["sofi-data-clearance"] == "cross-institution":
         return True
-    if not token_info["institution"] == metadata["institution"]:
-        return False
-    return True
+    # Default to false
+    return False
 
 
 def assert_authorized_to_edit(token_info: Dict[str, str], metadata: Dict[str, Any]):
