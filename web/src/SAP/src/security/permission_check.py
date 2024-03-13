@@ -36,8 +36,8 @@ def authorized_to_edit(token_info: Dict[str, str], metadata: Dict[str, Any]):
     if not user_has("approve", token_info):
         return False
     # When user's not from the same institution as the sample, they can't modify it
-    if not token_info["institution"] == metadata["institution"]:
-        return False
+    if token_info["institution"] == metadata["institution"]:
+        return True
     # User needs 'L2' or higher clearance to modify data
     if token_info["sofi-data-clearance"] == "all":
         return True
