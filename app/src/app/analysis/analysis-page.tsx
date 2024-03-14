@@ -2,23 +2,18 @@ import React, { useEffect, useState } from "react";
 import {
   Box,
   Flex,
-  Button,
   useToast,
   Editable,
   EditablePreview,
   EditableInput,
   useDisclosure,
   Skeleton,
-  Spinner,
 } from "@chakra-ui/react";
-import { CheckIcon, DragHandleIcon, NotAllowedIcon } from "@chakra-ui/icons";
 import { Column, Row } from "react-table";
 import {
   AnalysisResult,
-  ApprovalRequest,
   AnalysisQuery,
   ApprovalStatus,
-  Permission,
   Organization,
   HealthStatus,
 } from "sap-client";
@@ -30,7 +25,6 @@ import { OptionTypeBase } from "react-select";
 import { UserDefinedViewInternal } from "models";
 import { RootState } from "app/root-reducer";
 import { predicateBuilder, PropFilter, RangeFilter } from "utils";
-import { IfPermission } from "auth/if-permission";
 import { Loading } from "loading";
 import DataTable, {
   ColumnReordering,
@@ -50,11 +44,7 @@ import AnalysisSidebar from "./sidebar/analysis-sidebar";
 import AnalysisViewSelector from "./view-selector/analysis-view-selector";
 import AnalysisSearch from "./search/analysis-search";
 import { setSelection } from "./analysis-selection-configs";
-import {
-  fetchApprovalMatrix,
-  sendApproval,
-  sendRejection,
-} from "./analysis-approval-configs";
+import { fetchApprovalMatrix } from "./analysis-approval-configs";
 import { ColumnConfigWidget } from "./data-table/column-config-widget";
 import { toggleColumnVisibility } from "./view-selector/analysis-view-selection-config";
 import InlineAutoComplete from "../inputs/inline-autocomplete";
@@ -64,24 +54,11 @@ import AnalysisDetails from "./analysis-details/analysis-details-modal";
 import ExportButton from "./export/export-button";
 import { ColumnConfigNode } from "./data-table/column-config-node";
 import { AnalysisResultAllOfQcFailedTests } from "sap-client/models/AnalysisResultAllOfQcFailedTests";
+import { Judgement } from "./judgement/judgement";
 
 // When the fields in this array are 'approved', a given sequence is rendered
 // as 'approved' also.
 const PRIMARY_APPROVAL_FIELDS = ["st_final", "qc_final"];
-
-type SelectionList = {
-  [field: string]: boolean;
-};
-
-type SelectionType = {
-  [sequence_id: string]: SelectionList;
-};
-
-type ErrorObject = {
-  [sequence_id: string]: {
-    [field: string]: string;
-  };
-};
 
 export default function AnalysisPage() {
   const { t } = useTranslation();
@@ -103,19 +80,14 @@ export default function AnalysisPage() {
     ...requestPageOfAnalysis({ pageSize: 100 }, false),
   });
 
-  const [errors, setErrors] = React.useState<ErrorObject>();
-  const [error, setError] = React.useState<boolean>();
-
   useRequest({ ...fetchApprovalMatrix() });
 
-  const rootStateData = useSelector<RootState>((s) =>
-    s.entities.analysis
-  );
+  const rootStateData = useSelector<RootState>((s) => s.entities.analysis);
 
   // TODO: Figure out how to make this strongly typed
   const data = React.useMemo(() => {
     return Object.values(rootStateData ?? {}) as AnalysisResult[];
-  },[rootStateData]) ;
+  }, [rootStateData]);
 
   const totalCount = useSelector<RootState>((s) =>
     s.entities.analysisTotalCount !== 0
@@ -133,12 +105,14 @@ export default function AnalysisPage() {
         (k) =>
           ({
             accessor: k,
-            sortType: !k.startsWith("date") ? 'alphanumeric' : (a, b, column) => {
-              const aDate = a.original[column]?.getTime() ?? 0;
-              const bDate = b.original[column]?.getTime() ?? 0;
-              
-              return aDate - bDate;
-            },
+            sortType: !k.startsWith("date")
+              ? "alphanumeric"
+              : (a, b, column) => {
+                  const aDate = a.original[column]?.getTime() ?? 0;
+                  const bDate = b.original[column]?.getTime() ?? 0;
+
+                  return aDate - bDate;
+                },
             Header: t(k),
           } as Column<AnalysisResult>)
       ),
@@ -146,10 +120,6 @@ export default function AnalysisPage() {
   );
 
   const [pageState, setPageState] = useState({ isNarrowed: false });
-
-  const approvalErrors = useSelector<RootState>(
-    (s) => s.entities.approvalErrors
-  ) as Array<string>;
 
   const [
     { isPending: pendingUpdate, status: updateStatus },
@@ -372,18 +342,6 @@ export default function AnalysisPage() {
     [columnConfigs]
   );
 
-  const [
-    { isPending: pendingApproval, status: approvalStatus },
-    doApproval,
-  ] = useMutation((payload: ApprovalRequest) => sendApproval(payload));
-  const [
-    { isPending: pendingRejection, status: rejectionStatus },
-    doRejection,
-  ] = useMutation((payload: ApprovalRequest) => sendRejection(payload));
-
-  const [needsApproveNotify, setNeedsApproveNotify] = useState(true);
-  const [needsRejectNotify, setNeedsRejectNotify] = useState(true);
-
   const onNarrowHandler = React.useCallback(
     () =>
       setPageState({
@@ -392,144 +350,6 @@ export default function AnalysisPage() {
       }),
     [setPageState, pageState]
   );
-
-  React.useEffect(() => {
-    if (error) {
-      const stringyfied = Object.entries(errors).reduceRight((acc, [k, v]) => {
-        return Object.entries(v).reduceRight((accp, [kp, vp]) => {
-          return (
-            accp +
-            `\n\tColumn '${kp}' needs ${vp} to be included in the selection.`
-          );
-        }, acc + `\nSequence '${k}': `);
-      }, "");
-      toast({
-        title: t("Cannot approve when dependent fields are missing"),
-        description: stringyfied,
-        status: "error",
-        duration: null,
-        isClosable: true,
-      });
-      setNeedsApproveNotify(false);
-    }
-  }, [error, errors, toast, t]);
-
-  /**
-   * Check that every selected field does not "approve" with fields not present in selection.
-   *
-   * Some fields are "approved" with other fields. E.g., qc_final with species_final, run_id and sequence_id. In this
-   * case if qc_final is in the selection, then the three other fields must also be in the selection. #104595
-   * @param selection1 Selected columns from view
-   */
-  const approveSelection = React.useCallback(() => {
-    setNeedsApproveNotify(true);
-
-    const errorObject: ErrorObject = {};
-
-    for (const [sequenceId, sequenceSelection] of Object.entries(selection)) {
-      const approvedFields = Object.entries(sequenceSelection)
-        .filter(([k, v], i) => v)
-        .map(([k, v], i) => k);
-      approvedFields.forEach((field) => {
-        const needed = getDependentColumns(field as keyof AnalysisResult);
-        for (const e of needed) {
-          if (!approvedFields.some((x) => x === e)) {
-            if (errorObject[sequenceId] === undefined) {
-              errorObject[sequenceId] = {};
-            }
-            if (errorObject[sequenceId][field] === undefined) {
-              errorObject[sequenceId][field] = `'${e}'`;
-            } else {
-              errorObject[sequenceId][field] += `, '${e}'`;
-            }
-          }
-        }
-      });
-    }
-
-    if (Object.keys(errorObject).length > 0) {
-      setErrors(errorObject);
-      setError(true);
-    } else {
-      doApproval({ matrix: selection as any });
-    }
-  }, [selection, doApproval, setNeedsApproveNotify, getDependentColumns]);
-
-  const rejectSelection = React.useCallback(() => {
-    setNeedsRejectNotify(true);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    doRejection({ matrix: selection as any });
-  }, [selection, doRejection, setNeedsRejectNotify]);
-
-  // Display approval toasts
-  React.useMemo(() => {
-    if (
-      needsApproveNotify &&
-      approvalStatus >= 200 &&
-      approvalStatus < 300 &&
-      !pendingApproval
-    ) {
-      toast({
-        title: t("Approval submitted"),
-        description: `${
-          data.filter((x) => selection[x.sequence_id]).length
-        } ${t("records")} ${t("have been submitted for approval.")}`,
-        status: "info",
-        duration: 3000,
-        isClosable: true,
-      });
-      if (approvalErrors?.length > 0) {
-        approvalErrors.forEach((e) => {
-          toast({
-            title: t("An approval failed"),
-            description: e,
-            status: "error",
-            duration: null,
-            isClosable: true,
-          });
-        });
-      }
-      setNeedsApproveNotify(false);
-    }
-  }, [
-    t,
-    approvalErrors,
-    approvalStatus,
-    data,
-    selection,
-    toast,
-    needsApproveNotify,
-    pendingApproval,
-  ]);
-
-  // Display rejection toasts
-  React.useMemo(() => {
-    if (
-      needsRejectNotify &&
-      rejectionStatus >= 200 &&
-      rejectionStatus < 300 &&
-      !pendingRejection
-    ) {
-      toast({
-        title: t("Rejection submitted"),
-        description: `${
-          data.filter((x) => selection[x.sequence_id]).length
-        } ${t("records")} ${t("have been rejected.")}`,
-        status: "info",
-        duration: null,
-        isClosable: true,
-      });
-      setNeedsRejectNotify(false);
-    }
-  }, [
-    t,
-    rejectionStatus,
-    data,
-    selection,
-    toast,
-    needsRejectNotify,
-    pendingRejection,
-  ]);
 
   const getCellStyle = React.useCallback(
     (rowId: string, columnId: string, value: any, cell: any) => {
@@ -803,9 +623,10 @@ export default function AnalysisPage() {
     [setColumnReorder]
   );
 
-  const onSelectCallback = React.useCallback((sel) => 
-    dispatch(setSelection(sel)),
-    [dispatch]);
+  const onSelectCallback = React.useCallback(
+    (sel) => dispatch(setSelection(sel)),
+    [dispatch]
+  );
 
   const content = (
     <React.Fragment>
@@ -818,58 +639,32 @@ export default function AnalysisPage() {
         </Flex>
       </Box>
       <Box role="main" gridColumn="2 / 4" borderWidth="1px" rounded="md">
-        {pendingApproval ? (
-          <Flex m={2} alignItems="center">
-            <Spinner />
-          </Flex>
-        ) : (
-          <Flex m={2} alignItems="center">
-            <IfPermission permission={Permission.approve}>
-              <Button
-                leftIcon={<DragHandleIcon />}
-                margin="4px"
-                onClick={onNarrowHandler}
-              >
-                {pageState.isNarrowed ? t("Return") : t("Select")}
-              </Button>
-              <Button
-                leftIcon={<CheckIcon />}
-                margin="4px"
-                disabled={!pageState.isNarrowed}
-                onClick={approveSelection}
-              >
-                {t("Approve")}
-              </Button>
-              <Button
-                leftIcon={<NotAllowedIcon />}
-                margin="4px"
-                disabled={!pageState.isNarrowed}
-                onClick={rejectSelection}
-              >
-                {t("Reject")}
-              </Button>
-            </IfPermission>
-            <ColumnConfigWidget onReorder={onReorderColumn}>
-              {(columnOrder || columns.map((x) => x.accessor as string)).map(
-                (column, i) => (
-                  <ColumnConfigNode
-                    key={column}
-                    index={i}
-                    columnName={column}
-                    onChecked={toggleColumn}
-                    isChecked={checkColumnIsVisible(column)}
-                  />
-                )
-              )}
-            </ColumnConfigWidget>
-            <Flex grow={1} width="100%" />
-            <ExportButton
-              data={filteredData}
-              columns={columns.map((x) => x.accessor) as any}
-              selection={selection as DataTableSelection<AnalysisResult>}
-            />
-          </Flex>
-        )}
+        <Flex m={2} alignItems="center">
+          <Judgement<AnalysisResult>
+            isNarrowed={pageState.isNarrowed}
+            onNarrowHandler={onNarrowHandler}
+            getDependentColumns={getDependentColumns}
+          />
+          <ColumnConfigWidget onReorder={onReorderColumn}>
+            {(columnOrder || columns.map((x) => x.accessor as string)).map(
+              (column, i) => (
+                <ColumnConfigNode
+                  key={column}
+                  index={i}
+                  columnName={column}
+                  onChecked={toggleColumn}
+                  isChecked={checkColumnIsVisible(column)}
+                />
+              )
+            )}
+          </ColumnConfigWidget>
+          <Flex grow={1} width="100%" />
+          <ExportButton
+            data={filteredData}
+            columns={columns.map((x) => x.accessor) as any}
+            selection={selection as DataTableSelection<AnalysisResult>}
+          />
+        </Flex>
 
         <Box height="calc(100vh - 250px)">
           <DataTable<AnalysisResult>
