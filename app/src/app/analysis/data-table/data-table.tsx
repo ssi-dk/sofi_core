@@ -458,7 +458,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
           onClick={cellClickHandler(rowId, columnId)}
           key={columnIndex}
         >
-          <Flex>
+          <Flex minWidth="full" minHeight="full">
             {columnIndex === 0 && (
               <React.Fragment>
                 <SelectionCheckBox

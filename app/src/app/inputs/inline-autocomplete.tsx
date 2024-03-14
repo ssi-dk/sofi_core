@@ -108,6 +108,7 @@ export default (props: InlineAutoCompleteProps) => {
       onKeyDown={enterHandler}
       role="button"
       tabIndex={0}
+      style={{ width: "100%", height: "100%" }}
     >
       {isLoading ? (
         <Spinner size="xs" />
