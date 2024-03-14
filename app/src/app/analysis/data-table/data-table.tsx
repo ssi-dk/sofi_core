@@ -221,6 +221,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
     );
 
     column?.toggleSortBy(columnSort.ascending);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [columnSort]);
 
   // Make data table configuration externally visible
