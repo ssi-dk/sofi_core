@@ -96,25 +96,6 @@ def agg_pipeline(changed_ids=None):
                 },
                 "sero_enterobase": "$categories.serotype.report.enterobase_serotype1",
                 "sero_seqsero": "$categories.serotype.report.seqsero_serotype",
-                "serotype_final": removeNullProperty(
-                    {
-                        "$cond": {
-                            "if": {
-                                "$and": [
-                                    "$categories.serotype.report.seqsero_serotype",
-                                    {
-                                        "$eq": [
-                                            "$categories.serotype.report.enterobase_serotype1",
-                                            "$categories.serotype.report.seqsero_serotype",
-                                        ]
-                                    },
-                                ],
-                            },
-                            "then": "$categories.serotype.report.seqsero_serotype",
-                            "else": None,
-                        },
-                    }
-                ),
                 "sero_antigen_seqsero": "$categories.serotype.summary.antigenic_profile",
                 "sero_d_tartrate": "$categories.serotype.summary.D-tartrate_pos10",
                 "mlst_schema": {"$arrayElemAt": ["$mlstlookup.schema", 0]},
@@ -330,6 +311,94 @@ def agg_pipeline(changed_ids=None):
                     }
                 }
             }
+        },
+        # Calculate serotype_final
+        {
+            "$addFields": {
+                "serotype_final": {
+                    "$switch": {
+                        "branches": [
+                            # If identically
+                            {
+                                "case": {
+                                    "$and": [
+                                        "$sero_enterobase", {
+                                            "$eq": [
+                                                "$sero_enterobase", "$sero_seqsero"
+                                            ]
+                                        }
+                                    ]
+                                }, 
+                                "then": "$sero_seqsero"
+                            }, 
+                            # If sero_enterobase suggesting is a part of the sero_seqsero suggestion
+                            {
+                                "case": {
+                                    "$and": [
+                                        "$sero_enterobase", {
+                                            "$gte": [
+                                                {
+                                                    "$indexOfBytes": [
+                                                        "$sero_seqsero", "$sero_enterobase"
+                                                    ]
+                                                }, 0
+                                            ]
+                                        }
+                                    ]
+                                }, 
+                                "then": "$sero_enterobase"
+                            }, 
+                            # Specific for ST34 34 Typhimurium monophasic potential monophasic variant of Typhimurium 4,5,12:i:-
+                            {
+                                "case": {
+                                    "$and": [
+                                        {
+                                            "$eq": [
+                                                "$st", "34"
+                                            ]
+                                        },
+                                        {
+                                            "$eq": [
+                                                "$sero_enterobase", "Typhimurium monophasic"
+                                            ]
+                                        },
+                                        {
+                                            "$eq": [
+                                                "$sero_seqsero", "potential monophasic variant of Typhimurium"
+                                            ]
+                                        }
+                                    ]
+                                }, 
+                                "then": "4,5,12:i:-"
+                            }, 
+                            # Specific for ST34 34 Typhimurium monophasic potential monophasic variant of Typhimurium(O5-)* 4,12:i:-
+                            {
+                                "case": {
+                                    "$and": [
+                                        {
+                                            "$eq": [
+                                                "$st", "34"
+                                            ]
+                                        },
+                                        {
+                                            "$eq": [
+                                                "$sero_enterobase", "Typhimurium monophasic"
+                                            ]
+                                        },
+                                        {
+                                            "$eq": [
+                                                "$sero_seqsero", "potential monophasic variant of Typhimurium(O5-)*"
+                                            ]
+                                        }
+                                    ]
+                                }, 
+                                "then": "4,12:i:-"
+                            }
+                        ], 
+                        "default": "$null"
+                    },
+                },
+            },
         },
         {
             "$set": {
