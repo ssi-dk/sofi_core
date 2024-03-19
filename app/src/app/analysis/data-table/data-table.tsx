@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   useTable,
   useBlockLayout,
@@ -41,7 +41,7 @@ export type DataTableSelection<T extends NotEmpty> = {
 type DataTableProps<T extends NotEmpty> = {
   columns: Column<T>[];
   setNewColumnOrder: (columnOrder: string[]) => void;
-  setColumnSort: ({ column: string, ascending: boolean }) => void;
+  setColumnSort: (columnSort: { column: string; ascending: boolean }) => void;
   data: T[];
   primaryKey: keyof T;
   canSelectColumn: (columnName: string) => boolean;
@@ -175,8 +175,10 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
   const [visibleColumns, setVisibleColumns] = React.useState<Array<string>>([]);
   React.useEffect(() => {
     const hiddenColumnIds = view.hiddenColumns;
-    const allColumnIds = columns.map(c => String(c.accessor));
-    const newVisibleColumns = allColumnIds.filter(c => hiddenColumnIds.indexOf(c) === -1);
+    const allColumnIds = columns.map((c) => String(c.accessor));
+    const newVisibleColumns = allColumnIds.filter(
+      (c) => hiddenColumnIds.indexOf(c) === -1
+    );
     setVisibleColumns(newVisibleColumns);
   }, [view, columns]);
 
@@ -209,28 +211,24 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
     setNewColumnOrder(order);
   }
 
-  if (columnSort) {
-    const c = visibleColumnInstances.filter((x) => x.id == columnSort.column)[0];
-    if (columnSort.ascending) {
-      if (!c.isSorted) {
-        c.toggleSortBy(columnSort.ascending);
-      }
+  useEffect(() => {
+    if (!columnSort) {
+      return;
     }
-    if (!columnSort.ascending) {
-      if (!c.isSorted && !c.isSortedDesc) {
-        c.toggleSortBy(columnSort.ascending);
-      }
-    }
-  }
+
+    const column = visibleColumnInstances.find(
+      (x) => x.id == columnSort.column
+    );
+
+    column?.toggleSortBy(columnSort.ascending);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [columnSort]);
 
   // Make data table configuration externally visible
   exportDataTable(state);
 
   const visibleApprovableColumns = React.useMemo(
-    () =>
-      visibleColumns.filter(
-        (x) => approvableColumns.indexOf(x) > -1
-      ),
+    () => visibleColumns.filter((x) => approvableColumns.indexOf(x) > -1),
     [visibleColumns, approvableColumns]
   );
 
@@ -243,8 +241,10 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
         .filter((x) => typeof x === "string")
         .map((r) => {
           Object.keys(selection.current[r]).map((k) => {
-            if (visibleApprovableColumns.indexOf(k) < 0 && 
-                selectionClone[r][k]) {
+            if (
+              visibleApprovableColumns.indexOf(k) < 0 &&
+              selectionClone[r][k]
+            ) {
               needsNarrow = true;
               selectionClone[r] = { ...selectionClone[r], [k]: false };
             }
@@ -255,7 +255,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
         onSelect(selection.current as DataTableSelection<any>);
       }
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [visibleApprovableColumns, onSelect, selection.current]);
 
   const calcTableSelectionState = React.useCallback(() => {
