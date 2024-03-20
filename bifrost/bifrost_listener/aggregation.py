@@ -64,7 +64,13 @@ def agg_pipeline(changed_ids=None):
                 "date_sofi": {"$toDate": "$metadata.created_at"},
                 "date_analysis_sofi": {"$toDate": "$metadata.created_at"},
                 "qc_detected_species": "$categories.species_detection.summary.detected_species",
-                "qc_provided_species": "$categories.sample_info.summary.provided_species",
+                "qc_provided_species": {
+                        "$cond": {
+                            "if": "$categories.sample_info.summary.provided_species",
+                            "then": {"$toString": "$categories.sample_info.summary.provided_species"},
+                            "else": "$null"
+                        }
+                    },
                 "subspecies": "$categories.serotype.summary.Subspecies",
                 "species_final": removeNullProperty(
                     {
