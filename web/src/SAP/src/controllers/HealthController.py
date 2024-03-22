@@ -32,11 +32,11 @@ def health_ext_lims(user, token):
         if r.ok:
             return jsonify({"description": "OK", "status": HealthStatus.HEALTHY})
         else:
-            return jsonify({"description": "Error", "status": HealthStatus.UNHEALTHY})
-    except ConnectionError:
-        return jsonify({"description": "Error", "status": HealthStatus.UNHEALTHY}), 200
+            return jsonify({"description": f"LIMS Error: {str(r.text)}", "status": HealthStatus.UNHEALTHY}) # Might fail when trying to use r in this instance.
+    except ConnectionError as e:
+        return jsonify({"description": f"LIMS Connection Error: {str(e)}", "status": HealthStatus.UNHEALTHY}), 200
     except Exception:
-        return jsonify({"description": "Error", "status": HealthStatus.UNHEALTHY})
+        return jsonify({"description": f"LIMS Exception: {str(e)}", "status": HealthStatus.UNHEALTHY}), 200
 
 
 def health_ext_tbr(user, token):
@@ -46,11 +46,11 @@ def health_ext_tbr(user, token):
         if r.ok:
             return jsonify({"description": "OK", "status": HealthStatus.HEALTHY})
         else:
-            return jsonify({"description": "Error", "status": HealthStatus.UNHEALTHY})
-    except ConnectionError:
-        return jsonify({"description": "Error", "status": HealthStatus.UNHEALTHY}), 200
-    except Exception:
-        return jsonify({"description": "Error", "status": HealthStatus.UNHEALTHY})
+            return jsonify({"description": f"TBR Error: {str(r.text)}", "status": HealthStatus.UNHEALTHY}) # Might fail when trying to use r in this instance.
+    except ConnectionError as e:
+        return jsonify({"description": f"TBR Connection Error: {str(e)}", "status": HealthStatus.UNHEALTHY}), 200
+    except Exception as e:
+        return jsonify({"description": f"TBR Exception: {str(e)}", "status": HealthStatus.UNHEALTHY}), 200
 
 
 def system_health(user, token):

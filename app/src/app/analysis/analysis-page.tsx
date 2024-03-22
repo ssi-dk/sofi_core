@@ -190,10 +190,10 @@ export default function AnalysisPage() {
     if (health) {
       if (health.hasOwnProperty("lims") && health.hasOwnProperty("tbr")) {
         if (health["tbr"] && health["tbr"].status == HealthStatus.Unhealthy) {
-          messages.push("Could not connect to TBR.");
+          messages.push(health["tbr"].description);
         }
         if (health["lims"] && health["lims"].status == HealthStatus.Unhealthy) {
-          messages.push("Could not connect to LIMS.");
+          messages.push(health["lims"].description);
         }
       }
 
