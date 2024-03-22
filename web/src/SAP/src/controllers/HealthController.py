@@ -31,12 +31,15 @@ def health_ext_lims(user, token):
         r = requests.get(lims_api_url, data=payload)
         if r.ok:
             return jsonify({"description": "OK", "status": HealthStatus.HEALTHY})
-        else:
-            return jsonify({"description": f"LIMS Error: {str(r.text)}", "status": HealthStatus.UNHEALTHY}) # Might fail when trying to use r in this instance.
+        r.raise_for_status()
+    except requests.exceptions.HTTPError as e:
+        return jsonify({"description": f"LIMS HTTP Error: {e}", "status": HealthStatus.UNHEALTHY}), 200
     except ConnectionError as e:
-        return jsonify({"description": f"LIMS Connection Error: {str(e)}", "status": HealthStatus.UNHEALTHY}), 200
-    except Exception:
-        return jsonify({"description": f"LIMS Exception: {str(e)}", "status": HealthStatus.UNHEALTHY}), 200
+        return jsonify({"description": f"LIMS Connection Error: {e}", "status": HealthStatus.UNHEALTHY}), 200
+    except requests.exceptions.Timeout as e:
+        return jsonify({"description": f"LIMS Timeout Error: {e}", "status": HealthStatus.UNHEALTHY}), 200
+    except Exception as e:
+        return jsonify({"description": f"LIMS Exception: {e}", "status": HealthStatus.UNHEALTHY}), 200
 
 
 def health_ext_tbr(user, token):
@@ -44,13 +47,16 @@ def health_ext_tbr(user, token):
     try:
         r = requests.get(url, verify=tbr_api_root, cert=(tbr_api_cert, tbr_api_key))
         if r.ok:
-            return jsonify({"description": "OK", "status": HealthStatus.HEALTHY})
-        else:
-            return jsonify({"description": f"TBR Error: {str(r.text)}", "status": HealthStatus.UNHEALTHY}) # Might fail when trying to use r in this instance.
+            return jsonify({"description": "OK", "status": HealthStatus.HEALTHY})            
+        r.raise_for_status()
+    except requests.exceptions.HTTPError as e:
+        return jsonify({"description": f"TBR HTTP Error: {e}", "status": HealthStatus.UNHEALTHY}), 200
     except ConnectionError as e:
-        return jsonify({"description": f"TBR Connection Error: {str(e)}", "status": HealthStatus.UNHEALTHY}), 200
+        return jsonify({"description": f"TBR Connection Error: {e}", "status": HealthStatus.UNHEALTHY}), 200
+    except requests.exceptions.Timeout as e:
+        return jsonify({"description": f"TBR Timeout Error: {e}", "status": HealthStatus.UNHEALTHY}), 200
     except Exception as e:
-        return jsonify({"description": f"TBR Exception: {str(e)}", "status": HealthStatus.UNHEALTHY}), 200
+        return jsonify({"description": f"TBR Exception: {e}", "status": HealthStatus.UNHEALTHY}), 200
 
 
 def system_health(user, token):
