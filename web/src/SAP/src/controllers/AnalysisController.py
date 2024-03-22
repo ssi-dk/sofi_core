@@ -12,6 +12,7 @@ from flask.json import jsonify
 from ..repositories.analysis import (
     get_analysis_page,
     get_analysis_count,
+    get_analysis_with_metadata,
     update_analysis,
     get_single_analysis,
 )
@@ -40,7 +41,7 @@ def render_paging_token(page_size, query, offset):
 
 def get_sequence_by_id(user, token_info, sequence_id):
     assert_user_has("search", token_info)
-    row = get_single_analysis(sequence_id)
+    row = get_analysis_with_metadata(sequence_id)
     if row is None:
         abort(404)
     if (
