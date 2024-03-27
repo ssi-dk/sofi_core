@@ -435,7 +435,7 @@ def agg_pipeline(changed_ids=None):
                             "as": "amr_class",
                             "in": {
                                 "k": "$$amr_class",
-                                "v": "Resistant",
+                                "v": "Resistent",
                             },
                         },
                     },
