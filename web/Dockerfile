@@ -3,6 +3,9 @@ FROM tiangolo/meinheld-gunicorn-flask:python3.8-2023-06-19@sha256:d5e0957705c1d7
 COPY ["requirements.txt", "/app/"]
 RUN pip install -r requirements.txt
 
+COPY usr/local/share/ca-certificates/ usr/local/share/ca-certificates/
+RUN /usr/sbin/update-ca-certificates 
+
 COPY ["main.py", "start.sh", "gunicorn_conf.py", "/app/"]
 COPY "permission-config.jsonc" "/app/"
 COPY src /app/web/src
