@@ -28,7 +28,7 @@ def health_ext_lims(user, token):
         "password": lims_api_password,
     }
     try:
-        r = requests.get(lims_api_url, data=payload)
+        r = requests.post(f"{lims_api_url}/connections", json=payload)
         if r.ok:
             return jsonify({"description": "OK", "status": HealthStatus.HEALTHY})
         r.raise_for_status()
