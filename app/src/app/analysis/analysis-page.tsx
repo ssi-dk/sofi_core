@@ -55,6 +55,7 @@ import ExportButton from "./export/export-button";
 import { ColumnConfigNode } from "./data-table/column-config-node";
 import { AnalysisResultAllOfQcFailedTests } from "sap-client/models/AnalysisResultAllOfQcFailedTests";
 import { Judgement } from "./judgement/judgement";
+import { ResistanceButton } from "./resistance/resistance-button";
 
 // When the fields in this array are 'approved', a given sequence is rendered
 // as 'approved' also.
@@ -659,6 +660,9 @@ export default function AnalysisPage() {
             )}
           </ColumnConfigWidget>
           <Flex grow={1} width="100%" />
+          <ResistanceButton
+            selection={selection as DataTableSelection<AnalysisResult>}
+          />
           <ExportButton
             data={filteredData}
             columns={columns.map((x) => x.accessor) as any}
