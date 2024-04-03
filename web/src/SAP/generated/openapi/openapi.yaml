@@ -341,6 +341,29 @@ paths:
       tags:
       - user
       x-openapi-router-controller: web.src.SAP.generated.controllers.user_controller
+  /samples/{sequence_id}:
+    get:
+      description: Get an individual sample by id
+      operationId: get_sample_by_id
+      parameters:
+      - description: id of sample
+        explode: false
+        in: path
+        name: sequence_id
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Sample'
+          description: Sample
+      tags:
+      - samples
+      x-openapi-router-controller: web.src.SAP.generated.controllers.samples_controller
   /upload/bulk_metadata:
     post:
       description: Manually upload metadata for previously uploaded sequence files
@@ -694,6 +717,9 @@ components:
       - Degraded
       - Healthy
       type: string
+    Sample:
+      additionalProperties: true
+      type: object
     Column:
       example:
         pii: true

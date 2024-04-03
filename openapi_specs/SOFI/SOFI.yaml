@@ -479,6 +479,28 @@ paths:
               schema:
                 $ref: '#/components/schemas/HealthResponse'
 
+  /samples/{sequence_id}:
+    get:
+      description: Get an individual sample by id
+      operationId: get_sample_by_id
+      x-openapi-router-controller: web.src.SAP.generated.controllers.samples_controller
+      tags:
+        - samples
+      parameters:
+        - name: sequence_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: id of sample
+      responses:
+        '200':
+          description: Sample
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Sample'
+
 components:
   schemas:
     Organization:
@@ -603,6 +625,10 @@ components:
     HealthStatus:
       type: string
       enum: ["Unhealthy", "Degraded", "Healthy"]
+
+    Sample:
+      type: object
+      additionalProperties: true
 
     Column:
       properties:
