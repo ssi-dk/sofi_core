@@ -21,6 +21,7 @@ services:
         max-file: "20"
     volumes:
       - ${SOFI_UPLOAD_DIR}:/tmp:rw
+    extra_hosts: *default-extra_hosts
 
 
   sap_broker_queue:
