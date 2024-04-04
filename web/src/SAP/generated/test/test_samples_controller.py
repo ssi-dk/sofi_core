@@ -5,6 +5,7 @@ import unittest
 from flask import json
 from six import BytesIO
 
+from web.src.SAP.generated.models.sample import Sample  # noqa: E501
 from .test import BaseTestCase
 
 

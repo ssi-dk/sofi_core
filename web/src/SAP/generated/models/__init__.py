@@ -16,6 +16,7 @@ from .bulk_upload_request import BulkUploadRequest
 from .column import Column
 from .data_clearance import DataClearance
 from .exception import Exception
+from .gene import Gene
 from .health_response import HealthResponse
 from .health_status import HealthStatus
 from .lims_metadata import LimsMetadata
@@ -29,11 +30,15 @@ from .page_of_analysis import PageOfAnalysis
 from .permission import Permission
 from .personal_data import PersonalData
 from .personal_identifier_type import PersonalIdentifierType
+from .phenotype import Phenotype
 from .query_expression import QueryExpression
 from .query_operand import QueryOperand
 from .query_operator import QueryOperator
 from .query_range_inclusivity import QueryRangeInclusivity
 from .resistance import Resistance
+from .sample import Sample
+from .sample_categories import SampleCategories
+from .sample_categories_resistance import SampleCategoriesResistance
 from .single_upload_request import SingleUploadRequest
 from .tbr_metadata import TbrMetadata
 from .tbr_specific_metadata import TbrSpecificMetadata

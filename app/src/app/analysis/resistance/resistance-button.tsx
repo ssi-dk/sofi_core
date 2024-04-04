@@ -1,8 +1,5 @@
 import React, { useCallback } from "react";
-import {
-  IconButton,
-  useToast,
-} from "@chakra-ui/react";
+import { IconButton, useToast } from "@chakra-ui/react";
 import { AnalysisResult } from "sap-client";
 import { DataTableSelection } from "../data-table/data-table";
 import { Bacteria } from "app/icons/bacteria";

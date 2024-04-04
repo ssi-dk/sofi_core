@@ -14,6 +14,11 @@
 
 import { HttpMethods, QueryConfig, ResponseBody, ResponseText } from 'redux-query';
 import * as runtime from '../runtime';
+import {
+    Sample,
+    SampleFromJSON,
+    SampleToJSON,
+} from '../models';
 
 export interface GetSampleByIdRequest {
     sequenceId: string;
@@ -23,7 +28,7 @@ export interface GetSampleByIdRequest {
 /**
  * Get an individual sample by id
  */
-function getSampleByIdRaw<T>(requestParameters: GetSampleByIdRequest, requestConfig: runtime.TypedQueryConfig<T, { [key: string]: object; }> = {}): QueryConfig<T> {
+function getSampleByIdRaw<T>(requestParameters: GetSampleByIdRequest, requestConfig: runtime.TypedQueryConfig<T, Sample> = {}): QueryConfig<T> {
     if (requestParameters.sequenceId === null || requestParameters.sequenceId === undefined) {
         throw new runtime.RequiredError('sequenceId','Required parameter requestParameters.sequenceId was null or undefined when calling getSampleById.');
     }
@@ -54,6 +59,7 @@ function getSampleByIdRaw<T>(requestParameters: GetSampleByIdRequest, requestCon
 
     const { transform: requestTransform } = requestConfig;
     if (requestTransform) {
+        config.transform = (body: ResponseBody, text: ResponseBody) => requestTransform(SampleFromJSON(body), text);
     }
 
     return config;
@@ -62,7 +68,7 @@ function getSampleByIdRaw<T>(requestParameters: GetSampleByIdRequest, requestCon
 /**
 * Get an individual sample by id
 */
-export function getSampleById<T>(requestParameters: GetSampleByIdRequest, requestConfig?: runtime.TypedQueryConfig<T, { [key: string]: object; }>): QueryConfig<T> {
+export function getSampleById<T>(requestParameters: GetSampleByIdRequest, requestConfig?: runtime.TypedQueryConfig<T, Sample>): QueryConfig<T> {
     return getSampleByIdRaw(requestParameters, requestConfig);
 }
 

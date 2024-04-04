@@ -718,7 +718,131 @@ components:
       - Healthy
       type: string
     Sample:
-      additionalProperties: true
+      example:
+        name: name
+        categories:
+          resistance:
+            summary: summary
+            report:
+              key:
+                genes:
+                  key:
+                    alignment_length: 1.4658129805029452
+                    phenotypes:
+                    - phenotypes
+                    - phenotypes
+                    depth: 5.962133916683182
+                    notes:
+                    - notes
+                    - notes
+                    identity: 0.8008281904610115
+                    pmids:
+                    - pmids
+                    - pmids
+                    contig_end_pos: 2.3021358869347655
+                    contig_start_pos: 5.637376656633329
+                    ref_acc: ref_acc
+                    gene_id: gene_id
+                    ref_seq_length: 6.027456183070403
+                    contig: contig
+                amr_classes:
+                - amr_classes
+                - amr_classes
+      properties:
+        name:
+          type: string
+        categories:
+          $ref: '#/components/schemas/Sample_categories'
+      type: object
+    Phenotype:
+      example:
+        genes:
+          key:
+            alignment_length: 1.4658129805029452
+            phenotypes:
+            - phenotypes
+            - phenotypes
+            depth: 5.962133916683182
+            notes:
+            - notes
+            - notes
+            identity: 0.8008281904610115
+            pmids:
+            - pmids
+            - pmids
+            contig_end_pos: 2.3021358869347655
+            contig_start_pos: 5.637376656633329
+            ref_acc: ref_acc
+            gene_id: gene_id
+            ref_seq_length: 6.027456183070403
+            contig: contig
+        amr_classes:
+        - amr_classes
+        - amr_classes
+      properties:
+        amr_classes:
+          items:
+            type: string
+          type: array
+        genes:
+          additionalProperties:
+            $ref: '#/components/schemas/Gene'
+          type: object
+      type: object
+    Gene:
+      example:
+        alignment_length: 1.4658129805029452
+        phenotypes:
+        - phenotypes
+        - phenotypes
+        depth: 5.962133916683182
+        notes:
+        - notes
+        - notes
+        identity: 0.8008281904610115
+        pmids:
+        - pmids
+        - pmids
+        contig_end_pos: 2.3021358869347655
+        contig_start_pos: 5.637376656633329
+        ref_acc: ref_acc
+        gene_id: gene_id
+        ref_seq_length: 6.027456183070403
+        contig: contig
+      properties:
+        gene_id:
+          type: string
+        identity:
+          type: number
+        ref_seq_length:
+          type: number
+        alignment_length:
+          type: number
+        phenotypes:
+          items:
+            type: string
+          nullable: true
+          type: array
+        depth:
+          type: number
+        contig:
+          type: string
+        contig_start_pos:
+          type: number
+        contig_end_pos:
+          type: number
+        notes:
+          items:
+            type: string
+          nullable: true
+          type: array
+        pmids:
+          items:
+            type: string
+          nullable: true
+          type: array
+        ref_acc:
+          type: string
       type: object
     Column:
       example:
@@ -1112,6 +1236,75 @@ components:
           items:
             $ref: '#/components/schemas/Permission'
           type: array
+      type: object
+    Sample_categories_resistance:
+      example:
+        summary: summary
+        report:
+          key:
+            genes:
+              key:
+                alignment_length: 1.4658129805029452
+                phenotypes:
+                - phenotypes
+                - phenotypes
+                depth: 5.962133916683182
+                notes:
+                - notes
+                - notes
+                identity: 0.8008281904610115
+                pmids:
+                - pmids
+                - pmids
+                contig_end_pos: 2.3021358869347655
+                contig_start_pos: 5.637376656633329
+                ref_acc: ref_acc
+                gene_id: gene_id
+                ref_seq_length: 6.027456183070403
+                contig: contig
+            amr_classes:
+            - amr_classes
+            - amr_classes
+      properties:
+        summary:
+          type: string
+        report:
+          additionalProperties:
+            $ref: '#/components/schemas/Phenotype'
+          type: object
+      type: object
+    Sample_categories:
+      example:
+        resistance:
+          summary: summary
+          report:
+            key:
+              genes:
+                key:
+                  alignment_length: 1.4658129805029452
+                  phenotypes:
+                  - phenotypes
+                  - phenotypes
+                  depth: 5.962133916683182
+                  notes:
+                  - notes
+                  - notes
+                  identity: 0.8008281904610115
+                  pmids:
+                  - pmids
+                  - pmids
+                  contig_end_pos: 2.3021358869347655
+                  contig_start_pos: 5.637376656633329
+                  ref_acc: ref_acc
+                  gene_id: gene_id
+                  ref_seq_length: 6.027456183070403
+                  contig: contig
+              amr_classes:
+              - amr_classes
+              - amr_classes
+      properties:
+        resistance:
+          $ref: '#/components/schemas/Sample_categories_resistance'
       type: object
     UserDefinedView_column_resizing:
       example:

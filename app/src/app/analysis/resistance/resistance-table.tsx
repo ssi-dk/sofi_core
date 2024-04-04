@@ -1,6 +1,6 @@
 import React, { Fragment, useEffect, useMemo } from "react";
 import { Spinner, Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
-import { AnalysisResult } from "sap-client";
+import { AnalysisResult, Gene, Sample } from "sap-client";
 import { DataTableSelection } from "../data-table/data-table";
 import { requestGetSampleById } from "./resistance-query-configs";
 import { requestAsync } from "redux-query";
@@ -11,58 +11,17 @@ type Props = {
   selection: DataTableSelection<AnalysisResult>;
 };
 
-type Gene = {
-  gene_id: string;
-  identity: number;
-  ref_seq_length: number;
-  alignment_length: number;
-  phenotypes?: Array<string>;
-  depth: number;
-  contig: string;
-  contig_start_pos: number;
-  contig_end_pos: number;
-  notes?: Array<string>;
-  pmids?: Array<string>;
-  ref_acc: string;
-}
-
 export const ResistanceTable = (props: Props) => {
   const { selection } = props;
   const dispatch = useDispatch();
 
   const samples = useSelector<RootState>((s) => s.entities.samples) as Record<
     string,
-    // TODO: change to response type
-    {
-      name?: string;
-      categories?: {
-        resistance?: {
-          summary?: string;
-          report?: {
-            phenotypes?: Record<
-              string,
-              {
-                amr_classes: Array<string>;
-                genes: Record<
-                  string,
-                  Gene
-                >;
-              }
-            >;
-          };
-        };
-      };
-    }
+    Sample
   >;
 
   const genes = useMemo(() => {
-    const newGenes = {} as Record<
-      string,
-      Record<
-        string,
-        Gene
-      >
-    >;
+    const newGenes = {} as Record<string, Record<string, Gene>>;
     const sampleIds = Object.keys(samples ?? {});
     sampleIds.forEach((sampleId) => {
       const sample = samples[sampleId];
@@ -90,7 +49,7 @@ export const ResistanceTable = (props: Props) => {
       );
     });
   }, [dispatch, samples, selection]);
-  
+
   return (
     <Table variant="unstyled">
       <Thead style={{ backgroundColor: "#90cdf4" }}>
@@ -130,52 +89,64 @@ export const ResistanceTable = (props: Props) => {
               <Td></Td>
               <Td></Td>
             </Tr>
-            {!samples?.[sequenceId] && <Tr>
+            {!samples?.[sequenceId] && (
+              <Tr>
                 <Td>
                   <Spinner />
                 </Td>
-              </Tr> }
-            {samples?.[sequenceId] && Object.keys(genes?.[sequenceId] ?? {}).length > 0 && 
-              <>
-                <Tr style={{ fontWeight: 700, backgroundColor: "#A29DC4" }}>
-                  <Td>Gene/Mut name</Td>
-                  <Td>Gene/Mut ID</Td>
-                  <Td>%ID</Td>
-                  <Td>Ref length</Td>
-                  <Td>Aln Length</Td>
-                  <Td>Phenotype</Td>
-                  <Td>Class</Td>
-                  <Td>Depth</Td>
-                  <Td>Contig</Td>
-                  <Td>Start pos</Td>
-                  <Td>End pos</Td>
-                  <Td>Notes</Td>
-                  <Td>PMID</Td>
-                  <Td>Accession nr</Td>
-                </Tr>
-                {Object.keys(genes?.[sequenceId] ?? {}).map((geneId) => {
-                  const gene = genes[sequenceId][geneId];
-                  return (
-                    <Tr key={`${sequenceId}-${geneId}`} style={{ backgroundColor: "#A29DC4" }}>
-                      <Td>{geneId}</Td>
-                      <Td>{gene.gene_id}</Td>
-                      <Td>{gene.identity}</Td>
-                      <Td>{gene.ref_seq_length}</Td>
-                      <Td>{gene.alignment_length}</Td>
-                      <Td>{gene.phenotypes?.join(", ")}</Td>
-                      <Td>{samples?.[sequenceId].categories.resistance.report.phenotypes[gene.phenotypes[0]].amr_classes?.join(", ")}</Td>
-                      <Td>{gene.depth}</Td>
-                      <Td>{gene.contig}</Td>
-                      <Td>{gene.contig_start_pos}</Td>
-                      <Td>{gene.contig_end_pos}</Td>
-                      <Td>{gene.notes?.join("; ")}</Td>
-                      <Td>{gene.pmids?.join(", ")}</Td>
-                      <Td>{gene.ref_acc}</Td>
-                    </Tr>
-                  );
-                })}
-              </>
-            }
+              </Tr>
+            )}
+            {samples?.[sequenceId] &&
+              Object.keys(genes?.[sequenceId] ?? {}).length > 0 && (
+                <>
+                  <Tr style={{ fontWeight: 700, backgroundColor: "#A29DC4" }}>
+                    <Td>Gene/Mut name</Td>
+                    <Td>Gene/Mut ID</Td>
+                    <Td>%ID</Td>
+                    <Td>Ref length</Td>
+                    <Td>Aln Length</Td>
+                    <Td>Phenotype</Td>
+                    <Td>Class</Td>
+                    <Td>Depth</Td>
+                    <Td>Contig</Td>
+                    <Td>Start pos</Td>
+                    <Td>End pos</Td>
+                    <Td>Notes</Td>
+                    <Td>PMID</Td>
+                    <Td>Accession nr</Td>
+                  </Tr>
+                  {Object.keys(genes?.[sequenceId] ?? {}).map((geneId) => {
+                    const gene = genes[sequenceId][geneId];
+                    return (
+                      <Tr
+                        key={`${sequenceId}-${geneId}`}
+                        style={{ backgroundColor: "#A29DC4" }}
+                      >
+                        <Td>{geneId}</Td>
+                        <Td>{gene.gene_id}</Td>
+                        <Td>{gene.identity}</Td>
+                        <Td>{gene.ref_seq_length}</Td>
+                        <Td>{gene.alignment_length}</Td>
+                        <Td>{gene.phenotypes?.join(", ")}</Td>
+                        <Td>
+                          {samples?.[
+                            sequenceId
+                          ].categories.resistance.report.phenotypes[
+                            gene.phenotypes[0]
+                          ].amr_classes?.join(", ")}
+                        </Td>
+                        <Td>{gene.depth}</Td>
+                        <Td>{gene.contig}</Td>
+                        <Td>{gene.contig_start_pos}</Td>
+                        <Td>{gene.contig_end_pos}</Td>
+                        <Td>{gene.notes?.join("; ")}</Td>
+                        <Td>{gene.pmids?.join(", ")}</Td>
+                        <Td>{gene.ref_acc}</Td>
+                      </Tr>
+                    );
+                  })}
+                </>
+              )}
           </Fragment>
         ))}
       </Tbody>

@@ -12,6 +12,6 @@ def get_sample_by_id(user, token_info, sequence_id):  # noqa: E501
     :param sequence_id: id of sample
     :type sequence_id: str
 
-    :rtype: Dict[str, object]
+    :rtype: Sample
     """
     return SamplesController.get_sample_by_id(user, token_info, sequence_id)

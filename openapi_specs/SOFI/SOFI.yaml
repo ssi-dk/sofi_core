@@ -628,7 +628,70 @@ components:
 
     Sample:
       type: object
-      additionalProperties: true
+      properties:
+        name:
+          type: string
+        categories:
+          type: object
+          properties:
+            resistance:
+              type: object
+              properties:
+                summary:
+                  type: string
+                report:
+                  type: object
+                  additionalProperties:
+                    $ref: "#/components/schemas/Phenotype"
+
+    Phenotype:
+      type: object
+      properties:
+        amr_classes:
+          type: array
+          items:
+            type: string
+        genes:
+          type: object
+          additionalProperties:
+            $ref: "#/components/schemas/Gene"
+
+    Gene:
+      type: object
+      properties:
+        gene_id:
+          type: string
+        identity:
+          type: number
+        ref_seq_length:
+          type: number
+        alignment_length:
+          type: number
+        phenotypes:
+          nullable: true
+          type: array
+          items:
+            type: string
+        depth:
+          type: number
+        contig:
+          type: string
+        contig_start_pos:
+          type: number
+        contig_end_pos:
+          type: number
+        notes:
+          nullable: true
+          type: array
+          items:
+            type: string
+        pmids:
+          nullable: true
+          type: array
+          items:
+            type: string
+        ref_acc:
+          type: string
 
     Column:
       properties:
