@@ -407,6 +407,42 @@ def agg_pipeline(changed_ids=None):
                 },
             },
         },
+        # Create array of amr_classes with appropiate resistance level
+        {
+            "$addFields": {
+                "categories.resistance.amr_resistances": {
+                    "$arrayToObject": {
+                        "$map": {
+                            "input": {
+                                "$reduce": {
+                                    "input": {
+                                        "$map": {
+                                            "input": {
+                                                "$objectToArray":
+                                                "$categories.resistance.report.phenotypes",
+                                            },
+                                        "in": "$$this.v.amr_classes",
+                                        },
+                                    },
+                                    "initialValue": [],
+                                    "in": {
+                                        "$setUnion": [
+                                        "$$value",
+                                        "$$this",
+                                        ],
+                                    },
+                                },
+                            },
+                            "as": "amr_class",
+                            "in": {
+                                "k": "$$amr_class",
+                                "v": "Resistent",
+                            },
+                        },
+                    },
+                },
+            },
+        },
         {
             "$set": {
                 "st_final": {
