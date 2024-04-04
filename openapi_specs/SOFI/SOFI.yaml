@@ -479,6 +479,28 @@ paths:
               schema:
                 $ref: '#/components/schemas/HealthResponse'
 
+  /samples/{sequence_id}:
+    get:
+      description: Get an individual sample by id
+      operationId: get_sample_by_id
+      x-openapi-router-controller: web.src.SAP.generated.controllers.samples_controller
+      tags:
+        - samples
+      parameters:
+        - name: sequence_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: id of sample
+      responses:
+        '200':
+          description: Sample
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Sample'
+
 components:
   schemas:
     Organization:
@@ -603,6 +625,73 @@ components:
     HealthStatus:
       type: string
       enum: ["Unhealthy", "Degraded", "Healthy"]
+
+    Sample:
+      type: object
+      properties:
+        name:
+          type: string
+        categories:
+          type: object
+          properties:
+            resistance:
+              type: object
+              properties:
+                summary:
+                  type: string
+                report:
+                  type: object
+                  additionalProperties:
+                    $ref: "#/components/schemas/Phenotype"
+
+    Phenotype:
+      type: object
+      properties:
+        amr_classes:
+          type: array
+          items:
+            type: string
+        genes:
+          type: object
+          additionalProperties:
+            $ref: "#/components/schemas/Gene"
+
+    Gene:
+      type: object
+      properties:
+        gene_id:
+          type: string
+        identity:
+          type: number
+        ref_seq_length:
+          type: number
+        alignment_length:
+          type: number
+        phenotypes:
+          nullable: true
+          type: array
+          items:
+            type: string
+        depth:
+          type: number
+        contig:
+          type: string
+        contig_start_pos:
+          type: number
+        contig_end_pos:
+          type: number
+        notes:
+          nullable: true
+          type: array
+          items:
+            type: string
+        pmids:
+          nullable: true
+          type: array
+          items:
+            type: string
+        ref_acc:
+          type: string
 
     Column:
       properties:

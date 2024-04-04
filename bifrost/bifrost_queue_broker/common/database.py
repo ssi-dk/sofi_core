@@ -25,6 +25,7 @@ QUEUE_COL_NAME = "sap_broker_queue"
 MANUAL_METADATA_COL_NAME = "sap_manual_metadata"
 TBR_METADATA_COL_NAME = "sap_tbr_metadata"
 LIMS_METADATA_COL_NAME = "sap_lims_metadata"
+SAMPLES_COL_NAME = "samples"
 
 SOFI_BIFROST_ENCRYPTION_NAMESPACE = os.environ.get(
     "SOFI_BIFROST_ENCRYPTION_NAME", "encryption.sap_pii"
