@@ -100,6 +100,7 @@ def agg_pipeline(changed_ids=None):
                         + "$categories.resistance.summary.point_mutations"
                     ]
                 },
+                "resistance": "$categories.resistance",
                 "sero_enterobase": "$categories.serotype.report.enterobase_serotype1",
                 "sero_seqsero": "$categories.serotype.report.seqsero_serotype",
                 "sero_antigen_seqsero": "$categories.serotype.summary.antigenic_profile",
@@ -417,6 +418,196 @@ def agg_pipeline(changed_ids=None):
                 }
             }
         },
+        {
+            '$replaceRoot': {
+                'newRoot': {
+                    '$mergeObjects': [
+                        {
+                            '$arrayToObject': {
+                                '$map': {
+                                    'input': [
+                                        {
+                                            'phenotype': 'amikacin', 
+                                            'field': 'amr_ami'
+                                        }, {
+                                            'phenotype': 'ampicillin', 
+                                            'field': 'amr_amp'
+                                        }, {
+                                            'phenotype': 'azithromycin', 
+                                            'field': 'amr_azi'
+                                        }, {
+                                            'phenotype': 'cefepime', 
+                                            'field': 'amr_fep'
+                                        }, {
+                                            'phenotype': 'cefotaxime', 
+                                            'field': 'amr_fot'
+                                        }, {
+                                            'phenotype': 'cefotaxime/clavulanat', 
+                                            'field': 'amr_f_c'
+                                        }, {
+                                            'phenotype': 'cefoxitin', 
+                                            'field': 'amr_fox'
+                                        }, {
+                                            'phenotype': 'ceftazidime', 
+                                            'field': 'amr_taz'
+                                        }, {
+                                            'phenotype': 'ceftazidime/clavulanat', 
+                                            'field': 'amr_t_c'
+                                        }, {
+                                            'phenotype': 'chloramphenicol', 
+                                            'field': 'amr_chl'
+                                        }, {
+                                            'phenotype': 'ciprofloxacin', 
+                                            'field': 'amr_cip'
+                                        }, {
+                                            'phenotype': 'clindamycin', 
+                                            'field': 'amr_cli'
+                                        }, {
+                                            'phenotype': 'colistin', 
+                                            'field': 'amr_col'
+                                        }, {
+                                            'phenotype': 'daptomycin', 
+                                            'field': 'amr_dap'
+                                        }, {
+                                            'phenotype': 'ertapenem', 
+                                            'field': 'amr_etp'
+                                        }, {
+                                            'phenotype': 'erythromycin', 
+                                            'field': 'amr_ery'
+                                        }, {
+                                            'phenotype': 'fusidinsyre', 
+                                            'field': 'amr_fus'
+                                        }, {
+                                            'phenotype': 'gentamicin', 
+                                            'field': 'amr_gen'
+                                        }, {
+                                            'phenotype': 'imipenem', 
+                                            'field': 'amr_imi'
+                                        }, {
+                                            'phenotype': 'kanamycin', 
+                                            'field': 'amr_kan'
+                                        }, {
+                                            'phenotype': 'linezolid', 
+                                            'field': 'amr_lzd'
+                                        }, {
+                                            'phenotype': 'meropenem', 
+                                            'field': 'amr_mero'
+                                        }, {
+                                            'phenotype': 'mupirocin', 
+                                            'field': 'amr_mup'
+                                        }, {
+                                            'phenotype': 'nalidixan', 
+                                            'field': 'amr_nal'
+                                        }, {
+                                            'phenotype': 'penicillin', 
+                                            'field': 'amr_pen'
+                                        }, {
+                                            'phenotype': 'quinopristin/dalfopristin', 
+                                            'field': 'amr_syn'
+                                        }, {
+                                            'phenotype': 'rifampin', 
+                                            'field': 'amr_rif'
+                                        }, {
+                                            'phenotype': 'streptomycin', 
+                                            'field': 'amr_str'
+                                        }, {
+                                            'phenotype': 'sulfamethoxazole', 
+                                            'field': 'amr_sul'
+                                        }, {
+                                            'phenotype': 'teicoplanin', 
+                                            'field': 'amr_tei'
+                                        }, {
+                                            'phenotype': 'temocillin', 
+                                            'field': 'amr_trm'
+                                        }, {
+                                            'phenotype': 'tetracyklin', 
+                                            'field': 'amr_tet'
+                                        }, {
+                                            'phenotype': 'tiamulin', 
+                                            'field': 'amr_tia'
+                                        }, {
+                                            'phenotype': 'tigecycline', 
+                                            'field': 'amr_tgc'
+                                        }, {
+                                            'phenotype': 'trimethoprim', 
+                                            'field': 'amr_tmp'
+                                        }, {
+                                            'phenotype': 'vancomycin', 
+                                            'field': 'amr_van'
+                                        }
+                                    ], 
+                                    'in': [
+                                        '$$this.field', {
+                                            '$let': {
+                                                'vars': {
+                                                    'amr': {
+                                                        '$first': {
+                                                            '$map': {
+                                                                'input': {
+                                                                    '$filter': {
+                                                                        'input': {
+                                                                            '$objectToArray': '$$CURRENT.resistance.report.phenotypes'
+                                                                        }, 
+                                                                        'as': 'phenotype', 
+                                                                        'cond': {
+                                                                            '$eq': [
+                                                                                '$$phenotype.k', '$$this.phenotype'
+                                                                            ]
+                                                                        }
+                                                                    }
+                                                                }, 
+                                                                'in': '$$this.v'
+                                                            }
+                                                        }
+                                                    }
+                                                }, 
+                                                'in': {
+                                                    '$switch': {
+                                                        'branches': [
+                                                            {
+                                                                'case': {
+                                                                    '$eq': [
+                                                                        '$$amr', None
+                                                                    ]
+                                                                }, 
+                                                                'then': 'Ukendt'
+                                                            }, {
+                                                                'case': {
+                                                                    '$eq': [
+                                                                        '$$amr', '$null'
+                                                                    ]
+                                                                }, 
+                                                                'then': 'Ukendt'
+                                                            }, {
+                                                                'case': {
+                                                                    '$eq': [
+                                                                        '$$amr.genes', '$null'
+                                                                    ]
+                                                                }, 
+                                                                'then': 'Sensitiv'
+                                                            }, {
+                                                                'case': {
+                                                                    '$ne': [
+                                                                        '$$amr.genes', '$null'
+                                                                    ]
+                                                                }, 
+                                                                'then': 'Resistent'
+                                                            }
+                                                        ], 
+                                                        'default': 'Ukendt'
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        }, '$$CURRENT'
+                    ]
+                }
+            }
+        },
+        { "$unset": [ "resistance" ] },
         {
             "$merge": {
                 "into": "sap_analysis_results",
