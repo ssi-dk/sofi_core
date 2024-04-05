@@ -139,19 +139,41 @@ export const ResistanceTable = (props: Props) => {
                 <Td>
                   {samples?.[sequenceId]?.categories?.resistance?.summary}
                 </Td>
-                {/* TODO: add genes here */}
-                <Td></Td>
-                <Td></Td>
-                <Td></Td>
-                <Td></Td>
-                <Td></Td>
-                <Td></Td>
-                <Td></Td>
-                <Td></Td>
-                <Td></Td>
-                <Td></Td>
-                <Td></Td>
-                <Td></Td>
+                {Object.keys(amrClasses).map((amrClass, index) => {
+                  return amrClasses[amrClass].map((phenotypeName, pIndex) => {
+                    if (pIndex === 0) {
+                      const phenotype =
+                        samples?.[sequenceId]?.categories?.resistance?.report
+                          .phenotypes[phenotypeName];
+                      const phenotypeGenes = Object.keys(
+                        phenotype?.genes ?? {}
+                      ).join(", ");
+                      const grade = phenotype?.grade;
+                      let backgroundColor = "#9D9D9D";
+                      if (grade === 2) {
+                        backgroundColor = "#BEDCBE";
+                      }
+                      if (grade === 3) {
+                        backgroundColor = "#6EBE50";
+                      }
+
+                      return (
+                        <Th
+                          backgroundColor={
+                            phenotypeGenes ? backgroundColor : ""
+                          }
+                          key={`${phenotypeName}-${index}`}
+                        >
+                          {phenotypeGenes}
+                        </Th>
+                      );
+                    }
+                    return <Th key={`${phenotypeName}-${index}`}></Th>;
+                  });
+                })}
+                {headerPaddingColSpan > 0 ? (
+                  <Th colSpan={headerPaddingColSpan}></Th>
+                ) : null}
               </Tr>
               {!samples?.[sequenceId] && (
                 <Tr>
