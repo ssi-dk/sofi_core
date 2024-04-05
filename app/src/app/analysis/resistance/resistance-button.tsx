@@ -44,7 +44,7 @@ export const ResistanceButton = (props: Props) => {
 
   return (
     <>
-      <Modal isOpen={isOpen} onClose={onClose} size="4xl">
+      <Modal isOpen={isOpen} onClose={onClose} size="full">
         <ModalOverlay />
         <ModalContent mt="0">
           <ModalHeader pl="7">{`${t("Resistance")}`}</ModalHeader>
