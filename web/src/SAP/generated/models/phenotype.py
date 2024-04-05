@@ -19,26 +19,31 @@ class Phenotype(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, amr_classes=None, genes=None):  # noqa: E501
+    def __init__(self, amr_classes=None, genes=None, grade=None):  # noqa: E501
         """Phenotype - a model defined in OpenAPI
 
         :param amr_classes: The amr_classes of this Phenotype.  # noqa: E501
         :type amr_classes: List[str]
         :param genes: The genes of this Phenotype.  # noqa: E501
         :type genes: Dict[str, Gene]
+        :param grade: The grade of this Phenotype.  # noqa: E501
+        :type grade: float
         """
         self.openapi_types = {
             'amr_classes': List[str],
             'genes': Dict[str, Gene],
+            'grade': float,
         }
 
         self.attribute_map = {
             'amr_classes': 'amr_classes',
             'genes': 'genes',
+            'grade': 'grade',
         }
 
         self._amr_classes = amr_classes
         self._genes = genes
+        self._grade = grade
 
     @classmethod
     def from_dict(cls, dikt):
@@ -92,3 +97,24 @@ class Phenotype(Model):
         """
 
         self._genes = genes
+
+    @property
+    def grade(self):
+        """Gets the grade of this Phenotype.
+
+
+        :return: The grade of this Phenotype.
+        :rtype: float
+        """
+        return self._grade
+
+    @grade.setter
+    def grade(self, grade):
+        """Sets the grade of this Phenotype.
+
+
+        :param grade: The grade of this Phenotype.
+        :type grade: float
+        """
+
+        self._grade = grade

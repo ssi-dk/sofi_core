@@ -658,6 +658,8 @@ components:
           type: object
           additionalProperties:
             $ref: "#/components/schemas/Gene"
+        grade:
+          type: number
 
     Gene:
       type: object

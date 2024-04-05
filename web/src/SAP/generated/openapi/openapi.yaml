@@ -746,6 +746,7 @@ components:
                       gene_id: gene_id
                       ref_seq_length: 6.027456183070403
                       contig: contig
+                  grade: 7.061401241503109
                   amr_classes:
                   - amr_classes
                   - amr_classes
@@ -777,6 +778,7 @@ components:
             gene_id: gene_id
             ref_seq_length: 6.027456183070403
             contig: contig
+        grade: 7.061401241503109
         amr_classes:
         - amr_classes
         - amr_classes
@@ -789,6 +791,8 @@ components:
           additionalProperties:
             $ref: '#/components/schemas/Gene'
           type: object
+        grade:
+          type: number
       type: object
     Gene:
       example:
@@ -1262,6 +1266,7 @@ components:
                 gene_id: gene_id
                 ref_seq_length: 6.027456183070403
                 contig: contig
+            grade: 7.061401241503109
             amr_classes:
             - amr_classes
             - amr_classes
@@ -1297,6 +1302,7 @@ components:
                   gene_id: gene_id
                   ref_seq_length: 6.027456183070403
                   contig: contig
+              grade: 7.061401241503109
               amr_classes:
               - amr_classes
               - amr_classes
@@ -1333,6 +1339,7 @@ components:
                     gene_id: gene_id
                     ref_seq_length: 6.027456183070403
                     contig: contig
+                grade: 7.061401241503109
                 amr_classes:
                 - amr_classes
                 - amr_classes
