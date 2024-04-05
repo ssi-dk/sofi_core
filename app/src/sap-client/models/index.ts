@@ -32,6 +32,7 @@ export * from './Resistance';
 export * from './Sample';
 export * from './SampleCategories';
 export * from './SampleCategoriesResistance';
+export * from './SampleCategoriesResistanceReport';
 export * from './TbrMetadata';
 export * from './TbrSpecificMetadata';
 export * from './UploadMetadataFields';

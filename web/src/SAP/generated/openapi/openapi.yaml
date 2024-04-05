@@ -724,30 +724,31 @@ components:
           resistance:
             summary: summary
             report:
-              key:
-                genes:
-                  key:
-                    alignment_length: 1.4658129805029452
-                    phenotypes:
-                    - phenotypes
-                    - phenotypes
-                    depth: 5.962133916683182
-                    notes:
-                    - notes
-                    - notes
-                    identity: 0.8008281904610115
-                    pmids:
-                    - pmids
-                    - pmids
-                    contig_end_pos: 2.3021358869347655
-                    contig_start_pos: 5.637376656633329
-                    ref_acc: ref_acc
-                    gene_id: gene_id
-                    ref_seq_length: 6.027456183070403
-                    contig: contig
-                amr_classes:
-                - amr_classes
-                - amr_classes
+              phenotypes:
+                key:
+                  genes:
+                    key:
+                      alignment_length: 1.4658129805029452
+                      phenotypes:
+                      - phenotypes
+                      - phenotypes
+                      depth: 5.962133916683182
+                      notes:
+                      - notes
+                      - notes
+                      identity: 0.8008281904610115
+                      pmids:
+                      - pmids
+                      - pmids
+                      contig_end_pos: 2.3021358869347655
+                      contig_start_pos: 5.637376656633329
+                      ref_acc: ref_acc
+                      gene_id: gene_id
+                      ref_seq_length: 6.027456183070403
+                      contig: contig
+                  amr_classes:
+                  - amr_classes
+                  - amr_classes
       properties:
         name:
           type: string
@@ -1237,10 +1238,9 @@ components:
             $ref: '#/components/schemas/Permission'
           type: array
       type: object
-    Sample_categories_resistance:
+    Sample_categories_resistance_report:
       example:
-        summary: summary
-        report:
+        phenotypes:
           key:
             genes:
               key:
@@ -1266,18 +1266,16 @@ components:
             - amr_classes
             - amr_classes
       properties:
-        summary:
-          type: string
-        report:
+        phenotypes:
           additionalProperties:
             $ref: '#/components/schemas/Phenotype'
           type: object
       type: object
-    Sample_categories:
+    Sample_categories_resistance:
       example:
-        resistance:
-          summary: summary
-          report:
+        summary: summary
+        report:
+          phenotypes:
             key:
               genes:
                 key:
@@ -1302,6 +1300,42 @@ components:
               amr_classes:
               - amr_classes
               - amr_classes
+      properties:
+        summary:
+          type: string
+        report:
+          $ref: '#/components/schemas/Sample_categories_resistance_report'
+      type: object
+    Sample_categories:
+      example:
+        resistance:
+          summary: summary
+          report:
+            phenotypes:
+              key:
+                genes:
+                  key:
+                    alignment_length: 1.4658129805029452
+                    phenotypes:
+                    - phenotypes
+                    - phenotypes
+                    depth: 5.962133916683182
+                    notes:
+                    - notes
+                    - notes
+                    identity: 0.8008281904610115
+                    pmids:
+                    - pmids
+                    - pmids
+                    contig_end_pos: 2.3021358869347655
+                    contig_start_pos: 5.637376656633329
+                    ref_acc: ref_acc
+                    gene_id: gene_id
+                    ref_seq_length: 6.027456183070403
+                    contig: contig
+                amr_classes:
+                - amr_classes
+                - amr_classes
       properties:
         resistance:
           $ref: '#/components/schemas/Sample_categories_resistance'
