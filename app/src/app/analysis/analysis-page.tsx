@@ -646,19 +646,21 @@ export default function AnalysisPage() {
             onNarrowHandler={onNarrowHandler}
             getDependentColumns={getDependentColumns}
           />
-          <ColumnConfigWidget onReorder={onReorderColumn}>
-            {(columnOrder || columns.map((x) => x.accessor as string)).map(
-              (column, i) => (
-                <ColumnConfigNode
-                  key={column}
-                  index={i}
-                  columnName={column}
-                  onChecked={toggleColumn}
-                  isChecked={checkColumnIsVisible(column)}
-                />
-              )
-            )}
-          </ColumnConfigWidget>
+          {!pageState.isNarrowed ? (
+            <ColumnConfigWidget onReorder={onReorderColumn}>
+              {(columnOrder || columns.map((x) => x.accessor as string)).map(
+                (column, i) => (
+                  <ColumnConfigNode
+                    key={column}
+                    index={i}
+                    columnName={column}
+                    onChecked={toggleColumn}
+                    isChecked={checkColumnIsVisible(column)}
+                  />
+                )
+              )}
+            </ColumnConfigWidget>
+          ) : null}
           <Flex grow={1} width="100%" />
           <ResistanceButton
             selection={selection as DataTableSelection<AnalysisResult>}
