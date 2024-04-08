@@ -41,8 +41,6 @@ def authorized_to_edit(token_info: Dict[str, str], metadata: Dict[str, Any]):
     # User needs 'L2' or higher clearance to modify data
     if token_info["sofi-data-clearance"] == "all":
         return True
-    if token_info["sofi-data-clearance"] == "cross-institution":
-        return True
     # Default to false
     return False
 
