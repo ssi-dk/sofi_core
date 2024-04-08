@@ -36,12 +36,19 @@ export interface Phenotype  {
      * @memberof Phenotype
      */
     genes?: { [key: string]: Gene; };
+    /**
+     * 
+     * @type {number}
+     * @memberof Phenotype
+     */
+    grade?: number;
 }
 
 export function PhenotypeFromJSON(json: any): Phenotype {
     return {
         'amr_classes': !exists(json, 'amr_classes') ? undefined : json['amr_classes'],
         'genes': !exists(json, 'genes') ? undefined : mapValues(json['genes'], GeneFromJSON),
+        'grade': !exists(json, 'grade') ? undefined : json['grade'],
     };
 }
 
@@ -52,6 +59,7 @@ export function PhenotypeToJSON(value?: Phenotype): any {
     return {
         'amr_classes': value.amr_classes,
         'genes': value.genes === undefined ? undefined : mapValues(value.genes, GeneToJSON),
+        'grade': value.grade,
     };
 }
 

@@ -6,10 +6,10 @@ from datetime import date, datetime  # noqa: F401
 from typing import List, Dict  # noqa: F401
 
 from web.src.SAP.generated.models.base_model_ import Model
-from web.src.SAP.generated.models.phenotype import Phenotype
+from web.src.SAP.generated.models.sample_categories_resistance_report import SampleCategoriesResistanceReport
 from web.src.SAP.generated import util
 
-from web.src.SAP.generated.models.phenotype import Phenotype  # noqa: E501
+from web.src.SAP.generated.models.sample_categories_resistance_report import SampleCategoriesResistanceReport  # noqa: E501
 
 class SampleCategoriesResistance(Model):
 
@@ -25,11 +25,11 @@ class SampleCategoriesResistance(Model):
         :param summary: The summary of this SampleCategoriesResistance.  # noqa: E501
         :type summary: str
         :param report: The report of this SampleCategoriesResistance.  # noqa: E501
-        :type report: Dict[str, Phenotype]
+        :type report: SampleCategoriesResistanceReport
         """
         self.openapi_types = {
             'summary': str,
-            'report': Dict[str, Phenotype],
+            'report': SampleCategoriesResistanceReport,
         }
 
         self.attribute_map = {
@@ -78,7 +78,7 @@ class SampleCategoriesResistance(Model):
 
 
         :return: The report of this SampleCategoriesResistance.
-        :rtype: Dict[str, Phenotype]
+        :rtype: SampleCategoriesResistanceReport
         """
         return self._report
 
@@ -88,7 +88,7 @@ class SampleCategoriesResistance(Model):
 
 
         :param report: The report of this SampleCategoriesResistance.
-        :type report: Dict[str, Phenotype]
+        :type report: SampleCategoriesResistanceReport
         """
 
         self._report = report

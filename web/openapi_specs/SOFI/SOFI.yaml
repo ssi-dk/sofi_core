@@ -641,8 +641,11 @@ components:
                   type: string
                 report:
                   type: object
-                  additionalProperties:
-                    $ref: "#/components/schemas/Phenotype"
+                  properties:
+                    phenotypes:
+                      type: object
+                      additionalProperties:
+                        $ref: "#/components/schemas/Phenotype"
 
     Phenotype:
       type: object
@@ -655,6 +658,8 @@ components:
           type: object
           additionalProperties:
             $ref: "#/components/schemas/Gene"
+        grade:
+          type: number
 
     Gene:
       type: object

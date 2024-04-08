@@ -13,9 +13,9 @@
 
 import { exists, mapValues } from '../runtime';
 import {
-    Phenotype,
-    PhenotypeFromJSON,
-    PhenotypeToJSON,
+    SampleCategoriesResistanceReport,
+    SampleCategoriesResistanceReportFromJSON,
+    SampleCategoriesResistanceReportToJSON,
 } from './';
 
 /**
@@ -32,16 +32,16 @@ export interface SampleCategoriesResistance  {
     summary?: string;
     /**
      * 
-     * @type {{ [key: string]: Phenotype; }}
+     * @type {SampleCategoriesResistanceReport}
      * @memberof SampleCategoriesResistance
      */
-    report?: { [key: string]: Phenotype; };
+    report?: SampleCategoriesResistanceReport;
 }
 
 export function SampleCategoriesResistanceFromJSON(json: any): SampleCategoriesResistance {
     return {
         'summary': !exists(json, 'summary') ? undefined : json['summary'],
-        'report': !exists(json, 'report') ? undefined : mapValues(json['report'], PhenotypeFromJSON),
+        'report': !exists(json, 'report') ? undefined : SampleCategoriesResistanceReportFromJSON(json['report']),
     };
 }
 
@@ -51,7 +51,7 @@ export function SampleCategoriesResistanceToJSON(value?: SampleCategoriesResista
     }
     return {
         'summary': value.summary,
-        'report': value.report === undefined ? undefined : mapValues(value.report, PhenotypeToJSON),
+        'report': SampleCategoriesResistanceReportToJSON(value.report),
     };
 }
 
