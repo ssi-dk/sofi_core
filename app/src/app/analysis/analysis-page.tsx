@@ -142,7 +142,9 @@ export default function AnalysisPage() {
     [_submitChange, setLastUpdatedRow]
   );
 
-  const selection = useSelector<RootState>((s) => s.selection.selection);
+  const selection = useSelector<RootState>(
+    (s) => s.selection.selection
+  ) as DataTableSelection<AnalysisResult>;
   const approvals = useSelector<RootState>((s) => s.entities.approvalMatrix);
   const health = useSelector<RootState>(
     (s) => s.entities.health
@@ -662,13 +664,11 @@ export default function AnalysisPage() {
             </ColumnConfigWidget>
           ) : null}
           <Flex grow={1} width="100%" />
-          <ResistanceButton
-            selection={selection as DataTableSelection<AnalysisResult>}
-          />
+          <ResistanceButton selection={selection} />
           <ExportButton
             data={filteredData}
             columns={columns.map((x) => x.accessor) as any}
-            selection={selection as DataTableSelection<AnalysisResult>}
+            selection={selection}
           />
         </Flex>
 
@@ -689,7 +689,7 @@ export default function AnalysisPage() {
             getStickyCellStyle={getStickyCellStyle}
             data={
               pageState.isNarrowed
-                ? filteredData.filter((x) => selection[x.sequence_id])
+                ? data.filter((x) => selection[x.sequence_id])
                 : filteredData
             }
             renderCellControl={renderCellControl}
@@ -702,7 +702,7 @@ export default function AnalysisPage() {
             view={view}
           />
         </Box>
-        <Box role="status" gridColumn="2 / 4">
+        <Box role="status" gridColumn="2 / 4" margin={2}>
           {isPending && `${t("Fetching...")} ${data.length}`}
           {isFinished &&
             !pageState.isNarrowed &&
@@ -712,7 +712,7 @@ export default function AnalysisPage() {
           {isFinished &&
             pageState.isNarrowed &&
             `${t("Staging")} ${
-              filteredData.filter((x) => selection[x.sequence_id]).length
+              data.filter((x) => selection[x.sequence_id]).length
             } ${t("records")}.`}
         </Box>
       </Box>

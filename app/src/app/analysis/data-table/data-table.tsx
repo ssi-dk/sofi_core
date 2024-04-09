@@ -23,7 +23,6 @@ import { StickyVariableSizeGrid } from "./sticky-variable-size-grid";
 import DataTableColumnHeader from "./data-table-column-header";
 import "./data-table.css";
 import "./data-table-cell-styles.css";
-import { setSelection } from "../analysis-selection-configs";
 
 export type ColumnReordering =
   | {
@@ -301,14 +300,14 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
 
   const onSelectRow = React.useCallback(
     (row: Row<T>) => {
-      const { checked } = calcRowSelectionState(row);
+      const { checked, indeterminate } = calcRowSelectionState(row);
       const id = row.original[primaryKey];
       const cols = columns
         .filter((x) => typeof x.accessor === "string")
         .filter((x) => visibleColumns.indexOf(x.accessor as string) >= 0)
         .filter((x) => canApproveColumn(x.accessor as string))
         .filter((x) => !isJudgedCell(id, x.accessor as string))
-        .map((x) => ({ [x.accessor as string]: !checked }))
+        .map((x) => ({ [x.accessor as string]: !checked && !indeterminate }))
         .reduce((acc, val) => ({ ...acc, ...val }), []);
       const incSel = { ...selection.current, [id]: { ...cols } };
       selection.current = incSel;
@@ -336,13 +335,13 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
 
   const onSelectCol = React.useCallback(
     (col: Column<T>) => {
-      const { checked } = calcColSelectionState(col);
+      const { checked, indeterminate } = calcColSelectionState(col);
       const sel = rows
         .filter((r) => !isJudgedCell(r.original[primaryKey], col.id as string))
         .map((r) => ({
           [r.original[primaryKey]]: {
             ...selection.current[r.original[primaryKey]],
-            [col.id as string]: !checked,
+            [col.id as string]: !checked && !indeterminate,
           },
         }))
         .reduce((acc, val) => ({ ...acc, ...val }));
