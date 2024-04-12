@@ -17,6 +17,7 @@ import SearchHelpModal from "./search-help-modal";
 
 type AnalysisSearchProps = {
   onSubmit: (query: AnalysisQuery) => void;
+  isDisabled: boolean;
 };
 
 const parseQuery = (input: string, toast) => {
@@ -42,7 +43,7 @@ const parseQuery = (input: string, toast) => {
 };
 
 const AnalysisSearch = (props: AnalysisSearchProps) => {
-  const { onSubmit } = props;
+  const { onSubmit, isDisabled } = props;
   const inputRef = React.useRef<HTMLInputElement>();
   const toast = useToast();
   const [input, setInput] = React.useState("");
@@ -90,6 +91,7 @@ const AnalysisSearch = (props: AnalysisSearchProps) => {
           onInput={onInput}
           onKeyDown={onEnterKey}
           onSubmit={submit}
+          isDisabled={isDisabled}
         />
         <InputLeftElement>
           <QuestionIcon
@@ -112,6 +114,7 @@ const AnalysisSearch = (props: AnalysisSearchProps) => {
         icon={<SearchIcon />}
         ml="1"
         onClick={submit}
+        isDisabled={isDisabled}
       />
     </React.Fragment>
   );

@@ -9,6 +9,7 @@ interface Props {
   onChange: (date: Date) => void;
   selectedDate: Date | undefined;
   showPopperArrow?: boolean;
+  isDisabled: boolean;
 }
 
 const DatePicker = ({
@@ -16,6 +17,7 @@ const DatePicker = ({
   onChange,
   isClearable = false,
   showPopperArrow = false,
+  isDisabled,
   ...props
 }: Props & ReactDatePickerProps) => {
   return (
@@ -26,6 +28,7 @@ const DatePicker = ({
       onChange={onChange}
       isClearable={isClearable}
       showPopperArrow={showPopperArrow}
+      disabled={isDisabled}
       {...props}
     />
   );
