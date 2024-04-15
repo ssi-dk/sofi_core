@@ -21,6 +21,7 @@ type MetaFilterProps = {
   clusters: string[];
   onPropFilterChange: (resultingFilter: PropFilter<AnalysisResult>) => void;
   onRangeFilterChange: (resultingFilter: RangeFilter<AnalysisResult>) => void;
+  isDisabled: boolean;
 };
 
 function MetaFilter(props: MetaFilterProps) {
@@ -36,6 +37,7 @@ function MetaFilter(props: MetaFilterProps) {
     clusters,
     onPropFilterChange,
     onRangeFilterChange,
+    isDisabled,
   } = props;
 
   const { t } = useTranslation();
@@ -158,12 +160,14 @@ function MetaFilter(props: MetaFilterProps) {
           isClearable
           onChange={onDateChange("date_sample", "min", setSampledStartDate)}
           placeholderText={t("From")}
+          isDisabled={isDisabled}
         />
         <DatePicker
           selectedDate={sampledEndDate}
           isClearable
           onChange={onDateChange("date_sample", "max", setSampledEndDate)}
           placeholderText={t("To")}
+          isDisabled={isDisabled}
         />
       </Flex>
       <Text mt={2}>{t("institution")}</Text>
@@ -172,6 +176,7 @@ function MetaFilter(props: MetaFilterProps) {
         isMulti
         theme={selectTheme}
         onChange={onChangeBuilder("institution")}
+        isDisabled={isDisabled}
       />
       <Flex justifyContent="space-between" direction="row">
         <Flex direction="column" width="100%">
@@ -181,6 +186,7 @@ function MetaFilter(props: MetaFilterProps) {
             isMulti
             theme={selectTheme}
             onChange={onChangeBuilder("project_title")}
+            isDisabled={isDisabled}
           />
         </Flex>
         <Flex direction="column" width="100%">
@@ -190,6 +196,7 @@ function MetaFilter(props: MetaFilterProps) {
             isMulti
             theme={selectTheme}
             onChange={onChangeBuilder("project_number")}
+            isDisabled={isDisabled}
           />
         </Flex>
       </Flex>
@@ -200,12 +207,14 @@ function MetaFilter(props: MetaFilterProps) {
           isClearable
           onChange={onDateChange("date_received", "min", setReceivedStartDate)}
           placeholderText={t("From")}
+          isDisabled={isDisabled}
         />
         <DatePicker
           selectedDate={receivedEndDate}
           isClearable
           onChange={onDateChange("date_received", "max", setReceivedEndDate)}
           placeholderText={t("To")}
+          isDisabled={isDisabled}
         />
       </Flex>
       <Text mt={2}>{t("animal_species")}</Text>
@@ -214,6 +223,7 @@ function MetaFilter(props: MetaFilterProps) {
         isMulti
         theme={selectTheme}
         onChange={onChangeBuilder("animal_species")}
+        isDisabled={isDisabled}
       />
       <Flex justifyContent="space-between" direction="row">
         <Flex direction="column" width="100%">
@@ -223,6 +233,7 @@ function MetaFilter(props: MetaFilterProps) {
             isMulti
             theme={selectTheme}
             onChange={onChangeBuilder("run_id")}
+            isDisabled={isDisabled}
           />
         </Flex>
         <Flex direction="column" width="100%">
@@ -232,6 +243,7 @@ function MetaFilter(props: MetaFilterProps) {
             isMulti
             theme={selectTheme}
             onChange={onChangeBuilder("isolate_id")}
+            isDisabled={isDisabled}
           />
         </Flex>
       </Flex>
@@ -245,6 +257,7 @@ function MetaFilter(props: MetaFilterProps) {
           isMulti
           theme={selectTheme}
           onChange={onChangeBuilder("cpr_nr")}
+          isDisabled={isDisabled}
         />
       </IfPermission>
       <Flex justifyContent="space-between" direction="row">
@@ -255,6 +268,7 @@ function MetaFilter(props: MetaFilterProps) {
             isMulti
             theme={selectTheme}
             onChange={onChangeBuilder("fud_number")}
+            isDisabled={isDisabled}
           />
         </Flex>
         <Flex direction="column" width="100%">
@@ -264,6 +278,7 @@ function MetaFilter(props: MetaFilterProps) {
             isMulti
             theme={selectTheme}
             onChange={onChangeBuilder("cluster_id")}
+            isDisabled={isDisabled}
           />
         </Flex>
       </Flex>

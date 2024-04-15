@@ -635,7 +635,7 @@ export default function AnalysisPage() {
     <React.Fragment>
       <Box role="navigation" gridColumn="2 / 4" pb={5}>
         <Flex justifyContent="flex-end">
-          <AnalysisSearch onSubmit={onSearch} />
+          <AnalysisSearch onSubmit={onSearch} isDisabled={pageState.isNarrowed} />
           <Box minW="250px" ml="5">
             <AnalysisViewSelector />
           </Box>
@@ -733,6 +733,7 @@ export default function AnalysisPage() {
             data={filteredData}
             onPropFilterChange={onPropFilterChange}
             onRangeFilterChange={onRangeFilterChange}
+            isDisabled={pageState.isNarrowed}
           />
         }
         content={content}

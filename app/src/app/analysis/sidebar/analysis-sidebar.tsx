@@ -5,14 +5,15 @@ import { AnalysisResult } from "sap-client";
 import MetaFilter from "./meta-filter/meta-filter";
 import AnalysisFilter from "./analysis-filter/analysis-filter";
 
-export type AnalysisSidebarProps = {
+type AnalysisSidebarProps = {
   data: AnalysisResult[];
   onPropFilterChange: (filter: PropFilter<AnalysisResult>) => void;
   onRangeFilterChange: (filter: RangeFilter<AnalysisResult>) => void;
+  isDisabled: boolean;
 };
 
 function AnalysisSidebar(props: AnalysisSidebarProps) {
-  const { data, onPropFilterChange, onRangeFilterChange } = props;
+  const { data, onPropFilterChange, onRangeFilterChange, isDisabled } = props;
 
   const sortUnique = React.useCallback(
     (items: string[]) => Array.from(new Set(items)).sort(),
@@ -81,6 +82,7 @@ function AnalysisSidebar(props: AnalysisSidebarProps) {
         clusters={clusters}
         onPropFilterChange={onPropFilterChange}
         onRangeFilterChange={onRangeFilterChange}
+        isDisabled={isDisabled}
       />
       <Box m={3} />
       <AnalysisFilter
@@ -88,6 +90,7 @@ function AnalysisSidebar(props: AnalysisSidebarProps) {
         serotypeFinals={serotypes}
         providedSpecies={providedSpecies}
         onFilterChange={onPropFilterChange}
+        isDisabled={isDisabled}
       />
     </>
   );

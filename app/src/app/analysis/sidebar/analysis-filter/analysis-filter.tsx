@@ -12,10 +12,11 @@ type AnalysisFilterProps = {
   serotypeFinals: string[];
   sts: string[];
   onFilterChange: (resultingFilter: PropFilter<AnalysisResult>) => void;
+  isDisabled: boolean;
 };
 
 function AnalysisFilter(props: AnalysisFilterProps) {
-  const { providedSpecies, serotypeFinals, sts, onFilterChange } = props;
+  const { providedSpecies, serotypeFinals, sts, onFilterChange, isDisabled } = props;
 
   const providedSpeciesOptions = React.useMemo(
     () => providedSpecies.map((x) => ({ value: x, label: x })),
@@ -69,6 +70,7 @@ function AnalysisFilter(props: AnalysisFilterProps) {
         isMulti
         theme={selectTheme}
         onChange={onChangeBuilder("qc_provided_species")}
+        isDisabled={isDisabled}
       />
       <Text mt={2}>{t("serotype_final")}</Text>
       <Select
@@ -76,6 +78,7 @@ function AnalysisFilter(props: AnalysisFilterProps) {
         isMulti
         theme={selectTheme}
         onChange={onChangeBuilder("serotype_final")}
+        isDisabled={isDisabled}
       />
       <Text mt={2}>{t("st_final")}</Text>
       <Select
@@ -83,6 +86,7 @@ function AnalysisFilter(props: AnalysisFilterProps) {
         isMulti
         theme={selectTheme}
         onChange={onChangeBuilder("st_final")}
+        isDisabled={isDisabled}
       />
     </FilterBox>
   );
