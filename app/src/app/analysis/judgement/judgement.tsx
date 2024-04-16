@@ -213,7 +213,7 @@ export const Judgement = <T extends NotEmpty>(props: Props<T>) => {
         margin="4px"
         onClick={onNarrowHandler}
       >
-        {isNarrowed ? t("Return") : t("Select")}
+        {isNarrowed ? t("Return") : t("Stage")}
       </Button>
       <Button
         leftIcon={<CheckIcon />}
