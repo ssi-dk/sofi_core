@@ -1,12 +1,10 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import {
   Box,
   Flex,
-  useToast,
   Editable,
   EditablePreview,
   EditableInput,
-  useDisclosure,
   Skeleton,
 } from "@chakra-ui/react";
 import { Column, Row } from "react-table";
@@ -14,7 +12,6 @@ import {
   AnalysisResult,
   AnalysisQuery,
   ApprovalStatus,
-  Organization,
 } from "sap-client";
 import { useMutation, useRequest } from "redux-query-react";
 import { useDispatch, useSelector } from "react-redux";
@@ -47,7 +44,7 @@ import { toggleColumnVisibility } from "./view-selector/analysis-view-selection-
 import InlineAutoComplete from "../inputs/inline-autocomplete";
 import Species from "../data/species.json";
 import Serotypes from "../data/serotypes.json";
-import AnalysisDetails from "./analysis-details/analysis-details-modal";
+import { AnalysisDetailsModal } from "./analysis-details/analysis-details-modal";
 import ExportButton from "./export/export-button";
 import { ColumnConfigNode } from "./data-table/column-config-node";
 import { AnalysisResultAllOfQcFailedTests } from "sap-client/models/AnalysisResultAllOfQcFailedTests";
@@ -61,18 +58,14 @@ const PRIMARY_APPROVAL_FIELDS = ["st_final", "qc_final"];
 
 export default function AnalysisPage() {
   const { t } = useTranslation();
-  const toast = useToast();
   const dispatch = useDispatch();
 
-  const [moreInfoIsolate, setMoreInfoIsolate] = useState("");
-  const [moreInfoIsolateInstitution, setMoreInfoIsolateInstitution] = useState(
-    Organization.Other
-  );
-  const {
-    isOpen: isMoreInfoModalOpen,
-    onOpen: onMoreInfoModalOpen,
-    onClose: onMoreInfoModalClose,
-  } = useDisclosure();
+  const [detailsIsolate, setDetailsIsolate] = useState<
+    React.ComponentProps<typeof AnalysisDetailsModal>["isolate"]
+  >();
+  const onAnalysisDetailsModalClose = useCallback(() => {
+    setDetailsIsolate(undefined);
+  }, []);
 
   const [columnLoadState] = useRequest(requestColumns());
   const [{ isPending, isFinished }] = useRequest({
@@ -144,7 +137,6 @@ export default function AnalysisPage() {
     (s) => s.selection.selection
   ) as DataTableSelection<AnalysisResult>;
   const approvals = useSelector<RootState>((s) => s.entities.approvalMatrix);
-  
   const view = useSelector<RootState>(
     (s) => s.view.view
   ) as UserDefinedViewInternal;
@@ -548,11 +540,12 @@ export default function AnalysisPage() {
 
   const openDetailsView = React.useCallback(
     (primaryKey: string, row: Row<AnalysisResult>) => {
-      setMoreInfoIsolate(row.original.isolate_id);
-      setMoreInfoIsolateInstitution(row.original.institution);
-      onMoreInfoModalOpen();
+      setDetailsIsolate({
+        id: row.original.isolate_id,
+        institution: row.original.institution,
+      });
     },
-    [setMoreInfoIsolate, onMoreInfoModalOpen]
+    [setDetailsIsolate]
   );
 
   if (!columnLoadState.isFinished) {
@@ -587,7 +580,10 @@ export default function AnalysisPage() {
     <React.Fragment>
       <Box role="navigation" gridColumn="2 / 4" pb={5}>
         <Flex justifyContent="flex-end">
-          <AnalysisSearch onSubmit={onSearch} isDisabled={pageState.isNarrowed} />
+          <AnalysisSearch
+            onSubmit={onSearch}
+            isDisabled={pageState.isNarrowed}
+          />
           <Box minW="250px" ml="5">
             <AnalysisViewSelector />
           </Box>
@@ -673,12 +669,12 @@ export default function AnalysisPage() {
 
   return (
     <React.Fragment>
-      <AnalysisDetails
-        institution={moreInfoIsolateInstitution}
-        isolateId={moreInfoIsolate}
-        isOpen={isMoreInfoModalOpen}
-        onClose={onMoreInfoModalClose}
-      />
+      {detailsIsolate ? (
+        <AnalysisDetailsModal
+          isolate={detailsIsolate}
+          onClose={onAnalysisDetailsModalClose}
+        />
+      ) : null}
       <HalfHolyGrailLayout
         sidebar={
           <AnalysisSidebar
