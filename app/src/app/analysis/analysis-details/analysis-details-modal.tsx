@@ -14,12 +14,11 @@ import {
   TabPanels,
   TabPanel,
 } from "@chakra-ui/react";
-import { Organization, Permission } from "sap-client";
+import { Organization } from "sap-client";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { useRequest } from "redux-query-react";
 import { Loading } from "loading";
-import { IfPermission } from "auth/if-permission";
 import {
   IsolateWithData,
   sequencesFromIsolateId,
