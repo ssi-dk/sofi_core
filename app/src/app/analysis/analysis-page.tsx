@@ -8,11 +8,7 @@ import {
   Skeleton,
 } from "@chakra-ui/react";
 import { Column, Row } from "react-table";
-import {
-  AnalysisResult,
-  AnalysisQuery,
-  ApprovalStatus,
-} from "sap-client";
+import { AnalysisResult, AnalysisQuery, ApprovalStatus } from "sap-client";
 import { useMutation, useRequest } from "redux-query-react";
 import { useDispatch, useSelector } from "react-redux";
 import { requestAsync } from "redux-query";
@@ -51,6 +47,7 @@ import { AnalysisResultAllOfQcFailedTests } from "sap-client/models/AnalysisResu
 import { Judgement } from "./judgement/judgement";
 import { ResistanceButton } from "./resistance/resistance-button";
 import { Health } from "./health/health";
+import { Debug } from "./debug";
 
 // When the fields in this array are 'approved', a given sequence is rendered
 // as 'approved' also.
@@ -267,16 +264,6 @@ export default function AnalysisPage() {
       );
     },
     [approvals]
-  );
-
-  const canEditColumn = React.useCallback(
-    (columnName: string) => {
-      return (
-        columnConfigs[columnName]?.editable &&
-        !columnConfigs[columnName]?.computed
-      );
-    },
-    [columnConfigs]
   );
 
   const getDependentColumns = React.useCallback(
@@ -628,7 +615,6 @@ export default function AnalysisPage() {
             setNewColumnOrder={setColumnOrder}
             setColumnSort={setColumnSort}
             canSelectColumn={canSelectColumn}
-            canEditColumn={canEditColumn}
             canApproveColumn={canApproveColumn}
             isJudgedCell={isJudgedCell}
             approvableColumns={approvableColumns}
@@ -637,7 +623,7 @@ export default function AnalysisPage() {
             getStickyCellStyle={getStickyCellStyle}
             data={
               pageState.isNarrowed
-                ? data.filter((x) => selection[x.sequence_id])
+                ? Object.keys(selection).map((key) => selection[key].original)
                 : filteredData
             }
             renderCellControl={renderCellControl}
@@ -657,13 +643,18 @@ export default function AnalysisPage() {
             `${t("Showing")} ${filteredData.length} ${t(
               "of"
             )} ${totalCount} ${t("records")}.`}
+          {!pageState.isNarrowed && Object.keys(selection).length > 0
+            ? ` ${Object.keys(selection).length} selected.`
+            : null}
           {isFinished &&
             pageState.isNarrowed &&
-            `${t("Staging")} ${
-              data.filter((x) => selection[x.sequence_id]).length
-            } ${t("records")}.`}
+            `${t("Staging")} ${Object.keys(selection).length} ${t("records")}.`}
         </Box>
       </Box>
+      <Debug>
+        <p>redux selection:</p>
+        {JSON.stringify(selection, undefined, "  ")}
+      </Debug>
     </React.Fragment>
   );
 

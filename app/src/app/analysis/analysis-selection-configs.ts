@@ -26,7 +26,7 @@ export const selectionReducer = createReducer(initialState, (builder) => {
     .addCase(setSelection, (state, action) => {
       state.selection = Object.keys(action.payload)
         .filter((x) =>
-          Object.values(action.payload[x]).reduce((a, b) => a || b)
+          Object.values(action.payload[x].cells).reduce((a, b) => a || b, false)
         )
         .reduce(
           (o: DataTableSelection<AnalysisResult>, k) => ({

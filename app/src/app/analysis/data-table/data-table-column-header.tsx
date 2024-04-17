@@ -14,7 +14,7 @@ type DataTableColumnHeaderProps<T extends NotEmpty> = {
     column: Column<T>
   ) => { checked: boolean; indeterminate: boolean; visible?: boolean };
   canSelectColumn: (column: string) => boolean;
-  onSelectCol: (column: Column<T>) => void;
+  onSelectColum: (column: Column<T>) => void;
   onResize: (columnIndex: number) => void;
   onSort: ({ column: string, ascending: boolean }) => void;
 };
@@ -27,7 +27,7 @@ function DataTableColumnHeader<T extends NotEmpty>(
     columnIndex,
     calcColSelectionState,
     canSelectColumn,
-    onSelectCol,
+    onSelectColum,
     onResize,
     onSort,
   } = props;
@@ -69,7 +69,7 @@ function DataTableColumnHeader<T extends NotEmpty>(
         {canSelectColumn(column.id) && (
           <SelectionCheckBox
             onClick={(e) => {
-              onSelectCol(column);
+              onSelectColum(column);
               e.stopPropagation();
             }}
             css={headerButton}
