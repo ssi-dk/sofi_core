@@ -212,6 +212,7 @@ export const Judgement = <T extends NotEmpty>(props: Props<T>) => {
         leftIcon={<DragHandleIcon />}
         margin="4px"
         onClick={onNarrowHandler}
+        disabled={!isNarrowed && Object.keys(selection ?? {}).length === 0}
       >
         {isNarrowed ? t("Return") : t("Stage")}
       </Button>
