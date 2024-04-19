@@ -7,6 +7,7 @@ import { createBrowserHistory } from "history";
 import createRootReducer, { RootState } from "./root-reducer";
 import { jwtMiddleware } from "middleware/jwt-middleware";
 import { pagingMiddleware } from "middleware/paging-middleware";
+import { selectionMiddleware } from "middleware/selection-middleware";
 import { postApprovalRefreshMiddleware } from "middleware/post-approval-refresh-middleware";
 
 // selectors
@@ -22,6 +23,7 @@ const store = configureStore({
     postApprovalRefreshMiddleware,
     pagingMiddleware,
     jwtMiddleware,
+    selectionMiddleware,
     queryMiddleware(superagentInterface, getQueries, getEntities),
     routerMiddleware(history),
   ],
