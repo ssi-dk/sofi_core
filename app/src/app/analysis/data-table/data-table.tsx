@@ -142,8 +142,8 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
       };
       getDependentColumns(columnId).forEach((v) => {
         incSel[rowId].cells[v] = !(
-          selection.current[rowId].cells &&
-          selection.current[rowId].cells[columnId]
+          selection.current[rowId]?.cells &&
+          selection.current[rowId]?.cells[columnId]
         );
       });
       selection.current = incSel;
