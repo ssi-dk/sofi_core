@@ -1,0 +1,15 @@
+[Unit]
+Description=Monitor Docker Logs and restart Container if necessary
+Wants=sofi.service 
+After=sofi.service
+
+[Service]
+Type=simple
+Restart=always
+User=fvstsrv
+Group=fvst_ssi_dtu
+WorkingDirectory=/opt/sofi
+ExecStart=/opt/sofi/container_restart.sh
+
+[Install]
+WantedBy=multi-user.target

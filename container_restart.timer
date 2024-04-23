@@ -1,0 +1,9 @@
+[Unit]
+Description=Run Docker Log Monitor every hour
+
+[Timer]
+OnCalendar=*:30:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target

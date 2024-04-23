@@ -243,9 +243,16 @@ stages:
                   sed -i "s/^SOFI_RELEASE_TAG=.*$/SOFI_RELEASE_TAG=`cat tag.txt`/g" .env
                   chmod -R +x /opt/sofi/management_scripts
                   chmod +x /opt/sofi/sofi_filesync.sh
+                  chmod +x /opt/sofi/container_restart.sh
                   systemctl disable sofi_filesync.service
+                  systemctl disable container_restart.service
+                  systemctl disable container_restart.timer
                   cp /opt/sofi/sofi_filesync.service /etc/systemd/system/sofi_filesync.service
+                  cp /opt/sofi/container_restart.service /etc/systemd/system/container_restart.service
+                  cp /opt/sofi/container_restart.timer /etc/systemd/system/container_restart.timer
                   systemctl enable sofi_filesync.service
+                  systemctl enable container_restart.service
+                  systemctl enable container_restart.timer
                   systemctl disable sofi.service
                   make install
                   systemctl restart sofi.service
@@ -278,9 +285,16 @@ stages:
                   sed -i "s/^SOFI_RELEASE_TAG=.*$/SOFI_RELEASE_TAG=`cat tag.txt`/g" .env
                   chmod -R +x /opt/sofi/management_scripts
                   chmod +x /opt/sofi/sofi_filesync.sh
+                  chmod +x /opt/sofi/container_restart.sh
                   #systemctl disable sofi_filesync.service
+                  systemctl disable container_restart.service
+                  systemctl disable container_restart.timer
                   cp /opt/sofi/sofi_filesync.service /etc/systemd/system/sofi_filesync.service
+                  cp /opt/sofi/container_restart.service /etc/systemd/system/container_restart.service
+                  cp /opt/sofi/container_restart.timer /etc/systemd/system/container_restart.timer
                   #systemctl enable sofi_filesync.service
+                  systemctl enable container_restart.service
+                  systemctl enable container_restart.timer
                   systemctl disable sofi.service
                   make install
                   systemctl restart sofi.service
