@@ -541,7 +541,8 @@ def agg_pipeline(changed_ids=None):
                                             '$let': {
                                                 'vars': {
                                                     'amr': {
-                                                        '$first': {
+                                                        '$arrayElemAt': [{
+                                                        # '$first': {
                                                             '$map': {
                                                                 'input': {
                                                                     '$filter': {
@@ -559,6 +560,7 @@ def agg_pipeline(changed_ids=None):
                                                                 'in': '$$this.v'
                                                             }
                                                         }
+                                                        , 0]
                                                     }
                                                 }, 
                                                 'in': {
