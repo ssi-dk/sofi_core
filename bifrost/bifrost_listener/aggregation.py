@@ -11,7 +11,6 @@ def removeNullProperty(expr):
     - Adheasion_final
     - Toxin_final
     - AMR_profile
-    - ResFinder_version
     - QC_cgMLST%
     - cgMLST skema Salmonella
     - cgMLST skema E. coli
@@ -101,6 +100,7 @@ def agg_pipeline(changed_ids=None):
                     ]
                 },
                 "resistance": "$categories.resistance",
+                "resfinder_version": "$categories.resistance.resfinder_version",
                 "sero_enterobase": "$categories.serotype.report.enterobase_serotype1",
                 "sero_seqsero": "$categories.serotype.report.seqsero_serotype",
                 "sero_antigen_seqsero": "$categories.serotype.summary.antigenic_profile",
