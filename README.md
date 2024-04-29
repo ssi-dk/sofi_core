@@ -205,3 +205,5 @@ Consult `docs/`.
 4. Restart `sofi.service` by executing `systemctl restart sofi.service` and following the prompts.
 
 5. Verify chances by inspecting the logs, `journalctl -u sofi.service -f`, and check the website in the browser.
+
+
