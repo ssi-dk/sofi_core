@@ -60,3 +60,5 @@ jobs:
           tags: ${{ steps.semver.outputs.next }}
           file: ${{ matrix.dockerfile }}
           push: true
+        env:
+          DOCKER_BUILDKIT: 0
