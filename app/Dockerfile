@@ -1,3 +1,6 @@
+# connect to ghcr package
+LABEL org.opencontainers.image.source https://github.com/ssi-dk/sofi_core
+
 # build environment
 FROM node:14.17.1-alpine as build
 WORKDIR /app
