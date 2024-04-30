@@ -53,8 +53,15 @@ jobs:
           - image: ghcr.io/ssi-dk/sap-api
             dockerfile: web/Dockerfile
             path: web
-          # - image: user/app2
-          #   dockerfile: your-docker-registry/app1
+          - image: ghcr.io/ssi-dk/bifrost-queue-broker
+            dockerfile: bifrost/bifrost_queue_broker/Dockerfile
+            path: bifrost/bifrost_queue_broker
+          - image: ghcr.io/ssi-dk/bifrost-listener
+            dockerfile: bifrost/bifrost_listener/Dockerfile
+            path: bifrost/bifrost_listener
+          - image: ghcr.io/ssi-dk/bifrost-listener
+            dockerfile: bifrost/bifrost_listener/Dockerfile
+            path: bifrost/bifrost_listener
 
     steps:
       - name: Checkout
@@ -68,6 +75,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       # loops over all images in the matrix defined on top
+
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
@@ -76,5 +84,3 @@ jobs:
           tags: ${{ matrix.image }}:${{ needs.prepare_tag.outputs.tag }}
           file: ${{ matrix.dockerfile }}
           push: true
-        # env:
-        #   DOCKER_BUILDKIT: 0
