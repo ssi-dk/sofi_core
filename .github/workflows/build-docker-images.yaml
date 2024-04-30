@@ -37,6 +37,7 @@ jobs:
           tag_prefix: ""
 
   build_and_push:
+    needs: prepare_tag
     permissions:
       contents: write
       packages: write
