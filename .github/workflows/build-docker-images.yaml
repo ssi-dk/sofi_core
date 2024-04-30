@@ -53,14 +53,13 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       # loops over all images in the matrix defined on top
-
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
           context: ${{ matrix.path }}
           platforms: linux/amd64
-          tags: ${{ steps.semver.outputs.next }}
+          tags: ${{ matrix.image }}:${{ steps.semver.outputs.next }}
           file: ${{ matrix.dockerfile }}
           push: true
-        env:
-          DOCKER_BUILDKIT: 0
+        # env:
+        #   DOCKER_BUILDKIT: 0
