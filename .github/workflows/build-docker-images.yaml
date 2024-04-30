@@ -19,6 +19,9 @@ jobs:
           - image: ghcr.io/ssi-dk/sap-web
             dockerfile: app/Dockerfile
             path: app
+          - image: ghcr.io/ssi-dk/sap-api
+            dockerfile: web/Dockerfile
+            path: web
           # - image: user/app2
           #   dockerfile: your-docker-registry/app1
 
