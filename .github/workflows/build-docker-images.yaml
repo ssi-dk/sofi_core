@@ -84,3 +84,32 @@ jobs:
           tags: ${{ matrix.image }}:${{ needs.prepare_tag.outputs.tag }}
           file: ${{ matrix.dockerfile }}
           push: true
+
+  commit_to_dev:
+    needs:
+      - prepare_tag
+      - build_and_push
+    permissions:
+      contents: write
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          repository: ssi-dk/sofi_core_gitops
+
+      - name: update image
+        uses: mikefarah/yq@master
+        with:
+          cmd: |
+            yq eval '.spec.template.spec.containers[0].image = "ghcr.io/mytest/httpd:${{ needs.prepare_tag.outputs.tag }}"' -i ./test.yaml
+
+      - name: push
+        uses: actions-x/commit@v6
+        with:
+          email: me@example.com
+          name: GitHub Actions Autocommitter
+          branch: main
+          token: ${{ secrets.GITHUB_TOKEN }}
