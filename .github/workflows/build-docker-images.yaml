@@ -116,4 +116,4 @@ jobs:
           repository: https://github.com/ssi-dk/sofi_core_gitops
           branch: main
           token: ${{ secrets.GITHUB_TOKEN }}
-          directory: sofi_core_gitopst
+          directory: sofi_core_gitops
