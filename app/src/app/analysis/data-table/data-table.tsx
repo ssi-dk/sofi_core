@@ -418,7 +418,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
               columnIndex={columnIndex}
               calcColSelectionState={calcColSelectionState}
               canSelectColumn={canSelectColumn}
-              onSelectColum={onSelectColumn}
+              onSelectColumn={onSelectColumn}
               onSort={setColumnSort}
               onResize={onColumnResize}
             />
