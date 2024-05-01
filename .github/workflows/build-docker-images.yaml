@@ -106,7 +106,7 @@ jobs:
         uses: mikefarah/yq@master
         with:
           cmd: |
-            yq eval '.spec.template.spec.containers[0].image = "ghcr.io/mytest/httpd:${{ needs.prepare_tag.outputs.tag }}"' -i ./test.yaml
+            yq eval '.spec.template.spec.containers[0].image = "ghcr.io/mytest/httpd:${{ needs.prepare_tag.outputs.tag }}"' -i ./sofi_core_gitops/test.yaml
 
       - name: push
         uses: actions-x/commit@v6
@@ -116,4 +116,4 @@ jobs:
           repository: https://github.com/ssi-dk/sofi_core_gitops
           branch: main
           token: ${{ secrets.GITHUB_TOKEN }}
-          directory: sofi_core_gitops
+          directory: sofi_core_gitopst
