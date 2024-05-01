@@ -113,7 +113,7 @@ jobs:
         with:
           email: me@example.com
           name: GitHub Actions Autocommitter
-          repository: https://github.com/ssi-dk/sofi_core_gitops
           branch: main
+          repository: https://github.com/ssi-dk/sofi_core_gitops
           token: ${{ secrets.GITHUB_TOKEN }}
           directory: sofi_core_gitops
