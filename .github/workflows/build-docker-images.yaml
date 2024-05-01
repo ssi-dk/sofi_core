@@ -100,6 +100,7 @@ jobs:
         with:
           repository: ssi-dk/sofi_core_gitops
           ref: main
+          path: sofi_core_gitops
 
       - name: update image
         uses: mikefarah/yq@master
@@ -115,3 +116,4 @@ jobs:
           repository: https://github.com/ssi-dk/sofi_core_gitops
           branch: main
           token: ${{ secrets.GITHUB_TOKEN }}
+          directory: sofi_core_gitops
