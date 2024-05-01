@@ -107,7 +107,7 @@ export default function ApprovalHistory() {
           {approvalHistory &&
             approvalHistory.map((h) => {
               return (
-                <Tr verticalAlign="top">
+                <Tr verticalAlign="top" key={h.id}>
                   <Td>
                     <Text textStyle="xs">
                       {`${DateTime.fromISO(h.timestamp, { zone: "utc" })
@@ -121,7 +121,7 @@ export default function ApprovalHistory() {
                   <Td>
                     <Flex overflow="hidden" flexDirection="column">
                       {Object.keys(h.matrix)?.map((x) => (
-                        <React.Fragment>
+                        <React.Fragment key={x}>
                           <Text
                             as="pre"
                             overflow="hidden"
@@ -131,6 +131,7 @@ export default function ApprovalHistory() {
                           </Text>
                           {Object.keys(h.matrix[x]).map((y) => (
                             <Text
+                              key={`${x}-${y}`}
                               as="pre"
                               overflow="hidden"
                               textOverflow="ellipsis"

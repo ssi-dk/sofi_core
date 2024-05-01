@@ -14,12 +14,11 @@ import {
   TabPanels,
   TabPanel,
 } from "@chakra-ui/react";
-import { Organization, Permission } from "sap-client";
+import { Organization } from "sap-client";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { useRequest } from "redux-query-react";
 import { Loading } from "loading";
-import { IfPermission } from "auth/if-permission";
 import {
   IsolateWithData,
   sequencesFromIsolateId,
@@ -32,29 +31,29 @@ const getAnalysisHistory = (state: {
 }) => state.entities.analysisHistory;
 
 type AnalysisHistoryProps = {
-  isolateId: string;
-  institution: Organization;
-  isOpen: boolean;
+  isolate: {
+    id: string,
+    institution: Organization,
+  },
   onClose: () => void;
 };
 
-const AnalysisHistory = (props: AnalysisHistoryProps) => {
+export const AnalysisDetailsModal = (props: AnalysisHistoryProps) => {
   const { t } = useTranslation();
-  const { institution, isolateId, isOpen, onClose } = props;
+  const { isolate, onClose } = props;
 
   const analysisHistory = useSelector(getAnalysisHistory) ?? {};
 
   const [{ isPending, status }, refresh] = useRequest(
-    sequencesFromIsolateId(isolateId)
+    sequencesFromIsolateId(isolate?.id)
   );
 
   return (
-    <React.Fragment>
-      <Modal isOpen={isOpen} onClose={onClose} size="full">
+      <Modal isOpen={true} onClose={onClose} size="full">
         <ModalOverlay />
         <ModalContent mt="0">
           <ModalHeader pl="7">
-            {`${t("Details for isolate")}: ${isolateId}`}
+            {`${t("Details for isolate")}: ${isolate.id}`}
           </ModalHeader>
           <ModalCloseButton />
           <ModalBody overflowY="auto" px="7">
@@ -80,8 +79,8 @@ const AnalysisHistory = (props: AnalysisHistoryProps) => {
 
           <ModalFooter>
             <ReloadMetadataWidget
-              isolateId={isolateId}
-              institution={institution}
+              isolateId={isolate.id}
+              institution={isolate.institution}
             />
             <Button colorScheme="blue" mr={3} onClick={onClose}>
               {t("Close")}
@@ -89,8 +88,5 @@ const AnalysisHistory = (props: AnalysisHistoryProps) => {
           </ModalFooter>
         </ModalContent>
       </Modal>
-    </React.Fragment>
   );
 };
-
-export default React.memo(AnalysisHistory);

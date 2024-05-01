@@ -9,6 +9,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "app/root-reducer";
 import { useMutation } from "redux-query-react";
 import { NotEmpty } from "utils";
+import { DataTableSelection } from "../data-table/data-table";
 
 type Props<T extends NotEmpty> = {
   isNarrowed: boolean;
@@ -40,7 +41,9 @@ export const Judgement = <T extends NotEmpty>(props: Props<T>) => {
     (s) => s.entities.approvalErrors
   ) as Array<string>;
 
-  const selection = useSelector<RootState>((s) => s.selection.selection);
+  const selection = useSelector<RootState>(
+    (s) => s.selection.selection
+  ) as DataTableSelection<AnalysisResult>;
 
   const [
     { isPending: pendingApproval, status: approvalStatus },
@@ -122,7 +125,7 @@ export const Judgement = <T extends NotEmpty>(props: Props<T>) => {
     const errorObject: ErrorObject = {};
 
     for (const [sequenceId, sequenceSelection] of Object.entries(selection)) {
-      const approvedFields = Object.entries(sequenceSelection)
+      const approvedFields = Object.entries(sequenceSelection.cells)
         .filter(([k, v]) => v)
         .map(([k, v]) => k);
       approvedFields.forEach((field) => {
@@ -146,14 +149,21 @@ export const Judgement = <T extends NotEmpty>(props: Props<T>) => {
       setErrors(errorObject);
       setError(true);
     } else {
-      doApproval({ matrix: selection as any });
+      const matrix = {};
+      Object.keys(selection).forEach((key) => {
+        matrix[key] = selection[key].cells;
+      });
+      doApproval({ matrix });
     }
   }, [selection, doApproval, setNeedsApproveNotify, getDependentColumns]);
 
   const rejectSelection = React.useCallback(() => {
     setNeedsRejectNotify(true);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    doRejection({ matrix: selection as any });
+    const matrix = {};
+    Object.keys(selection).forEach((key) => {
+      matrix[key] = selection[key].cells;
+    });
+    doRejection({ matrix });
   }, [selection, doRejection, setNeedsRejectNotify]);
 
   // Display approval toasts
@@ -212,8 +222,9 @@ export const Judgement = <T extends NotEmpty>(props: Props<T>) => {
         leftIcon={<DragHandleIcon />}
         margin="4px"
         onClick={onNarrowHandler}
+        disabled={!isNarrowed && Object.keys(selection ?? {}).length === 0}
       >
-        {isNarrowed ? t("Return") : t("Select")}
+        {isNarrowed ? t("Return") : t("Stage")}
       </Button>
       <Button
         leftIcon={<CheckIcon />}

@@ -1,22 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
 import {
   Box,
   Flex,
-  useToast,
   Editable,
   EditablePreview,
   EditableInput,
-  useDisclosure,
   Skeleton,
 } from "@chakra-ui/react";
 import { Column, Row } from "react-table";
-import {
-  AnalysisResult,
-  AnalysisQuery,
-  ApprovalStatus,
-  Organization,
-  HealthStatus,
-} from "sap-client";
+import { AnalysisResult, AnalysisQuery, ApprovalStatus } from "sap-client";
 import { useMutation, useRequest } from "redux-query-react";
 import { useDispatch, useSelector } from "react-redux";
 import { requestAsync } from "redux-query";
@@ -36,8 +28,6 @@ import {
   ColumnSlice,
   searchPageOfAnalysis,
   updateAnalysis,
-  healthRequest,
-  HealthSlice,
 } from "./analysis-query-configs";
 import HalfHolyGrailLayout from "../../layouts/half-holy-grail";
 import AnalysisSidebar from "./sidebar/analysis-sidebar";
@@ -50,12 +40,14 @@ import { toggleColumnVisibility } from "./view-selector/analysis-view-selection-
 import InlineAutoComplete from "../inputs/inline-autocomplete";
 import Species from "../data/species.json";
 import Serotypes from "../data/serotypes.json";
-import AnalysisDetails from "./analysis-details/analysis-details-modal";
+import { AnalysisDetailsModal } from "./analysis-details/analysis-details-modal";
 import ExportButton from "./export/export-button";
 import { ColumnConfigNode } from "./data-table/column-config-node";
 import { AnalysisResultAllOfQcFailedTests } from "sap-client/models/AnalysisResultAllOfQcFailedTests";
 import { Judgement } from "./judgement/judgement";
 import { ResistanceButton } from "./resistance/resistance-button";
+import { Health } from "./health/health";
+import { Debug } from "./debug";
 
 // When the fields in this array are 'approved', a given sequence is rendered
 // as 'approved' also.
@@ -63,18 +55,14 @@ const PRIMARY_APPROVAL_FIELDS = ["st_final", "qc_final"];
 
 export default function AnalysisPage() {
   const { t } = useTranslation();
-  const toast = useToast();
   const dispatch = useDispatch();
 
-  const [moreInfoIsolate, setMoreInfoIsolate] = useState("");
-  const [moreInfoIsolateInstitution, setMoreInfoIsolateInstitution] = useState(
-    Organization.Other
-  );
-  const {
-    isOpen: isMoreInfoModalOpen,
-    onOpen: onMoreInfoModalOpen,
-    onClose: onMoreInfoModalClose,
-  } = useDisclosure();
+  const [detailsIsolate, setDetailsIsolate] = useState<
+    React.ComponentProps<typeof AnalysisDetailsModal>["isolate"]
+  >();
+  const onAnalysisDetailsModalClose = useCallback(() => {
+    setDetailsIsolate(undefined);
+  }, []);
 
   const [columnLoadState] = useRequest(requestColumns());
   const [{ isPending, isFinished }] = useRequest({
@@ -146,9 +134,6 @@ export default function AnalysisPage() {
     (s) => s.selection.selection
   ) as DataTableSelection<AnalysisResult>;
   const approvals = useSelector<RootState>((s) => s.entities.approvalMatrix);
-  const health = useSelector<RootState>(
-    (s) => s.entities.health
-  ) as HealthSlice;
   const view = useSelector<RootState>(
     (s) => s.view.view
   ) as UserDefinedViewInternal;
@@ -174,50 +159,6 @@ export default function AnalysisPage() {
     },
     [dispatch]
   );
-
-  useEffect(() => {
-    dispatch(
-      requestAsync({
-        ...healthRequest("lims"),
-      })
-    );
-    dispatch(
-      requestAsync({
-        ...healthRequest("tbr"),
-      })
-    );
-  }, [dispatch]);
-
-  useEffect(() => {
-    const messages = [];
-    if (health) {
-      if (health.hasOwnProperty("lims") && health.hasOwnProperty("tbr")) {
-        if (health["tbr"] && health["tbr"].status == HealthStatus.Unhealthy) {
-          messages.push("Could not connect to TBR.");
-        }
-        if (health["lims"] && health["lims"].status == HealthStatus.Unhealthy) {
-          messages.push("Could not connect to LIMS.");
-        }
-      }
-
-      if (messages.length > 0) {
-        const description = (
-          <>
-            {messages.map((message, index) => (
-              <div key={index}>{message}</div>
-            ))}
-          </>
-        );
-        toast({
-          title: "Error in service connection(s):",
-          description,
-          status: "warning",
-          duration: null,
-          isClosable: true,
-        });
-      }
-    }
-  }, [health, toast]);
 
   const { hiddenColumns } = view;
 
@@ -323,16 +264,6 @@ export default function AnalysisPage() {
       );
     },
     [approvals]
-  );
-
-  const canEditColumn = React.useCallback(
-    (columnName: string) => {
-      return (
-        columnConfigs[columnName]?.editable &&
-        !columnConfigs[columnName]?.computed
-      );
-    },
-    [columnConfigs]
   );
 
   const getDependentColumns = React.useCallback(
@@ -596,11 +527,12 @@ export default function AnalysisPage() {
 
   const openDetailsView = React.useCallback(
     (primaryKey: string, row: Row<AnalysisResult>) => {
-      setMoreInfoIsolate(row.original.isolate_id);
-      setMoreInfoIsolateInstitution(row.original.institution);
-      onMoreInfoModalOpen();
+      setDetailsIsolate({
+        id: row.original.isolate_id,
+        institution: row.original.institution,
+      });
     },
-    [setMoreInfoIsolate, onMoreInfoModalOpen]
+    [setDetailsIsolate]
   );
 
   if (!columnLoadState.isFinished) {
@@ -635,7 +567,10 @@ export default function AnalysisPage() {
     <React.Fragment>
       <Box role="navigation" gridColumn="2 / 4" pb={5}>
         <Flex justifyContent="flex-end">
-          <AnalysisSearch onSubmit={onSearch} isDisabled={pageState.isNarrowed} />
+          <AnalysisSearch
+            onSubmit={onSearch}
+            isDisabled={pageState.isNarrowed}
+          />
           <Box minW="250px" ml="5">
             <AnalysisViewSelector />
           </Box>
@@ -680,7 +615,6 @@ export default function AnalysisPage() {
             setNewColumnOrder={setColumnOrder}
             setColumnSort={setColumnSort}
             canSelectColumn={canSelectColumn}
-            canEditColumn={canEditColumn}
             canApproveColumn={canApproveColumn}
             isJudgedCell={isJudgedCell}
             approvableColumns={approvableColumns}
@@ -689,7 +623,7 @@ export default function AnalysisPage() {
             getStickyCellStyle={getStickyCellStyle}
             data={
               pageState.isNarrowed
-                ? data.filter((x) => selection[x.sequence_id])
+                ? Object.keys(selection).map((key) => selection[key].original)
                 : filteredData
             }
             renderCellControl={renderCellControl}
@@ -709,24 +643,29 @@ export default function AnalysisPage() {
             `${t("Showing")} ${filteredData.length} ${t(
               "of"
             )} ${totalCount} ${t("records")}.`}
+          {!pageState.isNarrowed && Object.keys(selection).length > 0
+            ? ` ${Object.keys(selection).length} selected.`
+            : null}
           {isFinished &&
             pageState.isNarrowed &&
-            `${t("Staging")} ${
-              data.filter((x) => selection[x.sequence_id]).length
-            } ${t("records")}.`}
+            `${t("Staging")} ${Object.keys(selection).length} ${t("records")}.`}
         </Box>
       </Box>
+      <Debug>
+        <p>redux selection:</p>
+        {JSON.stringify(selection, undefined, "  ")}
+      </Debug>
     </React.Fragment>
   );
 
   return (
     <React.Fragment>
-      <AnalysisDetails
-        institution={moreInfoIsolateInstitution}
-        isolateId={moreInfoIsolate}
-        isOpen={isMoreInfoModalOpen}
-        onClose={onMoreInfoModalClose}
-      />
+      {detailsIsolate ? (
+        <AnalysisDetailsModal
+          isolate={detailsIsolate}
+          onClose={onAnalysisDetailsModalClose}
+        />
+      ) : null}
       <HalfHolyGrailLayout
         sidebar={
           <AnalysisSidebar
@@ -738,6 +677,7 @@ export default function AnalysisPage() {
         }
         content={content}
       />
+      <Health />
     </React.Fragment>
   );
 }

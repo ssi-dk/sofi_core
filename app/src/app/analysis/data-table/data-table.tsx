@@ -16,7 +16,7 @@ import { Flex, IconButton } from "@chakra-ui/react";
 import { ExternalLinkIcon } from "@chakra-ui/icons";
 import deepmerge from "lodash.merge";
 import { UserDefinedViewInternal } from "models";
-import { IndexableOf, NotEmpty } from "utils";
+import { NotEmpty } from "utils";
 import SelectionCheckBox from "./selection-check-box";
 import { exportDataTable } from "./table-spy";
 import { StickyVariableSizeGrid } from "./sticky-variable-size-grid";
@@ -33,9 +33,13 @@ export type ColumnReordering =
     }
   | undefined;
 
-export type DataTableSelection<T extends NotEmpty> = {
-  [K in IndexableOf<T>]: { [k in IndexableOf<T>]: boolean };
-};
+export type DataTableSelection<T extends object> = Record<
+  string,
+  {
+    original: T;
+    cells: Record<keyof T, boolean>;
+  }
+>;
 
 type DataTableProps<T extends NotEmpty> = {
   columns: Column<T>[];
@@ -46,7 +50,6 @@ type DataTableProps<T extends NotEmpty> = {
   canSelectColumn: (columnName: string) => boolean;
   canApproveColumn: (columnName: string) => boolean;
   isJudgedCell: (rowId: string, columnName: string) => boolean;
-  canEditColumn: (columnName: string) => boolean;
   getDependentColumns: (columnName: keyof T) => Array<keyof T>;
   selectionClassName: string;
   approvableColumns: string[];
@@ -90,7 +93,6 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
     onSelect,
     onDetailsClick,
     selectionClassName,
-    canEditColumn,
     approvableColumns,
     canSelectColumn,
     canApproveColumn,
@@ -104,7 +106,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
   const selection = React.useRef({} as DataTableSelection<T>);
 
   const isInSelection = React.useCallback((rowId, columnId) => {
-    return selection.current[rowId] && selection.current[rowId][columnId];
+    return selection.current[rowId]?.cells?.[columnId];
   }, []);
 
   const [lastView, setLastView] = useState(view);
@@ -128,22 +130,26 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
 
   const onSelectCell = React.useCallback(
     (rowId, columnId) => {
-      const incSel = {
+      const incSel: DataTableSelection<T> = {
         ...selection.current,
         [rowId]: {
-          ...(selection.current[rowId] || {}),
-          [columnId]: !isInSelection(rowId, columnId),
+          original: data.find((d) => d[primaryKey] === rowId),
+          cells: {
+            ...(selection.current[rowId]?.cells || {}),
+            [columnId]: !isInSelection(rowId, columnId),
+          },
         },
       };
       getDependentColumns(columnId).forEach((v) => {
-        incSel[rowId][v as string] = !(
-          selection.current[rowId] && selection.current[rowId][columnId]
+        incSel[rowId].cells[v] = !(
+          selection.current[rowId]?.cells &&
+          selection.current[rowId]?.cells[columnId]
         );
       });
       selection.current = incSel;
       onSelect(incSel);
     },
-    [onSelect, isInSelection, getDependentColumns]
+    [onSelect, isInSelection, getDependentColumns, data, primaryKey]
   );
 
   const {
@@ -239,7 +245,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
       Object.keys(selection.current)
         .filter((x) => typeof x === "string")
         .map((r) => {
-          Object.keys(selection.current[r]).map((k) => {
+          Object.keys(selection.current[r].cells).map((k) => {
             if (
               visibleApprovableColumns.indexOf(k) < 0 &&
               selectionClone[r][k]
@@ -257,29 +263,19 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [visibleApprovableColumns, onSelect, selection.current]);
 
-  const calcTableSelectionState = React.useCallback(() => {
-    const columnCount = approvableColumns.length;
-    const count = Object.values(selection.current).reduce(
-      (acc: number, val) =>
-        acc + Object.values(val).reduce((a, v) => (v ? a + 1 : a), 0),
-      0
-    );
-    if (count === 0) return { checked: false, indeterminate: false };
-    if (count === columnCount * rows.length)
-      return { checked: true, indeterminate: false };
-    return { indeterminate: true, checked: false };
-  }, [rows, approvableColumns]);
-
   const calcRowSelectionState = React.useCallback(
     (row: Row<T>) => {
-      const r = selection.current[row.original[primaryKey]] || {};
+      const r = selection.current[row.original[primaryKey]]?.cells || {};
       const count = Object.values(r).reduce(
         (acc: number, val) => (val ? acc + 1 : acc),
         0
       );
-      if (count === 0) return { checked: false, indeterminate: false };
-      if (count === visibleApprovableColumns.length)
+      if (count === 0) {
+        return { checked: false, indeterminate: false };
+      }
+      if (count === visibleApprovableColumns.length) {
         return { checked: true, indeterminate: false };
+      }
       return { indeterminate: true, checked: false };
     },
     [primaryKey, visibleApprovableColumns]
@@ -288,11 +284,14 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
   const calcColSelectionState = React.useCallback(
     (col: Column<T>) => {
       const c = Object.values(selection.current).filter(
-        (x) => x[col.id] === true
+        (x) => x.cells[col.id] === true
       );
-      if (c.length === 0) return { checked: false, indeterminate: false };
-      if (c.length === rows.length)
+      if (c.length === 0) {
+        return { checked: false, indeterminate: false };
+      }
+      if (c.length === rows.length) {
         return { checked: true, indeterminate: false };
+      }
       return { indeterminate: true, checked: false, visible: true };
     },
     [rows]
@@ -309,9 +308,16 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
         .filter((x) => !isJudgedCell(id, x.accessor as string))
         .map((x) => ({ [x.accessor as string]: !checked && !indeterminate }))
         .reduce((acc, val) => ({ ...acc, ...val }), []);
-      const incSel = { ...selection.current, [id]: { ...cols } };
+
+      const incSel: DataTableSelection<T> = {
+        ...selection.current,
+        [id]: {
+          original: row.original,
+          cells: { ...cols },
+        },
+      };
       selection.current = incSel;
-      onSelect(incSel);
+      onSelect(selection.current);
     },
     [
       onSelect,
@@ -333,26 +339,29 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
     [datagridRef]
   );
 
-  const onSelectCol = React.useCallback(
+  const onSelectColumn = React.useCallback(
     (col: Column<T>) => {
       const { checked, indeterminate } = calcColSelectionState(col);
       const sel = rows
         .filter((r) => !isJudgedCell(r.original[primaryKey], col.id as string))
         .map((r) => ({
           [r.original[primaryKey]]: {
-            ...selection.current[r.original[primaryKey]],
-            [col.id as string]: !checked && !indeterminate,
+            original: r.original,
+            cells: {
+              ...selection.current[r.original[primaryKey]]?.cells,
+              [col.id as string]: !checked && !indeterminate,
+            },
           },
         }))
         .reduce((acc, val) => ({ ...acc, ...val }));
-      const incSel = { ...selection.current, ...sel };
+      const incSel : DataTableSelection<T> = { ...selection.current, ...sel };
       getDependentColumns(col.id).forEach((c) => {
         rows
           .map((r) => r.original[primaryKey])
           .forEach((r: string) => {
             if (incSel[r]) {
-              incSel[r][c as string] = !(
-                selection.current[r] && selection.current[r][c]
+              incSel[r].cells[c] = !(
+                selection.current[r] && selection.current[r].cells[c]
               );
             }
           });
@@ -372,19 +381,6 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
     ]
   );
 
-  const onSelectAllRows = React.useCallback(() => {
-    const { checked } = calcTableSelectionState();
-    const allCols = approvableColumns
-      .map((x) => ({ [x]: !checked }))
-      .reduce((acc, val) => ({ ...acc, ...val }));
-    const sel = rows
-      .map((r) => ({ [r.original[primaryKey]]: allCols }))
-      .reduce((acc, val) => ({ ...acc, ...val }));
-    const incSel = { ...selection.current, ...sel };
-    selection.current = incSel;
-    onSelect(incSel);
-  }, [primaryKey, rows, approvableColumns, calcTableSelectionState, onSelect]);
-
   const rowClickHandler = React.useCallback(
     (row) => (e) => {
       onSelectRow(row);
@@ -399,13 +395,11 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
       event: React.MouseEvent<HTMLDivElement, MouseEvent>
     ) => {
       event.stopPropagation();
-      if (event.ctrlKey) {
-        if (canSelectColumn) {
-          onSelectCell(rowId, columnId);
-        }
+      if (event.ctrlKey && canApproveColumn(columnId)) {
+        onSelectCell(rowId, columnId);
       }
     },
-    [canSelectColumn, onSelectCell]
+    [canApproveColumn, onSelectCell]
   );
 
   const RenderCell = React.useCallback(
@@ -414,7 +408,9 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
       if (rowIndex === 0) {
         // we are the header 'row'
         const col = visibleColumnInstances[columnIndex];
-        if (!col) return <div />;
+        if (!col) {
+          return <div />;
+        }
         return (
           <div style={style}>
             <DataTableColumnHeader<T>
@@ -422,7 +418,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
               columnIndex={columnIndex}
               calcColSelectionState={calcColSelectionState}
               canSelectColumn={canSelectColumn}
-              onSelectCol={onSelectCol}
+              onSelectColumn={onSelectColumn}
               onSort={setColumnSort}
               onResize={onColumnResize}
             />
@@ -492,7 +488,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
       calcColSelectionState,
       calcRowSelectionState,
       canSelectColumn,
-      onSelectCol,
+      onSelectColumn,
       onColumnResize,
       rowClickHandler,
       isInSelection,
