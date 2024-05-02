@@ -15,7 +15,7 @@ type Option = {
   value: string;
 };
 
-export type InlineAutoCompleteProps = {
+type InlineAutoCompleteProps = {
   onChange: (
     val: ValueType<OptionTypeBase, false> | string,
     action: ActionMeta<OptionTypeBase> | InputActionMeta
@@ -127,7 +127,7 @@ export default (props: InlineAutoCompleteProps) => {
           menuShouldScrollIntoView={false}
         />
       ) : (
-        <div>{defaultValue}</div>
+        <div style={{ width: "100%", height: "100%" }}>{defaultValue}</div>
       )}
     </div>
   );
