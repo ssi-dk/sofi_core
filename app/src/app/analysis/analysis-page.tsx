@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   Box,
   Flex,
@@ -6,6 +6,7 @@ import {
   EditablePreview,
   EditableInput,
   Skeleton,
+  useToast,
 } from "@chakra-ui/react";
 import { Column, Row } from "react-table";
 import { AnalysisResult, AnalysisQuery, ApprovalStatus } from "sap-client";
@@ -56,7 +57,8 @@ const PRIMARY_APPROVAL_FIELDS = ["st_final", "qc_final"];
 export default function AnalysisPage() {
   const { t } = useTranslation();
   const dispatch = useDispatch();
-
+  const toast = useToast();
+  
   const [detailsIsolate, setDetailsIsolate] = useState<
     React.ComponentProps<typeof AnalysisDetailsModal>["isolate"]
   >();
@@ -117,6 +119,17 @@ export default function AnalysisPage() {
   ] = useMutation((payload: { [K: string]: { [K: string]: string } }) =>
     updateAnalysis(payload)
   );
+
+  useEffect(() => {
+    if (updateStatus === 403) {
+      toast({
+        title: "Failed to edit isolate - Forbidden",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    }
+  }, [updateStatus, toast])
 
   const [lastUpdatedRow, setLastUpdatedRow] = React.useState(null);
   const [lastUpdatedColumns, setLastUpdatedColumns] = React.useState([]);
