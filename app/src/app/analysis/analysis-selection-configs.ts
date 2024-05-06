@@ -23,17 +23,7 @@ const initialState: SelectionState = {
 export const selectionReducer = createReducer(initialState, (builder) => {
   builder
     .addCase(setSelection, (state, action) => {
-      state.selection = Object.keys(action.payload)
-        .filter((x) =>
-          Object.values(action.payload[x].cells).reduce((a, b) => a || b, false)
-        )
-        .reduce(
-          (o: DataTableSelection<AnalysisResult>, k) => ({
-            ...o,
-            [k]: action.payload[k],
-          }),
-          {} as DataTableSelection<AnalysisResult>
-        );
+      state.selection = action.payload;
     })
     .addCase(updateSelectionOriginal, (state, action) => {
       const payload = action.payload;

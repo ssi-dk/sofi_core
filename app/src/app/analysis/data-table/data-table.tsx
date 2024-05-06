@@ -257,7 +257,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
         });
       if (needsNarrow) {
         selection.current = selectionClone;
-        onSelect(selection.current as DataTableSelection<any>);
+        onSelect(selection.current);
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -265,17 +265,22 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
 
   const calcRowSelectionState = React.useCallback(
     (row: Row<T>) => {
-      const r = selection.current[row.original[primaryKey]]?.cells || {};
-      const count = Object.values(r).reduce(
+      const dataTableSelection = selection.current[row.original[primaryKey]];
+      const checked = dataTableSelection !== undefined;
+      const cells = dataTableSelection?.cells;
+      const selectedCellCount = Object.values(cells ?? {}).reduce(
         (acc: number, val) => (val ? acc + 1 : acc),
         0
       );
-      if (count === 0) {
-        return { checked: false, indeterminate: false };
+      // If no cells marked, return of row is in selection
+      if (selectedCellCount === 0) {
+        return { checked, indeterminate: false };
       }
-      if (count === visibleApprovableColumns.length) {
+      // If all visible cells selected
+      if (selectedCellCount === visibleApprovableColumns.length) {
         return { checked: true, indeterminate: false };
       }
+      // Else, some cells selected
       return { indeterminate: true, checked: false };
     },
     [primaryKey, visibleApprovableColumns]
@@ -301,22 +306,35 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
     (row: Row<T>) => {
       const { checked, indeterminate } = calcRowSelectionState(row);
       const id = row.original[primaryKey];
-      const cols = columns
-        .filter((x) => typeof x.accessor === "string")
-        .filter((x) => visibleColumns.indexOf(x.accessor as string) >= 0)
-        .filter((x) => canApproveColumn(x.accessor as string))
-        .filter((x) => !isJudgedCell(id, x.accessor as string))
-        .map((x) => ({ [x.accessor as string]: !checked && !indeterminate }))
-        .reduce((acc, val) => ({ ...acc, ...val }), []);
 
-      const incSel: DataTableSelection<T> = {
+      const newSelection = {
         ...selection.current,
-        [id]: {
-          original: row.original,
-          cells: { ...cols },
-        },
       };
-      selection.current = incSel;
+
+      if (indeterminate || checked) {
+        // Delete selection
+        delete newSelection[id];
+      } else {
+        // Add all approvable cells to selection
+        const cols = columns
+          .filter((x) => typeof x.accessor === "string")
+          .filter((x) => visibleColumns.indexOf(x.accessor as string) >= 0)
+          .filter((x) => canApproveColumn(x.accessor as string))
+          .filter((x) => !isJudgedCell(id, x.accessor as string))
+          .map((x) => x.accessor as keyof T);
+
+        const flags = cols.reduce((a, b) => {
+          a[b] = true;
+          return a;
+        }, {} as Record<keyof T, boolean>);
+
+        newSelection[id] = {
+          original: row.original,
+          cells: flags,
+        };
+      }
+
+      selection.current = newSelection;
       onSelect(selection.current);
     },
     [
@@ -354,7 +372,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
           },
         }))
         .reduce((acc, val) => ({ ...acc, ...val }));
-      const incSel : DataTableSelection<T> = { ...selection.current, ...sel };
+      const incSel: DataTableSelection<T> = { ...selection.current, ...sel };
       getDependentColumns(col.id).forEach((c) => {
         rows
           .map((r) => r.original[primaryKey])
