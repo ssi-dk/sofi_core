@@ -6,6 +6,8 @@ on:
       - "master"
 
 jobs:
+  # This job finds the lastest tag and bumps it based on the conventional commit.
+
   prepare_tag:
     outputs:
       tag: ${{ steps.semver.outputs.next }}
@@ -36,59 +38,64 @@ jobs:
           custom_tag: ${{ steps.semver.outputs.next }}
           tag_prefix: ""
 
-  # build_and_push:
-  #   needs: prepare_tag
-  #   permissions:
-  #     contents: write
-  #     packages: write
-  #
-  #   runs-on: ubuntu-latest
-  #
-  #   strategy:
-  #     matrix:
-  #       include:
-  #         - image: ghcr.io/ssi-dk/sap-web
-  #           dockerfile: app/Dockerfile
-  #           path: app
-  #         - image: ghcr.io/ssi-dk/sap-api
-  #           dockerfile: web/Dockerfile
-  #           path: web
-  #         - image: ghcr.io/ssi-dk/bifrost-queue-broker
-  #           dockerfile: bifrost/bifrost_queue_broker/Dockerfile
-  #           path: bifrost/bifrost_queue_broker
-  #         - image: ghcr.io/ssi-dk/bifrost-listener
-  #           dockerfile: bifrost/bifrost_listener/Dockerfile
-  #           path: bifrost/bifrost_listener
-  #         - image: ghcr.io/ssi-dk/bifrost-listener
-  #           dockerfile: bifrost/bifrost_listener/Dockerfile
-  #           path: bifrost/bifrost_listener
-  #
-  #   steps:
-  #     - name: Checkout
-  #       uses: actions/checkout@v4
-  #
-  #     - name: Login to GitHub Container Registry
-  #       uses: docker/login-action@v3
-  #       with:
-  #         registry: ghcr.io
-  #         username: ${{ github.actor }}
-  #         password: ${{ secrets.GITHUB_TOKEN }}
-  #
-  #     # loops over all images in the matrix defined on top
-  #
-  #     - name: Build and push
-  #       uses: docker/build-push-action@v5
-  #       with:
-  #         context: ${{ matrix.path }}
-  #         platforms: linux/amd64
-  #         tags: ${{ matrix.image }}:${{ needs.prepare_tag.outputs.tag }}
-  #         file: ${{ matrix.dockerfile }}
-  #         push: true
+  # Build the Docker images and push to the GitHub container registry
+
+  build_and_push:
+    needs: prepare_tag
+    permissions:
+      contents: write
+      packages: write
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        include:
+          - image: ghcr.io/ssi-dk/sap-web
+            dockerfile: app/Dockerfile
+            path: app
+          - image: ghcr.io/ssi-dk/sap-api
+            dockerfile: web/Dockerfile
+            path: web
+          - image: ghcr.io/ssi-dk/bifrost-queue-broker
+            dockerfile: bifrost/bifrost_queue_broker/Dockerfile
+            path: bifrost/bifrost_queue_broker
+          - image: ghcr.io/ssi-dk/bifrost-listener
+            dockerfile: bifrost/bifrost_listener/Dockerfile
+            path: bifrost/bifrost_listener
+          - image: ghcr.io/ssi-dk/bifrost-listener
+            dockerfile: bifrost/bifrost_listener/Dockerfile
+            path: bifrost/bifrost_listener
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # loops over all images in the matrix defined on top
+
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          context: ${{ matrix.path }}
+          platforms: linux/amd64
+          tags: ${{ matrix.image }}:${{ needs.prepare_tag.outputs.tag }}
+          file: ${{ matrix.dockerfile }}
+          push: true
+
+  # Uses the tag from the first job, and updates the GitOps repo with the new tag.
 
   commit_to_dev:
     needs:
       - prepare_tag
-      # - build_and_push
+      - build_and_push
+    environment: dev
     permissions:
       contents: write
 
@@ -109,18 +116,8 @@ jobs:
           cmd: |
             yq eval '.spec.template.spec.containers[0].image = "ghcr.io/mytest/httpd:${{ needs.prepare_tag.outputs.tag }}"' -i ./sofi_core_gitops/test.yaml
 
-      # - name: push
-      #   uses: actions-x/commit@v6
-      #   with:
-      #     email: me@example.com
-      #     name: GitHub Actions Autocommitter
-      #     branch: main
-      #     repository: https://github.com/ssi-dk/sofi_core_gitops
-      #     token: ${{ secrets.GITHUB_TOKEN }}
-      #     directory: sofi_core_gitops
-
-      - uses: EndBug/add-and-commit@v9 # You can change this to use a specific version.
+      - uses: EndBug/add-and-commit@v9
         with:
-          author_name: Author Name
+          author_name: GitOps Bot
           author_email: mail@example.com
           cwd: sofi_core_gitops
