@@ -101,6 +101,7 @@ jobs:
           repository: ssi-dk/sofi_core_gitops
           ref: main
           path: sofi_core_gitops
+          token: "${{ secrets.ACTION_PAT }}"
 
       - name: update image
         uses: mikefarah/yq@master
