@@ -121,3 +121,4 @@ jobs:
           author_name: GitOps Bot
           author_email: mail@example.com
           cwd: sofi_core_gitops
+          message: Update deployments with tag "${{ needs.prepare_tag.outputs.tag }}"
