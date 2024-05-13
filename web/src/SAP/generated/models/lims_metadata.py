@@ -23,9 +23,11 @@ class LimsMetadata(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, sequence_id=None, sequence_filename=None, isolate_id=None, institution=None, project_number=None, project_title=None, date_sample=None, date_received=None, date_sofi=None, run_id=None, public_number=None, primary_isolate=None, chr_number=None, cvr_number=None, aut_number=None, product_type=None, product=None, origin_country=None, animal_species=None, sample_info=None):  # noqa: E501
+    def __init__(self, id=None, sequence_id=None, sequence_filename=None, isolate_id=None, institution=None, project_number=None, project_title=None, date_sample=None, date_received=None, date_sofi=None, run_id=None, public_number=None, primary_isolate=None, chr_number=None, cvr_number=None, aut_number=None, product_type=None, product=None, origin_country=None, animal_species=None, sample_info=None):  # noqa: E501
         """LimsMetadata - a model defined in OpenAPI
 
+        :param id: The id of this LimsMetadata.  # noqa: E501
+        :type id: str
         :param sequence_id: The sequence_id of this LimsMetadata.  # noqa: E501
         :type sequence_id: str
         :param sequence_filename: The sequence_filename of this LimsMetadata.  # noqa: E501
@@ -68,6 +70,7 @@ class LimsMetadata(Model):
         :type sample_info: str
         """
         self.openapi_types = {
+            'id': str,
             'sequence_id': str,
             'sequence_filename': str,
             'isolate_id': str,
@@ -91,6 +94,7 @@ class LimsMetadata(Model):
         }
 
         self.attribute_map = {
+            'id': 'id',
             'sequence_id': 'sequence_id',
             'sequence_filename': 'sequence_filename',
             'isolate_id': 'isolate_id',
@@ -113,6 +117,7 @@ class LimsMetadata(Model):
             'sample_info': 'sample_info',
         }
 
+        self._id = id
         self._sequence_id = sequence_id
         self._sequence_filename = sequence_filename
         self._isolate_id = isolate_id
@@ -144,6 +149,29 @@ class LimsMetadata(Model):
         :rtype: LimsMetadata
         """
         return util.deserialize_model(dikt, cls)
+
+    @property
+    def id(self):
+        """Gets the id of this LimsMetadata.
+
+
+        :return: The id of this LimsMetadata.
+        :rtype: str
+        """
+        return self._id
+
+    @id.setter
+    def id(self, id):
+        """Sets the id of this LimsMetadata.
+
+
+        :param id: The id of this LimsMetadata.
+        :type id: str
+        """
+        if id is None:
+            raise ValueError("Invalid value for `id`, must not be `None`")  # noqa: E501
+
+        self._id = id
 
     @property
     def sequence_id(self):

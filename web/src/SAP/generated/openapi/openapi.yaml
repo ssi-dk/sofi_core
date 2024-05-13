@@ -1000,6 +1000,8 @@ components:
       type: string
     BaseMetadata:
       properties:
+        id:
+          type: string
         sequence_id:
           type: string
         sequence_filename:
@@ -1029,6 +1031,7 @@ components:
           type: boolean
       required:
       - date_received
+      - id
       - institution
       - isolate_id
       - primary_isolate

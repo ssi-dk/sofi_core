@@ -836,6 +836,7 @@ components:
 
     BaseMetadata:
       required:
+        - id
         - sequence_id
         - isolate_id
         - institution
@@ -843,6 +844,8 @@ components:
         - run_id
         - primary_isolate
       properties:
+        id:
+          type: string
         sequence_id:
           type: string
         sequence_filename:

@@ -29,6 +29,12 @@ export interface BaseMetadata  {
      * @type {string}
      * @memberof BaseMetadata
      */
+    id: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof BaseMetadata
+     */
     sequence_id: string;
     /**
      * 
@@ -100,6 +106,7 @@ export interface BaseMetadata  {
 
 export function BaseMetadataFromJSON(json: any): BaseMetadata {
     return {
+        'id': json['id'],
         'sequence_id': json['sequence_id'],
         'sequence_filename': !exists(json, 'sequence_filename') ? undefined : json['sequence_filename'],
         'isolate_id': json['isolate_id'],
@@ -120,6 +127,7 @@ export function BaseMetadataToJSON(value?: BaseMetadata): any {
         return undefined;
     }
     return {
+        'id': value.id,
         'sequence_id': value.sequence_id,
         'sequence_filename': value.sequence_filename,
         'isolate_id': value.isolate_id,
