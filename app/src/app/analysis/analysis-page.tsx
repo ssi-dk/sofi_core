@@ -46,9 +46,9 @@ import ExportButton from "./export/export-button";
 import { ColumnConfigNode } from "./data-table/column-config-node";
 import { AnalysisResultAllOfQcFailedTests } from "sap-client/models/AnalysisResultAllOfQcFailedTests";
 import { Judgement } from "./judgement/judgement";
-import { ResistanceButton } from "./resistance/resistance-button";
 import { Health } from "./health/health";
 import { Debug } from "./debug";
+import { AnalysisSelectionMenu } from "./analysis-selection-menu";
 
 // When the fields in this array are 'approved', a given sequence is rendered
 // as 'approved' also.
@@ -58,7 +58,7 @@ export default function AnalysisPage() {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const toast = useToast();
-  
+
   const [detailsIsolate, setDetailsIsolate] = useState<
     React.ComponentProps<typeof AnalysisDetailsModal>["isolate"]
   >();
@@ -129,7 +129,7 @@ export default function AnalysisPage() {
         isClosable: true,
       });
     }
-  }, [updateStatus, toast])
+  }, [updateStatus, toast]);
 
   const [lastUpdatedRow, setLastUpdatedRow] = React.useState(null);
   const [lastUpdatedColumns, setLastUpdatedColumns] = React.useState([]);
@@ -596,6 +596,11 @@ export default function AnalysisPage() {
             onNarrowHandler={onNarrowHandler}
             getDependentColumns={getDependentColumns}
           />
+          <AnalysisSelectionMenu
+            selection={selection}
+            isNarrowed={pageState.isNarrowed}
+          />
+          <Flex grow={1} width="100%" />
           {!pageState.isNarrowed ? (
             <ColumnConfigWidget onReorder={onReorderColumn}>
               {(columnOrder || columns.map((x) => x.accessor as string)).map(
@@ -611,8 +616,6 @@ export default function AnalysisPage() {
               )}
             </ColumnConfigWidget>
           ) : null}
-          <Flex grow={1} width="100%" />
-          <ResistanceButton selection={selection} />
           <ExportButton
             data={filteredData}
             columns={columns.map((x) => x.accessor) as any}

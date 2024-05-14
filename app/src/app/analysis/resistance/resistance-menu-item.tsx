@@ -1,5 +1,5 @@
 import React, { useCallback } from "react";
-import { IconButton, useToast } from "@chakra-ui/react";
+import { MenuItem, useToast } from "@chakra-ui/react";
 import { AnalysisResult } from "sap-client";
 import { DataTableSelection } from "../data-table/data-table";
 import { Bacteria } from "app/icons/bacteria";
@@ -21,7 +21,7 @@ type Props = {
   selection: DataTableSelection<AnalysisResult>;
 };
 
-export const ResistanceButton = (props: Props) => {
+export const ResistanceMenuItem = (props: Props) => {
   const { t } = useTranslation();
   const toast = useToast();
   const { selection } = props;
@@ -60,18 +60,16 @@ export const ResistanceButton = (props: Props) => {
           </ModalFooter>
         </ModalContent>
       </Modal>
-      <IconButton
+      <MenuItem
         aria-label="Resistance"
         title="Resistance"
         icon={
-          <div style={{ margin: "6px", width: "100%" }}>
             <Bacteria />
-          </div>
         }
-        size="sm"
-        ml="1"
         onClick={onClickCallback}
-      />
+      >
+        Resistance
+      </MenuItem>
     </>
   );
 };
