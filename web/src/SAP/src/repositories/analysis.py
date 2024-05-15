@@ -29,6 +29,7 @@ def get_analysis_page(query, page_size, offset, columns, restrict_to_institution
     if restrict_to_institution:
         q["institution"] = restrict_to_institution
     column_projection = {x: 1 for x in columns}
+    column_projection["id"] = { "$toString": "$_id" }
     mydb = conn[DB_NAME]
     samples = mydb[ANALYSIS_COL_NAME]
     fetch_pipeline = [
@@ -81,12 +82,11 @@ def get_analysis_page(query, page_size, offset, columns, restrict_to_institution
         },
         {"$match": q},
         {"$sort": {"_id": pymongo.DESCENDING}},
-        {"$unset": ["_id", "metadata"]},
         {"$skip": offset},
         {"$limit": (int(page_size))},
         {"$project": column_projection},
+        {"$unset": ["_id", "metadata"]},
     ]
-
     # return list(map(remove_id, samples.find(query).sort('run_date',pymongo.DESCENDING).skip(offset).limit(int(page_size) + 2)))
     # For now, there is no handing of missing metadata, so the full_analysis table is used. The above aggregate pipeline should work though.
     return list(samples.aggregate(fetch_pipeline))

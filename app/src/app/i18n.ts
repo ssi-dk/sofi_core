@@ -33,6 +33,7 @@ const fieldDisplayNames = {
     comment_general: "Kommentar_generelt",
   },
   en: {
+    id: "ID",
     isolate_id: "Isolate_ID",
     sequence_id: "Sequence_ID",
     sequence_filename: "Sequence_files",
