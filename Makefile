@@ -112,6 +112,21 @@ ${mkfile_dir}/web/src/services/lims/openapi : ${mkfile_dir}/openapi_specs/lims.v
 		--global-property apiTests=false,apiDocs=false \
 		--global-property modelTests=false,modelDocs=false
 
+${mkfile_dir}/web/src/services/bio_api/openapi : ${mkfile_dir}/openapi_specs/bio_api.yaml
+	# Generate bio_api client for flask api
+	rm -rf ${mkfile_dir}/web/src/services/bio_api/openapi
+	docker run --rm -v "${mkfile_dir}:/local" \
+		--user ${mkfile_user} \
+		"openapitools/openapi-generator:cli-v5.2.0" \
+		generate \
+		-i /local/openapi_specs/bio_api.yaml \
+		-g python \
+		-o /local \
+		--additional-properties packageName=web.src.services.bio_api.openapi \
+		--additional-properties generateSourceCodeOnly=true \
+		--global-property apiTests=false,apiDocs=false \
+		--global-property modelTests=false,modelDocs=false
+
 ${mkfile_dir}/bifrost/bifrost_queue_broker/api_clients/lims_client : ${mkfile_dir}/openapi_specs/lims.v1.yaml
 	# Generate LIMS client for request broker
 	rm -rf ${mkfile_dir}/bifrost/bifrost_queue_broker/api_clients/lims_client
@@ -161,7 +176,7 @@ ${mkfile_dir}/bifrost/bifrost_queue_broker/api_clients/lims_client : ${mkfile_di
 ${mkfile_dir}/app/node_modules/ : ${mkfile_dir}/app/package.json
 	pushd ${mkfile_dir}/app && npx yarn install
 
-build: ${mkfile_dir}/app/src/sap-client ${mkfile_dir}/web/src/SAP/generated ${mkfile_dir}/web/src/services/lims/openapi
+build: ${mkfile_dir}/app/src/sap-client ${mkfile_dir}/web/src/SAP/generated ${mkfile_dir}/web/src/services/lims/openapi ${mkfile_dir}/web/src/services/bio_api/openapi
 	CURRENT_UID=${mkfile_user} docker-compose build --no-cache
 
 install:
@@ -177,6 +192,7 @@ RUN_DEPS += ${mkfile_dir}/web/src/services/lims/openapi ${mkfile_dir}/app/node_m
 RUN_DEPS += ${mkfile_dir}/bifrost/bifrost_queue_broker/api_clients/tbr_client 
 RUN_DEPS += ${mkfile_dir}/bifrost/bifrost_queue_broker/api_clients/lims_client 
 RUN_DEPS += ${mkfile_dir}/.env
+RUN_DEPS += ${mkfile_dir}/web/src/services/bio_api/openapi
 
 run: $(RUN_DEPS)
 	CURRENT_UID=${mkfile_user} docker-compose -f ${mkfile_dir}/docker-compose.yml -f ${mkfile_dir}/docker-compose.local.yml up --build $(ARGS)

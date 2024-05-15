@@ -12,6 +12,8 @@ from .approval_all_of import ApprovalAllOf
 from .approval_request import ApprovalRequest
 from .approval_status import ApprovalStatus
 from .base_metadata import BaseMetadata
+from .bio_api_job_response import BioApiJobResponse
+from .bio_api_status import BioApiStatus
 from .bulk_upload_request import BulkUploadRequest
 from .column import Column
 from .data_clearance import DataClearance
@@ -24,6 +26,7 @@ from .lims_specific_metadata import LimsSpecificMetadata
 from .metadata_reload_request import MetadataReloadRequest
 from .metadata_reload_response import MetadataReloadResponse
 from .multi_upload_request import MultiUploadRequest
+from .nearest_neighbors_request import NearestNeighborsRequest
 from .newick_tree_response import NewickTreeResponse
 from .organization import Organization
 from .page_of_analysis import PageOfAnalysis

@@ -15,6 +15,7 @@ services:
     command: ["/bin/sh", "-c", "/app/start.sh"]
     depends_on:
       - "hydra"
+      - "bio_api"
     restart: on-failure
 
     environment:
@@ -237,6 +238,17 @@ services:
         type: bind
         source: ./auth/config/kratos
         target: /etc/config/kratos
+
+  bio_api:
+    image: ghcr.io/ssi-dk/bio_api:latest
+    user: ${CURRENT_UID}
+    ports:
+      - "8000:8000"
+    expose:
+      - 8000
+    environment:
+      BIO_API_MONGO_CONNECTION: ${BIFROST_MONGO_CONN}
+    restart: on-failure
 
 networks:
   default:

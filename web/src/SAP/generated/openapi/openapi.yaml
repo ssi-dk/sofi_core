@@ -341,6 +341,27 @@ paths:
       tags:
       - user
       x-openapi-router-controller: web.src.SAP.generated.controllers.user_controller
+  /nearest_neighbors:
+    post:
+      description: Nearest Neighbors
+      operationId: post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NearestNeighborsRequest'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BioApiJobResponse'
+          description: Nearest Neighbors Response
+      tags:
+      - nearest_neighbors
+      x-openapi-router-controller: web.src.SAP.generated.controllers.nearest_neighbors_controller
+      x-codegen-request-body-name: body
   /samples/{sequence_id}:
     get:
       description: Get an individual sample by id
@@ -1245,6 +1266,43 @@ components:
             $ref: '#/components/schemas/Permission'
           type: array
       type: object
+    NearestNeighborsRequest:
+      description: Parameters for a REST request for a nearest neighbors calculation.
+      example:
+        id: id
+        cutoff: 0
+      properties:
+        id:
+          title: Input Mongo Id
+          type: string
+        cutoff:
+          title: Cutoff
+          type: integer
+      required:
+      - cutoff
+      - id
+      title: NearestNeighborsRequest
+      type: object
+    BioApiJobResponse:
+      example:
+        job_id: job_id
+        created_at: created_at
+      properties:
+        job_id:
+          title: Job Id
+          type: string
+        created_at:
+          title: Created At
+          type: string
+        status:
+          $ref: '#/components/schemas/BioApiStatus'
+    BioApiStatus:
+      enum:
+      - init
+      - completed
+      - error
+      title: Status
+      type: string
     Sample_categories_resistance_report:
       example:
         phenotypes:

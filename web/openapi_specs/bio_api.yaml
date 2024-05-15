@@ -1,0 +1,575 @@
+openapi: 3.0.0
+info:
+  title: Bio API
+  description: REST API for controlling bioinformatic calculations1
+  version: 0.2.0
+servers:
+  - url: 'http://localhost:8000/'
+paths:
+  "/v1/nearest_neighbors":
+    post:
+      tags:
+      - Nearest Neighbors
+      summary: Nearest Neighbors
+      operationId: nearest_neighbors_v1_nearest_neighbors_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/NearestNeighborsRequest"
+        required: true
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/CommonPOSTResponse"
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Message"
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Message"
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+  "/v1/nearest_neighbors/{nn_id}":
+    get:
+      tags:
+      - Nearest Neighbors
+      summary: Nn Result
+      description: Get result of a nearest neighbors calculation
+      operationId: nn_result_v1_nearest_neighbors__nn_id__get
+      parameters:
+      - name: nn_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Nn Id
+      - name: level
+        in: query
+        required: false
+        schema:
+          type: string
+          default: full
+          title: Level
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/NearestNeighborsGETResponse"
+        '400':
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Message"
+          description: Bad Request
+        '404':
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Message"
+          description: Not Found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+  "/v1/distance_calculations":
+    post:
+      tags:
+      - Distances
+      summary: Dmx From Mongodb
+      description: Run a distance calculation from selected cgMLST profiles in MongoDB
+      operationId: dmx_from_mongodb_v1_distance_calculations_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/DistanceMatrixRequest"
+        required: true
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/CommonPOSTResponse"
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Message"
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Message"
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+  "/v1/distance_calculations/{dc_id}":
+    get:
+      tags:
+      - Distances
+      summary: Dmx Result
+      description: Get result of a distance calculation
+      operationId: dmx_result_v1_distance_calculations__dc_id__get
+      parameters:
+      - name: dc_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Dc Id
+      - name: level
+        in: query
+        required: false
+        schema:
+          type: string
+          default: full
+          title: Level
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/DistanceMatrixGETResponse"
+        '400':
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Message"
+          description: Bad Request
+        '404':
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Message"
+          description: Not Found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+  "/v1/trees":
+    post:
+      tags:
+      - Trees
+      summary: Hc Tree From Dmx Job
+      operationId: hc_tree_from_dmx_job_v1_trees_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/HCTreeCalcRequest"
+        required: true
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/CommonPOSTResponse"
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Message"
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Message"
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+  "/v1/trees/{tc_id}":
+    get:
+      tags:
+      - Trees
+      summary: Hc Tree Result
+      operationId: hc_tree_result_v1_trees__tc_id__get
+      parameters:
+      - name: tc_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Tc Id
+      - name: level
+        in: query
+        required: false
+        schema:
+          type: string
+          default: full
+          title: Level
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HCTreeCalcGETResponse"
+        '400':
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Message"
+          description: Bad Request
+        '404':
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Message"
+          description: Not Found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+components:
+  schemas:
+    CommonPOSTResponse:
+      properties:
+        job_id:
+          type: string
+          title: Job Id
+        created_at:
+          type: string
+          title: Created At
+        status:
+          "$ref": "#/components/schemas/Status"
+      type: object
+      required:
+      - job_id
+      - created_at
+      - status
+      title: CommonPOSTResponse
+      description: Common response base class for all calculation responses (both
+        POST and GET)
+    DistanceMatrixGETResponse:
+      properties:
+        job_id:
+          type: string
+          title: Job Id
+        created_at:
+          type: string
+          title: Created At
+        status:
+          "$ref": "#/components/schemas/Status"
+        finished_at:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Finished At
+        seq_collection:
+          type: string
+          title: Seq Collection
+        seqid_field_path:
+          type: string
+          title: Seqid Field Path
+        profile_field_path:
+          type: string
+          title: Profile Field Path
+        seq_mongo_ids:
+          items: {}
+          type: array
+          title: Seq Mongo Ids
+        result:
+          "$ref": "#/components/schemas/DistanceMatrixResult"
+      type: object
+      required:
+      - job_id
+      - created_at
+      - status
+      - finished_at
+      - seq_collection
+      - seqid_field_path
+      - profile_field_path
+      - seq_mongo_ids
+      - result
+      title: DistanceMatrixGETResponse
+    DistanceMatrixRequest:
+      properties:
+        seq_collection:
+          type: string
+          title: Seq Collection
+        seqid_field_path:
+          type: string
+          title: Seqid Field Path
+        profile_field_path:
+          type: string
+          title: Profile Field Path
+        seq_mongo_ids:
+          items: {}
+          type: array
+          title: Seq Mongo Ids
+      type: object
+      required:
+      - seq_collection
+      - seqid_field_path
+      - profile_field_path
+      - seq_mongo_ids
+      title: DistanceMatrixRequest
+      description: |-
+        Parameters for a REST request for a distance calculation.
+
+        seq_collection: collection to find sequences in
+        seqid_field_path: field path in dotted notation which contains the 'sequence id' the user wants to see
+        profile_field_path: field path in dotted notation which contains the cgMLST allele profiles
+        mongo_ids: the  _id strings for the desired sequence documents
+    DistanceMatrixResult:
+      properties:
+        seq_to_mongo:
+          type: object
+          title: Seq To Mongo
+        distances:
+          anyOf:
+          - type: object
+          - type: 'null'
+          title: Distances
+      type: object
+      required:
+      - seq_to_mongo
+      title: DistanceMatrixResult
+    HCTreeCalcGETResponse:
+      properties:
+        job_id:
+          type: string
+          title: Job Id
+        created_at:
+          type: string
+          title: Created At
+        status:
+          "$ref": "#/components/schemas/Status"
+        finished_at:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Finished At
+        dmx_job:
+          type: string
+          title: Dmx Job
+        method:
+          type: string
+          enum:
+          - single
+          - complete
+          - average
+          - weighted
+          - centroid
+          - median
+          - ward
+          title: Method
+        result:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Result
+      type: object
+      required:
+      - job_id
+      - created_at
+      - status
+      - finished_at
+      - dmx_job
+      - method
+      - result
+      title: HCTreeCalcGETResponse
+    HCTreeCalcRequest:
+      properties:
+        dmx_job:
+          type: string
+          title: Dmx Job
+        method:
+          type: string
+          enum:
+          - single
+          - complete
+          - average
+          - weighted
+          - centroid
+          - median
+          - ward
+          title: Method
+      type: object
+      required:
+      - dmx_job
+      - method
+      title: HCTreeCalcRequest
+      description: |-
+        Parameters for a REST request for a tree calculation based on hierarchical clustering.
+        Distances are taken directly from the request.
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            "$ref": "#/components/schemas/ValidationError"
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    Message:
+      properties:
+        detail:
+          type: string
+          title: Detail
+      type: object
+      required:
+      - detail
+      title: Message
+    NearestNeighborsGETResponse:
+      properties:
+        job_id:
+          type: string
+          title: Job Id
+        created_at:
+          type: string
+          title: Created At
+        status:
+          "$ref": "#/components/schemas/Status"
+        finished_at:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Finished At
+        seq_collection:
+          type: string
+          title: Seq Collection
+        filtering:
+          anyOf:
+          - type: object
+          - type: 'null'
+          title: Filtering
+        profile_field_path:
+          type: string
+          title: Profile Field Path
+        input_mongo_id:
+          type: string
+          title: Input Mongo Id
+        cutoff:
+          type: integer
+          title: Cutoff
+        unknowns_are_diffs:
+          type: boolean
+          title: Unknowns Are Diffs
+        result:
+          anyOf:
+          - items:
+              "$ref": "#/components/schemas/Neighbor"
+            type: array
+          - type: 'null'
+          title: Result
+      type: object
+      required:
+      - job_id
+      - created_at
+      - status
+      - finished_at
+      - seq_collection
+      - profile_field_path
+      - input_mongo_id
+      - cutoff
+      - unknowns_are_diffs
+      - result
+      title: NearestNeighborsGETResponse
+    NearestNeighborsRequest:
+      properties:
+        seq_collection:
+          type: string
+          title: Seq Collection
+        filtering:
+          anyOf:
+          - type: object
+          - type: 'null'
+          title: Filtering
+        profile_field_path:
+          type: string
+          title: Profile Field Path
+        input_mongo_id:
+          type: string
+          title: Input Mongo Id
+        cutoff:
+          type: integer
+          title: Cutoff
+        unknowns_are_diffs:
+          type: boolean
+          title: Unknowns Are Diffs
+      type: object
+      required:
+      - seq_collection
+      - profile_field_path
+      - input_mongo_id
+      - cutoff
+      - unknowns_are_diffs
+      title: NearestNeighborsRequest
+      description: Parameters for a REST request for a nearest neighbors calculation.
+    Neighbor:
+      properties:
+        id:
+          type: string
+          title: Id
+        diff_count:
+          type: integer
+          title: Diff Count
+      type: object
+      required:
+      - id
+      - diff_count
+      title: Neighbor
+    Status:
+      type: string
+      enum:
+      - init
+      - completed
+      - error
+      title: Status
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError

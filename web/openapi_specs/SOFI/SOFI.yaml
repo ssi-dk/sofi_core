@@ -14,6 +14,27 @@ security:
   - jwt: []
 
 paths:
+  /nearest_neighbors:
+    post:
+      description: Nearest Neighbors
+      operationId: post
+      x-openapi-router-controller: web.src.SAP.generated.controllers.nearest_neighbors_controller
+      x-codegen-request-body-name: body
+      tags:
+        - nearest_neighbors
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/NearestNeighborsRequest"
+        required: true
+      responses:
+        '200':
+          description: Nearest Neighbors Response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BioApiJobResponse"
   /me:
     get:
       description: Describe the current user and their permissions
@@ -1274,6 +1295,40 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Permission"
+
+    NearestNeighborsRequest:
+      properties:
+        id:
+          type: string
+          title: Input Mongo Id
+        cutoff:
+          type: integer
+          title: Cutoff
+      type: object
+      required:
+      - id
+      - cutoff
+      title: NearestNeighborsRequest
+      description: Parameters for a REST request for a nearest neighbors calculation.
+
+    BioApiJobResponse:
+      properties:
+        job_id:
+          type: string
+          title: Job Id
+        created_at:
+          type: string
+          title: Created At
+        status:
+          "$ref": "#/components/schemas/BioApiStatus"
+
+    BioApiStatus:
+      type: string
+      enum:
+      - init
+      - completed
+      - error
+      title: Status
 
   securitySchemes:
     jwt:

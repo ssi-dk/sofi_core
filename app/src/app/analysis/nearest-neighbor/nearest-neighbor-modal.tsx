@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   NumberDecrementStepper,
   NumberIncrementStepper,
@@ -20,6 +20,9 @@ import {
   ModalCloseButton,
 } from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
+import { useDispatch } from "react-redux";
+import { requestAsync } from "redux-query";
+import { nearestNeighborsRequest } from "./nearest-neighbor-query-configs";
 
 type Props = {
   selection: DataTableSelection<AnalysisResult>;
@@ -32,6 +35,17 @@ export const NearestNeighborModal = (props: Props) => {
   const [isSearching, setIsSearching] = useState<boolean>(false);
   const [cutoff, setCutoff] = React.useState(15);
   const onChangeCutoff = (value) => setCutoff(value);
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    // TODO
+    dispatch(
+      requestAsync({
+        ...nearestNeighborsRequest({ id: "6211e8bc207a1f796ec0b69f", cutoff: 15 }),
+      })
+    );
+  }, [dispatch]);
 
   const onSearch = useCallback(() => {
     setIsSearching(true);
@@ -53,7 +67,12 @@ export const NearestNeighborModal = (props: Props) => {
           {!isSearching ? (
             <>
               Cutoff:
-              <NumberInput min={0} max={50} value={cutoff} onChange={onChangeCutoff}>
+              <NumberInput
+                min={0}
+                max={50}
+                value={cutoff}
+                onChange={onChangeCutoff}
+              >
                 <NumberInputField />
                 <NumberInputStepper>
                   <NumberIncrementStepper />
@@ -61,6 +80,7 @@ export const NearestNeighborModal = (props: Props) => {
                 </NumberInputStepper>
               </NumberInput>
             </>
+            // TODO: unknowns_are_diffs
           ) : (
             <Spinner size="xl" />
           )}
