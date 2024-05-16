@@ -1290,6 +1290,9 @@ components:
       type: object
     BioApiJobResponse:
       example:
+        result:
+        - null
+        - null
         jobId: jobId
         createdAt: createdAt
       properties:
@@ -1301,6 +1304,12 @@ components:
           type: string
         status:
           $ref: '#/components/schemas/BioApiStatus'
+        result:
+          items:
+            $ref: '#/components/schemas/AnalysisResult'
+          nullable: true
+          title: Result
+          type: array
     BioApiStatus:
       enum:
       - init

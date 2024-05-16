@@ -174,6 +174,7 @@ def get_analysis_with_metadata(sequence_id: str) -> Dict[str, Any]:
                 }
             }
         },
+        {"$set": { "id": {"$toString": "$_id"}}},
         {"$unset": ["_id", "metadata"]},
         {"$limit": (int(1))},
     ]

@@ -6,6 +6,7 @@ import {
   NumberInputField,
   NumberInputStepper,
   Spinner,
+  useToast,
 } from "@chakra-ui/react";
 import { AnalysisResult } from "sap-client";
 import { DataTableSelection } from "../data-table/data-table";
@@ -20,10 +21,13 @@ import {
   ModalCloseButton,
 } from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
-import { useDispatch } from "react-redux";
-import { requestAsync } from "redux-query";
-import { nearestNeighborsRequest } from "./nearest-neighbor-query-configs";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  NearestNeighborsResponse,
+  getNearestNeighbors,
+} from "./nearest-neighbor-query-configs";
 import { Checkbox } from "@chakra-ui/react";
+import { useMutation } from "redux-query-react";
 
 type Props = {
   selection: DataTableSelection<AnalysisResult>;
@@ -37,23 +41,41 @@ export const NearestNeighborModal = (props: Props) => {
   const [cutoff, setCutoff] = React.useState(15);
   const onChangeCutoff = (value: string) => setCutoff(parseInt(value));
   const [unknownsAreDiffs, setUnknownsAreDiffs] = useState<boolean>(true);
-
+  const toast = useToast();
   const dispatch = useDispatch();
 
-  const onSearch = useCallback(() => {
-    setIsSearching(true);
+  const nnResponse = useSelector(
+    (state: { entities: NearestNeighborsResponse }) => state.entities.nnResponse
+  );
 
+  const [{ isPending, status }, searchNearestNeighbors] = useMutation(() => {
     const first = Object.values(selection)[0];
-    dispatch(
-      requestAsync({
-        ...nearestNeighborsRequest({
-          id: first.original.id,
-          cutoff,
-          unknownsAreDiffs,
-        }),
-      })
-    );
+
+    const req = {
+      id: first.original.id,
+      cutoff,
+      unknownsAreDiffs,
+    };
+    return getNearestNeighbors(req);
+  });
+
+  const onSearch = useCallback(async () => {
+    setIsSearching(true);
+    await searchNearestNeighbors();
   }, [setIsSearching, selection, cutoff, unknownsAreDiffs, dispatch]);
+
+  React.useEffect(() => {
+    if (isSearching && status >= 200 && status < 300 && !isPending) {
+      console.dir(nnResponse);
+      toast({
+        title: `Found ${nnResponse.result.length} neighbor(s)`,
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+      });
+      onClose();
+    }
+  }, [t, toast, isSearching, isPending, status, nnResponse]);
 
   return (
     <Modal isOpen={true} onClose={onClose} size="sm">
@@ -91,8 +113,9 @@ export const NearestNeighborModal = (props: Props) => {
               </div>
             </div>
           ) : (
-            // TODO: unknowns_are_diffs
-            <Spinner size="xl" />
+            <>
+              <Spinner size="xl" />
+            </>
           )}
         </ModalBody>
         <ModalFooter>

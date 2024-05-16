@@ -1325,6 +1325,12 @@ components:
           title: Created At
         status:
           "$ref": "#/components/schemas/BioApiStatus"
+        result:
+          type: array
+          items:
+            "$ref": "#/components/schemas/AnalysisResult"
+          title: Result
+          nullable: true
 
     BioApiStatus:
       type: string

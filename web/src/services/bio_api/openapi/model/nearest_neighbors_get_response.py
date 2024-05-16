@@ -30,7 +30,9 @@ from web.src.services.bio_api.openapi.exceptions import ApiAttributeError
 
 
 def lazy_import():
+    from web.src.services.bio_api.openapi.model.neighbor import Neighbor
     from web.src.services.bio_api.openapi.model.status import Status
+    globals()['Neighbor'] = Neighbor
     globals()['Status'] = Status
 
 
@@ -90,14 +92,14 @@ class NearestNeighborsGETResponse(ModelNormal):
             'job_id': (str,),  # noqa: E501
             'created_at': (str,),  # noqa: E501
             'status': (Status,),  # noqa: E501
-            'finished_at': (dict,),  # noqa: E501
+            'finished_at': (str, none_type,),  # noqa: E501
             'seq_collection': (str,),  # noqa: E501
             'filtering': ({str: (bool, date, datetime, dict, float, int, list, str, none_type)},),  # noqa: E501
             'profile_field_path': (str,),  # noqa: E501
             'input_mongo_id': (str,),  # noqa: E501
             'cutoff': (int,),  # noqa: E501
             'unknowns_are_diffs': (bool,),  # noqa: E501
-            'result': (dict,),  # noqa: E501
+            'result': ([Neighbor], none_type,),  # noqa: E501
         }
 
     @cached_property
@@ -133,14 +135,14 @@ class NearestNeighborsGETResponse(ModelNormal):
             job_id (str):
             created_at (str):
             status (Status):
-            finished_at (dict):
+            finished_at (str, none_type):
             seq_collection (str):
             filtering ({str: (bool, date, datetime, dict, float, int, list, str, none_type)}):
             profile_field_path (str):
             input_mongo_id (str):
             cutoff (int):
             unknowns_are_diffs (bool):
-            result (dict):
+            result ([Neighbor], none_type):
 
         Keyword Args:
             _check_type (bool): if True, values for parameters in openapi_types
@@ -238,14 +240,14 @@ class NearestNeighborsGETResponse(ModelNormal):
             job_id (str):
             created_at (str):
             status (Status):
-            finished_at (dict):
+            finished_at (str, none_type):
             seq_collection (str):
             filtering ({str: (bool, date, datetime, dict, float, int, list, str, none_type)}):
             profile_field_path (str):
             input_mongo_id (str):
             cutoff (int):
             unknowns_are_diffs (bool):
-            result (dict):
+            result ([Neighbor], none_type):
 
         Keyword Args:
             _check_type (bool): if True, values for parameters in openapi_types

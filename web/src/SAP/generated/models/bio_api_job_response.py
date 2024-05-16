@@ -6,9 +6,11 @@ from datetime import date, datetime  # noqa: F401
 from typing import List, Dict  # noqa: F401
 
 from web.src.SAP.generated.models.base_model_ import Model
+from web.src.SAP.generated.models.analysis_result import AnalysisResult
 from web.src.SAP.generated.models.bio_api_status import BioApiStatus
 from web.src.SAP.generated import util
 
+from web.src.SAP.generated.models.analysis_result import AnalysisResult  # noqa: E501
 from web.src.SAP.generated.models.bio_api_status import BioApiStatus  # noqa: E501
 
 class BioApiJobResponse(Model):
@@ -19,7 +21,7 @@ class BioApiJobResponse(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, job_id=None, created_at=None, status=None):  # noqa: E501
+    def __init__(self, job_id=None, created_at=None, status=None, result=None):  # noqa: E501
         """BioApiJobResponse - a model defined in OpenAPI
 
         :param job_id: The job_id of this BioApiJobResponse.  # noqa: E501
@@ -28,22 +30,27 @@ class BioApiJobResponse(Model):
         :type created_at: str
         :param status: The status of this BioApiJobResponse.  # noqa: E501
         :type status: BioApiStatus
+        :param result: The result of this BioApiJobResponse.  # noqa: E501
+        :type result: List[AnalysisResult]
         """
         self.openapi_types = {
             'job_id': str,
             'created_at': str,
             'status': BioApiStatus,
+            'result': List[AnalysisResult],
         }
 
         self.attribute_map = {
             'job_id': 'jobId',
             'created_at': 'createdAt',
             'status': 'status',
+            'result': 'result',
         }
 
         self._job_id = job_id
         self._created_at = created_at
         self._status = status
+        self._result = result
 
     @classmethod
     def from_dict(cls, dikt):
@@ -118,3 +125,24 @@ class BioApiJobResponse(Model):
         """
 
         self._status = status
+
+    @property
+    def result(self):
+        """Gets the result of this BioApiJobResponse.
+
+
+        :return: The result of this BioApiJobResponse.
+        :rtype: List[AnalysisResult]
+        """
+        return self._result
+
+    @result.setter
+    def result(self, result):
+        """Sets the result of this BioApiJobResponse.
+
+
+        :param result: The result of this BioApiJobResponse.
+        :type result: List[AnalysisResult]
+        """
+
+        self._result = result

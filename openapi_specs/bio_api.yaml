@@ -457,9 +457,8 @@ components:
         status:
           "$ref": "#/components/schemas/Status"
         finished_at:
-          anyOf:
-          - type: string
-          - type: 'null'
+          type: string
+          nullable: true
           title: Finished At
         seq_collection:
           type: string
@@ -480,12 +479,11 @@ components:
           type: boolean
           title: Unknowns Are Diffs
         result:
-          anyOf:
-          - items:
-              "$ref": "#/components/schemas/Neighbor"
-            type: array
-          - type: 'null'
+          type: array
+          items:
+            "$ref": "#/components/schemas/Neighbor"
           title: Result
+          nullable: true
       type: object
       required:
       - job_id

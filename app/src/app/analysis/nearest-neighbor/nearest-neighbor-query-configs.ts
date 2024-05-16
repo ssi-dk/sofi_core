@@ -1,22 +1,26 @@
-import { BioApiJobResponse, NearestNeighborsRequest, post } from "sap-client";
+import { post, BioApiJobResponse, NearestNeighborsRequest } from "sap-client";
 import { getUrl } from "service";
 
-// TODO
-export const nearestNeighborsRequest = (request: NearestNeighborsRequest) => {
-  const base = post({ body: request });
+export type NearestNeighborsResponse = {
+  nnResponse: BioApiJobResponse;
+};
+
+export const getNearestNeighbors = (params: NearestNeighborsRequest) => {
+  const base = post<NearestNeighborsResponse>({ body: params });
 
   base.url = getUrl(base.url);
-
   base.transform = (response: BioApiJobResponse) => {
-    return {};
+    return {
+      nnResponse: response,
+    };
   };
 
-  // base.update = {
-  //   health: (oldValue, newValue) => {
-  //     return merge({}, cloneDeep(oldValue), newValue);
-  //   },
-  // };
+  base.update = {
+    nnResponse: (_, newValue) => newValue,
+  };
 
+  // Force a network call to be made. Making it promise as well.
   base.force = true;
+
   return base;
 };

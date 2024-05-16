@@ -13,6 +13,9 @@
 
 import { exists, mapValues } from '../runtime';
 import {
+    AnalysisResult,
+    AnalysisResultFromJSON,
+    AnalysisResultToJSON,
     BioApiStatus,
     BioApiStatusFromJSON,
     BioApiStatusToJSON,
@@ -42,6 +45,12 @@ export interface BioApiJobResponse  {
      * @memberof BioApiJobResponse
      */
     status?: BioApiStatus;
+    /**
+     * 
+     * @type {Array<AnalysisResult>}
+     * @memberof BioApiJobResponse
+     */
+    result?: Array<AnalysisResult>;
 }
 
 export function BioApiJobResponseFromJSON(json: any): BioApiJobResponse {
@@ -49,6 +58,7 @@ export function BioApiJobResponseFromJSON(json: any): BioApiJobResponse {
         'jobId': !exists(json, 'jobId') ? undefined : json['jobId'],
         'createdAt': !exists(json, 'createdAt') ? undefined : json['createdAt'],
         'status': !exists(json, 'status') ? undefined : BioApiStatusFromJSON(json['status']),
+        'result': !exists(json, 'result') ? undefined : (json['result'] as Array<any>).map(AnalysisResultFromJSON),
     };
 }
 
@@ -60,6 +70,7 @@ export function BioApiJobResponseToJSON(value?: BioApiJobResponse): any {
         'jobId': value.jobId,
         'createdAt': value.createdAt,
         'status': BioApiStatusToJSON(value.status),
+        'result': value.result === undefined ? undefined : (value.result as Array<any>).map(AnalysisResultToJSON),
     };
 }
 
