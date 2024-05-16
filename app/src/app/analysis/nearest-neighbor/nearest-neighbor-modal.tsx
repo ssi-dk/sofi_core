@@ -62,7 +62,7 @@ export const NearestNeighborModal = (props: Props) => {
   const onSearch = useCallback(async () => {
     setIsSearching(true);
     await searchNearestNeighbors();
-  }, [setIsSearching, selection, cutoff, unknownsAreDiffs, dispatch]);
+  }, [setIsSearching, searchNearestNeighbors]);
 
   React.useEffect(() => {
     if (isSearching && status >= 200 && status < 300 && !isPending) {
@@ -75,7 +75,7 @@ export const NearestNeighborModal = (props: Props) => {
       });
       onClose();
     }
-  }, [t, toast, isSearching, isPending, status, nnResponse]);
+  }, [t, toast, isSearching, isPending, status, nnResponse, onClose]);
 
   return (
     <Modal isOpen={true} onClose={onClose} size="sm">
