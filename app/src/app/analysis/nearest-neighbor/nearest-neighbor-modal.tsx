@@ -40,9 +40,10 @@ export const NearestNeighborModal = (props: Props) => {
 
   useEffect(() => {
     // TODO
+    const first = Object.values(selection)[0];
     dispatch(
       requestAsync({
-        ...nearestNeighborsRequest({ id: "6211e8bc207a1f796ec0b69f", cutoff: 15 }),
+        ...nearestNeighborsRequest({ id: first.original.id, cutoff }),
       })
     );
   }, [dispatch]);

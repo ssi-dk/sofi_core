@@ -15,7 +15,7 @@ from ...common.database import (
     ANALYSIS_COL_NAME,
 )
 import sys
-
+from bson.objectid import ObjectId
 
 def remove_id(item):
     item.pop("_id", None)
@@ -116,6 +116,11 @@ def get_single_analysis(identifier: str) -> Dict[str, Any]:
     samples = mydb[ANALYSIS_COL_NAME]
     return samples.find_one({"sequence_id": f"{identifier}"}, {"_id": 0})
 
+def get_single_analysis_by_object_id(id: str) -> Dict[str, Any]:
+    conn = get_connection()
+    mydb = conn[DB_NAME]
+    analysis = mydb[ANALYSIS_COL_NAME]
+    return analysis.find_one(ObjectId(id))
 
 def get_analysis_with_metadata(sequence_id: str) -> Dict[str, Any]:
     conn = get_connection()
