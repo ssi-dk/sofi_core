@@ -10,8 +10,7 @@ def post(user, token, body: NearestNeighborsRequest):
     with ApiClient(Configuration(host="http://bio_api:8000")) as api_client:
         api_instance = NearestNeighborsApi(api_client)
 
-        # TODO: filtering={"species_final": "value"}
-        request = BioNearestNeighborsRequest("sap_analysis_results", "st_alleles", body.id, body.cutoff, False)
+        request = BioNearestNeighborsRequest("sap_analysis_results", {"species_final": "value"}, "st_alleles", body.id, body.cutoff, False)
         api_response = api_instance.nearest_neighbors_v1_nearest_neighbors_post(request)
 
         return jsonify(api_response.to_dict())

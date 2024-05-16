@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   title: Bio API
-  description: REST API for controlling bioinformatic calculations1
+  description: REST API for controlling bioinformatic calculations
   version: 0.2.0
 servers:
   - url: 'http://localhost:8000/'
@@ -465,9 +465,7 @@ components:
           type: string
           title: Seq Collection
         filtering:
-          anyOf:
-          - type: object
-          - type: 'null'
+          type: object
           title: Filtering
         profile_field_path:
           type: string
@@ -495,6 +493,7 @@ components:
       - status
       - finished_at
       - seq_collection
+      - filtering
       - profile_field_path
       - input_mongo_id
       - cutoff
@@ -507,9 +506,7 @@ components:
           type: string
           title: Seq Collection
         filtering:
-          anyOf:
-          - type: object
-          - type: 'null'
+          type: object
           title: Filtering
         profile_field_path:
           type: string
@@ -526,6 +523,7 @@ components:
       type: object
       required:
       - seq_collection
+      - filtering
       - profile_field_path
       - input_mongo_id
       - cutoff
