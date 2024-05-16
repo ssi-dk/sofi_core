@@ -1317,10 +1317,10 @@ components:
 
     BioApiJobResponse:
       properties:
-        job_id:
+        jobId:
           type: string
           title: Job Id
-        created_at:
+        createdAt:
           type: string
           title: Created At
         status:

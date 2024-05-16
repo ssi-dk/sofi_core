@@ -29,13 +29,13 @@ export interface BioApiJobResponse  {
      * @type {string}
      * @memberof BioApiJobResponse
      */
-    job_id?: string;
+    jobId?: string;
     /**
      * 
      * @type {string}
      * @memberof BioApiJobResponse
      */
-    created_at?: string;
+    createdAt?: string;
     /**
      * 
      * @type {BioApiStatus}
@@ -46,8 +46,8 @@ export interface BioApiJobResponse  {
 
 export function BioApiJobResponseFromJSON(json: any): BioApiJobResponse {
     return {
-        'job_id': !exists(json, 'job_id') ? undefined : json['job_id'],
-        'created_at': !exists(json, 'created_at') ? undefined : json['created_at'],
+        'jobId': !exists(json, 'jobId') ? undefined : json['jobId'],
+        'createdAt': !exists(json, 'createdAt') ? undefined : json['createdAt'],
         'status': !exists(json, 'status') ? undefined : BioApiStatusFromJSON(json['status']),
     };
 }
@@ -57,8 +57,8 @@ export function BioApiJobResponseToJSON(value?: BioApiJobResponse): any {
         return undefined;
     }
     return {
-        'job_id': value.job_id,
-        'created_at': value.created_at,
+        'jobId': value.jobId,
+        'createdAt': value.createdAt,
         'status': BioApiStatusToJSON(value.status),
     };
 }

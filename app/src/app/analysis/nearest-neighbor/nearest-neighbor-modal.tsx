@@ -40,8 +40,9 @@ export const NearestNeighborModal = (props: Props) => {
 
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    // TODO
+  const onSearch = useCallback(() => {
+    setIsSearching(true);
+
     const first = Object.values(selection)[0];
     dispatch(
       requestAsync({
@@ -52,17 +53,7 @@ export const NearestNeighborModal = (props: Props) => {
         }),
       })
     );
-  }, [dispatch, selection, cutoff, unknownsAreDiffs]);
-
-  const onSearch = useCallback(() => {
-    setIsSearching(true);
-    alert(
-      `Search, cutoff ${cutoff}, ids ` +
-        Object.values(selection)
-          .map((s) => s.original.id)
-          .join(", ")
-    );
-  }, [setIsSearching, selection, cutoff]);
+  }, [setIsSearching, selection, cutoff, unknownsAreDiffs]);
 
   return (
     <Modal isOpen={true} onClose={onClose} size="sm">

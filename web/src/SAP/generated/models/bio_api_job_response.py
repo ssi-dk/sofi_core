@@ -36,8 +36,8 @@ class BioApiJobResponse(Model):
         }
 
         self.attribute_map = {
-            'job_id': 'job_id',
-            'created_at': 'created_at',
+            'job_id': 'jobId',
+            'created_at': 'createdAt',
             'status': 'status',
         }
 

@@ -1290,13 +1290,13 @@ components:
       type: object
     BioApiJobResponse:
       example:
-        job_id: job_id
-        created_at: created_at
+        jobId: jobId
+        createdAt: createdAt
       properties:
-        job_id:
+        jobId:
           title: Job Id
           type: string
-        created_at:
+        createdAt:
           title: Created At
           type: string
         status:

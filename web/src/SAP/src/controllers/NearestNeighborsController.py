@@ -16,4 +16,6 @@ def post(user, token, body: NearestNeighborsRequest):
         request = BioNearestNeighborsRequest("samples", filtering, "categories.cgmlst.report.alleles", body.id, body.cutoff, body.unknowns_are_diffs)
         api_response = api_instance.nearest_neighbors_v1_nearest_neighbors_post(request)
 
-        return jsonify(api_response.to_dict())
+        return jsonify({"status": api_response.status.value, 
+                        "jobId": api_response.job_id, 
+                        "createdAt":api_response.created_at })
