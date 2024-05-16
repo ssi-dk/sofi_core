@@ -53,7 +53,7 @@ export const NearestNeighborModal = (props: Props) => {
         }),
       })
     );
-  }, [setIsSearching, selection, cutoff, unknownsAreDiffs]);
+  }, [setIsSearching, selection, cutoff, unknownsAreDiffs, dispatch]);
 
   return (
     <Modal isOpen={true} onClose={onClose} size="sm">
