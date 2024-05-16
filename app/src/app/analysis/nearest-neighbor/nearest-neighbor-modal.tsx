@@ -23,6 +23,7 @@ import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { requestAsync } from "redux-query";
 import { nearestNeighborsRequest } from "./nearest-neighbor-query-configs";
+import { Checkbox } from "@chakra-ui/react";
 
 type Props = {
   selection: DataTableSelection<AnalysisResult>;
@@ -34,7 +35,8 @@ export const NearestNeighborModal = (props: Props) => {
   const { selection, onClose } = props;
   const [isSearching, setIsSearching] = useState<boolean>(false);
   const [cutoff, setCutoff] = React.useState(15);
-  const onChangeCutoff = (value) => setCutoff(value);
+  const onChangeCutoff = (value: string) => setCutoff(parseInt(value));
+  const [unknownsAreDiffs, setUnknownsAreDiffs] = useState<boolean>(true);
 
   const dispatch = useDispatch();
 
@@ -43,13 +45,14 @@ export const NearestNeighborModal = (props: Props) => {
     const first = Object.values(selection)[0];
     dispatch(
       requestAsync({
-        ...nearestNeighborsRequest({ 
-          id: first.original.id, 
-          cutoff, 
-          unknownsAreDiffs: true }),
+        ...nearestNeighborsRequest({
+          id: first.original.id,
+          cutoff,
+          unknownsAreDiffs,
+        }),
       })
     );
-  }, [dispatch, selection, cutoff]);
+  }, [dispatch, selection, cutoff, unknownsAreDiffs]);
 
   const onSearch = useCallback(() => {
     setIsSearching(true);
@@ -69,21 +72,33 @@ export const NearestNeighborModal = (props: Props) => {
         <ModalCloseButton />
         <ModalBody overflowY="auto" px="7">
           {!isSearching ? (
-            <>
-              Cutoff:
-              <NumberInput
-                min={0}
-                max={50}
-                value={cutoff}
-                onChange={onChangeCutoff}
-              >
-                <NumberInputField />
-                <NumberInputStepper>
-                  <NumberIncrementStepper />
-                  <NumberDecrementStepper />
-                </NumberInputStepper>
-              </NumberInput>
-            </>
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "8px" }}
+            >
+              <div>
+                Cutoff:
+                <NumberInput
+                  min={0}
+                  max={50}
+                  value={cutoff}
+                  onChange={onChangeCutoff}
+                >
+                  <NumberInputField />
+                  <NumberInputStepper>
+                    <NumberIncrementStepper />
+                    <NumberDecrementStepper />
+                  </NumberInputStepper>
+                </NumberInput>
+              </div>
+              <div>
+                <Checkbox
+                  onChange={(e) => setUnknownsAreDiffs(e.target.checked)}
+                  isChecked={unknownsAreDiffs}
+                >
+                  Unknowns are diffs
+                </Checkbox>
+              </div>
+            </div>
           ) : (
             // TODO: unknowns_are_diffs
             <Spinner size="xl" />
