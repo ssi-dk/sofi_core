@@ -30,12 +30,19 @@ export interface NearestNeighborsRequest  {
      * @memberof NearestNeighborsRequest
      */
     cutoff: number;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof NearestNeighborsRequest
+     */
+    unknownsAreDiffs: boolean;
 }
 
 export function NearestNeighborsRequestFromJSON(json: any): NearestNeighborsRequest {
     return {
         'id': json['id'],
         'cutoff': json['cutoff'],
+        'unknownsAreDiffs': json['unknownsAreDiffs'],
     };
 }
 
@@ -46,6 +53,7 @@ export function NearestNeighborsRequestToJSON(value?: NearestNeighborsRequest): 
     return {
         'id': value.id,
         'cutoff': value.cutoff,
+        'unknownsAreDiffs': value.unknownsAreDiffs,
     };
 }
 

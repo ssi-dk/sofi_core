@@ -19,6 +19,7 @@ class TestNearestNeighborsController(BaseTestCase):
         
         """
         body = {
+  "unknownsAreDiffs" : true,
   "id" : "id",
   "cutoff" : 0
 }

@@ -1269,6 +1269,7 @@ components:
     NearestNeighborsRequest:
       description: Parameters for a REST request for a nearest neighbors calculation.
       example:
+        unknownsAreDiffs: true
         id: id
         cutoff: 0
       properties:
@@ -1278,9 +1279,13 @@ components:
         cutoff:
           title: Cutoff
           type: integer
+        unknownsAreDiffs:
+          title: Unknowns Are Diffs
+          type: boolean
       required:
       - cutoff
       - id
+      - unknownsAreDiffs
       title: NearestNeighborsRequest
       type: object
     BioApiJobResponse:

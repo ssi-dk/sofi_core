@@ -17,26 +17,31 @@ class NearestNeighborsRequest(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, id=None, cutoff=None):  # noqa: E501
+    def __init__(self, id=None, cutoff=None, unknowns_are_diffs=None):  # noqa: E501
         """NearestNeighborsRequest - a model defined in OpenAPI
 
         :param id: The id of this NearestNeighborsRequest.  # noqa: E501
         :type id: str
         :param cutoff: The cutoff of this NearestNeighborsRequest.  # noqa: E501
         :type cutoff: int
+        :param unknowns_are_diffs: The unknowns_are_diffs of this NearestNeighborsRequest.  # noqa: E501
+        :type unknowns_are_diffs: bool
         """
         self.openapi_types = {
             'id': str,
             'cutoff': int,
+            'unknowns_are_diffs': bool,
         }
 
         self.attribute_map = {
             'id': 'id',
             'cutoff': 'cutoff',
+            'unknowns_are_diffs': 'unknownsAreDiffs',
         }
 
         self._id = id
         self._cutoff = cutoff
+        self._unknowns_are_diffs = unknowns_are_diffs
 
     @classmethod
     def from_dict(cls, dikt):
@@ -94,3 +99,26 @@ class NearestNeighborsRequest(Model):
             raise ValueError("Invalid value for `cutoff`, must not be `None`")  # noqa: E501
 
         self._cutoff = cutoff
+
+    @property
+    def unknowns_are_diffs(self):
+        """Gets the unknowns_are_diffs of this NearestNeighborsRequest.
+
+
+        :return: The unknowns_are_diffs of this NearestNeighborsRequest.
+        :rtype: bool
+        """
+        return self._unknowns_are_diffs
+
+    @unknowns_are_diffs.setter
+    def unknowns_are_diffs(self, unknowns_are_diffs):
+        """Sets the unknowns_are_diffs of this NearestNeighborsRequest.
+
+
+        :param unknowns_are_diffs: The unknowns_are_diffs of this NearestNeighborsRequest.
+        :type unknowns_are_diffs: bool
+        """
+        if unknowns_are_diffs is None:
+            raise ValueError("Invalid value for `unknowns_are_diffs`, must not be `None`")  # noqa: E501
+
+        self._unknowns_are_diffs = unknowns_are_diffs

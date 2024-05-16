@@ -43,10 +43,13 @@ export const NearestNeighborModal = (props: Props) => {
     const first = Object.values(selection)[0];
     dispatch(
       requestAsync({
-        ...nearestNeighborsRequest({ id: first.original.id, cutoff }),
+        ...nearestNeighborsRequest({ 
+          id: first.original.id, 
+          cutoff, 
+          unknownsAreDiffs: true }),
       })
     );
-  }, [dispatch]);
+  }, [dispatch, selection, cutoff]);
 
   const onSearch = useCallback(() => {
     setIsSearching(true);
@@ -81,8 +84,8 @@ export const NearestNeighborModal = (props: Props) => {
                 </NumberInputStepper>
               </NumberInput>
             </>
-            // TODO: unknowns_are_diffs
           ) : (
+            // TODO: unknowns_are_diffs
             <Spinner size="xl" />
           )}
         </ModalBody>

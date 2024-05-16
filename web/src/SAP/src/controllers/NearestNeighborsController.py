@@ -13,7 +13,7 @@ def post(user, token, body: NearestNeighborsRequest):
 
         api_instance = NearestNeighborsApi(api_client)
         filtering = {"categories.species_detection.summary.detected_species": analysis["species_final"]}
-        request = BioNearestNeighborsRequest("samples", filtering, "categories.cgmlst.report.alleles", body.id, body.cutoff, False)
+        request = BioNearestNeighborsRequest("samples", filtering, "categories.cgmlst.report.alleles", body.id, body.cutoff, body.unknowns_are_diffs)
         api_response = api_instance.nearest_neighbors_v1_nearest_neighbors_post(request)
 
         return jsonify(api_response.to_dict())
