@@ -13,10 +13,10 @@ app = create_app()
 idp = os.environ["IDP"]
 headers = {"Accept": "application/json"}
 
-r = requests.get(idp + "/.well-known/jwks.json", params={}, headers=headers)
+r = requests.get(idp, params={}, headers=headers)
 
 jsonkeys = r.json()
-jsonkey = jsonkeys["keys"][0]
+jsonkey = next(key for key in jsonkeys["keys"] if key["alg"] == "RS256")
 jwk_json = json.dumps(jsonkey)
 jwk = JWK.from_json(jwk_json)
 

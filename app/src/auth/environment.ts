@@ -2,12 +2,12 @@ import { DefaultCrypto, LocalStorageBackend } from "@openid/appauth";
 import { NoHashQueryStringUtils } from "./no-hash-query-string-utils";
 
 export const Environment = {
-  openIdConnectUrl: `${window.location.protocol}//${window.location.host}`,
+  openIdConnectUrl: `https://dev.sofi-platform.dk/auth/realms/master`,
   clientId: "SOFI_APP",
   redirectUri: `${window.location.protocol}//${window.location.host}/callback`,
   signoutUrl: `${window.location.protocol}//${window.location.host}/.ory/kratos/public/self-service/browser/flows/logout`,
-  scope: "openid offline email profile",
-  userInfoEndpoint: "/.well-known/userinfo",
+  scope: "openid offline_access email profile",
+  userInfoEndpoint: "/protocol/openid-connect/userinfo",
   storageBackend: new LocalStorageBackend(),
   crypto: new DefaultCrypto(),
   queryStringUtils: new NoHashQueryStringUtils(),

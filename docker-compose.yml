@@ -7,6 +7,36 @@ x-extra_hosts:
 
 services:
 
+  keycloak: 
+    image: quay.io/keycloak/keycloak:24.0.4
+    container_name: keycloak
+    ports:
+      - "8080:8080"
+    environment:
+      - KEYCLOAK_USER=admin
+      - KEYCLOAK_PASSWORD=admin
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=admin
+      - PROXY_ADDRESS_FORWARDING=true
+      - KC_HOSTNAME_URL=https://${SOFI_HOSTNAME}/auth
+      - KC_DB=postgres
+      - KC_DB_PASSWORD=${PG_SECRET}
+      - KC_DB_SCHEMA=public
+      - KC_DB_USERNAME=${PG_USER}
+      - KC_DB_URL_HOST=postgresd
+      - KC_DB_URL_DATABASE=keycloak
+      - KC_LOG_LEVEL=info
+      - KC_PROXY=edge
+      - KC_HTTP_RELATIVE_PATH=/auth
+    depends_on:
+      - postgresd
+    restart: on-failure
+    command:
+      - "start"
+    volumes:
+      - ./auth/import:/opt/keycloak/data/import
+
+
   sap_api:
     expose:
       - 6000
@@ -15,11 +45,12 @@ services:
     command: ["/bin/sh", "-c", "/app/start.sh"]
     depends_on:
       - "hydra"
+      - "keycloak"
     restart: on-failure
-
+##/auth/realms/master
     environment:
       - APP_MODULE=wsgi:app
-      - IDP=https://${SOFI_HOSTNAME}
+      - IDP=https://${SOFI_HOSTNAME}/auth/realms/master/protocol/openid-connect/certs
       - SOFI_CLIENT_ID=${SOFI_CLIENT_ID}
       - BIFROST_MONGO_CONN=${BIFROST_MONGO_CONN}
       - BIFROST_MONGO_DB=${BIFROST_MONGO_DB}
@@ -113,6 +144,7 @@ services:
       - "sap_api"
       - "sap_app"
       - "auth-selfservice-ui"
+      - "keycloak"
     volumes:
       - ./Caddyfile:/etc/Caddyfile:ro
       - ${TLS_KEY_PATH}:/etc/sofi.pem:ro
@@ -126,7 +158,7 @@ services:
     environment:
       - POSTGRES_USER=${PG_USER}
       - POSTGRES_PASSWORD=${PG_SECRET}
-      - POSTGRES_MULTIPLE_DATABASES=kratos,hydra
+      - POSTGRES_MULTIPLE_DATABASES=kratos,hydra,keycloak
       - PGDATA=/var/lib/postgresql/data/pgdata
     volumes:
       - ./auth/pg/pg-init:/docker-entrypoint-initdb.d

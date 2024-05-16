@@ -11,7 +11,7 @@ def who_am_i(user, token_info):
             user_id=token_info["email"],
             data_clearance=token_info["sofi-data-clearance"],
             institution=token_info["institution"],
-            groups=token_info["security-groups"],
+            groups=[item.lstrip('/') for item in token_info["security-groups"]],
             permissions=list_permissions(token_info),
         )
     )

@@ -32,6 +32,11 @@
         reverse_proxy auth-selfservice-ui:3000
     }
 
+    route /auth/* {        
+        header X-Forwarded-Proto https
+        reverse_proxy keycloak:8080
+    }
+
     route /.ory/hydra/public/* {
         uri strip_prefix /.ory/hydra/public
         header X-Forwarded-Proto https
