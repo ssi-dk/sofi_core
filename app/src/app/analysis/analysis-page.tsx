@@ -669,7 +669,9 @@ export default function AnalysisPage() {
       </Box>
       <Debug>
         <p>redux selection:</p>
-        {JSON.stringify(selection, undefined, "  ")}
+        <pre>
+          {JSON.stringify(selection, undefined, "  ")}
+        </pre>      
       </Debug>
     </React.Fragment>
   );

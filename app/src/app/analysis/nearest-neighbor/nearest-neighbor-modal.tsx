@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
 import {
   NumberDecrementStepper,
   NumberIncrementStepper,
@@ -23,11 +23,12 @@ import {
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  NearestNeighborsResponse,
+  NearestNeighborsResponseSlice,
   getNearestNeighbors,
 } from "./nearest-neighbor-query-configs";
 import { Checkbox } from "@chakra-ui/react";
 import { useMutation } from "redux-query-react";
+import { setSelection } from "../analysis-selection-configs";
 
 type Props = {
   selection: DataTableSelection<AnalysisResult>;
@@ -44,8 +45,9 @@ export const NearestNeighborModal = (props: Props) => {
   const toast = useToast();
   const dispatch = useDispatch();
 
-  const nnResponse = useSelector(
-    (state: { entities: NearestNeighborsResponse }) => state.entities.nnResponse
+  const nearestNeighborsResponse = useSelector(
+    (state: { entities: NearestNeighborsResponseSlice }) =>
+      state.entities.nearestNeighborsResponse
   );
 
   const [{ isPending, status }, searchNearestNeighbors] = useMutation(() => {
@@ -66,16 +68,37 @@ export const NearestNeighborModal = (props: Props) => {
 
   React.useEffect(() => {
     if (isSearching && status >= 200 && status < 300 && !isPending) {
-      console.dir(nnResponse);
       toast({
-        title: `Found ${nnResponse.result.length} neighbor(s)`,
+        title: `Found ${nearestNeighborsResponse.result.length} neighbor(s)`,
         status: "success",
         duration: 5000,
         isClosable: true,
       });
+
+      if (nearestNeighborsResponse.result) {
+        const newSelection = Object.assign({}, selection);
+        nearestNeighborsResponse.result?.forEach((n) => {
+          newSelection[n.sequence_id] = {
+            cells: {},
+            original: n,
+          };
+        });
+        dispatch(setSelection(newSelection));
+      }
+
       onClose();
     }
-  }, [t, toast, isSearching, isPending, status, nnResponse, onClose]);
+  }, [
+    t,
+    toast,
+    isSearching,
+    isPending,
+    status,
+    nearestNeighborsResponse,
+    onClose,
+    dispatch,
+    selection,
+  ]);
 
   return (
     <Modal isOpen={true} onClose={onClose} size="sm">

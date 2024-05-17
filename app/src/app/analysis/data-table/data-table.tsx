@@ -37,7 +37,7 @@ export type DataTableSelection<T extends object> = Record<
   string,
   {
     original: T;
-    cells: Record<keyof T, boolean>;
+    cells: Partial<Record<keyof T, boolean>>;
   }
 >;
 
