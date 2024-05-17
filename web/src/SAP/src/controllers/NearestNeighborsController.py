@@ -1,8 +1,8 @@
 import sys
 import time
 from web.src.SAP.generated.models.nearest_neighbors_request import NearestNeighborsRequest
-from web.src.SAP.src.controllers.AnalysisController import get_sequence_by_id
 from web.src.SAP.src.repositories.analysis import get_analysis_with_metadata, get_single_analysis_by_object_id
+from web.src.SAP.src.repositories.samples import get_single_sample_by_object_id
 from web.src.SAP.src.security.permission_check import assert_user_has
 from web.src.services.bio_api.openapi.api.nearest_neighbors_api import NearestNeighborsApi
 from web.src.services.bio_api.openapi.api_client import ApiClient
@@ -15,10 +15,11 @@ def post(user, token, body: NearestNeighborsRequest):
     assert_user_has("search", token)
     
     with ApiClient(Configuration(host="http://bio_api:8000")) as api_client:
-        analysis = get_single_analysis_by_object_id(body.id)
+        sample = get_single_sample_by_object_id(body.id)
+        detected_species = sample["categories"]["species_detection"]["summary"]["detected_species"]
 
         api_instance = NearestNeighborsApi(api_client)
-        filtering = {"categories.species_detection.summary.detected_species": analysis["species_final"]}
+        filtering = {"categories.species_detection.summary.detected_species": detected_species}
         request = BioNearestNeighborsRequest("samples", filtering, "categories.cgmlst.report.alleles", body.id, body.cutoff, body.unknowns_are_diffs)
         api_response = api_instance.nearest_neighbors_v1_nearest_neighbors_post(request)
 
