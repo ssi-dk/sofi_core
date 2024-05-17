@@ -572,7 +572,9 @@ export default function AnalysisPage() {
   );
 
   const onSelectCallback = React.useCallback(
-    (sel) => dispatch(setSelection(sel)),
+    (sel) => {
+      dispatch(setSelection(sel));
+    },
     [dispatch]
   );
 
@@ -648,6 +650,7 @@ export default function AnalysisPage() {
               pageState.isNarrowed ? "approvingCell" : "selectedCell"
             }
             onSelect={onSelectCallback}
+            selection={selection}
             onDetailsClick={openDetailsView}
             view={view}
           />
@@ -669,9 +672,7 @@ export default function AnalysisPage() {
       </Box>
       <Debug>
         <p>redux selection:</p>
-        <pre>
-          {JSON.stringify(selection, undefined, "  ")}
-        </pre>      
+        <pre>{JSON.stringify(selection, undefined, "  ")}</pre>
       </Debug>
     </React.Fragment>
   );
