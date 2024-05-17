@@ -67,23 +67,32 @@ export const NearestNeighborModal = (props: Props) => {
   }, [setIsSearching, searchNearestNeighbors]);
 
   React.useEffect(() => {
-    if (isSearching && status >= 200 && status < 300 && !isPending) {
-      toast({
-        title: `Found ${nearestNeighborsResponse.result.length} neighbor(s)`,
-        status: "success",
-        duration: 5000,
-        isClosable: true,
-      });
-
-      if (nearestNeighborsResponse.result) {
-        const newSelection = Object.assign({}, selection);
-        nearestNeighborsResponse.result?.forEach((n) => {
-          newSelection[n.sequence_id] = {
-            cells: {},
-            original: n,
-          };
+    if (isSearching && !isPending) {
+      if (status >= 200 && status < 300) {
+        toast({
+          title: `Found ${nearestNeighborsResponse.result.length} neighbor(s)`,
+          status: "success",
+          duration: 5000,
+          isClosable: true,
         });
-        dispatch(setSelection(newSelection));
+
+        if (nearestNeighborsResponse.result) {
+          const newSelection = Object.assign({}, selection);
+          nearestNeighborsResponse.result?.forEach((n) => {
+            newSelection[n.sequence_id] = {
+              cells: {},
+              original: n,
+            };
+          });
+          dispatch(setSelection(newSelection));
+        }
+      } else {
+        toast({
+          title: `Error`,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
       }
 
       onClose();
