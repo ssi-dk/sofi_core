@@ -15,12 +15,12 @@
 import { HttpMethods, QueryConfig, ResponseBody, ResponseText } from 'redux-query';
 import * as runtime from '../runtime';
 import {
-    BioApiJobResponse,
-    BioApiJobResponseFromJSON,
-    BioApiJobResponseToJSON,
     NearestNeighborsRequest,
     NearestNeighborsRequestFromJSON,
     NearestNeighborsRequestToJSON,
+    NearestNeighborsResponse,
+    NearestNeighborsResponseFromJSON,
+    NearestNeighborsResponseToJSON,
 } from '../models';
 
 export interface PostRequest {
@@ -31,7 +31,7 @@ export interface PostRequest {
 /**
  * Nearest Neighbors
  */
-function postRaw<T>(requestParameters: PostRequest, requestConfig: runtime.TypedQueryConfig<T, BioApiJobResponse> = {}): QueryConfig<T> {
+function postRaw<T>(requestParameters: PostRequest, requestConfig: runtime.TypedQueryConfig<T, NearestNeighborsResponse> = {}): QueryConfig<T> {
     if (requestParameters.body === null || requestParameters.body === undefined) {
         throw new runtime.RequiredError('body','Required parameter requestParameters.body was null or undefined when calling post.');
     }
@@ -64,7 +64,7 @@ function postRaw<T>(requestParameters: PostRequest, requestConfig: runtime.Typed
 
     const { transform: requestTransform } = requestConfig;
     if (requestTransform) {
-        config.transform = (body: ResponseBody, text: ResponseBody) => requestTransform(BioApiJobResponseFromJSON(body), text);
+        config.transform = (body: ResponseBody, text: ResponseBody) => requestTransform(NearestNeighborsResponseFromJSON(body), text);
     }
 
     return config;
@@ -73,7 +73,7 @@ function postRaw<T>(requestParameters: PostRequest, requestConfig: runtime.Typed
 /**
 * Nearest Neighbors
 */
-export function post<T>(requestParameters: PostRequest, requestConfig?: runtime.TypedQueryConfig<T, BioApiJobResponse>): QueryConfig<T> {
+export function post<T>(requestParameters: PostRequest, requestConfig?: runtime.TypedQueryConfig<T, NearestNeighborsResponse>): QueryConfig<T> {
     return postRaw(requestParameters, requestConfig);
 }
 

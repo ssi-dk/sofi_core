@@ -24,36 +24,36 @@ import {
 /**
  * 
  * @export
- * @interface BioApiJobResponse
+ * @interface NearestNeighborsResponse
  */
-export interface BioApiJobResponse  {
+export interface NearestNeighborsResponse  {
     /**
      * 
      * @type {string}
-     * @memberof BioApiJobResponse
+     * @memberof NearestNeighborsResponse
      */
     jobId?: string;
     /**
      * 
      * @type {string}
-     * @memberof BioApiJobResponse
+     * @memberof NearestNeighborsResponse
      */
     createdAt?: string;
     /**
      * 
      * @type {BioApiStatus}
-     * @memberof BioApiJobResponse
+     * @memberof NearestNeighborsResponse
      */
     status?: BioApiStatus;
     /**
      * 
      * @type {Array<AnalysisResult>}
-     * @memberof BioApiJobResponse
+     * @memberof NearestNeighborsResponse
      */
     result?: Array<AnalysisResult>;
 }
 
-export function BioApiJobResponseFromJSON(json: any): BioApiJobResponse {
+export function NearestNeighborsResponseFromJSON(json: any): NearestNeighborsResponse {
     return {
         'jobId': !exists(json, 'jobId') ? undefined : json['jobId'],
         'createdAt': !exists(json, 'createdAt') ? undefined : json['createdAt'],
@@ -62,7 +62,7 @@ export function BioApiJobResponseFromJSON(json: any): BioApiJobResponse {
     };
 }
 
-export function BioApiJobResponseToJSON(value?: BioApiJobResponse): any {
+export function NearestNeighborsResponseToJSON(value?: NearestNeighborsResponse): any {
     if (value === undefined) {
         return undefined;
     }

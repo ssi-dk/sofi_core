@@ -34,7 +34,7 @@ paths:
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/BioApiJobResponse"
+                "$ref": "#/components/schemas/NearestNeighborsResponse"
   /me:
     get:
       description: Describe the current user and their permissions
@@ -1315,7 +1315,7 @@ components:
       title: NearestNeighborsRequest
       description: Parameters for a REST request for a nearest neighbors calculation.
 
-    BioApiJobResponse:
+    NearestNeighborsResponse:
       properties:
         jobId:
           type: string

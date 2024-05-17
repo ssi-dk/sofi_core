@@ -13,7 +13,7 @@ from web.src.SAP.generated import util
 from web.src.SAP.generated.models.analysis_result import AnalysisResult  # noqa: E501
 from web.src.SAP.generated.models.bio_api_status import BioApiStatus  # noqa: E501
 
-class BioApiJobResponse(Model):
+class NearestNeighborsResponse(Model):
 
 
 
@@ -22,15 +22,15 @@ class BioApiJobResponse(Model):
     """
 
     def __init__(self, job_id=None, created_at=None, status=None, result=None):  # noqa: E501
-        """BioApiJobResponse - a model defined in OpenAPI
+        """NearestNeighborsResponse - a model defined in OpenAPI
 
-        :param job_id: The job_id of this BioApiJobResponse.  # noqa: E501
+        :param job_id: The job_id of this NearestNeighborsResponse.  # noqa: E501
         :type job_id: str
-        :param created_at: The created_at of this BioApiJobResponse.  # noqa: E501
+        :param created_at: The created_at of this NearestNeighborsResponse.  # noqa: E501
         :type created_at: str
-        :param status: The status of this BioApiJobResponse.  # noqa: E501
+        :param status: The status of this NearestNeighborsResponse.  # noqa: E501
         :type status: BioApiStatus
-        :param result: The result of this BioApiJobResponse.  # noqa: E501
+        :param result: The result of this NearestNeighborsResponse.  # noqa: E501
         :type result: List[AnalysisResult]
         """
         self.openapi_types = {
@@ -58,27 +58,27 @@ class BioApiJobResponse(Model):
 
         :param dikt: A dict.
         :type: dict
-        :return: The BioApiJobResponse of this BioApiJobResponse.  # noqa: E501
-        :rtype: BioApiJobResponse
+        :return: The NearestNeighborsResponse of this NearestNeighborsResponse.  # noqa: E501
+        :rtype: NearestNeighborsResponse
         """
         return util.deserialize_model(dikt, cls)
 
     @property
     def job_id(self):
-        """Gets the job_id of this BioApiJobResponse.
+        """Gets the job_id of this NearestNeighborsResponse.
 
 
-        :return: The job_id of this BioApiJobResponse.
+        :return: The job_id of this NearestNeighborsResponse.
         :rtype: str
         """
         return self._job_id
 
     @job_id.setter
     def job_id(self, job_id):
-        """Sets the job_id of this BioApiJobResponse.
+        """Sets the job_id of this NearestNeighborsResponse.
 
 
-        :param job_id: The job_id of this BioApiJobResponse.
+        :param job_id: The job_id of this NearestNeighborsResponse.
         :type job_id: str
         """
 
@@ -86,20 +86,20 @@ class BioApiJobResponse(Model):
 
     @property
     def created_at(self):
-        """Gets the created_at of this BioApiJobResponse.
+        """Gets the created_at of this NearestNeighborsResponse.
 
 
-        :return: The created_at of this BioApiJobResponse.
+        :return: The created_at of this NearestNeighborsResponse.
         :rtype: str
         """
         return self._created_at
 
     @created_at.setter
     def created_at(self, created_at):
-        """Sets the created_at of this BioApiJobResponse.
+        """Sets the created_at of this NearestNeighborsResponse.
 
 
-        :param created_at: The created_at of this BioApiJobResponse.
+        :param created_at: The created_at of this NearestNeighborsResponse.
         :type created_at: str
         """
 
@@ -107,20 +107,20 @@ class BioApiJobResponse(Model):
 
     @property
     def status(self):
-        """Gets the status of this BioApiJobResponse.
+        """Gets the status of this NearestNeighborsResponse.
 
 
-        :return: The status of this BioApiJobResponse.
+        :return: The status of this NearestNeighborsResponse.
         :rtype: BioApiStatus
         """
         return self._status
 
     @status.setter
     def status(self, status):
-        """Sets the status of this BioApiJobResponse.
+        """Sets the status of this NearestNeighborsResponse.
 
 
-        :param status: The status of this BioApiJobResponse.
+        :param status: The status of this NearestNeighborsResponse.
         :type status: BioApiStatus
         """
 
@@ -128,20 +128,20 @@ class BioApiJobResponse(Model):
 
     @property
     def result(self):
-        """Gets the result of this BioApiJobResponse.
+        """Gets the result of this NearestNeighborsResponse.
 
 
-        :return: The result of this BioApiJobResponse.
+        :return: The result of this NearestNeighborsResponse.
         :rtype: List[AnalysisResult]
         """
         return self._result
 
     @result.setter
     def result(self, result):
-        """Sets the result of this BioApiJobResponse.
+        """Sets the result of this NearestNeighborsResponse.
 
 
-        :param result: The result of this BioApiJobResponse.
+        :param result: The result of this NearestNeighborsResponse.
         :type result: List[AnalysisResult]
         """
 

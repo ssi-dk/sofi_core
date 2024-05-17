@@ -12,7 +12,7 @@ def post(user, token_info, body):  # noqa: E501
     :param body: 
     :type body: dict | bytes
 
-    :rtype: BioApiJobResponse
+    :rtype: NearestNeighborsResponse
     """
     if connexion.request.is_json:
         from ..models import NearestNeighborsRequest

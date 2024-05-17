@@ -1,15 +1,15 @@
-import { post, BioApiJobResponse, NearestNeighborsRequest } from "sap-client";
+import { post, NearestNeighborsResponse, NearestNeighborsRequest } from "sap-client";
 import { getUrl } from "service";
 
 export type NearestNeighborsResponseSlice = {
-  nearestNeighborsResponse: BioApiJobResponse;
+  nearestNeighborsResponse: NearestNeighborsResponse;
 };
 
 export const getNearestNeighbors = (params: NearestNeighborsRequest) => {
   const base = post<NearestNeighborsResponseSlice>({ body: params });
 
   base.url = getUrl(base.url);
-  base.transform = (response: BioApiJobResponse) => {
+  base.transform = (response: NearestNeighborsResponse) => {
     return {
       nearestNeighborsResponse: response,
     };

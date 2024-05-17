@@ -5,8 +5,8 @@ import unittest
 from flask import json
 from six import BytesIO
 
-from web.src.SAP.generated.models.bio_api_job_response import BioApiJobResponse  # noqa: E501
 from web.src.SAP.generated.models.nearest_neighbors_request import NearestNeighborsRequest  # noqa: E501
+from web.src.SAP.generated.models.nearest_neighbors_response import NearestNeighborsResponse  # noqa: E501
 from .test import BaseTestCase
 
 
