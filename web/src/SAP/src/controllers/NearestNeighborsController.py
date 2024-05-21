@@ -39,9 +39,14 @@ def post(user, token, body: NearestNeighborsRequest):
         def get_result(id: str):
             row = get_single_analysis_by_object_id(id)
 
+            if (
+                token["sofi-data-clearance"] == "own-institution"
+                and token["institution"] != row["institution"]
+            ):
+                return None
             return get_analysis_with_metadata(row["sequence_id"])
         
-        result = list(map(lambda r : get_result(r["id"]), response_dict["result"]))
+        result = list(filter(lambda x: x is not None, list(map(lambda r : get_result(r["id"]), response_dict["result"]))))
         
         return jsonify({"status": api_response.status.value, 
                         "jobId": api_response.job_id, 
