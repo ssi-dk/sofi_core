@@ -2,7 +2,7 @@ import { post, NearestNeighborsResponse, NearestNeighborsRequest } from "sap-cli
 import { getUrl } from "service";
 
 export type NearestNeighborsResponseSlice = {
-  nearestNeighborsResponse: NearestNeighborsResponse;
+  nearestNeighborsResponses: Record<string, NearestNeighborsResponse>;
 };
 
 export const getNearestNeighbors = (params: NearestNeighborsRequest) => {
@@ -10,13 +10,15 @@ export const getNearestNeighbors = (params: NearestNeighborsRequest) => {
 
   base.url = getUrl(base.url);
   base.transform = (response: NearestNeighborsResponse) => {
+    const resp = {};
+    resp[params.id] = response;
     return {
-      nearestNeighborsResponse: response,
+      nearestNeighborsResponses: resp,
     };
   };
 
   base.update = {
-    nearestNeighborsResponse: (_, newValue) => newValue,
+    nearestNeighborsResponses: (oldValue, newValue) => Object.assign(newValue, oldValue ?? {}),
   };
 
   // Force a network call to be made. Making it promise as well.

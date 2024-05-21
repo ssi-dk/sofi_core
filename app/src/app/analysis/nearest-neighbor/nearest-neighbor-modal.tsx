@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   NumberDecrementStepper,
   NumberIncrementStepper,
@@ -44,41 +44,79 @@ export const NearestNeighborModal = (props: Props) => {
   const [unknownsAreDiffs, setUnknownsAreDiffs] = useState<boolean>(true);
   const toast = useToast();
   const dispatch = useDispatch();
+  const [searchIndex, setSearchIndex] = useState(0);
 
-  const nearestNeighborsResponse = useSelector(
+  const nearestNeighborsResponses = useSelector(
     (state: { entities: NearestNeighborsResponseSlice }) =>
-      state.entities.nearestNeighborsResponse
+      state.entities.nearestNeighborsResponses
   );
 
-  const [{ isPending, status }, searchNearestNeighbors] = useMutation(() => {
-    const first = Object.values(selection)[0];
+  const [{ isPending, status }, searchNearestNeighbors] = useMutation(
+    (index: number) => {
+      const first = Object.values(selection)[index];
 
-    const req = {
-      id: first.original.id,
-      cutoff,
-      unknownsAreDiffs,
-    };
-    return getNearestNeighbors(req);
-  });
+      const req = {
+        id: first.original.id,
+        cutoff,
+        unknownsAreDiffs,
+      };
+      return getNearestNeighbors(req);
+    }
+  );
 
   const onSearch = useCallback(async () => {
     setIsSearching(true);
-    await searchNearestNeighbors();
+    await searchNearestNeighbors(0);
   }, [setIsSearching, searchNearestNeighbors]);
 
-  React.useEffect(() => {
+  useEffect(() => {
+    if (searchIndex === 0) {
+      return;
+    }
+    searchNearestNeighbors(searchIndex);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchIndex]);
+
+  useEffect(() => {
     if (isSearching && !isPending) {
       if (status >= 200 && status < 300) {
+        if (searchIndex + 1 !== Object.values(selection).length) {
+          setSearchIndex((prev) => prev + 1);
+          return;
+        }
+
+        if (
+          searchIndex !== 0 &&
+          searchIndex + 1 == Object.values(selection).length &&
+          Object.keys(nearestNeighborsResponses).length !==
+            Object.values(selection).length
+        ) {
+          // Wait for last response
+          return;
+        }
+
+        const neighbors: Record<string, AnalysisResult> = {};
+        for (const sequenceId of Object.keys(selection)) {
+          const row = selection[sequenceId];
+          const response = nearestNeighborsResponses[row.original.id];
+          response.result?.forEach((neighbor) => {
+            // If not in selection, set as neighbor
+            if (!selection[neighbor.sequence_id]) {
+              neighbors[neighbor.sequence_id] = neighbor;
+            }
+          });
+        }
+
         toast({
-          title: `Found ${nearestNeighborsResponse.result.length} neighbor(s)`,
+          title: `Found ${Object.keys(neighbors).length} neighbor(s)`,
           status: "success",
           duration: 5000,
           isClosable: true,
         });
 
-        if (nearestNeighborsResponse.result) {
+        if (Object.values(neighbors).length) {
           const newSelection = Object.assign({}, selection);
-          nearestNeighborsResponse.result?.forEach((n) => {
+          Object.values(neighbors).forEach((n) => {
             newSelection[n.sequence_id] = {
               cells: {},
               original: n,
@@ -103,10 +141,11 @@ export const NearestNeighborModal = (props: Props) => {
     isSearching,
     isPending,
     status,
-    nearestNeighborsResponse,
+    nearestNeighborsResponses,
     onClose,
     dispatch,
     selection,
+    searchIndex,
   ]);
 
   return (
@@ -147,6 +186,9 @@ export const NearestNeighborModal = (props: Props) => {
           ) : (
             <>
               <Spinner size="xl" />
+              <div>
+                {searchIndex} / {Object.values(selection).length}
+              </div>
             </>
           )}
         </ModalBody>
