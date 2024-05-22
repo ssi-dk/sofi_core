@@ -2,7 +2,7 @@ import { DefaultCrypto, LocalStorageBackend } from "@openid/appauth";
 import { NoHashQueryStringUtils } from "./no-hash-query-string-utils";
 
 export const Environment = {
-  openIdConnectUrl: `https://dev.sofi-platform.dk/auth/realms/master`,
+  openIdConnectUrl: `https://dev.sofi-platform.dk/auth/realms/sofi`,
   clientId: "SOFI_APP",
   redirectUri: `${window.location.protocol}//${window.location.host}/callback`,
   signoutUrl: `${window.location.protocol}//${window.location.host}/.ory/kratos/public/self-service/browser/flows/logout`,

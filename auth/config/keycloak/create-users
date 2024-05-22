@@ -1,0 +1,28 @@
+#!/bin/bash
+
+REALM="sofi"
+USERS=(
+	"user1:user1@example.com:password1"
+	"user2:user2@example.com:password2"
+	"user3:user3@example.com:password3"
+)
+
+# Wait for Keycloak to be up and running
+# until curl -s http://keycloak:8080/auth/realms/master; do
+#   echo "Waiting for Keycloak to start..."
+#   sleep 10
+# done
+
+# Authenticate with Keycloak
+
+for user in "${USERS[@]}"; do
+	docker exec keycloak /opt/keycloak/bin/kcadm.sh config credentials --server http://keycloak:8080/auth --realm master --user admin --password admin
+
+	echo "Creating user"
+	IFS=':' read -r username email password <<<"$user"
+	docker exec keycloak /opt/keycloak/bin/kcadm.sh create users -r $REALM -s username=$username -s enabled=true -s email=$email
+
+	echo "Setting password"
+	USER_ID=$(docker exec keycloak /opt/keycloak/bin/kcadm.sh get users -r $REALM -q username=$username --fields id --format csv --noquotes | tail -n 1)
+	docker exec keycloak /opt/keycloak/bin/kcadm.sh set-password -r $REALM --userid $USER_ID --new-password $password
+done
