@@ -28,6 +28,7 @@ services:
       - KC_HTTP_RELATIVE_PATH=/auth
     depends_on:
       - postgresd
+      - mailhog
     restart: on-failure
     command: -v start --import-realm
     volumes:
