@@ -108,7 +108,7 @@ export default (props: InlineAutoCompleteProps) => {
       onKeyDown={enterHandler}
       role="button"
       tabIndex={0}
-      style={{ width: "100%", height: "100%" }}
+      style={{ display: "flex", flex: "1" }}
     >
       {isLoading ? (
         <Spinner size="xs" />
@@ -127,7 +127,7 @@ export default (props: InlineAutoCompleteProps) => {
           menuShouldScrollIntoView={false}
         />
       ) : (
-        <div style={{ width: "100%", height: "100%" }}>{defaultValue}</div>
+        <div style={{ display: "flex", flex: "1" }}>{defaultValue}</div>
       )}
     </div>
   );
