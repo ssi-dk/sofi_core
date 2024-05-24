@@ -12,6 +12,21 @@ from .test import BaseTestCase
 class TestWorkspacesController(BaseTestCase):
     """WorkspacesController integration test stubs"""
 
+    def test_delete_workspace(self):
+        """Test case for delete_workspace
+
+        
+        """
+        headers = { 
+            'Authorization': 'Bearer special-key',
+        }
+        response = self.client.open(
+            '/api/workspaces/{workspace_id}'.format(workspace_id='workspace_id_example'),
+            method='DELETE',
+            headers=headers)
+        self.assert200(response,
+                       'Response body is : ' + response.data.decode('utf-8'))
+
     def test_get_workspaces(self):
         """Test case for get_workspaces
 

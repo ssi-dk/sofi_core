@@ -1,6 +1,8 @@
 import {
   getWorkspaces,
   Workspace,
+  deleteWorkspace as deleteWorkspaceApi,
+  DeleteWorkspaceRequest,
 } from "sap-client";
 import { getUrl } from "service";
 
@@ -19,6 +21,19 @@ export const fetchWorkspaces = () => {
 
   base.update = {
     workspaces: (_, newValue) => newValue,
+  };
+  base.force = true;
+  return base;
+};
+
+export const deleteWorkspace = (params: DeleteWorkspaceRequest) => {
+  const base = deleteWorkspaceApi(params);
+  base.url = getUrl(base.url);
+  base.update = {
+    workspaces: (oldValue) => {
+      const newValue = oldValue.filter(workspace => workspace.id !== params.workspaceId);
+      return newValue;
+    },
   };
   base.force = true;
   return base;

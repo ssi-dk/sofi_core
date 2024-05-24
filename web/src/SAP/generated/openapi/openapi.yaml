@@ -547,6 +547,25 @@ paths:
       tags:
       - workspaces
       x-openapi-router-controller: web.src.SAP.generated.controllers.workspaces_controller
+  /workspaces/{workspace_id}:
+    delete:
+      description: Delete an existing workspace
+      operationId: delete_workspace
+      parameters:
+      - description: Id of workspace to delete
+        explode: false
+        in: path
+        name: workspace_id
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "204":
+          description: Workspace deleted successfully.
+      tags:
+      - workspaces
+      x-openapi-router-controller: web.src.SAP.generated.controllers.workspaces_controller
 components:
   schemas:
     Organization:
