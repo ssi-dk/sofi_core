@@ -7,3 +7,4 @@ export * from './NearestNeighborsApi';
 export * from './SamplesApi';
 export * from './UploadApi';
 export * from './UserApi';
+export * from './WorkspacesApi';

@@ -531,6 +531,22 @@ paths:
       tags:
       - user
       x-openapi-router-controller: web.src.SAP.generated.controllers.user_controller
+  /workspaces:
+    get:
+      description: Gets workspaces
+      operationId: get_workspaces
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Workspace'
+                type: array
+          description: Workspaces info
+      tags:
+      - workspaces
+      x-openapi-router-controller: web.src.SAP.generated.controllers.workspaces_controller
 components:
   schemas:
     Organization:
@@ -1317,6 +1333,21 @@ components:
       - error
       title: Status
       type: string
+    Workspace:
+      example:
+        name: name
+        id: id
+      properties:
+        id:
+          title: Id
+          type: string
+        name:
+          title: Name
+          type: string
+      required:
+      - id
+      - name
+      type: object
     Sample_categories_resistance_report:
       example:
         phenotypes:
