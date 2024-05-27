@@ -12,6 +12,12 @@
  */
 
 import { exists, mapValues } from '../runtime';
+import {
+    AnalysisResult,
+    AnalysisResultFromJSON,
+    AnalysisResultToJSON,
+} from './';
+
 /**
  * 
  * @export
@@ -32,17 +38,17 @@ export interface WorkspaceInfo  {
     name: string;
     /**
      * 
-     * @type {Array<string>}
+     * @type {Array<AnalysisResult>}
      * @memberof WorkspaceInfo
      */
-    samples: Array<string>;
+    samples: Array<AnalysisResult>;
 }
 
 export function WorkspaceInfoFromJSON(json: any): WorkspaceInfo {
     return {
         'id': !exists(json, 'id') ? undefined : json['id'],
         'name': json['name'],
-        'samples': json['samples'],
+        'samples': (json['samples'] as Array<any>).map(AnalysisResultFromJSON),
     };
 }
 
@@ -53,7 +59,7 @@ export function WorkspaceInfoToJSON(value?: WorkspaceInfo): any {
     return {
         'id': value.id,
         'name': value.name,
-        'samples': value.samples,
+        'samples': (value.samples as Array<any>).map(AnalysisResultToJSON),
     };
 }
 

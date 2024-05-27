@@ -1477,7 +1477,7 @@ components:
         samples:
           type: array
           items:
-            type: string
+            $ref: '#/components/schemas/AnalysisResult'
           title: Samples
       type: object
       required:

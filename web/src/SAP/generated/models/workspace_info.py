@@ -6,8 +6,10 @@ from datetime import date, datetime  # noqa: F401
 from typing import List, Dict  # noqa: F401
 
 from web.src.SAP.generated.models.base_model_ import Model
+from web.src.SAP.generated.models.analysis_result import AnalysisResult
 from web.src.SAP.generated import util
 
+from web.src.SAP.generated.models.analysis_result import AnalysisResult  # noqa: E501
 
 class WorkspaceInfo(Model):
 
@@ -25,12 +27,12 @@ class WorkspaceInfo(Model):
         :param name: The name of this WorkspaceInfo.  # noqa: E501
         :type name: str
         :param samples: The samples of this WorkspaceInfo.  # noqa: E501
-        :type samples: List[str]
+        :type samples: List[AnalysisResult]
         """
         self.openapi_types = {
             'id': str,
             'name': str,
-            'samples': List[str],
+            'samples': List[AnalysisResult],
         }
 
         self.attribute_map = {
@@ -104,7 +106,7 @@ class WorkspaceInfo(Model):
 
 
         :return: The samples of this WorkspaceInfo.
-        :rtype: List[str]
+        :rtype: List[AnalysisResult]
         """
         return self._samples
 
@@ -114,7 +116,7 @@ class WorkspaceInfo(Model):
 
 
         :param samples: The samples of this WorkspaceInfo.
-        :type samples: List[str]
+        :type samples: List[AnalysisResult]
         """
         if samples is None:
             raise ValueError("Invalid value for `samples`, must not be `None`")  # noqa: E501

@@ -1462,8 +1462,8 @@ components:
         name: name
         id: id
         samples:
-        - samples
-        - samples
+        - null
+        - null
       properties:
         id:
           title: Id
@@ -1473,7 +1473,7 @@ components:
           type: string
         samples:
           items:
-            type: string
+            $ref: '#/components/schemas/AnalysisResult'
           title: Samples
           type: array
       required:
