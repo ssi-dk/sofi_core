@@ -9,6 +9,7 @@ type Props = {
 
 export function Workspace(props: Props) {
   const { t } = useTranslation();
+  const { id } = props;
 
   const content = (
     <Box textOverflow="hidden" minH="100vh">
@@ -18,7 +19,7 @@ export function Workspace(props: Props) {
         gap={6}
         justifyContent="space-between"
       >
-        <Heading>{`${t("Workspace")}: ${props.id}`}</Heading>
+        <Heading>{`${t("Workspace")}: ${id}`}</Heading>
       </Flex>
     </Box>
   );

@@ -7,6 +7,7 @@ import { Menu, MenuList, MenuButton, Button, MenuItem } from "@chakra-ui/react";
 import { useCallback } from "react";
 import { clearSelection } from "./analysis-selection-configs";
 import { useDispatch } from "react-redux";
+import { SendToWorkspaceMenuItem } from "app/workspaces/send-to-workspace-menu-item";
 
 type Props = {
   selection: DataTableSelection<AnalysisResult>;
@@ -34,6 +35,7 @@ export const AnalysisSelectionMenu = (props: Props) => {
         <MenuList>
           <ResistanceMenuItem selection={selection} />
           <NearestNeighborMenuItem selection={selection} />
+          <SendToWorkspaceMenuItem selection={selection} />
           <MenuItem
             aria-label="Clear Selection"
             title="Clear Selection"
