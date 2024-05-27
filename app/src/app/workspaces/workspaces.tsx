@@ -20,6 +20,7 @@ import { fetchWorkspaces } from "./workspaces-query-configs";
 import type { Workspace } from "sap-client";
 import { DeleteWorkspace } from "./delete-workspace";
 import { CreateWorkspace } from "./create-workspace";
+import { ViewWorkspace } from "./view-workspace";
 
 export function Workspaces() {
   const [workspacesQueryState] = useRequest(fetchWorkspaces());
@@ -56,7 +57,10 @@ export function Workspaces() {
                     <Text>{h.name}</Text>
                   </Td>
                   <Td>
-                    <DeleteWorkspace id={h.id} />
+                    <div style={{ display: "flex", columnGap: "4px" }}>
+                      <ViewWorkspace id={h.id} />
+                      <DeleteWorkspace id={h.id} />
+                    </div>
                   </Td>
                 </Tr>
               );

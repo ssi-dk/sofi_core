@@ -16,6 +16,7 @@ import ComparativeAnalysis from "./comparative-analysis/comparative-analysis";
 import "./style-reset.css";
 import i18n from "./i18n";
 import { Workspaces } from "./workspaces/workspaces";
+import { Workspace } from "./workspaces/workspace";
 
 export default function App() {
   return (
@@ -44,6 +45,15 @@ export default function App() {
           render={() => (
             <Authorize>
               <Workspaces />
+            </Authorize>
+          )}
+        />
+        <Route
+          exact
+          path="/workspaces/:id"
+          render={(params) => (
+            <Authorize>
+              <Workspace id={params.match.params.id} />
             </Authorize>
           )}
         />
