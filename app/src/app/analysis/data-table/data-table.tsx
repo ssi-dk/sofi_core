@@ -53,9 +53,9 @@ type DataTableProps<T extends NotEmpty> = {
   getDependentColumns: (columnName: keyof T) => Array<keyof T>;
   selectionClassName: string;
   approvableColumns: string[];
-  onSelect: (sel: DataTableSelection<T>) => void;
+  onSelect?: (sel: DataTableSelection<T>) => void;
   selection: DataTableSelection<T>;
-  onDetailsClick: (isolateId: string, row: Row<T>) => void;
+  onDetailsClick?: (isolateId: string, row: Row<T>) => void;
   view: UserDefinedViewInternal;
   getCellStyle: (
     rowId: string,
@@ -106,9 +106,12 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
     selection,
   } = props;
 
-  const isInSelection = React.useCallback((rowId, columnId) => {
-    return selection[rowId]?.cells?.[columnId];
-  }, [selection]);
+  const isInSelection = React.useCallback(
+    (rowId, columnId) => {
+      return selection[rowId]?.cells?.[columnId];
+    },
+    [selection]
+  );
 
   const [lastView, setLastView] = useState(view);
 
@@ -143,8 +146,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
       };
       getDependentColumns(columnId).forEach((v) => {
         incSel[rowId].cells[v] = !(
-          selection[rowId]?.cells &&
-          selection[rowId]?.cells[columnId]
+          selection[rowId]?.cells && selection[rowId]?.cells[columnId]
         );
       });
       onSelect(incSel);
@@ -377,9 +379,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
           .map((r) => r.original[primaryKey])
           .forEach((r: string) => {
             if (incSel[r]) {
-              incSel[r].cells[c] = !(
-                selection[r] && selection[r].cells[c]
-              );
+              incSel[r].cells[c] = !(selection[r] && selection[r].cells[c]);
             }
           });
       });
@@ -473,18 +473,22 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
           <Flex minWidth="full" minHeight="full">
             {columnIndex === 0 && (
               <React.Fragment>
-                <SelectionCheckBox
-                  onClick={rowClickHandler(rows[rowIndex - 1])}
-                  {...calcRowSelectionState(rows[rowIndex - 1])}
-                />
-                <IconButton
-                  size="1em"
-                  variant="unstyled"
-                  onClick={() => onDetailsClick(rowId, row)}
-                  aria-label="Search database"
-                  icon={<ExternalLinkIcon marginTop="-0.5em" />}
-                  ml="1"
-                />
+                {onSelect ? (
+                  <SelectionCheckBox
+                    onClick={rowClickHandler(rows[rowIndex - 1])}
+                    {...calcRowSelectionState(rows[rowIndex - 1])}
+                  />
+                ) : null}
+                {onDetailsClick ? (
+                  <IconButton
+                    size="1em"
+                    variant="unstyled"
+                    onClick={() => onDetailsClick(rowId, row)}
+                    aria-label="Search database"
+                    icon={<ExternalLinkIcon marginTop="-0.5em" />}
+                    ml="1"
+                  />
+                ) : null}
               </React.Fragment>
             )}
             {renderCellControl(
@@ -514,6 +518,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
       onDetailsClick,
       renderCellControl,
       cellClickHandler,
+      onSelect,
     ]
   );
 
