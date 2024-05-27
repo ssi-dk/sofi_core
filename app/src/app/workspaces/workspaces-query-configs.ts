@@ -3,15 +3,20 @@ import {
   Workspace,
   deleteWorkspace as deleteWorkspaceApi,
   createWorkspace as createWorkspaceApi,
+  getWorkspace as getWorkspaceApi,
   postWorkspace as postWorkspaceApi,
   DeleteWorkspaceRequest,
   PostWorkspaceRequest,
 } from "sap-client";
-import { CreateWorkspace } from "sap-client/models";
+import { CreateWorkspace, WorkspaceInfo } from "sap-client/models";
 import { getUrl } from "service";
 
 export type WorkspacesSlice = {
   workspaces: Array<Workspace>;
+};
+
+export type WorkspaceSlice = {
+  workspace: WorkspaceInfo;
 };
 
 export const fetchWorkspaces = () => {
@@ -25,6 +30,22 @@ export const fetchWorkspaces = () => {
 
   base.update = {
     workspaces: (_, newValue) => newValue,
+  };
+  base.force = true;
+  return base;
+};
+
+export const getWorkspace = (id: string) => {
+  const base = getWorkspaceApi<WorkspaceSlice>({ workspaceId: id });
+
+  base.url = getUrl(base.url);
+
+  base.transform = (response: WorkspaceInfo) => ({
+    workspace: response,
+  });
+
+  base.update = {
+    workspace: (_, newValue) => newValue,
   };
   base.force = true;
   return base;

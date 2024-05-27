@@ -579,6 +579,28 @@ paths:
       tags:
       - workspaces
       x-openapi-router-controller: web.src.SAP.generated.controllers.workspaces_controller
+    get:
+      description: Get an existing workspace
+      operationId: get_workspace
+      parameters:
+      - description: Id of workspace to get
+        explode: false
+        in: path
+        name: workspace_id
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkspaceInfo'
+          description: Workspace
+      tags:
+      - workspaces
+      x-openapi-router-controller: web.src.SAP.generated.controllers.workspaces_controller
     post:
       description: Updates an existing workspace
       operationId: post_workspace
@@ -1392,6 +1414,9 @@ components:
       example:
         name: name
         id: id
+        samples:
+        - samples
+        - samples
       properties:
         id:
           title: Id
@@ -1399,6 +1424,11 @@ components:
         name:
           title: Name
           type: string
+        samples:
+          items:
+            type: string
+          title: Samples
+          type: array
       required:
       - id
       - name
@@ -1425,6 +1455,29 @@ components:
           title: Samples
           type: array
       required:
+      - samples
+      type: object
+    WorkspaceInfo:
+      example:
+        name: name
+        id: id
+        samples:
+        - samples
+        - samples
+      properties:
+        id:
+          title: Id
+          type: string
+        name:
+          title: Name
+          type: string
+        samples:
+          items:
+            type: string
+          title: Samples
+          type: array
+      required:
+      - name
       - samples
       type: object
     Sample_categories_resistance_report:

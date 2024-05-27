@@ -8,6 +8,7 @@ from six import BytesIO
 from web.src.SAP.generated.models.create_workspace import CreateWorkspace  # noqa: E501
 from web.src.SAP.generated.models.update_workspace import UpdateWorkspace  # noqa: E501
 from web.src.SAP.generated.models.workspace import Workspace  # noqa: E501
+from web.src.SAP.generated.models.workspace_info import WorkspaceInfo  # noqa: E501
 from .test import BaseTestCase
 
 
@@ -46,6 +47,22 @@ class TestWorkspacesController(BaseTestCase):
         response = self.client.open(
             '/api/workspaces/{workspace_id}'.format(workspace_id='workspace_id_example'),
             method='DELETE',
+            headers=headers)
+        self.assert200(response,
+                       'Response body is : ' + response.data.decode('utf-8'))
+
+    def test_get_workspace(self):
+        """Test case for get_workspace
+
+        
+        """
+        headers = { 
+            'Accept': 'application/json',
+            'Authorization': 'Bearer special-key',
+        }
+        response = self.client.open(
+            '/api/workspaces/{workspace_id}'.format(workspace_id='workspace_id_example'),
+            method='GET',
             headers=headers)
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))

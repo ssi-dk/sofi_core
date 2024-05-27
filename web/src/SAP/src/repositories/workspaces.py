@@ -17,6 +17,11 @@ def get_workspaces(user: str):
     workspaces = db[WORKSPACES_COL_NAME]
     return list(map(trim, workspaces.find({"created_by": user})))
 
+def get_workspace(user: str, workspace_id: str):
+    conn = get_connection()
+    db = conn[DB_NAME]
+    workspaces = db[WORKSPACES_COL_NAME]
+    return trim(workspaces.find_one({"created_by": user, "_id": ObjectId(workspace_id)}))
 
 def delete_workspace(user: str, workspace_id: str):
     conn = get_connection()

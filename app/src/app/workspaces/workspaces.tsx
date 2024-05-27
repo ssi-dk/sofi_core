@@ -47,6 +47,7 @@ export function Workspaces() {
           <Thead>
             <Tr>
               <Th>{t("Name")}</Th>
+              <Th>{t("Samples")}</Th>
             </Tr>
           </Thead>
           <Tbody>
@@ -55,6 +56,9 @@ export function Workspaces() {
                 <Tr verticalAlign="top" key={h.id}>
                   <Td>
                     <Text>{h.name}</Text>
+                  </Td>
+                  <Td>
+                    <Text>#{h.samples?.length ?? 0}</Text>
                   </Td>
                   <Td>
                     <div style={{ display: "flex", columnGap: "4px" }}>

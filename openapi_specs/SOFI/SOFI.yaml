@@ -44,6 +44,26 @@ paths:
         - workspaces
       x-openapi-router-controller: web.src.SAP.generated.controllers.workspaces_controller
   /workspaces/{workspace_id}:
+    get:
+      description: Get an existing workspace
+      operationId: get_workspace
+      tags:
+        - workspaces
+      x-openapi-router-controller: web.src.SAP.generated.controllers.workspaces_controller
+      parameters:
+        - name: workspace_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Id of workspace to get
+      responses:
+        '200':
+          description: Workspace
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkspaceInfo'
     delete:
       description: Delete an existing workspace
       operationId: delete_workspace
@@ -1416,6 +1436,11 @@ components:
         name:
           type: string
           title: Name
+        samples:
+          type: array
+          items:
+            type: string
+          title: Samples          
       type: object
       required:
       - id
@@ -1439,6 +1464,24 @@ components:
           title: Samples
       type: object
       required:
+      - samples
+
+    WorkspaceInfo:
+      properties:
+        id:
+          type: string
+          title: Id
+        name:
+          type: string
+          title: Name
+        samples:
+          type: array
+          items:
+            type: string
+          title: Samples
+      type: object
+      required:
+      - name
       - samples
 
   securitySchemes:

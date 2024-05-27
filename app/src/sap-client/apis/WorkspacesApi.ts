@@ -24,6 +24,9 @@ import {
     Workspace,
     WorkspaceFromJSON,
     WorkspaceToJSON,
+    WorkspaceInfo,
+    WorkspaceInfoFromJSON,
+    WorkspaceInfoToJSON,
 } from '../models';
 
 export interface CreateWorkspaceRequest {
@@ -31,6 +34,10 @@ export interface CreateWorkspaceRequest {
 }
 
 export interface DeleteWorkspaceRequest {
+    workspaceId: string;
+}
+
+export interface GetWorkspaceRequest {
     workspaceId: string;
 }
 
@@ -126,6 +133,53 @@ function deleteWorkspaceRaw<T>(requestParameters: DeleteWorkspaceRequest, reques
 */
 export function deleteWorkspace<T>(requestParameters: DeleteWorkspaceRequest, requestConfig?: runtime.TypedQueryConfig<T, void>): QueryConfig<T> {
     return deleteWorkspaceRaw(requestParameters, requestConfig);
+}
+
+/**
+ * Get an existing workspace
+ */
+function getWorkspaceRaw<T>(requestParameters: GetWorkspaceRequest, requestConfig: runtime.TypedQueryConfig<T, WorkspaceInfo> = {}): QueryConfig<T> {
+    if (requestParameters.workspaceId === null || requestParameters.workspaceId === undefined) {
+        throw new runtime.RequiredError('workspaceId','Required parameter requestParameters.workspaceId was null or undefined when calling getWorkspace.');
+    }
+
+    let queryParameters = null;
+
+
+    const headerParameters : runtime.HttpHeaders = {};
+
+
+    const { meta = {} } = requestConfig;
+
+    meta.authType = ['bearer'];
+    const config: QueryConfig<T> = {
+        url: `${runtime.Configuration.basePath}/workspaces/{workspace_id}`.replace(`{${"workspace_id"}}`, encodeURIComponent(String(requestParameters.workspaceId))),
+        meta,
+        update: requestConfig.update,
+        queryKey: requestConfig.queryKey,
+        optimisticUpdate: requestConfig.optimisticUpdate,
+        force: requestConfig.force,
+        rollback: requestConfig.rollback,
+        options: {
+            method: 'GET',
+            headers: headerParameters,
+        },
+        body: queryParameters,
+    };
+
+    const { transform: requestTransform } = requestConfig;
+    if (requestTransform) {
+        config.transform = (body: ResponseBody, text: ResponseBody) => requestTransform(WorkspaceInfoFromJSON(body), text);
+    }
+
+    return config;
+}
+
+/**
+* Get an existing workspace
+*/
+export function getWorkspace<T>(requestParameters: GetWorkspaceRequest, requestConfig?: runtime.TypedQueryConfig<T, WorkspaceInfo>): QueryConfig<T> {
+    return getWorkspaceRaw(requestParameters, requestConfig);
 }
 
 /**

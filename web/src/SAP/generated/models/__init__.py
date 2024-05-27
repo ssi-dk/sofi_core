@@ -55,3 +55,4 @@ from .user_defined_view_column_resizing import UserDefinedViewColumnResizing
 from .user_defined_view_sort_by import UserDefinedViewSortBy
 from .user_info import UserInfo
 from .workspace import Workspace
+from .workspace_info import WorkspaceInfo

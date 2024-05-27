@@ -9,7 +9,7 @@ from web.src.SAP.generated.models.base_model_ import Model
 from web.src.SAP.generated import util
 
 
-class Workspace(Model):
+class WorkspaceInfo(Model):
 
 
 
@@ -18,13 +18,13 @@ class Workspace(Model):
     """
 
     def __init__(self, id=None, name=None, samples=None):  # noqa: E501
-        """Workspace - a model defined in OpenAPI
+        """WorkspaceInfo - a model defined in OpenAPI
 
-        :param id: The id of this Workspace.  # noqa: E501
+        :param id: The id of this WorkspaceInfo.  # noqa: E501
         :type id: str
-        :param name: The name of this Workspace.  # noqa: E501
+        :param name: The name of this WorkspaceInfo.  # noqa: E501
         :type name: str
-        :param samples: The samples of this Workspace.  # noqa: E501
+        :param samples: The samples of this WorkspaceInfo.  # noqa: E501
         :type samples: List[str]
         """
         self.openapi_types = {
@@ -49,50 +49,48 @@ class Workspace(Model):
 
         :param dikt: A dict.
         :type: dict
-        :return: The Workspace of this Workspace.  # noqa: E501
-        :rtype: Workspace
+        :return: The WorkspaceInfo of this WorkspaceInfo.  # noqa: E501
+        :rtype: WorkspaceInfo
         """
         return util.deserialize_model(dikt, cls)
 
     @property
     def id(self):
-        """Gets the id of this Workspace.
+        """Gets the id of this WorkspaceInfo.
 
 
-        :return: The id of this Workspace.
+        :return: The id of this WorkspaceInfo.
         :rtype: str
         """
         return self._id
 
     @id.setter
     def id(self, id):
-        """Sets the id of this Workspace.
+        """Sets the id of this WorkspaceInfo.
 
 
-        :param id: The id of this Workspace.
+        :param id: The id of this WorkspaceInfo.
         :type id: str
         """
-        if id is None:
-            raise ValueError("Invalid value for `id`, must not be `None`")  # noqa: E501
 
         self._id = id
 
     @property
     def name(self):
-        """Gets the name of this Workspace.
+        """Gets the name of this WorkspaceInfo.
 
 
-        :return: The name of this Workspace.
+        :return: The name of this WorkspaceInfo.
         :rtype: str
         """
         return self._name
 
     @name.setter
     def name(self, name):
-        """Sets the name of this Workspace.
+        """Sets the name of this WorkspaceInfo.
 
 
-        :param name: The name of this Workspace.
+        :param name: The name of this WorkspaceInfo.
         :type name: str
         """
         if name is None:
@@ -102,21 +100,23 @@ class Workspace(Model):
 
     @property
     def samples(self):
-        """Gets the samples of this Workspace.
+        """Gets the samples of this WorkspaceInfo.
 
 
-        :return: The samples of this Workspace.
+        :return: The samples of this WorkspaceInfo.
         :rtype: List[str]
         """
         return self._samples
 
     @samples.setter
     def samples(self, samples):
-        """Sets the samples of this Workspace.
+        """Sets the samples of this WorkspaceInfo.
 
 
-        :param samples: The samples of this Workspace.
+        :param samples: The samples of this WorkspaceInfo.
         :type samples: List[str]
         """
+        if samples is None:
+            raise ValueError("Invalid value for `samples`, must not be `None`")  # noqa: E501
 
         self._samples = samples

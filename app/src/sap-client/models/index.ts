@@ -47,3 +47,4 @@ export * from './UserDefinedViewColumnResizing';
 export * from './UserDefinedViewSortBy';
 export * from './UserInfo';
 export * from './Workspace';
+export * from './WorkspaceInfo';

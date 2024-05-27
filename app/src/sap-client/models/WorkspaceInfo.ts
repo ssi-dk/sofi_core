@@ -15,38 +15,38 @@ import { exists, mapValues } from '../runtime';
 /**
  * 
  * @export
- * @interface Workspace
+ * @interface WorkspaceInfo
  */
-export interface Workspace  {
+export interface WorkspaceInfo  {
     /**
      * 
      * @type {string}
-     * @memberof Workspace
+     * @memberof WorkspaceInfo
      */
-    id: string;
+    id?: string;
     /**
      * 
      * @type {string}
-     * @memberof Workspace
+     * @memberof WorkspaceInfo
      */
     name: string;
     /**
      * 
      * @type {Array<string>}
-     * @memberof Workspace
+     * @memberof WorkspaceInfo
      */
-    samples?: Array<string>;
+    samples: Array<string>;
 }
 
-export function WorkspaceFromJSON(json: any): Workspace {
+export function WorkspaceInfoFromJSON(json: any): WorkspaceInfo {
     return {
-        'id': json['id'],
+        'id': !exists(json, 'id') ? undefined : json['id'],
         'name': json['name'],
-        'samples': !exists(json, 'samples') ? undefined : json['samples'],
+        'samples': json['samples'],
     };
 }
 
-export function WorkspaceToJSON(value?: Workspace): any {
+export function WorkspaceInfoToJSON(value?: WorkspaceInfo): any {
     if (value === undefined) {
         return undefined;
     }
