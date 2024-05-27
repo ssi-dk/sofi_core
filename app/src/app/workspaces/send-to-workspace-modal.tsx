@@ -16,7 +16,7 @@ import { DataTableSelection } from "app/analysis/data-table/data-table";
 import { WorkspaceSelect } from "./workspace-select";
 import { useMutation } from "redux-query-react";
 import { useHistory } from "react-router";
-import { createWorkspace } from "./workspaces-query-configs";
+import { createWorkspace, updateWorkspace } from "./workspaces-query-configs";
 
 type Props = {
   selection: DataTableSelection<AnalysisResult>;
@@ -32,10 +32,11 @@ export const SendToWorkspaceModal = (props: Props) => {
   const toast = useToast();
 
   const [{ isPending, status }, sendToWorkspace] = useMutation(() => {
-    // TODO
-    // id: workspace
-    // samples: Object.values(selection).map(s => s.id)
-    return createWorkspace({ name: "TODO" });
+    const samples = Object.values(selection).map((s) => s.original.id);
+    return updateWorkspace({
+      workspaceId: workspace,
+      updateWorkspace: { samples },
+    });
   });
 
   const onSend = useCallback(async () => {

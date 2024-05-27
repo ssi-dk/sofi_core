@@ -60,6 +60,28 @@ paths:
       responses:
         '204':
           description: Workspace deleted successfully.
+    post:
+      description: Updates an existing workspace
+      operationId: post_workspace
+      tags:
+        - workspaces
+      x-openapi-router-controller: web.src.SAP.generated.controllers.workspaces_controller
+      parameters:
+        - name: workspace_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Id of workspace to update
+      requestBody:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UpdateWorkspace"
+      responses:
+        '204':
+          description: Workspace updated successfully.
+
   /nearest_neighbors:
     post:
       description: Nearest Neighbors
@@ -1407,6 +1429,17 @@ components:
       type: object
       required:
       - name
+
+    UpdateWorkspace:
+      properties:
+        samples:
+          type: array
+          items:
+            type: string
+          title: Samples
+      type: object
+      required:
+      - samples
 
   securitySchemes:
     jwt:

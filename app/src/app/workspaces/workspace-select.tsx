@@ -13,17 +13,20 @@ type Props = {
 export const WorkspaceSelect = (props: Props) => {
   const { onChange } = props;
   const [workspacesQueryState] = useRequest(fetchWorkspaces());
-  
+
   const workspaces = useSelector<RootState>((s) =>
     Object.values(s.entities.workspaces ?? {})
   ) as Array<Workspace>;
 
   const [workspace, setWorkspace] = useState<OptionTypeBase>();
 
-  const onChangeCallback = useCallback((option: OptionTypeBase) => {
-    setWorkspace(option);
-    onChange(option.value);
-  }, [setWorkspace, onChange]);
+  const onChangeCallback = useCallback(
+    (option: OptionTypeBase) => {
+      setWorkspace(option);
+      onChange(option.value);
+    },
+    [setWorkspace, onChange]
+  );
 
   return (
     <Select

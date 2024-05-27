@@ -1,4 +1,6 @@
 import sys
+
+from web.src.SAP.generated.models.update_workspace import UpdateWorkspace
 from ...common.database import get_connection, DB_NAME, WORKSPACES_COL_NAME
 from bson.objectid import ObjectId
 from web.src.SAP.generated.models import CreateWorkspace
@@ -31,3 +33,12 @@ def create_workspace(user: str, workspace: CreateWorkspace):
     workspaces = db[WORKSPACES_COL_NAME]
     record = {**workspace.to_dict(), "created_by": user}
     return workspaces.update_one({'created_by': user, 'name': workspace.name}, {"$set": record}, upsert=True)
+
+def update_workspace(user: str, workspace_id: str, workspace: UpdateWorkspace):
+    conn = get_connection()
+    db = conn[DB_NAME]
+    workspaces = db[WORKSPACES_COL_NAME]
+
+    filter = {'created_by': user, '_id': ObjectId(workspace_id)}
+    update = {"$addToSet": {"samples": { "$each": workspace.samples}}}
+    return workspaces.update_one(filter, update, upsert=True)

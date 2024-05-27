@@ -6,6 +6,7 @@ from flask import json
 from six import BytesIO
 
 from web.src.SAP.generated.models.create_workspace import CreateWorkspace  # noqa: E501
+from web.src.SAP.generated.models.update_workspace import UpdateWorkspace  # noqa: E501
 from web.src.SAP.generated.models.workspace import Workspace  # noqa: E501
 from .test import BaseTestCase
 
@@ -62,6 +63,27 @@ class TestWorkspacesController(BaseTestCase):
             '/api/workspaces',
             method='GET',
             headers=headers)
+        self.assert200(response,
+                       'Response body is : ' + response.data.decode('utf-8'))
+
+    def test_post_workspace(self):
+        """Test case for post_workspace
+
+        
+        """
+        update_workspace = {
+  "samples" : [ "samples", "samples" ]
+}
+        headers = { 
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer special-key',
+        }
+        response = self.client.open(
+            '/api/workspaces/{workspace_id}'.format(workspace_id='workspace_id_example'),
+            method='POST',
+            headers=headers,
+            data=json.dumps(update_workspace),
+            content_type='application/json')
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
 

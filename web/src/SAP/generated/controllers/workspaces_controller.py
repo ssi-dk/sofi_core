@@ -40,3 +40,20 @@ def get_workspaces(user, token_info):  # noqa: E501
     :rtype: List[Workspace]
     """
     return WorkspacesController.get_workspaces(user, token_info)
+
+def post_workspace(user, token_info, workspace_id, update_workspace=None):  # noqa: E501
+    """post_workspace
+
+    Updates an existing workspace # noqa: E501
+
+    :param workspace_id: Id of workspace to update
+    :type workspace_id: str
+    :param update_workspace: 
+    :type update_workspace: dict | bytes
+
+    :rtype: None
+    """
+    if connexion.request.is_json:
+        from ..models import UpdateWorkspace
+        update_workspace = UpdateWorkspace.from_dict(connexion.request.get_json())  # noqa: E501
+    return WorkspacesController.post_workspace(user, token_info, workspace_id, update_workspace)

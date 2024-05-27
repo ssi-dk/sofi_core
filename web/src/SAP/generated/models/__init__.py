@@ -47,6 +47,7 @@ from .sample_categories_resistance_report import SampleCategoriesResistanceRepor
 from .single_upload_request import SingleUploadRequest
 from .tbr_metadata import TbrMetadata
 from .tbr_specific_metadata import TbrSpecificMetadata
+from .update_workspace import UpdateWorkspace
 from .upload_metadata_fields import UploadMetadataFields
 from .upload_response import UploadResponse
 from .user_defined_view import UserDefinedView

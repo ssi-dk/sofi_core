@@ -18,6 +18,9 @@ import {
     CreateWorkspace,
     CreateWorkspaceFromJSON,
     CreateWorkspaceToJSON,
+    UpdateWorkspace,
+    UpdateWorkspaceFromJSON,
+    UpdateWorkspaceToJSON,
     Workspace,
     WorkspaceFromJSON,
     WorkspaceToJSON,
@@ -29,6 +32,11 @@ export interface CreateWorkspaceRequest {
 
 export interface DeleteWorkspaceRequest {
     workspaceId: string;
+}
+
+export interface PostWorkspaceRequest {
+    workspaceId: string;
+    updateWorkspace?: UpdateWorkspace;
 }
 
 
@@ -161,5 +169,53 @@ function getWorkspacesRaw<T>( requestConfig: runtime.TypedQueryConfig<T, Array<W
 */
 export function getWorkspaces<T>( requestConfig?: runtime.TypedQueryConfig<T, Array<Workspace>>): QueryConfig<T> {
     return getWorkspacesRaw( requestConfig);
+}
+
+/**
+ * Updates an existing workspace
+ */
+function postWorkspaceRaw<T>(requestParameters: PostWorkspaceRequest, requestConfig: runtime.TypedQueryConfig<T, void> = {}): QueryConfig<T> {
+    if (requestParameters.workspaceId === null || requestParameters.workspaceId === undefined) {
+        throw new runtime.RequiredError('workspaceId','Required parameter requestParameters.workspaceId was null or undefined when calling postWorkspace.');
+    }
+
+    let queryParameters = null;
+
+
+    const headerParameters : runtime.HttpHeaders = {};
+
+    headerParameters['Content-Type'] = 'application/json';
+
+
+    const { meta = {} } = requestConfig;
+
+    meta.authType = ['bearer'];
+    const config: QueryConfig<T> = {
+        url: `${runtime.Configuration.basePath}/workspaces/{workspace_id}`.replace(`{${"workspace_id"}}`, encodeURIComponent(String(requestParameters.workspaceId))),
+        meta,
+        update: requestConfig.update,
+        queryKey: requestConfig.queryKey,
+        optimisticUpdate: requestConfig.optimisticUpdate,
+        force: requestConfig.force,
+        rollback: requestConfig.rollback,
+        options: {
+            method: 'POST',
+            headers: headerParameters,
+        },
+        body: queryParameters || UpdateWorkspaceToJSON(requestParameters.updateWorkspace),
+    };
+
+    const { transform: requestTransform } = requestConfig;
+    if (requestTransform) {
+    }
+
+    return config;
+}
+
+/**
+* Updates an existing workspace
+*/
+export function postWorkspace<T>(requestParameters: PostWorkspaceRequest, requestConfig?: runtime.TypedQueryConfig<T, void>): QueryConfig<T> {
+    return postWorkspaceRaw(requestParameters, requestConfig);
 }
 
