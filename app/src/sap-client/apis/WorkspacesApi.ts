@@ -15,15 +15,64 @@
 import { HttpMethods, QueryConfig, ResponseBody, ResponseText } from 'redux-query';
 import * as runtime from '../runtime';
 import {
+    CreateWorkspace,
+    CreateWorkspaceFromJSON,
+    CreateWorkspaceToJSON,
     Workspace,
     WorkspaceFromJSON,
     WorkspaceToJSON,
 } from '../models';
 
+export interface CreateWorkspaceRequest {
+    createWorkspace?: CreateWorkspace;
+}
+
 export interface DeleteWorkspaceRequest {
     workspaceId: string;
 }
 
+
+/**
+ */
+function createWorkspaceRaw<T>(requestParameters: CreateWorkspaceRequest, requestConfig: runtime.TypedQueryConfig<T, void> = {}): QueryConfig<T> {
+    let queryParameters = null;
+
+
+    const headerParameters : runtime.HttpHeaders = {};
+
+    headerParameters['Content-Type'] = 'application/json';
+
+
+    const { meta = {} } = requestConfig;
+
+    meta.authType = ['bearer'];
+    const config: QueryConfig<T> = {
+        url: `${runtime.Configuration.basePath}/workspaces`,
+        meta,
+        update: requestConfig.update,
+        queryKey: requestConfig.queryKey,
+        optimisticUpdate: requestConfig.optimisticUpdate,
+        force: requestConfig.force,
+        rollback: requestConfig.rollback,
+        options: {
+            method: 'POST',
+            headers: headerParameters,
+        },
+        body: queryParameters || CreateWorkspaceToJSON(requestParameters.createWorkspace),
+    };
+
+    const { transform: requestTransform } = requestConfig;
+    if (requestTransform) {
+    }
+
+    return config;
+}
+
+/**
+*/
+export function createWorkspace<T>(requestParameters: CreateWorkspaceRequest, requestConfig?: runtime.TypedQueryConfig<T, void>): QueryConfig<T> {
+    return createWorkspaceRaw(requestParameters, requestConfig);
+}
 
 /**
  * Delete an existing workspace

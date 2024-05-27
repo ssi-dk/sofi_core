@@ -1,6 +1,7 @@
 import sys
 from ...common.database import get_connection, DB_NAME, WORKSPACES_COL_NAME
 from bson.objectid import ObjectId
+from web.src.SAP.generated.models import CreateWorkspace
 
 def trim(item):
     item["id"] = str(item["_id"])
@@ -23,3 +24,10 @@ def delete_workspace(user: str, workspace_id: str):
     return workspaces.delete_one(
         {"_id": ObjectId(workspace_id), "created_by": user}
     )
+
+def create_workspace(user: str, workspace: CreateWorkspace):
+    conn = get_connection()
+    db = conn[DB_NAME]
+    workspaces = db[WORKSPACES_COL_NAME]
+    record = {**workspace.to_dict(), "created_by": user}
+    return workspaces.update_one({'created_by': user, 'name': workspace.name}, {"$set": record}, upsert=True)

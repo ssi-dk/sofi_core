@@ -9,6 +9,7 @@ export * from './ApprovalStatus';
 export * from './BaseMetadata';
 export * from './BioApiStatus';
 export * from './Column';
+export * from './CreateWorkspace';
 export * from './DataClearance';
 export * from './Exception';
 export * from './Gene';

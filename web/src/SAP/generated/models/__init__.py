@@ -15,6 +15,7 @@ from .base_metadata import BaseMetadata
 from .bio_api_status import BioApiStatus
 from .bulk_upload_request import BulkUploadRequest
 from .column import Column
+from .create_workspace import CreateWorkspace
 from .data_clearance import DataClearance
 from .exception import Exception
 from .gene import Gene

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   Box,
   Flex,
@@ -10,17 +10,16 @@ import {
   Tr,
   Th,
   Td,
-  IconButton,
-  useToast,
 } from "@chakra-ui/react";
-import { useMutation, useRequest } from "redux-query-react";
+import { useRequest } from "redux-query-react";
 import { useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { RootState } from "app/root-reducer";
 import HalfHolyGrailLayout from "layouts/half-holy-grail";
-import { fetchWorkspaces, deleteWorkspace } from "./workspaces-query-configs";
+import { fetchWorkspaces } from "./workspaces-query-configs";
 import type { Workspace } from "sap-client";
-import { DeleteIcon } from "@chakra-ui/icons";
+import { DeleteWorkspace } from "./delete-workspace";
+import { CreateWorkspace } from "./create-workspace";
 
 export function Workspaces() {
   const [workspacesQueryState] = useRequest(fetchWorkspaces());
@@ -30,39 +29,6 @@ export function Workspaces() {
   ) as Array<Workspace>;
 
   const { t } = useTranslation();
-  const toast = useToast();
-
-  const [
-    deleteWorkspaceQueryState,
-    deleteWorkspaceMutation,
-  ] = useMutation((id: string) => deleteWorkspace({ workspaceId: id }));
-
-  const [needsNotify, setNeedsNotify] = useState(true);
-
-  const deleteWorkspaceCallback = React.useCallback(
-    (id: string) => {
-      setNeedsNotify(true);
-      deleteWorkspaceMutation(id);
-    },
-    [deleteWorkspaceMutation, setNeedsNotify]
-  );
-
-  React.useMemo(() => {
-    if (
-      needsNotify &&
-      deleteWorkspaceQueryState.status >= 200 &&
-      deleteWorkspaceQueryState.status < 300 &&
-      !deleteWorkspaceQueryState.isPending
-    ) {
-      toast({
-        title: t("Workspace deleted"),
-        status: "info",
-        duration: 3000,
-        isClosable: true,
-      });
-      setNeedsNotify(false);
-    }
-  }, [t, deleteWorkspaceQueryState, toast, needsNotify, setNeedsNotify]);
 
   const content = (
     <Box textOverflow="hidden" minH="100vh">
@@ -74,32 +40,30 @@ export function Workspaces() {
       >
         <Heading>{`${t("My workspaces")}`}</Heading>
       </Flex>
-      <Table variant="striped">
-        <Thead>
-          <Tr>
-            <Th>{t("Name")}</Th>
-          </Tr>
-        </Thead>
-        <Tbody>
-          {workspaces &&
-            workspaces.map((h) => {
+      <CreateWorkspace />
+      {workspaces?.length > 0 ? (
+        <Table variant="striped">
+          <Thead>
+            <Tr>
+              <Th>{t("Name")}</Th>
+            </Tr>
+          </Thead>
+          <Tbody>
+            {workspaces.map((h) => {
               return (
                 <Tr verticalAlign="top" key={h.id}>
                   <Td>
                     <Text>{h.name}</Text>
                   </Td>
                   <Td>
-                    <IconButton
-                      icon={<DeleteIcon />}
-                      aria-label={`${t("Delete")}`}
-                      onClick={() => deleteWorkspaceCallback(h.id)}
-                    />
+                    <DeleteWorkspace id={h.id} />
                   </Td>
                 </Tr>
               );
             })}
-        </Tbody>
-      </Table>
+          </Tbody>
+        </Table>
+      ) : null}
       {workspacesQueryState.isPending && `${t("Fetching...")}`}
       {workspacesQueryState.isFinished &&
         `${t("Found")} ${workspaces.length} ${t("workspaces")}.`}

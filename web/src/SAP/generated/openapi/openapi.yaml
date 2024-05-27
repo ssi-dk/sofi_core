@@ -547,6 +547,19 @@ paths:
       tags:
       - workspaces
       x-openapi-router-controller: web.src.SAP.generated.controllers.workspaces_controller
+    post:
+      operationId: create_workspace
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateWorkspace'
+      responses:
+        "204":
+          description: Workspace created.
+      tags:
+      - workspaces
+      x-openapi-router-controller: web.src.SAP.generated.controllers.workspaces_controller
   /workspaces/{workspace_id}:
     delete:
       description: Delete an existing workspace
@@ -1365,6 +1378,16 @@ components:
           type: string
       required:
       - id
+      - name
+      type: object
+    CreateWorkspace:
+      example:
+        name: name
+      properties:
+        name:
+          title: Name
+          type: string
+      required:
       - name
       type: object
     Sample_categories_resistance_report:
