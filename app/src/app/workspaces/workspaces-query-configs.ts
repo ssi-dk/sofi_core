@@ -72,11 +72,6 @@ export const updateWorkspace = (params: PostWorkspaceRequest) => {
   const base = postWorkspaceApi(params);
   base.url = getUrl(base.url);
 
-  base.update = {
-    workspaces: (oldValue) => {
-      oldValue;
-    },
-  };
   base.force = true;
   return base;
 };
