@@ -13,6 +13,7 @@ In order to build and run locally, you will need the following utilities:
 * docker-compose
 
 ### Extra Windows pre-requisites
+
 This guide is for running the project using WSL2 in Windows.
 
 1. Follow this guide [https://docs.microsoft.com/en-us/windows/wsl/setup/environment#get-started](https://docs.microsoft.com/en-us/windows/wsl/setup/environment#get-started)
@@ -204,3 +205,5 @@ Consult `docs/`.
 4. Restart `sofi.service` by executing `systemctl restart sofi.service` and following the prompts.
 
 5. Verify chances by inspecting the logs, `journalctl -u sofi.service -f`, and check the website in the browser.
+
+
