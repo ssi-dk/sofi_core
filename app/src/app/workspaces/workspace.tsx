@@ -19,7 +19,7 @@ import {
 import { Column } from "react-table";
 import { UserDefinedViewInternal } from "models/user-defined-view-internal";
 import { Loading } from "loading";
-import AnalysisViewSelector from "app/analysis/view-selector/analysis-view-selector";
+import { AnalysisViewSelector } from "app/analysis/view-selector/analysis-view-selector";
 
 type Props = {
   id: string;
@@ -136,7 +136,7 @@ export function Workspace(props: Props) {
           <div style={{ display: "flex", justifyContent: "space-between" }}>
             <Heading>{`${workspace?.name}`}</Heading>
             <div style={{ width: "300px" }}>
-              <AnalysisViewSelector />
+              <AnalysisViewSelector manageViews={false} />
             </div>
           </div>
         </Box>

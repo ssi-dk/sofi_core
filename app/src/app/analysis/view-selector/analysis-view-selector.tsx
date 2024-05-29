@@ -14,26 +14,15 @@ import {
 import { defaultViews, setView } from "./analysis-view-selection-config";
 import { spyDataTable } from "../data-table/table-spy";
 
-const AnalysisViewSelector = () => {
+type Props = {
+  manageViews?: boolean;
+};
+
+export const AnalysisViewSelector = (props: Props) => {
+  const { manageViews } = props;
   const { t } = useTranslation();
   const addViewValue = "AddView";
   const deleteViewValue = "DeleteView";
-
-  const buildOptions = React.useCallback(
-    (options: UserDefinedViewInternal[]) => [
-      { label: `-- ${t("Save current view")}`, value: addViewValue },
-      { label: `-- ${t("Delete current view")}`, value: deleteViewValue },
-      {
-        label: t("Predefined views"),
-        options: defaultViews.map((x) => ({ label: x.name, value: x })),
-      },
-      {
-        label: t("My views"),
-        options: options.map((x) => ({ label: x.name, value: x })),
-      },
-    ],
-    [t]
-  );
 
   const dispatch = useDispatch();
   const userViews = useSelector<RootState>(
@@ -111,9 +100,43 @@ const AnalysisViewSelector = () => {
     view,
   ]);
 
+  const selectOptions = React.useMemo(() => {
+    let options = new Array<
+      | { label: string; value: string | UserDefinedViewInternal }
+      | {
+          label: string;
+          options: Array<{
+            label: string;
+            value: string | UserDefinedViewInternal;
+          }>;
+        }
+    >();
+
+    if (manageViews !== false) {
+      options = options.concat([
+        { label: `-- ${t("Save current view")}`, value: addViewValue },
+        { label: `-- ${t("Delete current view")}`, value: deleteViewValue },
+      ]);
+    }
+
+    options.push({
+      label: t("Predefined views"),
+      options: defaultViews.map((x) => ({ label: x.name, value: x })),
+    });
+
+    if (isFinished) {
+      options.push({
+        label: t("My views"),
+        options: userViews.map((x) => ({ label: x.name, value: x })),
+      });
+    }
+
+    return options;
+  }, [t, isFinished, userViews, manageViews]);
+
   return (
     <Select
-      options={isFinished ? buildOptions(userViews) : ([] as any[])}
+      options={selectOptions}
       defaultValue={value}
       value={value}
       theme={selectTheme}
@@ -122,5 +145,3 @@ const AnalysisViewSelector = () => {
     />
   );
 };
-
-export default AnalysisViewSelector;
