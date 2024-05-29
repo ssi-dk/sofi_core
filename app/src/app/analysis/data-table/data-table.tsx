@@ -51,7 +51,7 @@ type DataTableProps<T extends NotEmpty> = {
   canApproveColumn: (columnName: string) => boolean;
   isJudgedCell: (rowId: string, columnName: string) => boolean;
   getDependentColumns: (columnName: keyof T) => Array<keyof T>;
-  selectionClassName: string;
+  selectionClassName?: string;
   approvableColumns: string[];
   onSelect?: (sel: DataTableSelection<T>) => void;
   selection: DataTableSelection<T>;
@@ -458,7 +458,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
           : cellStyle;
 
       if (isInSelection(rowId, columnId)) {
-        className = `${className} ${selectionClassName}`;
+        className = `${className} ${selectionClassName ?? ""}`;
       }
 
       return (

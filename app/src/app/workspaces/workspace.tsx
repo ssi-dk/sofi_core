@@ -119,7 +119,7 @@ export function Workspace(props: Props) {
         }
       }
 
-      return <div>{`${v}`}</div>;
+      return <div style={{ backgroundColor: "white" }}>{`${v}`}</div>;
     },
     [columnConfigs]
   );
@@ -155,7 +155,6 @@ export function Workspace(props: Props) {
               data={workspace.samples}
               renderCellControl={renderCellControl}
               primaryKey="sequence_id"
-              selectionClassName=""
               selection={{}}
               view={view}
             />
