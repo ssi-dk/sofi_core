@@ -44,7 +44,7 @@ export type DataTableSelection<T extends object> = Record<
 type DataTableProps<T extends NotEmpty> = {
   columns: Column<T>[];
   setNewColumnOrder: (columnOrder: string[]) => void;
-  setColumnSort: (columnSort: { column: string; ascending: boolean }) => void;
+  setColumnSort?: (columnSort: { column: string; ascending: boolean }) => void;
   data: T[];
   primaryKey: keyof T;
   canSelectColumn: (columnName: string) => boolean;

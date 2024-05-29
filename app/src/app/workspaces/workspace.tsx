@@ -145,7 +145,6 @@ export function Workspace(props: Props) {
             <DataTable<AnalysisResult>
               columns={columns || []}
               setNewColumnOrder={() => {}}
-              setColumnSort={() => {}}
               canSelectColumn={() => false}
               canApproveColumn={() => false}
               isJudgedCell={() => false}
