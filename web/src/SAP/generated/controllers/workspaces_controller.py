@@ -31,6 +31,20 @@ def delete_workspace(user, token_info, workspace_id):  # noqa: E501
     """
     return WorkspacesController.delete_workspace(user, token_info, workspace_id)
 
+def delete_workspace_sample(user, token_info, workspace_id, sample_id):  # noqa: E501
+    """delete_workspace_sample
+
+    Delete sample from workspace # noqa: E501
+
+    :param workspace_id: Id of workspace to modify
+    :type workspace_id: str
+    :param sample_id: Id of the sample to remove
+    :type sample_id: str
+
+    :rtype: None
+    """
+    return WorkspacesController.delete_workspace_sample(user, token_info, workspace_id, sample_id)
+
 def get_workspace(user, token_info, workspace_id):  # noqa: E501
     """get_workspace
 

@@ -41,6 +41,16 @@ def delete_workspace(user: str, workspace_id: str):
         {"_id": ObjectId(workspace_id), "created_by": user}
     )
 
+def delete_workspace_sample(user: str, workspace_id: str, sample_id: str):
+    conn = get_connection()
+    mydb = conn[DB_NAME]
+    workspaces = mydb[WORKSPACES_COL_NAME]
+
+    filter = {'created_by': user, '_id': ObjectId(workspace_id)}
+    update = {"$pull": {"samples": sample_id}}
+    return workspaces.update_one(filter, update, upsert=True)
+
+
 def create_workspace(user: str, workspace: CreateWorkspace):
     conn = get_connection()
     db = conn[DB_NAME]

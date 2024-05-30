@@ -51,6 +51,21 @@ class TestWorkspacesController(BaseTestCase):
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
 
+    def test_delete_workspace_sample(self):
+        """Test case for delete_workspace_sample
+
+        
+        """
+        headers = { 
+            'Authorization': 'Bearer special-key',
+        }
+        response = self.client.open(
+            '/api/workspace/{workspace_id}/{sample_id}'.format(workspace_id='workspace_id_example')sample_id='sample_id_example'),
+            method='DELETE',
+            headers=headers)
+        self.assert200(response,
+                       'Response body is : ' + response.data.decode('utf-8'))
+
     def test_get_workspace(self):
         """Test case for get_workspace
 

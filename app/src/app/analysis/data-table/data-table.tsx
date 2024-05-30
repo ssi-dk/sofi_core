@@ -69,7 +69,9 @@ type DataTableProps<T extends NotEmpty> = {
   renderCellControl: (
     rowId: string,
     columnId: string,
-    value: string
+    value: string,
+    columnIndex: number,
+    original: T
   ) => JSX.Element;
 };
 
@@ -494,7 +496,9 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
             {renderCellControl(
               rowId,
               columnId,
-              rows[rowIndex - 1].original[columnId]
+              rows[rowIndex - 1].original[columnId],
+              columnIndex,
+              rows[rowIndex - 1].original
             )}
           </Flex>
         </div>

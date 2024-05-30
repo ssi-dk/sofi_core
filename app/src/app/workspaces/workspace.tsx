@@ -1,9 +1,12 @@
-import React from "react";
-import { Box, Heading, Spinner } from "@chakra-ui/react";
+import React, { useCallback } from "react";
+import { Box, Heading, IconButton, Spinner } from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
 import HalfHolyGrailLayout from "layouts/half-holy-grail";
-import { useRequest } from "redux-query-react";
-import { getWorkspace } from "./workspaces-query-configs";
+import { useMutation, useRequest } from "redux-query-react";
+import {
+  getWorkspace,
+  removeWorkspaceSample,
+} from "./workspaces-query-configs";
 import { useSelector } from "react-redux";
 import { RootState } from "app/root-reducer";
 import {
@@ -20,6 +23,7 @@ import { Column } from "react-table";
 import { UserDefinedViewInternal } from "models/user-defined-view-internal";
 import { Loading } from "loading";
 import { AnalysisViewSelector } from "app/analysis/view-selector/analysis-view-selector";
+import { DeleteIcon } from "@chakra-ui/icons";
 
 type Props = {
   id: string;
@@ -64,22 +68,40 @@ export function Workspace(props: Props) {
     [columnConfigs, t]
   );
 
+  const deleteWorkspaceSampleCallback = useMutation((sampleId: string) =>
+    removeWorkspaceSample({ sampleId, workspaceId: id })
+  )[1];
+
+  const onRemoveSample = useCallback(
+    (sampleId) => {
+      const ok = confirm(
+        t("Are you sure you want to remove the sequence from the workspace?")
+      );
+      if (ok) {
+        deleteWorkspaceSampleCallback(sampleId);
+      }
+    },
+    [deleteWorkspaceSampleCallback, t]
+  );
+
   const renderCellControl = React.useCallback(
-    (rowId: string, columnId: string, value) => {
+    (
+      rowId: string,
+      columnId: string,
+      value,
+      columnIndex: number,
+      original: AnalysisResult
+    ) => {
       if (
-        value !== 0 &&
-        value !== false &&
-        !value &&
-        !columnConfigs[columnId].editable
+        value === undefined ||
+        value === null ||
+        String(value) === "Invalid Date"
       ) {
-        return <div />;
+        value = "";
       }
       let v = `${value}`;
-      if (v === "Invalid Date") {
-        return <div />;
-      }
-      // any other dates
-      else if (value instanceof Date) {
+
+      if (value instanceof Date) {
         // Fancy libraries could be used, but this will do the trick just fine
         v = value.toISOString().split("T")[0];
       } else if (
@@ -119,9 +141,23 @@ export function Workspace(props: Props) {
         }
       }
 
-      return <div style={{ backgroundColor: "white" }}>{`${v}`}</div>;
+      return (
+        <div style={{ backgroundColor: "white" }}>
+          {columnIndex === 0 ? (
+            <IconButton
+              size="1em"
+              variant="unstyled"
+              onClick={() => onRemoveSample(original.id)}
+              aria-label="Remove"
+              icon={<DeleteIcon marginTop="-0.5em" />}
+              ml="1"
+            />
+          ) : null}
+          {`${v}`}
+        </div>
+      );
     },
-    [columnConfigs]
+    [onRemoveSample]
   );
 
   if (!columnLoadState.isFinished) {

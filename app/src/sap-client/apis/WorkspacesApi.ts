@@ -37,6 +37,11 @@ export interface DeleteWorkspaceRequest {
     workspaceId: string;
 }
 
+export interface DeleteWorkspaceSampleRequest {
+    workspaceId: string;
+    sampleId: string;
+}
+
 export interface GetWorkspaceRequest {
     workspaceId: string;
 }
@@ -133,6 +138,56 @@ function deleteWorkspaceRaw<T>(requestParameters: DeleteWorkspaceRequest, reques
 */
 export function deleteWorkspace<T>(requestParameters: DeleteWorkspaceRequest, requestConfig?: runtime.TypedQueryConfig<T, void>): QueryConfig<T> {
     return deleteWorkspaceRaw(requestParameters, requestConfig);
+}
+
+/**
+ * Delete sample from workspace
+ */
+function deleteWorkspaceSampleRaw<T>(requestParameters: DeleteWorkspaceSampleRequest, requestConfig: runtime.TypedQueryConfig<T, void> = {}): QueryConfig<T> {
+    if (requestParameters.workspaceId === null || requestParameters.workspaceId === undefined) {
+        throw new runtime.RequiredError('workspaceId','Required parameter requestParameters.workspaceId was null or undefined when calling deleteWorkspaceSample.');
+    }
+
+    if (requestParameters.sampleId === null || requestParameters.sampleId === undefined) {
+        throw new runtime.RequiredError('sampleId','Required parameter requestParameters.sampleId was null or undefined when calling deleteWorkspaceSample.');
+    }
+
+    let queryParameters = null;
+
+
+    const headerParameters : runtime.HttpHeaders = {};
+
+
+    const { meta = {} } = requestConfig;
+
+    meta.authType = ['bearer'];
+    const config: QueryConfig<T> = {
+        url: `${runtime.Configuration.basePath}/workspace/{workspace_id}/{sample_id}`.replace(`{${"workspace_id"}}`, encodeURIComponent(String(requestParameters.workspaceId))).replace(`{${"sample_id"}}`, encodeURIComponent(String(requestParameters.sampleId))),
+        meta,
+        update: requestConfig.update,
+        queryKey: requestConfig.queryKey,
+        optimisticUpdate: requestConfig.optimisticUpdate,
+        force: requestConfig.force,
+        rollback: requestConfig.rollback,
+        options: {
+            method: 'DELETE',
+            headers: headerParameters,
+        },
+        body: queryParameters,
+    };
+
+    const { transform: requestTransform } = requestConfig;
+    if (requestTransform) {
+    }
+
+    return config;
+}
+
+/**
+* Delete sample from workspace
+*/
+export function deleteWorkspaceSample<T>(requestParameters: DeleteWorkspaceSampleRequest, requestConfig?: runtime.TypedQueryConfig<T, void>): QueryConfig<T> {
+    return deleteWorkspaceSampleRaw(requestParameters, requestConfig);
 }
 
 /**

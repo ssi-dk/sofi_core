@@ -5,8 +5,10 @@ import {
   createWorkspace as createWorkspaceApi,
   getWorkspace as getWorkspaceApi,
   postWorkspace as postWorkspaceApi,
+  deleteWorkspaceSample as deleteWorkspaceSampleApi,
   DeleteWorkspaceRequest,
   PostWorkspaceRequest,
+  DeleteWorkspaceSampleRequest,
 } from "sap-client";
 import { CreateWorkspace, WorkspaceInfo } from "sap-client/models";
 import { getUrl } from "service";
@@ -60,6 +62,21 @@ export const deleteWorkspace = (params: DeleteWorkspaceRequest) => {
         (workspace) => workspace.id !== params.workspaceId
       );
       return newValue;
+    },
+  };
+  base.force = true;
+  return base;
+};
+
+export const removeWorkspaceSample = (params: DeleteWorkspaceSampleRequest) => {
+  const base = deleteWorkspaceSampleApi(params);
+  base.url = getUrl(base.url);
+  base.update = {
+    workspace: (oldValue) => {
+      return {
+        ...oldValue,
+        samples: oldValue.samples.filter((s) => s.id !== params.sampleId),
+      };
     },
   };
   base.force = true;
