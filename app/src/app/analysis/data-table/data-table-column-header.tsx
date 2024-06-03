@@ -16,7 +16,7 @@ type DataTableColumnHeaderProps<T extends NotEmpty> = {
   canSelectColumn: (column: string) => boolean;
   onSelectColumn: (column: Column<T>) => void;
   onResize: (columnIndex: number) => void;
-  onSort: ({ column: string, ascending: boolean }) => void;
+  onSort?: ({ column: string, ascending: boolean }) => void;
 };
 
 function DataTableColumnHeader<T extends NotEmpty>(
@@ -60,7 +60,7 @@ function DataTableColumnHeader<T extends NotEmpty>(
       tabIndex={column.index}
       role="columnheader"
       key={column?.id}
-      {...(column.getHeaderProps(column.getSortByToggleProps()) as any)}
+      {...column.getHeaderProps(column.getSortByToggleProps())}
       title={undefined} // hides the "Toggle SortBy" tooltip
       onClick={noop} // Do not sort on header-click -- handled by button
       onKeyDown={noop}
@@ -81,14 +81,16 @@ function DataTableColumnHeader<T extends NotEmpty>(
             <span css={headerName}>{column.render("Header")}</span>
           </div>
         </Tooltip>
-        <button
-          type="button"
-          css={headerButton}
-          onClick={toggleSortHandler}
-          onKeyDown={toggleSortHandler}
-        >
-          {column.isSorted ? (column.isSortedDesc ? " ⯯" : " ⯭") : " ⬍"}
-        </button>
+        {onSort ? (
+          <button
+            type="button"
+            css={headerButton}
+            onClick={toggleSortHandler}
+            onKeyDown={toggleSortHandler}
+          >
+            {column.isSorted ? (column.isSortedDesc ? " ⯯" : " ⯭") : " ⬍"}
+          </button>
+        ) : null}
       </div>
       {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions */}
       <div

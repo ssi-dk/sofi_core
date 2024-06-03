@@ -32,7 +32,7 @@ import {
 } from "./analysis-query-configs";
 import HalfHolyGrailLayout from "../../layouts/half-holy-grail";
 import AnalysisSidebar from "./sidebar/analysis-sidebar";
-import AnalysisViewSelector from "./view-selector/analysis-view-selector";
+import { AnalysisViewSelector } from "./view-selector/analysis-view-selector";
 import AnalysisSearch from "./search/analysis-search";
 import { setSelection } from "./analysis-selection-configs";
 import { fetchApprovalMatrix } from "./analysis-approval-configs";

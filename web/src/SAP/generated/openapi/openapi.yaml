@@ -531,6 +531,126 @@ paths:
       tags:
       - user
       x-openapi-router-controller: web.src.SAP.generated.controllers.user_controller
+  /workspace/{workspace_id}/{sample_id}:
+    delete:
+      description: Delete sample from workspace
+      operationId: delete_workspace_sample
+      parameters:
+      - description: Id of workspace to modify
+        explode: false
+        in: path
+        name: workspace_id
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: Id of the sample to remove
+        explode: false
+        in: path
+        name: sample_id
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "204":
+          description: Sample removed from workspace successfully.
+      tags:
+      - workspaces
+      x-openapi-router-controller: web.src.SAP.generated.controllers.workspaces_controller
+  /workspaces:
+    get:
+      description: Gets workspaces
+      operationId: get_workspaces
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Workspace'
+                type: array
+          description: Workspaces info
+      tags:
+      - workspaces
+      x-openapi-router-controller: web.src.SAP.generated.controllers.workspaces_controller
+    post:
+      operationId: create_workspace
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateWorkspace'
+      responses:
+        "204":
+          description: Workspace created.
+      tags:
+      - workspaces
+      x-openapi-router-controller: web.src.SAP.generated.controllers.workspaces_controller
+  /workspaces/{workspace_id}:
+    delete:
+      description: Delete an existing workspace
+      operationId: delete_workspace
+      parameters:
+      - description: Id of workspace to delete
+        explode: false
+        in: path
+        name: workspace_id
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "204":
+          description: Workspace deleted successfully.
+      tags:
+      - workspaces
+      x-openapi-router-controller: web.src.SAP.generated.controllers.workspaces_controller
+    get:
+      description: Get an existing workspace
+      operationId: get_workspace
+      parameters:
+      - description: Id of workspace to get
+        explode: false
+        in: path
+        name: workspace_id
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkspaceInfo'
+          description: Workspace
+      tags:
+      - workspaces
+      x-openapi-router-controller: web.src.SAP.generated.controllers.workspaces_controller
+    post:
+      description: Updates an existing workspace
+      operationId: post_workspace
+      parameters:
+      - description: Id of workspace to update
+        explode: false
+        in: path
+        name: workspace_id
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateWorkspace'
+      responses:
+        "204":
+          description: Workspace updated successfully.
+      tags:
+      - workspaces
+      x-openapi-router-controller: web.src.SAP.generated.controllers.workspaces_controller
 components:
   schemas:
     Organization:
@@ -1317,6 +1437,76 @@ components:
       - error
       title: Status
       type: string
+    Workspace:
+      example:
+        name: name
+        id: id
+        samples:
+        - samples
+        - samples
+      properties:
+        id:
+          title: Id
+          type: string
+        name:
+          title: Name
+          type: string
+        samples:
+          items:
+            type: string
+          title: Samples
+          type: array
+      required:
+      - id
+      - name
+      type: object
+    CreateWorkspace:
+      example:
+        name: name
+      properties:
+        name:
+          title: Name
+          type: string
+      required:
+      - name
+      type: object
+    UpdateWorkspace:
+      example:
+        samples:
+        - samples
+        - samples
+      properties:
+        samples:
+          items:
+            type: string
+          title: Samples
+          type: array
+      required:
+      - samples
+      type: object
+    WorkspaceInfo:
+      example:
+        name: name
+        id: id
+        samples:
+        - null
+        - null
+      properties:
+        id:
+          title: Id
+          type: string
+        name:
+          title: Name
+          type: string
+        samples:
+          items:
+            $ref: '#/components/schemas/AnalysisResult'
+          title: Samples
+          type: array
+      required:
+      - name
+      - samples
+      type: object
     Sample_categories_resistance_report:
       example:
         phenotypes:

@@ -15,6 +15,7 @@ from .base_metadata import BaseMetadata
 from .bio_api_status import BioApiStatus
 from .bulk_upload_request import BulkUploadRequest
 from .column import Column
+from .create_workspace import CreateWorkspace
 from .data_clearance import DataClearance
 from .exception import Exception
 from .gene import Gene
@@ -46,9 +47,12 @@ from .sample_categories_resistance_report import SampleCategoriesResistanceRepor
 from .single_upload_request import SingleUploadRequest
 from .tbr_metadata import TbrMetadata
 from .tbr_specific_metadata import TbrSpecificMetadata
+from .update_workspace import UpdateWorkspace
 from .upload_metadata_fields import UploadMetadataFields
 from .upload_response import UploadResponse
 from .user_defined_view import UserDefinedView
 from .user_defined_view_column_resizing import UserDefinedViewColumnResizing
 from .user_defined_view_sort_by import UserDefinedViewSortBy
 from .user_info import UserInfo
+from .workspace import Workspace
+from .workspace_info import WorkspaceInfo

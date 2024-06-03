@@ -6,6 +6,7 @@ import {
   CalendarIcon,
   EditIcon,
   LockIcon,
+  ViewIcon,
 } from "@chakra-ui/icons";
 import { Permission } from "sap-client";
 import { IfPermission } from "auth/if-permission";
@@ -17,6 +18,9 @@ function NavBar() {
     <Flex align="center" justify="space-around" gridGap={5}>
       <NavLink to="/">
         <Button leftIcon={<EditIcon />}>{t("Analysis results")}</Button>
+      </NavLink>
+      <NavLink to="/workspaces">
+        <Button leftIcon={<ViewIcon />}>{t("Workspaces")}</Button>
       </NavLink>
       <IfPermission permission={Permission.approve}>
         <NavLink to="/approval-history">

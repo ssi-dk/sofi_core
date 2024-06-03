@@ -44,18 +44,18 @@ export type DataTableSelection<T extends object> = Record<
 type DataTableProps<T extends NotEmpty> = {
   columns: Column<T>[];
   setNewColumnOrder: (columnOrder: string[]) => void;
-  setColumnSort: (columnSort: { column: string; ascending: boolean }) => void;
+  setColumnSort?: (columnSort: { column: string; ascending: boolean }) => void;
   data: T[];
   primaryKey: keyof T;
   canSelectColumn: (columnName: string) => boolean;
   canApproveColumn: (columnName: string) => boolean;
   isJudgedCell: (rowId: string, columnName: string) => boolean;
   getDependentColumns: (columnName: keyof T) => Array<keyof T>;
-  selectionClassName: string;
+  selectionClassName?: string;
   approvableColumns: string[];
-  onSelect: (sel: DataTableSelection<T>) => void;
+  onSelect?: (sel: DataTableSelection<T>) => void;
   selection: DataTableSelection<T>;
-  onDetailsClick: (isolateId: string, row: Row<T>) => void;
+  onDetailsClick?: (isolateId: string, row: Row<T>) => void;
   view: UserDefinedViewInternal;
   getCellStyle: (
     rowId: string,
@@ -69,7 +69,9 @@ type DataTableProps<T extends NotEmpty> = {
   renderCellControl: (
     rowId: string,
     columnId: string,
-    value: string
+    value: string,
+    columnIndex: number,
+    original: T
   ) => JSX.Element;
 };
 
@@ -106,9 +108,12 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
     selection,
   } = props;
 
-  const isInSelection = React.useCallback((rowId, columnId) => {
-    return selection[rowId]?.cells?.[columnId];
-  }, [selection]);
+  const isInSelection = React.useCallback(
+    (rowId, columnId) => {
+      return selection[rowId]?.cells?.[columnId];
+    },
+    [selection]
+  );
 
   const [lastView, setLastView] = useState(view);
 
@@ -143,8 +148,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
       };
       getDependentColumns(columnId).forEach((v) => {
         incSel[rowId].cells[v] = !(
-          selection[rowId]?.cells &&
-          selection[rowId]?.cells[columnId]
+          selection[rowId]?.cells && selection[rowId]?.cells[columnId]
         );
       });
       onSelect(incSel);
@@ -377,9 +381,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
           .map((r) => r.original[primaryKey])
           .forEach((r: string) => {
             if (incSel[r]) {
-              incSel[r].cells[c] = !(
-                selection[r] && selection[r].cells[c]
-              );
+              incSel[r].cells[c] = !(selection[r] && selection[r].cells[c]);
             }
           });
       });
@@ -458,7 +460,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
           : cellStyle;
 
       if (isInSelection(rowId, columnId)) {
-        className = `${className} ${selectionClassName}`;
+        className = `${className} ${selectionClassName ?? ""}`;
       }
 
       return (
@@ -473,24 +475,30 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
           <Flex minWidth="full" minHeight="full">
             {columnIndex === 0 && (
               <React.Fragment>
-                <SelectionCheckBox
-                  onClick={rowClickHandler(rows[rowIndex - 1])}
-                  {...calcRowSelectionState(rows[rowIndex - 1])}
-                />
-                <IconButton
-                  size="1em"
-                  variant="unstyled"
-                  onClick={() => onDetailsClick(rowId, row)}
-                  aria-label="Search database"
-                  icon={<ExternalLinkIcon marginTop="-0.5em" />}
-                  ml="1"
-                />
+                {onSelect ? (
+                  <SelectionCheckBox
+                    onClick={rowClickHandler(rows[rowIndex - 1])}
+                    {...calcRowSelectionState(rows[rowIndex - 1])}
+                  />
+                ) : null}
+                {onDetailsClick ? (
+                  <IconButton
+                    size="1em"
+                    variant="unstyled"
+                    onClick={() => onDetailsClick(rowId, row)}
+                    aria-label="Search database"
+                    icon={<ExternalLinkIcon marginTop="-0.5em" />}
+                    ml="1"
+                  />
+                ) : null}
               </React.Fragment>
             )}
             {renderCellControl(
               rowId,
               columnId,
-              rows[rowIndex - 1].original[columnId]
+              rows[rowIndex - 1].original[columnId],
+              columnIndex,
+              rows[rowIndex - 1].original
             )}
           </Flex>
         </div>
@@ -514,6 +522,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
       onDetailsClick,
       renderCellControl,
       cellClickHandler,
+      onSelect,
     ]
   );
 
