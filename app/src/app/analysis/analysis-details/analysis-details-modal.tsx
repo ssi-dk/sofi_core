@@ -23,7 +23,7 @@ import {
   IsolateWithData,
   sequencesFromIsolateId,
 } from "./analysis-history-configs";
-import AnalysisHistoryTable from "./analysis-history-table";
+import { AnalysisHistoryTable } from "./analysis-history-table";
 import ReloadMetadataWidget from "./reload-widget/reload-metadata-widget";
 
 const getAnalysisHistory = (state: {
@@ -44,7 +44,7 @@ export const AnalysisDetailsModal = (props: AnalysisHistoryProps) => {
 
   const analysisHistory = useSelector(getAnalysisHistory) ?? {};
 
-  const [{ isPending, status }, refresh] = useRequest(
+  const [{ isPending }] = useRequest(
     sequencesFromIsolateId(isolate?.id)
   );
 

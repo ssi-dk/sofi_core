@@ -5,7 +5,6 @@ import {
   PageOfAnalysis,
   AnalysisResultFromJSON,
 } from "sap-client";
-import { PersonalData } from "sap-client/models/PersonalData";
 import { getUrl } from "service";
 import { arrayToNormalizedHashmap } from "utils";
 
@@ -32,7 +31,7 @@ export const sequencesFromIsolateId = (isolateId: string) => {
     analysisHistory: response.items
       ? arrayToNormalizedHashmap(
           response.items.map((a) => AnalysisResultFromJSON(a)),
-          "sequence_id"
+          "id"
         )
       : {},
   });
