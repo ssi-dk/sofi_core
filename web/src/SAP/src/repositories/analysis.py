@@ -22,7 +22,6 @@ def remove_id(item):
     return item
 
 
-# TODO: only select the latest document pr. isolate id.
 def get_analysis_page(query, page_size, offset, columns, restrict_to_institution):
     conn, encryption_client = get_connection(with_enc=True)
     q = encrypt_dict(encryption_client, query, pii_columns())
@@ -31,7 +30,7 @@ def get_analysis_page(query, page_size, offset, columns, restrict_to_institution
     column_projection = {x: 1 for x in columns}
     column_projection["id"] = { "$toString": "$_id" }
     mydb = conn[DB_NAME]
-    samples = mydb[ANALYSIS_COL_NAME]
+    analysis = mydb[ANALYSIS_COL_NAME]
     fetch_pipeline = [
         {
             "$lookup": {
@@ -82,6 +81,15 @@ def get_analysis_page(query, page_size, offset, columns, restrict_to_institution
         },
         {"$match": q},
         {"$sort": {"_id": pymongo.DESCENDING}},
+
+        {
+            "$group": {
+            "_id": "$sequence_id",
+            "record": { "$first": "$$ROOT" }
+            }
+        },
+        { "$replaceRoot": { "newRoot": "$record" } },
+
         {"$skip": offset},
         {"$limit": (int(page_size))},
         {"$project": column_projection},
@@ -89,32 +97,48 @@ def get_analysis_page(query, page_size, offset, columns, restrict_to_institution
     ]
     # return list(map(remove_id, samples.find(query).sort('run_date',pymongo.DESCENDING).skip(offset).limit(int(page_size) + 2)))
     # For now, there is no handing of missing metadata, so the full_analysis table is used. The above aggregate pipeline should work though.
-    return list(samples.aggregate(fetch_pipeline))
+    return list(analysis.aggregate(fetch_pipeline))
 
 
 def get_analysis_count(query):
     conn, encryption_client = get_connection(with_enc=True)
     mydb = conn[DB_NAME]
-    samples = mydb[ANALYSIS_COL_NAME]
+    analysis = mydb[ANALYSIS_COL_NAME]
     q = encrypt_dict(encryption_client, query, pii_columns())
 
-    return samples.find(q).count()
+    fetch_pipeline = [
+        { "$match": q },
+        {
+            "$group": {
+                "_id": "$sequence_id",
+                "record": { "$first": "$sequence_id" }
+            }
+        },
+        { "$count": "record" },
+        { "$project": { "count": "$record"}}
+    ]
+
+    res = list(analysis.aggregate(fetch_pipeline))
+    if len(res) == 1:
+        return res[0]["count"]
+    else:
+        return 0
 
 
 def update_analysis(change):
     conn = get_connection()
     mydb = conn[DB_NAME]
-    samples = mydb[ANALYSIS_COL_NAME]
+    analysis = mydb[ANALYSIS_COL_NAME]
     updates = map(lambda x: {**change[x], "id": x}, change.keys())
     for u in updates:
-        samples.update_one({"sequence_id": u["id"]}, {"$set": u})
+        analysis.update_one({"sequence_id": u["id"]}, {"$set": u})
 
 
-def get_single_analysis(identifier: str) -> Dict[str, Any]:
+def get_single_analysis(id: str) -> Dict[str, Any]:
     conn = get_connection()
     mydb = conn[DB_NAME]
-    samples = mydb[ANALYSIS_COL_NAME]
-    return samples.find_one({"sequence_id": f"{identifier}"}, {"_id": 0})
+    analysis = mydb[ANALYSIS_COL_NAME]
+    return analysis.find_one({"sequence_id": f"{id}"}, {"_id": 0})
 
 def get_single_analysis_by_object_id(id: str) -> Dict[str, Any]:
     conn = get_connection()
@@ -125,7 +149,7 @@ def get_single_analysis_by_object_id(id: str) -> Dict[str, Any]:
 def get_analysis_with_metadata(sequence_id: str) -> Dict[str, Any]:
     conn = get_connection()
     mydb = conn[DB_NAME]
-    samples = mydb[ANALYSIS_COL_NAME]
+    analysis = mydb[ANALYSIS_COL_NAME]
 
     fetch_pipeline = [
         {"$match": {"sequence_id": sequence_id}},
@@ -179,7 +203,7 @@ def get_analysis_with_metadata(sequence_id: str) -> Dict[str, Any]:
         {"$limit": (int(1))},
     ]
 
-    res = list(samples.aggregate(fetch_pipeline))
+    res = list(analysis.aggregate(fetch_pipeline))
     if len(res) == 1:
         return res[0]
     else:
