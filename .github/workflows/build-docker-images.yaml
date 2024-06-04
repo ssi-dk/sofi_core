@@ -115,7 +115,8 @@ jobs:
         with:
           cmd: |
             # sap-web
-            yq eval '.spec.template.spec.containers[0].image = "ghcr.io/ssi-dk/sap-web:${{ needs.prepare_tag.outputs.tag }}"' -i ./sofi_core_gitops/apps/dev/sap-web/sap-web-image.yaml
+            IMAGE="sap-web"
+            yq eval '.spec.template.spec.containers[0].image = "ghcr.io/ssi-dk/$IMAGE:${{ needs.prepare_tag.outputs.tag }}"' -i ./sofi_core_gitops/apps/dev/$IMAGE/$IMAGE-image.yaml
 
       - uses: EndBug/add-and-commit@v9
         with:
