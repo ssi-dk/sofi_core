@@ -5,6 +5,7 @@ import unittest
 from flask import json
 from six import BytesIO
 
+from web.src.SAP.generated.models.analysis_history import AnalysisHistory  # noqa: E501
 from web.src.SAP.generated.models.analysis_query import AnalysisQuery  # noqa: E501
 from web.src.SAP.generated.models.analysis_result import AnalysisResult  # noqa: E501
 from web.src.SAP.generated.models.column import Column  # noqa: E501
@@ -33,6 +34,22 @@ class TestAnalysisController(BaseTestCase):
             method='GET',
             headers=headers,
             query_string=query_string)
+        self.assert200(response,
+                       'Response body is : ' + response.data.decode('utf-8'))
+
+    def test_get_analysis_history(self):
+        """Test case for get_analysis_history
+
+        
+        """
+        headers = { 
+            'Accept': 'application/json',
+            'Authorization': 'Bearer special-key',
+        }
+        response = self.client.open(
+            '/api/analysis-history/{sequence_id}'.format(sequence_id='sequence_id_example'),
+            method='GET',
+            headers=headers)
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
 

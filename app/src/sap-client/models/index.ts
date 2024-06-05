@@ -1,3 +1,4 @@
+export * from './AnalysisHistory';
 export * from './AnalysisQuery';
 export * from './AnalysisResult';
 export * from './AnalysisResultAllOf';

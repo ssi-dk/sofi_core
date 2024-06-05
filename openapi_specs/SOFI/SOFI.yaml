@@ -211,7 +211,29 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PageOfAnalysis'
-              
+
+  /analysis-history/{sequence_id}:
+    get:
+      description: Get analysis history by sequence_id
+      operationId: get_analysis_history
+      x-openapi-router-controller: web.src.SAP.generated.controllers.analysis_controller
+      tags:
+        - analysis
+      parameters:
+        - name: sequence_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Id of sequence
+      responses:
+        '200':
+          description: Analysis history
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnalysisHistory'
+
   /analysis/by_id:
     get:
       description: Get an individual analysis result by sequence_id
@@ -639,6 +661,14 @@ components:
     Organization:
       type: string
       enum: [SSI, FVST, Other]
+
+    AnalysisHistory:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/AnalysisResult'
 
     SingleAnalysisResult:
       $ref: '#/components/schemas/AnalysisResult'

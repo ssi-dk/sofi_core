@@ -153,6 +153,7 @@ def get_analysis_with_metadata(sequence_id: str) -> Dict[str, Any]:
 
     fetch_pipeline = [
         {"$match": {"sequence_id": sequence_id}},
+        {"$sort": {"_id": pymongo.DESCENDING}},
         {
             "$lookup": {
                 "from": TBR_METADATA_COL_NAME,

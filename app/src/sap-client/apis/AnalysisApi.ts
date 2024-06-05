@@ -15,6 +15,9 @@
 import { HttpMethods, QueryConfig, ResponseBody, ResponseText } from 'redux-query';
 import * as runtime from '../runtime';
 import {
+    AnalysisHistory,
+    AnalysisHistoryFromJSON,
+    AnalysisHistoryToJSON,
     AnalysisQuery,
     AnalysisQueryFromJSON,
     AnalysisQueryToJSON,
@@ -38,6 +41,10 @@ import {
 export interface GetAnalysisRequest {
     pagingToken?: string;
     pageSize?: number;
+}
+
+export interface GetAnalysisHistoryRequest {
+    sequenceId: string;
 }
 
 export interface GetSequenceByIdRequest {
@@ -109,6 +116,53 @@ function getAnalysisRaw<T>(requestParameters: GetAnalysisRequest, requestConfig:
 */
 export function getAnalysis<T>(requestParameters: GetAnalysisRequest, requestConfig?: runtime.TypedQueryConfig<T, PageOfAnalysis>): QueryConfig<T> {
     return getAnalysisRaw(requestParameters, requestConfig);
+}
+
+/**
+ * Get analysis history by sequence_id
+ */
+function getAnalysisHistoryRaw<T>(requestParameters: GetAnalysisHistoryRequest, requestConfig: runtime.TypedQueryConfig<T, AnalysisHistory> = {}): QueryConfig<T> {
+    if (requestParameters.sequenceId === null || requestParameters.sequenceId === undefined) {
+        throw new runtime.RequiredError('sequenceId','Required parameter requestParameters.sequenceId was null or undefined when calling getAnalysisHistory.');
+    }
+
+    let queryParameters = null;
+
+
+    const headerParameters : runtime.HttpHeaders = {};
+
+
+    const { meta = {} } = requestConfig;
+
+    meta.authType = ['bearer'];
+    const config: QueryConfig<T> = {
+        url: `${runtime.Configuration.basePath}/analysis-history/{sequence_id}`.replace(`{${"sequence_id"}}`, encodeURIComponent(String(requestParameters.sequenceId))),
+        meta,
+        update: requestConfig.update,
+        queryKey: requestConfig.queryKey,
+        optimisticUpdate: requestConfig.optimisticUpdate,
+        force: requestConfig.force,
+        rollback: requestConfig.rollback,
+        options: {
+            method: 'GET',
+            headers: headerParameters,
+        },
+        body: queryParameters,
+    };
+
+    const { transform: requestTransform } = requestConfig;
+    if (requestTransform) {
+        config.transform = (body: ResponseBody, text: ResponseBody) => requestTransform(AnalysisHistoryFromJSON(body), text);
+    }
+
+    return config;
+}
+
+/**
+* Get analysis history by sequence_id
+*/
+export function getAnalysisHistory<T>(requestParameters: GetAnalysisHistoryRequest, requestConfig?: runtime.TypedQueryConfig<T, AnalysisHistory>): QueryConfig<T> {
+    return getAnalysisHistoryRaw(requestParameters, requestConfig);
 }
 
 /**
