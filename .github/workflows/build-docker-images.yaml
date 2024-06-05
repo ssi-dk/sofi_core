@@ -115,16 +115,16 @@ jobs:
         with:
           cmd: |
             # sap-web
-            yq e '.images[] |= select(.name == "sap-web").newTag = "${{ needs.prepare_tag.outputs.tag }}"' -i ./sofi_core_gitops/apps/dev/sap-web/kustomization.yaml
+            yq e '.images[] |= select(.name == "ghcr.io/ssi-dk/sap-web").newTag = "${{ needs.prepare_tag.outputs.tag }}"' -i ./sofi_core_gitops/apps/dev/sap-web/kustomization.yaml
 
             # sap-api
-            yq e '.images[] |= select(.name == "sap-api").newTag = "${{ needs.prepare_tag.outputs.tag }}"' -i ./sofi_core_gitops/apps/dev/sap-api/kustomization.yaml
+            yq e '.images[] |= select(.name == "ghcr.io/ssi-dk/sap-api").newTag = "${{ needs.prepare_tag.outputs.tag }}"' -i ./sofi_core_gitops/apps/dev/sap-api/kustomization.yaml
 
             # bifrost-queue-broker
-            yq e '.images[] |= select(.name == "bifrost-queue-broker").newTag = "${{ needs.prepare_tag.outputs.tag }}"' -i ./sofi_core_gitops/apps/dev/bifrost-queue-broker/kustomization.yaml
+            yq e '.images[] |= select(.name == "ghcr.io/ssi-dk/bifrost-queue-broker").newTag = "${{ needs.prepare_tag.outputs.tag }}"' -i ./sofi_core_gitops/apps/dev/bifrost-queue-broker/kustomization.yaml
 
             # bifrost-listener
-            yq e '.images[] |= select(.name == "bifrost-listener").newTag = "${{ needs.prepare_tag.outputs.tag }}"' -i ./sofi_core_gitops/apps/dev/bifrost-listener/kustomization.yaml
+            yq e '.images[] |= select(.name == "ghcr.io/ssi-dk/bifrost-listener").newTag = "${{ needs.prepare_tag.outputs.tag }}"' -i ./sofi_core_gitops/apps/dev/bifrost-listener/kustomization.yaml
 
       - uses: EndBug/add-and-commit@v9
         with:
