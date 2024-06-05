@@ -44,7 +44,7 @@ export interface GetAnalysisRequest {
 }
 
 export interface GetAnalysisHistoryRequest {
-    sequenceId: string;
+    isolateId: string;
 }
 
 export interface GetSequenceByIdRequest {
@@ -119,11 +119,11 @@ export function getAnalysis<T>(requestParameters: GetAnalysisRequest, requestCon
 }
 
 /**
- * Get analysis history by sequence_id
+ * Get analysis history by isolate_id
  */
 function getAnalysisHistoryRaw<T>(requestParameters: GetAnalysisHistoryRequest, requestConfig: runtime.TypedQueryConfig<T, AnalysisHistory> = {}): QueryConfig<T> {
-    if (requestParameters.sequenceId === null || requestParameters.sequenceId === undefined) {
-        throw new runtime.RequiredError('sequenceId','Required parameter requestParameters.sequenceId was null or undefined when calling getAnalysisHistory.');
+    if (requestParameters.isolateId === null || requestParameters.isolateId === undefined) {
+        throw new runtime.RequiredError('isolateId','Required parameter requestParameters.isolateId was null or undefined when calling getAnalysisHistory.');
     }
 
     let queryParameters = null;
@@ -136,7 +136,7 @@ function getAnalysisHistoryRaw<T>(requestParameters: GetAnalysisHistoryRequest, 
 
     meta.authType = ['bearer'];
     const config: QueryConfig<T> = {
-        url: `${runtime.Configuration.basePath}/analysis-history/{sequence_id}`.replace(`{${"sequence_id"}}`, encodeURIComponent(String(requestParameters.sequenceId))),
+        url: `${runtime.Configuration.basePath}/analysis-history/{isolate_id}`.replace(`{${"isolate_id"}}`, encodeURIComponent(String(requestParameters.isolateId))),
         meta,
         update: requestConfig.update,
         queryKey: requestConfig.queryKey,
@@ -159,7 +159,7 @@ function getAnalysisHistoryRaw<T>(requestParameters: GetAnalysisHistoryRequest, 
 }
 
 /**
-* Get analysis history by sequence_id
+* Get analysis history by isolate_id
 */
 export function getAnalysisHistory<T>(requestParameters: GetAnalysisHistoryRequest, requestConfig?: runtime.TypedQueryConfig<T, AnalysisHistory>): QueryConfig<T> {
     return getAnalysisHistoryRaw(requestParameters, requestConfig);

@@ -32,9 +32,9 @@ const getAnalysisHistory = (state: {
 
 type AnalysisHistoryProps = {
   isolate: {
-    id: string,
-    institution: Organization,
-  },
+    id: string;
+    institution: Organization;
+  };
   onClose: () => void;
 };
 
@@ -44,49 +44,47 @@ export const AnalysisDetailsModal = (props: AnalysisHistoryProps) => {
 
   const analysisHistory = useSelector(getAnalysisHistory) ?? {};
 
-  const [{ isPending }] = useRequest(
-    sequencesFromIsolateId(isolate?.id)
-  );
+  const [{ isPending }] = useRequest(sequencesFromIsolateId(isolate?.id));
 
   return (
-      <Modal isOpen={true} onClose={onClose} size="full">
-        <ModalOverlay />
-        <ModalContent mt="0">
-          <ModalHeader pl="7">
-            {`${t("Details for isolate")}: ${isolate.id}`}
-          </ModalHeader>
-          <ModalCloseButton />
-          <ModalBody overflowY="auto" px="7">
-            {isPending ? (
-              <Loading />
-            ) : (
-              <Tabs isFitted variant="enclosed">
-                <TabList mb="1em">
-                  <Tab>{t("Analysis History")}</Tab>
-                  <Tab>{t("Associated Details")}</Tab>
-                </TabList>
-                <TabPanels>
-                  <TabPanel>
-                    <AnalysisHistoryTable sequences={analysisHistory} />
-                  </TabPanel>
-                  <TabPanel>
-                    <p>{/* Load some HTML here */}</p>
-                  </TabPanel>
-                </TabPanels>
-              </Tabs>
-            )}
-          </ModalBody>
+    <Modal isOpen={true} onClose={onClose} size="full">
+      <ModalOverlay />
+      <ModalContent mt="0">
+        <ModalHeader pl="7">
+          {`${t("Details for isolate")}: ${isolate.id}`}
+        </ModalHeader>
+        <ModalCloseButton />
+        <ModalBody overflowY="auto" px="7">
+          {isPending ? (
+            <Loading />
+          ) : (
+            <Tabs isFitted variant="enclosed">
+              <TabList mb="1em">
+                <Tab>{t("Analysis History")}</Tab>
+                <Tab>{t("Associated Details")}</Tab>
+              </TabList>
+              <TabPanels>
+                <TabPanel>
+                  <AnalysisHistoryTable sequences={analysisHistory} />
+                </TabPanel>
+                <TabPanel>
+                  <p>{/* Load some HTML here */}</p>
+                </TabPanel>
+              </TabPanels>
+            </Tabs>
+          )}
+        </ModalBody>
 
-          <ModalFooter>
-            <ReloadMetadataWidget
-              isolateId={isolate.id}
-              institution={isolate.institution}
-            />
-            <Button colorScheme="blue" mr={3} onClick={onClose}>
-              {t("Close")}
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+        <ModalFooter>
+          <ReloadMetadataWidget
+            isolateId={isolate.id}
+            institution={isolate.institution}
+          />
+          <Button colorScheme="blue" mr={3} onClick={onClose}>
+            {t("Close")}
+          </Button>
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
   );
 };

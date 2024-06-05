@@ -47,7 +47,7 @@ class TestAnalysisController(BaseTestCase):
             'Authorization': 'Bearer special-key',
         }
         response = self.client.open(
-            '/api/analysis-history/{sequence_id}'.format(sequence_id='sequence_id_example'),
+            '/api/analysis-history/{isolate_id}'.format(isolate_id='isolate_id_example'),
             method='GET',
             headers=headers)
         self.assert200(response,

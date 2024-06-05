@@ -65,15 +65,15 @@ paths:
       - analysis
       x-openapi-router-controller: web.src.SAP.generated.controllers.analysis_controller
       x-codegen-request-body-name: query
-  /analysis-history/{sequence_id}:
+  /analysis-history/{isolate_id}:
     get:
-      description: Get analysis history by sequence_id
+      description: Get analysis history by isolate_id
       operationId: get_analysis_history
       parameters:
-      - description: Id of sequence
+      - description: Id of isolate
         explode: false
         in: path
-        name: sequence_id
+        name: isolate_id
         required: true
         schema:
           type: string

@@ -22,7 +22,7 @@ def remove_id(item):
     return item
 
 
-def get_analysis_page(query, page_size, offset, columns, restrict_to_institution):
+def get_analysis_page(query, page_size, offset, columns, restrict_to_institution, unique_sequences=True):
     conn, encryption_client = get_connection(with_enc=True)
     q = encrypt_dict(encryption_client, query, pii_columns())
     if restrict_to_institution:
@@ -87,14 +87,18 @@ def get_analysis_page(query, page_size, offset, columns, restrict_to_institution
             "_id": "$sequence_id",
             "record": { "$first": "$$ROOT" }
             }
-        },
-        { "$replaceRoot": { "newRoot": "$record" } },
+        } if unique_sequences else None,
+        { "$replaceRoot": { "newRoot": "$record" } } if unique_sequences else None,
+        {"$sort": {"_id": pymongo.DESCENDING}} if unique_sequences else None,
 
         {"$skip": offset},
         {"$limit": (int(page_size))},
         {"$project": column_projection},
         {"$unset": ["_id", "metadata"]},
     ]
+
+    fetch_pipeline = list(filter(lambda x: x != None, fetch_pipeline))
+
     # return list(map(remove_id, samples.find(query).sort('run_date',pymongo.DESCENDING).skip(offset).limit(int(page_size) + 2)))
     # For now, there is no handing of missing metadata, so the full_analysis table is used. The above aggregate pipeline should work though.
     return list(analysis.aggregate(fetch_pipeline))

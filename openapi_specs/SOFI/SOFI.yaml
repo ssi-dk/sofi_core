@@ -212,20 +212,20 @@ paths:
               schema:
                 $ref: '#/components/schemas/PageOfAnalysis'
 
-  /analysis-history/{sequence_id}:
+  /analysis-history/{isolate_id}:
     get:
-      description: Get analysis history by sequence_id
+      description: Get analysis history by isolate_id
       operationId: get_analysis_history
       x-openapi-router-controller: web.src.SAP.generated.controllers.analysis_controller
       tags:
         - analysis
       parameters:
-        - name: sequence_id
+        - name: isolate_id
           in: path
           required: true
           schema:
             type: string
-          description: Id of sequence
+          description: Id of isolate
       responses:
         '200':
           description: Analysis history

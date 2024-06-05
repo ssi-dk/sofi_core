@@ -18,17 +18,17 @@ def get_analysis(user, token_info, paging_token=None, page_size=None):  # noqa: 
     """
     return AnalysisController.get_analysis(user, token_info, paging_token, page_size)
 
-def get_analysis_history(user, token_info, sequence_id):  # noqa: E501
+def get_analysis_history(user, token_info, isolate_id):  # noqa: E501
     """get_analysis_history
 
-    Get analysis history by sequence_id # noqa: E501
+    Get analysis history by isolate_id # noqa: E501
 
-    :param sequence_id: Id of sequence
-    :type sequence_id: str
+    :param isolate_id: Id of isolate
+    :type isolate_id: str
 
     :rtype: AnalysisHistory
     """
-    return AnalysisController.get_analysis_history(user, token_info, sequence_id)
+    return AnalysisController.get_analysis_history(user, token_info, isolate_id)
 
 def get_columns(user, token_info):  # noqa: E501
     """get_columns
