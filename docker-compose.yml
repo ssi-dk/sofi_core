@@ -153,7 +153,7 @@ services:
     environment:
       - POSTGRES_USER=${PG_USER}
       - POSTGRES_PASSWORD=${PG_SECRET}
-      - POSTGRES_MULTIPLE_DATABASES=kratos,hydra,keycloak
+      - POSTGRES_MULTIPLE_DATABASES=keycloak
       - PGDATA=/var/lib/postgresql/data/pgdata
     volumes:
       - ./auth/pg/pg-init:/docker-entrypoint-initdb.d

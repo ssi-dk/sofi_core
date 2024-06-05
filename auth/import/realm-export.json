@@ -2,7 +2,7 @@
   "id": "90337785-dcaf-44fb-b04c-8f362ce831b0",
   "realm": "sofi",
   "displayName": "Sofi",
-  "displayNameHtml": "<div class=\"kc-logo-text\"><span>Keycloak</span></div>",
+  "displayNameHtml": "<div class=\"kc-logo-text\"><span>SOFI</span></div>",
   "notBefore": 0,
   "defaultSignatureAlgorithm": "RS256",
   "revokeRefreshToken": false,
@@ -781,7 +781,7 @@
       "frontchannelLogout": false,
       "protocol": "openid-connect",
       "attributes": {
-        "post.logout.redirect.uris": "+"
+        "post.logout.redirect.uris": "https://dev.sofi-platform.dk"
       },
       "authenticationFlowBindingOverrides": {},
       "fullScopeAllowed": false,
@@ -1080,7 +1080,7 @@
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-jwt",
       "redirectUris": [
-        "https://dev.sofi-platform.dk/callback"
+        "https://dev.sofi-platform.dk/callback"        
       ],
       "webOrigins": [
         "https://dev.sofi-platform.dk"
