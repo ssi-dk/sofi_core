@@ -12,6 +12,9 @@ RUN yarn run build
 FROM build AS testing
 ENV CI true
 LABEL test=true
+
+# label to ghcr package
+LABEL org.opencontainers.image.source https://github.com/ssi-dk/sofi_core
 # RUN yarn run lint
 RUN yarn run test-ci; exit 0
 

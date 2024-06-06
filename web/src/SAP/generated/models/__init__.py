@@ -3,6 +3,7 @@
 # flake8: noqa
 from __future__ import absolute_import
 # import models into model package
+from .analysis_history import AnalysisHistory
 from .analysis_query import AnalysisQuery
 from .analysis_result import AnalysisResult
 from .analysis_result_all_of import AnalysisResultAllOf
@@ -12,8 +13,10 @@ from .approval_all_of import ApprovalAllOf
 from .approval_request import ApprovalRequest
 from .approval_status import ApprovalStatus
 from .base_metadata import BaseMetadata
+from .bio_api_status import BioApiStatus
 from .bulk_upload_request import BulkUploadRequest
 from .column import Column
+from .create_workspace import CreateWorkspace
 from .data_clearance import DataClearance
 from .exception import Exception
 from .gene import Gene
@@ -24,6 +27,8 @@ from .lims_specific_metadata import LimsSpecificMetadata
 from .metadata_reload_request import MetadataReloadRequest
 from .metadata_reload_response import MetadataReloadResponse
 from .multi_upload_request import MultiUploadRequest
+from .nearest_neighbors_request import NearestNeighborsRequest
+from .nearest_neighbors_response import NearestNeighborsResponse
 from .newick_tree_response import NewickTreeResponse
 from .organization import Organization
 from .page_of_analysis import PageOfAnalysis
@@ -43,9 +48,12 @@ from .sample_categories_resistance_report import SampleCategoriesResistanceRepor
 from .single_upload_request import SingleUploadRequest
 from .tbr_metadata import TbrMetadata
 from .tbr_specific_metadata import TbrSpecificMetadata
+from .update_workspace import UpdateWorkspace
 from .upload_metadata_fields import UploadMetadataFields
 from .upload_response import UploadResponse
 from .user_defined_view import UserDefinedView
 from .user_defined_view_column_resizing import UserDefinedViewColumnResizing
 from .user_defined_view_sort_by import UserDefinedViewSortBy
 from .user_info import UserInfo
+from .workspace import Workspace
+from .workspace_info import WorkspaceInfo

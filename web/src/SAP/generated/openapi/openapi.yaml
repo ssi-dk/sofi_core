@@ -65,6 +65,29 @@ paths:
       - analysis
       x-openapi-router-controller: web.src.SAP.generated.controllers.analysis_controller
       x-codegen-request-body-name: query
+  /analysis-history/{isolate_id}:
+    get:
+      description: Get analysis history by isolate_id
+      operationId: get_analysis_history
+      parameters:
+      - description: Id of isolate
+        explode: false
+        in: path
+        name: isolate_id
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnalysisHistory'
+          description: Analysis history
+      tags:
+      - analysis
+      x-openapi-router-controller: web.src.SAP.generated.controllers.analysis_controller
   /analysis/by_id:
     get:
       description: Get an individual analysis result by sequence_id
@@ -341,6 +364,27 @@ paths:
       tags:
       - user
       x-openapi-router-controller: web.src.SAP.generated.controllers.user_controller
+  /nearest_neighbors:
+    post:
+      description: Nearest Neighbors
+      operationId: post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NearestNeighborsRequest'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NearestNeighborsResponse'
+          description: Nearest Neighbors Response
+      tags:
+      - nearest_neighbors
+      x-openapi-router-controller: web.src.SAP.generated.controllers.nearest_neighbors_controller
+      x-codegen-request-body-name: body
   /samples/{sequence_id}:
     get:
       description: Get an individual sample by id
@@ -510,6 +554,126 @@ paths:
       tags:
       - user
       x-openapi-router-controller: web.src.SAP.generated.controllers.user_controller
+  /workspace/{workspace_id}/{sample_id}:
+    delete:
+      description: Delete sample from workspace
+      operationId: delete_workspace_sample
+      parameters:
+      - description: Id of workspace to modify
+        explode: false
+        in: path
+        name: workspace_id
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: Id of the sample to remove
+        explode: false
+        in: path
+        name: sample_id
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "204":
+          description: Sample removed from workspace successfully.
+      tags:
+      - workspaces
+      x-openapi-router-controller: web.src.SAP.generated.controllers.workspaces_controller
+  /workspaces:
+    get:
+      description: Gets workspaces
+      operationId: get_workspaces
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Workspace'
+                type: array
+          description: Workspaces info
+      tags:
+      - workspaces
+      x-openapi-router-controller: web.src.SAP.generated.controllers.workspaces_controller
+    post:
+      operationId: create_workspace
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateWorkspace'
+      responses:
+        "204":
+          description: Workspace created.
+      tags:
+      - workspaces
+      x-openapi-router-controller: web.src.SAP.generated.controllers.workspaces_controller
+  /workspaces/{workspace_id}:
+    delete:
+      description: Delete an existing workspace
+      operationId: delete_workspace
+      parameters:
+      - description: Id of workspace to delete
+        explode: false
+        in: path
+        name: workspace_id
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "204":
+          description: Workspace deleted successfully.
+      tags:
+      - workspaces
+      x-openapi-router-controller: web.src.SAP.generated.controllers.workspaces_controller
+    get:
+      description: Get an existing workspace
+      operationId: get_workspace
+      parameters:
+      - description: Id of workspace to get
+        explode: false
+        in: path
+        name: workspace_id
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkspaceInfo'
+          description: Workspace
+      tags:
+      - workspaces
+      x-openapi-router-controller: web.src.SAP.generated.controllers.workspaces_controller
+    post:
+      description: Updates an existing workspace
+      operationId: post_workspace
+      parameters:
+      - description: Id of workspace to update
+        explode: false
+        in: path
+        name: workspace_id
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateWorkspace'
+      responses:
+        "204":
+          description: Workspace updated successfully.
+      tags:
+      - workspaces
+      x-openapi-router-controller: web.src.SAP.generated.controllers.workspaces_controller
 components:
   schemas:
     Organization:
@@ -518,6 +682,17 @@ components:
       - FVST
       - Other
       type: string
+    AnalysisHistory:
+      example:
+        items:
+        - null
+        - null
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/AnalysisResult'
+          type: array
+      type: object
     SingleAnalysisResult:
       $ref: '#/components/schemas/AnalysisResult'
     PageOfAnalysis:
@@ -1000,6 +1175,8 @@ components:
       type: string
     BaseMetadata:
       properties:
+        id:
+          type: string
         sequence_id:
           type: string
         sequence_filename:
@@ -1029,6 +1206,7 @@ components:
           type: boolean
       required:
       - date_received
+      - id
       - institution
       - isolate_id
       - primary_isolate
@@ -1241,6 +1419,127 @@ components:
           items:
             $ref: '#/components/schemas/Permission'
           type: array
+      type: object
+    NearestNeighborsRequest:
+      description: Parameters for a REST request for a nearest neighbors calculation.
+      example:
+        unknownsAreDiffs: true
+        id: id
+        cutoff: 0
+      properties:
+        id:
+          title: Input Mongo Id
+          type: string
+        cutoff:
+          title: Cutoff
+          type: integer
+        unknownsAreDiffs:
+          title: Unknowns Are Diffs
+          type: boolean
+      required:
+      - cutoff
+      - id
+      - unknownsAreDiffs
+      title: NearestNeighborsRequest
+      type: object
+    NearestNeighborsResponse:
+      example:
+        result:
+        - null
+        - null
+        jobId: jobId
+        createdAt: createdAt
+      properties:
+        jobId:
+          title: Job Id
+          type: string
+        createdAt:
+          title: Created At
+          type: string
+        status:
+          $ref: '#/components/schemas/BioApiStatus'
+        result:
+          items:
+            $ref: '#/components/schemas/AnalysisResult'
+          nullable: true
+          title: Result
+          type: array
+    BioApiStatus:
+      enum:
+      - init
+      - completed
+      - error
+      title: Status
+      type: string
+    Workspace:
+      example:
+        name: name
+        id: id
+        samples:
+        - samples
+        - samples
+      properties:
+        id:
+          title: Id
+          type: string
+        name:
+          title: Name
+          type: string
+        samples:
+          items:
+            type: string
+          title: Samples
+          type: array
+      required:
+      - id
+      - name
+      type: object
+    CreateWorkspace:
+      example:
+        name: name
+      properties:
+        name:
+          title: Name
+          type: string
+      required:
+      - name
+      type: object
+    UpdateWorkspace:
+      example:
+        samples:
+        - samples
+        - samples
+      properties:
+        samples:
+          items:
+            type: string
+          title: Samples
+          type: array
+      required:
+      - samples
+      type: object
+    WorkspaceInfo:
+      example:
+        name: name
+        id: id
+        samples:
+        - null
+        - null
+      properties:
+        id:
+          title: Id
+          type: string
+        name:
+          title: Name
+          type: string
+        samples:
+          items:
+            $ref: '#/components/schemas/AnalysisResult'
+          title: Samples
+          type: array
+      required:
+      - name
+      - samples
       type: object
     Sample_categories_resistance_report:
       example:

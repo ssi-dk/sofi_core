@@ -13,6 +13,7 @@ In order to build and run locally, you will need the following utilities:
 * docker-compose
 
 ### Extra Windows pre-requisites
+
 This guide is for running the project using WSL2 in Windows.
 
 1. Follow this guide [https://docs.microsoft.com/en-us/windows/wsl/setup/environment#get-started](https://docs.microsoft.com/en-us/windows/wsl/setup/environment#get-started)
@@ -184,6 +185,7 @@ The seeding only occurs when the database is first created, so to force the chan
 make clean && make run
 ```
 
+-
 
 ## Project Structure
 
@@ -195,12 +197,14 @@ Consult `docs/`.
     
     _The certificate might not have the full chain, which will result in errors in SOFI, because SOFI cannot look up intermediate certificate, they must exist in the certificate file (`.crt`). This is done by getting the intermediate certificates and pasting them into the plaintext certificate file (`.crt`)._ 
 
-2. Determine their location on the server, this can found by inspecting the `.env` file and looking for `TLS_CERT_PATH` or `TLS_KEY_PATH`.
-    
-    _The current locations is `/opt/sofi/.certs`_.
+2. Determine their location on the server, this can found by inspecting the
+   `.env` file and looking for `TLS_CERT_PATH` or `TLS_KEY_PATH`. _The current
+   locations is `/opt/sofi/.certs`_.
 
 3. Move the certificates to the server and dispose the old certificates and ensure their names are correct.
 
 4. Restart `sofi.service` by executing `systemctl restart sofi.service` and following the prompts.
 
 5. Verify chances by inspecting the logs, `journalctl -u sofi.service -f`, and check the website in the browser.
+
+
