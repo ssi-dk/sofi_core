@@ -2,12 +2,12 @@ import { DefaultCrypto, LocalStorageBackend } from "@openid/appauth";
 import { NoHashQueryStringUtils } from "./no-hash-query-string-utils";
 
 export const Environment = {
-  openIdConnectUrl: `${window.location.protocol}//${window.location.host}`,
+  openIdConnectUrl: `${window.location.protocol}//${window.location.host}/auth/realms/sofi`,
   clientId: "SOFI_APP",
   redirectUri: `${window.location.protocol}//${window.location.host}/callback`,
-  signoutUrl: `${window.location.protocol}//${window.location.host}/.ory/kratos/public/self-service/browser/flows/logout`,
-  scope: "openid offline email profile",
-  userInfoEndpoint: "/.well-known/userinfo",
+  signoutUrl: `${window.location.protocol}//${window.location.host}/auth/realms/sofi/protocol/openid-connect/logout`,
+  scope: "openid offline_access email profile",
+  userInfoEndpoint: "/protocol/openid-connect/userinfo",
   storageBackend: new LocalStorageBackend(),
   crypto: new DefaultCrypto(),
   queryStringUtils: new NoHashQueryStringUtils(),
@@ -54,9 +54,10 @@ export const clearIsLoggingIn = () => {
 };
 
 export const logout = () => {
+  var access = getAccessToken();
   clearAccessToken(undefined);
   clearRefreshToken(undefined);
   window.location.replace(
-    `${Environment.signoutUrl}?return_to=${window.location.protocol}//${window.location.host}`
+    `${Environment.signoutUrl}?post_logout_redirect_uri=${encodeURIComponent(`${window.location.protocol}//${window.location.host}`)}&id_token_hint=${access}`
   );
 };

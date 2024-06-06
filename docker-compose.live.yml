@@ -32,9 +32,6 @@ services:
     image: sekvensanalyseplatform/bifrost-listener:${SOFI_RELEASE_TAG}
     extra_hosts: *default-extra_hosts
 
-  auth-selfservice-ui:
-    image: sekvensanalyseplatform/auth-selfservice-ui:${SOFI_RELEASE_TAG}
-
   kratos:
     logging:
       driver: local

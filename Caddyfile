@@ -13,39 +13,9 @@
         reverse_proxy sap_api:6000
     }
 
-    route /.ory/kratos/public/* {
-        uri strip_prefix /.ory/kratos/public
-        reverse_proxy kratos:4433
-    }
-
-    route /.ory/kratos/public/self-service/registration/* {
-        basicauth {
-            SOFI {env.SOFI_HASH}
-        }
-        uri strip_prefix /.ory/kratos/public
-        header -Authorization
-        reverse_proxy @localrequest kratos:4433
-    }
-
-    route /ss/* {
-        uri strip_prefix /ss
-        reverse_proxy auth-selfservice-ui:3000
-    }
-
-    route /.ory/hydra/public/* {
-        uri strip_prefix /.ory/hydra/public
+    route /auth/* {        
         header X-Forwarded-Proto https
-        reverse_proxy hydra:4444
-    }
-
-    route /oauth2/* {
-        header X-Forwarded-Proto https
-        reverse_proxy hydra:4444
-    }
-
-    route /.well-known/* {
-        header X-Forwarded-Proto https
-        reverse_proxy hydra:4444
+        reverse_proxy keycloak:8080
     }
 
     route /mock/* {

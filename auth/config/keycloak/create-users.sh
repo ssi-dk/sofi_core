@@ -1,35 +1,30 @@
-#/usr/bin/env sh
+#!/bin/bash
 
-set -euo pipefail
-
-# Ensure a test account is automatically registered when running locally
-
-# Inits a Registration Flow
-sleep 5s
-
-pw="Delegate21!"
+REALM="sofi"
+password="Delegate21!"
 
 createUser(){
   # params
   email=$1
+  username=$1
   org=$2
   clearance=$3
   group=$4
 
-  actionUrl=$(\
-    curl -k -s -X GET -H "Accept: application/json" \
-      --user "SOFI:${KRATOS_AUTH}" \
-      "https://${SOFI_HOSTNAME}:${SOFI_PORT}/.ory/kratos/public/self-service/registration/api" \
-      | jq -r '.methods.password.config.action'\
-  )
 
-  echo $actionUrl
-
-  # Complete Registration Flow with password method
-  curl -k -i -H "Accept: application/json" -H "Content-Type: application/json" \
-      --user "SOFI:${KRATOS_AUTH}" \
-       -d '{"traits.email": "'"${email}"'", "password": "'"${pw}"'", "traits.institution": "'"${org}"'", "traits.security-groups": "'"${group}"'", "traits.sofi-data-clearance": "'"${clearance}"'" }' \
-       "$actionUrl"
+  docker exec keycloak /opt/keycloak/bin/kcadm.sh config credentials --server http://keycloak:8080/auth --realm master --user admin --password admin
+  echo "Get groups" 
+  GROUP_ID=$((docker exec keycloak /opt/keycloak/bin/kcadm.sh get groups -r $REALM --fields id,name) | jq -r '.[] | select(.name=="'$group'") | .id')
+  
+  echo "Creating user $username"
+  #IFS=':' read -r username email password <<<"$user"
+  docker exec keycloak /opt/keycloak/bin/kcadm.sh create users -r $REALM -s username=$username -s enabled=true -s email=$email  
+  echo "Setting password"
+  USER_ID=$(docker exec keycloak /opt/keycloak/bin/kcadm.sh get users -r $REALM -q username=$username --fields id --format csv --noquotes | tail -n 1)
+  docker exec keycloak /opt/keycloak/bin/kcadm.sh set-password -r $REALM --userid $USER_ID --new-password $password
+  docker exec keycloak /opt/keycloak/bin/kcadm.sh update users/$USER_ID -r $REALM -s "attributes.institution=$org"
+  docker exec keycloak /opt/keycloak/bin/kcadm.sh update users/$USER_ID -r $REALM -s "attributes.sofi-data-clearance=$clearance"
+  docker exec keycloak /opt/keycloak/bin/kcadm.sh update users/$USER_ID/groups/$GROUP_ID -r $REALM -s userId=$USER_ID -s groupId=$GROUP_ID -n
 }
 
 echo "Creating test users for dev environment"

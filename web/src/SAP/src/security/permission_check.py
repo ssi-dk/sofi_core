@@ -12,14 +12,14 @@ with open(os.getcwd() + "/permission-config.jsonc") as js_file:
 
 def list_permissions(token_info: Dict[str, str]):
     list = []
-    for group in token_info["security-groups"]:
+    for group in [item.lstrip('/') for item in token_info["security-groups"]]:
         for perm in PERMISSION_CONFIG[group]:
             list.append(perm)
     return list
 
 
 def user_has(permission: str, token_info: Dict[str, str]):
-    for group in token_info["security-groups"]:
+    for group in [item.lstrip('/') for item in token_info["security-groups"]]:
         for perm in PERMISSION_CONFIG[group]:
             if perm == permission:
                 return True

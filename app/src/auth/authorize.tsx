@@ -29,7 +29,7 @@ export const Authorize = (props: { children: React.ReactNode }) => {
     Environment.crypto
   );
   const redirect = () => {
-    setIsLoggingIn();
+    //setIsLoggingIn();
     AuthorizationServiceConfiguration.fetchFromIssuer(
       Environment.openIdConnectUrl,
       new FetchRequestor()
