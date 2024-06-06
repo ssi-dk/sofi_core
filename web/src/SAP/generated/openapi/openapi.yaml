@@ -65,6 +65,29 @@ paths:
       - analysis
       x-openapi-router-controller: web.src.SAP.generated.controllers.analysis_controller
       x-codegen-request-body-name: query
+  /analysis-history/{isolate_id}:
+    get:
+      description: Get analysis history by isolate_id
+      operationId: get_analysis_history
+      parameters:
+      - description: Id of isolate
+        explode: false
+        in: path
+        name: isolate_id
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnalysisHistory'
+          description: Analysis history
+      tags:
+      - analysis
+      x-openapi-router-controller: web.src.SAP.generated.controllers.analysis_controller
   /analysis/by_id:
     get:
       description: Get an individual analysis result by sequence_id
@@ -659,6 +682,17 @@ components:
       - FVST
       - Other
       type: string
+    AnalysisHistory:
+      example:
+        items:
+        - null
+        - null
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/AnalysisResult'
+          type: array
+      type: object
     SingleAnalysisResult:
       $ref: '#/components/schemas/AnalysisResult'
     PageOfAnalysis:

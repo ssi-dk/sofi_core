@@ -56,6 +56,26 @@ def get_sequence_by_id(user, token_info, sequence_id):
             del row[key]
     return jsonify(row)
 
+def get_analysis_history(user, token_info, isolate_id):
+    institution_filter = (
+        token_info["institution"]
+        if token_info["sofi-data-clearance"] == "own-institution"
+        else False
+    )
+
+    items = get_analysis_page(
+        {"isolate_id": isolate_id},
+        1000,
+        0,
+        authorized_columns(token_info),
+        institution_filter,
+        False,
+    )
+    response = {
+        "items": items,
+    }
+    audit_query(token_info, items)
+    return jsonify(response)
 
 def get_analysis(user, token_info, paging_token, page_size):
     assert_user_has("search", token_info)

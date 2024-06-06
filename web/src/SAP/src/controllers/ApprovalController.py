@@ -38,6 +38,8 @@ def create_approval(user, token_info, body: ApprovalRequest):
     
     for sid in body.matrix.keys():
         s = get_single_analysis(sid)
+        if s == None:
+            abort(404, description=f"Analysis '{sid}' not found.")
         assert_authorized_to_edit(token_info, s)
 
     appr = Approval()
