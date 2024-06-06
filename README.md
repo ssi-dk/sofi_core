@@ -135,11 +135,20 @@ Make sure to edit your `/etc/hosts` file (`c:\windows\system32\drivers\etc\hosts
 
 Setting `SOFI_HOSTNAME` to `localhost` or `127.0.0.1` is not currently supported.
 
-When running in the dev environment, a default user account is created,
- which you can use for signing into the application.
+When running in the dev environment, you can create a default set of demo users that can sign-in to the application. 
+
+Do so by running after the application has been started. 
+```
+auth/config/keycloak/create-users.sh
+``` 
 
 Username: `admin@fvst.dk`
 Password: `Delegate21!`
+
+You can access keycloak admin interface through `https://{hostname}/auth/admin`
+Username: `admin`
+Password: `admin`
+
 
 ## Local dev running
 Create virtual env, install dependencies
