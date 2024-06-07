@@ -1,0 +1,88 @@
+{
+  "auth": {
+
+    "openidconnect": {
+      "id": "keycloak",
+      "name": "Keycloak",
+      "wellKnown": "https://dev.sofi-platform.dk/auth/realms/sofi/.well-known/openid-configuration",
+      "type": "oauth",
+      "authorization": { "params": { "scope": "openid offline_access email profile" } },
+      "checks": ["pkce", "state"],
+      "idToken": true
+      },
+
+    "email": {
+      "server": {
+        "host": "smtp",
+        "port": "25",
+        "auth": {
+          "user": "",
+          "pass": ""
+        },
+        "secure": false
+      },
+      "from": "Microreact <noreply@microreact.org>",
+      "subject": "Login link for Microreact",
+      "text": "Hello!\nAccess your account here: http://localhost:80/auth/passwordless/callback?token=<%= tokenToSend %>&uid=",
+      "html": "views/emails/passwordless.html"
+    },
+
+    "facebook": {
+      "clientId": "",
+      "clientSecret": ""
+    },
+  
+    "google": {
+      "clientId": "",
+      "clientSecret": ""
+    },
+
+    "twitter": {
+      "clientId": "",
+      "clientSecret": ""
+    },
+
+    "secret": "",
+
+    "session": {
+      "maxAge": 2592000,
+      "updateAge": 86400
+    }
+  },
+
+  "baseUrl": "https://dev2.sofi-platform.dk/", 
+
+  "bodySizeLimit": "16mb",
+
+  "experimentalFlags": {
+    "publicFolders": false
+  },
+
+  "helpDesk": {
+    "email": "support@microreact.org",
+    "subject": "Feedback from Microreact.org"
+  },
+
+  "mapboxApiAccessToken": "pk.eyJ1IjoiY2dwc2RldiIsImEiOiJja2lhMndmN3AwbGpzMnhvNWZ0eWc3cWhoIn0.SDSaZCcDFP9s812jX1tzeA",
+
+  "mongodb": {
+    "url": "mongodb://localhost:27017/microreact",
+    "database": "microreact"
+  },
+
+  "repoPath": "./files",
+
+  "showcaseFolders": [],
+  
+  "smtp": {   
+    "host": "smtp.microreact.org",
+    "port": "25",
+    "auth": {
+      "user": "smtp@microreact.org",
+      "pass": ""
+    },
+    "secure": false,
+    "from": "Microreact <noreply@microreact.org>"
+  }
+
+}

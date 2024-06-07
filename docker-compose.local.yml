@@ -97,3 +97,10 @@ services:
     ports:
       - "1025:1025"
       - "8025:8025"
+
+  microreact:
+    image: registry.gitlab.com/cgps/microreact/server:v258
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./microreact_defaults.json:/app/defaults.json
