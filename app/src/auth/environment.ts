@@ -54,7 +54,7 @@ export const clearIsLoggingIn = () => {
 };
 
 export const logout = () => {
-  var access = getAccessToken();
+  const access = getAccessToken();
   clearAccessToken(undefined);
   clearRefreshToken(undefined);
   window.location.replace(
