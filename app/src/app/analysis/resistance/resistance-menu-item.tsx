@@ -63,9 +63,7 @@ export const ResistanceMenuItem = (props: Props) => {
       <MenuItem
         aria-label="Resistance"
         title="Resistance"
-        icon={
-            <Bacteria />
-        }
+        icon={<Bacteria />}
         onClick={onClickCallback}
       >
         Resistance

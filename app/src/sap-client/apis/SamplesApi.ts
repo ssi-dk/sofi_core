@@ -21,7 +21,7 @@ import {
 } from '../models';
 
 export interface GetSampleByIdRequest {
-    sequenceId: string;
+    sampleId: string;
 }
 
 
@@ -29,8 +29,8 @@ export interface GetSampleByIdRequest {
  * Get an individual sample by id
  */
 function getSampleByIdRaw<T>(requestParameters: GetSampleByIdRequest, requestConfig: runtime.TypedQueryConfig<T, Sample> = {}): QueryConfig<T> {
-    if (requestParameters.sequenceId === null || requestParameters.sequenceId === undefined) {
-        throw new runtime.RequiredError('sequenceId','Required parameter requestParameters.sequenceId was null or undefined when calling getSampleById.');
+    if (requestParameters.sampleId === null || requestParameters.sampleId === undefined) {
+        throw new runtime.RequiredError('sampleId','Required parameter requestParameters.sampleId was null or undefined when calling getSampleById.');
     }
 
     let queryParameters = null;
@@ -43,7 +43,7 @@ function getSampleByIdRaw<T>(requestParameters: GetSampleByIdRequest, requestCon
 
     meta.authType = ['bearer'];
     const config: QueryConfig<T> = {
-        url: `${runtime.Configuration.basePath}/samples/{sequence_id}`.replace(`{${"sequence_id"}}`, encodeURIComponent(String(requestParameters.sequenceId))),
+        url: `${runtime.Configuration.basePath}/samples/{sample_id}`.replace(`{${"sample_id"}}`, encodeURIComponent(String(requestParameters.sampleId))),
         meta,
         update: requestConfig.update,
         queryKey: requestConfig.queryKey,

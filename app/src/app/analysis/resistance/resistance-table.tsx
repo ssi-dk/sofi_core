@@ -48,8 +48,8 @@ export const ResistanceTable = (props: Props) => {
   const amrClasses = useMemo<Record<string, Array<string>>>(() => {
     const newAmrClasses = {} as Record<string, Array<string>>;
 
-    Object.keys(selection).forEach((selected) => {
-      const sample = samples?.[selected];
+    Object.values(selection).forEach((row) => {
+      const sample = samples?.[row.original.id];
       if (!sample) {
         return;
       }
@@ -81,7 +81,7 @@ export const ResistanceTable = (props: Props) => {
   }, [samples, selection]);
 
   useEffect(() => {
-    const ids = Object.keys(selection);
+    const ids = Object.values(selection).map((row) => row.original.id);
     ids.forEach((id) => {
       if (samples?.[id]) {
         // Skip if already fetched
@@ -132,109 +132,115 @@ export const ResistanceTable = (props: Props) => {
           </Tr>
         </Thead>
         <Tbody>
-          {Object.keys(selection).map((sequenceId) => (
-            <Fragment key={sequenceId}>
-              <Tr>
-                <Td>{samples?.[sequenceId]?.name || sequenceId}</Td>
-                <Td>
-                  {samples?.[sequenceId]?.categories?.resistance?.summary}
-                </Td>
-                {Object.keys(amrClasses).map((amrClass, index) => {
-                  return amrClasses[amrClass].map((phenotypeName, pIndex) => {
-                    if (pIndex === 0) {
-                      const phenotype =
-                        samples?.[sequenceId]?.categories?.resistance?.report
-                          .phenotypes[phenotypeName];
-                      const phenotypeGenes = Object.keys(
-                        phenotype?.genes ?? {}
-                      ).join(", ");
-                      const grade = phenotype?.grade;
-                      let backgroundColor = "#9D9D9D";
-                      if (grade === 2) {
-                        backgroundColor = "#BEDCBE";
-                      }
-                      if (grade === 3) {
-                        backgroundColor = "#6EBE50";
-                      }
-
-                      return (
-                        <Th
-                          backgroundColor={
-                            phenotypeGenes ? backgroundColor : ""
-                          }
-                          key={`${phenotypeName}-${index}`}
-                        >
-                          {phenotypeGenes}
-                        </Th>
-                      );
-                    }
-                    return <Th key={`${phenotypeName}-${index}`}></Th>;
-                  });
-                })}
-                {headerPaddingColSpan > 0 ? (
-                  <Th colSpan={headerPaddingColSpan}></Th>
-                ) : null}
-              </Tr>
-              {!samples?.[sequenceId] && (
+          {Object.values(selection).map((row) => {
+            const sampleId = row.original.id;
+            const sequenceId = row.original.sequence_id;
+            return (
+              <Fragment key={sampleId}>
                 <Tr>
+                  <Td>{samples?.[sampleId]?.name || sequenceId}</Td>
                   <Td>
-                    <Spinner />
+                    {samples?.[sampleId]?.categories?.resistance?.summary}
                   </Td>
+                  {Object.keys(amrClasses).map((amrClass, index) => {
+                    return amrClasses[amrClass].map((phenotypeName, pIndex) => {
+                      if (pIndex === 0) {
+                        const phenotype =
+                          samples?.[sampleId]?.categories?.resistance?.report
+                            .phenotypes[phenotypeName];
+                        const phenotypeGenes = Object.keys(
+                          phenotype?.genes ?? {}
+                        ).join(", ");
+                        const grade = phenotype?.grade;
+                        let backgroundColor = "#9D9D9D";
+                        if (grade === 2) {
+                          backgroundColor = "#BEDCBE";
+                        }
+                        if (grade === 3) {
+                          backgroundColor = "#6EBE50";
+                        }
+
+                        return (
+                          <Th
+                            backgroundColor={
+                              phenotypeGenes ? backgroundColor : ""
+                            }
+                            key={`${phenotypeName}-${index}`}
+                          >
+                            {phenotypeGenes}
+                          </Th>
+                        );
+                      }
+                      return <Th key={`${phenotypeName}-${index}`}></Th>;
+                    });
+                  })}
+                  {headerPaddingColSpan > 0 ? (
+                    <Th colSpan={headerPaddingColSpan}></Th>
+                  ) : null}
                 </Tr>
-              )}
-              {samples?.[sequenceId] &&
-                Object.keys(genes?.[sequenceId] ?? {}).length > 0 && (
-                  <>
-                    <Tr style={{ fontWeight: 700, backgroundColor: "#A29DC4" }}>
-                      <Td>Gene/Mut name</Td>
-                      <Td>Gene/Mut ID</Td>
-                      <Td>%ID</Td>
-                      <Td>Ref length</Td>
-                      <Td>Aln Length</Td>
-                      <Td>Phenotype</Td>
-                      <Td>Class</Td>
-                      <Td>Depth</Td>
-                      <Td>Contig</Td>
-                      <Td>Start pos</Td>
-                      <Td>End pos</Td>
-                      <Td>Notes</Td>
-                      <Td>PMID</Td>
-                      <Td>Accession nr</Td>
-                    </Tr>
-                    {Object.keys(genes?.[sequenceId] ?? {}).map((geneId) => {
-                      const gene = genes[sequenceId][geneId];
-                      return (
-                        <Tr
-                          key={`${sequenceId}-${geneId}`}
-                          style={{ backgroundColor: "#A29DC4" }}
-                        >
-                          <Td>{geneId}</Td>
-                          <Td>{gene.gene_id}</Td>
-                          <Td>{gene.identity}</Td>
-                          <Td>{gene.ref_seq_length}</Td>
-                          <Td>{gene.alignment_length}</Td>
-                          <Td>{gene.phenotypes?.join(", ")}</Td>
-                          <Td>
-                            {samples?.[
-                              sequenceId
-                            ].categories.resistance.report.phenotypes[
-                              gene.phenotypes[0]
-                            ].amr_classes?.join(", ")}
-                          </Td>
-                          <Td>{gene.depth}</Td>
-                          <Td>{gene.contig}</Td>
-                          <Td>{gene.contig_start_pos}</Td>
-                          <Td>{gene.contig_end_pos}</Td>
-                          <Td>{gene.notes?.join("; ")}</Td>
-                          <Td>{gene.pmids?.join(", ")}</Td>
-                          <Td>{gene.ref_acc}</Td>
-                        </Tr>
-                      );
-                    })}
-                  </>
+                {!samples?.[sampleId] && (
+                  <Tr>
+                    <Td>
+                      <Spinner />
+                    </Td>
+                  </Tr>
                 )}
-            </Fragment>
-          ))}
+                {samples?.[sampleId] &&
+                  Object.keys(genes?.[sampleId] ?? {}).length > 0 && (
+                    <>
+                      <Tr
+                        style={{ fontWeight: 700, backgroundColor: "#A29DC4" }}
+                      >
+                        <Td>Gene/Mut name</Td>
+                        <Td>Gene/Mut ID</Td>
+                        <Td>%ID</Td>
+                        <Td>Ref length</Td>
+                        <Td>Aln Length</Td>
+                        <Td>Phenotype</Td>
+                        <Td>Class</Td>
+                        <Td>Depth</Td>
+                        <Td>Contig</Td>
+                        <Td>Start pos</Td>
+                        <Td>End pos</Td>
+                        <Td>Notes</Td>
+                        <Td>PMID</Td>
+                        <Td>Accession nr</Td>
+                      </Tr>
+                      {Object.keys(genes?.[sampleId] ?? {}).map((geneId) => {
+                        const gene = genes[sampleId][geneId];
+                        return (
+                          <Tr
+                            key={`${sampleId}-${geneId}`}
+                            style={{ backgroundColor: "#A29DC4" }}
+                          >
+                            <Td>{geneId}</Td>
+                            <Td>{gene.gene_id}</Td>
+                            <Td>{gene.identity}</Td>
+                            <Td>{gene.ref_seq_length}</Td>
+                            <Td>{gene.alignment_length}</Td>
+                            <Td>{gene.phenotypes?.join(", ")}</Td>
+                            <Td>
+                              {samples?.[
+                                sampleId
+                              ].categories.resistance.report.phenotypes[
+                                gene.phenotypes[0]
+                              ].amr_classes?.join(", ")}
+                            </Td>
+                            <Td>{gene.depth}</Td>
+                            <Td>{gene.contig}</Td>
+                            <Td>{gene.contig_start_pos}</Td>
+                            <Td>{gene.contig_end_pos}</Td>
+                            <Td>{gene.notes?.join("; ")}</Td>
+                            <Td>{gene.pmids?.join(", ")}</Td>
+                            <Td>{gene.ref_acc}</Td>
+                          </Tr>
+                        );
+                      })}
+                    </>
+                  )}
+              </Fragment>
+            );
+          })}
         </Tbody>
       </Table>
     </TableContainer>

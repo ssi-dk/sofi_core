@@ -2,7 +2,7 @@ import sys
 import time
 from web.src.SAP.generated.models.nearest_neighbors_request import NearestNeighborsRequest
 from web.src.SAP.src.repositories.analysis import get_analysis_with_metadata, get_single_analysis_by_object_id
-from web.src.SAP.src.repositories.samples import get_single_sample_by_object_id
+from web.src.SAP.src.repositories.samples import get_single_sample
 from web.src.SAP.src.security.permission_check import assert_user_has
 from web.src.services.bio_api.openapi.api.nearest_neighbors_api import NearestNeighborsApi
 from web.src.services.bio_api.openapi.api_client import ApiClient
@@ -15,7 +15,7 @@ def post(user, token, body: NearestNeighborsRequest):
     assert_user_has("search", token)
     
     with ApiClient(Configuration(host="http://bio_api:8000")) as api_client:
-        sample = get_single_sample_by_object_id(body.id)
+        sample = get_single_sample(body.id)
         detected_species = sample["categories"]["species_detection"]["summary"]["detected_species"]
 
         api_instance = NearestNeighborsApi(api_client)

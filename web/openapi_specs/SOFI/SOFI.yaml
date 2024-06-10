@@ -634,7 +634,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/HealthResponse'
 
-  /samples/{sequence_id}:
+  /samples/{sample_id}:
     get:
       description: Get an individual sample by id
       operationId: get_sample_by_id
@@ -642,7 +642,7 @@ paths:
       tags:
         - samples
       parameters:
-        - name: sequence_id
+        - name: sample_id
           in: path
           required: true
           schema:

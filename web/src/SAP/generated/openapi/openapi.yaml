@@ -385,7 +385,7 @@ paths:
       - nearest_neighbors
       x-openapi-router-controller: web.src.SAP.generated.controllers.nearest_neighbors_controller
       x-codegen-request-body-name: body
-  /samples/{sequence_id}:
+  /samples/{sample_id}:
     get:
       description: Get an individual sample by id
       operationId: get_sample_by_id
@@ -393,7 +393,7 @@ paths:
       - description: id of sample
         explode: false
         in: path
-        name: sequence_id
+        name: sample_id
         required: true
         schema:
           type: string
