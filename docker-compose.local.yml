@@ -99,8 +99,13 @@ services:
       - "8025:8025"
 
   microreact:
-    image: registry.gitlab.com/cgps/microreact/server:v258
+    build:
+      context: ./microreact
+      dockerfile: Dockerfile
+    environment:
+      NODE_EXTRA_CA_CERTS: /etc/ssl/certs/ca-certificates.crt
+      NEXTAUTH_URL: https://dev2.sofi-platform.dk 
     ports:
       - "3000:3000"
     volumes:
-      - ./microreact_defaults.json:/app/defaults.json
+      - ./microreact_defaults.json:/app/config.json
