@@ -286,9 +286,8 @@ components:
         status:
           "$ref": "#/components/schemas/Status"
         finished_at:
-          anyOf:
-          - type: string
-          - type: 'null'
+          type: string
+          nullable: true
           title: Finished At
         seq_collection:
           type: string
@@ -352,9 +351,8 @@ components:
           type: object
           title: Seq To Mongo
         distances:
-          anyOf:
-          - type: object
-          - type: 'null'
+          type: object
+          nullable: true
           title: Distances
       type: object
       required:
@@ -371,9 +369,8 @@ components:
         status:
           "$ref": "#/components/schemas/Status"
         finished_at:
-          anyOf:
-          - type: string
-          - type: 'null'
+          type: string
+          nullable: true
           title: Finished At
         dmx_job:
           type: string
@@ -390,9 +387,8 @@ components:
           - ward
           title: Method
         result:
-          anyOf:
-          - type: string
-          - type: 'null'
+          type: string
+          nullable: true
           title: Result
       type: object
       required:
