@@ -554,6 +554,33 @@ paths:
       tags:
       - user
       x-openapi-router-controller: web.src.SAP.generated.controllers.user_controller
+  /workspace/{workspace_id}/tree:
+    post:
+      operationId: build_workspace_tree
+      parameters:
+      - description: Id of workspace
+        explode: false
+        in: path
+        name: workspace_id
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BuildWorkspaceTreeRequestBody'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: string
+          description: Tree generation started
+      tags:
+      - workspaces
+      x-openapi-router-controller: web.src.SAP.generated.controllers.workspaces_controller
   /workspace/{workspace_id}/{sample_id}:
     delete:
       description: Delete sample from workspace
@@ -682,6 +709,23 @@ components:
       - FVST
       - Other
       type: string
+    TreeMethod:
+      enum:
+      - single
+      - complete
+      - average
+      - weighted
+      - centroid
+      - median
+      - ward
+      type: string
+    BuildWorkspaceTreeRequestBody:
+      example: {}
+      properties:
+        tree_method:
+          $ref: '#/components/schemas/TreeMethod'
+      required:
+      - tree_method
     AnalysisHistory:
       example:
         items:

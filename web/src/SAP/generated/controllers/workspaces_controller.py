@@ -4,6 +4,23 @@ import six
 from .. import util
 from ...src.controllers import WorkspacesController
 
+def build_workspace_tree(user, token_info, workspace_id, build_workspace_tree_request_body=None):  # noqa: E501
+    """build_workspace_tree
+
+     # noqa: E501
+
+    :param workspace_id: Id of workspace
+    :type workspace_id: str
+    :param build_workspace_tree_request_body: 
+    :type build_workspace_tree_request_body: dict | bytes
+
+    :rtype: str
+    """
+    if connexion.request.is_json:
+        from ..models import BuildWorkspaceTreeRequestBody
+        build_workspace_tree_request_body = BuildWorkspaceTreeRequestBody.from_dict(connexion.request.get_json())  # noqa: E501
+    return WorkspacesController.build_workspace_tree(user, token_info, workspace_id, build_workspace_tree_request_body)
+
 def create_workspace(user, token_info, create_workspace=None):  # noqa: E501
     """create_workspace
 

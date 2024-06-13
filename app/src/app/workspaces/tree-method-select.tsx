@@ -1,5 +1,6 @@
 import React, { useCallback, useMemo, useState } from "react";
 import Select, { OptionTypeBase } from "react-select";
+import { TreeMethod } from "sap-client";
 
 type Props = {
   onChange: (id: string) => void;
@@ -11,15 +12,11 @@ export const TreeMethodSelect = (props: Props) => {
   const [treeMethod, setTreeMethod] = useState<OptionTypeBase>();
 
   const treeMethods = useMemo(() => {
-    return [
-      "single",
-      "complete",
-      "average",
-      "weighted",
-      "centroid",
-      "median",
-      "ward"
-    ].map((v) => {
+    const methods = new Array<string>();
+    for (const tm in TreeMethod) {
+      methods.push(tm);
+    }
+    return methods.map((v) => {
       return {
         value: v,
         label: v,
