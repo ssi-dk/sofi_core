@@ -9,6 +9,8 @@ import {
   DeleteWorkspaceRequest,
   PostWorkspaceRequest,
   DeleteWorkspaceSampleRequest,
+  buildWorkspaceTree as buildWorkspaceTreeApi,
+  BuildWorkspaceTreeRequest,
 } from "sap-client";
 import { CreateWorkspace, WorkspaceInfo } from "sap-client/models";
 import { getUrl } from "service";
@@ -108,6 +110,14 @@ export const createWorkspace = (params: CreateWorkspace) => {
 
 export const updateWorkspace = (params: PostWorkspaceRequest) => {
   const base = postWorkspaceApi(params);
+  base.url = getUrl(base.url);
+
+  base.force = true;
+  return base;
+};
+
+export const buildWorkspaceTree = (params: BuildWorkspaceTreeRequest) => {
+  const base = buildWorkspaceTreeApi(params);
   base.url = getUrl(base.url);
 
   base.force = true;

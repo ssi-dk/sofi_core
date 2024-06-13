@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import {
   Button,
   Modal,
@@ -11,6 +11,9 @@ import {
 } from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
 import { TreeMethodSelect } from "./tree-method-select";
+import { useMutation } from "redux-query-react";
+import { buildWorkspaceTree as buildWorkspaceTreeQuery } from "./workspaces-query-configs";
+import { TreeMethod } from "sap-client";
 
 type Props = {
   workspace: string;
@@ -21,6 +24,21 @@ export const TreesModal = (props: Props) => {
   const { t } = useTranslation();
   const { workspace, onClose } = props;
   const [treeMethod, setTreeMethod] = useState<string>();
+  const [isSending, setIsSending] = useState<boolean>(false);
+
+  const [_, buildWorkspaceTree] = useMutation(() => {
+    return buildWorkspaceTreeQuery({
+      workspaceId: workspace,
+      buildWorkspaceTreeRequestBody: {
+        tree_method: TreeMethod[treeMethod],
+      },
+    });
+  });
+
+  const onBuild = useCallback(async () => {
+    setIsSending(true);
+    buildWorkspaceTree();
+  }, [setIsSending, buildWorkspaceTree]);
 
   return (
     <Modal isOpen={true} onClose={onClose} size="lg">
@@ -41,10 +59,8 @@ export const TreesModal = (props: Props) => {
           <Button
             colorScheme="blue"
             mr={3}
-            onClick={() => {
-              alert(`${workspace}: ${treeMethod}`);
-            }}
-            disabled={!treeMethod}
+            onClick={onBuild}
+            disabled={isSending || !treeMethod}
           >
             {t("Build tree")}
           </Button>
