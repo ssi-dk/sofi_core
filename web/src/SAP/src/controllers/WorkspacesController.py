@@ -1,11 +1,14 @@
 import sys
+import time
 from flask import abort
 from flask.json import jsonify
 from web.src.services.bio_api.openapi.api.distances_api import DistancesApi
 from web.src.services.bio_api.openapi.api.nearest_neighbors_api import NearestNeighborsApi
+from web.src.services.bio_api.openapi.api.trees_api import TreesApi
 from web.src.services.bio_api.openapi.api_client import ApiClient
 from web.src.services.bio_api.openapi.configuration import Configuration
 from web.src.services.bio_api.openapi.model.distance_matrix_request import DistanceMatrixRequest
+from web.src.services.bio_api.openapi.model.hc_tree_calc_request import HCTreeCalcRequest
 from ..repositories.workspaces import get_workspaces as get_workspaces_db
 from ..repositories.workspaces import delete_workspace as delete_workspace_db
 from ..repositories.workspaces import delete_workspace_sample as delete_workspace_sample_db
@@ -45,9 +48,34 @@ def build_workspace_tree(user, token_info, workspace_id, body):
     samples = list(map(lambda s: s["id"], workspace["samples"]))
 
     with ApiClient(Configuration(host="http://bio_api:8000")) as api_client:
+        # Distance
         api_instance = DistancesApi(api_client)
         request = DistanceMatrixRequest("samples", "_id", "categories.cgmlst.report.alleles", samples)
         api_response = api_instance.dmx_from_mongodb_v1_distance_calculations_post(request)
         job_id = api_response["job_id"]
+        status = api_response.status.value
+        
+        while status == "init":
+            time.sleep(2)
+            api_response = api_instance.dmx_result_v1_distance_calculations_dc_id_get(job_id)
+            status = api_response.status
 
-    return "ok"
+        if status == "error":
+            abort(500)
+
+        # Trees
+        api_instance = TreesApi(api_client)
+        request = HCTreeCalcRequest(job_id, body.tree_method)
+        api_response = api_instance.hc_tree_from_dmx_job_v1_trees_post(request)
+        job_id = api_response["job_id"]
+        status = api_response.status.value
+        
+        while status == "init":
+            time.sleep(2)
+            api_response = api_instance.hc_tree_result_v1_trees_tc_id_get(job_id)
+            status = api_response.status
+
+        if status == "error":
+            abort(500)
+
+        return api_response.response
