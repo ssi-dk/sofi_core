@@ -50,7 +50,7 @@ def build_workspace_tree(user, token_info, workspace_id, body):
     with ApiClient(Configuration(host="http://bio_api:8000")) as api_client:
         # Distance
         api_instance = DistancesApi(api_client)
-        request = DistanceMatrixRequest("samples", "_id", "categories.cgmlst.report.alleles", samples)
+        request = DistanceMatrixRequest("samples", "categories.sample_info.summary.sofi_sequence_id", "categories.cgmlst.report.alleles", samples)
         api_response = api_instance.dmx_from_mongodb_v1_distance_calculations_post(request)
         job_id = api_response["job_id"]
         status = api_response.status.value
