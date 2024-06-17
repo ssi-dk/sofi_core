@@ -104,8 +104,13 @@ services:
       dockerfile: Dockerfile
     environment:
       NODE_EXTRA_CA_CERTS: /etc/ssl/certs/ca-certificates.crt
-      NEXTAUTH_URL: https://dev2.sofi-platform.dk 
+      NEXTAUTH_URL: https://dev2.sofi-platform.dk/
+      NEXTAUTH_URL_INTERNAL: http://localhost:3000/
+      LOGGER_FILENAME: microreactlogs
+      LOGGER_LEVEL: debug
+      LOGGER_DIR: /logs
     ports:
       - "3000:3000"
     volumes:
+      - ./logs:/logs
       - ./microreact_defaults.json:/app/config.json
