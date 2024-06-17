@@ -68,7 +68,7 @@ services:
       - "5001:443"
 
   bifrost_db:
-    image: mongo:4.4.2
+    image: mongo:7.0.11
     command: --replSet rs0
     container_name: bifrost_db
     restart: always
