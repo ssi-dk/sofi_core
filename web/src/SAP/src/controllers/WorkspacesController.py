@@ -58,10 +58,10 @@ def build_workspace_tree(user, token_info, workspace_id, body):
         while status == "init":
             time.sleep(2)
             api_response = api_instance.dmx_result_v1_distance_calculations_dc_id_get(job_id)
-            status = api_response.status
+            status = api_response.status.value
 
         if status == "error":
-            abort(500)
+            return abort(500)
 
         # Trees
         api_instance = TreesApi(api_client)
@@ -73,9 +73,9 @@ def build_workspace_tree(user, token_info, workspace_id, body):
         while status == "init":
             time.sleep(2)
             api_response = api_instance.hc_tree_result_v1_trees_tc_id_get(job_id)
-            status = api_response.status
+            status = api_response.status.value
 
         if status == "error":
-            abort(500)
+            return abort(500, description=api_response.result)
 
-        return api_response.response
+        return api_response.result
