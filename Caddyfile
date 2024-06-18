@@ -27,3 +27,11 @@
         reverse_proxy sap_app:3333
     }
 }
+
+dev2.sofi-platform.dk {
+    tls /etc/sofi.crt /etc/sofi.pem
+
+    route /* {
+        reverse_proxy microreact:3000
+    }   
+}
