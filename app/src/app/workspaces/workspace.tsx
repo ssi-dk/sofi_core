@@ -1,5 +1,5 @@
 import React, { useCallback } from "react";
-import { Box, Heading, IconButton, Spinner } from "@chakra-ui/react";
+import { Box, Button, Heading, IconButton, Spinner } from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
 import HalfHolyGrailLayout from "layouts/half-holy-grail";
 import { useMutation, useRequest } from "redux-query-react";
@@ -171,11 +171,32 @@ export function Workspace(props: Props) {
         <Box role="navigation" gridColumn="2 / 4" pb={5}>
           <div style={{ display: "flex", justifyContent: "space-between" }}>
             <Heading>{`${workspace?.name}`}</Heading>
-            <div style={{ width: "300px" }}>
-              <AnalysisViewSelector manageViews={false} />
+            {/* <div style={{ width: "300px" }}>
+            </div> */}
+            <div style={{ display: "flex", width: "500px" }}>
+              <Button style={{ marginRight: "10px" }}>
+                Send to microreact
+              </Button>
+              <div style={{ flexGrow: 1, minWidth: 0 }}>
+                <AnalysisViewSelector manageViews={false} />
+              </div>
             </div>
           </div>
         </Box>
+
+        {/* <Box role="navigation" gridColumn="2 / 4" pb={5}>
+  <div style={{ display: "flex", justifyContent: "flex-end", width: "100%" }}>
+    <div style={{ flexGrow: 1 }}>
+      <Heading>{`${workspace?.name}`}</Heading>
+    </div>
+    <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+      <Button mr={2} flexShrink={0}>
+        yo
+      </Button>
+      <AnalysisViewSelector flexGrow={1} />
+    </div>
+  </div>
+</Box> */}
         <Box role="main" gridColumn="2 / 4" borderWidth="1px" rounded="md">
           <Box height="calc(100vh - 250px)">
             <DataTable<AnalysisResult>
