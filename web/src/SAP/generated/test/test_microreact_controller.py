@@ -19,20 +19,8 @@ class TestMicroreactController(BaseTestCase):
         
         """
         new_microreact_project_request = {
-  "tree_calcs" : [ {
-    "result" : "result",
-    "method" : "method"
-  }, {
-    "result" : "result",
-    "method" : "method"
-  } ],
-  "public" : false,
-  "mr_access_token" : "mr_access_token",
-  "mr_base_url" : "mr_base_url",
-  "verify" : true,
-  "project_name" : "project_name",
-  "metadata_keys" : [ "metadata_keys", "metadata_keys" ],
-  "metadata_values" : [ "metadata_values", "metadata_values" ]
+  "workspace" : "workspace",
+  "mr_access_token" : "mr_access_token"
 }
         headers = { 
             'Accept': 'application/json',

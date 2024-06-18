@@ -29,6 +29,8 @@ from .metadata_reload_response import MetadataReloadResponse
 from .multi_upload_request import MultiUploadRequest
 from .nearest_neighbors_request import NearestNeighborsRequest
 from .nearest_neighbors_response import NearestNeighborsResponse
+from .new_microreact_project_request import NewMicroreactProjectRequest
+from .new_microreact_project_response import NewMicroreactProjectResponse
 from .newick_tree_response import NewickTreeResponse
 from .organization import Organization
 from .page_of_analysis import PageOfAnalysis
@@ -48,6 +50,7 @@ from .sample_categories_resistance_report import SampleCategoriesResistanceRepor
 from .single_upload_request import SingleUploadRequest
 from .tbr_metadata import TbrMetadata
 from .tbr_specific_metadata import TbrSpecificMetadata
+from .tree_calc import TreeCalc
 from .update_workspace import UpdateWorkspace
 from .upload_metadata_fields import UploadMetadataFields
 from .upload_response import UploadResponse

@@ -6,10 +6,8 @@ from datetime import date, datetime  # noqa: F401
 from typing import List, Dict  # noqa: F401
 
 from web.src.SAP.generated.models.base_model_ import Model
-from web.src.SAP.generated.models.tree_calc import TreeCalc
 from web.src.SAP.generated import util
 
-from web.src.SAP.generated.models.tree_calc import TreeCalc  # noqa: E501
 
 class NewMicroreactProjectRequest(Model):
 
@@ -19,56 +17,26 @@ class NewMicroreactProjectRequest(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, project_name=None, tree_calcs=None, metadata_keys=None, metadata_values=None, mr_access_token=None, mr_base_url=None, public=False, verify=True):  # noqa: E501
+    def __init__(self, workspace=None, mr_access_token=None):  # noqa: E501
         """NewMicroreactProjectRequest - a model defined in OpenAPI
 
-        :param project_name: The project_name of this NewMicroreactProjectRequest.  # noqa: E501
-        :type project_name: str
-        :param tree_calcs: The tree_calcs of this NewMicroreactProjectRequest.  # noqa: E501
-        :type tree_calcs: List[TreeCalc]
-        :param metadata_keys: The metadata_keys of this NewMicroreactProjectRequest.  # noqa: E501
-        :type metadata_keys: List[str]
-        :param metadata_values: The metadata_values of this NewMicroreactProjectRequest.  # noqa: E501
-        :type metadata_values: List[str]
+        :param workspace: The workspace of this NewMicroreactProjectRequest.  # noqa: E501
+        :type workspace: str
         :param mr_access_token: The mr_access_token of this NewMicroreactProjectRequest.  # noqa: E501
         :type mr_access_token: str
-        :param mr_base_url: The mr_base_url of this NewMicroreactProjectRequest.  # noqa: E501
-        :type mr_base_url: str
-        :param public: The public of this NewMicroreactProjectRequest.  # noqa: E501
-        :type public: bool
-        :param verify: The verify of this NewMicroreactProjectRequest.  # noqa: E501
-        :type verify: bool
         """
         self.openapi_types = {
-            'project_name': str,
-            'tree_calcs': List[TreeCalc],
-            'metadata_keys': List[str],
-            'metadata_values': List[str],
+            'workspace': str,
             'mr_access_token': str,
-            'mr_base_url': str,
-            'public': bool,
-            'verify': bool,
         }
 
         self.attribute_map = {
-            'project_name': 'project_name',
-            'tree_calcs': 'tree_calcs',
-            'metadata_keys': 'metadata_keys',
-            'metadata_values': 'metadata_values',
+            'workspace': 'workspace',
             'mr_access_token': 'mr_access_token',
-            'mr_base_url': 'mr_base_url',
-            'public': 'public',
-            'verify': 'verify',
         }
 
-        self._project_name = project_name
-        self._tree_calcs = tree_calcs
-        self._metadata_keys = metadata_keys
-        self._metadata_values = metadata_values
+        self._workspace = workspace
         self._mr_access_token = mr_access_token
-        self._mr_base_url = mr_base_url
-        self._public = public
-        self._verify = verify
 
     @classmethod
     def from_dict(cls, dikt):
@@ -82,96 +50,27 @@ class NewMicroreactProjectRequest(Model):
         return util.deserialize_model(dikt, cls)
 
     @property
-    def project_name(self):
-        """Gets the project_name of this NewMicroreactProjectRequest.
+    def workspace(self):
+        """Gets the workspace of this NewMicroreactProjectRequest.
 
 
-        :return: The project_name of this NewMicroreactProjectRequest.
+        :return: The workspace of this NewMicroreactProjectRequest.
         :rtype: str
         """
-        return self._project_name
+        return self._workspace
 
-    @project_name.setter
-    def project_name(self, project_name):
-        """Sets the project_name of this NewMicroreactProjectRequest.
+    @workspace.setter
+    def workspace(self, workspace):
+        """Sets the workspace of this NewMicroreactProjectRequest.
 
 
-        :param project_name: The project_name of this NewMicroreactProjectRequest.
-        :type project_name: str
+        :param workspace: The workspace of this NewMicroreactProjectRequest.
+        :type workspace: str
         """
-        if project_name is None:
-            raise ValueError("Invalid value for `project_name`, must not be `None`")  # noqa: E501
+        if workspace is None:
+            raise ValueError("Invalid value for `workspace`, must not be `None`")  # noqa: E501
 
-        self._project_name = project_name
-
-    @property
-    def tree_calcs(self):
-        """Gets the tree_calcs of this NewMicroreactProjectRequest.
-
-
-        :return: The tree_calcs of this NewMicroreactProjectRequest.
-        :rtype: List[TreeCalc]
-        """
-        return self._tree_calcs
-
-    @tree_calcs.setter
-    def tree_calcs(self, tree_calcs):
-        """Sets the tree_calcs of this NewMicroreactProjectRequest.
-
-
-        :param tree_calcs: The tree_calcs of this NewMicroreactProjectRequest.
-        :type tree_calcs: List[TreeCalc]
-        """
-        if tree_calcs is None:
-            raise ValueError("Invalid value for `tree_calcs`, must not be `None`")  # noqa: E501
-
-        self._tree_calcs = tree_calcs
-
-    @property
-    def metadata_keys(self):
-        """Gets the metadata_keys of this NewMicroreactProjectRequest.
-
-
-        :return: The metadata_keys of this NewMicroreactProjectRequest.
-        :rtype: List[str]
-        """
-        return self._metadata_keys
-
-    @metadata_keys.setter
-    def metadata_keys(self, metadata_keys):
-        """Sets the metadata_keys of this NewMicroreactProjectRequest.
-
-
-        :param metadata_keys: The metadata_keys of this NewMicroreactProjectRequest.
-        :type metadata_keys: List[str]
-        """
-        if metadata_keys is None:
-            raise ValueError("Invalid value for `metadata_keys`, must not be `None`")  # noqa: E501
-
-        self._metadata_keys = metadata_keys
-
-    @property
-    def metadata_values(self):
-        """Gets the metadata_values of this NewMicroreactProjectRequest.
-
-
-        :return: The metadata_values of this NewMicroreactProjectRequest.
-        :rtype: List[str]
-        """
-        return self._metadata_values
-
-    @metadata_values.setter
-    def metadata_values(self, metadata_values):
-        """Sets the metadata_values of this NewMicroreactProjectRequest.
-
-
-        :param metadata_values: The metadata_values of this NewMicroreactProjectRequest.
-        :type metadata_values: List[str]
-        """
-        if metadata_values is None:
-            raise ValueError("Invalid value for `metadata_values`, must not be `None`")  # noqa: E501
-
-        self._metadata_values = metadata_values
+        self._workspace = workspace
 
     @property
     def mr_access_token(self):
@@ -195,68 +94,3 @@ class NewMicroreactProjectRequest(Model):
             raise ValueError("Invalid value for `mr_access_token`, must not be `None`")  # noqa: E501
 
         self._mr_access_token = mr_access_token
-
-    @property
-    def mr_base_url(self):
-        """Gets the mr_base_url of this NewMicroreactProjectRequest.
-
-
-        :return: The mr_base_url of this NewMicroreactProjectRequest.
-        :rtype: str
-        """
-        return self._mr_base_url
-
-    @mr_base_url.setter
-    def mr_base_url(self, mr_base_url):
-        """Sets the mr_base_url of this NewMicroreactProjectRequest.
-
-
-        :param mr_base_url: The mr_base_url of this NewMicroreactProjectRequest.
-        :type mr_base_url: str
-        """
-        if mr_base_url is None:
-            raise ValueError("Invalid value for `mr_base_url`, must not be `None`")  # noqa: E501
-
-        self._mr_base_url = mr_base_url
-
-    @property
-    def public(self):
-        """Gets the public of this NewMicroreactProjectRequest.
-
-
-        :return: The public of this NewMicroreactProjectRequest.
-        :rtype: bool
-        """
-        return self._public
-
-    @public.setter
-    def public(self, public):
-        """Sets the public of this NewMicroreactProjectRequest.
-
-
-        :param public: The public of this NewMicroreactProjectRequest.
-        :type public: bool
-        """
-
-        self._public = public
-
-    @property
-    def verify(self):
-        """Gets the verify of this NewMicroreactProjectRequest.
-
-
-        :return: The verify of this NewMicroreactProjectRequest.
-        :rtype: bool
-        """
-        return self._verify
-
-    @verify.setter
-    def verify(self, verify):
-        """Sets the verify of this NewMicroreactProjectRequest.
-
-
-        :param verify: The verify of this NewMicroreactProjectRequest.
-        :type verify: bool
-        """
-
-        self._verify = verify

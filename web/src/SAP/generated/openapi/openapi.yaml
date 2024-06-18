@@ -364,6 +364,26 @@ paths:
       tags:
       - user
       x-openapi-router-controller: web.src.SAP.generated.controllers.user_controller
+  /microreact_integration:
+    post:
+      description: Send to Microreact
+      operationId: send_to_microreact
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewMicroreactProjectRequest'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NewMicroreactProjectResponse'
+          description: Microreact Response
+      tags:
+      - microreact
+      x-openapi-router-controller: web.src.SAP.generated.controllers.microreact_controller
   /nearest_neighbors:
     post:
       description: Nearest Neighbors
@@ -1541,6 +1561,41 @@ components:
       - name
       - samples
       type: object
+    NewMicroreactProjectRequest:
+      example:
+        workspace: workspace
+        mr_access_token: mr_access_token
+      properties:
+        workspace:
+          type: string
+        mr_access_token:
+          type: string
+      required:
+      - mr_access_token
+      - workspace
+      type: object
+    TreeCalc:
+      properties:
+        method:
+          type: string
+        result:
+          type: string
+      required:
+      - method
+      - result
+      type: object
+    NewMicroreactProjectResponse:
+      example:
+        isOwner: true
+        id: id
+        url: url
+      properties:
+        isOwner:
+          type: boolean
+        id:
+          type: string
+        url:
+          type: string
     Sample_categories_resistance_report:
       example:
         phenotypes:

@@ -132,7 +132,6 @@ paths:
       operationId: send_to_microreact
       x-openapi-router-controller: web.src.SAP.generated.controllers.microreact_controller
       tags:
-        - workspaces
         - microreact
       requestBody:
         content:
@@ -1563,37 +1562,40 @@ components:
     NewMicroreactProjectRequest:
       type: object
       properties:
-        project_name:
+        workspace:
           type: string
-        tree_calcs:
-          type: array
-          items:
-            "$ref": '#/components/schemas/TreeCalc'
-        metadata_keys:
-          type: array
-          items:
-            type: string
-        metadata_values:
-          type: array
-          items:
-            type: string
+        # project_name:
+        #   type: string
+        # tree_calcs:
+        #   type: array
+        #   items:
+        #     "$ref": '#/components/schemas/TreeCalc'
+        # metadata_keys:
+        #   type: array
+        #   items:
+        #     type: string
+        # metadata_values:
+        #   type: array
+        #   items:
+        #     type: string
         mr_access_token:
           type: string
-        mr_base_url:
-          type: string
-        public:
-          type: boolean
-          default: false
-        verify:
-          type: boolean
-          default: true
+        # mr_base_url:
+        #   type: string
+        # public:
+        #   type: boolean
+        #   default: false
+        # verify:
+        #   type: boolean
+        #   default: true
       required:
-        - project_name
-        - tree_calcs
-        - metadata_keys
-        - metadata_values
+        - workspace
+        # - project_name
+        # - tree_calcs
+        # - metadata_keys
+        # - metadata_values
         - mr_access_token
-        - mr_base_url
+        # - mr_base_url
 
     TreeCalc:
       type: object
