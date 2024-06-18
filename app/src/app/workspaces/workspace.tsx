@@ -24,6 +24,7 @@ import { UserDefinedViewInternal } from "models/user-defined-view-internal";
 import { Loading } from "loading";
 import { AnalysisViewSelector } from "app/analysis/view-selector/analysis-view-selector";
 import { DeleteIcon } from "@chakra-ui/icons";
+import { SendToMicroreactButton } from "./send-to-microreact-button";
 
 type Props = {
   id: string;
@@ -174,29 +175,13 @@ export function Workspace(props: Props) {
             {/* <div style={{ width: "300px" }}>
             </div> */}
             <div style={{ display: "flex", width: "500px" }}>
-              <Button style={{ marginRight: "10px" }}>
-                Send to microreact
-              </Button>
+              <SendToMicroreactButton workspace={workspace.id}  />
               <div style={{ flexGrow: 1, minWidth: 0 }}>
                 <AnalysisViewSelector manageViews={false} />
               </div>
             </div>
           </div>
         </Box>
-
-        {/* <Box role="navigation" gridColumn="2 / 4" pb={5}>
-  <div style={{ display: "flex", justifyContent: "flex-end", width: "100%" }}>
-    <div style={{ flexGrow: 1 }}>
-      <Heading>{`${workspace?.name}`}</Heading>
-    </div>
-    <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-      <Button mr={2} flexShrink={0}>
-        yo
-      </Button>
-      <AnalysisViewSelector flexGrow={1} />
-    </div>
-  </div>
-</Box> */}
         <Box role="main" gridColumn="2 / 4" borderWidth="1px" rounded="md">
           <Box height="calc(100vh - 250px)">
             <DataTable<AnalysisResult>
