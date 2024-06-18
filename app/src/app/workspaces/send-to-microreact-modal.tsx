@@ -15,9 +15,9 @@ import { useMutation } from "redux-query-react";
 import { sendToMicroreact as sendToMicroreactQuery } from "./microreact-query-configs";
 
 type Props = {
-    workspace: string;
-    onClose: () => void;
-  };
+  workspace: string;
+  onClose: () => void;
+};
 
 export const SendToMicroreactModal = (props: Props) => {
   const { t } = useTranslation();
@@ -37,7 +37,7 @@ export const SendToMicroreactModal = (props: Props) => {
     sendToWorkspace();
   }, [setIsSending, sendToWorkspace]);
 
-  const handleChange = (event) => setToken(event.target.value)
+  const handleChange = (event) => setToken(event.target.value);
 
   return (
     <Modal isOpen={true} onClose={onClose} size="lg">
@@ -51,11 +51,12 @@ export const SendToMicroreactModal = (props: Props) => {
               style={{ display: "flex", flexDirection: "column", gap: "8px" }}
             >
               <div>
-                Token: <Input
-        value={token}
-        onChange={handleChange}
-        placeholder="Token"
-      />
+                Token:
+                <Input
+                  value={token}
+                  onChange={handleChange}
+                  placeholder="Token"
+                />
               </div>
             </div>
           ) : (

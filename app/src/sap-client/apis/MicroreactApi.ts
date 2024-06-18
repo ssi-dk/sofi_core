@@ -24,7 +24,7 @@ import {
 } from '../models';
 
 export interface SendToMicroreactRequest {
-    newMicroreactProjectRequest: NewMicroreactProjectRequest;
+    body: NewMicroreactProjectRequest;
 }
 
 
@@ -32,8 +32,8 @@ export interface SendToMicroreactRequest {
  * Send to Microreact
  */
 function sendToMicroreactRaw<T>(requestParameters: SendToMicroreactRequest, requestConfig: runtime.TypedQueryConfig<T, NewMicroreactProjectResponse> = {}): QueryConfig<T> {
-    if (requestParameters.newMicroreactProjectRequest === null || requestParameters.newMicroreactProjectRequest === undefined) {
-        throw new runtime.RequiredError('newMicroreactProjectRequest','Required parameter requestParameters.newMicroreactProjectRequest was null or undefined when calling sendToMicroreact.');
+    if (requestParameters.body === null || requestParameters.body === undefined) {
+        throw new runtime.RequiredError('body','Required parameter requestParameters.body was null or undefined when calling sendToMicroreact.');
     }
 
     let queryParameters = null;
@@ -59,7 +59,7 @@ function sendToMicroreactRaw<T>(requestParameters: SendToMicroreactRequest, requ
             method: 'POST',
             headers: headerParameters,
         },
-        body: queryParameters || NewMicroreactProjectRequestToJSON(requestParameters.newMicroreactProjectRequest),
+        body: queryParameters || NewMicroreactProjectRequestToJSON(requestParameters.body),
     };
 
     const { transform: requestTransform } = requestConfig;

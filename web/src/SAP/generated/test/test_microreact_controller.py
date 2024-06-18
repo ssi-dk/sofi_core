@@ -18,7 +18,7 @@ class TestMicroreactController(BaseTestCase):
 
         
         """
-        new_microreact_project_request = {
+        body = {
   "workspace" : "workspace",
   "mr_access_token" : "mr_access_token"
 }
@@ -31,7 +31,7 @@ class TestMicroreactController(BaseTestCase):
             '/api/microreact_integration',
             method='POST',
             headers=headers,
-            data=json.dumps(new_microreact_project_request),
+            data=json.dumps(body),
             content_type='application/json')
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))

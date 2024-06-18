@@ -1,11 +1,11 @@
 import {
   NewMicroreactProjectRequest,
-  sendToMicroreact as sendToMicroreactApi
+  sendToMicroreact as sendToMicroreactApi,
 } from "sap-client";
 import { getUrl } from "service";
 
-export const sendToMicroreact = (params: NewMicroreactProjectRequest) => {
-  const base = sendToMicroreactApi({ newMicroreactProjectRequest: params });
+export const sendToMicroreact = (body: NewMicroreactProjectRequest) => {
+  const base = sendToMicroreactApi({ body });
   base.url = getUrl(base.url);
 
   base.force = true;

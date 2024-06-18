@@ -175,7 +175,7 @@ export function Workspace(props: Props) {
             {/* <div style={{ width: "300px" }}>
             </div> */}
             <div style={{ display: "flex", width: "500px" }}>
-              <SendToMicroreactButton workspace={workspace.id}  />
+              <SendToMicroreactButton workspace={workspace.id} />
               <div style={{ flexGrow: 1, minWidth: 0 }}>
                 <AnalysisViewSelector manageViews={false} />
               </div>

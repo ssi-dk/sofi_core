@@ -131,6 +131,7 @@ paths:
       description: Send to Microreact
       operationId: send_to_microreact
       x-openapi-router-controller: web.src.SAP.generated.controllers.microreact_controller
+      x-codegen-request-body-name: body
       tags:
         - microreact
       requestBody:
