@@ -1,5 +1,5 @@
 import React, { useCallback } from "react";
-import { Box, Button, Heading, IconButton, Spinner } from "@chakra-ui/react";
+import { Box, Heading, IconButton, Spinner } from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
 import HalfHolyGrailLayout from "layouts/half-holy-grail";
 import { useMutation, useRequest } from "redux-query-react";
@@ -172,8 +172,6 @@ export function Workspace(props: Props) {
         <Box role="navigation" gridColumn="2 / 4" pb={5}>
           <div style={{ display: "flex", justifyContent: "space-between" }}>
             <Heading>{`${workspace?.name}`}</Heading>
-            {/* <div style={{ width: "300px" }}>
-            </div> */}
             <div style={{ display: "flex", width: "500px" }}>
               <SendToMicroreactButton workspace={workspace.id} />
               <div style={{ flexGrow: 1, minWidth: 0 }}>
