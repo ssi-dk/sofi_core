@@ -32,19 +32,20 @@ export const SendToMicroreactModal = (props: Props) => {
     (s) => s.entities.workspace ?? {}
   ) as WorkspaceInfo;
 
-  useEffect(() => {
-    const url = workspaceInfo.microreact?.url;
-    if (url) {
-      window.open(url, "_blank");
-    }
-  }, [workspaceInfo]);
-
   const [{ isPending, status }, sendToWorkspace] = useMutation(() => {
     return sendToMicroreactQuery({
       workspace: workspace,
       mr_access_token: token,
     });
   });
+
+  useEffect(() => {
+    const url = workspaceInfo.microreact?.url;
+    if (url && status >= 200 && status < 300) {
+      window.open(url, "_blank");
+    }
+  }, [workspaceInfo, status]);
+
 
   const onSend = useCallback(async () => {
     setIsSending(true);
