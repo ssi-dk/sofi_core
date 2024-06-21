@@ -4,15 +4,13 @@ from flask import abort
 from flask.json import jsonify
 from .....microreact_integration.functions import new_project as new_microreact_project
 from ..repositories.workspaces import get_workspace as get_workspace_db
+from ..repositories.workspaces import update_microreact as update_microreact_db
 from web.src.SAP.src.security.permission_check import (authorized_columns)
 
 def send_to_microreact(user, token_info, body):
     ws_id = body.workspace 
-    ws = get_workspace_db(user, ws_id)
-     
+    ws = get_workspace_db(user, ws_id)    
     authorized = authorized_columns(token_info)
-    print(authorized, file=sys.stderr)
-    print(ws["samples"], file=sys.stderr)
 
     values = []
     for sample in ws["samples"] :
@@ -23,10 +21,7 @@ def send_to_microreact(user, token_info, body):
             else:
                 row.append("")
         values.append(row)
-
-    print(values, file=sys.stderr)
     
-
     res = new_microreact_project(        
         project_name=ws["name"],
         tree_calcs=[],
@@ -35,5 +30,17 @@ def send_to_microreact(user, token_info, body):
         mr_access_token=body.mr_access_token,
         mr_base_url="http://microreact:3000/"
         )
+        
+    jsonResponse = res.json()
 
-    return jsonify(res.json())
+    microreactReference = {
+        "id": ws_id,
+        "microreact": {
+            "id": jsonResponse["id"],
+            "url": jsonResponse["url"]
+        }
+    }
+
+    update_microreact_db(microreactReference)
+
+    return jsonify(jsonResponse)

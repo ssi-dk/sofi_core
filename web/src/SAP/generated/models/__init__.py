@@ -52,6 +52,7 @@ from .single_upload_request import SingleUploadRequest
 from .tbr_metadata import TbrMetadata
 from .tbr_specific_metadata import TbrSpecificMetadata
 from .tree_calc import TreeCalc
+from .update_microreact_reference import UpdateMicroreactReference
 from .update_workspace import UpdateWorkspace
 from .upload_metadata_fields import UploadMetadataFields
 from .upload_response import UploadResponse

@@ -1551,6 +1551,16 @@ components:
       required:
       - samples
       type: object
+    UpdateMicroreactReference:
+      properties:
+        id:
+          type: string
+        microreact:
+          $ref: '#/components/schemas/MicroreactProject'
+      required:
+      - id
+      - microreact
+      type: object
     WorkspaceInfo:
       example:
         name: name

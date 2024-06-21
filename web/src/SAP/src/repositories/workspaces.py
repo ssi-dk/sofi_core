@@ -1,6 +1,7 @@
 import sys
 
 from web.src.SAP.generated.models.update_workspace import UpdateWorkspace
+from web.src.SAP.generated.models.update_microreact_reference import UpdateMicroreactReference 
 from web.src.SAP.src.repositories.analysis import get_analysis_with_metadata, get_single_analysis_by_object_id
 from ...common.database import get_connection, DB_NAME, WORKSPACES_COL_NAME
 from bson.objectid import ObjectId
@@ -65,4 +66,13 @@ def update_workspace(user: str, workspace_id: str, workspace: UpdateWorkspace):
 
     filter = {'created_by': user, '_id': ObjectId(workspace_id)}
     update = {"$addToSet": {"samples": { "$each": workspace.samples}}}
+    return workspaces.update_one(filter, update, upsert=True)
+
+def update_microreact(microreact_reference: UpdateMicroreactReference):
+    conn = get_connection()
+    db = conn[DB_NAME]
+    workspaces = db[WORKSPACES_COL_NAME]
+
+    filter = {'_id': ObjectId(microreact_reference['id'])}
+    update = {"$set": {"microreact": microreact_reference['microreact']}}
     return workspaces.update_one(filter, update, upsert=True)
