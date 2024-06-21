@@ -1522,6 +1522,16 @@ components:
       - id
       - name
 
+    MicroreactProject:
+      properties:
+        id:
+          type: string
+          title: Id
+        url:
+          type: string
+          title: Url
+      type: object
+
     CreateWorkspace:
       properties:
         name:
@@ -1555,6 +1565,9 @@ components:
           items:
             $ref: '#/components/schemas/AnalysisResult'
           title: Samples
+        microreact:
+          $ref: '#/components/schemas/MicroreactProject'
+          title: Microreact
       type: object
       required:
       - name

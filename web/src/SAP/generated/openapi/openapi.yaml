@@ -1515,6 +1515,18 @@ components:
       - id
       - name
       type: object
+    MicroreactProject:
+      example:
+        id: id
+        url: url
+      properties:
+        id:
+          title: Id
+          type: string
+        url:
+          title: Url
+          type: string
+      type: object
     CreateWorkspace:
       example:
         name: name
@@ -1542,6 +1554,9 @@ components:
     WorkspaceInfo:
       example:
         name: name
+        microreact:
+          id: id
+          url: url
         id: id
         samples:
         - null
@@ -1558,6 +1573,8 @@ components:
             $ref: '#/components/schemas/AnalysisResult'
           title: Samples
           type: array
+        microreact:
+          $ref: '#/components/schemas/MicroreactProject'
       required:
       - name
       - samples
