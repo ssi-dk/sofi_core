@@ -43,6 +43,31 @@ paths:
       tags:
         - workspaces
       x-openapi-router-controller: web.src.SAP.generated.controllers.workspaces_controller
+  /workspace/{workspace_id}/tree:
+    post:
+      operationId: build_workspace_tree
+      requestBody:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BuildWorkspaceTreeRequestBody"
+      responses:
+        '200':
+          description: Tree generation started
+          content:
+            application/json:
+              schema:
+                type: string
+      parameters:
+        - name: workspace_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Id of workspace
+      tags:
+        - workspaces
+      x-openapi-router-controller: web.src.SAP.generated.controllers.workspaces_controller
   /workspace/{workspace_id}/{sample_id}:
     delete:
       description: Delete sample from workspace
@@ -125,6 +150,28 @@ paths:
       responses:
         '204':
           description: Workspace updated successfully.
+
+  /microreact_integration:
+    post:
+      description: Send to Microreact
+      operationId: send_to_microreact
+      x-openapi-router-controller: web.src.SAP.generated.controllers.microreact_controller
+      x-codegen-request-body-name: body
+      tags:
+        - microreact
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/NewMicroreactProjectRequest"
+        required: true
+      responses:
+        '200':
+          description: Microreact Response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/NewMicroreactProjectResponse"
 
   /nearest_neighbors:
     post:
@@ -634,7 +681,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/HealthResponse'
 
-  /samples/{sequence_id}:
+  /samples/{sample_id}:
     get:
       description: Get an individual sample by id
       operationId: get_sample_by_id
@@ -642,7 +689,7 @@ paths:
       tags:
         - samples
       parameters:
-        - name: sequence_id
+        - name: sample_id
           in: path
           required: true
           schema:
@@ -661,6 +708,17 @@ components:
     Organization:
       type: string
       enum: [SSI, FVST, Other]
+
+    TreeMethod:
+      type: string
+      enum: [single, complete, average, weighted, centroid, median, ward]
+
+    BuildWorkspaceTreeRequestBody:
+      required:
+        - tree_method
+      properties:
+        tree_method:
+          $ref: "#/components/schemas/TreeMethod"
 
     AnalysisHistory:
       type: object
@@ -1500,6 +1558,16 @@ components:
       - id
       - name
 
+    MicroreactProject:
+      properties:
+        id:
+          type: string
+          title: Id
+        url:
+          type: string
+          title: Url
+      type: object
+
     CreateWorkspace:
       properties:
         name:
@@ -1518,7 +1586,7 @@ components:
           title: Samples
       type: object
       required:
-      - samples
+      - samples 
 
     WorkspaceInfo:
       properties:
@@ -1533,10 +1601,71 @@ components:
           items:
             $ref: '#/components/schemas/AnalysisResult'
           title: Samples
+        microreact:
+          $ref: '#/components/schemas/MicroreactProject'
+          title: Microreact
       type: object
       required:
       - name
       - samples
+
+    NewMicroreactProjectRequest:
+      type: object
+      properties:
+        workspace:
+          type: string
+        # project_name:
+        #   type: string
+        # tree_calcs:
+        #   type: array
+        #   items:
+        #     "$ref": '#/components/schemas/TreeCalc'
+        # metadata_keys:
+        #   type: array
+        #   items:
+        #     type: string
+        # metadata_values:
+        #   type: array
+        #   items:
+        #     type: string
+        mr_access_token:
+          type: string
+        # mr_base_url:
+        #   type: string
+        # public:
+        #   type: boolean
+        #   default: false
+        # verify:
+        #   type: boolean
+        #   default: true
+      required:
+        - workspace
+        # - project_name
+        # - tree_calcs
+        # - metadata_keys
+        # - metadata_values
+        - mr_access_token
+        # - mr_base_url
+
+    TreeCalc:
+      type: object
+      properties:
+        method:
+          type: string
+        result:
+          type: string
+      required:
+        - method
+        - result
+
+    NewMicroreactProjectResponse:
+      properties:
+        isOwner:
+          type: boolean
+        id:
+          type: string
+        url:
+          type: string
 
   securitySchemes:
     jwt:

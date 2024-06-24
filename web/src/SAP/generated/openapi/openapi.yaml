@@ -364,6 +364,27 @@ paths:
       tags:
       - user
       x-openapi-router-controller: web.src.SAP.generated.controllers.user_controller
+  /microreact_integration:
+    post:
+      description: Send to Microreact
+      operationId: send_to_microreact
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewMicroreactProjectRequest'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NewMicroreactProjectResponse'
+          description: Microreact Response
+      tags:
+      - microreact
+      x-openapi-router-controller: web.src.SAP.generated.controllers.microreact_controller
+      x-codegen-request-body-name: body
   /nearest_neighbors:
     post:
       description: Nearest Neighbors
@@ -385,7 +406,7 @@ paths:
       - nearest_neighbors
       x-openapi-router-controller: web.src.SAP.generated.controllers.nearest_neighbors_controller
       x-codegen-request-body-name: body
-  /samples/{sequence_id}:
+  /samples/{sample_id}:
     get:
       description: Get an individual sample by id
       operationId: get_sample_by_id
@@ -393,7 +414,7 @@ paths:
       - description: id of sample
         explode: false
         in: path
-        name: sequence_id
+        name: sample_id
         required: true
         schema:
           type: string
@@ -554,6 +575,33 @@ paths:
       tags:
       - user
       x-openapi-router-controller: web.src.SAP.generated.controllers.user_controller
+  /workspace/{workspace_id}/tree:
+    post:
+      operationId: build_workspace_tree
+      parameters:
+      - description: Id of workspace
+        explode: false
+        in: path
+        name: workspace_id
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BuildWorkspaceTreeRequestBody'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: string
+          description: Tree generation started
+      tags:
+      - workspaces
+      x-openapi-router-controller: web.src.SAP.generated.controllers.workspaces_controller
   /workspace/{workspace_id}/{sample_id}:
     delete:
       description: Delete sample from workspace
@@ -682,6 +730,23 @@ components:
       - FVST
       - Other
       type: string
+    TreeMethod:
+      enum:
+      - single
+      - complete
+      - average
+      - weighted
+      - centroid
+      - median
+      - ward
+      type: string
+    BuildWorkspaceTreeRequestBody:
+      example: {}
+      properties:
+        tree_method:
+          $ref: '#/components/schemas/TreeMethod'
+      required:
+      - tree_method
     AnalysisHistory:
       example:
         items:
@@ -1494,6 +1559,18 @@ components:
       - id
       - name
       type: object
+    MicroreactProject:
+      example:
+        id: id
+        url: url
+      properties:
+        id:
+          title: Id
+          type: string
+        url:
+          title: Url
+          type: string
+      type: object
     CreateWorkspace:
       example:
         name: name
@@ -1521,6 +1598,9 @@ components:
     WorkspaceInfo:
       example:
         name: name
+        microreact:
+          id: id
+          url: url
         id: id
         samples:
         - null
@@ -1537,10 +1617,47 @@ components:
             $ref: '#/components/schemas/AnalysisResult'
           title: Samples
           type: array
+        microreact:
+          $ref: '#/components/schemas/MicroreactProject'
       required:
       - name
       - samples
       type: object
+    NewMicroreactProjectRequest:
+      example:
+        workspace: workspace
+        mr_access_token: mr_access_token
+      properties:
+        workspace:
+          type: string
+        mr_access_token:
+          type: string
+      required:
+      - mr_access_token
+      - workspace
+      type: object
+    TreeCalc:
+      properties:
+        method:
+          type: string
+        result:
+          type: string
+      required:
+      - method
+      - result
+      type: object
+    NewMicroreactProjectResponse:
+      example:
+        isOwner: true
+        id: id
+        url: url
+      properties:
+        isOwner:
+          type: boolean
+        id:
+          type: string
+        url:
+          type: string
     Sample_categories_resistance_report:
       example:
         phenotypes:

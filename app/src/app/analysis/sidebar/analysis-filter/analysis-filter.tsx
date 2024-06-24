@@ -16,7 +16,13 @@ type AnalysisFilterProps = {
 };
 
 function AnalysisFilter(props: AnalysisFilterProps) {
-  const { providedSpecies, serotypeFinals, sts, onFilterChange, isDisabled } = props;
+  const {
+    providedSpecies,
+    serotypeFinals,
+    sts,
+    onFilterChange,
+    isDisabled,
+  } = props;
 
   const providedSpeciesOptions = React.useMemo(
     () => providedSpecies.map((x) => ({ value: x, label: x })),
