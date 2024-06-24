@@ -3,13 +3,13 @@ import merge from "lodash.merge";
 import { getSampleById, Sample } from "sap-client";
 import { getUrl } from "service";
 
-export const requestGetSampleById = (sequenceId: string) => {
-  const base = getSampleById({ sequenceId });
+export const requestGetSampleById = (sampleId: string) => {
+  const base = getSampleById({ sampleId });
 
   base.url = getUrl(base.url);
 
   base.transform = (response: Sample) => ({
-    samples: { [sequenceId]: response },
+    samples: { [sampleId]: response },
   });
 
   base.update = {

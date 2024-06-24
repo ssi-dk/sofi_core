@@ -6,10 +6,10 @@ from web.src.SAP.src.security.permission_check import assert_user_has
 from bson import json_util
 import json
 
-def get_sample_by_id(user, token_info, sequence_id):
+def get_sample_by_id(user, token_info, sample_id):
     assert_user_has("search", token_info)
 
-    row = get_single_sample(sequence_id)
+    row = get_single_sample(sample_id)
     if row is None:
         abort(404)
     if (

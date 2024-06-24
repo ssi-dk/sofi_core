@@ -22,7 +22,7 @@ class TestSamplesController(BaseTestCase):
             'Authorization': 'Bearer special-key',
         }
         response = self.client.open(
-            '/api/samples/{sequence_id}'.format(sequence_id='sequence_id_example'),
+            '/api/samples/{sample_id}'.format(sample_id='sample_id_example'),
             method='GET',
             headers=headers)
         self.assert200(response,
