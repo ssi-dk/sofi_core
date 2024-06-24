@@ -99,10 +99,10 @@ class HCTreeCalcGETResponse(ModelNormal):
             'job_id': (str,),  # noqa: E501
             'created_at': (str,),  # noqa: E501
             'status': (Status,),  # noqa: E501
-            'finished_at': (dict,),  # noqa: E501
+            'finished_at': (str, none_type,),  # noqa: E501
             'dmx_job': (str,),  # noqa: E501
             'method': (str,),  # noqa: E501
-            'result': (dict,),  # noqa: E501
+            'result': (str, none_type,),  # noqa: E501
         }
 
     @cached_property
@@ -134,10 +134,10 @@ class HCTreeCalcGETResponse(ModelNormal):
             job_id (str):
             created_at (str):
             status (Status):
-            finished_at (dict):
+            finished_at (str, none_type):
             dmx_job (str):
             method (str):
-            result (dict):
+            result (str, none_type):
 
         Keyword Args:
             _check_type (bool): if True, values for parameters in openapi_types
@@ -231,10 +231,10 @@ class HCTreeCalcGETResponse(ModelNormal):
             job_id (str):
             created_at (str):
             status (Status):
-            finished_at (dict):
+            finished_at (str, none_type):
             dmx_job (str):
             method (str):
-            result (dict):
+            result (str, none_type):
 
         Keyword Args:
             _check_type (bool): if True, values for parameters in openapi_types

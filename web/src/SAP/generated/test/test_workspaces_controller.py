@@ -5,6 +5,7 @@ import unittest
 from flask import json
 from six import BytesIO
 
+from web.src.SAP.generated.models.build_workspace_tree_request_body import BuildWorkspaceTreeRequestBody  # noqa: E501
 from web.src.SAP.generated.models.create_workspace import CreateWorkspace  # noqa: E501
 from web.src.SAP.generated.models.update_workspace import UpdateWorkspace  # noqa: E501
 from web.src.SAP.generated.models.workspace import Workspace  # noqa: E501
@@ -14,6 +15,26 @@ from .test import BaseTestCase
 
 class TestWorkspacesController(BaseTestCase):
     """WorkspacesController integration test stubs"""
+
+    def test_build_workspace_tree(self):
+        """Test case for build_workspace_tree
+
+        
+        """
+        build_workspace_tree_request_body = { }
+        headers = { 
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer special-key',
+        }
+        response = self.client.open(
+            '/api/workspace/{workspace_id}/tree'.format(workspace_id='workspace_id_example'),
+            method='POST',
+            headers=headers,
+            data=json.dumps(build_workspace_tree_request_body),
+            content_type='application/json')
+        self.assert200(response,
+                       'Response body is : ' + response.data.decode('utf-8'))
 
     def test_create_workspace(self):
         """Test case for create_workspace
