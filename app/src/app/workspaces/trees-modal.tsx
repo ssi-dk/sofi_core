@@ -26,7 +26,7 @@ export const TreesModal = (props: Props) => {
   const [treeMethod, setTreeMethod] = useState<string>();
   const [isSending, setIsSending] = useState<boolean>(false);
 
-  const [_, buildWorkspaceTree] = useMutation(() => {
+  const [, buildWorkspaceTree] = useMutation(() => {
     return buildWorkspaceTreeQuery({
       workspaceId: workspace,
       buildWorkspaceTreeRequestBody: {
