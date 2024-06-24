@@ -1,4 +1,10 @@
+<<<<<<< skp/microreact-environment
+[submodule "microreact/microreact-server"]
+	path = microreact/microreact-server
+	url = https://github.com/sjkp/microreact-server
+=======
 [submodule "web/microreact_integration"]
 	path = web/microreact_integration
 	url = https://github.com/ssi-dk/microreact_integration
 	branch = main
+>>>>>>> master
