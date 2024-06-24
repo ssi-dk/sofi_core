@@ -170,6 +170,8 @@ services:
     environment:
       BIO_API_MONGO_CONNECTION: ${BIFROST_MONGO_CONN}
     restart: on-failure
+    volumes:
+      - ./dmx_data:/dmx_data
 
 networks:
   default:

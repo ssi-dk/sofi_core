@@ -92,7 +92,7 @@ class DistanceMatrixGETResponse(ModelNormal):
             'job_id': (str,),  # noqa: E501
             'created_at': (str,),  # noqa: E501
             'status': (Status,),  # noqa: E501
-            'finished_at': (dict,),  # noqa: E501
+            'finished_at': (str, none_type,),  # noqa: E501
             'seq_collection': (str,),  # noqa: E501
             'seqid_field_path': (str,),  # noqa: E501
             'profile_field_path': (str,),  # noqa: E501
@@ -131,7 +131,7 @@ class DistanceMatrixGETResponse(ModelNormal):
             job_id (str):
             created_at (str):
             status (Status):
-            finished_at (dict):
+            finished_at (str, none_type):
             seq_collection (str):
             seqid_field_path (str):
             profile_field_path (str):
@@ -232,7 +232,7 @@ class DistanceMatrixGETResponse(ModelNormal):
             job_id (str):
             created_at (str):
             status (Status):
-            finished_at (dict):
+            finished_at (str, none_type):
             seq_collection (str):
             seqid_field_path (str):
             profile_field_path (str):

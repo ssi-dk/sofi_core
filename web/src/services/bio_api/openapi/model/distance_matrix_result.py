@@ -82,7 +82,7 @@ class DistanceMatrixResult(ModelNormal):
         """
         return {
             'seq_to_mongo': ({str: (bool, date, datetime, dict, float, int, list, str, none_type)},),  # noqa: E501
-            'distances': (dict,),  # noqa: E501
+            'distances': ({str: (bool, date, datetime, dict, float, int, list, str, none_type)}, none_type,),  # noqa: E501
         }
 
     @cached_property
@@ -139,7 +139,7 @@ class DistanceMatrixResult(ModelNormal):
                                 Animal class but this time we won't travel
                                 through its discriminator because we passed in
                                 _visited_composed_classes = (Animal,)
-            distances (dict): [optional]  # noqa: E501
+            distances ({str: (bool, date, datetime, dict, float, int, list, str, none_type)}, none_type): [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)
@@ -225,7 +225,7 @@ class DistanceMatrixResult(ModelNormal):
                                 Animal class but this time we won't travel
                                 through its discriminator because we passed in
                                 _visited_composed_classes = (Animal,)
-            distances (dict): [optional]  # noqa: E501
+            distances ({str: (bool, date, datetime, dict, float, int, list, str, none_type)}, none_type): [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)
