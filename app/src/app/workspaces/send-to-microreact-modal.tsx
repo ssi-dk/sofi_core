@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Input, Spinner } from "@chakra-ui/react";
 import {
   Button,
@@ -15,7 +15,7 @@ import { useMutation } from "redux-query-react";
 import { sendToMicroreact as sendToMicroreactQuery } from "./microreact-query-configs";
 import { RootState } from "app/root-reducer";
 import { useSelector } from "react-redux";
-import { WorkspaceInfo } from "sap-client";
+import { UserInfo, WorkspaceInfo } from "sap-client";
 
 type Props = {
   workspace: string;
@@ -25,7 +25,11 @@ type Props = {
 export const SendToMicroreactModal = (props: Props) => {
   const { t } = useTranslation();
   const { workspace, onClose } = props;
-  const [token, setToken] = useState<string>("");
+  const user = useSelector<RootState>((s) => s.entities.user ?? {}) as UserInfo;
+  const localStorageKey = useMemo(() => {
+    return `${user.userId}-microreact-token`;
+  }, [user]);
+  const [token, setToken] = useState<string>(localStorage.getItem(localStorageKey));
   const [isSending, setIsSending] = useState<boolean>(false);
 
   const workspaceInfo = useSelector<RootState>(
@@ -33,6 +37,7 @@ export const SendToMicroreactModal = (props: Props) => {
   ) as WorkspaceInfo;
 
   const [{ isPending, status }, sendToWorkspace] = useMutation(() => {
+    localStorage.setItem(localStorageKey, token);
     return sendToMicroreactQuery({
       workspace: workspace,
       mr_access_token: token,
