@@ -1550,19 +1550,7 @@ components:
           title: Samples
       type: object
       required:
-      - samples
-
-    UpdateMicroreactReference:
-      properties:
-        id:
-          type: string
-        microreact:
-          $ref: '#/components/schemas/MicroreactProject'
-          title: Microreact
-      type: object
-      required:
-      - id
-      - microreact     
+      - samples 
 
     WorkspaceInfo:
       properties:
