@@ -66,3 +66,12 @@ def update_workspace(user: str, workspace_id: str, workspace: UpdateWorkspace):
     filter = {'created_by': user, '_id': ObjectId(workspace_id)}
     update = {"$addToSet": {"samples": { "$each": workspace.samples}}}
     return workspaces.update_one(filter, update, upsert=True)
+
+def update_microreact(microreact_reference):
+    conn = get_connection()
+    db = conn[DB_NAME]
+    workspaces = db[WORKSPACES_COL_NAME]
+
+    filter = {'_id': ObjectId(microreact_reference['id'])}
+    update = {"$set": {"microreact": microreact_reference['microreact']}}
+    return workspaces.update_one(filter, update, upsert=True)

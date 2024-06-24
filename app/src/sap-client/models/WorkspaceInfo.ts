@@ -16,6 +16,9 @@ import {
     AnalysisResult,
     AnalysisResultFromJSON,
     AnalysisResultToJSON,
+    MicroreactProject,
+    MicroreactProjectFromJSON,
+    MicroreactProjectToJSON,
 } from './';
 
 /**
@@ -42,6 +45,12 @@ export interface WorkspaceInfo  {
      * @memberof WorkspaceInfo
      */
     samples: Array<AnalysisResult>;
+    /**
+     * 
+     * @type {MicroreactProject}
+     * @memberof WorkspaceInfo
+     */
+    microreact?: MicroreactProject;
 }
 
 export function WorkspaceInfoFromJSON(json: any): WorkspaceInfo {
@@ -49,6 +58,7 @@ export function WorkspaceInfoFromJSON(json: any): WorkspaceInfo {
         'id': !exists(json, 'id') ? undefined : json['id'],
         'name': json['name'],
         'samples': (json['samples'] as Array<any>).map(AnalysisResultFromJSON),
+        'microreact': !exists(json, 'microreact') ? undefined : MicroreactProjectFromJSON(json['microreact']),
     };
 }
 
@@ -60,6 +70,7 @@ export function WorkspaceInfoToJSON(value?: WorkspaceInfo): any {
         'id': value.id,
         'name': value.name,
         'samples': (value.samples as Array<any>).map(AnalysisResultToJSON),
+        'microreact': MicroreactProjectToJSON(value.microreact),
     };
 }
 

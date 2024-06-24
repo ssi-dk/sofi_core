@@ -3,6 +3,7 @@ export * from './ApprovalApi';
 export * from './ComparativeAnalysisApi';
 export * from './GdprApi';
 export * from './HealthApi';
+export * from './MicroreactApi';
 export * from './NearestNeighborsApi';
 export * from './SamplesApi';
 export * from './UploadApi';

@@ -7,9 +7,11 @@ from typing import List, Dict  # noqa: F401
 
 from web.src.SAP.generated.models.base_model_ import Model
 from web.src.SAP.generated.models.analysis_result import AnalysisResult
+from web.src.SAP.generated.models.microreact_project import MicroreactProject
 from web.src.SAP.generated import util
 
 from web.src.SAP.generated.models.analysis_result import AnalysisResult  # noqa: E501
+from web.src.SAP.generated.models.microreact_project import MicroreactProject  # noqa: E501
 
 class WorkspaceInfo(Model):
 
@@ -19,7 +21,7 @@ class WorkspaceInfo(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, id=None, name=None, samples=None):  # noqa: E501
+    def __init__(self, id=None, name=None, samples=None, microreact=None):  # noqa: E501
         """WorkspaceInfo - a model defined in OpenAPI
 
         :param id: The id of this WorkspaceInfo.  # noqa: E501
@@ -28,22 +30,27 @@ class WorkspaceInfo(Model):
         :type name: str
         :param samples: The samples of this WorkspaceInfo.  # noqa: E501
         :type samples: List[AnalysisResult]
+        :param microreact: The microreact of this WorkspaceInfo.  # noqa: E501
+        :type microreact: MicroreactProject
         """
         self.openapi_types = {
             'id': str,
             'name': str,
             'samples': List[AnalysisResult],
+            'microreact': MicroreactProject,
         }
 
         self.attribute_map = {
             'id': 'id',
             'name': 'name',
             'samples': 'samples',
+            'microreact': 'microreact',
         }
 
         self._id = id
         self._name = name
         self._samples = samples
+        self._microreact = microreact
 
     @classmethod
     def from_dict(cls, dikt):
@@ -122,3 +129,24 @@ class WorkspaceInfo(Model):
             raise ValueError("Invalid value for `samples`, must not be `None`")  # noqa: E501
 
         self._samples = samples
+
+    @property
+    def microreact(self):
+        """Gets the microreact of this WorkspaceInfo.
+
+
+        :return: The microreact of this WorkspaceInfo.
+        :rtype: MicroreactProject
+        """
+        return self._microreact
+
+    @microreact.setter
+    def microreact(self, microreact):
+        """Sets the microreact of this WorkspaceInfo.
+
+
+        :param microreact: The microreact of this WorkspaceInfo.
+        :type microreact: MicroreactProject
+        """
+
+        self._microreact = microreact

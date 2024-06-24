@@ -151,6 +151,28 @@ paths:
         '204':
           description: Workspace updated successfully.
 
+  /microreact_integration:
+    post:
+      description: Send to Microreact
+      operationId: send_to_microreact
+      x-openapi-router-controller: web.src.SAP.generated.controllers.microreact_controller
+      x-codegen-request-body-name: body
+      tags:
+        - microreact
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/NewMicroreactProjectRequest"
+        required: true
+      responses:
+        '200':
+          description: Microreact Response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/NewMicroreactProjectResponse"
+
   /nearest_neighbors:
     post:
       description: Nearest Neighbors
@@ -1536,6 +1558,16 @@ components:
       - id
       - name
 
+    MicroreactProject:
+      properties:
+        id:
+          type: string
+          title: Id
+        url:
+          type: string
+          title: Url
+      type: object
+
     CreateWorkspace:
       properties:
         name:
@@ -1554,7 +1586,7 @@ components:
           title: Samples
       type: object
       required:
-      - samples
+      - samples 
 
     WorkspaceInfo:
       properties:
@@ -1569,10 +1601,71 @@ components:
           items:
             $ref: '#/components/schemas/AnalysisResult'
           title: Samples
+        microreact:
+          $ref: '#/components/schemas/MicroreactProject'
+          title: Microreact
       type: object
       required:
       - name
       - samples
+
+    NewMicroreactProjectRequest:
+      type: object
+      properties:
+        workspace:
+          type: string
+        # project_name:
+        #   type: string
+        # tree_calcs:
+        #   type: array
+        #   items:
+        #     "$ref": '#/components/schemas/TreeCalc'
+        # metadata_keys:
+        #   type: array
+        #   items:
+        #     type: string
+        # metadata_values:
+        #   type: array
+        #   items:
+        #     type: string
+        mr_access_token:
+          type: string
+        # mr_base_url:
+        #   type: string
+        # public:
+        #   type: boolean
+        #   default: false
+        # verify:
+        #   type: boolean
+        #   default: true
+      required:
+        - workspace
+        # - project_name
+        # - tree_calcs
+        # - metadata_keys
+        # - metadata_values
+        - mr_access_token
+        # - mr_base_url
+
+    TreeCalc:
+      type: object
+      properties:
+        method:
+          type: string
+        result:
+          type: string
+      required:
+        - method
+        - result
+
+    NewMicroreactProjectResponse:
+      properties:
+        isOwner:
+          type: boolean
+        id:
+          type: string
+        url:
+          type: string
 
   securitySchemes:
     jwt:
