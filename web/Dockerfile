@@ -8,6 +8,7 @@ RUN /usr/sbin/update-ca-certificates
 
 COPY ["main.py", "start.sh", "gunicorn_conf.py", "/app/"]
 COPY "permission-config.jsonc" "/app/"
+COPY microreact_integration /app/web/microreact_integration
 COPY src /app/web/src
 COPY openapi_specs /app/openapi_specs
 RUN chmod +x start.sh
