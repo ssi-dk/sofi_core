@@ -125,6 +125,7 @@ services:
     volumes:
       - ./logs:/logs
       - ./microreact_defaults.js:/app/config.js
+      - ./files/:/app/files/      
     depends_on:
       - "bifrost_db"
       - "mailhog"
