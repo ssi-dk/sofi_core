@@ -297,7 +297,21 @@ def agg_pipeline(changed_ids=None):
                                         "$filter": {
                                             "input": {
                                                 "$map": {
-                                                    "input": {"$objectToArray": "$st"},
+                                                    "input": {
+                                                        '$cond': {
+                                                            'if': {
+                                                                '$eq': [
+                                                                    {
+                                                                        '$type': '$st'
+                                                                    }, 'object'
+                                                                ]
+                                                            }, 
+                                                            'then': {
+                                                                '$objectToArray': '$st'
+                                                            }, 
+                                                            'else': []
+                                                        }
+                                                    },
                                                     "in": {
                                                         "k": "$$this.k",
                                                         "v": "$$this.v",
