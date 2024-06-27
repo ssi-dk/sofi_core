@@ -14,7 +14,6 @@ from .approval_request import ApprovalRequest
 from .approval_status import ApprovalStatus
 from .base_metadata import BaseMetadata
 from .bio_api_status import BioApiStatus
-from .build_workspace_tree_request_body import BuildWorkspaceTreeRequestBody
 from .bulk_upload_request import BulkUploadRequest
 from .column import Column
 from .create_workspace import CreateWorkspace
@@ -52,7 +51,6 @@ from .sample_categories_resistance_report import SampleCategoriesResistanceRepor
 from .single_upload_request import SingleUploadRequest
 from .tbr_metadata import TbrMetadata
 from .tbr_specific_metadata import TbrSpecificMetadata
-from .tree_calc import TreeCalc
 from .tree_method import TreeMethod
 from .update_workspace import UpdateWorkspace
 from .upload_metadata_fields import UploadMetadataFields

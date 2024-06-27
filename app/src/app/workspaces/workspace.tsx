@@ -26,7 +26,6 @@ import { AnalysisViewSelector } from "app/analysis/view-selector/analysis-view-s
 import { DeleteIcon } from "@chakra-ui/icons";
 import { SendToMicroreactButton } from "./send-to-microreact-button";
 import { OpenInMicroreactButton } from "./open-in-microreact-button";
-import { TreesButton } from "./trees-button";
 
 type Props = {
   id: string;
@@ -176,7 +175,6 @@ export function Workspace(props: Props) {
             <Heading>{`${workspace?.name}`}</Heading>
             <OpenInMicroreactButton />
             <SendToMicroreactButton workspace={workspace.id} />
-            <TreesButton workspace={workspace.id} />
             <div style={{ width: "300px" }}>
               <AnalysisViewSelector manageViews={false} />
             </div>

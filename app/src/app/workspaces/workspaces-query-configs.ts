@@ -115,11 +115,3 @@ export const updateWorkspace = (params: PostWorkspaceRequest) => {
   base.force = true;
   return base;
 };
-
-export const buildWorkspaceTree = (params: BuildWorkspaceTreeRequest) => {
-  const base = buildWorkspaceTreeApi(params);
-  base.url = getUrl(base.url);
-
-  base.force = true;
-  return base;
-};

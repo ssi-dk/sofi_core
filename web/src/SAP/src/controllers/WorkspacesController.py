@@ -43,39 +43,39 @@ def delete_workspace_sample(user, token_info, workspace_id, sample_id):
     res = delete_workspace_sample_db(user, workspace_id, sample_id)
     return None if res.modified_count > 0 else abort(404)
 
-def build_workspace_tree(user, token_info, workspace_id, body):
-    workspace = get_workspace_db(user, workspace_id)
-    samples = list(map(lambda s: s["id"], workspace["samples"]))
+# def build_workspace_tree(user, token_info, workspace_id, body):
+#     workspace = get_workspace_db(user, workspace_id)
+#     samples = list(map(lambda s: s["id"], workspace["samples"]))
 
-    with ApiClient(Configuration(host="http://bio_api:8000")) as api_client:
-        # Distance
-        api_instance = DistancesApi(api_client)
-        request = DistanceMatrixRequest("samples", "categories.sample_info.summary.sofi_sequence_id", "categories.cgmlst.report.alleles", samples)
-        api_response = api_instance.dmx_from_mongodb_v1_distance_calculations_post(request)
-        job_id = api_response["job_id"]
-        status = api_response.status.value
+#     with ApiClient(Configuration(host="http://bio_api:8000")) as api_client:
+#         # Distance
+#         api_instance = DistancesApi(api_client)
+#         request = DistanceMatrixRequest("samples", "categories.sample_info.summary.sofi_sequence_id", "categories.cgmlst.report.alleles", samples)
+#         api_response = api_instance.dmx_from_mongodb_v1_distance_calculations_post(request)
+#         job_id = api_response["job_id"]
+#         status = api_response.status.value
         
-        while status == "init":
-            time.sleep(2)
-            api_response = api_instance.dmx_result_v1_distance_calculations_dc_id_get(job_id)
-            status = api_response.status.value
+#         while status == "init":
+#             time.sleep(2)
+#             api_response = api_instance.dmx_result_v1_distance_calculations_dc_id_get(job_id)
+#             status = api_response.status.value
 
-        if status == "error":
-            return abort(500)
+#         if status == "error":
+#             return abort(500)
 
-        # Trees
-        api_instance = TreesApi(api_client)
-        request = HCTreeCalcRequest(job_id, body.tree_method)
-        api_response = api_instance.hc_tree_from_dmx_job_v1_trees_post(request)
-        job_id = api_response["job_id"]
-        status = api_response.status.value
+#         # Trees
+#         api_instance = TreesApi(api_client)
+#         request = HCTreeCalcRequest(job_id, body.tree_method)
+#         api_response = api_instance.hc_tree_from_dmx_job_v1_trees_post(request)
+#         job_id = api_response["job_id"]
+#         status = api_response.status.value
         
-        while status == "init":
-            time.sleep(2)
-            api_response = api_instance.hc_tree_result_v1_trees_tc_id_get(job_id)
-            status = api_response.status.value
+#         while status == "init":
+#             time.sleep(2)
+#             api_response = api_instance.hc_tree_result_v1_trees_tc_id_get(job_id)
+#             status = api_response.status.value
 
-        if status == "error":
-            return abort(500, description=api_response.result)
+#         if status == "error":
+#             return abort(500, description=api_response.result)
 
-        return api_response.result
+#         return api_response.result

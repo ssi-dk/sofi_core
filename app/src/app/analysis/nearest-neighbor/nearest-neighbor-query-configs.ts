@@ -1,4 +1,8 @@
-import { post, NearestNeighborsResponse, NearestNeighborsRequest } from "sap-client";
+import {
+  post,
+  NearestNeighborsResponse,
+  NearestNeighborsRequest,
+} from "sap-client";
 import { getUrl } from "service";
 
 export type NearestNeighborsResponseSlice = {
@@ -18,7 +22,8 @@ export const getNearestNeighbors = (params: NearestNeighborsRequest) => {
   };
 
   base.update = {
-    nearestNeighborsResponses: (oldValue, newValue) => Object.assign(newValue, oldValue ?? {}),
+    nearestNeighborsResponses: (oldValue, newValue) =>
+      Object.assign(newValue, oldValue ?? {}),
   };
 
   // Force a network call to be made. Making it promise as well.

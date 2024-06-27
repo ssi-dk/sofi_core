@@ -58,6 +58,8 @@ export const logout = () => {
   clearAccessToken(undefined);
   clearRefreshToken(undefined);
   window.location.replace(
-    `${Environment.signoutUrl}?post_logout_redirect_uri=${encodeURIComponent(`${window.location.protocol}//${window.location.host}`)}&id_token_hint=${access}`
+    `${Environment.signoutUrl}?post_logout_redirect_uri=${encodeURIComponent(
+      `${window.location.protocol}//${window.location.host}`
+    )}&id_token_hint=${access}`
   );
 };

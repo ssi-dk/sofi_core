@@ -15,7 +15,8 @@ import { useMutation } from "redux-query-react";
 import { sendToMicroreact as sendToMicroreactQuery } from "./microreact-query-configs";
 import { RootState } from "app/root-reducer";
 import { useSelector } from "react-redux";
-import { UserInfo, WorkspaceInfo } from "sap-client";
+import { TreeMethod, UserInfo, WorkspaceInfo } from "sap-client";
+import { TreeMethodSelect } from "./tree-method-select";
 
 type Props = {
   workspace: string;
@@ -30,9 +31,10 @@ export const SendToMicroreactModal = (props: Props) => {
     return `${user.userId}-microreact-token`;
   }, [user]);
   const [token, setToken] = useState<string>(
-    localStorage.getItem(localStorageKey)
+    localStorage.getItem(localStorageKey) ?? ""
   );
   const [isSending, setIsSending] = useState<boolean>(false);
+  const [treeMethod, setTreeMethod] = useState<string>();
 
   const workspaceInfo = useSelector<RootState>(
     (s) => s.entities.workspace ?? {}
@@ -43,6 +45,7 @@ export const SendToMicroreactModal = (props: Props) => {
     return sendToMicroreactQuery({
       workspace: workspace,
       mr_access_token: token,
+      tree_method: TreeMethod[treeMethod],
     });
   });
 
@@ -67,20 +70,27 @@ export const SendToMicroreactModal = (props: Props) => {
         <ModalHeader pl="7">{`${t("Send To Microreact")}`}</ModalHeader>
         <ModalCloseButton />
         <ModalBody px="7">
-          {!isPending && status ? (
+          {!isPending && status >= 200 && status < 300 ? (
             <div>Workspace sent to Microreact.</div>
+          ) : null}
+          {!isPending && (status < 200 || status >= 300) ? (
+            <div>Failed to send workspace to Microreact.</div>
           ) : null}
           {!isPending && !status ? (
             <div
               style={{ display: "flex", flexDirection: "column", gap: "8px" }}
             >
               <div>
-                Token:
+                {t("Token")}:
                 <Input
                   value={token}
                   onChange={handleChange}
-                  placeholder="Token"
+                  placeholder={t("Token")}
                 />
+              </div>
+              <div>
+                {t("Tree method")}:
+                <TreeMethodSelect onChange={setTreeMethod} />
               </div>
             </div>
           ) : null}
@@ -94,7 +104,7 @@ export const SendToMicroreactModal = (props: Props) => {
             colorScheme="blue"
             mr={3}
             onClick={onSend}
-            disabled={isSending || !token}
+            disabled={isSending || !token || !treeMethod}
           >
             {t("Send")}
           </Button>

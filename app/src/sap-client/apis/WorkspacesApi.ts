@@ -15,9 +15,6 @@
 import { HttpMethods, QueryConfig, ResponseBody, ResponseText } from 'redux-query';
 import * as runtime from '../runtime';
 import {
-    BuildWorkspaceTreeRequestBody,
-    BuildWorkspaceTreeRequestBodyFromJSON,
-    BuildWorkspaceTreeRequestBodyToJSON,
     CreateWorkspace,
     CreateWorkspaceFromJSON,
     CreateWorkspaceToJSON,
@@ -31,11 +28,6 @@ import {
     WorkspaceInfoFromJSON,
     WorkspaceInfoToJSON,
 } from '../models';
-
-export interface BuildWorkspaceTreeRequest {
-    workspaceId: string;
-    buildWorkspaceTreeRequestBody?: BuildWorkspaceTreeRequestBody;
-}
 
 export interface CreateWorkspaceRequest {
     createWorkspace?: CreateWorkspace;
@@ -59,53 +51,6 @@ export interface PostWorkspaceRequest {
     updateWorkspace?: UpdateWorkspace;
 }
 
-
-/**
- */
-function buildWorkspaceTreeRaw<T>(requestParameters: BuildWorkspaceTreeRequest, requestConfig: runtime.TypedQueryConfig<T, string> = {}): QueryConfig<T> {
-    if (requestParameters.workspaceId === null || requestParameters.workspaceId === undefined) {
-        throw new runtime.RequiredError('workspaceId','Required parameter requestParameters.workspaceId was null or undefined when calling buildWorkspaceTree.');
-    }
-
-    let queryParameters = null;
-
-
-    const headerParameters : runtime.HttpHeaders = {};
-
-    headerParameters['Content-Type'] = 'application/json';
-
-
-    const { meta = {} } = requestConfig;
-
-    meta.authType = ['bearer'];
-    const config: QueryConfig<T> = {
-        url: `${runtime.Configuration.basePath}/workspace/{workspace_id}/tree`.replace(`{${"workspace_id"}}`, encodeURIComponent(String(requestParameters.workspaceId))),
-        meta,
-        update: requestConfig.update,
-        queryKey: requestConfig.queryKey,
-        optimisticUpdate: requestConfig.optimisticUpdate,
-        force: requestConfig.force,
-        rollback: requestConfig.rollback,
-        options: {
-            method: 'POST',
-            headers: headerParameters,
-        },
-        body: queryParameters || BuildWorkspaceTreeRequestBodyToJSON(requestParameters.buildWorkspaceTreeRequestBody),
-    };
-
-    const { transform: requestTransform } = requestConfig;
-    if (requestTransform) {
-        throw "OH NO";
-    }
-
-    return config;
-}
-
-/**
-*/
-export function buildWorkspaceTree<T>(requestParameters: BuildWorkspaceTreeRequest, requestConfig?: runtime.TypedQueryConfig<T, string>): QueryConfig<T> {
-    return buildWorkspaceTreeRaw(requestParameters, requestConfig);
-}
 
 /**
  */
