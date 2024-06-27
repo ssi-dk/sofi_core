@@ -29,7 +29,9 @@ export const SendToMicroreactModal = (props: Props) => {
   const localStorageKey = useMemo(() => {
     return `${user.userId}-microreact-token`;
   }, [user]);
-  const [token, setToken] = useState<string>(localStorage.getItem(localStorageKey));
+  const [token, setToken] = useState<string>(
+    localStorage.getItem(localStorageKey)
+  );
   const [isSending, setIsSending] = useState<boolean>(false);
 
   const workspaceInfo = useSelector<RootState>(
@@ -50,7 +52,6 @@ export const SendToMicroreactModal = (props: Props) => {
       window.open(url, "_blank");
     }
   }, [workspaceInfo, status]);
-
 
   const onSend = useCallback(async () => {
     setIsSending(true);
