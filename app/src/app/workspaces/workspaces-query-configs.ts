@@ -9,8 +9,6 @@ import {
   DeleteWorkspaceRequest,
   PostWorkspaceRequest,
   DeleteWorkspaceSampleRequest,
-  buildWorkspaceTree as buildWorkspaceTreeApi,
-  BuildWorkspaceTreeRequest,
 } from "sap-client";
 import { CreateWorkspace, WorkspaceInfo } from "sap-client/models";
 import { getUrl } from "service";
