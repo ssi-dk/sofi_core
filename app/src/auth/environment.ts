@@ -33,11 +33,11 @@ export const setRefreshToken = (token: string) => {
   localStorage.setItem(RefreshTokenKey, token);
 };
 
-export const clearAccessToken = (token: string) => {
+export const clearAccessToken = () => {
   localStorage.removeItem(AccessTokenKey);
 };
 
-export const clearRefreshToken = (token: string) => {
+export const clearRefreshToken = () => {
   localStorage.removeItem(RefreshTokenKey);
 };
 
@@ -55,8 +55,8 @@ export const clearIsLoggingIn = () => {
 
 export const logout = () => {
   const access = getAccessToken();
-  clearAccessToken(undefined);
-  clearRefreshToken(undefined);
+  clearAccessToken();
+  clearRefreshToken();
   window.location.replace(
     `${Environment.signoutUrl}?post_logout_redirect_uri=${encodeURIComponent(
       `${window.location.protocol}//${window.location.host}`
