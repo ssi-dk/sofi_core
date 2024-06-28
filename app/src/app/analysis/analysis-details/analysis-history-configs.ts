@@ -23,9 +23,9 @@ export const sequencesFromIsolateId = (isolateId: string) => {
     return {
       analysisHistory: response.items
         ? arrayToNormalizedHashmap(
-          response.items.map((a) => AnalysisResultFromJSON(a)),
-          "id"
-        )
+            response.items.map((a) => AnalysisResultFromJSON(a)),
+            "id"
+          )
         : {},
     };
   };

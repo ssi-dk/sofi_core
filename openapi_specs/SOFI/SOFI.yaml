@@ -43,31 +43,6 @@ paths:
       tags:
         - workspaces
       x-openapi-router-controller: web.src.SAP.generated.controllers.workspaces_controller
-  /workspace/{workspace_id}/tree:
-    post:
-      operationId: build_workspace_tree
-      requestBody:
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/BuildWorkspaceTreeRequestBody"
-      responses:
-        '200':
-          description: Tree generation started
-          content:
-            application/json:
-              schema:
-                type: string
-      parameters:
-        - name: workspace_id
-          in: path
-          required: true
-          schema:
-            type: string
-          description: Id of workspace
-      tags:
-        - workspaces
-      x-openapi-router-controller: web.src.SAP.generated.controllers.workspaces_controller
   /workspace/{workspace_id}/{sample_id}:
     delete:
       description: Delete sample from workspace
@@ -712,13 +687,6 @@ components:
     TreeMethod:
       type: string
       enum: [single, complete, average, weighted, centroid, median, ward]
-
-    BuildWorkspaceTreeRequestBody:
-      required:
-        - tree_method
-      properties:
-        tree_method:
-          $ref: "#/components/schemas/TreeMethod"
 
     AnalysisHistory:
       type: object
@@ -1614,49 +1582,14 @@ components:
       properties:
         workspace:
           type: string
-        # project_name:
-        #   type: string
-        # tree_calcs:
-        #   type: array
-        #   items:
-        #     "$ref": '#/components/schemas/TreeCalc'
-        # metadata_keys:
-        #   type: array
-        #   items:
-        #     type: string
-        # metadata_values:
-        #   type: array
-        #   items:
-        #     type: string
         mr_access_token:
           type: string
-        # mr_base_url:
-        #   type: string
-        # public:
-        #   type: boolean
-        #   default: false
-        # verify:
-        #   type: boolean
-        #   default: true
+        tree_method:
+          $ref: "#/components/schemas/TreeMethod"
       required:
         - workspace
-        # - project_name
-        # - tree_calcs
-        # - metadata_keys
-        # - metadata_values
         - mr_access_token
-        # - mr_base_url
-
-    TreeCalc:
-      type: object
-      properties:
-        method:
-          type: string
-        result:
-          type: string
-      required:
-        - method
-        - result
+        - tree_method
 
     NewMicroreactProjectResponse:
       properties:

@@ -6,9 +6,9 @@ interface SelectionState {
   selection: DataTableSelection<AnalysisResult>;
 }
 
-export const updateSelectionOriginal = createAction<Record<string, AnalysisResult>>(
-  "analysis/updateSelectionOriginal"
-);
+export const updateSelectionOriginal = createAction<
+  Record<string, AnalysisResult>
+>("analysis/updateSelectionOriginal");
 
 export const setSelection = createAction<DataTableSelection<AnalysisResult>>(
   "analysis/setSelection"
@@ -28,26 +28,25 @@ export const selectionReducer = createReducer(initialState, (builder) => {
     .addCase(updateSelectionOriginal, (state, action) => {
       const payload = action.payload;
       const payloadKeys = Object.keys(payload);
-      const selectionKeys = Object.keys(state.selection)
+      const selectionKeys = Object.keys(state.selection);
 
-      const intersection = payloadKeys.filter(value => selectionKeys.includes(value));
+      const intersection = payloadKeys.filter((value) =>
+        selectionKeys.includes(value)
+      );
       if (intersection.length === 0) {
         return;
       }
 
-      state.selection = selectionKeys.reduce(
-        (o, k) => {
-          const value = state.selection[k];
-          if (payload[k]) {
-            value.original = payload[k];
-          }
-          return {
-            ...o,
-            [k]: value,
-          };
-        },
-        {} as DataTableSelection<AnalysisResult>
-      );
+      state.selection = selectionKeys.reduce((o, k) => {
+        const value = state.selection[k];
+        if (payload[k]) {
+          value.original = payload[k];
+        }
+        return {
+          ...o,
+          [k]: value,
+        };
+      }, {} as DataTableSelection<AnalysisResult>);
     })
     .addCase(clearSelection, (state) => {
       state.selection = {} as DataTableSelection<AnalysisResult>;

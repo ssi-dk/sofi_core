@@ -12,6 +12,12 @@
  */
 
 import { exists, mapValues } from '../runtime';
+import {
+    TreeMethod,
+    TreeMethodFromJSON,
+    TreeMethodToJSON,
+} from './';
+
 /**
  * 
  * @export
@@ -30,12 +36,19 @@ export interface NewMicroreactProjectRequest  {
      * @memberof NewMicroreactProjectRequest
      */
     mr_access_token: string;
+    /**
+     * 
+     * @type {TreeMethod}
+     * @memberof NewMicroreactProjectRequest
+     */
+    tree_method: TreeMethod;
 }
 
 export function NewMicroreactProjectRequestFromJSON(json: any): NewMicroreactProjectRequest {
     return {
         'workspace': json['workspace'],
         'mr_access_token': json['mr_access_token'],
+        'tree_method': TreeMethodFromJSON(json['tree_method']),
     };
 }
 
@@ -46,6 +59,7 @@ export function NewMicroreactProjectRequestToJSON(value?: NewMicroreactProjectRe
     return {
         'workspace': value.workspace,
         'mr_access_token': value.mr_access_token,
+        'tree_method': TreeMethodToJSON(value.tree_method),
     };
 }
 
