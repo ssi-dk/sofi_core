@@ -17,21 +17,26 @@ class CreateWorkspace(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, name=None):  # noqa: E501
+    def __init__(self, name=None, samples=None):  # noqa: E501
         """CreateWorkspace - a model defined in OpenAPI
 
         :param name: The name of this CreateWorkspace.  # noqa: E501
         :type name: str
+        :param samples: The samples of this CreateWorkspace.  # noqa: E501
+        :type samples: List[str]
         """
         self.openapi_types = {
             'name': str,
+            'samples': List[str],
         }
 
         self.attribute_map = {
             'name': 'name',
+            'samples': 'samples',
         }
 
         self._name = name
+        self._samples = samples
 
     @classmethod
     def from_dict(cls, dikt):
@@ -66,3 +71,24 @@ class CreateWorkspace(Model):
             raise ValueError("Invalid value for `name`, must not be `None`")  # noqa: E501
 
         self._name = name
+
+    @property
+    def samples(self):
+        """Gets the samples of this CreateWorkspace.
+
+
+        :return: The samples of this CreateWorkspace.
+        :rtype: List[str]
+        """
+        return self._samples
+
+    @samples.setter
+    def samples(self, samples):
+        """Sets the samples of this CreateWorkspace.
+
+
+        :param samples: The samples of this CreateWorkspace.
+        :type samples: List[str]
+        """
+
+        self._samples = samples

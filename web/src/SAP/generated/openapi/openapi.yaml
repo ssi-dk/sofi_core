@@ -1540,10 +1540,18 @@ components:
     CreateWorkspace:
       example:
         name: name
+        samples:
+        - samples
+        - samples
       properties:
         name:
           title: Name
           type: string
+        samples:
+          items:
+            type: string
+          title: Samples
+          type: array
       required:
       - name
       type: object

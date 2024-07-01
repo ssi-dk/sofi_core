@@ -27,8 +27,15 @@ def get_workspace(user: str, workspace_id: str):
     conn = get_connection()
     db = conn[DB_NAME]
     workspaces = db[WORKSPACES_COL_NAME]
-    workspace = trim(workspaces.find_one({"created_by": user, "_id": ObjectId(workspace_id)}))
-    workspace["samples"] = list(map(get_sequence, workspace["samples"]))
+    if ObjectId.is_valid(workspace_id):
+        workspace = trim(workspaces.find_one({"created_by": user, "_id": ObjectId(workspace_id)}))
+    else:
+        workspace = trim(workspaces.find_one({"created_by": user, "name": workspace_id}))
+    
+    if workspace["samples"] is None:
+        workspace["samples"] = []
+    else:
+        workspace["samples"] = list(map(get_sequence, workspace["samples"]))
 
     return workspace
 
