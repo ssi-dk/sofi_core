@@ -24,11 +24,18 @@ export interface CreateWorkspace  {
      * @memberof CreateWorkspace
      */
     name: string;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof CreateWorkspace
+     */
+    samples?: Array<string>;
 }
 
 export function CreateWorkspaceFromJSON(json: any): CreateWorkspace {
     return {
         'name': json['name'],
+        'samples': !exists(json, 'samples') ? undefined : json['samples'],
     };
 }
 
@@ -38,6 +45,7 @@ export function CreateWorkspaceToJSON(value?: CreateWorkspace): any {
     }
     return {
         'name': value.name,
+        'samples': value.samples,
     };
 }
 

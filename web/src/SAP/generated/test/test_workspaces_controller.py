@@ -21,7 +21,8 @@ class TestWorkspacesController(BaseTestCase):
         
         """
         create_workspace = {
-  "name" : "name"
+  "name" : "name",
+  "samples" : [ "samples", "samples" ]
 }
         headers = { 
             'Content-Type': 'application/json',

@@ -1541,6 +1541,11 @@ components:
         name:
           type: string
           title: Name
+        samples:
+          type: array
+          items:
+            type: string
+          title: Samples
       type: object
       required:
       - name
