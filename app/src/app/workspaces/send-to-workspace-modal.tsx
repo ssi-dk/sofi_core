@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { Spinner, useToast } from "@chakra-ui/react";
-import { AnalysisResult } from "sap-client";
+import { AnalysisResult, Workspace } from "sap-client";
 import {
   Button,
   Modal,
@@ -17,6 +17,8 @@ import { WorkspaceSelect } from "./workspace-select";
 import { useMutation } from "redux-query-react";
 import { useHistory } from "react-router";
 import { createWorkspace, updateWorkspace } from "./workspaces-query-configs";
+import { useSelector } from "react-redux";
+import { RootState } from "app/root-reducer";
 
 type Props = {
   selection: DataTableSelection<AnalysisResult>;
@@ -30,19 +32,44 @@ export const SendToWorkspaceModal = (props: Props) => {
   const [workspace, setWorkspace] = React.useState<string>();
   const history = useHistory();
   const toast = useToast();
+  const workspaces = useSelector<RootState>((s) =>
+    Object.values(s.entities.workspaces ?? {})
+  ) as Array<Workspace>;
 
-  const [{ isPending, status }, sendToWorkspace] = useMutation(() => {
-    const samples = Object.values(selection).map((s) => s.original.id);
-    return updateWorkspace({
-      workspaceId: workspace,
-      updateWorkspace: { samples },
-    });
-  });
+  const [{ isPending, status }, sendToWorkspace] = useMutation(
+    (name: string) => {
+      const samples = Object.values(selection).map((s) => s.original.id);
+      if (workspace === "-- New workspace") {
+        setWorkspace(name);
+        return createWorkspace({
+          name,
+          samples,
+        });
+      }
+      return updateWorkspace({
+        workspaceId: workspace,
+        updateWorkspace: { samples },
+      });
+    }
+  );
 
   const onSend = useCallback(async () => {
+    if (workspace === "-- New workspace") {
+      const name = prompt(t("Workspace name"));
+      if (name) {
+        const exists = workspaces.find((w) => w.name === name);
+        if (exists) {
+          alert(t("Workspace already exists."));
+          return;
+        }
+        setIsSending(true);
+        sendToWorkspace(name);
+      }
+      return;
+    }
     setIsSending(true);
-    sendToWorkspace();
-  }, [setIsSending, sendToWorkspace]);
+    sendToWorkspace(workspace);
+  }, [setIsSending, sendToWorkspace, workspaces, workspace, t]);
 
   const onWorkspaceChange = useCallback((id: string) => {
     setWorkspace(id);

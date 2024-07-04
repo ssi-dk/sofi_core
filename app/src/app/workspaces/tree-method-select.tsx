@@ -4,12 +4,16 @@ import { TreeMethod } from "sap-client";
 
 type Props = {
   onChange: (id: string) => void;
+  value: string;
 };
 
 export const TreeMethodSelect = (props: Props) => {
-  const { onChange } = props;
+  const { onChange, value } = props;
 
-  const [treeMethod, setTreeMethod] = useState<OptionTypeBase>();
+  const [treeMethod, setTreeMethod] = useState<OptionTypeBase>({
+    value,
+    label: value,
+  });
 
   const treeMethods = useMemo(() => {
     const methods = new Array<string>();

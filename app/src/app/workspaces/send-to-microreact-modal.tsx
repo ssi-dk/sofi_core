@@ -34,7 +34,7 @@ export const SendToMicroreactModal = (props: Props) => {
     localStorage.getItem(localStorageKey) ?? ""
   );
   const [isSending, setIsSending] = useState<boolean>(false);
-  const [treeMethod, setTreeMethod] = useState<string>();
+  const [treeMethod, setTreeMethod] = useState<string>(TreeMethod.single);
 
   const workspaceInfo = useSelector<RootState>(
     (s) => s.entities.workspace ?? {}
@@ -90,7 +90,7 @@ export const SendToMicroreactModal = (props: Props) => {
               </div>
               <div>
                 {t("Tree method")}:
-                <TreeMethodSelect onChange={setTreeMethod} />
+                <TreeMethodSelect value={treeMethod} onChange={setTreeMethod} />
               </div>
             </div>
           ) : null}
