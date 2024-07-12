@@ -35,6 +35,9 @@ def authorized_to_edit(token_info: Dict[str, str], metadata: Dict[str, Any]):
     # User must have the approve claim to do modifications
     if not user_has("approve", token_info):
         return False
+    # I no institution, allow
+    if not ("institution" in metadata):
+        return True
     # When user's not from the same institution as the sample, they can't modify it
     if token_info["institution"] == metadata["institution"]:
         return True

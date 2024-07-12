@@ -49,6 +49,7 @@ import { Judgement } from "./judgement/judgement";
 import { Health } from "./health/health";
 import { Debug } from "./debug";
 import { AnalysisSelectionMenu } from "./analysis-selection-menu";
+import { CellConfirmModal } from "./data-table/cell-confirm-modal";
 
 // When the fields in this array are 'approved', a given sequence is rendered
 // as 'approved' also.
@@ -58,6 +59,13 @@ export default function AnalysisPage() {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const toast = useToast();
+
+  const [isModalOpen, setModalOpen] = useState(false);
+  const [modalInfo, setModalInfo] = useState({
+    rowId: "",
+    columnId: "",
+    value: "",
+  });
 
   const [detailsIsolate, setDetailsIsolate] = useState<
     React.ComponentProps<typeof AnalysisDetailsModal>["isolate"]
@@ -393,9 +401,24 @@ export default function AnalysisPage() {
     [submitChange]
   );
 
+  const handleConfirm = () => {
+    submitChange({
+      [modalInfo.rowId]: { [modalInfo.columnId]: modalInfo.value },
+    });
+    setModalOpen(false);
+  };
+
+  const handleClose = () => {
+    setModalOpen(false);
+  };
+
   const onFreeTextEdit = React.useCallback(
     (rowId: string, field: string) => (val: string) => {
-      if (columnConfigs[field].editable_format === "date") {
+      // May need a more dynamic check if other fields should use same dialog.
+      if (field === "cluster_id") {
+        setModalInfo({ rowId, columnId: field, value: val });
+        setModalOpen(true);
+      } else if (columnConfigs[field].editable_format === "date") {
         if (val.match(/\d{4}-\d{1,2}-\d{1,2}/) != null) {
           submitChange({ [rowId]: { [field]: val } });
         }
@@ -670,6 +693,14 @@ export default function AnalysisPage() {
             `${t("Staging")} ${Object.keys(selection).length} ${t("records")}.`}
         </Box>
       </Box>
+      <CellConfirmModal
+        rowId={modalInfo.rowId}
+        field={modalInfo.columnId}
+        value={modalInfo.value}
+        isOpen={isModalOpen}
+        onClose={handleClose}
+        onConfirm={handleConfirm}
+      />
       <Debug>
         <p>redux selection:</p>
         <pre>{JSON.stringify(selection, undefined, "  ")}</pre>
