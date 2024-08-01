@@ -21,3 +21,4 @@ six>=1.9
 jwcrypto >= 0.8
 Flask-JWT-Extended >= 3.25.1
 openapi-spec-validator==0.2.9
+pydantic==2.8.2

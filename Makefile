@@ -117,7 +117,7 @@ ${mkfile_dir}/web/src/services/bio_api/openapi : ${mkfile_dir}/openapi_specs/bio
 	rm -rf ${mkfile_dir}/web/src/services/bio_api/openapi
 	docker run --rm -v "${mkfile_dir}:/local" \
 		--user ${mkfile_user} \
-		"openapitools/openapi-generator:cli-v5.2.0" \
+		"openapitools/openapi-generator-cli:v7.7.0" \
 		generate \
 		-i /local/openapi_specs/bio_api.yaml \
 		-g python \

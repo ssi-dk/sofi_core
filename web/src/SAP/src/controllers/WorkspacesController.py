@@ -1,5 +1,3 @@
-import sys
-import time
 from flask import abort
 from flask.json import jsonify
 from ..repositories.workspaces import get_workspaces as get_workspaces_db
@@ -19,9 +17,9 @@ def delete_workspace(user, token_info, workspace_id: str):
 def create_workspace(user, token_info, body):
     res = create_workspace_db(user, body)
 
-    if (res.upserted_id):
+    if res.upserted_id:
         return jsonify({"id": str(res.upserted_id)})
-    
+
     return jsonify(body)
 
 def post_workspace(user, token_info, workspace_id: str, body):

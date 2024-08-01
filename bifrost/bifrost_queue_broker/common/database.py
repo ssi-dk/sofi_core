@@ -2,7 +2,7 @@ import os, sys
 import binascii
 import logging
 
-from typing import Dict
+from typing import Dict, Literal, Tuple, overload
 
 from dateutil import parser
 from pymongo import MongoClient, mongo_client
@@ -37,6 +37,15 @@ SOFI_BIFROST_ENCRYPTION_NAMESPACE = os.environ.get(
 ) = SOFI_BIFROST_ENCRYPTION_NAMESPACE.split(".", 1)
 
 # The MongoClient is thread safe and pooled, so no problem sharing it :)
+@overload
+def get_connection() -> MongoClient: ...
+
+@overload
+def get_connection(with_enc: Literal[False]) -> MongoClient: ...
+
+@overload
+def get_connection(with_enc: Literal[True]) -> Tuple[MongoClient, ClientEncryption]: ...
+
 def get_connection(with_enc=False):
     """
     Returns instance of global pooled connection.
@@ -119,6 +128,10 @@ def get_connection(with_enc=False):
         else:
             return CONNECTION
 
+def get_collection(collection: str):
+    conn = get_connection()
+    db = conn[DB_NAME]
+    return db[collection]
 
 def recursive_replace(data, replacement_fn, filter_list=None, filtered_parent=False):
     # If no filter_list is provided, then assume all leaf nodes in tree must be replaced

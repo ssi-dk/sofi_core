@@ -1,24 +1,29 @@
 import os
-from typing import Any, Dict
+from typing import Any, Dict, List, Union
 import commentjson
-from flask import current_app as app
 from werkzeug.exceptions import Forbidden
-from web.src.SAP.common.config.column_config import columns
+from ...common.config.column_config import columns
 
-PERMISSION_CONFIG = None
-with open(os.getcwd() + "/permission-config.jsonc") as js_file:
+PERMISSION_CONFIG: Union[Dict[str, List[str]], None] = None
+with open(os.getcwd() + "/permission-config.jsonc", encoding="utf-8") as js_file:
     PERMISSION_CONFIG = commentjson.loads(js_file.read())
 
 
-def list_permissions(token_info: Dict[str, str]):
-    list = []
+def list_permissions(token_info: Dict[str, str]) -> List[str]:
+    permissions: List[str] = []
+    if PERMISSION_CONFIG is None:
+        return permissions
+
     for group in [item.lstrip('/') for item in token_info["security-groups"]]:
         for perm in PERMISSION_CONFIG[group]:
-            list.append(perm)
-    return list
+            permissions.append(perm)
+    return permissions
 
 
-def user_has(permission: str, token_info: Dict[str, str]):
+def user_has(permission: str, token_info: Dict[str, str]) -> bool:
+    if PERMISSION_CONFIG is None:
+        return False
+
     for group in [item.lstrip('/') for item in token_info["security-groups"]]:
         for perm in PERMISSION_CONFIG[group]:
             if perm == permission:
@@ -47,11 +52,11 @@ def authorized_to_edit(token_info: Dict[str, str], metadata: Dict[str, Any]):
 
 def assert_authorized_to_edit(token_info: Dict[str, str], metadata: Dict[str, Any]):
     if not authorized_to_edit(token_info, metadata):
-        theId = metadata["isolate_id"]
-        raise Forbidden(f"You are not authorized to edit isolate -{theId}-")
+        isolate_id = metadata["isolate_id"]
+        raise Forbidden(f"You are not authorized to edit isolate -{isolate_id}-")
 
 
-def authorized_columns(token_info: Dict[str, Any]):
+def authorized_columns(token_info: Dict[str, Any]) -> List[str]:
     data_clearance = token_info["sofi-data-clearance"]
     cols = columns()
     institution = token_info["institution"]
