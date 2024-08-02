@@ -16,7 +16,7 @@ import { sendToMicroreact as sendToMicroreactQuery } from "./microreact-query-co
 import { RootState } from "app/root-reducer";
 import { useSelector } from "react-redux";
 import { TreeMethod, UserInfo, WorkspaceInfo } from "sap-client";
-import { TreeMethodSelect } from "./tree-method-select";
+import { TreeMethodCheckboxGroup } from "./tree-method-checkbox-group";
 
 type Props = {
   workspace: string;
@@ -34,7 +34,9 @@ export const SendToMicroreactModal = (props: Props) => {
     localStorage.getItem(localStorageKey) ?? ""
   );
   const [isSending, setIsSending] = useState<boolean>(false);
-  const [treeMethod, setTreeMethod] = useState<string>(TreeMethod.single);
+  const [treeMethods, setTreeMethods] = useState<Array<string>>([
+    TreeMethod.single,
+  ]);
 
   const workspaceInfo = useSelector<RootState>(
     (s) => s.entities.workspace ?? {}
@@ -45,7 +47,7 @@ export const SendToMicroreactModal = (props: Props) => {
     return sendToMicroreactQuery({
       workspace: workspace,
       mr_access_token: token,
-      tree_methods: [TreeMethod[treeMethod]],
+      tree_methods: treeMethods.map((tm) => TreeMethod[tm]),
     });
   });
 
@@ -89,8 +91,11 @@ export const SendToMicroreactModal = (props: Props) => {
                 />
               </div>
               <div>
-                {t("Tree method")}:
-                <TreeMethodSelect value={treeMethod} onChange={setTreeMethod} />
+                {t("Tree methods")}:
+                <TreeMethodCheckboxGroup
+                  value={treeMethods}
+                  onChange={setTreeMethods}
+                />
               </div>
             </div>
           ) : null}
@@ -104,7 +109,9 @@ export const SendToMicroreactModal = (props: Props) => {
             colorScheme="blue"
             mr={3}
             onClick={onSend}
-            disabled={isSending || !token || !treeMethod}
+            disabled={
+              isSending || !token || !treeMethods || treeMethods.length === 0
+            }
           >
             {t("Send")}
           </Button>
