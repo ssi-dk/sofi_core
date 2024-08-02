@@ -1600,17 +1600,22 @@ components:
     NewMicroreactProjectRequest:
       example:
         workspace: workspace
+        tree_methods:
+        - null
+        - null
         mr_access_token: mr_access_token
       properties:
         workspace:
           type: string
         mr_access_token:
           type: string
-        tree_method:
-          $ref: '#/components/schemas/TreeMethod'
+        tree_methods:
+          items:
+            $ref: '#/components/schemas/TreeMethod'
+          type: array
       required:
       - mr_access_token
-      - tree_method
+      - tree_methods
       - workspace
       type: object
     NewMicroreactProjectResponse:

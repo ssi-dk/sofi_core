@@ -20,6 +20,7 @@ class TestMicroreactController(BaseTestCase):
         """
         body = {
   "workspace" : "workspace",
+  "tree_methods" : [ null, null ],
   "mr_access_token" : "mr_access_token"
 }
         headers = { 

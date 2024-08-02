@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 import time
-from typing import Union
+from typing import List, Union
 from flask import abort
 from flask.json import jsonify
 from pydantic import StrictStr
@@ -21,7 +21,7 @@ from ....services.bio_api.openapi.models.hc_tree_calc_request import HCTreeCalcR
 class NewMicroreactProjectRequestData:
     workspace: str
     mr_access_token: str
-    tree_method: str
+    tree_methods: List[str]
 
 def send_to_microreact(user, token_info, body: NewMicroreactProjectRequestData):
     workspace_id = body.workspace
@@ -55,22 +55,24 @@ def send_to_microreact(user, token_info, body: NewMicroreactProjectRequestData):
 
         # Trees
         api_instance = TreesApi(api_client)
-        request = HCTreeCalcRequest(dmx_job=job_id, method=body.tree_method)
-        trees_post_api_response = api_instance.hc_tree_from_dmx_job_v1_trees_post(request)
-        job_id = trees_post_api_response.job_id
-        status = trees_post_api_response.status.value
-        result: Union[StrictStr, None] = None
+        tree_calcs = []
+        for tree_method in body.tree_methods:
+            request = HCTreeCalcRequest(dmx_job=job_id, method=tree_method)
+            trees_post_api_response = api_instance.hc_tree_from_dmx_job_v1_trees_post(request)
+            job_id = trees_post_api_response.job_id
+            status = trees_post_api_response.status.value
+            result: Union[StrictStr, None] = None
 
-        while status == "init":
-            time.sleep(2)
-            trees_get_api_response = api_instance.hc_tree_result_v1_trees_tc_id_get(job_id)
-            status = trees_get_api_response.status.value
-            result = trees_get_api_response.result
+            while status == "init":
+                time.sleep(2)
+                trees_get_api_response = api_instance.hc_tree_result_v1_trees_tc_id_get(job_id)
+                status = trees_get_api_response.status.value
+                result = trees_get_api_response.result
 
-        if status == "error":
-            return abort(500, description=result)
+            if status == "error":
+                return abort(500, description=result)
 
-        tree_calcs = [{"method": body.tree_method, "result": result}]
+            tree_calcs.append({"method": tree_method, "result": result})
 
     # Create microreact project
     authorized = authorized_columns(token_info)

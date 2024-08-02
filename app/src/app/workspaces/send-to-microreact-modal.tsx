@@ -45,7 +45,7 @@ export const SendToMicroreactModal = (props: Props) => {
     return sendToMicroreactQuery({
       workspace: workspace,
       mr_access_token: token,
-      tree_method: TreeMethod[treeMethod],
+      tree_methods: [TreeMethod[treeMethod]],
     });
   });
 

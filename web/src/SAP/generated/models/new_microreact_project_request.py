@@ -19,31 +19,31 @@ class NewMicroreactProjectRequest(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, workspace=None, mr_access_token=None, tree_method=None):  # noqa: E501
+    def __init__(self, workspace=None, mr_access_token=None, tree_methods=None):  # noqa: E501
         """NewMicroreactProjectRequest - a model defined in OpenAPI
 
         :param workspace: The workspace of this NewMicroreactProjectRequest.  # noqa: E501
         :type workspace: str
         :param mr_access_token: The mr_access_token of this NewMicroreactProjectRequest.  # noqa: E501
         :type mr_access_token: str
-        :param tree_method: The tree_method of this NewMicroreactProjectRequest.  # noqa: E501
-        :type tree_method: TreeMethod
+        :param tree_methods: The tree_methods of this NewMicroreactProjectRequest.  # noqa: E501
+        :type tree_methods: List[TreeMethod]
         """
         self.openapi_types = {
             'workspace': str,
             'mr_access_token': str,
-            'tree_method': TreeMethod,
+            'tree_methods': List[TreeMethod],
         }
 
         self.attribute_map = {
             'workspace': 'workspace',
             'mr_access_token': 'mr_access_token',
-            'tree_method': 'tree_method',
+            'tree_methods': 'tree_methods',
         }
 
         self._workspace = workspace
         self._mr_access_token = mr_access_token
-        self._tree_method = tree_method
+        self._tree_methods = tree_methods
 
     @classmethod
     def from_dict(cls, dikt):
@@ -103,24 +103,24 @@ class NewMicroreactProjectRequest(Model):
         self._mr_access_token = mr_access_token
 
     @property
-    def tree_method(self):
-        """Gets the tree_method of this NewMicroreactProjectRequest.
+    def tree_methods(self):
+        """Gets the tree_methods of this NewMicroreactProjectRequest.
 
 
-        :return: The tree_method of this NewMicroreactProjectRequest.
-        :rtype: TreeMethod
+        :return: The tree_methods of this NewMicroreactProjectRequest.
+        :rtype: List[TreeMethod]
         """
-        return self._tree_method
+        return self._tree_methods
 
-    @tree_method.setter
-    def tree_method(self, tree_method):
-        """Sets the tree_method of this NewMicroreactProjectRequest.
+    @tree_methods.setter
+    def tree_methods(self, tree_methods):
+        """Sets the tree_methods of this NewMicroreactProjectRequest.
 
 
-        :param tree_method: The tree_method of this NewMicroreactProjectRequest.
-        :type tree_method: TreeMethod
+        :param tree_methods: The tree_methods of this NewMicroreactProjectRequest.
+        :type tree_methods: List[TreeMethod]
         """
-        if tree_method is None:
-            raise ValueError("Invalid value for `tree_method`, must not be `None`")  # noqa: E501
+        if tree_methods is None:
+            raise ValueError("Invalid value for `tree_methods`, must not be `None`")  # noqa: E501
 
-        self._tree_method = tree_method
+        self._tree_methods = tree_methods

@@ -38,17 +38,17 @@ export interface NewMicroreactProjectRequest  {
     mr_access_token: string;
     /**
      * 
-     * @type {TreeMethod}
+     * @type {Array<TreeMethod>}
      * @memberof NewMicroreactProjectRequest
      */
-    tree_method: TreeMethod;
+    tree_methods: Array<TreeMethod>;
 }
 
 export function NewMicroreactProjectRequestFromJSON(json: any): NewMicroreactProjectRequest {
     return {
         'workspace': json['workspace'],
         'mr_access_token': json['mr_access_token'],
-        'tree_method': TreeMethodFromJSON(json['tree_method']),
+        'tree_methods': (json['tree_methods'] as Array<any>).map(TreeMethodFromJSON),
     };
 }
 
@@ -59,7 +59,7 @@ export function NewMicroreactProjectRequestToJSON(value?: NewMicroreactProjectRe
     return {
         'workspace': value.workspace,
         'mr_access_token': value.mr_access_token,
-        'tree_method': TreeMethodToJSON(value.tree_method),
+        'tree_methods': (value.tree_methods as Array<any>).map(TreeMethodToJSON),
     };
 }
 
