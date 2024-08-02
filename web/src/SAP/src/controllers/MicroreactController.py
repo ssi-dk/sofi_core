@@ -21,8 +21,7 @@ from ....services.bio_api.openapi.models.hc_tree_calc_request import HCTreeCalcR
 class NewMicroreactProjectRequestData:
     workspace: str
     mr_access_token: str
-    tree_method: TreeMethod
-
+    tree_method: str
 
 def send_to_microreact(user, token_info, body: NewMicroreactProjectRequestData):
     workspace_id = body.workspace
@@ -56,7 +55,7 @@ def send_to_microreact(user, token_info, body: NewMicroreactProjectRequestData):
 
         # Trees
         api_instance = TreesApi(api_client)
-        request = HCTreeCalcRequest(dmx_job=job_id, method=body.tree_method.to_str())
+        request = HCTreeCalcRequest(dmx_job=job_id, method=body.tree_method)
         trees_post_api_response = api_instance.hc_tree_from_dmx_job_v1_trees_post(request)
         job_id = trees_post_api_response.job_id
         status = trees_post_api_response.status.value
