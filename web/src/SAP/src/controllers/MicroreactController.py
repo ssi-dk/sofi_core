@@ -42,12 +42,12 @@ def send_to_microreact(user, token_info, body: NewMicroreactProjectRequestData):
                                         profile_field_path="categories.cgmlst.report.alleles",
                                         seq_mongo_ids=samples)
         distance_post_api_response = api_instance.dmx_from_mongodb_v1_distance_calculations_post(request)
-        job_id = distance_post_api_response.job_id
+        distance_job_id = distance_post_api_response.job_id
         status = distance_post_api_response.status.value
 
         while status == "init":
             time.sleep(2)
-            distance_get_api_response = api_instance.dmx_result_v1_distance_calculations_dc_id_get(job_id)
+            distance_get_api_response = api_instance.dmx_result_v1_distance_calculations_dc_id_get(distance_job_id)
             status = distance_get_api_response.status.value
 
         if status == "error":
@@ -57,7 +57,7 @@ def send_to_microreact(user, token_info, body: NewMicroreactProjectRequestData):
         api_instance = TreesApi(api_client)
         tree_calcs = []
         for tree_method in body.tree_methods:
-            request = HCTreeCalcRequest(dmx_job=job_id, method=tree_method)
+            request = HCTreeCalcRequest(dmx_job=distance_job_id, method=tree_method)
             trees_post_api_response = api_instance.hc_tree_from_dmx_job_v1_trees_post(request)
             job_id = trees_post_api_response.job_id
             status = trees_post_api_response.status.value
