@@ -154,17 +154,19 @@ def encrypt_dict(encryption_client: ClientEncryption, val, filter_list=None):
         filter_list,
     )
 
-def coerce_date(v):
-    try:
-        return parser.parse(v).isoformat() if v else None
-    except:
-        return None
+def coerce_date(dayfirst):
+    def parse_value(v):
+        try:
+            return parser.parse(v, dayfirst=dayfirst).isoformat() if v else None
+        except:
+            return None
+    return parse_value
 
-def coerce_dates(val):
+def coerce_dates(val, dayfirst=None):
     filter_list = list(filter(lambda k: k.startswith("date_"), val.keys()))
     return recursive_replace(
         val,
-        coerce_date,
+        coerce_date(dayfirst),
         filter_list,
     )
 

@@ -9,7 +9,7 @@ from ..shared import (
 )
 from ..lims_conn import *
 from .request_broker import RequestBroker
-from common.database import encrypt_dict, get_connection
+from common.database import coerce_dates, encrypt_dict, get_connection
 from common.config.column_config import pii_columns
 
 # LIMS API imports
@@ -90,6 +90,8 @@ class LIMSRequestBroker(RequestBroker):
                 if "output" in api_response and "sapresponse" in api_response.output:
                     values = transform_lims_metadata(api_response)
                     isolate_id = values["isolate_id"]
+
+                    coerce_dates(values, dayfirst=True)
                     encrypt_dict(self.encryption_client, values, pii_columns())
 
                     result = self.lims_col.find_one_and_update(
