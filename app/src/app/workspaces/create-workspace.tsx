@@ -12,7 +12,7 @@ export function CreateWorkspace() {
   const [
     createWorkspaceQueryState,
     createWorkspaceMutation,
-  ] = useMutation((name: string) => createWorkspace({ name }));
+  ] = useMutation((name: string) => createWorkspace({ name, samples: [] }));
 
   const [needsNotify, setNeedsNotify] = useState(true);
 
