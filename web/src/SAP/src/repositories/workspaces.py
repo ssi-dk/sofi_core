@@ -62,6 +62,10 @@ def create_workspace(user: str, workspace: CreateWorkspace):
     conn = get_connection()
     db = conn[DB_NAME]
     workspaces = db[WORKSPACES_COL_NAME]
+
+    if workspace.samples is None:
+        workspace.samples = []
+        
     record = {**workspace.to_dict(), "created_by": user}
     return workspaces.update_one({'created_by': user, 'name': workspace.name}, {"$set": record}, upsert=True)
 
