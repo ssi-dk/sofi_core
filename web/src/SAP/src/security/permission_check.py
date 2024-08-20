@@ -1,30 +1,29 @@
 import os
 from typing import Any, Dict
 import commentjson
-from flask import current_app as app
 from werkzeug.exceptions import Forbidden
 from web.src.SAP.common.config.column_config import columns
 
-PERMISSION_CONFIG = None
-with open(os.getcwd() + "/permission-config.jsonc") as js_file:
+PERMISSION_CONFIG : Any = None
+with open(os.getcwd() + "/permission-config.jsonc", encoding="utf-8") as js_file:
     PERMISSION_CONFIG = commentjson.loads(js_file.read())
 
 
 def list_permissions(token_info: Dict[str, str]):
-    list = []
+    permissions = []
     if not "security-groups" in token_info:
-        return list
-    
+        return permissions
+
     for group in [item.lstrip('/') for item in token_info["security-groups"]]:
         for perm in PERMISSION_CONFIG[group]:
-            list.append(perm)
-    return list
+            permissions.append(perm)
+    return permissions
 
 
 def user_has(permission: str, token_info: Dict[str, str]):
     if not "security-groups" in token_info:
         return False
-    
+
     for group in [item.lstrip('/') for item in token_info["security-groups"]]:
         for perm in PERMISSION_CONFIG[group]:
             if perm == permission:
@@ -42,7 +41,7 @@ def authorized_to_edit(token_info: Dict[str, str], metadata: Dict[str, Any]):
     if not user_has("approve", token_info):
         return False
     # I no institution, allow
-    if not ("institution" in metadata):
+    if not "institution" in metadata:
         return True
     # When user's not from the same institution as the sample, they can't modify it
     if token_info["institution"] == metadata["institution"]:
@@ -56,8 +55,8 @@ def authorized_to_edit(token_info: Dict[str, str], metadata: Dict[str, Any]):
 
 def assert_authorized_to_edit(token_info: Dict[str, str], metadata: Dict[str, Any]):
     if not authorized_to_edit(token_info, metadata):
-        theId = metadata["isolate_id"]
-        raise Forbidden(f"You are not authorized to edit isolate -{theId}-")
+        isolate_id = metadata["isolate_id"]
+        raise Forbidden(f"You are not authorized to edit isolate -{isolate_id}-")
 
 
 def authorized_columns(token_info: Dict[str, Any]):
