@@ -14,7 +14,7 @@ from flask.json import jsonify
 def post(user, token, body: NearestNeighborsRequest):
     assert_user_has("search", token)
     
-    with ApiClient(Configuration(host="http://bio_api:8000")) as api_client:
+    with ApiClient(Configuration(host="http://bioapi:8000")) as api_client:
         sample = get_single_sample(body.id)
         detected_species = sample["categories"]["species_detection"]["summary"]["detected_species"]
 
