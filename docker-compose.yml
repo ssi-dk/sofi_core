@@ -42,7 +42,7 @@ services:
     command: ["/bin/sh", "-c", "/app/start.sh"]
     depends_on:
       - "keycloak"
-      - "bio_api"
+      - "bioapi"
     restart: on-failure
 
     environment:
@@ -160,7 +160,7 @@ services:
       - ./auth/pg/pg-init:/docker-entrypoint-initdb.d
       - ${PG_DATA_DIR}:/var/lib/postgresql/data/
 
-  bio_api:
+  bioapi:
     image: ghcr.io/ssi-dk/bio_api:latest
     user: ${CURRENT_UID}
     ports:

@@ -20,7 +20,7 @@ def send_to_microreact(user, token_info, body):
     tree_calcs=[]
     samples = list(map(lambda s: s["id"], workspace["samples"]))
 
-    with ApiClient(Configuration(host="http://bio_api:8000")) as api_client:
+    with ApiClient(Configuration(host="http://bioapi:8000")) as api_client:
         # Distance
         api_instance = DistancesApi(api_client)
         request = DistanceMatrixRequest("samples", "categories.sample_info.summary.sofi_sequence_id", "categories.cgmlst.report.alleles", samples)
