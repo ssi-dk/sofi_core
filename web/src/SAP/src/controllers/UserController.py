@@ -6,12 +6,16 @@ from web.src.SAP.src.security.permission_check import list_permissions
 
 
 def who_am_i(user, token_info):
+    groups=[]
+    if "security-groups" in token_info:
+        groups=[item.lstrip('/') for item in token_info["security-groups"]]
+
     return jsonify(
         UserInfo(
             user_id=token_info["email"],
             data_clearance=token_info["sofi-data-clearance"],
             institution=token_info["institution"],
-            groups=[item.lstrip('/') for item in token_info["security-groups"]],
+            groups=groups,
             permissions=list_permissions(token_info),
         )
     )
