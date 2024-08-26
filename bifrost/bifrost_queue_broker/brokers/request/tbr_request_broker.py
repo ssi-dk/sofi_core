@@ -9,7 +9,7 @@ from ..shared import (
 )
 from ..tbr_conn import get_tbr_configuration
 from .request_broker import RequestBroker
-from common.database import encrypt_dict, get_connection
+from common.database import coerce_dates, encrypt_dict, get_connection
 from common.config.column_config import pii_columns
 
 # TBR API imports
@@ -90,6 +90,7 @@ class TBRRequestBroker(RequestBroker):
 
                 logging.debug(f"TBR mapped result: {values}")
 
+                coerce_dates(values)
                 encrypt_dict(self.encryption_client, values, pii_columns())
 
                 # TODO: make sure this hardocded collection name is correct, or take form env variables.

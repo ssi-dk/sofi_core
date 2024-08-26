@@ -167,15 +167,21 @@ def encrypt_dict(encryption_client: ClientEncryption, val, filter_list=None):
         filter_list,
     )
 
+def coerce_date(dayfirst):
+    def parse_value(v):
+        try:
+            return parser.parse(v, dayfirst=dayfirst).isoformat() if v else None
+        except:
+            return None
+    return parse_value
 
-def coerce_dates(val):
-    filter_list = filter(lambda k: k.startswith("date_"), val.keys())
+def coerce_dates(val, dayfirst=None):
+    filter_list = list(filter(lambda k: k.startswith("date_"), val.keys()))
     return recursive_replace(
         val,
-        lambda v: parser.parse(v) if v else None,
+        coerce_date(dayfirst),
         filter_list,
     )
-
 
 def yield_chunks(cursor, chunk_size=200):
     """
