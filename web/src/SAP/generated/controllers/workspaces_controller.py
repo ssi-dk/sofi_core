@@ -57,6 +57,18 @@ def get_workspace(user, token_info, workspace_id):  # noqa: E501
     """
     return WorkspacesController.get_workspace(user, token_info, workspace_id)
 
+def get_workspace_data(user, token_info, workspace_id):  # noqa: E501
+    """get_workspace_data
+
+    Get an workspace data # noqa: E501
+
+    :param workspace_id: Id of workspace to get
+    :type workspace_id: str
+
+    :rtype: List[List[AnyType]]
+    """
+    return WorkspacesController.get_workspace_data(user, token_info, workspace_id)
+
 def get_workspaces(user, token_info):  # noqa: E501
     """get_workspaces
 

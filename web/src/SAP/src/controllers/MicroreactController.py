@@ -5,11 +5,10 @@ from flask import abort
 from flask.json import jsonify
 from pydantic import StrictStr
 
-from ...generated.models.tree_method import TreeMethod
 from .....microreact_integration.functions import new_project as new_microreact_project
 from ..repositories.workspaces import get_workspace as get_workspace_db
+from ..repositories.workspaces import get_workspace_data as get_workspace_data_db
 from ..repositories.workspaces import update_microreact as update_microreact_db
-from ..security.permission_check import (authorized_columns)
 from ....services.bio_api.openapi.api.distances_api import DistancesApi
 from ....services.bio_api.openapi.api.trees_api import TreesApi
 from ....services.bio_api.openapi.api_client import ApiClient
@@ -75,23 +74,16 @@ def send_to_microreact(user, token_info, body: NewMicroreactProjectRequestData):
             tree_calcs.append({"method": tree_method, "result": result})
 
     # Create microreact project
-    authorized = authorized_columns(token_info)
+    data = get_workspace_data_db(user, token_info, workspace_id)
 
-    values = []
-    for sample in workspace["samples"]:
-        row = []
-        for column in authorized:
-            if column in sample:
-                row.append(sample[column])
-            else:
-                row.append("")
-        values.append(row)
+    if data is None:
+        return abort(404)
 
     res = new_microreact_project(
         project_name=workspace["name"],
         tree_calcs=tree_calcs,
-        metadata_keys=authorized,
-        metadata_values=values,
+        metadata_keys=data["keys"],
+        metadata_values=data["values"],
         mr_access_token=body.mr_access_token,
         mr_base_url="http://microreact:3000/"
         )

@@ -1,4 +1,8 @@
+from typing import Any, Dict, List, TypedDict, Union
+
 from bson.objectid import ObjectId
+
+from ...src.security.permission_check import authorized_columns
 
 from ...generated.models.update_workspace import UpdateWorkspace
 from ...src.repositories.analysis import get_analysis_with_metadata, get_single_analysis_by_object_id
@@ -37,6 +41,31 @@ def get_workspace(user: str, workspace_id: str):
 
     return workspace
 
+WorkspaceData = TypedDict('WorkspaceData', {'keys': List[str], 'values': List[List[Any]]})
+
+def get_workspace_data(user: str, token_info: Dict[str, str], workspace_id: str) -> Union[WorkspaceData,None]:
+    workspace = get_workspace(user, workspace_id)
+
+    if workspace is None:
+        return workspace
+
+    authorized = authorized_columns(token_info)
+
+    values = []
+    for sample in workspace["samples"]:
+        row = []
+        for column in authorized:
+            if column in sample:
+                row.append(sample[column])
+            else:
+                row.append("")
+        values.append(row)
+
+    return {
+        "keys": authorized, 
+        "values": values
+    }
+
 def delete_workspace(user: str, workspace_id: str):
     workspaces = get_collection(WORKSPACES_COL_NAME)
 
@@ -57,7 +86,7 @@ def create_workspace(user: str, workspace: CreateWorkspace):
 
     if workspace.samples is None:
         workspace.samples = []
-        
+    
     record = {**workspace.to_dict(), "created_by": user}
     return workspaces.update_one({'created_by': user, 'name': workspace.name}, {"$set": record}, upsert=True)
 

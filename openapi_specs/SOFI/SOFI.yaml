@@ -67,6 +67,31 @@ paths:
         '204':
           description: Sample removed from workspace successfully.
 
+  /workspaces/{workspace_id}/data:
+    get:
+      description: Get an workspace data
+      operationId: get_workspace_data
+      tags:
+        - workspaces
+      x-openapi-router-controller: web.src.SAP.generated.controllers.workspaces_controller
+      parameters:
+        - name: workspace_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Id of workspace to get
+      responses:
+        '200':
+          description: Data
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: array
+                  items: {}
+
   /workspaces/{workspace_id}:
     get:
       description: Get an existing workspace

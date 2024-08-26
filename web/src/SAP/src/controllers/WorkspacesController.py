@@ -6,6 +6,7 @@ from ..repositories.workspaces import delete_workspace_sample as delete_workspac
 from ..repositories.workspaces import create_workspace as create_workspace_db
 from ..repositories.workspaces import update_workspace as update_workspace_db
 from ..repositories.workspaces import get_workspace as get_workspace_db
+from ..repositories.workspaces import get_workspace_data as get_workspace_data_db
 
 def get_workspaces(user, token_info):
     return jsonify(get_workspaces_db(user))
@@ -33,3 +34,11 @@ def get_workspace(user, token_info, workspace_id: str):
 def delete_workspace_sample(user, token_info, workspace_id, sample_id):
     res = delete_workspace_sample_db(user, workspace_id, sample_id)
     return None if res.modified_count > 0 else abort(404)
+
+def get_workspace_data(user, token_info, workspace_id):
+    res = get_workspace_data_db(user, token_info, workspace_id)
+
+    if res is None:
+        return abort(404)
+
+    return jsonify(res["values"])
