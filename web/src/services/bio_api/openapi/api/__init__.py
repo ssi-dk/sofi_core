@@ -1,3 +1,7 @@
-# do not import all apis into this module because that uses a lot of memory and stack frames
-# if you need the ability to import all apis from one package, import them with
-# from web.src.services.bio_api.openapi.apis import DistancesApi
+# flake8: noqa
+
+# import apis into api package
+from web.src.services.bio_api.openapi.api.distances_api import DistancesApi
+from web.src.services.bio_api.openapi.api.nearest_neighbors_api import NearestNeighborsApi
+from web.src.services.bio_api.openapi.api.trees_api import TreesApi
+

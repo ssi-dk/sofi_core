@@ -1589,12 +1589,14 @@ components:
           type: string
         mr_access_token:
           type: string
-        tree_method:
-          $ref: "#/components/schemas/TreeMethod"
+        tree_methods:
+          type: array
+          items:
+            $ref: "#/components/schemas/TreeMethod"
       required:
         - workspace
         - mr_access_token
-        - tree_method
+        - tree_methods
 
     NewMicroreactProjectResponse:
       properties:

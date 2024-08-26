@@ -40,7 +40,14 @@ export const NearestNeighborModal = (props: Props) => {
   const { selection, onClose } = props;
   const [isSearching, setIsSearching] = useState<boolean>(false);
   const [cutoff, setCutoff] = React.useState(15);
-  const onChangeCutoff = (value: string) => setCutoff(parseInt(value));
+  const onChangeCutoff = (value: string) => {
+    const n = parseInt(value);
+    if (isNaN(n)) {
+      setCutoff(0);
+      return;
+    }
+    setCutoff(n);
+  };
   const [unknownsAreDiffs, setUnknownsAreDiffs] = useState<boolean>(false);
   const toast = useToast();
   const dispatch = useDispatch();
