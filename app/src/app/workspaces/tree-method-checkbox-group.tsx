@@ -20,8 +20,8 @@ export const TreeMethodCheckboxGroup = (props: Props) => {
   }, []);
 
   const onChangeCallback = useCallback(
-    (value: StringOrNumber[]) => {
-      onChange(value.map((v) => String(v)));
+    (checkboxValue: StringOrNumber[]) => {
+      onChange(checkboxValue.map((v) => String(v)));
     },
     [onChange]
   );
