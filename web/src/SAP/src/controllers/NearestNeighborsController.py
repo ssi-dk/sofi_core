@@ -16,11 +16,10 @@ from web.src.services.bio_api.openapi.models.nearest_neighbors_request import Ne
 
 def post(user, token, body: NearestNeighborsRequest):
     assert_user_has("search", token)
-
     if body.id is None:
         return abort(400)
-
-    with ApiClient(Configuration(host="http://bio_api:8000")) as api_client:
+    
+    with ApiClient(Configuration(host="http://bioapi:8000")) as api_client:
         sample = get_single_sample(body.id)
         detected_species = sample["categories"]["species_detection"]["summary"]["detected_species"]
 

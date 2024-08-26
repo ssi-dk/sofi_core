@@ -14,14 +14,19 @@ def list_permissions(token_info: Dict[str, str]) -> List[str]:
     if PERMISSION_CONFIG is None:
         return permissions
 
+    if not "security-groups" in token_info:
+        return permissions
+
     for group in [item.lstrip('/') for item in token_info["security-groups"]]:
         for perm in PERMISSION_CONFIG[group]:
             permissions.append(perm)
     return permissions
 
-
 def user_has(permission: str, token_info: Dict[str, str]) -> bool:
     if PERMISSION_CONFIG is None:
+        return False
+
+    if not "security-groups" in token_info:
         return False
 
     for group in [item.lstrip('/') for item in token_info["security-groups"]]:
@@ -40,6 +45,9 @@ def authorized_to_edit(token_info: Dict[str, str], metadata: Dict[str, Any]):
     # User must have the approve claim to do modifications
     if not user_has("approve", token_info):
         return False
+    # I no institution, allow
+    if not "institution" in metadata:
+        return True
     # When user's not from the same institution as the sample, they can't modify it
     if token_info["institution"] == metadata["institution"]:
         return True

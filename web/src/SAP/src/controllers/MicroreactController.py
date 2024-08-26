@@ -34,7 +34,7 @@ def send_to_microreact(user, token_info, body: NewMicroreactProjectRequestData):
     tree_calcs=[]
     samples = list(map(lambda s: s["id"], workspace["samples"]))
 
-    with ApiClient(Configuration(host="http://bio_api:8000")) as api_client:
+    with ApiClient(Configuration(host="http://bioapi:8000")) as api_client:
         # Distance
         api_instance = DistancesApi(api_client)
         request = DistanceMatrixRequest(seq_collection="samples",

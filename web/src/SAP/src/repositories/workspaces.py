@@ -54,6 +54,10 @@ def delete_workspace_sample(user: str, workspace_id: str, sample_id: str):
 
 def create_workspace(user: str, workspace: CreateWorkspace):
     workspaces = get_collection(WORKSPACES_COL_NAME)
+
+    if workspace.samples is None:
+        workspace.samples = []
+        
     record = {**workspace.to_dict(), "created_by": user}
     return workspaces.update_one({'created_by': user, 'name': workspace.name}, {"$set": record}, upsert=True)
 
