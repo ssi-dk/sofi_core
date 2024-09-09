@@ -120,7 +120,8 @@ class TBRPullingBroker(threading.Thread):
             update_count = 0
             try:
                 row_ver_elems = [RowVersion(**element) for element in element_batch]
-
+                
+                logging.debug(f"Calling TBR with {row_ver_elems}")
                 updated_isolates = api_instance.api_isolate_changed_isolates_post(
                     row_version=row_ver_elems
                 )
