@@ -85,9 +85,12 @@ class TBRPullingBroker(threading.Thread):
             # {"$unwind": {"path": "$metadata", "preserveNullAndEmptyArrays": True}},
             {
                 "$match": {
-                    "$or": [
-                        {"metadata.gdpr_deleted": {"$exists": False}},
-                        {"metadata.gdpr_deleted": False},
+                    "$and": [
+                        {"isolate_id": {"$ne": null}},
+                        {"$or": [                         
+                            {"metadata.gdpr_deleted": {"$exists": False}},
+                            {"metadata.gdpr_deleted": False},
+                        ]}
                     ]
                 }
             },
