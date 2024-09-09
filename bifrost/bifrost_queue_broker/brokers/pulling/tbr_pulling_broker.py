@@ -86,6 +86,7 @@ class TBRPullingBroker(threading.Thread):
             {
                 "$match": {
                     "$or": [
+                         {"isolate_id": {"$ne": null}},
                         {"metadata.gdpr_deleted": {"$exists": False}},
                         {"metadata.gdpr_deleted": False},
                     ]
