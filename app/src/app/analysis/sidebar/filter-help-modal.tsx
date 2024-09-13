@@ -40,9 +40,9 @@ const FilterHelpModal = (props: FilterHelpModalProps) => {
                 Filters can be applied to filter out irrelevant results from the current results.
               </Box>
               <br/>
-              <Heading size="s">Note</Heading>
+              <Heading size="s">OBS</Heading>
               <Box>
-                Filters work only on the currently displayed results.
+                Filters only work on the currently displayed results.
               </Box>
             </div>
           </ModalBody>
