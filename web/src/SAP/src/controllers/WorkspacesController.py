@@ -4,6 +4,7 @@ from ..repositories.workspaces import get_workspaces as get_workspaces_db
 from ..repositories.workspaces import delete_workspace as delete_workspace_db
 from ..repositories.workspaces import delete_workspace_sample as delete_workspace_sample_db
 from ..repositories.workspaces import create_workspace as create_workspace_db
+from ..repositories.workspaces import clone_workspace as clone_workspace_db
 from ..repositories.workspaces import update_workspace as update_workspace_db
 from ..repositories.workspaces import get_workspace as get_workspace_db
 
@@ -21,6 +22,14 @@ def create_workspace(user, token_info, body):
         return jsonify({"id": str(res.upserted_id)})
 
     return jsonify(body)
+
+def clone_workspace(user, token_info, body):
+    res = clone_workspace_db(user, body)
+
+    if not res.inserted_id:
+        return None
+    
+    return jsonify({"id": str(res.inserted_id)})
 
 def post_workspace(user, token_info, workspace_id: str, body):
     update_workspace_db(user, workspace_id, body)
