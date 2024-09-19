@@ -624,6 +624,7 @@ export default function AnalysisPage() {
           <AnalysisSelectionMenu
             selection={selection}
             isNarrowed={pageState.isNarrowed}
+            data={filteredData}
           />
           <Flex grow={1} width="100%" />
           {!pageState.isNarrowed ? (

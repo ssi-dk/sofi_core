@@ -16,6 +16,10 @@ export const setSelection = createAction<DataTableSelection<AnalysisResult>>(
 
 export const clearSelection = createAction("analysis/clearSelection");
 
+export const selectAll = createAction("analysis/selectAll");
+
+export const selectAllInView = createAction<AnalysisResult[]>("analysis/selectAllInView");
+
 const initialState: SelectionState = {
   selection: {} as DataTableSelection<AnalysisResult>,
 };
@@ -50,5 +54,18 @@ export const selectionReducer = createReducer(initialState, (builder) => {
     })
     .addCase(clearSelection, (state) => {
       state.selection = {} as DataTableSelection<AnalysisResult>;
+    })
+    .addCase(selectAll, (state) => {
+      console.log("Du trykkede på selectAll knappen!");
+    })
+    .addCase(selectAllInView, (state, action) => {
+      let mapped = action.payload.map(x => {
+        return ({ [x["sequence_id"]]: { original: x, cells: {} } } as DataTableSelection<AnalysisResult>)
+      });
+      let reduced = mapped.reduce((acc, cur) => {
+        return { ...acc, ...cur }
+      }, {} as DataTableSelection<AnalysisResult>)
+
+      state.selection = reduced;
     });
 });

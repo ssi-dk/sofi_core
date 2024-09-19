@@ -1,26 +1,37 @@
 import { AnalysisResult } from "sap-client";
 import { DataTableSelection } from "./data-table/data-table";
-import { HamburgerIcon, SmallCloseIcon } from "@chakra-ui/icons";
+import { HamburgerIcon, SmallCloseIcon, SmallAddIcon } from "@chakra-ui/icons";
 import { ResistanceMenuItem } from "./resistance/resistance-menu-item";
 import { NearestNeighborMenuItem } from "./nearest-neighbor/nearest-neighbor-menu-item";
 import { Menu, MenuList, MenuButton, Button, MenuItem } from "@chakra-ui/react";
 import { useCallback } from "react";
-import { clearSelection } from "./analysis-selection-configs";
+import { clearSelection, selectAll, selectAllInView } from "./analysis-selection-configs";
 import { useDispatch } from "react-redux";
 import { SendToWorkspaceMenuItem } from "app/workspaces/send-to-workspace-menu-item";
 
 type Props = {
   selection: DataTableSelection<AnalysisResult>;
   isNarrowed: boolean;
+  data: AnalysisResult[];
 };
 
 export const AnalysisSelectionMenu = (props: Props) => {
-  const { selection, isNarrowed } = props;
+  const { selection, isNarrowed, data } = props;
   const dispatch = useDispatch();
 
   const onClear = useCallback(() => {
     dispatch(clearSelection());
   }, [dispatch]);
+
+  const onSelectAllInView = useCallback(() => {
+    dispatch(selectAllInView(data));
+  }, [dispatch, data]);
+
+  const onSelectAll = useCallback(() => {
+    dispatch(selectAll());
+  }, [dispatch]);
+
+  let disabled = isNarrowed || Object.keys(selection).length == 0;
 
   return (
     <div>
@@ -28,19 +39,35 @@ export const AnalysisSelectionMenu = (props: Props) => {
         <MenuButton
           as={Button}
           leftIcon={<HamburgerIcon />}
-          disabled={isNarrowed || Object.keys(selection).length == 0}
         >
           Selection
         </MenuButton>
         <MenuList>
-          <ResistanceMenuItem selection={selection} />
-          <NearestNeighborMenuItem selection={selection} />
-          <SendToWorkspaceMenuItem selection={selection} />
+          <ResistanceMenuItem selection={selection} disabled={disabled} />
+          <NearestNeighborMenuItem selection={selection} disabled={disabled} />
+          <SendToWorkspaceMenuItem selection={selection} disabled={disabled} />
+          <MenuItem
+            aria-label="Select All In view"
+            title="SelectAllInView"
+            icon={<SmallAddIcon />}
+            onClick={onSelectAllInView}
+          >
+            Select All In View
+          </MenuItem>
+          <MenuItem
+            aria-label="Select All"
+            title="SelectAll"
+            icon={<SmallAddIcon />}
+            onClick={onSelectAll}
+          >
+            Select All
+          </MenuItem>
           <MenuItem
             aria-label="Clear Selection"
             title="Clear Selection"
             icon={<SmallCloseIcon />}
             onClick={onClear}
+            isDisabled={disabled}
           >
             Clear Selection
           </MenuItem>
