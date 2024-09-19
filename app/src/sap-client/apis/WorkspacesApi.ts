@@ -15,6 +15,9 @@
 import { HttpMethods, QueryConfig, ResponseBody, ResponseText } from 'redux-query';
 import * as runtime from '../runtime';
 import {
+    CloneWorkspace,
+    CloneWorkspaceFromJSON,
+    CloneWorkspaceToJSON,
     CreateWorkspace,
     CreateWorkspaceFromJSON,
     CreateWorkspaceToJSON,
@@ -28,6 +31,10 @@ import {
     WorkspaceInfoFromJSON,
     WorkspaceInfoToJSON,
 } from '../models';
+
+export interface CloneWorkspaceRequest {
+    cloneWorkspace?: CloneWorkspace;
+}
 
 export interface CreateWorkspaceRequest {
     createWorkspace?: CreateWorkspace;
@@ -51,6 +58,48 @@ export interface PostWorkspaceRequest {
     updateWorkspace?: UpdateWorkspace;
 }
 
+
+/**
+ */
+function cloneWorkspaceRaw<T>(requestParameters: CloneWorkspaceRequest, requestConfig: runtime.TypedQueryConfig<T, void> = {}): QueryConfig<T> {
+    let queryParameters = null;
+
+
+    const headerParameters : runtime.HttpHeaders = {};
+
+    headerParameters['Content-Type'] = 'application/json';
+
+
+    const { meta = {} } = requestConfig;
+
+    meta.authType = ['bearer'];
+    const config: QueryConfig<T> = {
+        url: `${runtime.Configuration.basePath}/workspace/clone`,
+        meta,
+        update: requestConfig.update,
+        queryKey: requestConfig.queryKey,
+        optimisticUpdate: requestConfig.optimisticUpdate,
+        force: requestConfig.force,
+        rollback: requestConfig.rollback,
+        options: {
+            method: 'POST',
+            headers: headerParameters,
+        },
+        body: queryParameters || CloneWorkspaceToJSON(requestParameters.cloneWorkspace),
+    };
+
+    const { transform: requestTransform } = requestConfig;
+    if (requestTransform) {
+    }
+
+    return config;
+}
+
+/**
+*/
+export function cloneWorkspace<T>(requestParameters: CloneWorkspaceRequest, requestConfig?: runtime.TypedQueryConfig<T, void>): QueryConfig<T> {
+    return cloneWorkspaceRaw(requestParameters, requestConfig);
+}
 
 /**
  */

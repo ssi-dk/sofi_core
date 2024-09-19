@@ -43,6 +43,20 @@ paths:
       tags:
         - workspaces
       x-openapi-router-controller: web.src.SAP.generated.controllers.workspaces_controller
+  /workspace/clone:
+    post:
+      operationId: clone_workspace
+      requestBody:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CloneWorkspace"
+      responses:
+        '204':
+          description: "Workspace cloned."
+      tags:
+        - workspaces
+      x-openapi-router-controller: web.src.SAP.generated.controllers.workspaces_controller
   /workspace/{workspace_id}/{sample_id}:
     delete:
       description: Delete sample from workspace
@@ -1549,6 +1563,19 @@ components:
       type: object
       required:
       - name
+
+    CloneWorkspace:
+      properties:
+        name:
+          type: string
+          title: Name
+        id:
+          type: string
+          title: Id
+      type: object
+      required:
+      - name
+      - id
 
     UpdateWorkspace:
       properties:

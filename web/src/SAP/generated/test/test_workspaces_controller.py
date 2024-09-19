@@ -5,6 +5,7 @@ import unittest
 from flask import json
 from six import BytesIO
 
+from web.src.SAP.generated.models.clone_workspace import CloneWorkspace  # noqa: E501
 from web.src.SAP.generated.models.create_workspace import CreateWorkspace  # noqa: E501
 from web.src.SAP.generated.models.update_workspace import UpdateWorkspace  # noqa: E501
 from web.src.SAP.generated.models.workspace import Workspace  # noqa: E501
@@ -14,6 +15,28 @@ from .test import BaseTestCase
 
 class TestWorkspacesController(BaseTestCase):
     """WorkspacesController integration test stubs"""
+
+    def test_clone_workspace(self):
+        """Test case for clone_workspace
+
+        
+        """
+        clone_workspace = {
+  "name" : "name",
+  "id" : "id"
+}
+        headers = { 
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer special-key',
+        }
+        response = self.client.open(
+            '/api/workspace/clone',
+            method='POST',
+            headers=headers,
+            data=json.dumps(clone_workspace),
+            content_type='application/json')
+        self.assert200(response,
+                       'Response body is : ' + response.data.decode('utf-8'))
 
     def test_create_workspace(self):
         """Test case for create_workspace
