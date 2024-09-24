@@ -31,8 +31,8 @@ export const jwtMiddleware = (store) => (next) => (action) => {
     // Let the action continue, but now with the JWT header.
     next(updatedAction);
   } else if (
-    (action && action.type === REQUEST_FAILURE) ||
-    action.type === MUTATE_FAILURE
+    action && (action.type === REQUEST_FAILURE ||
+    action.type === MUTATE_FAILURE)
   ) {
     // If we failed a request, if it's due to a 401, redirect to signin
     if (action?.status === 401) {
