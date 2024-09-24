@@ -5,18 +5,21 @@ import { ResistanceMenuItem } from "./resistance/resistance-menu-item";
 import { NearestNeighborMenuItem } from "./nearest-neighbor/nearest-neighbor-menu-item";
 import { Menu, MenuList, MenuButton, Button, MenuItem } from "@chakra-ui/react";
 import { useCallback } from "react";
-import { clearSelection, selectAll, selectAllInView } from "./analysis-selection-configs";
+import { clearSelection, selectAllInView, selectAllThunk } from "./analysis-selection-configs";
 import { useDispatch } from "react-redux";
 import { SendToWorkspaceMenuItem } from "app/workspaces/send-to-workspace-menu-item";
+import { AnalysisQuery } from "sap-client";
 
 type Props = {
   selection: DataTableSelection<AnalysisResult>;
   isNarrowed: boolean;
   data: AnalysisResult[];
+  search: (query: AnalysisQuery, pageSize: number) => void;
+  lastSearchQuery: AnalysisQuery
 };
 
 export const AnalysisSelectionMenu = (props: Props) => {
-  const { selection, isNarrowed, data } = props;
+  const { selection, isNarrowed, data, search, lastSearchQuery } = props;
   const dispatch = useDispatch();
 
   const onClear = useCallback(() => {
@@ -28,7 +31,7 @@ export const AnalysisSelectionMenu = (props: Props) => {
   }, [dispatch, data]);
 
   const onSelectAll = useCallback(() => {
-    dispatch(selectAll());
+    dispatch(selectAllThunk({searchFunc: search, query: lastSearchQuery}));
   }, [dispatch]);
 
   let disabled = isNarrowed || Object.keys(selection).length == 0;

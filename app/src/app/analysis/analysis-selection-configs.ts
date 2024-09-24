@@ -1,9 +1,15 @@
-import { createAction, createReducer } from "@reduxjs/toolkit";
+import { createAction, createReducer, createAsyncThunk } from "@reduxjs/toolkit";
 import { AnalysisResult } from "sap-client";
 import { DataTableSelection } from "./data-table/data-table";
+import { AnalysisQuery } from "sap-client"
 
 interface SelectionState {
   selection: DataTableSelection<AnalysisResult>;
+}
+
+type Search = {
+  searchFunc: (query: AnalysisQuery, pageSize: number) => void;
+  query: AnalysisQuery;
 }
 
 export const updateSelectionOriginal = createAction<
@@ -16,7 +22,16 @@ export const setSelection = createAction<DataTableSelection<AnalysisResult>>(
 
 export const clearSelection = createAction("analysis/clearSelection");
 
-export const selectAll = createAction("analysis/selectAll");
+export const selectAllThunk = createAsyncThunk('analysis/selectAllThunk', async (search: Search, thunkAPI) => {
+  search.searchFunc(search.query, 1000);
+
+  while (!results || Object.keys(results).length === 0 || results.length === 0) {
+    await new Promise(resolve => setTimeout(resolve, 10));
+    var results = (thunkAPI.getState() as any).entities.analysis;
+  }
+
+  return results;
+})
 
 export const selectAllInView = createAction<AnalysisResult[]>("analysis/selectAllInView");
 
@@ -55,17 +70,24 @@ export const selectionReducer = createReducer(initialState, (builder) => {
     .addCase(clearSelection, (state) => {
       state.selection = {} as DataTableSelection<AnalysisResult>;
     })
-    .addCase(selectAll, (state) => {
-      console.log("Du trykkede på selectAll knappen!");
-    })
     .addCase(selectAllInView, (state, action) => {
-      let mapped = action.payload.map(x => {
-        return ({ [x["sequence_id"]]: { original: x, cells: {} } } as DataTableSelection<AnalysisResult>)
-      });
-      let reduced = mapped.reduce((acc, cur) => {
-        return { ...acc, ...cur }
-      }, {} as DataTableSelection<AnalysisResult>)
+      state.selection = action.payload
+        .map(x => {
+          return ({ [x["sequence_id"]]: { original: x, cells: {} } } as DataTableSelection<AnalysisResult>)
+        })
+        .reduce((acc, cur) => {
+          return { ...acc, ...cur }
+        }, {} as DataTableSelection<AnalysisResult>)
+    })
+    .addCase(selectAllThunk.fulfilled, (state, action) => {
+      let analysis = action.payload;
 
-      state.selection = reduced;
+      state.selection = Object.keys(analysis)
+        .map(x => {
+          return ({ [x]: { original: analysis[x], cells: {} } } as DataTableSelection<AnalysisResult>);
+        })
+        .reduce((acc, cur) => {
+          return { ...acc, ...cur }
+        }, {} as DataTableSelection<AnalysisResult>);
     });
 });
