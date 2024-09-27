@@ -29,8 +29,12 @@ export const TreeMethodCheckboxGroup = (props: Props) => {
   return (
     <CheckboxGroup defaultValue={value} onChange={onChangeCallback}>
       <Stack spacing={2}>
-        {treeMethods?.map((treeMethod) => {
-          return <Checkbox value={treeMethod}>{treeMethod}</Checkbox>;
+        {treeMethods?.map((treeMethod, index) => {
+          return (
+            <Checkbox key={`tree-method-${index}`} value={treeMethod}>
+              {treeMethod}
+            </Checkbox>
+          );
         })}
       </Stack>
     </CheckboxGroup>
