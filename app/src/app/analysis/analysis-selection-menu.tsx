@@ -5,7 +5,11 @@ import { ResistanceMenuItem } from "./resistance/resistance-menu-item";
 import { NearestNeighborMenuItem } from "./nearest-neighbor/nearest-neighbor-menu-item";
 import { Menu, MenuList, MenuButton, Button, MenuItem } from "@chakra-ui/react";
 import { useCallback } from "react";
-import { clearSelection, selectAllInView, selectAllThunk } from "./analysis-selection-configs";
+import {
+  clearSelection,
+  selectAllInView,
+  selectAllThunk,
+} from "./analysis-selection-configs";
 import { useDispatch } from "react-redux";
 import { SendToWorkspaceMenuItem } from "app/workspaces/send-to-workspace-menu-item";
 import { AnalysisQuery } from "sap-client";
@@ -15,7 +19,7 @@ type Props = {
   isNarrowed: boolean;
   data: AnalysisResult[];
   search: (query: AnalysisQuery, pageSize: number) => void;
-  lastSearchQuery: AnalysisQuery
+  lastSearchQuery: AnalysisQuery;
 };
 
 export const AnalysisSelectionMenu = (props: Props) => {
@@ -31,18 +35,15 @@ export const AnalysisSelectionMenu = (props: Props) => {
   }, [dispatch, data]);
 
   const onSelectAll = useCallback(() => {
-    dispatch(selectAllThunk({searchFunc: search, query: lastSearchQuery}));
-  }, [dispatch]);
+    dispatch(selectAllThunk({ searchFunc: search, query: lastSearchQuery }));
+  }, [dispatch, lastSearchQuery, search]);
 
-  let disabled = isNarrowed || Object.keys(selection).length == 0;
+  const disabled = isNarrowed || Object.keys(selection).length == 0;
 
   return (
     <div>
       <Menu>
-        <MenuButton
-          as={Button}
-          leftIcon={<HamburgerIcon />}
-        >
+        <MenuButton as={Button} leftIcon={<HamburgerIcon />}>
           Selection
         </MenuButton>
         <MenuList>
