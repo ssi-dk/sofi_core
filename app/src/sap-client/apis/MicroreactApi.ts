@@ -15,6 +15,9 @@
 import { HttpMethods, QueryConfig, ResponseBody, ResponseText } from 'redux-query';
 import * as runtime from '../runtime';
 import {
+    MicroreactUrlResponse,
+    MicroreactUrlResponseFromJSON,
+    MicroreactUrlResponseToJSON,
     NewMicroreactProjectRequest,
     NewMicroreactProjectRequestFromJSON,
     NewMicroreactProjectRequestToJSON,
@@ -27,6 +30,49 @@ export interface SendToMicroreactRequest {
     body: NewMicroreactProjectRequest;
 }
 
+
+/**
+ * Get the base url to Microreact
+ */
+function getMicroreactUrlRaw<T>( requestConfig: runtime.TypedQueryConfig<T, MicroreactUrlResponse> = {}): QueryConfig<T> {
+    let queryParameters = null;
+
+
+    const headerParameters : runtime.HttpHeaders = {};
+
+
+    const { meta = {} } = requestConfig;
+
+    meta.authType = ['bearer'];
+    const config: QueryConfig<T> = {
+        url: `${runtime.Configuration.basePath}/microreact_integration/base_url`,
+        meta,
+        update: requestConfig.update,
+        queryKey: requestConfig.queryKey,
+        optimisticUpdate: requestConfig.optimisticUpdate,
+        force: requestConfig.force,
+        rollback: requestConfig.rollback,
+        options: {
+            method: 'GET',
+            headers: headerParameters,
+        },
+        body: queryParameters,
+    };
+
+    const { transform: requestTransform } = requestConfig;
+    if (requestTransform) {
+        config.transform = (body: ResponseBody, text: ResponseBody) => requestTransform(MicroreactUrlResponseFromJSON(body), text);
+    }
+
+    return config;
+}
+
+/**
+* Get the base url to Microreact
+*/
+export function getMicroreactUrl<T>( requestConfig?: runtime.TypedQueryConfig<T, MicroreactUrlResponse>): QueryConfig<T> {
+    return getMicroreactUrlRaw( requestConfig);
+}
 
 /**
  * Send to Microreact
