@@ -1,16 +1,15 @@
 import {
   NewMicroreactProjectRequest,
   NewMicroreactProjectResponse,
-  MicroreactUrlResponse,
   sendToMicroreact as sendToMicroreactApi,
   getMicroreactUrl as getMicroreactUrlApi,
   WorkspaceInfo,
 } from "sap-client";
 import { getUrl } from "service";
 
-export type urlSlice = {
+export type UrlSlice = {
   url: string;
-}
+};
 
 export const sendToMicroreact = (body: NewMicroreactProjectRequest) => {
   const base = sendToMicroreactApi({ body });
@@ -37,11 +36,11 @@ export const sendToMicroreact = (body: NewMicroreactProjectRequest) => {
 };
 
 export const getMicroreactUrl = () => {
-  const base = getMicroreactUrlApi<urlSlice>();
+  const base = getMicroreactUrlApi<UrlSlice>();
 
   base.url = getUrl(base.url);
 
-  base.transform = (response: urlSlice) => ({
+  base.transform = (response: UrlSlice) => ({
     url: response.url,
   });
 
