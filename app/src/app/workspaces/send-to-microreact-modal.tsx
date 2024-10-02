@@ -72,7 +72,7 @@ export const SendToMicroreactModal = (props: Props) => {
   ) as string;
 
   const onGotoMicroreact = useCallback(() => {
-    window.open(microreactBaseUrl + "/my-account/settings", "_blank")
+    window.open(microreactBaseUrl + "/api/auth/signin?callbackUrl=/my-account/settings", "_blank")
   }, [microreactUrl])
 
   const handleChange = (event) => setToken(event.target.value);
