@@ -4,6 +4,16 @@ import six
 from .. import util
 from ...src.controllers import MicroreactController
 
+def get_microreact_url(user, token_info):  # noqa: E501
+    """get_microreact_url
+
+    Get the base url to Microreact # noqa: E501
+
+
+    :rtype: MicroreactUrlResponse
+    """
+    return MicroreactController.get_microreact_url(user, token_info)
+
 def send_to_microreact(user, token_info, body):  # noqa: E501
     """send_to_microreact
 

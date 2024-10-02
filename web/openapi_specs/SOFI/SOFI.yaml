@@ -162,6 +162,21 @@ paths:
               schema:
                 "$ref": "#/components/schemas/NewMicroreactProjectResponse"
 
+  /microreact_integration/base_url:
+    get:
+      description: Get the base url to Microreact
+      operationId: get_microreact_url
+      x-openapi-router-controller: web.src.SAP.generated.controllers.microreact_controller
+      tags:
+        - microreact
+      responses:
+        '200':
+          description: Microreact Response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/MicroreactUrlResponse"
+
   /nearest_neighbors:
     post:
       description: Nearest Neighbors
@@ -1631,6 +1646,11 @@ components:
           type: boolean
         id:
           type: string
+        url:
+          type: string
+          
+    MicroreactUrlResponse:
+      properties:
         url:
           type: string
 

@@ -9,12 +9,17 @@ import {
   ModalFooter,
   ModalBody,
   ModalCloseButton,
+  Tooltip,
 } from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
 import { useMutation } from "redux-query-react";
-import { sendToMicroreact as sendToMicroreactQuery } from "./microreact-query-configs";
+import {
+  sendToMicroreact as sendToMicroreactQuery,
+  getMicroreactUrl,
+} from "./microreact-query-configs";
 import { RootState } from "app/root-reducer";
 import { useSelector } from "react-redux";
+import { useRequest } from "redux-query-react";
 import { TreeMethod, UserInfo, WorkspaceInfo } from "sap-client";
 import { TreeMethodCheckboxGroup } from "./tree-method-checkbox-group";
 
@@ -63,6 +68,16 @@ export const SendToMicroreactModal = (props: Props) => {
     sendToWorkspace();
   }, [setIsSending, sendToWorkspace]);
 
+  useRequest(getMicroreactUrl());
+
+  const microreactBaseUrl = useSelector<RootState>(
+    (s) => s.entities.url ?? ""
+  ) as string;
+
+  const onGotoMicroreact = useCallback(() => {
+    window.open(microreactBaseUrl + "/my-account/settings", "_blank");
+  }, [microreactBaseUrl]);
+
   const handleChange = (event) => setToken(event.target.value);
 
   return (
@@ -82,6 +97,21 @@ export const SendToMicroreactModal = (props: Props) => {
             <div
               style={{ display: "flex", flexDirection: "column", gap: "8px" }}
             >
+              <Tooltip
+                hasArrow
+                label="See your API Access Token and other settings"
+                bg="rgb(191, 26, 47)"
+              >
+                <Button
+                  w={"fit-content"}
+                  ml={"auto"}
+                  mr={0}
+                  colorScheme="blue"
+                  onClick={onGotoMicroreact}
+                >
+                  Microreact Account Settings
+                </Button>
+              </Tooltip>
               <div>
                 {t("Token")}:
                 <Input

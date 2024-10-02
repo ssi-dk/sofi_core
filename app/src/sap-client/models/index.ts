@@ -22,6 +22,7 @@ export * from './LimsSpecificMetadata';
 export * from './MetadataReloadRequest';
 export * from './MetadataReloadResponse';
 export * from './MicroreactProject';
+export * from './MicroreactUrlResponse';
 export * from './NearestNeighborsRequest';
 export * from './NearestNeighborsResponse';
 export * from './NewMicroreactProjectRequest';
