@@ -9,8 +9,7 @@ import {
   ModalFooter,
   ModalBody,
   ModalCloseButton,
-  Tooltip
-}  Tooltip,
+  Tooltip,
 } from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
 import { useMutation } from "redux-query-react";
@@ -76,7 +75,10 @@ export const SendToMicroreactModal = (props: Props) => {
   ) as string;
 
   const onGotoMicroreact = useCallback(() => {
-    window.open(microreactBaseUrl + "/api/auth/signin?callbackUrl=/my-account/settings", "_blank");
+    window.open(
+      microreactBaseUrl + "/api/auth/signin?callbackUrl=/my-account/settings",
+      "_blank"
+    );
   }, [microreactBaseUrl]);
 
   const handleChange = (event) => setToken(event.target.value);
@@ -112,6 +114,10 @@ export const SendToMicroreactModal = (props: Props) => {
                 >
                   Microreact Account Settings
                 </Button>
+              </Tooltip>
+              <div>
+                {t("Token")}:
+                <Input
                   value={token}
                   onChange={handleChange}
                   placeholder={t("Token")}
