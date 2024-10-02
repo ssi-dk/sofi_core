@@ -16,7 +16,7 @@ import { getFieldInternalName } from "app/i18n";
 import SearchHelpModal from "./search-help-modal";
 
 type AnalysisSearchProps = {
-  onSubmit: (query: AnalysisQuery) => void;
+  onSubmit: (query: AnalysisQuery, pageSize: number) => void;
   isDisabled: boolean;
 };
 
@@ -52,7 +52,7 @@ const AnalysisSearch = (props: AnalysisSearchProps) => {
   ]);
 
   const submitQuery = React.useCallback(
-    (q?: string) => onSubmit({ expression: parseQuery(q || input, toast) }),
+    (q?: string) => onSubmit({ expression: parseQuery(q || input, toast) }, 100),
     [onSubmit, input, toast]
   );
 
