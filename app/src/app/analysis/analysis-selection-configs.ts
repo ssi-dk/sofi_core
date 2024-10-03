@@ -24,7 +24,7 @@ export const clearSelection = createAction("analysis/clearSelection");
 
 export const selectAllThunk = createAsyncThunk('analysis/selectAllThunk', async (search: Search, thunkAPI) => {
   search.searchFunc(search.query, 1000);
-  
+
   let results = (thunkAPI.getState() as any).entities.analysis;
   while (!results || Object.keys(results).length === 0 || results.length === 0) {
     await new Promise(resolve => setTimeout(resolve, 10));
@@ -81,7 +81,7 @@ export const selectionReducer = createReducer(initialState, (builder) => {
         }, {} as DataTableSelection<AnalysisResult>)
     })
     .addCase(selectAllThunk.fulfilled, (state, action) => {
-      let analysis = action.payload;
+      const analysis = action.payload;
 
       state.selection = Object.keys(analysis)
         .map(x => {
