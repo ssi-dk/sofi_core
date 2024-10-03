@@ -24,10 +24,11 @@ export const clearSelection = createAction("analysis/clearSelection");
 
 export const selectAllThunk = createAsyncThunk('analysis/selectAllThunk', async (search: Search, thunkAPI) => {
   search.searchFunc(search.query, 1000);
-
+  
+  let results = (thunkAPI.getState() as any).entities.analysis;
   while (!results || Object.keys(results).length === 0 || results.length === 0) {
     await new Promise(resolve => setTimeout(resolve, 10));
-    var results = (thunkAPI.getState() as any).entities.analysis;
+    results = (thunkAPI.getState() as any).entities.analysis;
   }
 
   return results;
