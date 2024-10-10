@@ -718,6 +718,8 @@ paths:
                   type: array
                 type: array
           description: Data
+      security:
+      - microreactjwt: []
       tags:
       - workspaces
       x-openapi-router-controller: web.src.SAP.generated.controllers.workspaces_controller
@@ -2020,3 +2022,8 @@ components:
       scheme: bearer
       type: http
       x-bearerInfoFunc: web.src.SAP.generated.controllers.security_controller_.info_from_jwt
+    microreactjwt:
+      bearerFormat: JWT
+      scheme: bearer
+      type: http
+      x-bearerInfoFunc: web.src.SAP.generated.controllers.security_controller_.info_from_microreactjwt
