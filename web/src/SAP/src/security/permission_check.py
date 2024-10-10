@@ -3,6 +3,7 @@ from typing import Any, Dict, List, Union
 import commentjson
 from werkzeug.exceptions import Forbidden
 from ...common.config.column_config import columns
+from flask_jwt_extended import decode_token
 
 PERMISSION_CONFIG: Union[Dict[str, List[str]], None] = None
 with open(os.getcwd() + "/permission-config.jsonc", encoding="utf-8") as js_file:
@@ -94,3 +95,11 @@ def authorized_columns(token_info: Dict[str, Any]) -> List[str]:
 
     # User has not been granted a sofi-data-clearance claim that we recognize
     return []
+
+def decode_sofi_token(token:str, name:str):
+    if(token):
+        if(name == "microreactjwt"):
+            return {"user": "",
+                    "token": ""}
+        return decode_token(token)
+    return None

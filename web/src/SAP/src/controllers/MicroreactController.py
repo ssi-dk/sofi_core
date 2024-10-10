@@ -5,7 +5,8 @@ from flask import abort
 from flask.json import jsonify
 from pydantic import StrictStr
 
-from .....microreact_integration.functions import new_project as new_microreact_project
+from .....microreact_integration.functions import new_project_2 as new_microreact_project
+from ..security.permission_check import authorized_columns
 from ..repositories.workspaces import get_workspace as get_workspace_db
 from ..repositories.workspaces import get_workspace_data as get_workspace_data_db
 from ..repositories.workspaces import update_microreact as update_microreact_db
@@ -21,6 +22,8 @@ class NewMicroreactProjectRequestData:
     workspace: str
     mr_access_token: str
     tree_methods: List[str]
+
+public_base_url = "https://dev.sofi-platform.dk" # TODO env-var
 
 def send_to_microreact(user, token_info, body: NewMicroreactProjectRequestData):
     workspace_id = body.workspace
@@ -79,13 +82,15 @@ def send_to_microreact(user, token_info, body: NewMicroreactProjectRequestData):
     if data is None:
         return abort(404)
 
+    cols = authorized_columns(token_info)
+
     res = new_microreact_project(
         project_name=workspace["name"],
-        tree_calcs=tree_calcs,
-        metadata_keys=data["keys"],
-        metadata_values=data["values"],
+        metadata_url=f"{public_base_url}/api/workspaces/{workspace_id}/data",# get_workspace_data
+        columns=cols,
         mr_access_token=body.mr_access_token,
-        mr_base_url="http://microreact:3000/"
+        mr_base_url="http://microreact:3000/",
+        tree_calcs=tree_calcs,
         )
 
     json_response = res.json()

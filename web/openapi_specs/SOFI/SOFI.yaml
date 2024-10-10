@@ -91,6 +91,8 @@ paths:
                 items:
                   type: array
                   items: {}
+      security: 
+        - microreactjwt: []
 
   /workspaces/{workspace_id}:
     get:
@@ -1638,3 +1640,8 @@ components:
       scheme: bearer
       bearerFormat: JWT
       x-bearerInfoFunc: web.src.SAP.generated.controllers.security_controller_.info_from_jwt
+    microreactjwt:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      x-bearerInfoFunc: web.src.SAP.generated.controllers.security_controller_.info_from_microreactjwt

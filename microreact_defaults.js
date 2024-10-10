@@ -1,4 +1,7 @@
 module.exports = {
+  externalRequests: {
+      secret: "generate a random string"
+    },
   auth: {
     openidconnect: {
       id: "keycloak",
