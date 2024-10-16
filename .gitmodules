@@ -2,3 +2,6 @@
 	path = web/microreact_integration
 	url = https://github.com/ssi-dk/microreact_integration
 	branch = main
+[submodule "microreact/sofi-mr-server"]
+	path = microreact/sofi-mr-server
+	url = https://github.com/ssi-dk/sofi-mr-server

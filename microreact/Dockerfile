@@ -4,7 +4,7 @@ RUN apk add --update --no-cache curl g++ git make openssh-client python2
 
 RUN mkdir -p ~/.ssh/ && ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
 
-COPY ./microreact-server /app/
+COPY ./sofi-mr-server /app/
 
 WORKDIR /app
 
