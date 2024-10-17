@@ -21,6 +21,7 @@ import type { Workspace } from "sap-client";
 import { DeleteWorkspace } from "./delete-workspace";
 import { CreateWorkspace } from "./create-workspace";
 import { ViewWorkspace } from "./view-workspace";
+import { CloneWorkspace } from "./clone-workspace";
 
 export function Workspaces() {
   const [workspacesQueryState] = useRequest(fetchWorkspaces());
@@ -63,6 +64,7 @@ export function Workspaces() {
                   <Td>
                     <div style={{ display: "flex", columnGap: "4px" }}>
                       <ViewWorkspace id={h.id} />
+                      <CloneWorkspace id={h.id} samples={h.samples}/>
                       <DeleteWorkspace id={h.id} />
                     </div>
                   </Td>

@@ -4,6 +4,21 @@ import six
 from .. import util
 from ...src.controllers import WorkspacesController
 
+def clone_workspace(user, token_info, clone_workspace=None):  # noqa: E501
+    """clone_workspace
+
+     # noqa: E501
+
+    :param clone_workspace: 
+    :type clone_workspace: dict | bytes
+
+    :rtype: None
+    """
+    if connexion.request.is_json:
+        from ..models import CloneWorkspace
+        clone_workspace = CloneWorkspace.from_dict(connexion.request.get_json())  # noqa: E501
+    return WorkspacesController.clone_workspace(user, token_info, clone_workspace)
+
 def create_workspace(user, token_info, create_workspace=None):  # noqa: E501
     """create_workspace
 

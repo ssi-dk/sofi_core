@@ -1,6 +1,7 @@
 import os, sys
 import binascii
 import logging
+import datetime
 
 from typing import Dict, Literal, Tuple, overload
 
@@ -135,20 +136,22 @@ def get_collection(collection: str):
 
 def recursive_replace(data, replacement_fn, filter_list=None, filtered_parent=False):
     # If no filter_list is provided, then assume all leaf nodes in tree must be replaced
-    do_filter = not filter_list or filtered_parent
+    do_filter = not filter_list or filtered_parent    
     if isinstance(data, (dict, list)):
         for k, v in data.items() if isinstance(data, dict) else enumerate(data):
             # If a key in the filter_list is seen at any node in the tree, leaf values
             # underneath that node must be replaced
             if k in filter_list:
                 do_filter = True
-            if (not (isinstance(v, (dict, list)))) and do_filter:
-                try:
+            else:
+                do_filter = False   
+            if  (not (isinstance(v, (dict, list)))) and do_filter:
+                try:                      
                     replacement_text = replacement_fn(v)
                     data[k] = replacement_text
                 except:
                     pass
-            else:
+            else:                    
                 data[k] = recursive_replace(v, replacement_fn, filter_list, do_filter)
     return data
 
@@ -167,15 +170,23 @@ def encrypt_dict(encryption_client: ClientEncryption, val, filter_list=None):
         filter_list,
     )
 
+def coerce_date(dayfirst):
+    def parse_value(v):
+        try:
+            if isinstance(v, datetime.datetime):
+                return v.isoformat()
+            return parser.parse(v, dayfirst=dayfirst).isoformat() if v else None
+        except:
+            return None
+    return parse_value
 
-def coerce_dates(val):
-    filter_list = filter(lambda k: k.startswith("date_"), val.keys())
+def coerce_dates(val, dayfirst=None):
+    filter_list = list(filter(lambda k: k.startswith("date_"), val.keys()))
     return recursive_replace(
         val,
-        lambda v: parser.parse(v) if v else None,
+        coerce_date(dayfirst),
         filter_list,
     )
-
 
 def yield_chunks(cursor, chunk_size=200):
     """

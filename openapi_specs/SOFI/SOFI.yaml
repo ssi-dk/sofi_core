@@ -43,6 +43,20 @@ paths:
       tags:
         - workspaces
       x-openapi-router-controller: web.src.SAP.generated.controllers.workspaces_controller
+  /workspace/clone:
+    post:
+      operationId: clone_workspace
+      requestBody:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CloneWorkspace"
+      responses:
+        '204':
+          description: "Workspace cloned."
+      tags:
+        - workspaces
+      x-openapi-router-controller: web.src.SAP.generated.controllers.workspaces_controller
   /workspace/{workspace_id}/{sample_id}:
     delete:
       description: Delete sample from workspace
@@ -174,6 +188,21 @@ paths:
             application/json:
               schema:
                 "$ref": "#/components/schemas/NewMicroreactProjectResponse"
+
+  /microreact_integration/base_url:
+    get:
+      description: Get the base url to Microreact
+      operationId: get_microreact_url
+      x-openapi-router-controller: web.src.SAP.generated.controllers.microreact_controller
+      tags:
+        - microreact
+      responses:
+        '200':
+          description: Microreact Response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/MicroreactUrlResponse"
 
   /nearest_neighbors:
     post:
@@ -1577,6 +1606,19 @@ components:
       required:
       - name
 
+    CloneWorkspace:
+      properties:
+        name:
+          type: string
+          title: Name
+        id:
+          type: string
+          title: Id
+      type: object
+      required:
+      - name
+      - id
+
     UpdateWorkspace:
       properties:
         samples:
@@ -1631,6 +1673,11 @@ components:
           type: boolean
         id:
           type: string
+        url:
+          type: string
+          
+    MicroreactUrlResponse:
+      properties:
         url:
           type: string
 

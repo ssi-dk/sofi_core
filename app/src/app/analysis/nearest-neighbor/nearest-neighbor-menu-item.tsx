@@ -8,10 +8,11 @@ import { NearestNeighborModal } from "./nearest-neighbor-modal";
 
 type Props = {
   selection: DataTableSelection<AnalysisResult>;
+  disabled: boolean;
 };
 
 export const NearestNeighborMenuItem = (props: Props) => {
-  const { selection } = props;
+  const { selection, disabled } = props;
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
@@ -24,6 +25,7 @@ export const NearestNeighborMenuItem = (props: Props) => {
         title="Nearest Neighbor"
         icon={<PlusSquareIcon />}
         onClick={onOpen}
+        isDisabled={disabled}
       >
         Nearest Neighbor
       </MenuItem>

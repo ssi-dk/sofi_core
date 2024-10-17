@@ -102,18 +102,18 @@ export default function AnalysisPage() {
     () =>
       Object.keys(columnConfigs || []).map(
         (k) =>
-          ({
-            accessor: k,
-            sortType: !k.startsWith("date")
-              ? "alphanumeric"
-              : (a, b, column) => {
-                  const aDate = a.original[column]?.getTime() ?? 0;
-                  const bDate = b.original[column]?.getTime() ?? 0;
+        ({
+          accessor: k,
+          sortType: !k.startsWith("date")
+            ? "alphanumeric"
+            : (a, b, column) => {
+              const aDate = a.original[column]?.getTime() ?? 0;
+              const bDate = b.original[column]?.getTime() ?? 0;
 
-                  return aDate - bDate;
-                },
-            Header: t(k),
-          } as Column<AnalysisResult>)
+              return aDate - bDate;
+            },
+          Header: t(k),
+        } as Column<AnalysisResult>)
       ),
     [columnConfigs, t]
   );
@@ -159,23 +159,26 @@ export default function AnalysisPage() {
     (s) => s.view.view
   ) as UserDefinedViewInternal;
 
+  const [lastSearchQuery, setLastSearchQuery] = useState<AnalysisQuery>({ expression: {} });
+
   const onSearch = React.useCallback(
-    (q: AnalysisQuery) => {
+    (q: AnalysisQuery, pageSize: number) => {
       dispatch({ type: "RESET/Analysis" });
+      setLastSearchQuery(q);
       // if we got an empty expression, just request a page
       if (q.expression && Object.keys(q.expression).length === 0) {
         dispatch(
           requestAsync({
-            ...requestPageOfAnalysis({ pageSize: 100 }, false),
+            ...requestPageOfAnalysis({ pageSize: pageSize }, false),
           })
         );
       } else {
         dispatch(
           requestAsync({
-            ...searchPageOfAnalysis({ query: { ...q, page_size: 100 } }),
+            ...searchPageOfAnalysis({ query: { ...q, page_size: pageSize } }),
             queryKey: JSON.stringify(q),
           })
-        );
+        )
       }
     },
     [dispatch]
@@ -624,6 +627,9 @@ export default function AnalysisPage() {
           <AnalysisSelectionMenu
             selection={selection}
             isNarrowed={pageState.isNarrowed}
+            data={filteredData}
+            search={onSearch}
+            lastSearchQuery={lastSearchQuery}
           />
           <Flex grow={1} width="100%" />
           {!pageState.isNarrowed ? (

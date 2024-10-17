@@ -149,7 +149,7 @@ class LIMSPullingBroker(threading.Thread):
         result = []
         for values in metadata_batch:
             isolate_id = values["isolate_id"]
-            coerce_dates(values)
+            coerce_dates(values, dayfirst=True)
             encrypt_dict(self.encryption_client, values, pii_columns())
 
             update_query = pymongo.UpdateOne(

@@ -19,12 +19,13 @@ import { ResistanceTable } from "./resistance-table";
 
 type Props = {
   selection: DataTableSelection<AnalysisResult>;
+  disabled: boolean;
 };
 
 export const ResistanceMenuItem = (props: Props) => {
   const { t } = useTranslation();
   const toast = useToast();
-  const { selection } = props;
+  const { selection, disabled } = props;
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const onClickCallback = useCallback(() => {
@@ -65,6 +66,7 @@ export const ResistanceMenuItem = (props: Props) => {
         title="Resistance"
         icon={<Bacteria />}
         onClick={onClickCallback}
+        isDisabled={disabled}
       >
         Resistance
       </MenuItem>

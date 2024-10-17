@@ -8,10 +8,11 @@ import { SendToWorkspaceModal } from "./send-to-workspace-modal";
 
 type Props = {
   selection: DataTableSelection<AnalysisResult>;
+  disabled: boolean;
 };
 
 export const SendToWorkspaceMenuItem = (props: Props) => {
-  const { selection } = props;
+  const { selection, disabled } = props;
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
@@ -24,6 +25,7 @@ export const SendToWorkspaceMenuItem = (props: Props) => {
         title="Send to Workspace"
         icon={<ArrowForwardIcon />}
         onClick={onOpen}
+        isDisabled={disabled}
       >
         Send to Workspace
       </MenuItem>

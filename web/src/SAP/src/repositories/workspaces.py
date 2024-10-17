@@ -8,6 +8,7 @@ from ...generated.models.update_workspace import UpdateWorkspace
 from ...src.repositories.analysis import get_analysis_with_metadata, get_single_analysis_by_object_id
 from ...common.database import get_collection, WORKSPACES_COL_NAME
 from ...generated.models import CreateWorkspace
+from ...generated.models import CloneWorkspace
 
 def trim(item):
     item["id"] = str(item["_id"])
@@ -89,6 +90,22 @@ def create_workspace(user: str, workspace: CreateWorkspace):
     
     record = {**workspace.to_dict(), "created_by": user}
     return workspaces.update_one({'created_by': user, 'name': workspace.name}, {"$set": record}, upsert=True)
+
+def clone_workspace(user: str, cloneWorkspaceInfo: CloneWorkspace):
+    workspaces = get_collection(WORKSPACES_COL_NAME)
+
+    if ObjectId.is_valid(cloneWorkspaceInfo.id):
+        workspace = trim(workspaces.find_one({"created_by": user, "_id": ObjectId(cloneWorkspaceInfo.id)}))
+    else:
+        workspace = trim(workspaces.find_one({"created_by": user, "name": cloneWorkspaceInfo.id}))
+
+    if workspace is None:
+        return None
+
+    if workspace["samples"] is None:    
+        workspace["samples"] = []
+
+    return workspaces.insert_one({'created_by': user, 'name': cloneWorkspaceInfo.name, 'samples': workspace["samples"]})
 
 def update_workspace(user: str, workspace_id: str, workspace: UpdateWorkspace):
     workspaces = get_collection(WORKSPACES_COL_NAME)

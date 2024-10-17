@@ -385,6 +385,20 @@ paths:
       - microreact
       x-openapi-router-controller: web.src.SAP.generated.controllers.microreact_controller
       x-codegen-request-body-name: body
+  /microreact_integration/base_url:
+    get:
+      description: Get the base url to Microreact
+      operationId: get_microreact_url
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MicroreactUrlResponse'
+          description: Microreact Response
+      tags:
+      - microreact
+      x-openapi-router-controller: web.src.SAP.generated.controllers.microreact_controller
   /nearest_neighbors:
     post:
       description: Nearest Neighbors
@@ -575,6 +589,20 @@ paths:
       tags:
       - user
       x-openapi-router-controller: web.src.SAP.generated.controllers.user_controller
+  /workspace/clone:
+    post:
+      operationId: clone_workspace
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CloneWorkspace'
+      responses:
+        "204":
+          description: Workspace cloned.
+      tags:
+      - workspaces
+      x-openapi-router-controller: web.src.SAP.generated.controllers.workspaces_controller
   /workspace/{workspace_id}/{sample_id}:
     delete:
       description: Delete sample from workspace
@@ -1583,6 +1611,21 @@ components:
       required:
       - name
       type: object
+    CloneWorkspace:
+      example:
+        name: name
+        id: id
+      properties:
+        name:
+          title: Name
+          type: string
+        id:
+          title: Id
+          type: string
+      required:
+      - id
+      - name
+      type: object
     UpdateWorkspace:
       example:
         samples:
@@ -1656,6 +1699,12 @@ components:
           type: boolean
         id:
           type: string
+        url:
+          type: string
+    MicroreactUrlResponse:
+      example:
+        url: url
+      properties:
         url:
           type: string
     Sample_categories_resistance_report:

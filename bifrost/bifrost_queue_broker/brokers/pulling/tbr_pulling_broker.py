@@ -85,9 +85,12 @@ class TBRPullingBroker(threading.Thread):
             # {"$unwind": {"path": "$metadata", "preserveNullAndEmptyArrays": True}},
             {
                 "$match": {
-                    "$or": [
-                        {"metadata.gdpr_deleted": {"$exists": False}},
-                        {"metadata.gdpr_deleted": False},
+                    "$and": [
+                        {"isolate_id": {"$ne": None}},
+                        {"$or": [                         
+                            {"metadata.gdpr_deleted": {"$exists": False}},
+                            {"metadata.gdpr_deleted": False},
+                        ]}
                     ]
                 }
             },
@@ -120,7 +123,8 @@ class TBRPullingBroker(threading.Thread):
             update_count = 0
             try:
                 row_ver_elems = [RowVersion(**element) for element in element_batch]
-
+                
+                logging.debug(f"Calling TBR with {row_ver_elems}")
                 updated_isolates = api_instance.api_isolate_changed_isolates_post(
                     row_version=row_ver_elems
                 )
@@ -154,9 +158,11 @@ class TBRPullingBroker(threading.Thread):
                 if column_mapping.normal_get(k)
             }
 
+            #logging.debug(f"Updating isolate {isolate_id} with {values}")
             coerce_dates(values)
+            #logging.debug(f"Updating isolate after date fixes {isolate_id} with {values}")
             encrypt_dict(self.encryption_client, values, pii_columns())
-
+            #logging.debug(f"Updating isolate after encryption {isolate_id} with {values}")
             update_query = pymongo.UpdateOne(
                 {"isolate_id": isolate_id}, {"$set": values}, upsert=True
             )

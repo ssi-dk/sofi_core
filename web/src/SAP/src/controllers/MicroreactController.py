@@ -5,6 +5,7 @@ from typing import List, Union
 from flask import abort
 from flask.json import jsonify
 from pydantic import StrictStr
+from os import environ
 
 from .....microreact_integration.functions import (
     new_project_2 as new_microreact_project,
@@ -32,6 +33,12 @@ class NewMicroreactProjectRequestData:
 
 PUBLIC_BASE_URL = os.environ.get("PUBLIC_BASE_URL")
 
+def get_microreact_url(user, token_info):
+    url = environ.get("MICROREACT_BASE_URL")
+    resp = {
+        "url": url
+    }
+    return jsonify(resp)
 
 def send_to_microreact(user, token_info, body: NewMicroreactProjectRequestData):
     workspace_id = body.workspace
