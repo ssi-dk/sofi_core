@@ -1,9 +1,13 @@
 {
     auto_https off
+    log {
+        format json
+    }
 }
 
 {$SOFI_HOSTNAME} {
     tls /etc/sofi.crt /etc/sofi.pem
+    log
 
     @localrequest {
         remote_ip 127.0.0.1 172.18.0.0/24
@@ -30,6 +34,7 @@
 
 dev2.sofi-platform.dk {
     tls /etc/sofi.crt /etc/sofi.pem
+    log
 
     route /* {
         reverse_proxy microreact:3000
