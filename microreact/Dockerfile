@@ -31,7 +31,7 @@ WORKDIR /app
 
 ENV NODE_ENV=production
 
-COPY ./microreact-server /app/
+COPY ./sofi-mr-server /app/
 
 COPY --from=backend /app/node_modules /app/node_modules
 
