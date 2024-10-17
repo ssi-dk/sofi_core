@@ -20,6 +20,7 @@ MICROREACT_ENCRYPTION_SECRET = os.environ.get(
 )
 KEYCLOAK_ADMIN_USER = os.environ.get("KEYCLOAK_ADMIN_USER")
 KEYCLOAK_ADMIN_PASSWORD = os.environ.get("KEYCLOAK_ADMIN_PASSWORD")
+KEYCLOAK_URL = os.environ.get("KEYCLOAK_URL")
 
 
 def list_permissions(token_info: Dict[str, str]) -> List[str]:
@@ -152,7 +153,7 @@ def get_user_info_from_keycloak(token: dict):
     username = token["email"]
 
     keycloak = KeycloakAdmin(
-        server_url="http://keycloak:8080/auth/",
+        server_url=f"{KEYCLOAK_URL}/auth/",
         username=KEYCLOAK_ADMIN_USER,
         password=KEYCLOAK_ADMIN_PASSWORD,
         realm_name="sofi",
@@ -168,7 +169,7 @@ def get_user_info_from_keycloak(token: dict):
         "iat": token["iat"],
         "auth_time": token["iat"],
         "jti": token["jti"],
-        "iss": "http://keycloak:8080/auth/realms/sofi",
+        "iss": f"{KEYCLOAK_URL}/auth/realms/sofi",
         "aud": "SOFI_APP",
         "sub": user["id"],
         "typ": "ID",
