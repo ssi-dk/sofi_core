@@ -723,6 +723,34 @@ paths:
       tags:
       - workspaces
       x-openapi-router-controller: web.src.SAP.generated.controllers.workspaces_controller
+  /workspaces/{workspace_id}/data:
+    get:
+      description: Get an workspace data
+      operationId: get_workspace_data
+      parameters:
+      - description: Id of workspace to get
+        explode: false
+        in: path
+        name: workspace_id
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  items: {}
+                  type: array
+                type: array
+          description: Data
+      security:
+      - microreactjwt: []
+      tags:
+      - workspaces
+      x-openapi-router-controller: web.src.SAP.generated.controllers.workspaces_controller
 components:
   schemas:
     Organization:
@@ -2043,3 +2071,8 @@ components:
       scheme: bearer
       type: http
       x-bearerInfoFunc: web.src.SAP.generated.controllers.security_controller_.info_from_jwt
+    microreactjwt:
+      bearerFormat: JWT
+      scheme: bearer
+      type: http
+      x-bearerInfoFunc: web.src.SAP.generated.controllers.security_controller_.info_from_microreactjwt

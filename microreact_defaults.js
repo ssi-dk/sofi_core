@@ -1,4 +1,7 @@
 module.exports = {
+  externalRequests: {
+      secret: process.env.MICROREACT_ENCRYPTION_SECRET
+    },
   auth: {
     openidconnect: {
       id: "keycloak",

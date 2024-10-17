@@ -53,6 +53,10 @@ export interface GetWorkspaceRequest {
     workspaceId: string;
 }
 
+export interface GetWorkspaceDataRequest {
+    workspaceId: string;
+}
+
 export interface PostWorkspaceRequest {
     workspaceId: string;
     updateWorkspace?: UpdateWorkspace;
@@ -284,6 +288,52 @@ function getWorkspaceRaw<T>(requestParameters: GetWorkspaceRequest, requestConfi
 */
 export function getWorkspace<T>(requestParameters: GetWorkspaceRequest, requestConfig?: runtime.TypedQueryConfig<T, WorkspaceInfo>): QueryConfig<T> {
     return getWorkspaceRaw(requestParameters, requestConfig);
+}
+
+/**
+ * Get an workspace data
+ */
+function getWorkspaceDataRaw<T>(requestParameters: GetWorkspaceDataRequest, requestConfig: runtime.TypedQueryConfig<T, Array<Array<any>>> = {}): QueryConfig<T> {
+    if (requestParameters.workspaceId === null || requestParameters.workspaceId === undefined) {
+        throw new runtime.RequiredError('workspaceId','Required parameter requestParameters.workspaceId was null or undefined when calling getWorkspaceData.');
+    }
+
+    let queryParameters = null;
+
+
+    const headerParameters : runtime.HttpHeaders = {};
+
+
+    const { meta = {} } = requestConfig;
+
+    meta.authType = ['bearer'];
+    const config: QueryConfig<T> = {
+        url: `${runtime.Configuration.basePath}/workspaces/{workspace_id}/data`.replace(`{${"workspace_id"}}`, encodeURIComponent(String(requestParameters.workspaceId))),
+        meta,
+        update: requestConfig.update,
+        queryKey: requestConfig.queryKey,
+        optimisticUpdate: requestConfig.optimisticUpdate,
+        force: requestConfig.force,
+        rollback: requestConfig.rollback,
+        options: {
+            method: 'GET',
+            headers: headerParameters,
+        },
+        body: queryParameters,
+    };
+
+    const { transform: requestTransform } = requestConfig;
+    if (requestTransform) {
+    }
+
+    return config;
+}
+
+/**
+* Get an workspace data
+*/
+export function getWorkspaceData<T>(requestParameters: GetWorkspaceDataRequest, requestConfig?: runtime.TypedQueryConfig<T, Array<Array<any>>>): QueryConfig<T> {
+    return getWorkspaceDataRaw(requestParameters, requestConfig);
 }
 
 /**

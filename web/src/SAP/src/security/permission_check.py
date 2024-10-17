@@ -1,12 +1,26 @@
+import json
 import os
 from typing import Any, Dict, List, Union
+
 import commentjson
+from flask_jwt_extended import decode_token
+from hkdf import Hkdf
+from jose.jwe import decrypt
+from keycloak import KeycloakAdmin
 from werkzeug.exceptions import Forbidden
+
 from ...common.config.column_config import columns
 
 PERMISSION_CONFIG: Union[Dict[str, List[str]], None] = None
 with open(os.getcwd() + "/permission-config.jsonc", encoding="utf-8") as js_file:
     PERMISSION_CONFIG = commentjson.loads(js_file.read())
+
+MICROREACT_ENCRYPTION_SECRET = os.environ.get(
+    "MICROREACT_ENCRYPTION_SECRET"
+)
+KEYCLOAK_ADMIN_USER = os.environ.get("KEYCLOAK_ADMIN_USER")
+KEYCLOAK_ADMIN_PASSWORD = os.environ.get("KEYCLOAK_ADMIN_PASSWORD")
+KEYCLOAK_URL = os.environ.get("KEYCLOAK_URL")
 
 
 def list_permissions(token_info: Dict[str, str]) -> List[str]:
@@ -17,10 +31,11 @@ def list_permissions(token_info: Dict[str, str]) -> List[str]:
     if not "security-groups" in token_info:
         return permissions
 
-    for group in [item.lstrip('/') for item in token_info["security-groups"]]:
+    for group in [item.lstrip("/") for item in token_info["security-groups"]]:
         for perm in PERMISSION_CONFIG[group]:
             permissions.append(perm)
     return permissions
+
 
 def user_has(permission: str, token_info: Dict[str, str]) -> bool:
     if PERMISSION_CONFIG is None:
@@ -29,7 +44,7 @@ def user_has(permission: str, token_info: Dict[str, str]) -> bool:
     if not "security-groups" in token_info:
         return False
 
-    for group in [item.lstrip('/') for item in token_info["security-groups"]]:
+    for group in [item.lstrip("/") for item in token_info["security-groups"]]:
         for perm in PERMISSION_CONFIG[group]:
             if perm == permission:
                 return True
@@ -68,6 +83,7 @@ def authorized_columns(token_info: Dict[str, Any]) -> List[str]:
     data_clearance = token_info["sofi-data-clearance"]
     cols = columns()
     institution = token_info["institution"]
+
     if data_clearance == "own-institution":
         # User only has access to their institution's data, so filter off that
         return list(
@@ -94,3 +110,76 @@ def authorized_columns(token_info: Dict[str, Any]) -> List[str]:
 
     # User has not been granted a sofi-data-clearance claim that we recognize
     return []
+
+
+def decode_sofi_token(token: str, name: str):
+    if name == "microreactjwt":
+        if MICROREACT_ENCRYPTION_SECRET is None:
+            raise Exception(
+                "Missing environment variable: MICROREACT_ENCRYPTION_SECRET"
+            )
+
+        obj = decode_jwe(token, MICROREACT_ENCRYPTION_SECRET)
+        if obj == None:
+            return None
+
+        return get_user_info_from_keycloak(obj)
+
+    else:
+        return decode_token(token)
+
+
+def __encryption_key(secret: str):
+    return Hkdf("", bytes(secret, "utf-8")).expand(
+        b"NextAuth.js Generated Encryption Key", 32
+    )
+
+
+def decode_jwe(token: str, secret: str):
+    decrypted = decrypt(token, __encryption_key(secret))
+
+    if decrypted:
+        return json.loads(bytes.decode(decrypted, "utf-8"))
+    else:
+        return None
+
+
+def get_user_info_from_keycloak(token: dict):
+    if KEYCLOAK_ADMIN_USER is None or KEYCLOAK_ADMIN_PASSWORD is None:
+        raise Exception(
+            "Missing environment variable: KEYCLOAK_ADMIN_USER or KEYCLOAK_ADMIN_PASSWORD"
+        )
+
+    username = token["email"]
+
+    keycloak = KeycloakAdmin(
+        server_url=f"{KEYCLOAK_URL}/auth/",
+        username=KEYCLOAK_ADMIN_USER,
+        password=KEYCLOAK_ADMIN_PASSWORD,
+        realm_name="sofi",
+        user_realm_name="master",
+    )
+
+    user_id = keycloak.get_user_id(username)
+    user = keycloak.get_user(user_id)
+    groups = keycloak.get_user_groups(user_id)
+
+    return {
+        "exp": token["exp"],
+        "iat": token["iat"],
+        "auth_time": token["iat"],
+        "jti": token["jti"],
+        "iss": f"{KEYCLOAK_URL}/auth/realms/sofi",
+        "aud": "SOFI_APP",
+        "sub": user["id"],
+        "typ": "ID",
+        "azp": "SOFI_APP",
+        "institution": user["attributes"]["institution"],
+        "email_verified": user["emailVerified"],
+        "security-groups": list(map(lambda x: x["path"], groups)),
+        "sofi-data-clearance": user["attributes"]["sofi-data-clearance"][0],
+        "preferred_username": user["username"],
+        "email": user["email"],
+        "type": "access",
+        "fresh": False,
+    }
