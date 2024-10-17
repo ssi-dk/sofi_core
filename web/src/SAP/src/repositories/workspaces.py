@@ -42,30 +42,22 @@ def get_workspace(user: str, workspace_id: str):
 
     return workspace
 
-WorkspaceData = TypedDict('WorkspaceData', {'keys': List[str], 'values': List[List[Any]]})
-
-def get_workspace_data(user: str, token_info: Dict[str, str], workspace_id: str) -> Union[WorkspaceData,None]:
+def get_workspace_data(user: str, token_info: Dict[str, str], workspace_id: str) -> Union[str,None]:
     workspace = get_workspace(user, workspace_id)
 
     if workspace is None:
-        return workspace
+        return None
 
     authorized = authorized_columns(token_info)
+    
+    if len(authorized) == 0:
+        return None
 
-    values = []
+    csvVal = ",".join(authorized) + "\n"        
     for sample in workspace["samples"]:
-        row = []
-        for column in authorized:
-            if column in sample:
-                row.append(sample[column])
-            else:
-                row.append("")
-        values.append(row)
-
-    return {
-        "keys": authorized, 
-        "values": values
-    }
+        csvVal += ",".join([sample[column] or "" for column in authorized if column in sample]) + "\n"
+        
+    return csvVal[:-1]
 
 def delete_workspace(user: str, workspace_id: str):
     workspaces = get_collection(WORKSPACES_COL_NAME)
