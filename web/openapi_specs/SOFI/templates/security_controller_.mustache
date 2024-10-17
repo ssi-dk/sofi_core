@@ -1,6 +1,5 @@
 from typing import List
-from flask_jwt_extended import decode_token
-from ....src.security.permission_check import decode_sofi_token
+from ...src.security.permission_check import decode_sofi_token
 
 {{#authMethods}}
 {{#isOAuth}}
@@ -85,7 +84,7 @@ def info_from_{{name}}(token):
     :rtype: dict | None
     """
     if token:
-        return decode_sofi_token(token, {{name}})
+        return decode_sofi_token(token, "{{name}}")
 
     return None
 

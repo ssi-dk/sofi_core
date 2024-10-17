@@ -9,16 +9,19 @@ werkzeug == 0.16.1; python_version=="3.5" or python_version=="3.4"
 swagger-ui-bundle >= 0.0.2
 python_dateutil >= 2.6.0
 setuptools >= 21.0.0
-urllib3==1.25.10
+urllib3>=1.26.2
 certifi==2020.6.20
 python-dotenv==0.15.0
 pymongo==3.11.0
 pymongocrypt==1.1.0
 commentjson==0.9.0
-cryptography==3.3.1
-python-jose[cryptography]
+cryptography>=3.3.1
+python-jose[cryptography]==3.3.0
 six>=1.9
 jwcrypto >= 0.8
 Flask-JWT-Extended >= 3.25.1
 openapi-spec-validator==0.2.9
 pydantic==2.8.2
+hkdf
+python-keycloak
+flask-cors

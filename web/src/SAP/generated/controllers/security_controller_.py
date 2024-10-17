@@ -1,5 +1,5 @@
 from typing import List
-from flask_jwt_extended import decode_token
+from ...src.security.permission_check import decode_sofi_token
 
 def info_from_jwt(token):
     """
@@ -12,15 +12,8 @@ def info_from_jwt(token):
     :return: Decoded token information or None if token is invalid
     :rtype: dict | None
     """
-
-    if("jwt" == "microreactjwt"):
-        return {
-            "user": "",
-            "token": ""
-            }
-
     if token:
-        return decode_token(token)
+        return decode_sofi_token(token, "jwt")
 
     return None
 
@@ -35,16 +28,10 @@ def info_from_microreactjwt(token):
     :return: Decoded token information or None if token is invalid
     :rtype: dict | None
     """
-
-    if("microreactjwt" == "microreactjwt"):
-        return {
-            "user": "",
-            "token": ""
-            }
-
     if token:
-        return decode_token(token)
+        return decode_sofi_token(token, "microreactjwt")
 
     return None
+
 
 
