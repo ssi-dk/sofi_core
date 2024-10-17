@@ -1,6 +1,6 @@
 module.exports = {
   externalRequests: {
-      secret: "generate a random string"
+      secret: process.env.MICROREACT_ENCRYPTION_SECRET
     },
   auth: {
     openidconnect: {
