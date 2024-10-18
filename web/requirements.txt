@@ -25,3 +25,4 @@ pydantic==2.8.2
 hkdf
 python-keycloak
 flask-cors
+flask

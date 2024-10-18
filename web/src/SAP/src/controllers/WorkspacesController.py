@@ -50,4 +50,4 @@ def get_workspace_data(user, token_info, workspace_id):
     if res is None:
         return abort(404)
 
-    return jsonify(res["values"])
+    return res
