@@ -2,6 +2,14 @@ module.exports = {
   externalRequests: {
       secret: process.env.MICROREACT_ENCRYPTION_SECRET
     },
+  downloadActions: [
+    {
+      id: "createnewworkspace",
+      label: "Create new workspace from selection",
+      type: "selection",
+      url: process.env.SOFI_BASE_URL + "/createworkspace?ids="
+    }
+  ],
   auth: {
     openidconnect: {
       id: "keycloak",
