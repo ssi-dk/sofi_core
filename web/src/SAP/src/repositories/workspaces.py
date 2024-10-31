@@ -67,9 +67,8 @@ def get_workspace_data(user: str, token_info: Dict[str, str], workspace_id: str)
     csv = ",".join(f'"{column}"' for column in authorized)
     for sample in workspace["samples"]:
         csv += "\n" + ",".join(
-            f'"{sample[column]}"' if sample[column] else ""
+            f'"{sample[column]}"' if column in sample and sample[column] else ""
             for column in authorized
-            if column in sample
         )
 
     file = io.BytesIO(bytes(csv, "utf-8"))
