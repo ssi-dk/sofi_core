@@ -6,7 +6,6 @@ import { CacheSwitch, CacheRoute } from "react-router-cache-route";
 import { Authorize } from "auth/authorize";
 import appTheme from "app/app.theme";
 import { Callback } from "auth/auth-callback";
-import { globalCss } from "./app.styles";
 import "./i18n";
 import AnalysisPage from "./analysis/analysis-page";
 import ApprovalHistory from "./approval-history/approval-history";
@@ -14,9 +13,9 @@ import ManualUploadPage from "./manual-upload/manual-upload-page";
 import GdprPage from "./gdpr/gdpr";
 import ComparativeAnalysis from "./comparative-analysis/comparative-analysis";
 import "./style-reset.css";
-import i18n from "./i18n";
 import { Workspaces } from "./workspaces/workspaces";
 import { Workspace } from "./workspaces/workspace";
+import { CreateWorkspaceFromMicroreact } from "./workspaces/create-workspace-from-microreact";
 
 export default function App() {
   return (
@@ -54,6 +53,15 @@ export default function App() {
           render={(params) => (
             <Authorize>
               <Workspace id={params.match.params.id} />
+            </Authorize>
+          )}
+        />
+        <Route
+          exact
+          path="/createworkspace"
+          render={() => (
+            <Authorize>
+              <CreateWorkspaceFromMicroreact />
             </Authorize>
           )}
         />
