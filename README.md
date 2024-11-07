@@ -6,6 +6,7 @@ In order to build and run locally, you will need the following utilities:
 
 * node v14
 * bash
+* jq
 * make
 * pip3
 * yarn
@@ -29,7 +30,7 @@ This guide is for running the project using WSL2 in Windows.
       ```
       adduser <user-name>
       usermod -aG sudo <user-name>
-      su <use-name>
+      su <user-name>
       ```
    2. Now the user is created, and you are logged into that user. To set this as a default user, you can add/edit the file `/etc/wsl.conf` to:
       ```
@@ -41,58 +42,20 @@ You're now set to continue with [Running](#running), below there's additional no
  
 #### Database permission
 
-Ensure that `auth/pg/pgdata/` and `bifrost/bifrsot_db/data/` are owned by `<user-name>`. 
+Ensure that `auth/pg/pgdata/` and `bifrost/bifrost_db/data/` are owned by `<user-name>`. 
 
 #### Project placement
 
 You have to store the project, i.e. clone the repo, to the WSL2 filesystem and **NOT** the Windows filesystem. The Windows filesystem is emulated and the user permission file causes unexpected behavior. 
 
 E.g. clone the repo to `/home/<user-name>/git/`. This is placed in the `git` directory within your linux users home directory.
+
+Be sure to get submodules `git submodule update --init --recursive`
 
 #### Host file
 Latter in this `README.md` you will have to add something to your host file, this must be added in both the WSL2 hosts file and the Windows hosts file.
 
 * [task](https://taskfile.dev) (Used for running tests)
-
-### Extra Windows pre-requisites
-This guide is for running the project using WSL2 in Windows.
-
-1. Follow this guide [https://docs.microsoft.com/en-us/windows/wsl/setup/environment#get-started](https://docs.microsoft.com/en-us/windows/wsl/setup/environment#get-started)
-
-   This includes:
-      * Docker for desktop - with WSL2 integration
-      * WSL2
-
-2. Create your own user
-   
-   We want to avoid using root, it can create unexpected behavior.
-   1. Start by creating your user, adding it to sudo group and change to that user 
-      ```
-      adduser <user-name>
-      usermod -aG sudo <user-name>
-      su <use-name>
-      ```
-   2. Now the user is created, and you are logged into that user. To set this as a default user, you can add/edit the file `/etc/wsl.conf` to:
-      ```
-      [user]
-      default=<use-name>
-      ```
- 
-You're now set to continue with [Running](#running), below there's additional notes to consider:
- 
-#### Database permission
-
-Ensure that `auth/pg/pgdata/` and `bifrost/bifrsot_db/data/` are owned by `<user-name>`. 
-
-#### Project placement
-
-You have to store the project, i.e. clone the repo, to the WSL2 filesystem and **NOT** the Windows filesystem. The Windows filesystem is emulated and the user permission file causes unexpected behavior. 
-
-E.g. clone the repo to `/home/<user-name>/git/`. This is placed in the `git` directory within your linux users home directory.
-
-#### Host file
-Latter in this `README.md` you will have to add something to your host file, this must be added in both the WSL2 hosts file and the Windows hosts file.
-
 
 # Running
 
@@ -123,7 +86,7 @@ make run
 This will launch all containers with locally mounted files, enabling automatic code reload, 
 as well as hot-module-reload (HMR) in the browser.
 
-By default, services will be available on `http://sofi.localhost`.
+By default, services will be available on `https://dev.sofi-platform.dk`.
 This can be changed by modifying the generated `.env` file.
 The relevant env variables are `SOFI_SCHEME`, `SOFI_HOSTNAME`, and `SOFI_PORT`.
 
@@ -131,6 +94,7 @@ Make sure to edit your `/etc/hosts` file (`c:\windows\system32\drivers\etc\hosts
 
 ```
 127.0.0.1	dev.sofi-platform.dk
+127.0.0.1	dev2.sofi-platform.dk
 ```
 
 Setting `SOFI_HOSTNAME` to `localhost` or `127.0.0.1` is not currently supported.
@@ -199,21 +163,4 @@ make clean && make run
 ## Project Structure
 
 Consult `docs/`.
-
-# Update certificate
-
-1. Acquire the new certificate.
-    
-    _The certificate might not have the full chain, which will result in errors in SOFI, because SOFI cannot look up intermediate certificate, they must exist in the certificate file (`.crt`). This is done by getting the intermediate certificates and pasting them into the plaintext certificate file (`.crt`)._ 
-
-2. Determine their location on the server, this can found by inspecting the
-   `.env` file and looking for `TLS_CERT_PATH` or `TLS_KEY_PATH`. _The current
-   locations is `/opt/sofi/.certs`_.
-
-3. Move the certificates to the server and dispose the old certificates and ensure their names are correct.
-
-4. Restart `sofi.service` by executing `systemctl restart sofi.service` and following the prompts.
-
-5. Verify chances by inspecting the logs, `journalctl -u sofi.service -f`, and check the website in the browser.
-
 
