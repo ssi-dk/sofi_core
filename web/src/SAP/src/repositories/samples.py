@@ -17,6 +17,5 @@ def get_sample_id_from_sequence_id(sequence_id: str) -> str:
     mydb = conn[DB_NAME]
     samples = mydb[SAMPLES_COL_NAME]
     id = str(samples.find({"categories.sample_info.summary.sofi_sequence_id": sequence_id}, {"_id": 1}).sort("metadata.updated_at", -1).next()["_id"])
-    print(f"Found {id} for seq: {sequence_id}")
     
     return id
