@@ -108,7 +108,7 @@ def authorized_columns(token_info: Dict[str, Any]) -> List[str]:
         # User has access to all columns, return all field names
         return list(map(lambda c: c["field_name"], cols))
 
-    # User has not been granted a sofi-data-clearance claim that we recognize
+    # User has not been granted a sofi-data-clearance claim that we recognize 
     return []
 
 
