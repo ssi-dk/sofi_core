@@ -9,6 +9,7 @@ from ...src.repositories.analysis import (
 from ...common.database import get_collection, WORKSPACES_COL_NAME
 from ...generated.models import CreateWorkspace
 from ...generated.models import CloneWorkspace
+from ..repositories.samples import get_sample_id_from_sequence_id
 import io
 from flask import send_file
 
@@ -100,6 +101,18 @@ def create_workspace(user: str, workspace: CreateWorkspace):
         {"created_by": user, "name": workspace.name}, {"$set": record}, upsert=True
     )
 
+def create_workspace_from_sequence_ids(user: str, workspace: CreateWorkspace):
+    workspaces = get_collection(WORKSPACES_COL_NAME)
+    
+    if workspace.samples is None:
+        workspace.samples = []
+        
+    workspace.samples = list(map(lambda x: get_sample_id_from_sequence_id(x), workspace.samples))
+        
+    record = {**workspace.to_dict(), "created_by": user}
+    return workspaces.update_one(
+        {"created_by": user, "name": workspace.name}, {"$set": record}, upsert=True
+    )
 
 def clone_workspace(user: str, cloneWorkspaceInfo: CloneWorkspace):
     workspaces = get_collection(WORKSPACES_COL_NAME)

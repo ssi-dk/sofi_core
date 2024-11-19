@@ -3,6 +3,7 @@ import {
   Workspace,
   deleteWorkspace as deleteWorkspaceApi,
   createWorkspace as createWorkspaceApi,
+  createWorkspaceFromSequenceIds as createWorkspaceFromSequenceIdsApi,
   getWorkspace as getWorkspaceApi,
   postWorkspace as postWorkspaceApi,
   deleteWorkspaceSample as deleteWorkspaceSampleApi,
@@ -11,7 +12,11 @@ import {
   DeleteWorkspaceSampleRequest,
   cloneWorkspace as cloneWorkspaceApi,
 } from "sap-client";
-import { CreateWorkspace, WorkspaceInfo, CloneWorkspace } from "sap-client/models";
+import {
+  CreateWorkspace,
+  WorkspaceInfo,
+  CloneWorkspace,
+} from "sap-client/models";
 import { getUrl } from "service";
 
 export type WorkspacesSlice = {
@@ -107,7 +112,32 @@ export const createWorkspace = (params: CreateWorkspace) => {
   return base;
 };
 
-export const cloneWorkspace = (params: CloneWorkspace & { samples: string[] }) => {
+export const createWorkspaceFromSequenceIds = (params: CreateWorkspace) => {
+  const base = createWorkspaceFromSequenceIdsApi({ createWorkspace: params });
+  base.url = getUrl(base.url);
+
+  base.transform = (response) => {
+    if (!response.id) {
+      return undefined;
+    }
+    return { workspaces: [{ id: response.id, name: params.name }] };
+  };
+
+  base.update = {
+    workspaces: (oldValue, newValue) => {
+      if (!newValue) {
+        return oldValue;
+      }
+      return [].concat(...oldValue, ...newValue);
+    },
+  };
+  base.force = true;
+  return base;
+};
+
+export const cloneWorkspace = (
+  params: CloneWorkspace & { samples: string[] }
+) => {
   const base = cloneWorkspaceApi({ cloneWorkspace: params });
   base.url = getUrl(base.url);
 
@@ -115,9 +145,12 @@ export const cloneWorkspace = (params: CloneWorkspace & { samples: string[] }) =
     if (!response.id) {
       return undefined;
     }
-    return { workspaces: [{ id: response.id, name: params.name, samples: params.samples }] };
+    return {
+      workspaces: [
+        { id: response.id, name: params.name, samples: params.samples },
+      ],
+    };
   };
-
 
   base.update = {
     workspaces: (oldValue, newValue) => {

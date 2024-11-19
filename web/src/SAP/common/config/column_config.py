@@ -41,6 +41,8 @@ def columns() -> List[Dict[str, str]]:
     # build up dictionary of default configs
     openapi_columns = analysis.openapi_types.items()
     for attr, _ in openapi_columns:
+        if attr == "id":
+            continue
         cols.update({attr: gen_default_column(attr)})
     # apply configuration file on top
     with open(PATH + "/column-config.jsonc") as js_file:
