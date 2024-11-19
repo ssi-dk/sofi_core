@@ -174,7 +174,7 @@ def get_user_info_from_keycloak(token: dict):
         "sub": user["id"],
         "typ": "ID",
         "azp": "SOFI_APP",
-        "institution": user["attributes"]["institution"],
+        "institution": user["attributes"]["institution"][0],
         "email_verified": user["emailVerified"],
         "security-groups": list(map(lambda x: x["path"], groups)),
         "sofi-data-clearance": user["attributes"]["sofi-data-clearance"][0],
