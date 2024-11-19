@@ -5,7 +5,7 @@ import { AddIcon } from "@chakra-ui/icons";
 import { useMutation } from "redux-query-react";
 import { useLocation, Redirect } from "react-router-dom";
 import { useMemo } from "react";
-import { createWorkspace } from "./workspaces-query-configs";
+import { createWorkspaceFromSequenceIds } from "./workspaces-query-configs";
 
 export function CreateWorkspaceFromMicroreact() {
   const [name, setName] = React.useState("");
@@ -13,12 +13,14 @@ export function CreateWorkspaceFromMicroreact() {
   const searchParams = useMemo(() => new URLSearchParams(search), [search]);
   const [isSending, setIsSending] = React.useState(false);
   const [isCreated, setIsCreated] = React.useState(false);
-  const [isRequired, setIsRequired] = React.useState(false)
+  const [isRequired, setIsRequired] = React.useState(false);
 
   const [
     createWorkspaceQueryState,
     createWorkspaceMutation,
-  ] = useMutation((workspaceName: string, samples: string[]) => createWorkspace({ name: workspaceName, samples: samples }));
+  ] = useMutation((workspaceName: string, samples: string[]) =>
+    createWorkspaceFromSequenceIds({ name: workspaceName, samples: samples })
+  );
 
   const content = (
     <React.Fragment>
@@ -41,19 +43,19 @@ export function CreateWorkspaceFromMicroreact() {
         <Button
           leftIcon={<AddIcon />}
           onClick={() => {
-            if(!name){
-              setIsRequired(true)
-              setTimeout(() => setIsRequired(false), 250)
+            if (!name) {
+              setIsRequired(true);
+              setTimeout(() => setIsRequired(false), 250);
               return;
             }
-            setIsSending(true)
+            setIsSending(true);
             const ids = searchParams.get("ids");
             if (ids) {
               const idArr = ids.split(",");
-              createWorkspaceMutation(name, idArr );
-              setIsCreated(true)
-              setIsSending(false)
-              alert("Workspace created.")
+              createWorkspaceMutation(name, idArr);
+              setIsCreated(true);
+              setIsSending(false);
+              alert("Workspace created.");
             }
           }}
           disabled={isSending && !isCreated}

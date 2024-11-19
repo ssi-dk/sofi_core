@@ -28,6 +28,7 @@ from .lims_specific_metadata import LimsSpecificMetadata
 from .metadata_reload_request import MetadataReloadRequest
 from .metadata_reload_response import MetadataReloadResponse
 from .microreact_project import MicroreactProject
+from .microreact_url_response import MicroreactUrlResponse
 from .multi_upload_request import MultiUploadRequest
 from .nearest_neighbors_request import NearestNeighborsRequest
 from .nearest_neighbors_response import NearestNeighborsResponse

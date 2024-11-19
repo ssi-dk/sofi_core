@@ -4,6 +4,7 @@ from ..repositories.workspaces import get_workspaces as get_workspaces_db
 from ..repositories.workspaces import delete_workspace as delete_workspace_db
 from ..repositories.workspaces import delete_workspace_sample as delete_workspace_sample_db
 from ..repositories.workspaces import create_workspace as create_workspace_db
+from ..repositories.workspaces import create_workspace_from_sequence_ids as create_workspace_from_sequence_ids_db
 from ..repositories.workspaces import clone_workspace as clone_workspace_db
 from ..repositories.workspaces import update_workspace as update_workspace_db
 from ..repositories.workspaces import get_workspace as get_workspace_db
@@ -22,6 +23,13 @@ def create_workspace(user, token_info, body):
     if res.upserted_id:
         return jsonify({"id": str(res.upserted_id)})
 
+    return jsonify(body)
+
+def create_workspace_from_sequence_ids(user, token_info, body):
+    res = create_workspace_from_sequence_ids_db(user, body)
+    
+    if res.upserted_id:
+        return jsonify({"id": str(res.upserted_id)})
     return jsonify(body)
 
 def clone_workspace(user, token_info, body):
