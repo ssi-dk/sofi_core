@@ -16,62 +16,20 @@ from ...common.database import (
 )
 import sys
 from bson.objectid import ObjectId
-from datetime import datetime, timedelta
 
 def remove_id(item):
     item.pop("_id", None)
     return item
 
-def is_date_string(value):
-    try:
-        datetime.fromisoformat(value)
-        return True
-    except ValueError:
-        return False
-    
-def is_float_string(value):
-    try:
-        float(value)
-        return True
-    except ValueError:
-        return False
-    
-def convert_type(value):
-    if is_float_string(value):
-        return float(value)
-    elif value.isdigit():
-        return int(value)
-    elif is_date_string(value):
-        return datetime.fromisoformat(value)
-    return value
-
-def convert_query_values(query):
-    stack = [query]
-    while stack:
-        current = stack.pop()
-        if isinstance(current, dict):
-            for key, value in current.items():
-                if isinstance(value, dict):
-                    stack.append(value)
-                    if '$lte' in value:
-                        value['$lte'] = convert_type(value['$lte'])
-                        if isinstance(value['$lte'], datetime):
-                            #if the hours, minutes and seconds are not in the search like this 2022-04-08T09:01:07 it is assumed that the entire day wants to be included
-                            #default with them not specified is as if they are 00, which would exclude all records from during that day
-                            if value['$lte'].hour == 0 and value['$lte'].minute == 0 and value['$lte'].second == 0:
-                                value['$lte'] = value['$lte'] + timedelta(days = 1 ) - timedelta(seconds = 1)
-                elif isinstance(value, str):
-                    current[key] = convert_type(value)
-        elif isinstance(current, list):
-            for item in current:
-                if isinstance(item, (dict, list)):
-                    stack.append(item)
-    return query
-
 def get_analysis_page(query, page_size, offset, columns, restrict_to_institution, unique_sequences=True):
     conn, encryption_client = get_connection(with_enc=True)
-    query = convert_query_values(query)
+
+    # TODO remove print later
+    print(f"query before value encrypt: \n{query}")
+
     q = encrypt_dict(encryption_client, query, pii_columns())
+
+    print(f"query after value encrypt: \n{q}")
 
     if restrict_to_institution:
         q["institution"] = restrict_to_institution

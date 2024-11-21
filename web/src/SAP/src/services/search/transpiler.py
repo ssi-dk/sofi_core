@@ -78,14 +78,38 @@ def structure_wildcard(field, node):
         return {"$in": [coerced, node.term]}
 
 
+def is_date_string(value):
+    try:
+        datetime.fromisoformat(value)
+        return True
+    except ValueError:
+        return False
+    
+def is_float_string(value):
+    try:
+        float(value)
+        return True
+    except ValueError:
+        return False
+    
+def convert_type(value):
+    if is_float_string(value):
+        return float(value)
+    elif value.isdigit():
+        return int(value)
+    elif is_date_string(value):
+        return datetime.fromisoformat(value)
+    return value
+
+
 def structure_ranged(field, node):
     min_op = "$gte" if node.inclusive == "left" or node.inclusive == "both" else "$gt"
     max_op = "$lte" if node.inclusive == "right" or node.inclusive == "both" else "$lt"
     if node.term_min == "*":
-        return {max_op: node.term_max}
+        return {max_op: convert_type(node.term_max)}
     if node.term_max == "*":
         return {min_op: node.term_min}
-    return {min_op: node.term_min, max_op: node.term_max}
+    return {min_op: convert_type(node.term_min), max_op: convert_type(node.term_max)}
 
 
 def structure_leaf(node, is_negated):
@@ -144,7 +168,6 @@ class AbstractSyntaxTreeVisitor(object):
     @when(QueryExpression)
     def visit(self, node: QueryExpression):
         operator, is_negated = is_negated_op(node)
-
         if node.operator == None:
             is_negated = is_negated or (
                 node.left is not None
@@ -179,6 +202,6 @@ class AbstractSyntaxTreeVisitor(object):
             return structure_operator(
                 operator, left.accept(self, is_negated), right.accept(self, is_negated)
             )
-        elif node.field and node.term:
+        elif node.field and (node.term or node.inclusive):  # presence of inclusivity denotes a range-based query
             is_negated = is_negated or (node.prefix is not None and "-" in node.prefix)
             return structure_leaf(node, is_negated)
