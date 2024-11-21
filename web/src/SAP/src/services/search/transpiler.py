@@ -108,8 +108,15 @@ def structure_ranged(field, node):
     if node.term_min == "*":
         return {max_op: convert_type(node.term_max)}
     if node.term_max == "*":
-        return {min_op: node.term_min}
-    return {min_op: convert_type(node.term_min), max_op: convert_type(node.term_max)}
+        return {min_op: convert_type(node.term_min)}
+    
+    #if the hours, minutes and seconds are not in the search like this 2022-04-08T09:01:07 it is assumed that the entire day is intended to be included
+    #default with the specific time of day not specified it is as if they are 00, which would exclude all records from during that day, which is not the behavior we expect is wanted
+    max_term = convert_type(node.term_max) 
+    if type(max_term) == datetime and max_op =="$lte" and max_term.hour == 0 and max_term.minute == 0 and max_term.second == 0:
+        max_term = max_term + timedelta(days = 1 ) - timedelta(seconds = 1)
+
+    return {min_op: convert_type(node.term_min), max_op: max_term}
 
 
 def structure_leaf(node, is_negated):
