@@ -21,10 +21,16 @@ def remove_id(item):
     item.pop("_id", None)
     return item
 
-
 def get_analysis_page(query, page_size, offset, columns, restrict_to_institution, unique_sequences=True):
     conn, encryption_client = get_connection(with_enc=True)
+
+    # TODO remove print later
+    print(f"query before value encrypt: \n{query}")
+
     q = encrypt_dict(encryption_client, query, pii_columns())
+
+    print(f"query after value encrypt: \n{q}")
+
     if restrict_to_institution:
         q["institution"] = restrict_to_institution
     column_projection = {x: 1 for x in columns}
@@ -209,6 +215,10 @@ def get_analysis_with_metadata(sequence_id: str) -> Dict[str, Any]:
     ]
 
     res = list(analysis.aggregate(fetch_pipeline))
+
+    print("is in analysis.py result")
+    print(res)
+
     if len(res) == 1:
         return res[0]
     else:
