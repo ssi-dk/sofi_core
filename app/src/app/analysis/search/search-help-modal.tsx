@@ -97,11 +97,30 @@ const SearchHelpModal = (props: Props) => {
                     Wildcard that is a placeholder for multiple characters.
                     This can be used to perform &apos;fuzzy&apos; searches,
                     like <code>Salmonella*</code> to match any species of
-                    that genus.
+                    that genus. <br/>
+                    This will not work for numbers or dates, and range terms should be used instead.
                   </Td>
                 </Tr>
               </Tbody>
             </Table>
+            <List>
+              <ListItem>
+                <b>Range terms</b> For numerical interval comparison, range search should be used.
+                This is the case for both numbers and dates. Examples are:
+                <p><code>date_sofi:[2022-02-01 TO 2022-04-30]</code> Which would return all records with a date between the first date and the last date.</p>
+                <p><code>date_sofi:[* TO 2022-04-30]</code> Which would return all records with a sofi_date before and <b>including</b> 2022-04-30</p>
+                <p><code>date_sofi:[* TO 2022-04-30{"}"}</code> Which would return all records with a sofi_date before and <b>excluding</b> 2022-04-30</p>
+              </ListItem>
+            </List>
+          </Box>
+          <Heading size="s">Special Considerations</Heading>
+          <Box margin="auto" maxW="90%">
+            <List spacing="6">
+              <ListItem>
+              <b>PII columns</b>: When using columns containing Personal Identifiable Information (PII) as fields in a search, only exact matches will return results. <br/>
+              Wildcard (*, ?) and range-based searches (e.g., field:[value1 TO value2]) are not supported for PII columns.
+              </ListItem>
+            </List>
           </Box>
           <Heading size="s">Examples</Heading>
 
@@ -165,12 +184,12 @@ const SearchHelpModal = (props: Props) => {
                   case, you can &apos;escape&apos; that character by
                   prefixing it with <code>\</code>.
                 </p>
-                <code>institution:fvst st:15\*</code>
+                <code>institution:fvst project_title:Surveil\*</code>
                 <p>
                   <small>
-                    Gives results where the ST is specifically
-                    &quot;15*&quot; (15 star), while <code>st:15*</code>{" "}
-                    would also return ST values 15, 152, 157, etc.
+                    Gives results where the project_title is specifically
+                    &quot;Surveil*&quot; (Surveil{"<"}star{">"}), while <code>project_title:Surveil*</code>{" "}
+                    would also return project_title values Surveillance, Surveilling, "Surveil case", etc.
                   </small>
                 </p>
               </ListItem>
