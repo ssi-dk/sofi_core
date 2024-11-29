@@ -19,9 +19,12 @@ namespace DG.SAP.TBRIntegration
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        private readonly IHostEnvironment hostEnvironment;
+
+        public Startup(IConfiguration configuration, IHostEnvironment hostEnvironment)
         {
             Configuration = configuration;
+            this.hostEnvironment = hostEnvironment;
         }
 
         public IConfiguration Configuration { get; }
@@ -41,7 +44,14 @@ namespace DG.SAP.TBRIntegration
                 });
             });
 
-            LoadDependencies(services);
+            if (hostEnvironment.IsDevelopment())
+            {
+                LoadMockDependencies(services);
+            }
+            else
+            {
+                LoadDependencies(services);
+            }
             services.AddTransient<IIsolateChangeService, IsolateChangeService>();
         }
 

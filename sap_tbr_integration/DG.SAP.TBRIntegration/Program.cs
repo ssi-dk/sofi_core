@@ -26,10 +26,14 @@ namespace DG.SAP.TBRIntegration
                 {
                     logging.ClearProviders();
                     logging.AddConfiguration(hosting.Configuration.GetSection("Logging"));
-                    logging.AddEventLog(new EventLogSettings()
-                    {
-                        SourceName = "TBR.SAP.Integration",                        
-                    });
+                    var isMock = hosting.HostingEnvironment.IsDevelopment();
+                    Console.WriteLine($"IsMock: {isMock}");
+                    if (!isMock) {
+                        logging.AddEventLog(new EventLogSettings()
+                        {
+                            SourceName = "TBR.SAP.Integration",
+                        });
+                    }                    
                     logging.AddConsole();
                 });
     }
