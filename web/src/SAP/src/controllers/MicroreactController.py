@@ -110,6 +110,8 @@ def send_to_microreact(user, token_info, body: NewMicroreactProjectRequestData):
         return abort(404)
 
     cols = authorized_columns(token_info)
+    
+    hidden_columns = get_hidden_columns(token_info["institution"], cols)
 
     res = new_microreact_project(
         project_name=workspace["name"],
@@ -118,6 +120,7 @@ def send_to_microreact(user, token_info, body: NewMicroreactProjectRequestData):
         mr_access_token=body.mr_access_token,
         mr_base_url="http://microreact:3000/",
         tree_calcs=tree_calcs,
+        hidden=hidden_columns
     )
 
     json_response = res.json()
@@ -130,3 +133,13 @@ def send_to_microreact(user, token_info, body: NewMicroreactProjectRequestData):
     update_microreact_db(microreact_reference)
 
     return jsonify(json_response)
+
+def get_hidden_columns(institution: str, all_cols):
+    if institution == "SSI":
+        relevant_columns = ["isolate_id", "date_sample", "primary_isolate", "gender", "age", "travel_country", "kma", "fud_number", "cluster_id", "date_epi", "species_final", "st_final", "serotype_final", "toxins_final", "amr_profile"]
+    elif institution == "FVST":
+        relevant_columns = ["sampling_date", "institution", "provided_species", "animal_species", "run_id", "isolate_id", "fud_number", "cluster_id", "serotype_final", "st", "infection_source", "comment_cluster", "sequence_id", "sequence_filename", "chr_number", "aut_number", "origin_country", "species_final", "subspecies", "pathotype_final", "virulence_genes", "adhesion_final", "toxins_final", "resistance_genes", "qc_final", "qc_provided_species", "qc_genome1x", "qc_genome10x", "qc_gsize_diff1x10", "qc_avg_coverage", "qc_num_contigs", "qc_ambiguous_sites", "qc_num_reads", "qc_cgmlst_percent", "cgmlst_schema_salmonella", "cgmlst_schema_ecoli", "cgmlst_schema_campylobacter", "cgmlst_schema_listeria", "cgmlst_schema_klebsiella"]
+    else:
+        relevant_columns = [""]
+    return [x for x in all_cols if x not in relevant_columns]
+    
