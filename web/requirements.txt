@@ -23,6 +23,6 @@ Flask-JWT-Extended >= 3.25.1
 openapi-spec-validator==0.2.9
 pydantic==2.8.2
 hkdf
-python-keycloak==4.7.3
+python-keycloak==4.6.2
 flask-cors
 flask
