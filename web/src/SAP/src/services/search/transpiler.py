@@ -69,6 +69,10 @@ def coerce_term(term: str):
 
 
 def structure_wildcard(field, node):
+    if field in pii_columns():
+        if field == "cpr_nr":   # because cpr is saved as a string in the DB, so don't convert even when consists of only digits
+            return node.term
+        return coerce_term(node.term)
     coerced = coerce_term(node.term)
     if isinstance(coerced, str):
         return check_for_wildcard(field, coerced)
@@ -93,7 +97,9 @@ def is_float_string(value):
         return False
     
 def convert_type(value):
-    if is_float_string(value):
+    if value.isdigit():
+        return int(value)
+    elif is_float_string(value):
         return float(value)
     elif value.isdigit():
         return int(value)
