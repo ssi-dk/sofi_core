@@ -23,11 +23,13 @@ class Approval(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, matrix=None, id=None, approver=None, timestamp=None, sequence_ids=None, status=None):  # noqa: E501
+    def __init__(self, matrix=None, required_values=None, id=None, approver=None, timestamp=None, sequence_ids=None, status=None):  # noqa: E501
         """Approval - a model defined in OpenAPI
 
         :param matrix: The matrix of this Approval.  # noqa: E501
         :type matrix: Dict[str, Dict[str, ApprovalStatus]]
+        :param required_values: The required_values of this Approval.  # noqa: E501
+        :type required_values: Dict[str, Dict[str, str]]
         :param id: The id of this Approval.  # noqa: E501
         :type id: str
         :param approver: The approver of this Approval.  # noqa: E501
@@ -41,6 +43,7 @@ class Approval(Model):
         """
         self.openapi_types = {
             'matrix': Dict[str, Dict[str, ApprovalStatus]],
+            'required_values': Dict[str, Dict[str, str]],
             'id': str,
             'approver': str,
             'timestamp': datetime,
@@ -50,6 +53,7 @@ class Approval(Model):
 
         self.attribute_map = {
             'matrix': 'matrix',
+            'required_values': 'required_values',
             'id': 'id',
             'approver': 'approver',
             'timestamp': 'timestamp',
@@ -58,6 +62,7 @@ class Approval(Model):
         }
 
         self._matrix = matrix
+        self._required_values = required_values
         self._id = id
         self._approver = approver
         self._timestamp = timestamp
@@ -97,6 +102,27 @@ class Approval(Model):
             raise ValueError("Invalid value for `matrix`, must not be `None`")  # noqa: E501
 
         self._matrix = matrix
+
+    @property
+    def required_values(self):
+        """Gets the required_values of this Approval.
+
+
+        :return: The required_values of this Approval.
+        :rtype: Dict[str, Dict[str, str]]
+        """
+        return self._required_values
+
+    @required_values.setter
+    def required_values(self, required_values):
+        """Sets the required_values of this Approval.
+
+
+        :param required_values: The required_values of this Approval.
+        :type required_values: Dict[str, Dict[str, str]]
+        """
+
+        self._required_values = required_values
 
     @property
     def id(self):

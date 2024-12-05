@@ -35,7 +35,7 @@ def post_and_await_reload(isolate_id, institution):
         return {"error": f"Could not reload isolate {isolate_id} due to an error."}, 500
 
 
-def post_and_await_approval(sequence_id, field_mask, user_institution):
+def post_and_await_approval(sequence_id, field_mask, user_institution, required_values):
     data = get_analysis_with_metadata(sequence_id)
     internal_fields = internal_approval_fields()
 
@@ -51,6 +51,9 @@ def post_and_await_approval(sequence_id, field_mask, user_institution):
     # For LIMS, date_analysis_sofi should always be implicitly included
     if institution == "FVST":
         fields["date_analysis_sofi"] = data.get("date_analysis_sofi")
+        
+    for field, val in required_values.items():
+        fields[field] = val  
 
     print(data, file=sys.stderr)
     # TODO UNDO

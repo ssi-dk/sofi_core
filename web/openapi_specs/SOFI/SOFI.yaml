@@ -1031,6 +1031,12 @@ components:
       properties:
         matrix:
           $ref: "#/components/schemas/ApprovalMatrix"
+        required_values:
+          type: object
+          additionalProperties:
+            type: object
+            additionalProperties:
+              type: string
 
     Approval:
       allOf:

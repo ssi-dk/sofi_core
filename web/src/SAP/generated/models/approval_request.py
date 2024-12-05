@@ -19,21 +19,26 @@ class ApprovalRequest(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, matrix=None):  # noqa: E501
+    def __init__(self, matrix=None, required_values=None):  # noqa: E501
         """ApprovalRequest - a model defined in OpenAPI
 
         :param matrix: The matrix of this ApprovalRequest.  # noqa: E501
         :type matrix: Dict[str, Dict[str, ApprovalStatus]]
+        :param required_values: The required_values of this ApprovalRequest.  # noqa: E501
+        :type required_values: Dict[str, Dict[str, str]]
         """
         self.openapi_types = {
             'matrix': Dict[str, Dict[str, ApprovalStatus]],
+            'required_values': Dict[str, Dict[str, str]],
         }
 
         self.attribute_map = {
             'matrix': 'matrix',
+            'required_values': 'required_values',
         }
 
         self._matrix = matrix
+        self._required_values = required_values
 
     @classmethod
     def from_dict(cls, dikt):
@@ -68,3 +73,24 @@ class ApprovalRequest(Model):
             raise ValueError("Invalid value for `matrix`, must not be `None`")  # noqa: E501
 
         self._matrix = matrix
+
+    @property
+    def required_values(self):
+        """Gets the required_values of this ApprovalRequest.
+
+
+        :return: The required_values of this ApprovalRequest.
+        :rtype: Dict[str, Dict[str, str]]
+        """
+        return self._required_values
+
+    @required_values.setter
+    def required_values(self, required_values):
+        """Sets the required_values of this ApprovalRequest.
+
+
+        :param required_values: The required_values of this ApprovalRequest.
+        :type required_values: Dict[str, Dict[str, str]]
+        """
+
+        self._required_values = required_values

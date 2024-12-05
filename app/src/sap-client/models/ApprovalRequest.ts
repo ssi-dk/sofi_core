@@ -30,11 +30,18 @@ export interface ApprovalRequest  {
      * @memberof ApprovalRequest
      */
     matrix: { [key: string]: { [key: string]: ApprovalStatus; }; };
+    /**
+     * 
+     * @type {{ [key: string]: { [key: string]: string; }; }}
+     * @memberof ApprovalRequest
+     */
+    required_values?: { [key: string]: { [key: string]: string; }; };
 }
 
 export function ApprovalRequestFromJSON(json: any): ApprovalRequest {
     return {
         'matrix': json['matrix'],
+        'required_values': !exists(json, 'required_values') ? undefined : json['required_values'],
     };
 }
 
@@ -44,6 +51,7 @@ export function ApprovalRequestToJSON(value?: ApprovalRequest): any {
     }
     return {
         'matrix': value.matrix,
+        'required_values': value.required_values,
     };
 }
 
