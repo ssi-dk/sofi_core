@@ -1,6 +1,7 @@
 import base64
 import json
 import sys
+from datetime import datetime
 from flask import abort
 from typing import Any, Dict
 from web.src.SAP.generated.models.analysis_query import AnalysisQuery
@@ -25,16 +26,41 @@ from web.src.SAP.common.config.column_config import columns
 from ..services.queue_service import post_and_await_reload
 from ..services.search.transpiler import AbstractSyntaxTreeVisitor
 
+    
+def serialize_query_for_json(query):
+    if isinstance(query, dict):
+        return {k: serialize_query_for_json(v) for k, v in query.items()}
+    elif isinstance(query, list):
+        return [serialize_query_for_json(item) for item in query]
+    elif isinstance(query, datetime):
+        return query.isoformat()
+    else:
+        return query
+
+def deserialize_query(query):
+    if isinstance(query, dict):
+        return {k: deserialize_query(v) for k, v in query.items()}
+    elif isinstance(query, list):
+        return [deserialize_query(item) for item in query]
+    elif isinstance(query, str):
+        try:
+            return datetime.fromisoformat(query)
+        except ValueError:
+            return query
+    else:
+        return query
 
 def parse_paging_token(token):
     if token:
         body = base64.b64decode(token)
-        return json.loads(body)
+        parsed = json.loads(body)
+        deserialized_parsed = deserialize_query(parsed)
+        return deserialized_parsed
     else:
         return None
 
-
 def render_paging_token(page_size, query, offset):
+    query = serialize_query_for_json(query)
     body = {"page_size": int(page_size), "query": query, "offset": int(offset)}
     return str(base64.b64encode(json.dumps(body).encode("utf8")), encoding="utf8")
 
