@@ -44,6 +44,7 @@ def create_approval(user, token_info, body: ApprovalRequest):
 
     appr = Approval()
     appr.matrix = body.matrix
+    appr.required_values = body.required_values
     appr.approver = user
     appr.timestamp = datetime.datetime.now()
     appr.status = "submitted"
@@ -82,6 +83,7 @@ def create_approval(user, token_info, body: ApprovalRequest):
         for f in time_fields:
             analysis_timestamp_reverts[error_seq_id] = {f: None}
         del appr.matrix[error_seq_id]
+        del appr.required_values[error_seq_id]
         errors.append(error)
 
     # If any sequences errored out on the metadata service, revert their
@@ -101,7 +103,9 @@ def create_approval(user, token_info, body: ApprovalRequest):
 def handle_approvals(approvals: Approval, institution: str):
     errors = []
     for sequence_id, field_mask in approvals.matrix.items():
-        if error := post_and_await_approval(sequence_id, field_mask, institution):
+        if sequence_id in approvals.required_values:
+            required_values = approvals.required_values[sequence_id]
+        if error := post_and_await_approval(sequence_id, field_mask, institution, required_values):
             errors.append(error)
 
     return errors

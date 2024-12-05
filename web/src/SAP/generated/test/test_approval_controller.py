@@ -34,6 +34,11 @@ class TestApprovalController(BaseTestCase):
         
         """
         body = {
+  "required_values" : {
+    "key" : {
+      "key" : "required_values"
+    }
+  },
   "matrix" : {
     "key" : {
       "key" : "matrix"

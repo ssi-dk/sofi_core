@@ -1215,6 +1215,9 @@ components:
       type: object
     ApprovalRequest:
       example:
+        required_values:
+          key:
+            key: required_values
         matrix:
           key:
             key: matrix
@@ -1223,6 +1226,12 @@ components:
           additionalProperties:
             additionalProperties:
               $ref: '#/components/schemas/ApprovalStatus'
+            type: object
+          type: object
+        required_values:
+          additionalProperties:
+            additionalProperties:
+              type: string
             type: object
           type: object
       required:

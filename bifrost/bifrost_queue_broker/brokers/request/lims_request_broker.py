@@ -119,6 +119,9 @@ class LIMSRequestBroker(RequestBroker):
                 for k, v in fields.items()
                 if reverse_column_mapping.normal_get(k) and v
             }
+            # add edge-case columns that always should be sent
+            mapped_request["ResfinderVersion"] = fields["resfinder_version"]
+            
             logging.debug(f"Reverse-mapped request: {mapped_request}")
             conn_id, lms_cfg = create_lims_conn_config()
 
