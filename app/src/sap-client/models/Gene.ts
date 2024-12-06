@@ -90,6 +90,12 @@ export interface Gene  {
      * @memberof Gene
      */
     ref_acc?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof Gene
+     */
+    grade?: number;
 }
 
 export function GeneFromJSON(json: any): Gene {
@@ -106,6 +112,7 @@ export function GeneFromJSON(json: any): Gene {
         'notes': !exists(json, 'notes') ? undefined : json['notes'],
         'pmids': !exists(json, 'pmids') ? undefined : json['pmids'],
         'ref_acc': !exists(json, 'ref_acc') ? undefined : json['ref_acc'],
+        'grade': !exists(json, 'grade') ? undefined : json['grade'],
     };
 }
 
@@ -126,6 +133,7 @@ export function GeneToJSON(value?: Gene): any {
         'notes': value.notes,
         'pmids': value.pmids,
         'ref_acc': value.ref_acc,
+        'grade': value.grade,
     };
 }
 
