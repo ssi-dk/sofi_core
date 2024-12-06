@@ -106,10 +106,11 @@ export const ResistanceTable = (props: Props) => {
       <Table variant="unstyled" size="sm">
         <Thead style={{ backgroundColor: "#90cdf4" }}>
           <Tr>
-            <Th colSpan={2}>&nbsp;</Th>
+            {/* @ts-expect-error TS2590 */}
+            <Th colSpan={2} style={{borderRight: "1px solid black" }}>&nbsp;</Th>
             {Object.keys(amrClasses).map((amrClass, index) => {
               return (
-                <Th key={`amr-${index}`} colSpan={amrClasses[amrClass].length}>
+                <Th key={`amr-${index}`} colSpan={amrClasses[amrClass].length} style={{ borderLeft: "1px solid black", borderRight: "1px solid black" }}>
                   <Center>{amrClass}</Center>
                 </Th>
               );
@@ -120,10 +121,11 @@ export const ResistanceTable = (props: Props) => {
           </Tr>
           <Tr>
             <Th>Sample</Th>
-            <Th>Summary</Th>
+            <Th style={{borderRight: "1px solid black" }}>Summary</Th>
             {Object.values(amrClasses).map((phenotypes, index) => {
-              return phenotypes.map((phenotype) => {
-                return <Th key={`${phenotype}-${index}`}>{phenotype}</Th>;
+              return phenotypes.map((phenotype, i) => {
+                const isLast = i === phenotypes.length - 1;
+                return <Th key={`${phenotype}-${index}`} style={isLast ? { borderRight: "1px solid black" } : {}}>{phenotype}</Th>;
               });
             })}
             {headerPaddingColSpan > 0 ? (
