@@ -98,13 +98,21 @@ def send_to_microreact(user, token_info, body: NewMicroreactProjectRequestData):
             while status == "init":
                 time.sleep(2)
                 trees_get_api_response = api_instance.hc_tree_result_v1_trees_tc_id_get(
-                    job_id
+                    job_id,
+                    level="basic"
                 )
                 status = trees_get_api_response.status.value
-                result = trees_get_api_response.result
 
             if status == "error":
                 return abort(500, description=result)
+            
+            if status == "completed":
+                trees_get_api_response = api_instance.hc_tree_result_v1_trees_tc_id_get(
+                    job_id,
+                    level="full"
+                )
+            
+            result = trees_get_api_response.result
 
             tree_calcs.append({"method": tree_method, "result": result})
 
