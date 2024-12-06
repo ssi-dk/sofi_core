@@ -70,13 +70,18 @@ def send_to_microreact(user, token_info, body: NewMicroreactProjectRequestData):
             time.sleep(2)
             distance_get_api_response = (
                 api_instance.dmx_result_v1_distance_calculations_dc_id_get(
-                    distance_job_id
+                    distance_job_id,
+                    level='basic'
                 )
             )
             status = distance_get_api_response.status.value
 
         if status == "error":
             return abort(500)
+        
+        # Note:
+        # SOFI does not need the actual distance matrix for now, so no need to request with level='full'.
+        # When SOFI has to send the distance matrix to Microreact another GET call with level='full' will be necessary.
 
         # Trees
         api_instance = TreesApi(api_client)
