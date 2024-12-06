@@ -38,11 +38,16 @@ def post(user, token, body: NearestNeighborsRequest):
 
         while status == "init":
             time.sleep(2)
-            api_response = api_instance.nn_result_v1_nearest_neighbors_nn_id_get(job_id)
+            # Only request basic info about the job when polling (don't ask for result)
+            api_response = api_instance.nn_result_v1_nearest_neighbors_nn_id_get(job_id, level='basic')
             status = api_response.status
 
         if status == "error":
             return jsonify({"status": "error"})
+
+        if status == "completed":
+            # Get the result
+            api_response = api_instance.nn_result_v1_nearest_neighbors_nn_id_get(job_id, level='full')
 
         response_dict = api_response.to_dict()
 
