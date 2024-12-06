@@ -153,13 +153,19 @@ export const ResistanceTable = (props: Props) => {
                         const phenotypeGenes = Object.keys(
                           phenotype?.genes ?? {}
                         ).join(", ");
-                        const grade = phenotype?.grade;
-                        let backgroundColor = "#9D9D9D";
-                        if (grade === 2) {
-                          backgroundColor = "#BEDCBE";
-                        }
-                        if (grade === 3) {
-                          backgroundColor = "#6EBE50";
+
+                        let backgroundColor = "#9D9D9D";  //Default gray color
+                        if (phenotype) {
+                          for (const gene of Object.values(phenotype.genes)) {
+                            if (gene.ref_seq_length === gene.alignment_length) {
+                              if (gene.identity === 100) {
+                                backgroundColor = "#6EBE50"; // Green if everything matches in at least one gene
+                                break;
+                              } else {
+                                backgroundColor = "#BEDCBE"; // Light green if only seq and aln length match
+                              }
+                            }
+                          }
                         }
 
                         return (
