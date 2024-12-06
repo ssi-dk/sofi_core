@@ -150,15 +150,15 @@ export const Judgement = <T extends NotEmpty>(props: Props<T>) => {
       setError(true);
     } else {
       const matrix = {};
-      const required_values = {};
+      const requiredValues = {};
       Object.keys(selection).forEach((key) => {
         matrix[key] = selection[key].cells;
-        required_values[key] = {}
-        required_values[key]["resfinder_version"] =
+        requiredValues[key] = {}
+        requiredValues[key]["resfinder_version"] =
           selection[key].original.resfinder_version ?? "";
       });
 
-      doApproval({ matrix, required_values });
+      doApproval({ matrix, required_values: requiredValues });
     }
   }, [selection, doApproval, setNeedsApproveNotify, getDependentColumns]);
 
