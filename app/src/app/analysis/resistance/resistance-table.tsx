@@ -156,7 +156,7 @@ export const ResistanceTable = (props: Props) => {
               <Fragment key={sampleId}>
                 <Tr>
                   <Td>
-                    {samples?.[sampleId]?.name || sequenceId}
+                    {sequenceId}
                     <div onClick={() => toggleRowCollapse(sampleId)} style={{ cursor: "pointer" }}>
                       {isRowCollapsed ? <ChevronRightIcon /> : <ChevronDownIcon />} Gene Details
                     </div>
