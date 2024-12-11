@@ -121,7 +121,6 @@ export const ResistanceTable = (props: Props) => {
       <Table variant="unstyled" size="sm">
         <Thead style={{ backgroundColor: "#90cdf4" }}>
           <Tr>
-            {/* @ts-expect-error TS2590 */}
             <Th colSpan={2} style={{borderRight: "1px solid black" }}>&nbsp;</Th>
             {Object.keys(amrClasses).map((amrClass, index) => {
               return (
