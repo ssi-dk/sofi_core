@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useMemo } from "react";
+import React, { Fragment, useEffect, useMemo, useState } from "react";
 import {
   Center,
   Spinner,
@@ -16,6 +16,7 @@ import { requestGetSampleById } from "./resistance-query-configs";
 import { requestAsync } from "redux-query";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "app/root-reducer";
+import { ChevronDownIcon, ChevronRightIcon } from "@chakra-ui/icons";
 
 type Props = {
   selection: DataTableSelection<AnalysisResult>;
@@ -24,6 +25,13 @@ type Props = {
 export const ResistanceTable = (props: Props) => {
   const { selection } = props;
   const dispatch = useDispatch();
+  const [collapsedRows, setCollapsedRows] = useState<Record<string, boolean>>(() => {
+    const initialCollapsedState: Record<string, boolean> = {};
+    Object.values(selection).forEach((row) => {
+      initialCollapsedState[row.original.id] = true;
+    });
+    return initialCollapsedState;
+  });
 
   const samples = useSelector<RootState>((s) => s.entities.samples) as Record<
     string,
@@ -101,6 +109,13 @@ export const ResistanceTable = (props: Props) => {
       .map((amrClass) => amrClasses[amrClass].length)
       .reduce((a, b) => a + b, 0);
 
+  const toggleRowCollapse = (rowId: string) => {
+    setCollapsedRows((prev) => ({
+      ...prev,
+      [rowId]: !prev[rowId],
+    }));
+  };    
+
   return (
     <TableContainer>
       <Table variant="unstyled" size="sm">
@@ -137,10 +152,16 @@ export const ResistanceTable = (props: Props) => {
           {Object.values(selection).map((row) => {
             const sampleId = row.original.id;
             const sequenceId = row.original.sequence_id;
+            const isRowCollapsed = collapsedRows[sampleId] ?? true;
             return (
               <Fragment key={sampleId}>
                 <Tr>
-                  <Td>{samples?.[sampleId]?.name || sequenceId}</Td>
+                  <Td>
+                    {samples?.[sampleId]?.name || sequenceId}
+                    <div onClick={() => toggleRowCollapse(sampleId)} style={{ cursor: "pointer" }}>
+                      {isRowCollapsed ? <ChevronRightIcon /> : <ChevronDownIcon />} Gene Details
+                    </div>
+</Td>
                   <Td>
                     {samples?.[sampleId]?.categories?.resistance?.summary}
                   </Td>
@@ -194,7 +215,7 @@ export const ResistanceTable = (props: Props) => {
                   </Tr>
                 )}
                 {samples?.[sampleId] &&
-                  Object.keys(genes?.[sampleId] ?? {}).length > 0 && (
+                  Object.keys(genes?.[sampleId] ?? {}).length > 0 && !isRowCollapsed && (
                     <>
                       <Tr
                         style={{ fontWeight: 700, backgroundColor: "#A29DC4" }}
