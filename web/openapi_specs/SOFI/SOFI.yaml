@@ -1097,7 +1097,7 @@ components:
 
     Resistance:
       type: string
-      enum: ["Sensitiv", "Resistent", "Ukendt"]
+      enum: ["Sensitiv", "Resistent"]
 
     BaseMetadata:
       required:
