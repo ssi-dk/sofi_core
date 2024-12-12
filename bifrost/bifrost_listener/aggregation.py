@@ -10,7 +10,6 @@ def removeNullProperty(expr):
     - Virulence_genes
     - Adheasion_final
     - Toxin_final
-    - AMR_profile
     - QC_cgMLST%
     - cgMLST skema Salmonella
     - cgMLST skema E. coli
