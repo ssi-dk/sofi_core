@@ -99,6 +99,7 @@ def agg_pipeline(changed_ids=None):
                         + "$categories.resistance.summary.point_mutations"
                     ]
                 },
+                "amr_profile": "$categories.resistance.summary",
                 "resistance": "$categories.resistance",
                 "resfinder_version": "$categories.resistance.resfinder_version",
                 "sero_enterobase": "$categories.serotype.report.enterobase_serotype1",
