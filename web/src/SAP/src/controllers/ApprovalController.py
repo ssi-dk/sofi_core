@@ -131,15 +131,17 @@ def find_approved_categories(fields: Dict[str, ApprovalStatus]):
         if fields[f] == "approved":
             if f == "st_final":
                 time_fields.append("date_approved_st")
-            if f == "qc_final":
+            elif f == "qc_final":
                 time_fields.append("date_approved_qc")
-            if f == "serotype_final":
+            elif f == "serotype_final":
                 time_fields.append("date_approved_serotype")
-            if f == "toxins_final":
+            elif f == "toxins_final":
                 time_fields.append("date_approved_toxin")
-            if f == "cluster_id":
+            elif f == "cluster_id":
                 time_fields.append("date_approved_cluster")
-            if f == "amr_profile":
+            elif f == "amr_profile":
                 time_fields.append("date_approved_amr")
+            elif f == "cdiff_details":
+                time_fields.append("date_approved_cdiff")
 
     return time_fields

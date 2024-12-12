@@ -1916,6 +1916,9 @@ components:
         date_approved_cluster:
           format: date-time
           type: string
+        date_approved_cdiff:
+          format: date-time
+          type: string
         qc_provided_species:
           type: string
         qc_genome1x:
@@ -2084,6 +2087,20 @@ components:
           type: object
         cgmlst_schema_klebsiella:
           type: object
+        trst:
+          type: string
+        tcda:
+          type: string
+        tcdb:
+          type: string
+        cdta_cdtb:
+          type: string
+        del_117:
+          type: string
+        a117t:
+          type: string
+        cdiff_details:
+          type: string
       required:
       - isolate_id
       type: object

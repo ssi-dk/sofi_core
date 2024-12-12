@@ -1249,6 +1249,9 @@ components:
             date_approved_cluster:
               type: string
               format: date-time
+            date_approved_cdiff:
+              type: string
+              format: date-time
             qc_provided_species:
               type: string
             qc_genome1x:
@@ -1421,6 +1424,20 @@ components:
               type: object
             cgmlst_schema_klebsiella:
               type: object
+            trst:
+              type: string
+            tcda:
+              type: string
+            tcdb:
+              type: string
+            cdta_cdtb:
+              type: string
+            del_117:
+              type: string
+            a117t:
+              type: string
+            cdiff_details:
+              type: string
 
     NewickTreeResponse:
       type: object

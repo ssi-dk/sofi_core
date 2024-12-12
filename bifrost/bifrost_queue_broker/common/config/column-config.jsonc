@@ -245,6 +245,10 @@
     "computed": true
   },
   {
+    "field_name": "date_approved_cdiff",
+    "computed": true
+  },
+  {
     "field_name": "date_analysis_sofi",
     "computed": true
   }
