@@ -10,7 +10,6 @@ def removeNullProperty(expr):
     - Virulence_genes
     - Adheasion_final
     - Toxin_final
-    - AMR_profile
     - QC_cgMLST%
     - cgMLST skema Salmonella
     - cgMLST skema E. coli
@@ -93,12 +92,25 @@ def agg_pipeline(changed_ids=None):
                     }
                 },
                 "resistance_genes": {
-                    "$concat": [
-                        "$categories.resistance.summary.genes"
-                        + " "
-                        + "$categories.resistance.summary.point_mutations"
-                    ]
+                    "$reduce": {
+                        "input": {
+                            "$map": {
+                                "input": {"$objectToArray": "$categories.resistance.report.phenotypes"},
+                                "as": "phenotype",
+                                "in": {
+                                    "$reduce": {
+                                        "input": {"$objectToArray": "$$phenotype.v.genes"},
+                                        "initialValue": "",
+                                        "in": {"$concat": ["$$value", {"$cond": [{"$eq": ["$$value", ""]}, "", ", "]}, "$$this.k"]}
+                                    }
+                                }
+                            }
+                        },
+                        "initialValue": "",
+                        "in": {"$concat": ["$$value", {"$cond": [{"$eq": ["$$value", ""]}, "", ", "]}, "$$this"]}
+                    }
                 },
+                "amr_profile": "$categories.resistance.summary",
                 "resistance": "$categories.resistance",
                 "resfinder_version": "$categories.resistance.resfinder_version",
                 "sero_enterobase": "$categories.serotype.report.enterobase_serotype1",
