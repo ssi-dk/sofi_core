@@ -1281,7 +1281,6 @@ components:
       enum:
       - Sensitiv
       - Resistent
-      - Ukendt
       type: string
     BaseMetadata:
       properties:

@@ -586,14 +586,14 @@ def agg_pipeline(changed_ids=None):
                                                                         '$$amr', None
                                                                     ]
                                                                 }, 
-                                                                'then': 'Ukendt'
+                                                                'then': 'Sensitiv'
                                                             }, {
                                                                 'case': {
                                                                     '$eq': [
                                                                         '$$amr', '$null'
                                                                     ]
                                                                 }, 
-                                                                'then': 'Ukendt'
+                                                                'then': 'Sensitiv'
                                                             }, {
                                                                 'case': {
                                                                     '$eq': [
@@ -610,7 +610,7 @@ def agg_pipeline(changed_ids=None):
                                                                 'then': 'Resistent'
                                                             }
                                                         ], 
-                                                        'default': 'Ukendt'
+                                                        'default': 'Sensitiv'
                                                     }
                                                 }
                                             }
