@@ -257,6 +257,13 @@ def agg_pipeline(changed_ids=None):
                 "qc_avg_coverage": "$categories.denovo_assembly.summary.depth",
                 "qc_num_contigs": "$categories.denovo_assembly.summary.contigs",
                 "qc_num_reads": "$categories.size_check.summary.num_of_reads",
+                "trst": "$categories.bifrost_sp_cdiff.summary.TRST",
+                "tcda": "$categories.bifrost_sp_cdiff.summary.tcdA",
+                "tcdb": "$categories.bifrost_sp_cdiff.summary.tcdB",
+                "cdta_cdtb": "$categories.bifrost_sp_cdiff.summary.cdtA/B",
+                "del117": "$categories.bifrost_sp_cdiff.summary.117del",
+                "a117t": "$categories.bifrost_sp_cdiff.summary.A117T",
+                "cdiff_details": "$categories.bifrost_sp_cdiff.summary.tcdA:tcdB:tcdC:cdtA:cdtB",                
                 "qc_main_sp_plus_uncl": removeNullProperty(
                     {
                         "$round": [

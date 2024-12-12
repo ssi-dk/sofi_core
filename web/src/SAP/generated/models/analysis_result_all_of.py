@@ -21,7 +21,7 @@ class AnalysisResultAllOf(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, latest_for_isolate=None, resfinder_version=None, date_received_kma=None, date_analysis_sofi=None, date_approved_serotype=None, date_approved_qc=None, date_approved_amr=None, date_approved_st=None, date_approved_toxin=None, date_approved_cluster=None, qc_provided_species=None, qc_genome1x=None, qc_genome10x=None, qc_gsize_diff1x10=None, qc_avg_coverage=None, qc_final=None, qc_action=None, qc_num_contigs=None, qc_ambiguous_sites=None, qc_num_reads=None, qc_main_sp_plus_uncl=None, qc_unclassified_reads=None, qc_db_id=None, qc_db_id2=None, qc_failed_tests=None, qc_cgmlst_percent=None, subspecies=None, species_final=None, st=None, st_final=None, st_alleles=None, pathotype=None, pathotype_final=None, sero_enterobase=None, sero_seqsero=None, sero_antigen_seqsero=None, sero_d_tartrate=None, sero_serotype_finder=None, serotype_final=None, adhesion_final=None, virulence_genes=None, toxins_final=None, infection_source=None, resistance_genes=None, amr_profile=None, comment=None, comment_cluster=None, comment_general=None, comment_supplementary=None, comment_qc=None, amr_ami=None, amr_amp=None, amr_azi=None, amr_fep=None, amr_fot=None, amr_f_c=None, amr_fox=None, amr_taz=None, amr_t_c=None, amr_chl=None, amr_cip=None, amr_cli=None, amr_col=None, amr_dap=None, amr_etp=None, amr_ery=None, amr_fus=None, amr_gen=None, amr_imi=None, amr_kan=None, amr_lzd=None, amr_mero=None, amr_mup=None, amr_nal=None, amr_pen=None, amr_syn=None, amr_rif=None, amr_str=None, amr_sul=None, amr_tei=None, amr_trm=None, amr_tet=None, amr_tia=None, amr_tgc=None, amr_tmp=None, amr_van=None, cgmlst_schema_salmonella=None, cgmlst_schema_ecoli=None, cgmlst_schema_campylobacter=None, cgmlst_schema_listeria=None, cgmlst_schema_klebsiella=None):  # noqa: E501
+    def __init__(self, latest_for_isolate=None, resfinder_version=None, date_received_kma=None, date_analysis_sofi=None, date_approved_serotype=None, date_approved_qc=None, date_approved_amr=None, date_approved_st=None, date_approved_toxin=None, date_approved_cluster=None, date_approved_cdiff=None, qc_provided_species=None, qc_genome1x=None, qc_genome10x=None, qc_gsize_diff1x10=None, qc_avg_coverage=None, qc_final=None, qc_action=None, qc_num_contigs=None, qc_ambiguous_sites=None, qc_num_reads=None, qc_main_sp_plus_uncl=None, qc_unclassified_reads=None, qc_db_id=None, qc_db_id2=None, qc_failed_tests=None, qc_cgmlst_percent=None, subspecies=None, species_final=None, st=None, st_final=None, st_alleles=None, pathotype=None, pathotype_final=None, sero_enterobase=None, sero_seqsero=None, sero_antigen_seqsero=None, sero_d_tartrate=None, sero_serotype_finder=None, serotype_final=None, adhesion_final=None, virulence_genes=None, toxins_final=None, infection_source=None, resistance_genes=None, amr_profile=None, comment=None, comment_cluster=None, comment_general=None, comment_supplementary=None, comment_qc=None, amr_ami=None, amr_amp=None, amr_azi=None, amr_fep=None, amr_fot=None, amr_f_c=None, amr_fox=None, amr_taz=None, amr_t_c=None, amr_chl=None, amr_cip=None, amr_cli=None, amr_col=None, amr_dap=None, amr_etp=None, amr_ery=None, amr_fus=None, amr_gen=None, amr_imi=None, amr_kan=None, amr_lzd=None, amr_mero=None, amr_mup=None, amr_nal=None, amr_pen=None, amr_syn=None, amr_rif=None, amr_str=None, amr_sul=None, amr_tei=None, amr_trm=None, amr_tet=None, amr_tia=None, amr_tgc=None, amr_tmp=None, amr_van=None, cgmlst_schema_salmonella=None, cgmlst_schema_ecoli=None, cgmlst_schema_campylobacter=None, cgmlst_schema_listeria=None, cgmlst_schema_klebsiella=None, trst=None, tcda=None, tcdb=None, cdta_cdtb=None, del_117=None, a117t=None, cdiff_details=None):  # noqa: E501
         """AnalysisResultAllOf - a model defined in OpenAPI
 
         :param latest_for_isolate: The latest_for_isolate of this AnalysisResultAllOf.  # noqa: E501
@@ -44,6 +44,8 @@ class AnalysisResultAllOf(Model):
         :type date_approved_toxin: datetime
         :param date_approved_cluster: The date_approved_cluster of this AnalysisResultAllOf.  # noqa: E501
         :type date_approved_cluster: datetime
+        :param date_approved_cdiff: The date_approved_cdiff of this AnalysisResultAllOf.  # noqa: E501
+        :type date_approved_cdiff: datetime
         :param qc_provided_species: The qc_provided_species of this AnalysisResultAllOf.  # noqa: E501
         :type qc_provided_species: str
         :param qc_genome1x: The qc_genome1x of this AnalysisResultAllOf.  # noqa: E501
@@ -206,6 +208,20 @@ class AnalysisResultAllOf(Model):
         :type cgmlst_schema_listeria: object
         :param cgmlst_schema_klebsiella: The cgmlst_schema_klebsiella of this AnalysisResultAllOf.  # noqa: E501
         :type cgmlst_schema_klebsiella: object
+        :param trst: The trst of this AnalysisResultAllOf.  # noqa: E501
+        :type trst: str
+        :param tcda: The tcda of this AnalysisResultAllOf.  # noqa: E501
+        :type tcda: str
+        :param tcdb: The tcdb of this AnalysisResultAllOf.  # noqa: E501
+        :type tcdb: str
+        :param cdta_cdtb: The cdta_cdtb of this AnalysisResultAllOf.  # noqa: E501
+        :type cdta_cdtb: str
+        :param del_117: The del_117 of this AnalysisResultAllOf.  # noqa: E501
+        :type del_117: str
+        :param a117t: The a117t of this AnalysisResultAllOf.  # noqa: E501
+        :type a117t: str
+        :param cdiff_details: The cdiff_details of this AnalysisResultAllOf.  # noqa: E501
+        :type cdiff_details: str
         """
         self.openapi_types = {
             'latest_for_isolate': str,
@@ -218,6 +234,7 @@ class AnalysisResultAllOf(Model):
             'date_approved_st': datetime,
             'date_approved_toxin': datetime,
             'date_approved_cluster': datetime,
+            'date_approved_cdiff': datetime,
             'qc_provided_species': str,
             'qc_genome1x': float,
             'qc_genome10x': float,
@@ -299,6 +316,13 @@ class AnalysisResultAllOf(Model):
             'cgmlst_schema_campylobacter': object,
             'cgmlst_schema_listeria': object,
             'cgmlst_schema_klebsiella': object,
+            'trst': str,
+            'tcda': str,
+            'tcdb': str,
+            'cdta_cdtb': str,
+            'del_117': str,
+            'a117t': str,
+            'cdiff_details': str,
         }
 
         self.attribute_map = {
@@ -312,6 +336,7 @@ class AnalysisResultAllOf(Model):
             'date_approved_st': 'date_approved_st',
             'date_approved_toxin': 'date_approved_toxin',
             'date_approved_cluster': 'date_approved_cluster',
+            'date_approved_cdiff': 'date_approved_cdiff',
             'qc_provided_species': 'qc_provided_species',
             'qc_genome1x': 'qc_genome1x',
             'qc_genome10x': 'qc_genome10x',
@@ -393,6 +418,13 @@ class AnalysisResultAllOf(Model):
             'cgmlst_schema_campylobacter': 'cgmlst_schema_campylobacter',
             'cgmlst_schema_listeria': 'cgmlst_schema_listeria',
             'cgmlst_schema_klebsiella': 'cgmlst_schema_klebsiella',
+            'trst': 'trst',
+            'tcda': 'tcda',
+            'tcdb': 'tcdb',
+            'cdta_cdtb': 'cdta_cdtb',
+            'del_117': 'del_117',
+            'a117t': 'a117t',
+            'cdiff_details': 'cdiff_details',
         }
 
         self._latest_for_isolate = latest_for_isolate
@@ -405,6 +437,7 @@ class AnalysisResultAllOf(Model):
         self._date_approved_st = date_approved_st
         self._date_approved_toxin = date_approved_toxin
         self._date_approved_cluster = date_approved_cluster
+        self._date_approved_cdiff = date_approved_cdiff
         self._qc_provided_species = qc_provided_species
         self._qc_genome1x = qc_genome1x
         self._qc_genome10x = qc_genome10x
@@ -486,6 +519,13 @@ class AnalysisResultAllOf(Model):
         self._cgmlst_schema_campylobacter = cgmlst_schema_campylobacter
         self._cgmlst_schema_listeria = cgmlst_schema_listeria
         self._cgmlst_schema_klebsiella = cgmlst_schema_klebsiella
+        self._trst = trst
+        self._tcda = tcda
+        self._tcdb = tcdb
+        self._cdta_cdtb = cdta_cdtb
+        self._del_117 = del_117
+        self._a117t = a117t
+        self._cdiff_details = cdiff_details
 
     @classmethod
     def from_dict(cls, dikt):
@@ -709,6 +749,27 @@ class AnalysisResultAllOf(Model):
         """
 
         self._date_approved_cluster = date_approved_cluster
+
+    @property
+    def date_approved_cdiff(self):
+        """Gets the date_approved_cdiff of this AnalysisResultAllOf.
+
+
+        :return: The date_approved_cdiff of this AnalysisResultAllOf.
+        :rtype: datetime
+        """
+        return self._date_approved_cdiff
+
+    @date_approved_cdiff.setter
+    def date_approved_cdiff(self, date_approved_cdiff):
+        """Sets the date_approved_cdiff of this AnalysisResultAllOf.
+
+
+        :param date_approved_cdiff: The date_approved_cdiff of this AnalysisResultAllOf.
+        :type date_approved_cdiff: datetime
+        """
+
+        self._date_approved_cdiff = date_approved_cdiff
 
     @property
     def qc_provided_species(self):
@@ -2416,3 +2477,150 @@ class AnalysisResultAllOf(Model):
         """
 
         self._cgmlst_schema_klebsiella = cgmlst_schema_klebsiella
+
+    @property
+    def trst(self):
+        """Gets the trst of this AnalysisResultAllOf.
+
+
+        :return: The trst of this AnalysisResultAllOf.
+        :rtype: str
+        """
+        return self._trst
+
+    @trst.setter
+    def trst(self, trst):
+        """Sets the trst of this AnalysisResultAllOf.
+
+
+        :param trst: The trst of this AnalysisResultAllOf.
+        :type trst: str
+        """
+
+        self._trst = trst
+
+    @property
+    def tcda(self):
+        """Gets the tcda of this AnalysisResultAllOf.
+
+
+        :return: The tcda of this AnalysisResultAllOf.
+        :rtype: str
+        """
+        return self._tcda
+
+    @tcda.setter
+    def tcda(self, tcda):
+        """Sets the tcda of this AnalysisResultAllOf.
+
+
+        :param tcda: The tcda of this AnalysisResultAllOf.
+        :type tcda: str
+        """
+
+        self._tcda = tcda
+
+    @property
+    def tcdb(self):
+        """Gets the tcdb of this AnalysisResultAllOf.
+
+
+        :return: The tcdb of this AnalysisResultAllOf.
+        :rtype: str
+        """
+        return self._tcdb
+
+    @tcdb.setter
+    def tcdb(self, tcdb):
+        """Sets the tcdb of this AnalysisResultAllOf.
+
+
+        :param tcdb: The tcdb of this AnalysisResultAllOf.
+        :type tcdb: str
+        """
+
+        self._tcdb = tcdb
+
+    @property
+    def cdta_cdtb(self):
+        """Gets the cdta_cdtb of this AnalysisResultAllOf.
+
+
+        :return: The cdta_cdtb of this AnalysisResultAllOf.
+        :rtype: str
+        """
+        return self._cdta_cdtb
+
+    @cdta_cdtb.setter
+    def cdta_cdtb(self, cdta_cdtb):
+        """Sets the cdta_cdtb of this AnalysisResultAllOf.
+
+
+        :param cdta_cdtb: The cdta_cdtb of this AnalysisResultAllOf.
+        :type cdta_cdtb: str
+        """
+
+        self._cdta_cdtb = cdta_cdtb
+
+    @property
+    def del_117(self):
+        """Gets the del_117 of this AnalysisResultAllOf.
+
+
+        :return: The del_117 of this AnalysisResultAllOf.
+        :rtype: str
+        """
+        return self._del_117
+
+    @del_117.setter
+    def del_117(self, del_117):
+        """Sets the del_117 of this AnalysisResultAllOf.
+
+
+        :param del_117: The del_117 of this AnalysisResultAllOf.
+        :type del_117: str
+        """
+
+        self._del_117 = del_117
+
+    @property
+    def a117t(self):
+        """Gets the a117t of this AnalysisResultAllOf.
+
+
+        :return: The a117t of this AnalysisResultAllOf.
+        :rtype: str
+        """
+        return self._a117t
+
+    @a117t.setter
+    def a117t(self, a117t):
+        """Sets the a117t of this AnalysisResultAllOf.
+
+
+        :param a117t: The a117t of this AnalysisResultAllOf.
+        :type a117t: str
+        """
+
+        self._a117t = a117t
+
+    @property
+    def cdiff_details(self):
+        """Gets the cdiff_details of this AnalysisResultAllOf.
+
+
+        :return: The cdiff_details of this AnalysisResultAllOf.
+        :rtype: str
+        """
+        return self._cdiff_details
+
+    @cdiff_details.setter
+    def cdiff_details(self, cdiff_details):
+        """Sets the cdiff_details of this AnalysisResultAllOf.
+
+
+        :param cdiff_details: The cdiff_details of this AnalysisResultAllOf.
+        :type cdiff_details: str
+        """
+
+        self._cdiff_details = cdiff_details

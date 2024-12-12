@@ -89,6 +89,12 @@ export interface AnalysisResultAllOf  {
     date_approved_cluster?: Date;
     /**
      * 
+     * @type {Date}
+     * @memberof AnalysisResultAllOf
+     */
+    date_approved_cdiff?: Date;
+    /**
+     * 
      * @type {string}
      * @memberof AnalysisResultAllOf
      */
@@ -573,6 +579,48 @@ export interface AnalysisResultAllOf  {
      * @memberof AnalysisResultAllOf
      */
     cgmlst_schema_klebsiella?: object;
+    /**
+     * 
+     * @type {string}
+     * @memberof AnalysisResultAllOf
+     */
+    trst?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof AnalysisResultAllOf
+     */
+    tcda?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof AnalysisResultAllOf
+     */
+    tcdb?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof AnalysisResultAllOf
+     */
+    cdta_cdtb?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof AnalysisResultAllOf
+     */
+    del_117?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof AnalysisResultAllOf
+     */
+    a117t?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof AnalysisResultAllOf
+     */
+    cdiff_details?: string;
 }
 
 export function AnalysisResultAllOfFromJSON(json: any): AnalysisResultAllOf {
@@ -587,6 +635,7 @@ export function AnalysisResultAllOfFromJSON(json: any): AnalysisResultAllOf {
         'date_approved_st': !exists(json, 'date_approved_st') ? undefined : new Date(json['date_approved_st']),
         'date_approved_toxin': !exists(json, 'date_approved_toxin') ? undefined : new Date(json['date_approved_toxin']),
         'date_approved_cluster': !exists(json, 'date_approved_cluster') ? undefined : new Date(json['date_approved_cluster']),
+        'date_approved_cdiff': !exists(json, 'date_approved_cdiff') ? undefined : new Date(json['date_approved_cdiff']),
         'qc_provided_species': !exists(json, 'qc_provided_species') ? undefined : json['qc_provided_species'],
         'qc_genome1x': !exists(json, 'qc_genome1x') ? undefined : json['qc_genome1x'],
         'qc_genome10x': !exists(json, 'qc_genome10x') ? undefined : json['qc_genome10x'],
@@ -668,6 +717,13 @@ export function AnalysisResultAllOfFromJSON(json: any): AnalysisResultAllOf {
         'cgmlst_schema_campylobacter': !exists(json, 'cgmlst_schema_campylobacter') ? undefined : json['cgmlst_schema_campylobacter'],
         'cgmlst_schema_listeria': !exists(json, 'cgmlst_schema_listeria') ? undefined : json['cgmlst_schema_listeria'],
         'cgmlst_schema_klebsiella': !exists(json, 'cgmlst_schema_klebsiella') ? undefined : json['cgmlst_schema_klebsiella'],
+        'trst': !exists(json, 'trst') ? undefined : json['trst'],
+        'tcda': !exists(json, 'tcda') ? undefined : json['tcda'],
+        'tcdb': !exists(json, 'tcdb') ? undefined : json['tcdb'],
+        'cdta_cdtb': !exists(json, 'cdta_cdtb') ? undefined : json['cdta_cdtb'],
+        'del_117': !exists(json, 'del_117') ? undefined : json['del_117'],
+        'a117t': !exists(json, 'a117t') ? undefined : json['a117t'],
+        'cdiff_details': !exists(json, 'cdiff_details') ? undefined : json['cdiff_details'],
     };
 }
 
@@ -686,6 +742,7 @@ export function AnalysisResultAllOfToJSON(value?: AnalysisResultAllOf): any {
         'date_approved_st': value.date_approved_st === undefined ? undefined : value.date_approved_st.toISOString(),
         'date_approved_toxin': value.date_approved_toxin === undefined ? undefined : value.date_approved_toxin.toISOString(),
         'date_approved_cluster': value.date_approved_cluster === undefined ? undefined : value.date_approved_cluster.toISOString(),
+        'date_approved_cdiff': value.date_approved_cdiff === undefined ? undefined : value.date_approved_cdiff.toISOString(),
         'qc_provided_species': value.qc_provided_species,
         'qc_genome1x': value.qc_genome1x,
         'qc_genome10x': value.qc_genome10x,
@@ -767,6 +824,13 @@ export function AnalysisResultAllOfToJSON(value?: AnalysisResultAllOf): any {
         'cgmlst_schema_campylobacter': value.cgmlst_schema_campylobacter,
         'cgmlst_schema_listeria': value.cgmlst_schema_listeria,
         'cgmlst_schema_klebsiella': value.cgmlst_schema_klebsiella,
+        'trst': value.trst,
+        'tcda': value.tcda,
+        'tcdb': value.tcdb,
+        'cdta_cdtb': value.cdta_cdtb,
+        'del_117': value.del_117,
+        'a117t': value.a117t,
+        'cdiff_details': value.cdiff_details,
     };
 }
 

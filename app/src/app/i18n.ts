@@ -155,6 +155,13 @@ const fieldDisplayNames = {
     cgmlst_schema_campylobacter: "cgMLST skema Campylobacter",
     cgmlst_schema_listeria: "cgMLST skema Listeria",
     cgmlst_schema_klebsiella: "cgMLST skema Klebsiella",
+    trst: "TRST",
+    tcda: "tcdA",
+    tcdb: "tcdB",
+    cdta_cdtb: "cdtA_cdtB",
+    del_117: "117del",
+    a117t: "A117T",
+    cdiff_details: "Cdiff_details",
   } as { [key in keyof AnalysisResult]: string },
 };
 
