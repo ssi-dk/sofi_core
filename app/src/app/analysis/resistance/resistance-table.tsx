@@ -121,7 +121,7 @@ export const ResistanceTable = (props: Props) => {
       <Table variant="unstyled" size="sm">
         <Thead style={{ backgroundColor: "#90cdf4" }}>
           <Tr>
-            <Th colSpan={2} style={{borderRight: "1px solid black" }}>&nbsp;</Th>
+            <Th colSpan={2} style={ {borderRight: "1px solid black" } } >&nbsp;</Th>
             {Object.keys(amrClasses).map((amrClass, index) => {
               return (
                 <Th key={`amr-${index}`} colSpan={amrClasses[amrClass].length} style={{ borderLeft: "1px solid black", borderRight: "1px solid black" }}>
@@ -135,7 +135,7 @@ export const ResistanceTable = (props: Props) => {
           </Tr>
           <Tr>
             <Th>Sample</Th>
-            <Th style={{borderRight: "1px solid black" }}>Summary</Th>
+            <Th style={ {borderRight: "1px solid black" } } >Summary</Th>
             {Object.values(amrClasses).map((phenotypes, index) => {
               return phenotypes.map((phenotype, i) => {
                 const isLast = i === phenotypes.length - 1;
