@@ -1,4 +1,9 @@
+import os, sys
+import threading
 from typing import Dict
+
+from web.src.SAP.common.database import get_connection
+from web.src.SAP.src.controllers.poc_tbr_broker_approve_fields import approve_fields
 from web.src.SAP.src.repositories.analysis import (get_single_analysis, update_analysis)
 from web.src.SAP.generated.models import Approval, ApprovalRequest, ApprovalStatus
 from ..repositories.approval import (
@@ -11,7 +16,6 @@ from ..repositories.approval import (
 from flask.json import jsonify
 from flask import abort
 import json
-import sys
 import datetime
 import uuid
 import logging
@@ -75,30 +79,73 @@ def create_approval(user, token_info, body: ApprovalRequest):
 
     update_analysis(analysis_timestamp_updates)
 
-    errors_tuple = handle_approvals(appr, token_info["institution"])
+#### POC - Synchronous TBR Request Broker ####
+    # errors_tuple = handle_approvals(appr, token_info["institution"])
+    errors = handle_approvals_synch_POC(appr)
+    if errors:
+        return jsonify({"success": False, "errors": errors}), 400
+    return jsonify({"success": True}), 200
+
+    # errors = []
+    # analysis_timestamp_reverts = {}
+    # for error_seq_id, error in errors_tuple:
+    #     time_fields = find_approved_categories(appr.matrix[error_seq_id])
+    #     for f in time_fields:
+    #         analysis_timestamp_reverts[error_seq_id] = {f: None}
+    #     del appr.matrix[error_seq_id]
+    #     del appr.required_values[error_seq_id]
+    #     errors.append(error)
+
+    # # If any sequences errored out on the metadata service, revert their
+    # # date_analysis_sofi timestamp
+    # update_analysis(analysis_timestamp_reverts)
+
+    # # Insert approval after matrix has been manipulated
+    # res = insert_approval(token_info["email"], appr)
+
+    # return (
+    #     jsonify({"success": appr.to_dict(), "error": errors})
+    #     if res != None
+    #     else abort(400)
+    # )
+
+
+
+
+
+TBR_COLLECTION_NAME = os.environ.get(
+    "BIFROST_MONGO_TBR_METADATA_COLLECTION", "sap_tbr_metadata"
+)
+QUEUE_COLLECTION_NAME = os.environ.get(
+    "BIFROST_MONGO_QUEUE_COLLECTION", "sap_broker_queue"
+)
+
+DB_NAME = os.environ.get("BIFROST_MONGO_DB", "bifrost_test")
+conn, enc = get_connection(with_enc=True)
+db = conn[DB_NAME]
+
+TBR_data_lock = threading.Lock()
+
+# tbr_request_broker = TBRRequestBroker(TBR_data_lock, QUEUE_COLLECTION_NAME, TBR_COLLECTION_NAME, 2, db)
+
+def handle_approvals_synch_POC(approvals: Approval):
     errors = []
-    analysis_timestamp_reverts = {}
-    for error_seq_id, error in errors_tuple:
-        time_fields = find_approved_categories(appr.matrix[error_seq_id])
-        for f in time_fields:
-            analysis_timestamp_reverts[error_seq_id] = {f: None}
-        del appr.matrix[error_seq_id]
-        del appr.required_values[error_seq_id]
-        errors.append(error)
+    for sequence_id, field_mask in approvals.matrix.items():
+        if sequence_id in approvals.required_values:
+            required_values = approvals.required_values[sequence_id]
+        request = {
+            "isolate_id": sequence_id,
+            "request_type": "approve",
+            "body": required_values
+        }
+        try:
+            approve_fields(request)
+        except Exception as e:
+            errors.append(str(e))
+    return errors
 
-    # If any sequences errored out on the metadata service, revert their
-    # date_analysis_sofi timestamp
-    update_analysis(analysis_timestamp_reverts)
 
-    # Insert approval after matrix has been manipulated
-    res = insert_approval(token_info["email"], appr)
-
-    return (
-        jsonify({"success": appr.to_dict(), "error": errors})
-        if res != None
-        else abort(400)
-    )
-
+##############################################
 
 def handle_approvals(approvals: Approval, institution: str):
     errors = []

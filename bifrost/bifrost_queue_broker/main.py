@@ -59,14 +59,14 @@ def main():
     TBR_data_lock = threading.Lock()
     LIMS_data_lock = threading.Lock()
 
-    # Some of the brokers take different arguments other than the db and collection. Partially apply these.
-    tbr_requests = partial(
-        TBRRequestBroker,
-        TBR_data_lock,
-        QUEUE_COLLECTION_NAME,
-        TBR_COLLECTION_NAME,
-        REQUEST_THREAD_ACQUIRE_TIMEOUT,
-    )
+    # # Some of the brokers take different arguments other than the db and collection. Partially apply these.
+    # tbr_requests = partial(
+    #     TBRRequestBroker,
+    #     TBR_data_lock,
+    #     QUEUE_COLLECTION_NAME,
+    #     TBR_COLLECTION_NAME,
+    #     REQUEST_THREAD_ACQUIRE_TIMEOUT,
+    # )
     tbr_puller = partial(
         TBRPullingBroker,
         TBR_data_lock,
