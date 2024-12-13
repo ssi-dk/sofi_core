@@ -2,6 +2,7 @@ import os, sys
 import threading
 from typing import Dict
 
+from ......bifrost.bifrost_queue_broker.brokers.request.tbr_request_broker import TBRRequestBroker
 from web.src.SAP.common.database import get_connection
 from web.src.SAP.src.controllers.poc_tbr_broker_approve_fields import approve_fields
 from web.src.SAP.src.repositories.analysis import (get_single_analysis, update_analysis)
@@ -126,7 +127,7 @@ db = conn[DB_NAME]
 
 TBR_data_lock = threading.Lock()
 
-# tbr_request_broker = TBRRequestBroker(TBR_data_lock, QUEUE_COLLECTION_NAME, TBR_COLLECTION_NAME, 2, db)
+tbr_request_broker = TBRRequestBroker(TBR_data_lock, QUEUE_COLLECTION_NAME, TBR_COLLECTION_NAME, 2, db)
 
 def handle_approvals_synch_POC(approvals: Approval):
     errors = []
@@ -139,7 +140,7 @@ def handle_approvals_synch_POC(approvals: Approval):
             "body": required_values
         }
         try:
-            approve_fields(request)
+            tbr_request_broker.approve_fields(request)
         except Exception as e:
             errors.append(str(e))
     return errors
