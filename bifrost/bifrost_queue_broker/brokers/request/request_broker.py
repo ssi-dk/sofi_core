@@ -52,6 +52,11 @@ class RequestBroker(threading.Thread):
 
             except StopIteration:
                 time.sleep(1)
+                if not cursor.alive:
+                    log.error(f"{self.broker_name} stop iterations was thrown and curser is not alive.")
+                    cursor = self.col.find(
+                        self.listener_match, cursor_type=CursorType.TAILABLE_AWAIT
+                    )
             else:
                 pass
 
