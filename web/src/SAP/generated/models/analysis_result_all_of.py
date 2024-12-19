@@ -21,7 +21,7 @@ class AnalysisResultAllOf(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, latest_for_isolate=None, resfinder_version=None, date_received_kma=None, date_analysis_sofi=None, date_approved_serotype=None, date_approved_qc=None, date_approved_amr=None, date_approved_st=None, date_approved_toxin=None, date_approved_cluster=None, date_approved_cdiff=None, qc_provided_species=None, qc_genome1x=None, qc_genome10x=None, qc_gsize_diff1x10=None, qc_avg_coverage=None, qc_final=None, qc_action=None, qc_num_contigs=None, qc_ambiguous_sites=None, qc_num_reads=None, qc_main_sp_plus_uncl=None, qc_unclassified_reads=None, qc_db_id=None, qc_db_id2=None, qc_failed_tests=None, qc_cgmlst_percent=None, subspecies=None, species_final=None, st=None, st_final=None, st_alleles=None, pathotype=None, pathotype_final=None, sero_enterobase=None, sero_seqsero=None, sero_antigen_seqsero=None, sero_d_tartrate=None, sero_serotype_finder=None, serotype_final=None, adhesion_final=None, virulence_genes=None, toxins_final=None, infection_source=None, resistance_genes=None, amr_profile=None, comment=None, comment_cluster=None, comment_general=None, comment_supplementary=None, comment_qc=None, amr_ami=None, amr_amp=None, amr_azi=None, amr_fep=None, amr_fot=None, amr_f_c=None, amr_fox=None, amr_taz=None, amr_t_c=None, amr_chl=None, amr_cip=None, amr_cli=None, amr_col=None, amr_dap=None, amr_etp=None, amr_ery=None, amr_fus=None, amr_gen=None, amr_imi=None, amr_kan=None, amr_lzd=None, amr_mero=None, amr_mup=None, amr_nal=None, amr_pen=None, amr_syn=None, amr_rif=None, amr_str=None, amr_sul=None, amr_tei=None, amr_trm=None, amr_tet=None, amr_tia=None, amr_tgc=None, amr_tmp=None, amr_van=None, cgmlst_schema_salmonella=None, cgmlst_schema_ecoli=None, cgmlst_schema_campylobacter=None, cgmlst_schema_listeria=None, cgmlst_schema_klebsiella=None, trst=None, tcda=None, tcdb=None, cdta_cdtb=None, del_117=None, a117t=None, cdiff_details=None):  # noqa: E501
+    def __init__(self, latest_for_isolate=None, resfinder_version=None, date_received_kma=None, date_analysis_sofi=None, date_approved_serotype=None, date_approved_qc=None, date_approved_amr=None, date_approved_st=None, date_approved_toxin=None, date_approved_cluster=None, date_approved_cdiff=None, qc_provided_species=None, qc_genome1x=None, qc_genome10x=None, qc_gsize_diff1x10=None, qc_avg_coverage=None, qc_final=None, qc_action=None, qc_num_contigs=None, qc_ambiguous_sites=None, qc_num_reads=None, qc_main_sp_plus_uncl=None, qc_unclassified_reads=None, qc_db_id=None, qc_db_id2=None, qc_failed_tests=None, call_percent=None, multiple_alleles=None, subspecies=None, species_final=None, st=None, st_final=None, st_alleles=None, pathotype=None, pathotype_final=None, sero_enterobase=None, sero_seqsero=None, sero_antigen_seqsero=None, sero_d_tartrate=None, sero_serotype_finder=None, serotype_final=None, adhesion_final=None, virulence_genes=None, toxins_final=None, infection_source=None, resistance_genes=None, amr_profile=None, comment=None, comment_cluster=None, comment_general=None, comment_supplementary=None, comment_qc=None, amr_ami=None, amr_amp=None, amr_azi=None, amr_fep=None, amr_fot=None, amr_f_c=None, amr_fox=None, amr_taz=None, amr_t_c=None, amr_chl=None, amr_cip=None, amr_cli=None, amr_col=None, amr_dap=None, amr_etp=None, amr_ery=None, amr_fus=None, amr_gen=None, amr_imi=None, amr_kan=None, amr_lzd=None, amr_mero=None, amr_mup=None, amr_nal=None, amr_pen=None, amr_syn=None, amr_rif=None, amr_str=None, amr_sul=None, amr_tei=None, amr_trm=None, amr_tet=None, amr_tia=None, amr_tgc=None, amr_tmp=None, amr_van=None, cgmlst_schema=None, trst=None, tcda=None, tcdb=None, cdta_cdtb=None, del_117=None, a117t=None, cdiff_details=None, adhaesion=None, toxin=None, toxin_details=None, bifrost_min_read_check=None, bifrost_whats_my_species=None, bifrost_assemblatron=None, bifrost_assembly_qc=None, bifrost_ssi_stamper=None, bifrost_cge_mlst=None, bifrost_cge_resfinder=None, bifrost_seqsero=None, bifrost_enterobase=None, bifrost_salmonella_subspecies_dtartrate=None, bifrost_chewbbaca=None, bifrost_sp_ecoli=None, bifrost_sp_cdiff=None, bifrost_amrfinderplus=None):  # noqa: E501
         """AnalysisResultAllOf - a model defined in OpenAPI
 
         :param latest_for_isolate: The latest_for_isolate of this AnalysisResultAllOf.  # noqa: E501
@@ -76,8 +76,10 @@ class AnalysisResultAllOf(Model):
         :type qc_db_id2: str
         :param qc_failed_tests: The qc_failed_tests of this AnalysisResultAllOf.  # noqa: E501
         :type qc_failed_tests: List[AnalysisResultAllOfQcFailedTests]
-        :param qc_cgmlst_percent: The qc_cgmlst_percent of this AnalysisResultAllOf.  # noqa: E501
-        :type qc_cgmlst_percent: float
+        :param call_percent: The call_percent of this AnalysisResultAllOf.  # noqa: E501
+        :type call_percent: float
+        :param multiple_alleles: The multiple_alleles of this AnalysisResultAllOf.  # noqa: E501
+        :type multiple_alleles: float
         :param subspecies: The subspecies of this AnalysisResultAllOf.  # noqa: E501
         :type subspecies: str
         :param species_final: The species_final of this AnalysisResultAllOf.  # noqa: E501
@@ -198,16 +200,8 @@ class AnalysisResultAllOf(Model):
         :type amr_tmp: Resistance
         :param amr_van: The amr_van of this AnalysisResultAllOf.  # noqa: E501
         :type amr_van: Resistance
-        :param cgmlst_schema_salmonella: The cgmlst_schema_salmonella of this AnalysisResultAllOf.  # noqa: E501
-        :type cgmlst_schema_salmonella: object
-        :param cgmlst_schema_ecoli: The cgmlst_schema_ecoli of this AnalysisResultAllOf.  # noqa: E501
-        :type cgmlst_schema_ecoli: object
-        :param cgmlst_schema_campylobacter: The cgmlst_schema_campylobacter of this AnalysisResultAllOf.  # noqa: E501
-        :type cgmlst_schema_campylobacter: object
-        :param cgmlst_schema_listeria: The cgmlst_schema_listeria of this AnalysisResultAllOf.  # noqa: E501
-        :type cgmlst_schema_listeria: object
-        :param cgmlst_schema_klebsiella: The cgmlst_schema_klebsiella of this AnalysisResultAllOf.  # noqa: E501
-        :type cgmlst_schema_klebsiella: object
+        :param cgmlst_schema: The cgmlst_schema of this AnalysisResultAllOf.  # noqa: E501
+        :type cgmlst_schema: object
         :param trst: The trst of this AnalysisResultAllOf.  # noqa: E501
         :type trst: str
         :param tcda: The tcda of this AnalysisResultAllOf.  # noqa: E501
@@ -222,6 +216,40 @@ class AnalysisResultAllOf(Model):
         :type a117t: str
         :param cdiff_details: The cdiff_details of this AnalysisResultAllOf.  # noqa: E501
         :type cdiff_details: str
+        :param adhaesion: The adhaesion of this AnalysisResultAllOf.  # noqa: E501
+        :type adhaesion: str
+        :param toxin: The toxin of this AnalysisResultAllOf.  # noqa: E501
+        :type toxin: str
+        :param toxin_details: The toxin_details of this AnalysisResultAllOf.  # noqa: E501
+        :type toxin_details: str
+        :param bifrost_min_read_check: The bifrost_min_read_check of this AnalysisResultAllOf.  # noqa: E501
+        :type bifrost_min_read_check: str
+        :param bifrost_whats_my_species: The bifrost_whats_my_species of this AnalysisResultAllOf.  # noqa: E501
+        :type bifrost_whats_my_species: str
+        :param bifrost_assemblatron: The bifrost_assemblatron of this AnalysisResultAllOf.  # noqa: E501
+        :type bifrost_assemblatron: str
+        :param bifrost_assembly_qc: The bifrost_assembly_qc of this AnalysisResultAllOf.  # noqa: E501
+        :type bifrost_assembly_qc: str
+        :param bifrost_ssi_stamper: The bifrost_ssi_stamper of this AnalysisResultAllOf.  # noqa: E501
+        :type bifrost_ssi_stamper: str
+        :param bifrost_cge_mlst: The bifrost_cge_mlst of this AnalysisResultAllOf.  # noqa: E501
+        :type bifrost_cge_mlst: str
+        :param bifrost_cge_resfinder: The bifrost_cge_resfinder of this AnalysisResultAllOf.  # noqa: E501
+        :type bifrost_cge_resfinder: str
+        :param bifrost_seqsero: The bifrost_seqsero of this AnalysisResultAllOf.  # noqa: E501
+        :type bifrost_seqsero: str
+        :param bifrost_enterobase: The bifrost_enterobase of this AnalysisResultAllOf.  # noqa: E501
+        :type bifrost_enterobase: str
+        :param bifrost_salmonella_subspecies_dtartrate: The bifrost_salmonella_subspecies_dtartrate of this AnalysisResultAllOf.  # noqa: E501
+        :type bifrost_salmonella_subspecies_dtartrate: str
+        :param bifrost_chewbbaca: The bifrost_chewbbaca of this AnalysisResultAllOf.  # noqa: E501
+        :type bifrost_chewbbaca: str
+        :param bifrost_sp_ecoli: The bifrost_sp_ecoli of this AnalysisResultAllOf.  # noqa: E501
+        :type bifrost_sp_ecoli: str
+        :param bifrost_sp_cdiff: The bifrost_sp_cdiff of this AnalysisResultAllOf.  # noqa: E501
+        :type bifrost_sp_cdiff: str
+        :param bifrost_amrfinderplus: The bifrost_amrfinderplus of this AnalysisResultAllOf.  # noqa: E501
+        :type bifrost_amrfinderplus: str
         """
         self.openapi_types = {
             'latest_for_isolate': str,
@@ -250,7 +278,8 @@ class AnalysisResultAllOf(Model):
             'qc_db_id': str,
             'qc_db_id2': str,
             'qc_failed_tests': List[AnalysisResultAllOfQcFailedTests],
-            'qc_cgmlst_percent': float,
+            'call_percent': float,
+            'multiple_alleles': float,
             'subspecies': str,
             'species_final': str,
             'st': str,
@@ -311,11 +340,7 @@ class AnalysisResultAllOf(Model):
             'amr_tgc': Resistance,
             'amr_tmp': Resistance,
             'amr_van': Resistance,
-            'cgmlst_schema_salmonella': object,
-            'cgmlst_schema_ecoli': object,
-            'cgmlst_schema_campylobacter': object,
-            'cgmlst_schema_listeria': object,
-            'cgmlst_schema_klebsiella': object,
+            'cgmlst_schema': object,
             'trst': str,
             'tcda': str,
             'tcdb': str,
@@ -323,6 +348,23 @@ class AnalysisResultAllOf(Model):
             'del_117': str,
             'a117t': str,
             'cdiff_details': str,
+            'adhaesion': str,
+            'toxin': str,
+            'toxin_details': str,
+            'bifrost_min_read_check': str,
+            'bifrost_whats_my_species': str,
+            'bifrost_assemblatron': str,
+            'bifrost_assembly_qc': str,
+            'bifrost_ssi_stamper': str,
+            'bifrost_cge_mlst': str,
+            'bifrost_cge_resfinder': str,
+            'bifrost_seqsero': str,
+            'bifrost_enterobase': str,
+            'bifrost_salmonella_subspecies_dtartrate': str,
+            'bifrost_chewbbaca': str,
+            'bifrost_sp_ecoli': str,
+            'bifrost_sp_cdiff': str,
+            'bifrost_amrfinderplus': str,
         }
 
         self.attribute_map = {
@@ -352,7 +394,8 @@ class AnalysisResultAllOf(Model):
             'qc_db_id': 'qc_db_id',
             'qc_db_id2': 'qc_db_id2',
             'qc_failed_tests': 'qc_failed_tests',
-            'qc_cgmlst_percent': 'qc_cgmlst_percent',
+            'call_percent': 'call_percent',
+            'multiple_alleles': 'multiple_alleles',
             'subspecies': 'subspecies',
             'species_final': 'species_final',
             'st': 'st',
@@ -413,11 +456,7 @@ class AnalysisResultAllOf(Model):
             'amr_tgc': 'amr_tgc',
             'amr_tmp': 'amr_tmp',
             'amr_van': 'amr_van',
-            'cgmlst_schema_salmonella': 'cgmlst_schema_salmonella',
-            'cgmlst_schema_ecoli': 'cgmlst_schema_ecoli',
-            'cgmlst_schema_campylobacter': 'cgmlst_schema_campylobacter',
-            'cgmlst_schema_listeria': 'cgmlst_schema_listeria',
-            'cgmlst_schema_klebsiella': 'cgmlst_schema_klebsiella',
+            'cgmlst_schema': 'cgmlst_schema',
             'trst': 'trst',
             'tcda': 'tcda',
             'tcdb': 'tcdb',
@@ -425,6 +464,23 @@ class AnalysisResultAllOf(Model):
             'del_117': 'del_117',
             'a117t': 'a117t',
             'cdiff_details': 'cdiff_details',
+            'adhaesion': 'adhaesion',
+            'toxin': 'toxin',
+            'toxin_details': 'toxin_details',
+            'bifrost_min_read_check': 'bifrost_min_read_check',
+            'bifrost_whats_my_species': 'bifrost_whats_my_species',
+            'bifrost_assemblatron': 'bifrost_assemblatron',
+            'bifrost_assembly_qc': 'bifrost_assembly_qc',
+            'bifrost_ssi_stamper': 'bifrost_ssi_stamper',
+            'bifrost_cge_mlst': 'bifrost_cge_mlst',
+            'bifrost_cge_resfinder': 'bifrost_cge_resfinder',
+            'bifrost_seqsero': 'bifrost_seqsero',
+            'bifrost_enterobase': 'bifrost_enterobase',
+            'bifrost_salmonella_subspecies_dtartrate': 'bifrost_salmonella_subspecies_dtartrate',
+            'bifrost_chewbbaca': 'bifrost_chewbbaca',
+            'bifrost_sp_ecoli': 'bifrost_sp_ecoli',
+            'bifrost_sp_cdiff': 'bifrost_sp_cdiff',
+            'bifrost_amrfinderplus': 'bifrost_amrfinderplus',
         }
 
         self._latest_for_isolate = latest_for_isolate
@@ -453,7 +509,8 @@ class AnalysisResultAllOf(Model):
         self._qc_db_id = qc_db_id
         self._qc_db_id2 = qc_db_id2
         self._qc_failed_tests = qc_failed_tests
-        self._qc_cgmlst_percent = qc_cgmlst_percent
+        self._call_percent = call_percent
+        self._multiple_alleles = multiple_alleles
         self._subspecies = subspecies
         self._species_final = species_final
         self._st = st
@@ -514,11 +571,7 @@ class AnalysisResultAllOf(Model):
         self._amr_tgc = amr_tgc
         self._amr_tmp = amr_tmp
         self._amr_van = amr_van
-        self._cgmlst_schema_salmonella = cgmlst_schema_salmonella
-        self._cgmlst_schema_ecoli = cgmlst_schema_ecoli
-        self._cgmlst_schema_campylobacter = cgmlst_schema_campylobacter
-        self._cgmlst_schema_listeria = cgmlst_schema_listeria
-        self._cgmlst_schema_klebsiella = cgmlst_schema_klebsiella
+        self._cgmlst_schema = cgmlst_schema
         self._trst = trst
         self._tcda = tcda
         self._tcdb = tcdb
@@ -526,6 +579,23 @@ class AnalysisResultAllOf(Model):
         self._del_117 = del_117
         self._a117t = a117t
         self._cdiff_details = cdiff_details
+        self._adhaesion = adhaesion
+        self._toxin = toxin
+        self._toxin_details = toxin_details
+        self._bifrost_min_read_check = bifrost_min_read_check
+        self._bifrost_whats_my_species = bifrost_whats_my_species
+        self._bifrost_assemblatron = bifrost_assemblatron
+        self._bifrost_assembly_qc = bifrost_assembly_qc
+        self._bifrost_ssi_stamper = bifrost_ssi_stamper
+        self._bifrost_cge_mlst = bifrost_cge_mlst
+        self._bifrost_cge_resfinder = bifrost_cge_resfinder
+        self._bifrost_seqsero = bifrost_seqsero
+        self._bifrost_enterobase = bifrost_enterobase
+        self._bifrost_salmonella_subspecies_dtartrate = bifrost_salmonella_subspecies_dtartrate
+        self._bifrost_chewbbaca = bifrost_chewbbaca
+        self._bifrost_sp_ecoli = bifrost_sp_ecoli
+        self._bifrost_sp_cdiff = bifrost_sp_cdiff
+        self._bifrost_amrfinderplus = bifrost_amrfinderplus
 
     @classmethod
     def from_dict(cls, dikt):
@@ -1093,25 +1163,46 @@ class AnalysisResultAllOf(Model):
         self._qc_failed_tests = qc_failed_tests
 
     @property
-    def qc_cgmlst_percent(self):
-        """Gets the qc_cgmlst_percent of this AnalysisResultAllOf.
+    def call_percent(self):
+        """Gets the call_percent of this AnalysisResultAllOf.
 
 
-        :return: The qc_cgmlst_percent of this AnalysisResultAllOf.
+        :return: The call_percent of this AnalysisResultAllOf.
         :rtype: float
         """
-        return self._qc_cgmlst_percent
+        return self._call_percent
 
-    @qc_cgmlst_percent.setter
-    def qc_cgmlst_percent(self, qc_cgmlst_percent):
-        """Sets the qc_cgmlst_percent of this AnalysisResultAllOf.
+    @call_percent.setter
+    def call_percent(self, call_percent):
+        """Sets the call_percent of this AnalysisResultAllOf.
 
 
-        :param qc_cgmlst_percent: The qc_cgmlst_percent of this AnalysisResultAllOf.
-        :type qc_cgmlst_percent: float
+        :param call_percent: The call_percent of this AnalysisResultAllOf.
+        :type call_percent: float
         """
 
-        self._qc_cgmlst_percent = qc_cgmlst_percent
+        self._call_percent = call_percent
+
+    @property
+    def multiple_alleles(self):
+        """Gets the multiple_alleles of this AnalysisResultAllOf.
+
+
+        :return: The multiple_alleles of this AnalysisResultAllOf.
+        :rtype: float
+        """
+        return self._multiple_alleles
+
+    @multiple_alleles.setter
+    def multiple_alleles(self, multiple_alleles):
+        """Sets the multiple_alleles of this AnalysisResultAllOf.
+
+
+        :param multiple_alleles: The multiple_alleles of this AnalysisResultAllOf.
+        :type multiple_alleles: float
+        """
+
+        self._multiple_alleles = multiple_alleles
 
     @property
     def subspecies(self):
@@ -2374,109 +2465,25 @@ class AnalysisResultAllOf(Model):
         self._amr_van = amr_van
 
     @property
-    def cgmlst_schema_salmonella(self):
-        """Gets the cgmlst_schema_salmonella of this AnalysisResultAllOf.
+    def cgmlst_schema(self):
+        """Gets the cgmlst_schema of this AnalysisResultAllOf.
 
 
-        :return: The cgmlst_schema_salmonella of this AnalysisResultAllOf.
+        :return: The cgmlst_schema of this AnalysisResultAllOf.
         :rtype: object
         """
-        return self._cgmlst_schema_salmonella
+        return self._cgmlst_schema
 
-    @cgmlst_schema_salmonella.setter
-    def cgmlst_schema_salmonella(self, cgmlst_schema_salmonella):
-        """Sets the cgmlst_schema_salmonella of this AnalysisResultAllOf.
+    @cgmlst_schema.setter
+    def cgmlst_schema(self, cgmlst_schema):
+        """Sets the cgmlst_schema of this AnalysisResultAllOf.
 
 
-        :param cgmlst_schema_salmonella: The cgmlst_schema_salmonella of this AnalysisResultAllOf.
-        :type cgmlst_schema_salmonella: object
+        :param cgmlst_schema: The cgmlst_schema of this AnalysisResultAllOf.
+        :type cgmlst_schema: object
         """
 
-        self._cgmlst_schema_salmonella = cgmlst_schema_salmonella
-
-    @property
-    def cgmlst_schema_ecoli(self):
-        """Gets the cgmlst_schema_ecoli of this AnalysisResultAllOf.
-
-
-        :return: The cgmlst_schema_ecoli of this AnalysisResultAllOf.
-        :rtype: object
-        """
-        return self._cgmlst_schema_ecoli
-
-    @cgmlst_schema_ecoli.setter
-    def cgmlst_schema_ecoli(self, cgmlst_schema_ecoli):
-        """Sets the cgmlst_schema_ecoli of this AnalysisResultAllOf.
-
-
-        :param cgmlst_schema_ecoli: The cgmlst_schema_ecoli of this AnalysisResultAllOf.
-        :type cgmlst_schema_ecoli: object
-        """
-
-        self._cgmlst_schema_ecoli = cgmlst_schema_ecoli
-
-    @property
-    def cgmlst_schema_campylobacter(self):
-        """Gets the cgmlst_schema_campylobacter of this AnalysisResultAllOf.
-
-
-        :return: The cgmlst_schema_campylobacter of this AnalysisResultAllOf.
-        :rtype: object
-        """
-        return self._cgmlst_schema_campylobacter
-
-    @cgmlst_schema_campylobacter.setter
-    def cgmlst_schema_campylobacter(self, cgmlst_schema_campylobacter):
-        """Sets the cgmlst_schema_campylobacter of this AnalysisResultAllOf.
-
-
-        :param cgmlst_schema_campylobacter: The cgmlst_schema_campylobacter of this AnalysisResultAllOf.
-        :type cgmlst_schema_campylobacter: object
-        """
-
-        self._cgmlst_schema_campylobacter = cgmlst_schema_campylobacter
-
-    @property
-    def cgmlst_schema_listeria(self):
-        """Gets the cgmlst_schema_listeria of this AnalysisResultAllOf.
-
-
-        :return: The cgmlst_schema_listeria of this AnalysisResultAllOf.
-        :rtype: object
-        """
-        return self._cgmlst_schema_listeria
-
-    @cgmlst_schema_listeria.setter
-    def cgmlst_schema_listeria(self, cgmlst_schema_listeria):
-        """Sets the cgmlst_schema_listeria of this AnalysisResultAllOf.
-
-
-        :param cgmlst_schema_listeria: The cgmlst_schema_listeria of this AnalysisResultAllOf.
-        :type cgmlst_schema_listeria: object
-        """
-
-        self._cgmlst_schema_listeria = cgmlst_schema_listeria
-
-    @property
-    def cgmlst_schema_klebsiella(self):
-        """Gets the cgmlst_schema_klebsiella of this AnalysisResultAllOf.
-
-
-        :return: The cgmlst_schema_klebsiella of this AnalysisResultAllOf.
-        :rtype: object
-        """
-        return self._cgmlst_schema_klebsiella
-
-    @cgmlst_schema_klebsiella.setter
-    def cgmlst_schema_klebsiella(self, cgmlst_schema_klebsiella):
-        """Sets the cgmlst_schema_klebsiella of this AnalysisResultAllOf.
-
-
-        :param cgmlst_schema_klebsiella: The cgmlst_schema_klebsiella of this AnalysisResultAllOf.
-        :type cgmlst_schema_klebsiella: object
-        """
-
-        self._cgmlst_schema_klebsiella = cgmlst_schema_klebsiella
+        self._cgmlst_schema = cgmlst_schema
 
     @property
     def trst(self):
@@ -2624,3 +2631,360 @@ class AnalysisResultAllOf(Model):
         """
 
         self._cdiff_details = cdiff_details
+
+    @property
+    def adhaesion(self):
+        """Gets the adhaesion of this AnalysisResultAllOf.
+
+
+        :return: The adhaesion of this AnalysisResultAllOf.
+        :rtype: str
+        """
+        return self._adhaesion
+
+    @adhaesion.setter
+    def adhaesion(self, adhaesion):
+        """Sets the adhaesion of this AnalysisResultAllOf.
+
+
+        :param adhaesion: The adhaesion of this AnalysisResultAllOf.
+        :type adhaesion: str
+        """
+
+        self._adhaesion = adhaesion
+
+    @property
+    def toxin(self):
+        """Gets the toxin of this AnalysisResultAllOf.
+
+
+        :return: The toxin of this AnalysisResultAllOf.
+        :rtype: str
+        """
+        return self._toxin
+
+    @toxin.setter
+    def toxin(self, toxin):
+        """Sets the toxin of this AnalysisResultAllOf.
+
+
+        :param toxin: The toxin of this AnalysisResultAllOf.
+        :type toxin: str
+        """
+
+        self._toxin = toxin
+
+    @property
+    def toxin_details(self):
+        """Gets the toxin_details of this AnalysisResultAllOf.
+
+
+        :return: The toxin_details of this AnalysisResultAllOf.
+        :rtype: str
+        """
+        return self._toxin_details
+
+    @toxin_details.setter
+    def toxin_details(self, toxin_details):
+        """Sets the toxin_details of this AnalysisResultAllOf.
+
+
+        :param toxin_details: The toxin_details of this AnalysisResultAllOf.
+        :type toxin_details: str
+        """
+
+        self._toxin_details = toxin_details
+
+    @property
+    def bifrost_min_read_check(self):
+        """Gets the bifrost_min_read_check of this AnalysisResultAllOf.
+
+
+        :return: The bifrost_min_read_check of this AnalysisResultAllOf.
+        :rtype: str
+        """
+        return self._bifrost_min_read_check
+
+    @bifrost_min_read_check.setter
+    def bifrost_min_read_check(self, bifrost_min_read_check):
+        """Sets the bifrost_min_read_check of this AnalysisResultAllOf.
+
+
+        :param bifrost_min_read_check: The bifrost_min_read_check of this AnalysisResultAllOf.
+        :type bifrost_min_read_check: str
+        """
+
+        self._bifrost_min_read_check = bifrost_min_read_check
+
+    @property
+    def bifrost_whats_my_species(self):
+        """Gets the bifrost_whats_my_species of this AnalysisResultAllOf.
+
+
+        :return: The bifrost_whats_my_species of this AnalysisResultAllOf.
+        :rtype: str
+        """
+        return self._bifrost_whats_my_species
+
+    @bifrost_whats_my_species.setter
+    def bifrost_whats_my_species(self, bifrost_whats_my_species):
+        """Sets the bifrost_whats_my_species of this AnalysisResultAllOf.
+
+
+        :param bifrost_whats_my_species: The bifrost_whats_my_species of this AnalysisResultAllOf.
+        :type bifrost_whats_my_species: str
+        """
+
+        self._bifrost_whats_my_species = bifrost_whats_my_species
+
+    @property
+    def bifrost_assemblatron(self):
+        """Gets the bifrost_assemblatron of this AnalysisResultAllOf.
+
+
+        :return: The bifrost_assemblatron of this AnalysisResultAllOf.
+        :rtype: str
+        """
+        return self._bifrost_assemblatron
+
+    @bifrost_assemblatron.setter
+    def bifrost_assemblatron(self, bifrost_assemblatron):
+        """Sets the bifrost_assemblatron of this AnalysisResultAllOf.
+
+
+        :param bifrost_assemblatron: The bifrost_assemblatron of this AnalysisResultAllOf.
+        :type bifrost_assemblatron: str
+        """
+
+        self._bifrost_assemblatron = bifrost_assemblatron
+
+    @property
+    def bifrost_assembly_qc(self):
+        """Gets the bifrost_assembly_qc of this AnalysisResultAllOf.
+
+
+        :return: The bifrost_assembly_qc of this AnalysisResultAllOf.
+        :rtype: str
+        """
+        return self._bifrost_assembly_qc
+
+    @bifrost_assembly_qc.setter
+    def bifrost_assembly_qc(self, bifrost_assembly_qc):
+        """Sets the bifrost_assembly_qc of this AnalysisResultAllOf.
+
+
+        :param bifrost_assembly_qc: The bifrost_assembly_qc of this AnalysisResultAllOf.
+        :type bifrost_assembly_qc: str
+        """
+
+        self._bifrost_assembly_qc = bifrost_assembly_qc
+
+    @property
+    def bifrost_ssi_stamper(self):
+        """Gets the bifrost_ssi_stamper of this AnalysisResultAllOf.
+
+
+        :return: The bifrost_ssi_stamper of this AnalysisResultAllOf.
+        :rtype: str
+        """
+        return self._bifrost_ssi_stamper
+
+    @bifrost_ssi_stamper.setter
+    def bifrost_ssi_stamper(self, bifrost_ssi_stamper):
+        """Sets the bifrost_ssi_stamper of this AnalysisResultAllOf.
+
+
+        :param bifrost_ssi_stamper: The bifrost_ssi_stamper of this AnalysisResultAllOf.
+        :type bifrost_ssi_stamper: str
+        """
+
+        self._bifrost_ssi_stamper = bifrost_ssi_stamper
+
+    @property
+    def bifrost_cge_mlst(self):
+        """Gets the bifrost_cge_mlst of this AnalysisResultAllOf.
+
+
+        :return: The bifrost_cge_mlst of this AnalysisResultAllOf.
+        :rtype: str
+        """
+        return self._bifrost_cge_mlst
+
+    @bifrost_cge_mlst.setter
+    def bifrost_cge_mlst(self, bifrost_cge_mlst):
+        """Sets the bifrost_cge_mlst of this AnalysisResultAllOf.
+
+
+        :param bifrost_cge_mlst: The bifrost_cge_mlst of this AnalysisResultAllOf.
+        :type bifrost_cge_mlst: str
+        """
+
+        self._bifrost_cge_mlst = bifrost_cge_mlst
+
+    @property
+    def bifrost_cge_resfinder(self):
+        """Gets the bifrost_cge_resfinder of this AnalysisResultAllOf.
+
+
+        :return: The bifrost_cge_resfinder of this AnalysisResultAllOf.
+        :rtype: str
+        """
+        return self._bifrost_cge_resfinder
+
+    @bifrost_cge_resfinder.setter
+    def bifrost_cge_resfinder(self, bifrost_cge_resfinder):
+        """Sets the bifrost_cge_resfinder of this AnalysisResultAllOf.
+
+
+        :param bifrost_cge_resfinder: The bifrost_cge_resfinder of this AnalysisResultAllOf.
+        :type bifrost_cge_resfinder: str
+        """
+
+        self._bifrost_cge_resfinder = bifrost_cge_resfinder
+
+    @property
+    def bifrost_seqsero(self):
+        """Gets the bifrost_seqsero of this AnalysisResultAllOf.
+
+
+        :return: The bifrost_seqsero of this AnalysisResultAllOf.
+        :rtype: str
+        """
+        return self._bifrost_seqsero
+
+    @bifrost_seqsero.setter
+    def bifrost_seqsero(self, bifrost_seqsero):
+        """Sets the bifrost_seqsero of this AnalysisResultAllOf.
+
+
+        :param bifrost_seqsero: The bifrost_seqsero of this AnalysisResultAllOf.
+        :type bifrost_seqsero: str
+        """
+
+        self._bifrost_seqsero = bifrost_seqsero
+
+    @property
+    def bifrost_enterobase(self):
+        """Gets the bifrost_enterobase of this AnalysisResultAllOf.
+
+
+        :return: The bifrost_enterobase of this AnalysisResultAllOf.
+        :rtype: str
+        """
+        return self._bifrost_enterobase
+
+    @bifrost_enterobase.setter
+    def bifrost_enterobase(self, bifrost_enterobase):
+        """Sets the bifrost_enterobase of this AnalysisResultAllOf.
+
+
+        :param bifrost_enterobase: The bifrost_enterobase of this AnalysisResultAllOf.
+        :type bifrost_enterobase: str
+        """
+
+        self._bifrost_enterobase = bifrost_enterobase
+
+    @property
+    def bifrost_salmonella_subspecies_dtartrate(self):
+        """Gets the bifrost_salmonella_subspecies_dtartrate of this AnalysisResultAllOf.
+
+
+        :return: The bifrost_salmonella_subspecies_dtartrate of this AnalysisResultAllOf.
+        :rtype: str
+        """
+        return self._bifrost_salmonella_subspecies_dtartrate
+
+    @bifrost_salmonella_subspecies_dtartrate.setter
+    def bifrost_salmonella_subspecies_dtartrate(self, bifrost_salmonella_subspecies_dtartrate):
+        """Sets the bifrost_salmonella_subspecies_dtartrate of this AnalysisResultAllOf.
+
+
+        :param bifrost_salmonella_subspecies_dtartrate: The bifrost_salmonella_subspecies_dtartrate of this AnalysisResultAllOf.
+        :type bifrost_salmonella_subspecies_dtartrate: str
+        """
+
+        self._bifrost_salmonella_subspecies_dtartrate = bifrost_salmonella_subspecies_dtartrate
+
+    @property
+    def bifrost_chewbbaca(self):
+        """Gets the bifrost_chewbbaca of this AnalysisResultAllOf.
+
+
+        :return: The bifrost_chewbbaca of this AnalysisResultAllOf.
+        :rtype: str
+        """
+        return self._bifrost_chewbbaca
+
+    @bifrost_chewbbaca.setter
+    def bifrost_chewbbaca(self, bifrost_chewbbaca):
+        """Sets the bifrost_chewbbaca of this AnalysisResultAllOf.
+
+
+        :param bifrost_chewbbaca: The bifrost_chewbbaca of this AnalysisResultAllOf.
+        :type bifrost_chewbbaca: str
+        """
+
+        self._bifrost_chewbbaca = bifrost_chewbbaca
+
+    @property
+    def bifrost_sp_ecoli(self):
+        """Gets the bifrost_sp_ecoli of this AnalysisResultAllOf.
+
+
+        :return: The bifrost_sp_ecoli of this AnalysisResultAllOf.
+        :rtype: str
+        """
+        return self._bifrost_sp_ecoli
+
+    @bifrost_sp_ecoli.setter
+    def bifrost_sp_ecoli(self, bifrost_sp_ecoli):
+        """Sets the bifrost_sp_ecoli of this AnalysisResultAllOf.
+
+
+        :param bifrost_sp_ecoli: The bifrost_sp_ecoli of this AnalysisResultAllOf.
+        :type bifrost_sp_ecoli: str
+        """
+
+        self._bifrost_sp_ecoli = bifrost_sp_ecoli
+
+    @property
+    def bifrost_sp_cdiff(self):
+        """Gets the bifrost_sp_cdiff of this AnalysisResultAllOf.
+
+
+        :return: The bifrost_sp_cdiff of this AnalysisResultAllOf.
+        :rtype: str
+        """
+        return self._bifrost_sp_cdiff
+
+    @bifrost_sp_cdiff.setter
+    def bifrost_sp_cdiff(self, bifrost_sp_cdiff):
+        """Sets the bifrost_sp_cdiff of this AnalysisResultAllOf.
+
+
+        :param bifrost_sp_cdiff: The bifrost_sp_cdiff of this AnalysisResultAllOf.
+        :type bifrost_sp_cdiff: str
+        """
+
+        self._bifrost_sp_cdiff = bifrost_sp_cdiff
+
+    @property
+    def bifrost_amrfinderplus(self):
+        """Gets the bifrost_amrfinderplus of this AnalysisResultAllOf.
+
+
+        :return: The bifrost_amrfinderplus of this AnalysisResultAllOf.
+        :rtype: str
+        """
+        return self._bifrost_amrfinderplus
+
+    @bifrost_amrfinderplus.setter
+    def bifrost_amrfinderplus(self, bifrost_amrfinderplus):
+        """Sets the bifrost_amrfinderplus of this AnalysisResultAllOf.
+
+
+        :param bifrost_amrfinderplus: The bifrost_amrfinderplus of this AnalysisResultAllOf.
+        :type bifrost_amrfinderplus: str
+        """
+
+        self._bifrost_amrfinderplus = bifrost_amrfinderplus

@@ -7,15 +7,8 @@ def removeNullProperty(expr):
 
     PHASE 2:
     - Pathotype_final
-    - Virulence_genes
-    - Adheasion_final
     - Toxin_final
     - QC_cgMLST%
-    - cgMLST skema Salmonella
-    - cgMLST skema E. coli
-    - cgMLST skema Campylobacter
-    - cgMLST skema Listeria
-    - cgMLST skema Klebsiella
     - Sero_serotype_finder
 """
 
@@ -263,7 +256,296 @@ def agg_pipeline(changed_ids=None):
                 "cdta_cdtb": "$categories.bifrost_sp_cdiff.summary.cdtA/B",
                 "del117": "$categories.bifrost_sp_cdiff.summary.117del",
                 "a117t": "$categories.bifrost_sp_cdiff.summary.A117T",
-                "cdiff_details": "$categories.bifrost_sp_cdiff.summary.tcdA:tcdB:tcdC:cdtA:cdtB",                
+                "cdiff_details": "$categories.bifrost_sp_cdiff.summary.tcdA:tcdB:tcdC:cdtA:cdtB",
+                "adhaesion": "$categories.bifrost_sp_ecoli.summary.eae",
+                "toxin": "$categories.bifrost_sp_ecoli.summary.stx",
+                "toxin_details": "$categories.bifrost_sp_ecoli.summary.verbose",
+                "call_percent": "$categories.cgmlst.summary.call_percent",
+                "multiple_alleles": "$categories.cgmlst.summary.multiple_alleles",
+                "cgmlst_schema": {
+                    "$concat": [
+                        "$categories.cgmlst.report.scheme.name",
+                        " (",
+                        "$categories.cgmlst.report.scheme.digest",
+                        ")"
+                    ]
+                },
+                "virulence_genes": {
+                    "$concat": [
+                        "$categories.bifrost_sp_ecoli.summary.wzx",
+                        ",",
+                        "$categories.bifrost_sp_ecoli.summary.wzy",
+                        ",",
+                        "$categories.bifrost_sp_ecoli.summary.fliC",
+                        ",",
+                        "$categories.bifrost_sp_ecoli.summary.ehx",
+                    ]},
+                "bifrost_min_read_check": {
+                    "$let": {
+                        "vars": {
+                            "component": {
+                                "$arrayElemAt": [
+                                    {
+                                        "$filter": {
+                                            "input": "$components",
+                                            "as": "component",
+                                            "cond": {"$regexMatch": {"input": "$$component.name", "regex": "^min_read_check"}}
+                                        }
+                                    },
+                                    0
+                                ]
+                            }
+                        },
+                        "in": "$$component.status"
+                    }
+                },
+                "bifrost_whats_my_species": {
+                    "$let": {
+                        "vars": {
+                            "component": {
+                                "$arrayElemAt": [
+                                    {
+                                        "$filter": {
+                                            "input": "$components",
+                                            "as": "component",
+                                            "cond": {"$regexMatch": {"input": "$$component.name", "regex": "^whats_my_species"}}
+                                        }
+                                    },
+                                    0
+                                ]
+                            }
+                        },
+                        "in": "$$component.status"
+                    }
+                },
+                "bifrost_assemblatron": {
+                    "$let": {
+                        "vars": {
+                            "component": {
+                                "$arrayElemAt": [
+                                    {
+                                        "$filter": {
+                                            "input": "$components",
+                                            "as": "component",
+                                            "cond": {"$regexMatch": {"input": "$$component.name", "regex": "^assemblatron"}}
+                                        }
+                                    },
+                                    0
+                                ]
+                            }
+                        },
+                        "in": "$$component.status"
+                    }
+                },
+                "bifrost_assembly_qc": {
+                    "$let": {
+                        "vars": {
+                            "component": {
+                                "$arrayElemAt": [
+                                    {
+                                        "$filter": {
+                                            "input": "$components",
+                                            "as": "component",
+                                            "cond": {"$regexMatch": {"input": "$$component.name", "regex": "^assembly_qc"}}
+                                        }
+                                    },
+                                    0
+                                ]
+                            }
+                        },
+                        "in": "$$component.status"
+                    }
+                },
+                "bifrost_ssi_stamper": {
+                    "$let": {
+                        "vars": {
+                            "component": {
+                                "$arrayElemAt": [
+                                    {
+                                        "$filter": {
+                                            "input": "$components",
+                                            "as": "component",
+                                            "cond": {"$regexMatch": {"input": "$$component.name", "regex": "^ssi_stamper"}}
+                                        }
+                                    },
+                                    0
+                                ]
+                            }
+                        },
+                        "in": "$$component.status"
+                    }
+                },
+                "bifrost_cge_mlst": {
+                    "$let": {
+                        "vars": {
+                            "component": {
+                                "$arrayElemAt": [
+                                    {
+                                        "$filter": {
+                                            "input": "$components",
+                                            "as": "component",
+                                            "cond": {"$regexMatch": {"input": "$$component.name", "regex": "^cge_mlst"}}
+                                        }
+                                    },
+                                    0
+                                ]
+                            }
+                        },
+                        "in": "$$component.status"
+                    }
+                },
+                "bifrost_cge_resfinder": {
+                    "$let": {
+                        "vars": {
+                            "component": {
+                                "$arrayElemAt": [
+                                    {
+                                        "$filter": {
+                                            "input": "$components",
+                                            "as": "component",
+                                            "cond": {"$regexMatch": {"input": "$$component.name", "regex": "^cge_resfinder"}}
+                                        }
+                                    },
+                                    0
+                                ]
+                            }
+                        },
+                        "in": "$$component.status"
+                    }
+                },
+                "bifrost_seqsero": {
+                    "$let": {
+                        "vars": {
+                            "component": {
+                                "$arrayElemAt": [
+                                    {
+                                        "$filter": {
+                                            "input": "$components",
+                                            "as": "component",
+                                            "cond": {"$regexMatch": {"input": "$$component.name", "regex": "^seqsero"}}
+                                        }
+                                    },
+                                    0
+                                ]
+                            }
+                        },
+                        "in": "$$component.status"
+                    }
+                },
+                "bifrost_enterobase": {
+                    "$let": {
+                        "vars": {
+                            "component": {
+                                "$arrayElemAt": [
+                                    {
+                                        "$filter": {
+                                            "input": "$components",
+                                            "as": "component",
+                                            "cond": {"$regexMatch": {"input": "$$component.name", "regex": "^enterobase"}}
+                                        }
+                                    },
+                                    0
+                                ]
+                            }
+                        },
+                        "in": "$$component.status"
+                    }
+                },
+                "bifrost_salmonella_subspecies_dtartrate": {
+                    "$let": {
+                        "vars": {
+                            "component": {
+                                "$arrayElemAt": [
+                                    {
+                                        "$filter": {
+                                            "input": "$components",
+                                            "as": "component",
+                                            "cond": {"$regexMatch": {"input": "$$component.name", "regex": "^salmonella_subspecies_dtartrate"}}
+                                        }
+                                    },
+                                    0
+                                ]
+                            }
+                        },
+                        "in": "$$component.status"
+                    }
+                },
+                "bifrost_chewbbaca": {
+                    "$let": {
+                        "vars": {
+                            "component": {
+                                "$arrayElemAt": [
+                                    {
+                                        "$filter": {
+                                            "input": "$components",
+                                            "as": "component",
+                                            "cond": {"$regexMatch": {"input": "$$component.name", "regex": "^chewbbaca"}}
+                                        }
+                                    },
+                                    0
+                                ]
+                            }
+                        },
+                        "in": "$$component.status"
+                    }
+                },
+                "bifrost_sp_ecoli": {
+                    "$let": {
+                        "vars": {
+                            "component": {
+                                "$arrayElemAt": [
+                                    {
+                                        "$filter": {
+                                            "input": "$components",
+                                            "as": "component",
+                                            "cond": {"$regexMatch": {"input": "$$component.name", "regex": "^sp_ecoli"}}
+                                        }
+                                    },
+                                    0
+                                ]
+                            }
+                        },
+                        "in": "$$component.status"
+                    }
+                },
+                "bifrost_sp_cdiff": {
+                    "$let": {
+                        "vars": {
+                            "component": {
+                                "$arrayElemAt": [
+                                    {
+                                        "$filter": {
+                                            "input": "$components",
+                                            "as": "component",
+                                            "cond": {"$regexMatch": {"input": "$$component.name", "regex": "^sp_cdiff"}}
+                                        }
+                                    },
+                                    0
+                                ]
+                            }
+                        },
+                        "in": "$$component.status"
+                    }
+                },
+                "bifrost_amrfinderplus": {
+                    "$let": {
+                        "vars": {
+                            "component": {
+                                "$arrayElemAt": [
+                                    {
+                                        "$filter": {
+                                            "input": "$components",
+                                            "as": "component",
+                                            "cond": {"$regexMatch": {"input": "$$component.name", "regex": "^amrfinderplus"}}
+                                        }
+                                    },
+                                    0
+                                ]
+                            }
+                        },
+                        "in": "$$component.status"
+                    }
+                },
                 "qc_main_sp_plus_uncl": removeNullProperty(
                     {
                         "$round": [
