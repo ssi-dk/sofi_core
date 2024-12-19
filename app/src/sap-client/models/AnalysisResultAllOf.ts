@@ -188,7 +188,13 @@ export interface AnalysisResultAllOf  {
      * @type {number}
      * @memberof AnalysisResultAllOf
      */
-    qc_cgmlst_percent?: number;
+    call_percent?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof AnalysisResultAllOf
+     */
+    multiple_alleles?: number;
     /**
      * 
      * @type {string}
@@ -554,31 +560,7 @@ export interface AnalysisResultAllOf  {
      * @type {object}
      * @memberof AnalysisResultAllOf
      */
-    cgmlst_schema_salmonella?: object;
-    /**
-     * 
-     * @type {object}
-     * @memberof AnalysisResultAllOf
-     */
-    cgmlst_schema_ecoli?: object;
-    /**
-     * 
-     * @type {object}
-     * @memberof AnalysisResultAllOf
-     */
-    cgmlst_schema_campylobacter?: object;
-    /**
-     * 
-     * @type {object}
-     * @memberof AnalysisResultAllOf
-     */
-    cgmlst_schema_listeria?: object;
-    /**
-     * 
-     * @type {object}
-     * @memberof AnalysisResultAllOf
-     */
-    cgmlst_schema_klebsiella?: object;
+    cgmlst_schema?: object;
     /**
      * 
      * @type {string}
@@ -621,6 +603,108 @@ export interface AnalysisResultAllOf  {
      * @memberof AnalysisResultAllOf
      */
     cdiff_details?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof AnalysisResultAllOf
+     */
+    adhaesion?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof AnalysisResultAllOf
+     */
+    toxin?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof AnalysisResultAllOf
+     */
+    toxin_details?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof AnalysisResultAllOf
+     */
+    bifrost_min_read_check?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof AnalysisResultAllOf
+     */
+    bifrost_whats_my_species?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof AnalysisResultAllOf
+     */
+    bifrost_assemblatron?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof AnalysisResultAllOf
+     */
+    bifrost_assembly_qc?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof AnalysisResultAllOf
+     */
+    bifrost_ssi_stamper?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof AnalysisResultAllOf
+     */
+    bifrost_cge_mlst?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof AnalysisResultAllOf
+     */
+    bifrost_cge_resfinder?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof AnalysisResultAllOf
+     */
+    bifrost_seqsero?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof AnalysisResultAllOf
+     */
+    bifrost_enterobase?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof AnalysisResultAllOf
+     */
+    bifrost_salmonella_subspecies_dtartrate?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof AnalysisResultAllOf
+     */
+    bifrost_chewbbaca?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof AnalysisResultAllOf
+     */
+    bifrost_sp_ecoli?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof AnalysisResultAllOf
+     */
+    bifrost_sp_cdiff?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof AnalysisResultAllOf
+     */
+    bifrost_amrfinderplus?: string;
 }
 
 export function AnalysisResultAllOfFromJSON(json: any): AnalysisResultAllOf {
@@ -651,7 +735,8 @@ export function AnalysisResultAllOfFromJSON(json: any): AnalysisResultAllOf {
         'qc_db_id': !exists(json, 'qc_db_id') ? undefined : json['qc_db_id'],
         'qc_db_id2': !exists(json, 'qc_db_id2') ? undefined : json['qc_db_id2'],
         'qc_failed_tests': !exists(json, 'qc_failed_tests') ? undefined : (json['qc_failed_tests'] as Array<any>).map(AnalysisResultAllOfQcFailedTestsFromJSON),
-        'qc_cgmlst_percent': !exists(json, 'qc_cgmlst_percent') ? undefined : json['qc_cgmlst_percent'],
+        'call_percent': !exists(json, 'call_percent') ? undefined : json['call_percent'],
+        'multiple_alleles': !exists(json, 'multiple_alleles') ? undefined : json['multiple_alleles'],
         'subspecies': !exists(json, 'subspecies') ? undefined : json['subspecies'],
         'species_final': !exists(json, 'species_final') ? undefined : json['species_final'],
         'st': !exists(json, 'st') ? undefined : json['st'],
@@ -712,11 +797,7 @@ export function AnalysisResultAllOfFromJSON(json: any): AnalysisResultAllOf {
         'amr_tgc': !exists(json, 'amr_tgc') ? undefined : ResistanceFromJSON(json['amr_tgc']),
         'amr_tmp': !exists(json, 'amr_tmp') ? undefined : ResistanceFromJSON(json['amr_tmp']),
         'amr_van': !exists(json, 'amr_van') ? undefined : ResistanceFromJSON(json['amr_van']),
-        'cgmlst_schema_salmonella': !exists(json, 'cgmlst_schema_salmonella') ? undefined : json['cgmlst_schema_salmonella'],
-        'cgmlst_schema_ecoli': !exists(json, 'cgmlst_schema_ecoli') ? undefined : json['cgmlst_schema_ecoli'],
-        'cgmlst_schema_campylobacter': !exists(json, 'cgmlst_schema_campylobacter') ? undefined : json['cgmlst_schema_campylobacter'],
-        'cgmlst_schema_listeria': !exists(json, 'cgmlst_schema_listeria') ? undefined : json['cgmlst_schema_listeria'],
-        'cgmlst_schema_klebsiella': !exists(json, 'cgmlst_schema_klebsiella') ? undefined : json['cgmlst_schema_klebsiella'],
+        'cgmlst_schema': !exists(json, 'cgmlst_schema') ? undefined : json['cgmlst_schema'],
         'trst': !exists(json, 'trst') ? undefined : json['trst'],
         'tcda': !exists(json, 'tcda') ? undefined : json['tcda'],
         'tcdb': !exists(json, 'tcdb') ? undefined : json['tcdb'],
@@ -724,6 +805,23 @@ export function AnalysisResultAllOfFromJSON(json: any): AnalysisResultAllOf {
         'del_117': !exists(json, 'del_117') ? undefined : json['del_117'],
         'a117t': !exists(json, 'a117t') ? undefined : json['a117t'],
         'cdiff_details': !exists(json, 'cdiff_details') ? undefined : json['cdiff_details'],
+        'adhaesion': !exists(json, 'adhaesion') ? undefined : json['adhaesion'],
+        'toxin': !exists(json, 'toxin') ? undefined : json['toxin'],
+        'toxin_details': !exists(json, 'toxin_details') ? undefined : json['toxin_details'],
+        'bifrost_min_read_check': !exists(json, 'bifrost_min_read_check') ? undefined : json['bifrost_min_read_check'],
+        'bifrost_whats_my_species': !exists(json, 'bifrost_whats_my_species') ? undefined : json['bifrost_whats_my_species'],
+        'bifrost_assemblatron': !exists(json, 'bifrost_assemblatron') ? undefined : json['bifrost_assemblatron'],
+        'bifrost_assembly_qc': !exists(json, 'bifrost_assembly_qc') ? undefined : json['bifrost_assembly_qc'],
+        'bifrost_ssi_stamper': !exists(json, 'bifrost_ssi_stamper') ? undefined : json['bifrost_ssi_stamper'],
+        'bifrost_cge_mlst': !exists(json, 'bifrost_cge_mlst') ? undefined : json['bifrost_cge_mlst'],
+        'bifrost_cge_resfinder': !exists(json, 'bifrost_cge_resfinder') ? undefined : json['bifrost_cge_resfinder'],
+        'bifrost_seqsero': !exists(json, 'bifrost_seqsero') ? undefined : json['bifrost_seqsero'],
+        'bifrost_enterobase': !exists(json, 'bifrost_enterobase') ? undefined : json['bifrost_enterobase'],
+        'bifrost_salmonella_subspecies_dtartrate': !exists(json, 'bifrost_salmonella_subspecies_dtartrate') ? undefined : json['bifrost_salmonella_subspecies_dtartrate'],
+        'bifrost_chewbbaca': !exists(json, 'bifrost_chewbbaca') ? undefined : json['bifrost_chewbbaca'],
+        'bifrost_sp_ecoli': !exists(json, 'bifrost_sp_ecoli') ? undefined : json['bifrost_sp_ecoli'],
+        'bifrost_sp_cdiff': !exists(json, 'bifrost_sp_cdiff') ? undefined : json['bifrost_sp_cdiff'],
+        'bifrost_amrfinderplus': !exists(json, 'bifrost_amrfinderplus') ? undefined : json['bifrost_amrfinderplus'],
     };
 }
 
@@ -758,7 +856,8 @@ export function AnalysisResultAllOfToJSON(value?: AnalysisResultAllOf): any {
         'qc_db_id': value.qc_db_id,
         'qc_db_id2': value.qc_db_id2,
         'qc_failed_tests': value.qc_failed_tests === undefined ? undefined : (value.qc_failed_tests as Array<any>).map(AnalysisResultAllOfQcFailedTestsToJSON),
-        'qc_cgmlst_percent': value.qc_cgmlst_percent,
+        'call_percent': value.call_percent,
+        'multiple_alleles': value.multiple_alleles,
         'subspecies': value.subspecies,
         'species_final': value.species_final,
         'st': value.st,
@@ -819,11 +918,7 @@ export function AnalysisResultAllOfToJSON(value?: AnalysisResultAllOf): any {
         'amr_tgc': ResistanceToJSON(value.amr_tgc),
         'amr_tmp': ResistanceToJSON(value.amr_tmp),
         'amr_van': ResistanceToJSON(value.amr_van),
-        'cgmlst_schema_salmonella': value.cgmlst_schema_salmonella,
-        'cgmlst_schema_ecoli': value.cgmlst_schema_ecoli,
-        'cgmlst_schema_campylobacter': value.cgmlst_schema_campylobacter,
-        'cgmlst_schema_listeria': value.cgmlst_schema_listeria,
-        'cgmlst_schema_klebsiella': value.cgmlst_schema_klebsiella,
+        'cgmlst_schema': value.cgmlst_schema,
         'trst': value.trst,
         'tcda': value.tcda,
         'tcdb': value.tcdb,
@@ -831,6 +926,23 @@ export function AnalysisResultAllOfToJSON(value?: AnalysisResultAllOf): any {
         'del_117': value.del_117,
         'a117t': value.a117t,
         'cdiff_details': value.cdiff_details,
+        'adhaesion': value.adhaesion,
+        'toxin': value.toxin,
+        'toxin_details': value.toxin_details,
+        'bifrost_min_read_check': value.bifrost_min_read_check,
+        'bifrost_whats_my_species': value.bifrost_whats_my_species,
+        'bifrost_assemblatron': value.bifrost_assemblatron,
+        'bifrost_assembly_qc': value.bifrost_assembly_qc,
+        'bifrost_ssi_stamper': value.bifrost_ssi_stamper,
+        'bifrost_cge_mlst': value.bifrost_cge_mlst,
+        'bifrost_cge_resfinder': value.bifrost_cge_resfinder,
+        'bifrost_seqsero': value.bifrost_seqsero,
+        'bifrost_enterobase': value.bifrost_enterobase,
+        'bifrost_salmonella_subspecies_dtartrate': value.bifrost_salmonella_subspecies_dtartrate,
+        'bifrost_chewbbaca': value.bifrost_chewbbaca,
+        'bifrost_sp_ecoli': value.bifrost_sp_ecoli,
+        'bifrost_sp_cdiff': value.bifrost_sp_cdiff,
+        'bifrost_amrfinderplus': value.bifrost_amrfinderplus,
     };
 }
 
