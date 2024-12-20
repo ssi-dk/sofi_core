@@ -264,9 +264,9 @@ def agg_pipeline(changed_ids=None):
                 "multiple_alleles": "$categories.cgmlst.summary.multiple_alleles",
                 "cgmlst_schema": {
                     "$concat": [
-                        "$categories.cgmlst.report.scheme.name",
+                        "$categories.cgmlst.report.schema.name",
                         " (",
-                        "$categories.cgmlst.report.scheme.digest",
+                        "$categories.cgmlst.report.schema.digest",
                         ")"
                     ]
                 },
