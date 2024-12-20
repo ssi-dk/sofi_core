@@ -109,6 +109,7 @@ def agg_pipeline(changed_ids=None):
                 "sero_enterobase": "$categories.serotype.report.enterobase_serotype1",
                 "sero_seqsero": "$categories.serotype.report.seqsero_serotype",
                 "sero_antigen_seqsero": "$categories.serotype.summary.antigenic_profile",
+                "sero_serotype_finder": "$categories.bifrost_sp_ecoli.summary.OH",
                 "sero_d_tartrate": "$categories.serotype.summary.D-tartrate_pos10",
                 "mlst_schema": {"$arrayElemAt": ["$mlstlookup.schema", 0]},
                 # "siblings": "$siblings",
@@ -253,10 +254,16 @@ def agg_pipeline(changed_ids=None):
                 "trst": "$categories.bifrost_sp_cdiff.summary.TRST",
                 "tcda": "$categories.bifrost_sp_cdiff.summary.tcdA",
                 "tcdb": "$categories.bifrost_sp_cdiff.summary.tcdB",
-                "cdta_cdtb": "$categories.bifrost_sp_cdiff.summary.cdtA/B",
-                "del117": "$categories.bifrost_sp_cdiff.summary.117del",
+                "cdta_cdtb": {
+                    "$concat": [
+    	                "$categories.bifrost_sp_cdiff.summary.cdtA",
+                        "/",
+                        "$categories.bifrost_sp_cdiff.summary.cdtB"
+                    ]
+                },
+                "del_117": "$categories.bifrost_sp_cdiff.summary.117del",
                 "a117t": "$categories.bifrost_sp_cdiff.summary.A117T",
-                "cdiff_details": "$categories.bifrost_sp_cdiff.summary.tcdA:tcdB:tcdC:cdtA:cdtB",
+                "cdiff_details": "$categories.bifrost_sp_cdiff.summary.cov_info",
                 "adhaesion": "$categories.bifrost_sp_ecoli.summary.eae",
                 "toxin": "$categories.bifrost_sp_ecoli.summary.stx",
                 "toxin_details": "$categories.bifrost_sp_ecoli.summary.verbose",
@@ -272,13 +279,9 @@ def agg_pipeline(changed_ids=None):
                 },
                 "virulence_genes": {
                     "$concat": [
-                        "$categories.bifrost_sp_ecoli.summary.wzx",
-                        ",",
-                        "$categories.bifrost_sp_ecoli.summary.wzy",
-                        ",",
-                        "$categories.bifrost_sp_ecoli.summary.fliC",
-                        ",",
                         "$categories.bifrost_sp_ecoli.summary.ehx",
+                        ",",
+                        "$categories.bifrost_sp_ecoli.summary.other",
                     ]},
                 "bifrost_min_read_check": {
                     "$let": {
