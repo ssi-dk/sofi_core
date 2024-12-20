@@ -1955,7 +1955,9 @@ components:
           items:
             $ref: '#/components/schemas/AnalysisResult_allOf_qc_failed_tests'
           type: array
-        qc_cgmlst_percent:
+        call_percent:
+          type: number
+        multiple_alleles:
           type: number
         subspecies:
           type: string
@@ -2077,15 +2079,7 @@ components:
           $ref: '#/components/schemas/Resistance'
         amr_van:
           $ref: '#/components/schemas/Resistance'
-        cgmlst_schema_salmonella:
-          type: object
-        cgmlst_schema_ecoli:
-          type: object
-        cgmlst_schema_campylobacter:
-          type: object
-        cgmlst_schema_listeria:
-          type: object
-        cgmlst_schema_klebsiella:
+        cgmlst_schema:
           type: object
         trst:
           type: string
@@ -2100,6 +2094,40 @@ components:
         a117t:
           type: string
         cdiff_details:
+          type: string
+        adhaesion:
+          type: string
+        toxin:
+          type: string
+        toxin_details:
+          type: string
+        bifrost_min_read_check:
+          type: string
+        bifrost_whats_my_species:
+          type: string
+        bifrost_assemblatron:
+          type: string
+        bifrost_assembly_qc:
+          type: string
+        bifrost_ssi_stamper:
+          type: string
+        bifrost_cge_mlst:
+          type: string
+        bifrost_cge_resfinder:
+          type: string
+        bifrost_seqsero:
+          type: string
+        bifrost_enterobase:
+          type: string
+        bifrost_salmonella_subspecies_dtartrate:
+          type: string
+        bifrost_chewbbaca:
+          type: string
+        bifrost_sp_ecoli:
+          type: string
+        bifrost_sp_cdiff:
+          type: string
+        bifrost_amrfinderplus:
           type: string
       required:
       - isolate_id

@@ -149,12 +149,8 @@ const fieldDisplayNames = {
     qc_db_id: "QC_DB_ID",
     qc_db_id2: "QC_DB_ID2",
     qc_failed_tests: "QC_failed_tests",
-    qc_cgmlst_percent: "QC_cgMLST%",
-    cgmlst_schema_salmonella: "cgMLST skema Salmonella",
-    cgmlst_schema_ecoli: "cgMLST skema E. coli",
-    cgmlst_schema_campylobacter: "cgMLST skema Campylobacter",
-    cgmlst_schema_listeria: "cgMLST skema Listeria",
-    cgmlst_schema_klebsiella: "cgMLST skema Klebsiella",
+    call_percent: "Call_percent",
+    cgmlst_schema: "cgMLST skema",
     trst: "TRST",
     tcda: "tcdA",
     tcdb: "tcdB",
@@ -162,6 +158,7 @@ const fieldDisplayNames = {
     del_117: "117del",
     a117t: "A117T",
     cdiff_details: "Cdiff_details",
+    adhaesion: "Adhæsion",
   } as { [key in keyof AnalysisResult]: string },
 };
 
