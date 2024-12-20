@@ -1,4 +1,4 @@
-# Initial setup 
+# Initial setup
 
 ## Pre-requisites
 
