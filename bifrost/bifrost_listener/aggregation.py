@@ -87,20 +87,32 @@ def agg_pipeline(changed_ids=None):
                 "resistance_genes": {
                     "$reduce": {
                         "input": {
-                            "$map": {
-                                "input": {"$objectToArray": "$categories.resistance.report.phenotypes"},
-                                "as": "phenotype",
-                                "in": {
-                                    "$reduce": {
-                                        "input": {"$objectToArray": "$$phenotype.v.genes"},
-                                        "initialValue": "",
-                                        "in": {"$concat": ["$$value", {"$cond": [{"$eq": ["$$value", ""]}, "", ", "]}, "$$this.k"]}
+                            "$reduce": {
+                                "input": {
+                                    "$map": {
+                                        "input": {"$objectToArray": "$categories.resistance.report.phenotypes"},
+                                        "as": "phenotype",
+                                        "in": {
+                                            "$reduce": {
+                                                "input": {"$objectToArray": "$$phenotype.v.genes"},
+                                                "initialValue": [],
+                                                "in": {"$concatArrays": ["$$value", ["$$this.k"]]}
+                                            }
+                                        }
                                     }
-                                }
+                                },
+                                "initialValue": [],
+                                "in": {"$setUnion": ["$$value", "$$this"]}
                             }
                         },
                         "initialValue": "",
-                        "in": {"$concat": ["$$value", {"$cond": [{"$eq": ["$$value", ""]}, "", ", "]}, "$$this"]}
+                        "in": {
+                            "$cond": {
+                                "if": {"$eq": ["$$value",""]},
+                                "then": "$$this",
+                                "else": {"$concat":["$$value", ", ", "$$this"]}
+                            }
+                        }
                     }
                 },
                 "amr_profile": "$categories.resistance.summary",
