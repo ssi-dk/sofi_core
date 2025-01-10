@@ -16,7 +16,9 @@ services:
       - "bifrost_db"
 
   sap_broker_queue:
-    image: sekvensanalyseplatform/sap-queue-broker:437
+    build:
+      context: ./bifrost/bifrost_queue_broker
+      dockerfile: Dockerfile
     depends_on:
       - "sap_api"
       - "bifrost_db"
