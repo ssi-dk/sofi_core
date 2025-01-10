@@ -164,3 +164,12 @@ make clean && make run
 
 Consult `docs/`.
 
+
+# Troubleshooting possible development errors
+
+## bifrost_db container ERROR: child process failed, exited with 1
+When running make run. If the bifrost conainer keeps failing with an error message saying "ERROR: child process failed, exited with 1". Look for if "Error creating journal directory".
+One way to get around this error is by running `make run` with sudo privilidges:
+```shell
+sudo make run
+```
