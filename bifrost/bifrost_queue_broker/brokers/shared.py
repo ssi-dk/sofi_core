@@ -144,6 +144,12 @@ sofi_to_tbr_column_mapping = immutable_dict(
         "date_approved_st": "date_approved_st",
         "date_approved_cluster": "date_approved_cluster",
         "date_approved_toxin": "date_approved_toxin",
+        "TRST": "trst",
+        "tcdA": "tcda",
+        "tcdB": "tcdb",
+        "cdtAB": "cdta_cdtb",
+        "tcdC_117": "del117",
+        "tcdC_[A117T]": "a117t",
         # TBR AMR mappings
         "amr_profile": "amr_profile",
         "amikacin": "amr_ami",
