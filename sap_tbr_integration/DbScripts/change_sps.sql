@@ -68,7 +68,7 @@ CREATE PROCEDURE [FVST_DTU].[UpdateIsolate](
 	@TRST [nvarchar](10) NULL,
 	@tcdA [nvarchar](10) NULL,
 	@tcdB [nvarchar](10) NULL,
-	@cdtAB [nvarchar](10) NULL, # Combined cdtA+cdtB -> (pos,neg,pos/neg,neg/pos)
+	@cdtAB [nvarchar](10) NULL,
 	@tcdC_deletion [nvarchar](2) NULL, 
 	@tcdC_117 [nvarchar](10) NULL,
 	@tcdC_184T [nvarchar](10) NULL,
