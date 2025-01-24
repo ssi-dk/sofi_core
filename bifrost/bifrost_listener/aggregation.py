@@ -267,11 +267,28 @@ def agg_pipeline(changed_ids=None):
                 "tcda": "$categories.bifrost_sp_cdiff.summary.tcdA",
                 "tcdb": "$categories.bifrost_sp_cdiff.summary.tcdB",
                 "cdta_cdtb": {
-                    "$concat": [
-    	                "$categories.bifrost_sp_cdiff.summary.cdtA",
-                        "/",
-                        "$categories.bifrost_sp_cdiff.summary.cdtB"
-                    ]
+                    "$cond": {
+                        "if": {
+                            "$or": [
+                                {"$eq": ["$categories.bifrost_sp_cdiff.summary.cdtA", None]},
+                                {"$eq": ["$categories.bifrost_sp_cdiff.summary.cdtB", None]}
+                            ]
+                        },
+                        "then": None,
+                        "else": {
+                            "$cond": {
+                                "if": {"$eq": ["$categories.bifrost_sp_cdiff.summary.cdtA", "$categories.bifrost_sp_cdiff.summary.cdtB"]},
+                                "then": "$categories.bifrost_sp_cdiff.summary.cdtA",
+                                "else": {
+                                    "$concat": [
+                                        "$categories.bifrost_sp_cdiff.summary.cdtA",
+                                        "/",
+                                        "$categories.bifrost_sp_cdiff.summary.cdtB"
+                                    ]
+                                }
+                            }
+                        }
+                    }
                 },
                 "del_117": "$categories.bifrost_sp_cdiff.summary.117del",
                 "a117t": "$categories.bifrost_sp_cdiff.summary.A117T",
