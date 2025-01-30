@@ -420,6 +420,20 @@ paths:
       - nearest_neighbors
       x-openapi-router-controller: web.src.SAP.generated.controllers.nearest_neighbors_controller
       x-codegen-request-body-name: body
+  /samples/add_to_cluster:
+    post:
+      operationId: add_to_cluster
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddToCluster'
+      responses:
+        "204":
+          description: Samples added to cluster.
+      tags:
+      - samples
+      x-openapi-router-controller: web.src.SAP.generated.controllers.samples_controller
   /samples/{sample_id}:
     get:
       description: Get an individual sample by id
@@ -1632,6 +1646,24 @@ components:
           type: array
       required:
       - name
+      type: object
+    AddToCluster:
+      example:
+        clusterid: clusterid
+        samples:
+        - samples
+        - samples
+      properties:
+        clusterid:
+          title: ClusterId
+          type: string
+        samples:
+          items:
+            type: string
+          title: Samples
+          type: array
+      required:
+      - clusterid
       type: object
     CloneWorkspace:
       example:

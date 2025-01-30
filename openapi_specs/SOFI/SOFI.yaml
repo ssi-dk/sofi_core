@@ -747,6 +747,20 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Sample'
+  /samples/add_to_cluster:
+    post:
+      operationId: add_to_cluster
+      requestBody:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AddToCluster"
+      responses:
+        '204':
+          description: "Samples added to cluster."
+      tags:
+        - samples
+      x-openapi-router-controller: web.src.SAP.generated.controllers.samples_controller
 
 components:
   schemas:
@@ -1671,6 +1685,20 @@ components:
       type: object
       required:
       - name
+    
+    AddToCluster:
+      properties:
+        clusterid:
+          type: string
+          title: ClusterId
+        samples:
+          type: array
+          items:
+            type: string
+          title: Samples
+      type: object
+      required:
+      - clusterid
 
     CloneWorkspace:
       properties:

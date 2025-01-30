@@ -25,13 +25,15 @@ type Props = {
 export const ResistanceTable = (props: Props) => {
   const { selection } = props;
   const dispatch = useDispatch();
-  const [collapsedRows, setCollapsedRows] = useState<Record<string, boolean>>(() => {
-    const initialCollapsedState: Record<string, boolean> = {};
-    Object.values(selection).forEach((row) => {
-      initialCollapsedState[row.original.id] = true;
-    });
-    return initialCollapsedState;
-  });
+  const [collapsedRows, setCollapsedRows] = useState<Record<string, boolean>>(
+    () => {
+      const initialCollapsedState: Record<string, boolean> = {};
+      Object.values(selection).forEach((row) => {
+        initialCollapsedState[row.original.id] = true;
+      });
+      return initialCollapsedState;
+    }
+  );
 
   const samples = useSelector<RootState>((s) => s.entities.samples) as Record<
     string,
@@ -114,17 +116,26 @@ export const ResistanceTable = (props: Props) => {
       ...prev,
       [rowId]: !prev[rowId],
     }));
-  };    
+  };
 
   return (
     <TableContainer>
       <Table variant="unstyled" size="sm">
         <Thead style={{ backgroundColor: "#90cdf4" }}>
           <Tr>
-            <Th colSpan={2} style={ { borderRight: "1px solid black" } } >&nbsp;</Th>
+            <Th colSpan={2} style={{ borderRight: "1px solid black" }}>
+              &nbsp;
+            </Th>
             {Object.keys(amrClasses).map((amrClass, index) => {
               return (
-                <Th key={`amr-${index}`} colSpan={amrClasses[amrClass].length} style={{ borderLeft: "1px solid black", borderRight: "1px solid black" }}>
+                <Th
+                  key={`amr-${index}`}
+                  colSpan={amrClasses[amrClass].length}
+                  style={{
+                    borderLeft: "1px solid black",
+                    borderRight: "1px solid black",
+                  }}
+                >
                   <Center>{amrClass}</Center>
                 </Th>
               );
@@ -135,11 +146,18 @@ export const ResistanceTable = (props: Props) => {
           </Tr>
           <Tr>
             <Th>Sample</Th>
-            <Th style={ { borderRight: "1px solid black" } } >Summary</Th>
+            <Th style={{ borderRight: "1px solid black" }}>Summary</Th>
             {Object.values(amrClasses).map((phenotypes, index) => {
               return phenotypes.map((phenotype, i) => {
                 const isLast = i === phenotypes.length - 1;
-                return <Th key={`${phenotype}-${index}`} style={isLast ? { borderRight: "1px solid black" } : {}}>{phenotype}</Th>;
+                return (
+                  <Th
+                    key={`${phenotype}-${index}`}
+                    style={isLast ? { borderRight: "1px solid black" } : {}}
+                  >
+                    {phenotype}
+                  </Th>
+                );
               });
             })}
             {headerPaddingColSpan > 0 ? (
@@ -157,10 +175,18 @@ export const ResistanceTable = (props: Props) => {
                 <Tr>
                   <Td>
                     {sequenceId}
-                    <div onClick={() => toggleRowCollapse(sampleId)} style={{ cursor: "pointer" }}>
-                      {isRowCollapsed ? <ChevronRightIcon /> : <ChevronDownIcon />} Gene Details
+                    <div
+                      onClick={() => toggleRowCollapse(sampleId)}
+                      style={{ cursor: "pointer" }}
+                    >
+                      {isRowCollapsed ? (
+                        <ChevronRightIcon />
+                      ) : (
+                        <ChevronDownIcon />
+                      )}{" "}
+                      Gene Details
                     </div>
-</Td>
+                  </Td>
                   <Td>
                     {samples?.[sampleId]?.categories?.resistance?.summary}
                   </Td>
@@ -174,7 +200,7 @@ export const ResistanceTable = (props: Props) => {
                           phenotype?.genes ?? {}
                         ).join(", ");
 
-                        let backgroundColor = "#9D9D9D";  //Default gray color
+                        let backgroundColor = "#9D9D9D"; //Default gray color
                         if (phenotype) {
                           for (const gene of Object.values(phenotype.genes)) {
                             if (gene.ref_seq_length === gene.alignment_length) {
@@ -214,7 +240,8 @@ export const ResistanceTable = (props: Props) => {
                   </Tr>
                 )}
                 {samples?.[sampleId] &&
-                  Object.keys(genes?.[sampleId] ?? {}).length > 0 && !isRowCollapsed && (
+                  Object.keys(genes?.[sampleId] ?? {}).length > 0 &&
+                  !isRowCollapsed && (
                     <>
                       <Tr
                         style={{ fontWeight: 700, backgroundColor: "#A29DC4" }}

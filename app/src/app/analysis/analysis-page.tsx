@@ -102,18 +102,18 @@ export default function AnalysisPage() {
     () =>
       Object.keys(columnConfigs || []).map(
         (k) =>
-        ({
-          accessor: k,
-          sortType: !k.startsWith("date")
-            ? "alphanumeric"
-            : (a, b, column) => {
-              const aDate = a.original[column]?.getTime() ?? 0;
-              const bDate = b.original[column]?.getTime() ?? 0;
+          ({
+            accessor: k,
+            sortType: !k.startsWith("date")
+              ? "alphanumeric"
+              : (a, b, column) => {
+                  const aDate = a.original[column]?.getTime() ?? 0;
+                  const bDate = b.original[column]?.getTime() ?? 0;
 
-              return aDate - bDate;
-            },
-          Header: t(k),
-        } as Column<AnalysisResult>)
+                  return aDate - bDate;
+                },
+            Header: t(k),
+          } as Column<AnalysisResult>)
       ),
     [columnConfigs, t]
   );
@@ -159,7 +159,9 @@ export default function AnalysisPage() {
     (s) => s.view.view
   ) as UserDefinedViewInternal;
 
-  const [lastSearchQuery, setLastSearchQuery] = useState<AnalysisQuery>({ expression: {} });
+  const [lastSearchQuery, setLastSearchQuery] = useState<AnalysisQuery>({
+    expression: {},
+  });
 
   const onSearch = React.useCallback(
     (q: AnalysisQuery, pageSize: number) => {
@@ -178,7 +180,7 @@ export default function AnalysisPage() {
             ...searchPageOfAnalysis({ query: { ...q, page_size: pageSize } }),
             queryKey: JSON.stringify(q),
           })
-        )
+        );
       }
     },
     [dispatch]

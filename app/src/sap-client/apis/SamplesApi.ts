@@ -15,15 +15,64 @@
 import { HttpMethods, QueryConfig, ResponseBody, ResponseText } from 'redux-query';
 import * as runtime from '../runtime';
 import {
+    AddToCluster,
+    AddToClusterFromJSON,
+    AddToClusterToJSON,
     Sample,
     SampleFromJSON,
     SampleToJSON,
 } from '../models';
 
+export interface AddToClusterRequest {
+    addToCluster?: AddToCluster;
+}
+
 export interface GetSampleByIdRequest {
     sampleId: string;
 }
 
+
+/**
+ */
+function addToClusterRaw<T>(requestParameters: AddToClusterRequest, requestConfig: runtime.TypedQueryConfig<T, void> = {}): QueryConfig<T> {
+    let queryParameters = null;
+
+
+    const headerParameters : runtime.HttpHeaders = {};
+
+    headerParameters['Content-Type'] = 'application/json';
+
+
+    const { meta = {} } = requestConfig;
+
+    meta.authType = ['bearer'];
+    const config: QueryConfig<T> = {
+        url: `${runtime.Configuration.basePath}/samples/add_to_cluster`,
+        meta,
+        update: requestConfig.update,
+        queryKey: requestConfig.queryKey,
+        optimisticUpdate: requestConfig.optimisticUpdate,
+        force: requestConfig.force,
+        rollback: requestConfig.rollback,
+        options: {
+            method: 'POST',
+            headers: headerParameters,
+        },
+        body: queryParameters || AddToClusterToJSON(requestParameters.addToCluster),
+    };
+
+    const { transform: requestTransform } = requestConfig;
+    if (requestTransform) {
+    }
+
+    return config;
+}
+
+/**
+*/
+export function addToCluster<T>(requestParameters: AddToClusterRequest, requestConfig?: runtime.TypedQueryConfig<T, void>): QueryConfig<T> {
+    return addToClusterRaw(requestParameters, requestConfig);
+}
 
 /**
  * Get an individual sample by id
