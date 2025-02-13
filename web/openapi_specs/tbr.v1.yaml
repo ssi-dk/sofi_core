@@ -105,9 +105,6 @@ components:
         isolateId:
           type: string
           nullable: true
-        runId:
-          type: string
-          nullable: true
         testDate:
           type: string
           format: date-time
@@ -146,6 +143,9 @@ components:
           type: string
           nullable: true
         region:
+          type: string
+          nullable: true
+        runId:
           type: string
           nullable: true
         serotype:
@@ -320,6 +320,30 @@ components:
         dateEpi:
           type: string
           format: date-time
+          nullable: true
+        trst:
+          type: string
+          nullable: true
+        tcdA:
+          type: string
+          nullable: true
+        tcdB:
+          type: string
+          nullable: true
+        cdtAB:
+          type: string
+          nullable: true
+        tcdC_deletion:
+          type: string
+          nullable: true
+        tcdC_117:
+          type: string
+          nullable: true
+        tcdC_184T:
+          type: string
+          nullable: true
+        tcdC_A117T:
+          type: string
           nullable: true
         rowVer:
           type: integer
@@ -517,17 +541,41 @@ components:
           type: string
           format: date-time
           nullable: true
-        dateApprovedToxin:
+        dateApprovedCluster:
           type: string
           format: date-time
           nullable: true
-        dateApprovedCluster:
+        dateApprovedToxin:
           type: string
           format: date-time
           nullable: true
         dateEpi:
           type: string
           format: date-time
+          nullable: true
+        trst:
+          type: string
+          nullable: true
+        tcdA:
+          type: string
+          nullable: true
+        tcdB:
+          type: string
+          nullable: true
+        cdtAB:
+          type: string
+          nullable: true
+        tcdC_deletion:
+          type: string
+          nullable: true
+        tcdC_117:
+          type: string
+          nullable: true
+        tcdC_184T:
+          type: string
+          nullable: true
+        tcdC_A117T:
+          type: string
           nullable: true
       additionalProperties: false
     RowVersion:
@@ -540,3 +588,4 @@ components:
           type: integer
           format: int64
       additionalProperties: false
+      
