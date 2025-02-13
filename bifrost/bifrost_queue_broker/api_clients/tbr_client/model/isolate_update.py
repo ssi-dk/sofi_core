@@ -128,9 +128,17 @@ class IsolateUpdate(ModelNormal):
             'date_approved_serotype': (datetime, none_type,),  # noqa: E501
             'date_approved_qc': (datetime, none_type,),  # noqa: E501
             'date_approved_st': (datetime, none_type,),  # noqa: E501
-            'date_approved_toxin': (datetime, none_type,),  # noqa: E501
             'date_approved_cluster': (datetime, none_type,),  # noqa: E501
+            'date_approved_toxin': (datetime, none_type,),  # noqa: E501
             'date_epi': (datetime, none_type,),  # noqa: E501
+            'trst': (str, none_type,),  # noqa: E501
+            'tcd_a': (str, none_type,),  # noqa: E501
+            'tcd_b': (str, none_type,),  # noqa: E501
+            'cdt_ab': (str, none_type,),  # noqa: E501
+            'tcd_c_deletion': (str, none_type,),  # noqa: E501
+            'tcd_c_117': (str, none_type,),  # noqa: E501
+            'tcd_c_184_t': (str, none_type,),  # noqa: E501
+            'tcd_c_a117_t': (str, none_type,),  # noqa: E501
         }
 
     @cached_property
@@ -193,9 +201,17 @@ class IsolateUpdate(ModelNormal):
         'date_approved_serotype': 'dateApprovedSerotype',  # noqa: E501
         'date_approved_qc': 'dateApprovedQC',  # noqa: E501
         'date_approved_st': 'dateApprovedST',  # noqa: E501
-        'date_approved_toxin': 'dateApprovedToxin',  # noqa: E501
         'date_approved_cluster': 'dateApprovedCluster',  # noqa: E501
+        'date_approved_toxin': 'dateApprovedToxin',  # noqa: E501
         'date_epi': 'dateEpi',  # noqa: E501
+        'trst': 'trst',  # noqa: E501
+        'tcd_a': 'tcdA',  # noqa: E501
+        'tcd_b': 'tcdB',  # noqa: E501
+        'cdt_ab': 'cdtAB',  # noqa: E501
+        'tcd_c_deletion': 'tcdC_deletion',  # noqa: E501
+        'tcd_c_117': 'tcdC_117',  # noqa: E501
+        'tcd_c_184_t': 'tcdC_184T',  # noqa: E501
+        'tcd_c_a117_t': 'tcdC_A117T',  # noqa: E501
     }
 
     _composed_schemas = {}
@@ -298,9 +314,17 @@ class IsolateUpdate(ModelNormal):
             date_approved_serotype (datetime, none_type): [optional]  # noqa: E501
             date_approved_qc (datetime, none_type): [optional]  # noqa: E501
             date_approved_st (datetime, none_type): [optional]  # noqa: E501
-            date_approved_toxin (datetime, none_type): [optional]  # noqa: E501
             date_approved_cluster (datetime, none_type): [optional]  # noqa: E501
+            date_approved_toxin (datetime, none_type): [optional]  # noqa: E501
             date_epi (datetime, none_type): [optional]  # noqa: E501
+            trst (str, none_type): [optional]  # noqa: E501
+            tcd_a (str, none_type): [optional]  # noqa: E501
+            tcd_b (str, none_type): [optional]  # noqa: E501
+            cdt_ab (str, none_type): [optional]  # noqa: E501
+            tcd_c_deletion (str, none_type): [optional]  # noqa: E501
+            tcd_c_117 (str, none_type): [optional]  # noqa: E501
+            tcd_c_184_t (str, none_type): [optional]  # noqa: E501
+            tcd_c_a117_t (str, none_type): [optional]  # noqa: E501
         """
 
         _check_type = kwargs.pop('_check_type', True)

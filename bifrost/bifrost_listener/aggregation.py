@@ -87,20 +87,32 @@ def agg_pipeline(changed_ids=None):
                 "resistance_genes": {
                     "$reduce": {
                         "input": {
-                            "$map": {
-                                "input": {"$objectToArray": "$categories.resistance.report.phenotypes"},
-                                "as": "phenotype",
-                                "in": {
-                                    "$reduce": {
-                                        "input": {"$objectToArray": "$$phenotype.v.genes"},
-                                        "initialValue": "",
-                                        "in": {"$concat": ["$$value", {"$cond": [{"$eq": ["$$value", ""]}, "", ", "]}, "$$this.k"]}
+                            "$reduce": {
+                                "input": {
+                                    "$map": {
+                                        "input": {"$objectToArray": "$categories.resistance.report.phenotypes"},
+                                        "as": "phenotype",
+                                        "in": {
+                                            "$reduce": {
+                                                "input": {"$objectToArray": "$$phenotype.v.genes"},
+                                                "initialValue": [],
+                                                "in": {"$concatArrays": ["$$value", ["$$this.k"]]}
+                                            }
+                                        }
                                     }
-                                }
+                                },
+                                "initialValue": [],
+                                "in": {"$setUnion": ["$$value", "$$this"]}
                             }
                         },
                         "initialValue": "",
-                        "in": {"$concat": ["$$value", {"$cond": [{"$eq": ["$$value", ""]}, "", ", "]}, "$$this"]}
+                        "in": {
+                            "$cond": {
+                                "if": {"$eq": ["$$value",""]},
+                                "then": "$$this",
+                                "else": {"$concat":["$$value", ", ", "$$this"]}
+                            }
+                        }
                     }
                 },
                 "amr_profile": "$categories.resistance.summary",
@@ -255,11 +267,28 @@ def agg_pipeline(changed_ids=None):
                 "tcda": "$categories.bifrost_sp_cdiff.summary.tcdA",
                 "tcdb": "$categories.bifrost_sp_cdiff.summary.tcdB",
                 "cdta_cdtb": {
-                    "$concat": [
-    	                "$categories.bifrost_sp_cdiff.summary.cdtA",
-                        "/",
-                        "$categories.bifrost_sp_cdiff.summary.cdtB"
-                    ]
+                    "$cond": {
+                        "if": {
+                            "$or": [
+                                {"$eq": ["$categories.bifrost_sp_cdiff.summary.cdtA", None]},
+                                {"$eq": ["$categories.bifrost_sp_cdiff.summary.cdtB", None]}
+                            ]
+                        },
+                        "then": None,
+                        "else": {
+                            "$cond": {
+                                "if": {"$eq": ["$categories.bifrost_sp_cdiff.summary.cdtA", "$categories.bifrost_sp_cdiff.summary.cdtB"]},
+                                "then": "$categories.bifrost_sp_cdiff.summary.cdtA",
+                                "else": {
+                                    "$concat": [
+                                        "$categories.bifrost_sp_cdiff.summary.cdtA",
+                                        "/",
+                                        "$categories.bifrost_sp_cdiff.summary.cdtB"
+                                    ]
+                                }
+                            }
+                        }
+                    }
                 },
                 "del_117": "$categories.bifrost_sp_cdiff.summary.117del",
                 "a117t": "$categories.bifrost_sp_cdiff.summary.A117T",

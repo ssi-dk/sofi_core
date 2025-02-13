@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace DG.SAP.TBRIntegration.Models
 {
-    public class Isolate: ISapMasterData
+    public class Isolate : ISapMasterData
     {
         public string IsolateId { get; set; }
         public DateTime? TestDate { get; set; }
@@ -77,7 +74,14 @@ namespace DG.SAP.TBRIntegration.Models
         public DateTime? DateApprovedToxin { get; set; }
         public DateTime? DateApprovedCluster { get; set; }
         public DateTime? DateEpi { get; set; }
-
+        public string TRST { get; set; }
+        public string tcdA { get; set; }
+        public string tcdB { get; set; }
+        public string cdtAB { get; set; }
+        public string tcdC_deletion { get; set; }
+        public string tcdC_117 { get; set; }
+        public string tcdC_184T { get; set; }
+        public string tcdC_A117T { get; set; }
         public long RowVer { get; set; }
     }
 }

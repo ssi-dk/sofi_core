@@ -75,7 +75,6 @@ class Isolate(ModelNormal):
         """
         return {
             'isolate_id': (str, none_type,),  # noqa: E501
-            'run_id': (str, none_type,),  # noqa: E501
             'test_date': (datetime, none_type,),  # noqa: E501
             'ssi_date': (datetime, none_type,),  # noqa: E501
             'cpr_nr': (str, none_type,),  # noqa: E501
@@ -88,6 +87,7 @@ class Isolate(ModelNormal):
             'travel': (str, none_type,),  # noqa: E501
             'travel_country': (str, none_type,),  # noqa: E501
             'region': (str, none_type,),  # noqa: E501
+            'run_id': (str, none_type,),  # noqa: E501
             'serotype': (str, none_type,),  # noqa: E501
             'st': (int, none_type,),  # noqa: E501
             'fud_nr': (str, none_type,),  # noqa: E501
@@ -143,6 +143,14 @@ class Isolate(ModelNormal):
             'date_approved_toxin': (datetime, none_type,),  # noqa: E501
             'date_approved_cluster': (datetime, none_type,),  # noqa: E501
             'date_epi': (datetime, none_type,),  # noqa: E501
+            'trst': (str, none_type,),  # noqa: E501
+            'tcd_a': (str, none_type,),  # noqa: E501
+            'tcd_b': (str, none_type,),  # noqa: E501
+            'cdt_ab': (str, none_type,),  # noqa: E501
+            'tcd_c_deletion': (str, none_type,),  # noqa: E501
+            'tcd_c_117': (str, none_type,),  # noqa: E501
+            'tcd_c_184_t': (str, none_type,),  # noqa: E501
+            'tcd_c_a117_t': (str, none_type,),  # noqa: E501
             'row_ver': (int,),  # noqa: E501
         }
 
@@ -153,7 +161,6 @@ class Isolate(ModelNormal):
 
     attribute_map = {
         'isolate_id': 'isolateId',  # noqa: E501
-        'run_id': 'runId',  # noqa: E501
         'test_date': 'testDate',  # noqa: E501
         'ssi_date': 'ssiDate',  # noqa: E501
         'cpr_nr': 'cprNr',  # noqa: E501
@@ -166,6 +173,7 @@ class Isolate(ModelNormal):
         'travel': 'travel',  # noqa: E501
         'travel_country': 'travelCountry',  # noqa: E501
         'region': 'region',  # noqa: E501
+        'run_id': 'runId',  # noqa: E501
         'serotype': 'serotype',  # noqa: E501
         'st': 'st',  # noqa: E501
         'fud_nr': 'fudNr',  # noqa: E501
@@ -221,6 +229,14 @@ class Isolate(ModelNormal):
         'date_approved_toxin': 'dateApprovedToxin',  # noqa: E501
         'date_approved_cluster': 'dateApprovedCluster',  # noqa: E501
         'date_epi': 'dateEpi',  # noqa: E501
+        'trst': 'trst',  # noqa: E501
+        'tcd_a': 'tcdA',  # noqa: E501
+        'tcd_b': 'tcdB',  # noqa: E501
+        'cdt_ab': 'cdtAB',  # noqa: E501
+        'tcd_c_deletion': 'tcdC_deletion',  # noqa: E501
+        'tcd_c_117': 'tcdC_117',  # noqa: E501
+        'tcd_c_184_t': 'tcdC_184T',  # noqa: E501
+        'tcd_c_a117_t': 'tcdC_A117T',  # noqa: E501
         'row_ver': 'rowVer',  # noqa: E501
     }
 
@@ -271,7 +287,6 @@ class Isolate(ModelNormal):
                                 through its discriminator because we passed in
                                 _visited_composed_classes = (Animal,)
             isolate_id (str, none_type): [optional]  # noqa: E501
-            run_id (str, none_type): [optional]  # noqa: E501
             test_date (datetime, none_type): [optional]  # noqa: E501
             ssi_date (datetime, none_type): [optional]  # noqa: E501
             cpr_nr (str, none_type): [optional]  # noqa: E501
@@ -284,6 +299,7 @@ class Isolate(ModelNormal):
             travel (str, none_type): [optional]  # noqa: E501
             travel_country (str, none_type): [optional]  # noqa: E501
             region (str, none_type): [optional]  # noqa: E501
+            run_id (str, none_type): [optional]  # noqa: E501
             serotype (str, none_type): [optional]  # noqa: E501
             st (int, none_type): [optional]  # noqa: E501
             fud_nr (str, none_type): [optional]  # noqa: E501
@@ -339,6 +355,14 @@ class Isolate(ModelNormal):
             date_approved_toxin (datetime, none_type): [optional]  # noqa: E501
             date_approved_cluster (datetime, none_type): [optional]  # noqa: E501
             date_epi (datetime, none_type): [optional]  # noqa: E501
+            trst (str, none_type): [optional]  # noqa: E501
+            tcd_a (str, none_type): [optional]  # noqa: E501
+            tcd_b (str, none_type): [optional]  # noqa: E501
+            cdt_ab (str, none_type): [optional]  # noqa: E501
+            tcd_c_deletion (str, none_type): [optional]  # noqa: E501
+            tcd_c_117 (str, none_type): [optional]  # noqa: E501
+            tcd_c_184_t (str, none_type): [optional]  # noqa: E501
+            tcd_c_a117_t (str, none_type): [optional]  # noqa: E501
             row_ver (int): [optional]  # noqa: E501
         """
 
