@@ -42,7 +42,12 @@ You're now set to continue with [Running](#running), below there's additional no
  
 #### Database permission
 
-Ensure that `auth/pg/pgdata/` and `bifrost/bifrost_db/data/` are owned by `<user-name>`. 
+Ensure that `auth/pg/pgdata/` and `bifrost/bifrost_db/data/` are owned by `<user-name>`.
+
+This can be done by running
+```sh
+sudo chown -R $(id -u):$(id -g) bifrost/bifrost_db/data/db
+```
 
 #### Project placement
 
@@ -169,7 +174,7 @@ Consult `docs/`.
 
 ## bifrost_db container ERROR: child process failed, exited with 1
 When running make run. If the bifrost conainer keeps failing with an error message saying "ERROR: child process failed, exited with 1". Look for if "Error creating journal directory".
-One way to get around this error is by running `make run` with sudo privilidges:
+First look at the [Database permission](#database-permission) section. Alternatively, one way to get around this error is by running `make run` with sudo privilidges:
 ```shell
 sudo make run
 ```
