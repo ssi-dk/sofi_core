@@ -17,6 +17,8 @@ import {
   healthExtLims,
   healthExtTbr,
   HealthResponse,
+  AddToCluster,
+  addToCluster as addToClusterApi,
 } from "sap-client";
 import { getUrl } from "service";
 import { arrayToNormalizedHashmap } from "utils";
@@ -173,6 +175,21 @@ type HealthEndpoints = "lims" | "tbr";
 
 export type HealthSlice = {
   health: { [K: string]: HealthResponse };
+};
+
+export const AddToClusterRequest = (params: AddToCluster) => {
+  const base = addToClusterApi({ addToCluster: params });
+  base.url = getUrl(base.url);
+
+  base.transform = (response) => {
+    if (!response.id) {
+      return undefined;
+    }
+    return { clusterrequest: [{ id: response.id, name: params.clusterid }] };
+  };
+  
+  base.force = true;
+  return base;
 };
 
 export const healthRequest = (endpoint: HealthEndpoints) => {

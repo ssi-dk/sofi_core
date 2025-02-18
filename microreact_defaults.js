@@ -7,7 +7,13 @@ module.exports = {
       id: "createnewworkspace",
       label: "Create new workspace from selection",
       type: "selection",
-      url: process.env.SOFI_BASE_URL + "/createworkspace?ids="
+      url: process.env.SOFI_BASE_URL + "/workspaces/create_from_sequence_ids?ids="
+    },
+    {
+      id: "addtocluster",
+      label: "Add selection to cluster",
+      type: "selection",
+      url: process.env.SOFI_BASE_URL + "/addtocluster?ids="
     }
   ],
   auth: {

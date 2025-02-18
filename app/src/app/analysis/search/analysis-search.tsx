@@ -52,7 +52,8 @@ const AnalysisSearch = (props: AnalysisSearchProps) => {
   ]);
 
   const submitQuery = React.useCallback(
-    (q?: string) => onSubmit({ expression: parseQuery(q || input, toast) }, 100),
+    (q?: string) =>
+      onSubmit({ expression: parseQuery(q || input, toast) }, 100),
     [onSubmit, input, toast]
   );
 

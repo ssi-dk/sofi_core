@@ -22,7 +22,6 @@ class Resistance(Model):
     """
     SENSITIV = "Sensitiv"
     RESISTENT = "Resistent"
-    UKENDT = "Ukendt"
     def __init__(self):  # noqa: E501
         """Resistance - a model defined in OpenAPI
 

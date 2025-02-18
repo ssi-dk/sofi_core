@@ -16,6 +16,7 @@ import "./style-reset.css";
 import { Workspaces } from "./workspaces/workspaces";
 import { Workspace } from "./workspaces/workspace";
 import { CreateWorkspaceFromMicroreact } from "./workspaces/create-workspace-from-microreact";
+import { AddToCluster } from "./analysis/add-to-cluster-page";
 
 export default function App() {
   return (
@@ -62,6 +63,15 @@ export default function App() {
           render={() => (
             <Authorize>
               <CreateWorkspaceFromMicroreact />
+            </Authorize>
+          )}
+        />
+        <Route
+          exact
+          path="/addtocluster"
+          render={() => (
+            <Authorize>
+              <AddToCluster />
             </Authorize>
           )}
         />
