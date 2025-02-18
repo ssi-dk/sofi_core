@@ -18,8 +18,8 @@ export function AddToCluster() {
   const [
     addToClusterQueryState,
     addToClusterMutation,
-  ] = useMutation((clusterid: string, samples: string[]) =>
-    AddToClusterRequest({ clusterid: clusterid, samples: samples })
+  ] = useMutation((cluster: string, samples: string[]) =>
+    AddToClusterRequest({ clusterid: cluster, samples: samples })
   );
 
   const content = (
