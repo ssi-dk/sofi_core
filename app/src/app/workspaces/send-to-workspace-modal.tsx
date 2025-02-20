@@ -25,6 +25,11 @@ type Props = {
   onClose: () => void;
 };
 
+export function isValidObjectId(id: string): boolean {
+  const hexRegex = /^[0-9a-fA-F]{24}$/;
+  return hexRegex.test(id);
+}
+
 export const SendToWorkspaceModal = (props: Props) => {
   const { t } = useTranslation();
   const { selection, onClose } = props;
@@ -54,6 +59,20 @@ export const SendToWorkspaceModal = (props: Props) => {
   );
 
   const onSend = useCallback(async () => {
+    const samples = Object.values(selection).map((s) => s.original.id);
+    const invalidSamples = samples.filter((id) => !isValidObjectId(id));
+
+    if (invalidSamples.length > 0) {
+      toast({
+        title: t("Invalid Sample IDs"),
+        description: `${t("The following sample IDs are invalid:")} ${invalidSamples.join(", ")}`,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+      return;
+    }
+
     if (workspace === "-- New workspace") {
       const name = prompt(t("Workspace name"));
       if (name) {
