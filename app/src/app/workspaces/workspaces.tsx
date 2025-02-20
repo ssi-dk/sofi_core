@@ -64,7 +64,7 @@ export function Workspaces() {
                   <Td>
                     <div style={{ display: "flex", columnGap: "4px" }}>
                       <ViewWorkspace id={h.id} />
-                      <CloneWorkspace id={h.id} samples={h.samples}/>
+                      <CloneWorkspace id={h.id} samples={h.samples} />
                       <DeleteWorkspace id={h.id} />
                     </div>
                   </Td>

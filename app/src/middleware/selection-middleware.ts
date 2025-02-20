@@ -4,7 +4,8 @@ import { updateSelectionOriginal } from "app/analysis/analysis-selection-configs
 const { MUTATE_SUCCESS, REQUEST_SUCCESS } = actionTypes;
 
 export const selectionMiddleware = (store) => (next) => (action) => {
-  if (action && 
+  if (
+    action &&
     action.type === MUTATE_SUCCESS &&
     action.url.indexOf("/api/analysis/changes") !== -1
   ) {

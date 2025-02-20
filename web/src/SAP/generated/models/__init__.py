@@ -3,6 +3,7 @@
 # flake8: noqa
 from __future__ import absolute_import
 # import models into model package
+from .add_to_cluster import AddToCluster
 from .analysis_history import AnalysisHistory
 from .analysis_query import AnalysisQuery
 from .analysis_result import AnalysisResult

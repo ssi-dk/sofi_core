@@ -18,7 +18,9 @@ export function CloneWorkspace(props: Props) {
   const [
     cloneWorkspaceQueryState,
     cloneWorkspaceMutation,
-  ] = useMutation((name: string, id: string) => cloneWorkspace({ name, id, samples: props.samples }));
+  ] = useMutation((name: string, id: string) =>
+    cloneWorkspace({ name, id, samples: props.samples })
+  );
 
   const [needsNotify, setNeedsNotify] = useState(true);
 
