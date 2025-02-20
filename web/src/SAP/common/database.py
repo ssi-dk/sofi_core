@@ -1,6 +1,7 @@
 import os, sys
 import binascii
 import logging
+from datetime import datetime
 
 from typing import Dict, Literal, Tuple, overload
 
@@ -170,7 +171,9 @@ def encrypt_dict(encryption_client: ClientEncryption, val, filter_list=None):
 def coerce_date(dayfirst):
     def parse_value(v):
         try:
-            return parser.parse(v, dayfirst=dayfirst).isoformat() if v else None
+            if isinstance(v, datetime):
+                return v
+            return parser.parse(v, dayfirst=dayfirst) if v else None
         except:
             return None
     return parse_value
