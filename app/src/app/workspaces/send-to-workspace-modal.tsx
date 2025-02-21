@@ -88,7 +88,7 @@ export const SendToWorkspaceModal = (props: Props) => {
     }
     setIsSending(true);
     sendToWorkspace(workspace);
-  }, [setIsSending, sendToWorkspace, workspaces, workspace, t]);
+  }, [setIsSending, sendToWorkspace, workspaces, workspace, t, selection, toast]);
 
   const onWorkspaceChange = useCallback((id: string) => {
     setWorkspace(id);
