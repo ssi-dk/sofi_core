@@ -17,7 +17,6 @@
 from web.src.services.bio_api.openapi.models.common_post_response import CommonPOSTResponse
 from web.src.services.bio_api.openapi.models.distance_matrix_get_response import DistanceMatrixGETResponse
 from web.src.services.bio_api.openapi.models.distance_matrix_request import DistanceMatrixRequest
-from web.src.services.bio_api.openapi.models.distance_matrix_result import DistanceMatrixResult
 from web.src.services.bio_api.openapi.models.hc_tree_calc_get_response import HCTreeCalcGETResponse
 from web.src.services.bio_api.openapi.models.hc_tree_calc_request import HCTreeCalcRequest
 from web.src.services.bio_api.openapi.models.http_validation_error import HTTPValidationError

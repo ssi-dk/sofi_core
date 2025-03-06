@@ -76,7 +76,6 @@ Class | Method | HTTP request | Description
  - [CommonPOSTResponse](web/src/services/bio_api/openapi/docs/CommonPOSTResponse.md)
  - [DistanceMatrixGETResponse](web/src/services/bio_api/openapi/docs/DistanceMatrixGETResponse.md)
  - [DistanceMatrixRequest](web/src/services/bio_api/openapi/docs/DistanceMatrixRequest.md)
- - [DistanceMatrixResult](web/src/services/bio_api/openapi/docs/DistanceMatrixResult.md)
  - [HCTreeCalcGETResponse](web/src/services/bio_api/openapi/docs/HCTreeCalcGETResponse.md)
  - [HCTreeCalcRequest](web/src/services/bio_api/openapi/docs/HCTreeCalcRequest.md)
  - [HTTPValidationError](web/src/services/bio_api/openapi/docs/HTTPValidationError.md)

@@ -50,6 +50,7 @@ def send_to_microreact(user, token_info, body: NewMicroreactProjectRequestData):
     # Calculate tree
     tree_calcs = []
     samples = list(map(lambda s: s["id"], workspace["samples"]))
+    dmx = []
 
     with ApiClient(Configuration(host="http://bioapi:8000")) as api_client:
         # Distance
@@ -71,10 +72,12 @@ def send_to_microreact(user, token_info, body: NewMicroreactProjectRequestData):
             distance_get_api_response = (
                 api_instance.dmx_result_v1_distance_calculations_dc_id_get(
                     distance_job_id,
-                    level='basic'
+                    level='full'
                 )
             )
             status = distance_get_api_response.status.value
+            if distance_get_api_response.result is not None:
+                dmx = distance_get_api_response.result["distances"] or []
 
         if status == "error":
             return abort(500)
@@ -126,14 +129,15 @@ def send_to_microreact(user, token_info, body: NewMicroreactProjectRequestData):
     
     hidden_columns = get_hidden_columns(token_info["institution"], cols)
 
-    res = new_microreact_project(
+    res = new_microreact_project (
         project_name=workspace["name"],
         metadata_url=f"{PUBLIC_BASE_URL}/api/workspaces/{workspace_id}/data",  # get_workspace_data
         columns=cols,
         mr_access_token=body.mr_access_token,
         mr_base_url="http://microreact:3000/",
         tree_calcs=tree_calcs,
-        hidden=hidden_columns
+        hidden=hidden_columns,
+        raw_matrices=dmx,
     )
 
     json_response = res.json()
