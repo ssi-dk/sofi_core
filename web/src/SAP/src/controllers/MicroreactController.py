@@ -81,10 +81,6 @@ def send_to_microreact(user, token_info, body: NewMicroreactProjectRequestData):
 
         if status == "error":
             return abort(500)
-        
-        # Note:
-        # SOFI does not need the actual distance matrix for now, so no need to request with level='full'.
-        # When SOFI has to send the distance matrix to Microreact another GET call with level='full' will be necessary.
 
         # Trees
         api_instance = TreesApi(api_client)
