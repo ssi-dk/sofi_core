@@ -164,10 +164,14 @@ export const Judgement = <T extends NotEmpty>(props: Props<T>) => {
   const rejectSelection = React.useCallback(() => {
     setNeedsRejectNotify(true);
     const matrix = {};
+    const requiredValues = {};
     Object.keys(selection).forEach((key) => {
       matrix[key] = selection[key].cells;
+      requiredValues[key] = {};
+        requiredValues[key]["resfinder_version"] =
+          selection[key].original.resfinder_version ?? ""
     });
-    doRejection({ matrix });
+    doRejection({ matrix, required_values: requiredValues });
   }, [selection, doRejection, setNeedsRejectNotify]);
 
   // Display approval toasts
