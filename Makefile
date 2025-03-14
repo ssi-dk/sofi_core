@@ -176,7 +176,7 @@ ${mkfile_dir}/bifrost/bifrost_queue_broker/api_clients/lims_client : ${mkfile_di
 ${mkfile_dir}/app/node_modules/ : ${mkfile_dir}/app/package.json
 	pushd ${mkfile_dir}/app && npx yarn install
 
-build: ${mkfile_dir}/app/src/sap-client ${mkfile_dir}/web/src/SAP/generated ${mkfile_dir}/web/src/services/lims/openapi ${mkfile_dir}/web/src/services/bio_api/openapi
+build: ${mkfile_dir}/app/src/sap-client ${mkfile_dir}/web/src/SAP/generated ${mkfile_dir}/web/src/services/lims/openapi ${mkfile_dir}/web/src/services/bio_api/openapi ${mkfile_dir}/bifrost/bifrost_queue_broker/bifrost_queue_broker_lims_pull ${mkfile_dir}/bifrost/bifrost_queue_broker/bifrost_queue_broker_tbr_pull ${mkfile_dir}/bifrost/bifrost_queue_broker/bifrost_queue_broker_lims_request ${mkfile_dir}/bifrost/bifrost_queue_broker/bifrost_queue_broker_tbr_request
 	CURRENT_UID=${mkfile_user} docker-compose build --no-cache
 
 install:
