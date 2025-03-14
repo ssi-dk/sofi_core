@@ -303,7 +303,7 @@ components:
           type: array
           title: Seq Mongo Ids
         result:
-          "$ref": "#/components/schemas/DistanceMatrixResult"
+          title: Result
       type: object
       required:
       - job_id
@@ -345,19 +345,6 @@ components:
         seqid_field_path: field path in dotted notation which contains the 'sequence id' the user wants to see
         profile_field_path: field path in dotted notation which contains the cgMLST allele profiles
         mongo_ids: the  _id strings for the desired sequence documents
-    DistanceMatrixResult:
-      properties:
-        seq_to_mongo:
-          type: object
-          title: Seq To Mongo
-        distances:
-          type: object
-          nullable: true
-          title: Distances
-      type: object
-      required:
-      - seq_to_mongo
-      title: DistanceMatrixResult
     HCTreeCalcGETResponse:
       properties:
         job_id:
