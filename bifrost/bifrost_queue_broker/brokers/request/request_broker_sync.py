@@ -17,7 +17,7 @@ class RequestBrokerSync():
         cursor = self.col.find(
             self.listener_match, cursor_type=CursorType.TAILABLE_AWAIT
         )
-        while True:
+        while cursor.hasNext():
                 record = cursor.next()
                 logging.info(f"{self.broker_name} trying to DB lock {record['_id']}")
                 # We cannot change size of documents in capped collections
