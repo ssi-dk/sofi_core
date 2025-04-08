@@ -76,6 +76,18 @@
     ]
   },
   {
+    "field_name": "trst",
+    "approvable": true,
+    "approves_with": [
+      "tcda",
+      "tcdb",
+      "cdta_cdtb",
+      "del_117",
+      "a117t",
+      "cdiff_details"
+    ]
+  },
+  {
     "field_name": "cluster_id",
     "approvable": true,
     "editable": true
