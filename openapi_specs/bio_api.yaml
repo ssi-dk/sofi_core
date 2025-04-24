@@ -467,9 +467,6 @@ components:
       - created_at
       - status
       - finished_at
-      - seq_collection
-      - filtering
-      - profile_field_path
       - input_mongo_id
       - cutoff
       - unknowns_are_diffs
@@ -497,9 +494,6 @@ components:
           title: Unknowns Are Diffs
       type: object
       required:
-      - seq_collection
-      - filtering
-      - profile_field_path
       - input_mongo_id
       - cutoff
       - unknowns_are_diffs
