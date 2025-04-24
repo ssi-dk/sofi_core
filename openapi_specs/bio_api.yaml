@@ -310,9 +310,6 @@ components:
       - created_at
       - status
       - finished_at
-      - seq_collection
-      - seqid_field_path
-      - profile_field_path
       - seq_mongo_ids
       - result
       title: DistanceMatrixGETResponse
@@ -333,9 +330,6 @@ components:
           title: Seq Mongo Ids
       type: object
       required:
-      - seq_collection
-      - seqid_field_path
-      - profile_field_path
       - seq_mongo_ids
       title: DistanceMatrixRequest
       description: |-
