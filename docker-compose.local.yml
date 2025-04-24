@@ -15,96 +15,13 @@ services:
     depends_on:
       - "bifrost_db"
 
-  queue_broker_lims_pull:
+  sap_broker_queue:
     build:
       context: ./bifrost/bifrost_queue_broker
-      dockerfile: bifrost_queue_broker_lims_pull/Dockerfile
-    container_name: bifrost_queue_broker_lims_pull
-    image: bifrost_queue_broker_lims_pull
-    restart: on-failure
-    environment:
-      - PYTHONDONTWRITEBYTECODE=1
-      - PYTHONUNBUFFERED=0
-      - BIFROST_MONGO_CONN=${BIFROST_MONGO_CONN}
-      - BIFROST_MONGO_DB=${BIFROST_MONGO_DB}
-      - BIFROST_MONGO_QUEUE_COLLECTION=sap_broker_queue
-      - BIFROST_MONGO_LIMS_METADATA_COLLECTION=sap_lims_metadata
-      - BIFROST_MONGO_ANALYSIS_VIEW_COLLECTION=sap_analysis_results
-      - SOFI_BIFROST_ENCRYPTION_NAME=${SOFI_BIFROST_ENCRYPTION_NAME}
-      - SOFI_BIFROST_ENCRYPTION_KEY=${SOFI_BIFROST_ENCRYPTION_KEY}
-      - LIMS_API_URL=${LIMS_API_URL}
-      - LIMS_API_DATABASEID=${LIMS_API_DATABASEID}
-      - LIMS_API_USERNAME=${LIMS_API_USERNAME}
-      - LIMS_API_PASSWORD=${LIMS_API_PASSWORD}
-      - LOG_LEVEL=${LOG_LEVEL}
-    volumes:
-      - ./bifrost/bifrost_queue_broker:/app
-  queue_broker_tbr_pull:
-    build:
-      context: ./bifrost/bifrost_queue_broker
-      dockerfile: bifrost_queue_broker_tbr_pull/Dockerfile
-    container_name: bifrost_queue_broker_tbr_pull
-    image: bifrost_queue_broker_tbr_pull
-    restart: on-failure
-    environment:
-      - PYTHONDONTWRITEBYTECODE=1
-      - PYTHONUNBUFFERED=0
-      - BIFROST_MONGO_CONN=${BIFROST_MONGO_CONN}
-      - BIFROST_MONGO_DB=${BIFROST_MONGO_DB}
-      - BIFROST_MONGO_QUEUE_COLLECTION=sap_broker_queue
-      - BIFROST_MONGO_TBR_METADATA_COLLECTION=sap_tbr_metadata
-      - BIFROST_MONGO_ANALYSIS_VIEW_COLLECTION=sap_analysis_results
-      - SOFI_BIFROST_ENCRYPTION_NAME=${SOFI_BIFROST_ENCRYPTION_NAME}
-      - SOFI_BIFROST_ENCRYPTION_KEY=${SOFI_BIFROST_ENCRYPTION_KEY}
-      - TBR_API_URL=${TBR_API_URL}
-      - LOG_LEVEL=${LOG_LEVEL}
-    volumes:
-      - ./bifrost/bifrost_queue_broker:/app
-  queue_broker_lims_request:
-    build:
-      context: ./bifrost/bifrost_queue_broker
-      dockerfile: bifrost_queue_broker_lims_request/Dockerfile
-    container_name: bifrost_queue_broker_lims_request
-    image: bifrost_queue_broker_lims_request
-    restart: on-failure
-    environment:
-      - PYTHONDONTWRITEBYTECODE=1
-      - PYTHONUNBUFFERED=0
-      - BIFROST_MONGO_CONN=${BIFROST_MONGO_CONN}
-      - BIFROST_MONGO_DB=${BIFROST_MONGO_DB}
-      - BIFROST_MONGO_QUEUE_COLLECTION=sap_broker_queue
-      - BIFROST_MONGO_LIMS_METADATA_COLLECTION=sap_lims_metadata
-      - BIFROST_MONGO_ANALYSIS_VIEW_COLLECTION=sap_analysis_results
-      - SOFI_BIFROST_ENCRYPTION_NAME=${SOFI_BIFROST_ENCRYPTION_NAME}
-      - SOFI_BIFROST_ENCRYPTION_KEY=${SOFI_BIFROST_ENCRYPTION_KEY}
-      - LIMS_API_URL=${LIMS_API_URL}
-      - LIMS_API_DATABASEID=${LIMS_API_DATABASEID}
-      - LIMS_API_USERNAME=${LIMS_API_USERNAME}
-      - LIMS_API_PASSWORD=${LIMS_API_PASSWORD}
-      - LOG_LEVEL=${LOG_LEVEL}
-    volumes:
-      - ./bifrost/bifrost_queue_broker:/app
-  queue_broker_tbr_request:
-    build:
-      context: ./bifrost/bifrost_queue_broker
-      dockerfile: bifrost_queue_broker_tbr_request/Dockerfile
-    container_name: bifrost_queue_broker_tbr_request
-    image: bifrost_queue_broker_tbr_request
-    restart: on-failure
-    environment:
-      - PYTHONDONTWRITEBYTECODE=1
-      - PYTHONUNBUFFERED=0
-      - BIFROST_MONGO_CONN=${BIFROST_MONGO_CONN}
-      - BIFROST_MONGO_DB=${BIFROST_MONGO_DB}
-      - BIFROST_MONGO_QUEUE_COLLECTION=sap_broker_queue
-      - BIFROST_MONGO_TBR_METADATA_COLLECTION=sap_tbr_metadata
-      - BIFROST_MONGO_ANALYSIS_VIEW_COLLECTION=sap_analysis_results
-      - SOFI_BIFROST_ENCRYPTION_NAME=${SOFI_BIFROST_ENCRYPTION_NAME}
-      - SOFI_BIFROST_ENCRYPTION_KEY=${SOFI_BIFROST_ENCRYPTION_KEY}
-      - TBR_API_URL=${TBR_API_URL}
-      - LOG_LEVEL=${LOG_LEVEL}
-    volumes:
-      - ./bifrost/bifrost_queue_broker:/app
+      dockerfile: Dockerfile
+    depends_on:
+      - "sap_api"
+      - "bifrost_db"
 
   bifrost_listener:
     build:

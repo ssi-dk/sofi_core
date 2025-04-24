@@ -79,36 +79,9 @@ services:
     depends_on:
       - "sap_api"
 
-  queue_broker_lims_pull:
-    build:
-      context: ./bifrost/bifrost_queue_broker
-      dockerfile: bifrost_queue_broker/bifrost_queue_broker_lims_pull/Dockerfile
-    container_name: bifrost_queue_broker_lims_pull
-    image: bifrost_queue_broker_lims_pull
-    restart: on-failure
-    environment:
-      - PYTHONDONTWRITEBYTECODE=1
-      - PYTHONUNBUFFERED=0
-      - BIFROST_MONGO_CONN=${BIFROST_MONGO_CONN}
-      - BIFROST_MONGO_DB=${BIFROST_MONGO_DB}
-      - BIFROST_MONGO_QUEUE_COLLECTION=sap_broker_queue
-      - BIFROST_MONGO_LIMS_METADATA_COLLECTION=sap_lims_metadata
-      - BIFROST_MONGO_ANALYSIS_VIEW_COLLECTION=sap_analysis_results
-      - SOFI_BIFROST_ENCRYPTION_NAME=${SOFI_BIFROST_ENCRYPTION_NAME}
-      - SOFI_BIFROST_ENCRYPTION_KEY=${SOFI_BIFROST_ENCRYPTION_KEY}
-      - LIMS_API_URL=${LIMS_API_URL}
-      - LIMS_API_DATABASEID=${LIMS_API_DATABASEID}
-      - LIMS_API_USERNAME=${LIMS_API_USERNAME}
-      - LIMS_API_PASSWORD=${LIMS_API_PASSWORD}
-      - LOG_LEVEL=${LOG_LEVEL}
-    volumes:
-      - ./bifrost/bifrost_queue_broker:/app
-  queue_broker_tbr_pull:
-    build:
-      context: ./bifrost/bifrost_queue_broker
-      dockerfile: bifrost_queue_broker/bifrost_queue_broker_tbr_pull/Dockerfile
-    container_name: bifrost_queue_broker_tbr_pull
-    image: bifrost_queue_broker_tbr_pull
+  sap_broker_queue:
+    container_name: bifrost_queue_broker
+    user: ${CURRENT_UID}
     restart: on-failure
     environment:
       - PYTHONDONTWRITEBYTECODE=1
@@ -117,58 +90,21 @@ services:
       - BIFROST_MONGO_DB=${BIFROST_MONGO_DB}
       - BIFROST_MONGO_QUEUE_COLLECTION=sap_broker_queue
       - BIFROST_MONGO_TBR_METADATA_COLLECTION=sap_tbr_metadata
-      - BIFROST_MONGO_ANALYSIS_VIEW_COLLECTION=sap_analysis_results
-      - SOFI_BIFROST_ENCRYPTION_NAME=${SOFI_BIFROST_ENCRYPTION_NAME}
-      - SOFI_BIFROST_ENCRYPTION_KEY=${SOFI_BIFROST_ENCRYPTION_KEY}
-      - TBR_API_URL=${TBR_API_URL}
-      - LOG_LEVEL=${LOG_LEVEL}
-    volumes:
-      - ./bifrost/bifrost_queue_broker:/app
-  queue_broker_lims_request:
-    build:
-      context: ./bifrost/bifrost_queue_broker
-      dockerfile: bifrost_queue_broker_lims_request/Dockerfile
-    container_name: bifrost_queue_broker_lims_request
-    image: bifrost_queue_broker_lims_request
-    restart: on-failure
-    environment:
-      - PYTHONDONTWRITEBYTECODE=1
-      - PYTHONUNBUFFERED=0
-      - BIFROST_MONGO_CONN=${BIFROST_MONGO_CONN}
-      - BIFROST_MONGO_DB=${BIFROST_MONGO_DB}
-      - BIFROST_MONGO_QUEUE_COLLECTION=sap_broker_queue
       - BIFROST_MONGO_LIMS_METADATA_COLLECTION=sap_lims_metadata
       - BIFROST_MONGO_ANALYSIS_VIEW_COLLECTION=sap_analysis_results
       - SOFI_BIFROST_ENCRYPTION_NAME=${SOFI_BIFROST_ENCRYPTION_NAME}
       - SOFI_BIFROST_ENCRYPTION_KEY=${SOFI_BIFROST_ENCRYPTION_KEY}
+      - TBR_API_URL=${TBR_API_URL}
       - LIMS_API_URL=${LIMS_API_URL}
       - LIMS_API_DATABASEID=${LIMS_API_DATABASEID}
       - LIMS_API_USERNAME=${LIMS_API_USERNAME}
       - LIMS_API_PASSWORD=${LIMS_API_PASSWORD}
       - LOG_LEVEL=${LOG_LEVEL}
     volumes:
-      - ./bifrost/bifrost_queue_broker:/app
-  queue_broker_tbr_request:
-    build:
-      context: ./bifrost/bifrost_queue_broker
-      dockerfile: bifrost_queue_broker_tbr_request/Dockerfile
-    container_name: bifrost_queue_broker_tbr_request
-    image: bifrost_queue_broker_tbr_request
-    restart: on-failure
-    environment:
-      - PYTHONDONTWRITEBYTECODE=1
-      - PYTHONUNBUFFERED=0
-      - BIFROST_MONGO_CONN=${BIFROST_MONGO_CONN}
-      - BIFROST_MONGO_DB=${BIFROST_MONGO_DB}
-      - BIFROST_MONGO_QUEUE_COLLECTION=sap_broker_queue
-      - BIFROST_MONGO_TBR_METADATA_COLLECTION=sap_tbr_metadata
-      - BIFROST_MONGO_ANALYSIS_VIEW_COLLECTION=sap_analysis_results
-      - SOFI_BIFROST_ENCRYPTION_NAME=${SOFI_BIFROST_ENCRYPTION_NAME}
-      - SOFI_BIFROST_ENCRYPTION_KEY=${SOFI_BIFROST_ENCRYPTION_KEY}
-      - TBR_API_URL=${TBR_API_URL}
-      - LOG_LEVEL=${LOG_LEVEL}
-    volumes:
-      - ./bifrost/bifrost_queue_broker:/app
+      - ${TBR_CLIENT_KEY}:/app/.certs/client.key:ro
+      - ${TBR_CLIENT_CERT}:/app/.certs/client.pem:ro
+      - ${TBR_ROOT_CA}:/app/.certs/SOFI_ROOT.pem:ro
+    extra_hosts: *default-extra_hosts
 
   bifrost_listener:
     container_name: bifrost_listener
