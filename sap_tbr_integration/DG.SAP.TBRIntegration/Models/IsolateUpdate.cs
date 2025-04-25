@@ -61,13 +61,15 @@ namespace DG.SAP.TBRIntegration.Models
         public DateTime? DateApprovedCluster { get; set; }
         public DateTime? DateApprovedToxin { get; set; }
         public DateTime? DateEpi { get; set; }
-        public string TRST { get; set; }
-        public string tcdA { get; set; }
-        public string tcdB { get; set; }
-        public string cdtAB { get; set; }
-        public string tcdC_deletion { get; set; }
-        public string tcdC_117 { get; set; }
-        public string tcdC_184T { get; set; }
-        public string tcdC_A117T { get; set; }
+        #nullable enable
+        public string? TRST { get; set; }
+        public string? tcdA { get; set; }
+        public string? tcdB { get; set; }
+        public string? cdtAB { get; set; }
+        public string? tcdC_deletion { get; set; }
+        public string? tcdC_117 { get; set; }
+        public string? tcdC_184T { get; set; }
+        public string? tcdC_A117T { get; set; }
+        #nullable restore
     }
 }
