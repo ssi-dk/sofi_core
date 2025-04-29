@@ -1,15 +1,11 @@
-import os, sys
 import logging
-import time
 import pymongo
-import threading
-from pymongo import CursorType
-from ..shared import (
-    BrokerError,
+import time
+from brokers.shared import (
     yield_chunks,
     tbr_to_sofi_column_mapping as column_mapping,
 )
-from ..tbr_conn import get_tbr_configuration
+from brokers.tbr_conn import get_tbr_configuration
 from common.database import (
     coerce_dates,
     encrypt_dict,
@@ -19,49 +15,30 @@ from common.config.column_config import pii_columns
 
 # TBR API imports
 import time
-import api_clients.tbr_client
-from pymongo.collection import ReturnDocument
-from pprint import pprint
 from api_clients.tbr_client.api.isolate_api import ApiClient, IsolateApi
-from api_clients.tbr_client.models import Isolate, RowVersion
+from api_clients.tbr_client.models import RowVersion
 
 
-class TBRPullingBroker(threading.Thread):
+class TBRPullingBrokerSync():
     def __init__(
-        self, data_lock, tbr_col_name, analysis_view_col_name, thread_timeout, db
+        self, tbr_col_name, analysis_view_col_name, db
     ):
-        super(TBRPullingBroker, self).__init__()
-        self.data_lock = data_lock
+        super(TBRPullingBrokerSync, self).__init__()
         self.db = db
         self.analysis_col = db[analysis_view_col_name]
         self.metadata_col = db[tbr_col_name]
-        self.stop = threading.Event()
-        self.thread_timeout = thread_timeout
         self.broker_name = "TBR Pulling broker"
         _, enc = get_connection(with_enc=True)
         self.encryption_client = enc
 
-    def stop(self):
-        self.stop.set()
-
     def run(self):
         logging.info(f"Started {self.broker_name} thread.")
         interval = 60 * 10  # 10 minutes
+        start_time = time.time()
         first_run = True
-        while first_run or not self.stop.wait(interval):
+        while first_run or (time.time() - start_time) < interval:
             first_run = False
-            thread_acquired = self.data_lock.acquire(timeout=self.thread_timeout)
-            if not thread_acquired:
-                logging.warning(
-                    f"{self.broker_name} Failed to acquire thread before {self.thread_timeout} seconds timeout"
-                )
-                continue
-            try:
-                self.run_sync_job()
-            except:
-                raise
-            finally:
-                self.data_lock.release()
+            self.run_sync_job()
 
     def run_sync_job(self):
         batch_size = 200
@@ -121,31 +98,24 @@ class TBRPullingBroker(threading.Thread):
         with ApiClient(get_tbr_configuration()) as api_client:
             api_instance = IsolateApi(api_client)
             update_count = 0
-            try:
-                row_ver_elems = [RowVersion(**element) for element in element_batch]
-                
-                logging.debug(f"Calling TBR with {row_ver_elems}")
-                updated_isolates = api_instance.api_isolate_changed_isolates_post(
-                    row_version=row_ver_elems
-                )
-                bulk_update_queries = self.upsert_tbr_metadata_batch(updated_isolates)
+            row_ver_elems = [RowVersion(**element) for element in element_batch]
+            
+            logging.debug(f"Calling TBR with {row_ver_elems}")
+            updated_isolates = api_instance.api_isolate_changed_isolates_post(
+                row_version=row_ver_elems
+            )
+            bulk_update_queries = self.upsert_tbr_metadata_batch(updated_isolates)
 
-                if len(bulk_update_queries) > 0:
-                    bulk_result = self.metadata_col.bulk_write(
-                        bulk_update_queries, ordered=False
-                    )
-                    update_count = (
-                        bulk_result.upserted_count
-                        + bulk_result.modified_count
-                        + bulk_result.inserted_count
-                    )
-
-            except Exception as e:
-                logging.error(
-                    f"Exception on check for isolate updates {self.broker_name}: {e}\n"
+            if len(bulk_update_queries) > 0:
+                bulk_result = self.metadata_col.bulk_write(
+                    bulk_update_queries, ordered=False
                 )
-            finally:
-                return update_count
+                update_count = (
+                    bulk_result.upserted_count
+                    + bulk_result.modified_count
+                    + bulk_result.inserted_count
+                )
+            return update_count
 
     def upsert_tbr_metadata_batch(self, updated_isolates):
         result = []
