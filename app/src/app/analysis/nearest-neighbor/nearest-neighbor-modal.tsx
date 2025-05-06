@@ -71,90 +71,73 @@ export const NearestNeighborModal = (props: Props) => {
     }
   );
 
+  const submitAllRequests = async () => {
+    const selectionArray = Object.values(selection);
+  
+    const promises = selectionArray.map((item, index) => {
+      const req = {
+        id: item.original.id,
+        cutoff,
+        unknownsAreDiffs,
+      };
+      return getNearestNeighbors(req);
+    });
+  
+    return promises;
+  };
+
+  const collectAllResponses = async (promises) => {
+    try {
+      const responses = await Promise.all(promises);
+      return responses;
+    } catch (error) {
+      throw error; // optionally handle individual errors
+    }
+  };
+  
   const onSearch = useCallback(async () => {
     setIsSearching(true);
-    await searchNearestNeighbors(0);
-  }, [setIsSearching, searchNearestNeighbors]);
-
-  useEffect(() => {
-    if (searchIndex === 0) {
-      return;
-    }
-    searchNearestNeighbors(searchIndex);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchIndex]);
-
-  useEffect(() => {
-    if (isSearching && !isPending) {
-      if (status >= 200 && status < 300) {
-        if (searchIndex + 1 !== Object.values(selection).length) {
-          setSearchIndex((prev) => prev + 1);
-          return;
-        }
-
-        if (
-          searchIndex !== 0 &&
-          searchIndex + 1 == Object.values(selection).length &&
-          Object.keys(nearestNeighborsResponses).length !==
-            Object.values(selection).length
-        ) {
-          // Wait for last response
-          return;
-        }
-
-        const neighbors: Record<string, AnalysisResult> = {};
-        for (const sequenceId of Object.keys(selection)) {
-          const row = selection[sequenceId];
-          const response = nearestNeighborsResponses[row.original.id];
-          response.result?.forEach((neighbor) => {
-            // If not in selection, set as neighbor
-            if (!selection[neighbor.sequence_id]) {
-              neighbors[neighbor.sequence_id] = neighbor;
-            }
-          });
-        }
-
+    try {
+      const promises = submitAllRequests();
+      const responses = await collectAllResponses(promises);
+  
+      const neighbors: Record<string, AnalysisResult> = {};
+  
+      responses.forEach((response, index) => {
+        const row = Object.values(selection)[index];
+        response.result?.forEach((neighbor) => {
+          if (!selection[neighbor.sequence_id]) {
+            neighbors[neighbor.sequence_id] = neighbor;
+          }
+        });
+      });
+  
+      if (Object.keys(neighbors).length) {
+        const newSelection = { ...selection };
+        Object.values(neighbors).forEach((n) => {
+          newSelection[n.sequence_id] = { cells: {}, original: n };
+        });
+        dispatch(setSelection(newSelection));
         toast({
           title: `Found ${Object.keys(neighbors).length} neighbor(s)`,
           status: "success",
           duration: 5000,
           isClosable: true,
         });
-
-        if (Object.values(neighbors).length) {
-          const newSelection = Object.assign({}, selection);
-          Object.values(neighbors).forEach((n) => {
-            newSelection[n.sequence_id] = {
-              cells: {},
-              original: n,
-            };
-          });
-          dispatch(setSelection(newSelection));
-        }
-      } else {
-        toast({
-          title: `Error`,
-          status: "error",
-          duration: 5000,
-          isClosable: true,
-        });
       }
-
+    } catch (err) {
+      toast({
+        title: `Error running search`,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    } finally {
+      setIsSearching(false);
       onClose();
     }
-  }, [
-    t,
-    toast,
-    isSearching,
-    isPending,
-    status,
-    nearestNeighborsResponses,
-    onClose,
-    dispatch,
-    selection,
-    searchIndex,
-  ]);
-
+  }, [selection, cutoff, unknownsAreDiffs, dispatch, toast, onClose]);
+  
   return (
     <Modal isOpen={true} onClose={onClose} size="sm">
       <ModalOverlay />
