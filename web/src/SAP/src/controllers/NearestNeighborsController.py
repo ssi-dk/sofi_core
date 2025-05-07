@@ -25,19 +25,18 @@ def post(user, token, body: NearestNeighborsRequest):
 
         api_instance = NearestNeighborsApi(api_client)
         filtering = {"categories.species_detection.summary.detected_species": detected_species}
-        request = BioNearestNeighborsRequest(seq_collection="samples",
-                                             filtering=filtering,
-                                             profile_field_path="categories.cgmlst.report.alleles",
-                                             input_mongo_id=body.id,
+        request = BioNearestNeighborsRequest(input_mongo_id=body.id,
                                              cutoff=cast(StrictInt, body.cutoff),
                                              unknowns_are_diffs=cast(StrictBool, body.unknowns_are_diffs))
         api_response = api_instance.nearest_neighbors_v1_nearest_neighbors_post(request)
 
         job_id = api_response.job_id
         status = api_response.status.value
+        delay = 0.05
 
         while status == "init":
-            time.sleep(2)
+            time.sleep(delay)
+            delay *= 2
             # Only request basic info about the job when polling (don't ask for result)
             api_response = api_instance.nn_result_v1_nearest_neighbors_nn_id_get(job_id, level='basic')
             status = api_response.status
