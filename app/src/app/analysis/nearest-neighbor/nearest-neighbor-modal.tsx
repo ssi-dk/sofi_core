@@ -136,7 +136,7 @@ export const NearestNeighborModal = (props: Props) => {
       setIsSearching(false);
       onClose();
     }
-  }, [selection, cutoff, unknownsAreDiffs, dispatch, toast, onClose, submitAllRequests, collectAllResponses]);
+  }, [selection, dispatch, toast, onClose, submitAllRequests, collectAllResponses]);
   
   return (
     <Modal isOpen={true} onClose={onClose} size="sm">
