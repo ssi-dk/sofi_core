@@ -71,7 +71,7 @@ export const NearestNeighborModal = (props: Props) => {
     }
   );
 
-  const submitAllRequests = async () => {
+  const submitAllRequests = useCallback(async () => {
     const selectionArray = Object.values(selection);
   
     const promises = selectionArray.map((item, index) => {
@@ -84,16 +84,16 @@ export const NearestNeighborModal = (props: Props) => {
     });
   
     return promises;
-  };
+  }, [selection, unknownsAreDiffs, cutoff]);
 
-  const collectAllResponses = async (promises) => {
+  const collectAllResponses = useCallback(async (promises) => {
     try {
       const responses = await Promise.all(promises);
       return responses;
     } catch (error) {
       throw error; // optionally handle individual errors
     }
-  };
+  }, []);
   
   const onSearch = useCallback(async () => {
     setIsSearching(true);
