@@ -42,6 +42,7 @@ export const SendToMicroreactModal = (props: Props) => {
   const [treeMethods, setTreeMethods] = useState<Array<string>>([
     TreeMethod.single,
   ]);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const workspaceInfo = useSelector<RootState>(
     (s) => s.entities.workspace ?? {}
@@ -65,8 +66,16 @@ export const SendToMicroreactModal = (props: Props) => {
 
   const onSend = useCallback(async () => {
     setIsSending(true);
-    sendToWorkspace();
-  }, [setIsSending, sendToWorkspace]);
+    const result = await sendToWorkspace();
+
+    if (result.status >= 400) {
+      const errorMsg = result?.body?.message?.details ?? "An unknown error occurred";
+      setErrorMessage(errorMsg);
+    } else {
+      setErrorMessage(null);
+    }
+    setIsSending(false);
+  }, [sendToWorkspace]);
 
   useRequest(getMicroreactUrl());
 
@@ -95,6 +104,9 @@ export const SendToMicroreactModal = (props: Props) => {
           ) : null}
           {!isPending && (status < 200 || status >= 300) ? (
             <div>Failed to send workspace to Microreact.</div>
+            {!isPending && status >= 400 && ErrorMessage ? (
+              <div>{errorMessage}</div>
+            )}
           ) : null}
           {!isPending && !status ? (
             <div
