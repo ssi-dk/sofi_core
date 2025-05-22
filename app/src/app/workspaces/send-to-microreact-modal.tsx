@@ -104,9 +104,9 @@ export const SendToMicroreactModal = (props: Props) => {
           ) : null}
           {!isPending && (status < 200 || status >= 300) ? (
             <div>Failed to send workspace to Microreact.</div>
-            {!isPending && status >= 400 && ErrorMessage ? (
-              <div>{errorMessage}</div>
-            )}
+          ) : null}
+          {!isPending && status >= 400 && errorMessage ? (
+            <div>{errorMessage}</div>
           ) : null}
           {!isPending && !status ? (
             <div
