@@ -39,6 +39,7 @@ export const NearestNeighborModal = (props: Props) => {
   const { t } = useTranslation();
   const { selection, onClose } = props;
   const [isSearching, setIsSearching] = useState<boolean>(false);
+  const [searchProgress, setSearchProgress] = useState(0);
   const [cutoff, setCutoff] = React.useState(15);
   const onChangeCutoff = (value: string) => {
     const n = parseInt(value);
@@ -59,50 +60,51 @@ export const NearestNeighborModal = (props: Props) => {
   );
 
   const [{ isPending, status }, searchNearestNeighbors] = useMutation(
-    (index: number) => {
-      const first = Object.values(selection)[index];
-
-      const req = {
-        id: first.original.id,
-        cutoff,
-        unknownsAreDiffs,
-      };
+    (req: any) => {
+    
       return getNearestNeighbors(req);
     }
   );
 
   const submitAllRequests = useCallback(async () => {
     const selectionArray = Object.values(selection);
-  
-    const promises = selectionArray.map((item, index) => {
+    setSearchIndex(0); // reset progress
+
+    const promises = selectionArray.map(async (item) => {
       const req = {
         id: item.original.id,
         cutoff,
         unknownsAreDiffs,
       };
-      return getNearestNeighbors(req);
+      try {
+        const response = await searchNearestNeighbors(req);
+        return response;
+      } catch (error) {
+        console.error("Failed request for:", req.id, error);
+        return null;
+      } finally {
+        // This ensures index is updated whether it succeeds or fails
+        setSearchIndex((prev) => prev + 1);
+      }
     });
-  
-    return promises;
-  }, [selection, unknownsAreDiffs, cutoff]);
 
-  const collectAllResponses = useCallback(async (promises) => {
-    try {
-      const responses = await Promise.all(promises);
-      return responses;
-    } catch (error) {
-      throw error; // optionally handle individual errors
+    const responses = await Promise.all(promises);
+    return responses.filter((res) => res !== null);
+  }, [selection, unknownsAreDiffs, cutoff, searchNearestNeighbors]);
+
+  useEffect(() => {
+    if (!isSearching) {
+      setSearchIndex(0);
     }
-  }, []);
-  
+  }, [isSearching]);
+
   const onSearch = useCallback(async () => {
     setIsSearching(true);
     try {
-      const promises = submitAllRequests();
-      const responses = await collectAllResponses(promises);
-  
+      const responses = await submitAllRequests();
+
       const neighbors: Record<string, AnalysisResult> = {};
-  
+
       responses.forEach((response, index) => {
         const row = Object.values(selection)[index];
         response.result?.forEach((neighbor) => {
@@ -111,7 +113,7 @@ export const NearestNeighborModal = (props: Props) => {
           }
         });
       });
-  
+
       if (Object.keys(neighbors).length) {
         const newSelection = { ...selection };
         Object.values(neighbors).forEach((n) => {
@@ -126,6 +128,7 @@ export const NearestNeighborModal = (props: Props) => {
         });
       }
     } catch (err) {
+      console.error("Unexpected error during search:", err);
       toast({
         title: `Error running search`,
         status: "error",
@@ -136,8 +139,8 @@ export const NearestNeighborModal = (props: Props) => {
       setIsSearching(false);
       onClose();
     }
-  }, [selection, dispatch, toast, onClose, submitAllRequests, collectAllResponses]);
-  
+  }, [selection, dispatch, toast, onClose, submitAllRequests]);
+
   return (
     <Modal isOpen={true} onClose={onClose} size="sm">
       <ModalOverlay />
