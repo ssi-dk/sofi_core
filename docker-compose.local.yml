@@ -173,7 +173,7 @@ services:
       - "bifrost_db:127.0.0.1"
     healthcheck:
       # causes replicaset to initialize as a side effect
-      test: 'test $$(mongo bifrost_test --eval "rs.status().ok" --quiet) -eq 1 -a $$(mongo bifrost_test --eval "rs.status().set" --quiet) = rs0'
+      test: 'test $$(mongosh bifrost_test --eval "rs.status().ok" --quiet) -eq 1 -a $$(mongosh bifrost_test --eval "rs.status().set" --quiet) = rs0'
       interval: 60s
       start_period: 15s
 
@@ -216,3 +216,19 @@ services:
       - "bifrost_db"
       - "mailhog"
       - "keycloak"
+
+  bioapi:
+    image: ghcr.io/ssi-dk/bio_api:latest
+    cap_add:
+      - CHOWN
+      - SETUID
+      - SETGID
+    ports:
+      - "8000:8000"
+    expose:
+      - 8000
+    environment:
+      BIO_API_MONGO_CONNECTION: ${BIFROST_MONGO_CONN}
+    restart: on-failure
+    volumes:
+      - ./dmx_data:/dmx_data
