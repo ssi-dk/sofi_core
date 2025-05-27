@@ -66,9 +66,12 @@ def send_to_microreact(user, token_info, body: NewMicroreactProjectRequestData):
         )
         distance_job_id = distance_post_api_response.job_id
         status = distance_post_api_response.status.value
+        delay = 0.05
 
         while status == "init":
-            time.sleep(2)
+            time.sleep(delay)
+            delay = delay * 2
+
             distance_get_api_response = (
                 api_instance.dmx_result_v1_distance_calculations_dc_id_get(
                     distance_job_id,
@@ -93,9 +96,11 @@ def send_to_microreact(user, token_info, body: NewMicroreactProjectRequestData):
             job_id = trees_post_api_response.job_id
             status = trees_post_api_response.status.value
             result: Union[StrictStr, None] = None
+            delay = 0.05
 
             while status == "init":
-                time.sleep(2)
+                time.sleep(delay)
+                delay = delay * 2
                 trees_get_api_response = api_instance.hc_tree_result_v1_trees_tc_id_get(
                     job_id,
                     level="basic"
