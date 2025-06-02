@@ -1,4 +1,9 @@
 import {
+  createAction,
+  createReducer,
+  createAsyncThunk,
+} from "@reduxjs/toolkit";
+import {
   post,
   NearestNeighborsResponse,
   NearestNeighborsRequest,
@@ -9,13 +14,25 @@ export type NearestNeighborsResponseSlice = {
   nearestNeighborsResponses: Record<string, NearestNeighborsResponse>;
 };
 
+export function serializeNNRequest(req: NearestNeighborsRequest): string {
+  const sorted = Object.keys(req)
+    .sort()
+    .reduce((obj, key) => {
+      obj[key] = req[key as keyof NearestNeighborsRequest];
+      return obj;
+    }, {} as NearestNeighborsRequest);
+
+  return JSON.stringify(sorted);
+}
+
 export const getNearestNeighbors = (params: NearestNeighborsRequest) => {
   const base = post<NearestNeighborsResponseSlice>({ body: params });
 
   base.url = getUrl(base.url);
   base.transform = (response: NearestNeighborsResponse) => {
+    const index = serializeNNRequest(params);
     const resp = {};
-    resp[params.id] = response;
+    resp[index] = response;
     return {
       nearestNeighborsResponses: resp,
     };
