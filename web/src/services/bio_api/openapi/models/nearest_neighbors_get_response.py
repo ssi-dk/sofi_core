@@ -32,9 +32,9 @@ class NearestNeighborsGETResponse(BaseModel):
     created_at: StrictStr
     status: Status
     finished_at: Optional[StrictStr]
-    seq_collection: StrictStr
-    filtering: Dict[str, Any]
-    profile_field_path: StrictStr
+    seq_collection: Optional[StrictStr] = None
+    filtering: Optional[Dict[str, Any]] = None
+    profile_field_path: Optional[StrictStr] = None
     input_mongo_id: StrictStr
     cutoff: StrictInt
     unknowns_are_diffs: StrictBool

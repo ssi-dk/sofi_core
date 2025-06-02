@@ -239,6 +239,26 @@ paths:
             application/json:
               schema:
                 "$ref": "#/components/schemas/NearestNeighborsResponse"
+    get:
+      description: Nearest Neighbors
+      operationId: get
+      x-openapi-router-controller: web.src.SAP.generated.controllers.nearest_neighbors_controller
+      x-codegen-request-body-name: body
+      tags:
+        - nearest_neighbors
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/NearestNeighborsRequest"
+        required: true
+      responses:
+        '200':
+          description: Nearest Neighbors Response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/NearestNeighborsResponse"
   /me:
     get:
       description: Describe the current user and their permissions

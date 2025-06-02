@@ -66,3 +66,6 @@ def post(user, token, body: NearestNeighborsRequest):
                         "jobId": api_response.job_id, 
                         "createdAt": api_response.created_at,
                         "result": result })
+
+def get(user, token, body:NearestNeighborsRequest):
+    return post(user, token, body)
