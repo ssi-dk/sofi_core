@@ -187,7 +187,7 @@ export const AddToClusterRequest = (params: AddToCluster) => {
     }
     return { clusterrequest: [{ id: response.id, name: params.clusterid }] };
   };
-  
+
   base.force = true;
   return base;
 };
