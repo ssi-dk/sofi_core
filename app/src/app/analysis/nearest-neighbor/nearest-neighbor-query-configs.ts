@@ -1,18 +1,9 @@
 import {
-  createAction,
-  createReducer,
-  createAsyncThunk,
-} from "@reduxjs/toolkit";
-import {
   post,
   NearestNeighborsResponse,
   NearestNeighborsRequest,
 } from "sap-client";
 import { getUrl } from "service";
-
-export type NearestNeighborsResponseSlice = {
-  nearestNeighborsResponses: Record<string, NearestNeighborsResponse>;
-};
 
 export function serializeNNRequest(req: NearestNeighborsRequest): string {
   const sorted = Object.keys(req)
@@ -24,6 +15,10 @@ export function serializeNNRequest(req: NearestNeighborsRequest): string {
 
   return JSON.stringify(sorted);
 }
+
+export type NearestNeighborsResponseSlice = {
+  nearestNeighborsResponses: Record<string, NearestNeighborsResponse>;
+};
 
 export const getNearestNeighbors = (params: NearestNeighborsRequest) => {
   const base = post<NearestNeighborsResponseSlice>({ body: params });
@@ -41,7 +36,7 @@ export const getNearestNeighbors = (params: NearestNeighborsRequest) => {
   base.update = {
     nearestNeighborsResponses: (oldValue, newValue) =>
       //Object.assign(newValue, oldValue ?? {}), // Is the order correct??
-      Object.assign(oldValue ?? {}, newValue), 
+      Object.assign(oldValue ?? {}, newValue),
   };
 
   // Force a network call to be made. Making it promise as well.

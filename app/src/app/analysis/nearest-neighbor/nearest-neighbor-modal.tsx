@@ -9,7 +9,10 @@ import {
   useToast,
   UseToastOptions,
 } from "@chakra-ui/react";
-import { AnalysisResult, NearestNeighborsRequest, NearestNeighborsResponse } from "sap-client";
+import {
+  AnalysisResult,
+  NearestNeighborsRequest,
+} from "sap-client";
 import { DataTableSelection } from "../data-table/data-table";
 import {
   Button,
@@ -30,9 +33,9 @@ import {
 } from "./nearest-neighbor-query-configs";
 import { Checkbox } from "@chakra-ui/react";
 import { useMutation } from "redux-query-react";
-import { requestAsync, mutateAsync } from "redux-query";
 import { setSelection } from "../analysis-selection-configs";
 import { sequencesFromIsolateId } from "../analysis-details/analysis-history-configs";
+import { isTemplateExpression, preProcessFile } from "typescript";
 
 type Props = {
   selection: DataTableSelection<AnalysisResult>;
@@ -54,93 +57,138 @@ export const NearestNeighborModal = (props: Props) => {
     setCutoff(n);
   };
   const [unknownsAreDiffs, setUnknownsAreDiffs] = useState<boolean>(false);
-  const [submittedSearches, setSubmittedSearches] = useState<Array<NearestNeighborsRequest>>([])
+  const [newReqs, setNewReqs] = useState<
+    Array<NearestNeighborsRequest>
+  >([]);
   const toast = useToast();
   const dispatch = useDispatch();
 
-  const showToast = useCallback((message: string, status: UseToastOptions["status"]) => {
-    return toast({
-      title: message,
-      status: status,
-      duration: 5000,
-      isClosable: true,
-    });
-  },[toast])
+  const showToast = useCallback(
+    (message: string, status: UseToastOptions["status"]) => {
+      return toast({
+        title: message,
+        status: status,
+        duration: 5000,
+        isClosable: true,
+      });
+    },
+    [toast]
+  );
 
   const nearestNeighborsResponses = useSelector(
     (state: { entities: NearestNeighborsResponseSlice }) =>
       state.entities.nearestNeighborsResponses
   );
 
-
   const [{ isPending, status }, searchNearestNeighbors] = useMutation(
-    (req: any) => {
+    (index: number) => {
+      const req = newReqs[index]
       return getNearestNeighbors(req);
     }
   );
 
-  // const submitAllRequests = useCallback(async () => {
-  //   const selectionArray = Object.values(selection);
-
-  //   const responses: Record<string, NearestNeighborsResponse> = {};
-  //   const promises = selectionArray.map(async (item) => {
-  //     const req = {
-  //       id: item.original.id,
-  //       cutoff,
-  //       unknownsAreDiffs,
-  //     };
-  //     const queryConfig = getNearestNeighbors(req);
-  //     const promise = dispatch(requestAsync(queryConfig))
-  //     try {
-  //       const { transformed } = await searchNearestNeighbors(req);
-  //       if (transformed?.nearestNeighborsResponses){
-  //         Object.assign(responses,transformed.nearestNeighborsResponses)
-  //       }
-  //     } catch (error) {
-  //       console.error("Failed request for:", req.id, error);
-  //       return null;
-  //     } finally {
-  //       // This ensures index is updated whether it succeeds or fails
-  //       setSearchIndex((prev) => prev + 1);
-  //     }
-  //   });
-
-  //   await Promise.all(promises);
-  //   return responses
-  // }, [selection, unknownsAreDiffs, cutoff, searchNearestNeighbors, dispatch]);
-
   const handleSearchComplete = useCallback(() => {
     const newSelection = { ...selection };
-    let totalhits = 0
-    Object.values(submittedSearches).forEach((value) => {
-      const neighbors = nearestNeighborsResponses[serializeNNRequest(value)].result;
+    let totalhits = 0;
+    Object.values(newReqs).forEach((value) => {
+      const neighbors =
+        nearestNeighborsResponses[serializeNNRequest(value)].result;
       totalhits += neighbors.length;
       Object.values(neighbors).forEach((n) => {
         newSelection[n.sequence_id] = { cells: {}, original: n };
       });
     });
     dispatch(setSelection(newSelection));
-    showToast(
-      `Found ${totalhits} neighbor(s)`,
-      "success");
+    showToast(`Found ${totalhits} neighbor(s)`, "success");
     setIsSearching(false);
     onClose();
-   },[dispatch, nearestNeighborsResponses, onClose, selection, showToast, submittedSearches]);
+  }, [
+    dispatch,
+    nearestNeighborsResponses,
+    onClose,
+    selection,
+    showToast,
+    newReqs,
+  ]);
 
   useEffect(() => {
-    const requestedIDs = submittedSearches.map((item) => {
-      return serializeNNRequest(item)
-    })
+    const ids = newReqs.map(serializeNNRequest);
+    if (isSearching && isPending) {
+      if (status >= 200 && status < 300) {
+        if (searchIndex < newReqs.length) {
+          // Still searching search some more
+          setSearchIndex((prev) => prev + 1);
+          return;
+        }
+        if (
+          searchIndex !== 0 && 
+          searchIndex + 1 == newReqs.length && 
+          ! ids.every((index) => nearestNeighborsResponses[index] !== undefined)
+        ) {
+          // Wait for the last result
+          return;
+        }
+        // Needs a rewrite
+        const neighbors: Record<string, AnalysisResult> = {};
+        for (const reqId of ids) {
+          const response = nearestNeighborsResponses[reqId];
+          response.result?.forEach((neighbor) => {
+            if (!selection[neighbor.sequence_id]) {
+              neighbors[neighbor.sequence_id] = neighbor;
+            }
+          });
+        }
+        showToast(`Found ${Object.keys(neighbors).length} neighbor(s).`,"success");
+        if (Object.values(neighbors).length) {
+          const newSelection = Object.assign({}, selection);
+          Object.values(neighbors).forEach((n) => {
+            newSelection[n.sequence_id] = {
+              cells: {},
+              original: n,
+            };
+          });
+          dispatch(setSelection(newSelection))
+        }
+      } else{
+        showToast(`Error`, "error");
+      }
+      onClose();
+    }
+  },[
+    t,
+    showToast,
+    isSearching,
+    isPending,
+    status,
+    nearestNeighborsResponses,
+    onClose,
+    dispatch,
+    selection,
+    searchIndex,
+    newReqs,
+    serializeNNRequest,
+  ]);
+
+
+  useEffect(() => {
+    const requestedIDs = newReqs.map((item) => {
+      return serializeNNRequest(item);
+    });
     const allReady = requestedIDs.every(
-      (id) => nearestNeighborsResponses !== undefined &&
-          nearestNeighborsResponses[id] !== undefined
+      (id) =>
+        nearestNeighborsResponses !== undefined &&
+        nearestNeighborsResponses[id] !== undefined
     );
 
     if (allReady && isSearching) {
-      // Now safe to proceed with processing the Redux state
       handleSearchComplete();
     }
-  }, [nearestNeighborsResponses, isSearching, submittedSearches, handleSearchComplete]);
+  }, [
+    nearestNeighborsResponses,
+    isSearching,
+    newReqs,
+    handleSearchComplete,
+  ]);
 
   useEffect(() => {
     if (!isSearching) {
@@ -149,82 +197,35 @@ export const NearestNeighborModal = (props: Props) => {
   }, [isSearching]);
 
   const submitRequests = useCallback(async () => {
-    setSubmittedSearches(Object.values(selection).map((item) => {
-      return {
-        id: item.original.id,
-        cutoff: cutoff,
-        unknownsAreDiffs: unknownsAreDiffs,
-      };
-    }))
-    const promises = submittedSearches.map( async (req)=>{
+    const promises = newReqs.map((req) => {
       return searchNearestNeighbors(req);
-    })
-    await Promise.all(promises)
+    });
+    await Promise.all(promises);
     // NNqueryConfigs.map( (queryConfig) => {
     //   dispatch(mutateAsync(queryConfig))
     // } );
-  },[
-    submittedSearches, 
+  }, [
+    submittedSearches,
     cutoff,
-    unknownsAreDiffs, 
-    selection, 
+    unknownsAreDiffs,
+    selection,
     //dispatch,
     searchNearestNeighbors,
   ]);
 
   const onSearch = useCallback(async () => {
+    setNewReqs(
+      Object.values(selection).map((item) => {
+        return {
+          id: item.original.id,
+          cutoff: cutoff,
+          unknownsAreDiffs: unknownsAreDiffs,
+        };
+      })
+    );
     setIsSearching(true);
-    setSearchIndex(0); // reset progress
-    submitRequests();
-    //await submitAllRequests();
-
-  }, [submitRequests]);
-
-
-  // const onSearch = useCallback(async () => {
-  //   setIsSearching(true);
-  //   setSearchIndex(0); // reset progress
-  //   try {
-  //     const responses = await submitAllRequests();
-
-  //     const neighbors: Record<string, AnalysisResult> = {};
-  //     for (const sequenceId of Object.keys(selection)) {
-  //       const row = selection[sequenceId];
-  //       const response = responses[row.original.id];
-  //       response.result?.forEach((neighbor) => {
-  //         //if (!selection.sequence_id) {
-  //         if (!selection[neighbor.sequence_id]) {
-  //           neighbors[neighbor.sequence_id] = neighbor;
-  //         }
-  //       });
-  //     }
-
-  //     if (Object.keys(neighbors).length) {
-  //       const newSelection = { ...selection };
-  //       Object.values(neighbors).forEach((n) => {
-  //         newSelection[n.sequence_id] = { cells: {}, original: n };
-  //       });
-  //       dispatch(setSelection(newSelection));
-  //       toast({
-  //         title: `Found ${Object.keys(neighbors).length} neighbor(s)`,
-  //         status: "success",
-  //         duration: 5000,
-  //         isClosable: true,
-  //       });
-  //     }
-  //   } catch (err) {
-  //     console.error("Unexpected error during search:", err);
-  //     toast({
-  //       title: `Error running search`,
-  //       status: "error",
-  //       duration: 5000,
-  //       isClosable: true,
-  //     });
-  //   } finally {
-  //     setIsSearching(false);
-  //     onClose();
-  //   }
-  // }, [selection, dispatch, toast, onClose, submitAllRequests]);
+    await searchNearestNeighbors(0); // start search
+  }, [setIsSearching, setNewReqs, searchNearestNeighbors]);
 
   return (
     <Modal isOpen={true} onClose={onClose} size="sm">
