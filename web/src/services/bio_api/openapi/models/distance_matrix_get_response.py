@@ -31,9 +31,9 @@ class DistanceMatrixGETResponse(BaseModel):
     created_at: StrictStr
     status: Status
     finished_at: Optional[StrictStr]
-    seq_collection: StrictStr
-    seqid_field_path: StrictStr
-    profile_field_path: StrictStr
+    seq_collection: Optional[StrictStr] = None
+    seqid_field_path: Optional[StrictStr] = None
+    profile_field_path: Optional[StrictStr] = None
     seq_mongo_ids: List[Any]
     result: Optional[Any]
     __properties: ClassVar[List[str]] = ["job_id", "created_at", "status", "finished_at", "seq_collection", "seqid_field_path", "profile_field_path", "seq_mongo_ids", "result"]

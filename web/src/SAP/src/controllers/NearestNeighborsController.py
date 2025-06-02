@@ -36,7 +36,7 @@ def post(user, token, body: NearestNeighborsRequest):
 
         while status == "init":
             time.sleep(delay)
-            delay *= 2
+            delay = delay * 2
             # Only request basic info about the job when polling (don't ask for result)
             api_response = api_instance.nn_result_v1_nearest_neighbors_nn_id_get(job_id, level='basic')
             status = api_response.status
@@ -66,3 +66,6 @@ def post(user, token, body: NearestNeighborsRequest):
                         "jobId": api_response.job_id, 
                         "createdAt": api_response.created_at,
                         "result": result })
+
+def get(user, token, body:NearestNeighborsRequest):
+    return post(user, token, body)
