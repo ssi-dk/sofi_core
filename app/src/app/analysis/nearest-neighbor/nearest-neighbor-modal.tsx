@@ -7,8 +7,12 @@ import {
   NumberInputStepper,
   Spinner,
   useToast,
+  UseToastOptions,
 } from "@chakra-ui/react";
-import { AnalysisResult } from "sap-client";
+import {
+  AnalysisResult,
+  NearestNeighborsRequest,
+} from "sap-client";
 import { DataTableSelection } from "../data-table/data-table";
 import {
   Button,
@@ -25,10 +29,13 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   NearestNeighborsResponseSlice,
   getNearestNeighbors,
+  serializeNNRequest,
 } from "./nearest-neighbor-query-configs";
 import { Checkbox } from "@chakra-ui/react";
 import { useMutation } from "redux-query-react";
 import { setSelection } from "../analysis-selection-configs";
+import { sequencesFromIsolateId } from "../analysis-details/analysis-history-configs";
+import { isTemplateExpression, preProcessFile } from "typescript";
 
 type Props = {
   selection: DataTableSelection<AnalysisResult>;
@@ -39,7 +46,7 @@ export const NearestNeighborModal = (props: Props) => {
   const { t } = useTranslation();
   const { selection, onClose } = props;
   const [isSearching, setIsSearching] = useState<boolean>(false);
-  const [searchProgress, setSearchProgress] = useState(0);
+  const [searchIndex, setSearchIndex] = useState(0);
   const [cutoff, setCutoff] = React.useState(15);
   const onChangeCutoff = (value: string) => {
     const n = parseInt(value);
@@ -50,96 +57,157 @@ export const NearestNeighborModal = (props: Props) => {
     setCutoff(n);
   };
   const [unknownsAreDiffs, setUnknownsAreDiffs] = useState<boolean>(false);
+  const [newReqs, setNewReqs] = useState<NearestNeighborsRequest[]>([]);
   const toast = useToast();
   const dispatch = useDispatch();
-  const [searchIndex, setSearchIndex] = useState(0);
+
+  const showToast = useCallback(
+    (message: string, status: UseToastOptions["status"]) => {
+      return toast({
+        title: message,
+        status: status,
+        duration: 5000,
+        isClosable: true,
+      });
+    },
+    [toast]
+  );
 
   const nearestNeighborsResponses = useSelector(
     (state: { entities: NearestNeighborsResponseSlice }) =>
       state.entities.nearestNeighborsResponses
   );
 
-  const [{ isPending, status }, searchNearestNeighbors] = useMutation(
-    (req: any) => {
-    
-      return getNearestNeighbors(req);
-    }
+  const [{ isPending, isFinished, status }, searchNearestNeighbors] = useMutation(
+    (req: NearestNeighborsRequest) => getNearestNeighbors(req)
   );
 
-  const submitAllRequests = useCallback(async () => {
-    const selectionArray = Object.values(selection);
-    setSearchIndex(0); // reset progress
-
-    const promises = selectionArray.map(async (item) => {
-      const req = {
-        id: item.original.id,
-        cutoff,
-        unknownsAreDiffs,
-      };
-      try {
-        const response = await searchNearestNeighbors(req);
-        return response;
-      } catch (error) {
-        console.error("Failed request for:", req.id, error);
-        return null;
-      } finally {
-        // This ensures index is updated whether it succeeds or fails
-        setSearchIndex((prev) => prev + 1);
-      }
+  const handleSearchComplete = useCallback(() => {
+    const newSelection = { ...selection };
+    let totalhits = 0;
+    Object.values(newReqs).forEach((value) => {
+      const neighbors =
+        nearestNeighborsResponses[serializeNNRequest(value)].result;
+      totalhits += neighbors.length;
+      Object.values(neighbors).forEach((n) => {
+        newSelection[n.sequence_id] = { cells: {}, original: n };
+      });
     });
+    dispatch(setSelection(newSelection));
+    showToast(`Found ${totalhits} neighbor(s)`, "success");
+    setIsSearching(false);
+    onClose();
+  }, [
+    dispatch,
+    nearestNeighborsResponses,
+    onClose,
+    selection,
+    showToast,
+    newReqs,
+  ]);
 
-    const responses = await Promise.all(promises);
-    return responses.filter((res) => res !== null);
-  }, [selection, unknownsAreDiffs, cutoff, searchNearestNeighbors]);
+  useEffect(() => { // Collector
+    if (
+      !isSearching ||
+      isPending ||
+      !isFinished
+    ) {
+      return
+    }
+    const ids = newReqs.map((req) => {
+      return serializeNNRequest(req);
+    });
+    if (isSearching && isFinished) {
+      if (status >= 200 && status < 300) {
+        if (searchIndex < newReqs.length) {
+          // Still searching search some more
+          setSearchIndex((prev) => prev + 1);
+          return;
+        }
+        if (
+          searchIndex !== 0 && 
+          ! ids.every((index) => nearestNeighborsResponses[index] !== undefined)
+        ) {
+          // Wait for the last result
+          console.log()
+          return;
+        }
+        // Needs a rewrite
+        const neighbors: Record<string, AnalysisResult> = {};
+        for (const reqId of ids) {
+          const response = nearestNeighborsResponses[reqId];
+          response.result?.forEach((neighbor) => {
+            if (!selection[neighbor.sequence_id]) {
+              neighbors[neighbor.sequence_id] = neighbor;
+            }
+          });
+        }
+        showToast(`Found ${Object.keys(neighbors).length} neighbor(s).`,"success");
+        if (Object.values(neighbors).length) {
+          const newSelection = Object.assign({}, selection);
+          Object.values(neighbors).forEach((n) => {
+            newSelection[n.sequence_id] = {
+              cells: {},
+              original: n,
+            };
+          });
+          dispatch(setSelection(newSelection))
+        }
+      } else{
+        showToast(`Error`, "error");
+      }
+      onClose();
+    }
+  },[
+    t,
+    showToast,
+    isSearching,
+    isPending,
+    isFinished,
+    status,
+    nearestNeighborsResponses,
+    onClose,
+    dispatch,
+    selection,
+    searchIndex,
+    newReqs,
+  ]);
 
-  useEffect(() => {
+  useEffect(() => { // Reset
     if (!isSearching) {
       setSearchIndex(0);
     }
   }, [isSearching]);
 
-  const onSearch = useCallback(async () => {
-    setIsSearching(true);
-    try {
-      const responses = await submitAllRequests();
+  // useEffect(() => {
+  //   if (searchIndex === 0) {
+  //     return;
+  //   }
+  //   searchNearestNeighbors(searchIndex);
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [searchIndex]);
 
-      const neighbors: Record<string, AnalysisResult> = {};
-
-      responses.forEach((response, index) => {
-        const row = Object.values(selection)[index];
-        response.result?.forEach((neighbor) => {
-          if (!selection[neighbor.sequence_id]) {
-            neighbors[neighbor.sequence_id] = neighbor;
-          }
-        });
-      });
-
-      if (Object.keys(neighbors).length) {
-        const newSelection = { ...selection };
-        Object.values(neighbors).forEach((n) => {
-          newSelection[n.sequence_id] = { cells: {}, original: n };
-        });
-        dispatch(setSelection(newSelection));
-        toast({
-          title: `Found ${Object.keys(neighbors).length} neighbor(s)`,
-          status: "success",
-          duration: 5000,
-          isClosable: true,
-        });
-      }
-    } catch (err) {
-      console.error("Unexpected error during search:", err);
-      toast({
-        title: `Error running search`,
-        status: "error",
-        duration: 5000,
-        isClosable: true,
-      });
-    } finally {
-      setIsSearching(false);
-      onClose();
+  useEffect(() => {
+    if (!isSearching || newReqs.length == 0) {
+      return;
     }
-  }, [selection, dispatch, toast, onClose, submitAllRequests]);
+    if (searchIndex < newReqs.length) {
+      console.log(newReqs[searchIndex])
+      searchNearestNeighbors(newReqs[searchIndex]);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchIndex, isSearching, newReqs]);
+
+  const onSearch = useCallback(async () => {
+    const requests =  Object.values(selection).map(item => ({
+        id: item.original.id,
+        cutoff: cutoff,
+        unknownsAreDiffs: unknownsAreDiffs,
+      })
+    );
+    setNewReqs(requests);
+    setIsSearching(true);
+  }, [setIsSearching, setNewReqs, cutoff, unknownsAreDiffs, selection]);
 
   return (
     <Modal isOpen={true} onClose={onClose} size="sm">

@@ -65,7 +65,9 @@ export const SendToWorkspaceModal = (props: Props) => {
     if (invalidSamples.length > 0) {
       toast({
         title: t("Invalid Sample IDs"),
-        description: `${t("The following sample IDs are invalid:")} ${invalidSamples.join(", ")}`,
+        description: `${t(
+          "The following sample IDs are invalid:"
+        )} ${invalidSamples.join(", ")}`,
         status: "error",
         duration: 5000,
         isClosable: true,
@@ -88,7 +90,15 @@ export const SendToWorkspaceModal = (props: Props) => {
     }
     setIsSending(true);
     sendToWorkspace(workspace);
-  }, [setIsSending, sendToWorkspace, workspaces, workspace, t, selection, toast]);
+  }, [
+    setIsSending,
+    sendToWorkspace,
+    workspaces,
+    workspace,
+    t,
+    selection,
+    toast,
+  ]);
 
   const onWorkspaceChange = useCallback((id: string) => {
     setWorkspace(id);

@@ -18,7 +18,7 @@ import re  # noqa: F401
 import json
 
 from pydantic import BaseModel, ConfigDict, StrictBool, StrictInt, StrictStr
-from typing import Any, ClassVar, Dict, List
+from typing import Any, ClassVar, Dict, List, Optional
 from typing import Optional, Set
 from typing_extensions import Self
 
@@ -26,9 +26,9 @@ class NearestNeighborsRequest(BaseModel):
     """
     Parameters for a REST request for a nearest neighbors calculation.
     """ # noqa: E501
-    seq_collection: StrictStr
-    filtering: Dict[str, Any]
-    profile_field_path: StrictStr
+    seq_collection: Optional[StrictStr] = None
+    filtering: Optional[Dict[str, Any]] = None
+    profile_field_path: Optional[StrictStr] = None
     input_mongo_id: StrictStr
     cutoff: StrictInt
     unknowns_are_diffs: StrictBool

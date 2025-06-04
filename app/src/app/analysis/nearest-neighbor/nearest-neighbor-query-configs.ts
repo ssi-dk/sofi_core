@@ -5,6 +5,17 @@ import {
 } from "sap-client";
 import { getUrl } from "service";
 
+export function serializeNNRequest(req: NearestNeighborsRequest): string {
+  const sorted = Object.keys(req)
+    .sort()
+    .reduce((obj, key) => {
+      obj[key] = req[key as keyof NearestNeighborsRequest];
+      return obj;
+    }, {} as NearestNeighborsRequest);
+
+  return JSON.stringify(sorted);
+}
+
 export type NearestNeighborsResponseSlice = {
   nearestNeighborsResponses: Record<string, NearestNeighborsResponse>;
 };
@@ -14,8 +25,9 @@ export const getNearestNeighbors = (params: NearestNeighborsRequest) => {
 
   base.url = getUrl(base.url);
   base.transform = (response: NearestNeighborsResponse) => {
-    const resp = {};
-    resp[params.id] = response;
+    const index = serializeNNRequest(params);
+    const resp: Record<string, NearestNeighborsResponse> = {};
+    resp[index] = response;
     return {
       nearestNeighborsResponses: resp,
     };
@@ -23,7 +35,8 @@ export const getNearestNeighbors = (params: NearestNeighborsRequest) => {
 
   base.update = {
     nearestNeighborsResponses: (oldValue, newValue) =>
-      Object.assign(newValue, oldValue ?? {}),
+      Object.assign(newValue, oldValue ?? {}), // Is the order correct??
+      // Object.assign(oldValue ?? {}, newValue),
   };
 
   // Force a network call to be made. Making it promise as well.

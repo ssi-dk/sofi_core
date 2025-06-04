@@ -18,7 +18,7 @@ import re  # noqa: F401
 import json
 
 from pydantic import BaseModel, ConfigDict, StrictStr
-from typing import Any, ClassVar, Dict, List
+from typing import Any, ClassVar, Dict, List, Optional
 from typing import Optional, Set
 from typing_extensions import Self
 
@@ -26,9 +26,9 @@ class DistanceMatrixRequest(BaseModel):
     """
     Parameters for a REST request for a distance calculation.  seq_collection: collection to find sequences in seqid_field_path: field path in dotted notation which contains the 'sequence id' the user wants to see profile_field_path: field path in dotted notation which contains the cgMLST allele profiles mongo_ids: the  _id strings for the desired sequence documents
     """ # noqa: E501
-    seq_collection: StrictStr
-    seqid_field_path: StrictStr
-    profile_field_path: StrictStr
+    seq_collection: Optional[StrictStr] = None
+    seqid_field_path: Optional[StrictStr] = None
+    profile_field_path: Optional[StrictStr] = None
     seq_mongo_ids: List[Any]
     __properties: ClassVar[List[str]] = ["seq_collection", "seqid_field_path", "profile_field_path", "seq_mongo_ids"]
 
