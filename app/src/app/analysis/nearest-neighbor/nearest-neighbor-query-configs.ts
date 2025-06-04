@@ -26,7 +26,7 @@ export const getNearestNeighbors = (params: NearestNeighborsRequest) => {
   base.url = getUrl(base.url);
   base.transform = (response: NearestNeighborsResponse) => {
     const index = serializeNNRequest(params);
-    const resp = {};
+    const resp: Record<string, NearestNeighborsResponse> = {};
     resp[index] = response;
     return {
       nearestNeighborsResponses: resp,
@@ -35,8 +35,8 @@ export const getNearestNeighbors = (params: NearestNeighborsRequest) => {
 
   base.update = {
     nearestNeighborsResponses: (oldValue, newValue) =>
-      //Object.assign(newValue, oldValue ?? {}), // Is the order correct??
-      Object.assign(oldValue ?? {}, newValue),
+      Object.assign(newValue, oldValue ?? {}), // Is the order correct??
+      // Object.assign(oldValue ?? {}, newValue),
   };
 
   // Force a network call to be made. Making it promise as well.

@@ -57,9 +57,7 @@ export const NearestNeighborModal = (props: Props) => {
     setCutoff(n);
   };
   const [unknownsAreDiffs, setUnknownsAreDiffs] = useState<boolean>(false);
-  const [newReqs, setNewReqs] = useState<
-    Array<NearestNeighborsRequest>
-  >([]);
+  const [newReqs, setNewReqs] = useState<NearestNeighborsRequest[]>([]);
   const toast = useToast();
   const dispatch = useDispatch();
 
@@ -80,11 +78,8 @@ export const NearestNeighborModal = (props: Props) => {
       state.entities.nearestNeighborsResponses
   );
 
-  const [{ isPending, status }, searchNearestNeighbors] = useMutation(
-    (index: number) => {
-      const req = newReqs[index]
-      return getNearestNeighbors(req);
-    }
+  const [{ isPending, isFinished, status }, searchNearestNeighbors] = useMutation(
+    (req: NearestNeighborsRequest) => getNearestNeighbors(req)
   );
 
   const handleSearchComplete = useCallback(() => {
@@ -111,9 +106,18 @@ export const NearestNeighborModal = (props: Props) => {
     newReqs,
   ]);
 
-  useEffect(() => {
-    const ids = newReqs.map(serializeNNRequest);
-    if (isSearching && isPending) {
+  useEffect(() => { // Collector
+    if (
+      !isSearching ||
+      isPending ||
+      !isFinished
+    ) {
+      return
+    }
+    const ids = newReqs.map((req) => {
+      return serializeNNRequest(req);
+    });
+    if (isSearching && isFinished) {
       if (status >= 200 && status < 300) {
         if (searchIndex < newReqs.length) {
           // Still searching search some more
@@ -122,10 +126,10 @@ export const NearestNeighborModal = (props: Props) => {
         }
         if (
           searchIndex !== 0 && 
-          searchIndex + 1 == newReqs.length && 
           ! ids.every((index) => nearestNeighborsResponses[index] !== undefined)
         ) {
           // Wait for the last result
+          console.log()
           return;
         }
         // Needs a rewrite
@@ -159,6 +163,7 @@ export const NearestNeighborModal = (props: Props) => {
     showToast,
     isSearching,
     isPending,
+    isFinished,
     status,
     nearestNeighborsResponses,
     onClose,
@@ -166,66 +171,43 @@ export const NearestNeighborModal = (props: Props) => {
     selection,
     searchIndex,
     newReqs,
-    serializeNNRequest,
   ]);
 
-
-  useEffect(() => {
-    const requestedIDs = newReqs.map((item) => {
-      return serializeNNRequest(item);
-    });
-    const allReady = requestedIDs.every(
-      (id) =>
-        nearestNeighborsResponses !== undefined &&
-        nearestNeighborsResponses[id] !== undefined
-    );
-
-    if (allReady && isSearching) {
-      handleSearchComplete();
-    }
-  }, [
-    nearestNeighborsResponses,
-    isSearching,
-    newReqs,
-    handleSearchComplete,
-  ]);
-
-  useEffect(() => {
+  useEffect(() => { // Reset
     if (!isSearching) {
       setSearchIndex(0);
     }
   }, [isSearching]);
 
-  const submitRequests = useCallback(async () => {
-    const promises = newReqs.map((req) => {
-      return searchNearestNeighbors(req);
-    });
-    await Promise.all(promises);
-    // NNqueryConfigs.map( (queryConfig) => {
-    //   dispatch(mutateAsync(queryConfig))
-    // } );
-  }, [
-    submittedSearches,
-    cutoff,
-    unknownsAreDiffs,
-    selection,
-    //dispatch,
-    searchNearestNeighbors,
-  ]);
+  // useEffect(() => {
+  //   if (searchIndex === 0) {
+  //     return;
+  //   }
+  //   searchNearestNeighbors(searchIndex);
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [searchIndex]);
+
+  useEffect(() => {
+    if (!isSearching || newReqs.length == 0) {
+      return;
+    }
+    if (searchIndex < newReqs.length) {
+      console.log(newReqs[searchIndex])
+      searchNearestNeighbors(newReqs[searchIndex]);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchIndex, isSearching, newReqs]);
 
   const onSearch = useCallback(async () => {
-    setNewReqs(
-      Object.values(selection).map((item) => {
-        return {
-          id: item.original.id,
-          cutoff: cutoff,
-          unknownsAreDiffs: unknownsAreDiffs,
-        };
+    const requests =  Object.values(selection).map(item => ({
+        id: item.original.id,
+        cutoff: cutoff,
+        unknownsAreDiffs: unknownsAreDiffs,
       })
     );
+    setNewReqs(requests);
     setIsSearching(true);
-    await searchNearestNeighbors(0); // start search
-  }, [setIsSearching, setNewReqs, searchNearestNeighbors]);
+  }, [setIsSearching, setNewReqs, cutoff, unknownsAreDiffs, selection]);
 
   return (
     <Modal isOpen={true} onClose={onClose} size="sm">
