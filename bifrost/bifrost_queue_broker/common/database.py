@@ -147,7 +147,8 @@ def recursive_replace(data, replacement_fn, filter_list=None, filtered_parent=Fa
                 try:
                     replacement_text = replacement_fn(v)
                     data[k] = replacement_text
-                except:
+                except Exception as e:
+                    logging.debug(str(e))
                     pass
             else:
                 data[k] = recursive_replace(v, replacement_fn, filter_list, do_filter)
