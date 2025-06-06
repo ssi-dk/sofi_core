@@ -137,11 +137,11 @@ def get_collection(collection: str):
 
 def recursive_replace(data, replacement_fn, filter_list=None, filtered_parent=False):
     # If no filter_list is provided, then assume all leaf nodes in tree must be replaced
-    do_filter = not filter_list or filtered_parent
     if isinstance(data, (dict, list)):
         for k, v in data.items() if isinstance(data, dict) else enumerate(data):
             # If a key in the filter_list is seen at any node in the tree, leaf values
             # underneath that node must be replaced
+            do_filter = not filter_list or filtered_parent
             if v is None:
                 continue # Filter out Nones, so we don't flood exception log
             if k in filter_list:
