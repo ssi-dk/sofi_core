@@ -7,6 +7,7 @@ from typing import Dict, Literal, Tuple, overload
 
 from dateutil import parser
 from pymongo import MongoClient, mongo_client
+from pymongo.errors import EncryptionError
 from pymongo.encryption import Algorithm, ClientEncryption
 from pymongo.encryption_options import AutoEncryptionOpts
 
@@ -147,6 +148,8 @@ def recursive_replace(data, replacement_fn, filter_list=None, filtered_parent=Fa
                 try:
                     replacement_text = replacement_fn(v)
                     data[k] = replacement_text
+                except EncryptionError as e:
+                    logging.debug(f"{e}: {type(v)}")
                 except Exception as e:
                     logging.debug(str(e))
                     pass
