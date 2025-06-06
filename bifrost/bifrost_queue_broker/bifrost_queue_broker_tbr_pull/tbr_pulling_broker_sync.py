@@ -128,11 +128,11 @@ class TBRPullingBrokerSync():
                 if column_mapping.normal_get(k)
             }
 
-            logging.debug(f"Updating isolate {isolate_id} with {values}")
+            #logging.debug(f"Updating isolate {isolate_id} with {values}")
             coerce_dates(values)
-            logging.debug(f"Updating isolate after date fixes {isolate_id} with {values}")
+            #logging.debug(f"Updating isolate after date fixes {isolate_id} with {values}")
             encrypt_dict(self.encryption_client, values, pii_columns())
-            logging.debug(f"Updating isolate after encryption {isolate_id} with {values}")
+            #logging.debug(f"Updating isolate after encryption {isolate_id} with {values}")
             update_query = pymongo.UpdateOne(
                 {"isolate_id": isolate_id}, {"$set": values}, upsert=True
             )

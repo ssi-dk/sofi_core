@@ -142,6 +142,8 @@ def recursive_replace(data, replacement_fn, filter_list=None, filtered_parent=Fa
             # If a key in the filter_list is seen at any node in the tree, leaf values
             # underneath that node must be replaced
             do_filter = not filter_list or filtered_parent
+            if v is None:
+                continue # Filter out Nones, so we don't flood exception log
             if k in filter_list:
                 do_filter = True
             if (not (isinstance(v, (dict, list)))) and do_filter:
@@ -175,10 +177,11 @@ def encrypt_dict(encryption_client: ClientEncryption, val, filter_list=None):
 def coerce_date(dayfirst):
     def parse_value(v):
         try:
-            if isinstance(v, datetime):
+            if isinstance(v, datetime) or v is None:
                 return v
             return parser.parse(v, dayfirst=dayfirst) if v else None
-        except:
+        except Exception as e:
+            logging.debug(str(e))
             return None
     return parse_value
 
