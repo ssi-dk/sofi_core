@@ -136,19 +136,19 @@ jobs:
 
             # bifrost-queue-broker-lims-pull
             yq e '.images[] |= select(.name == "ghcr.io/ssi-dk/bifrost-queue-broker-lims-pull").newTag = "${{ needs.prepare_tag.outputs.tag }}"' -i ./sofi_core_gitops/apps/dev/bifrost-queue-broker-lims-pull/kustomization.yaml
-            yq e '.spec.template.spec.containers[] |= select(.name == "ghcr.io/ssi-dk/bifrost-queue-broker").image = ghcr.io/ssi-dk/bifrost-queue-broker-lims-pull:${{ needs.prepare_tag.outputs.tag }}' -i ./sofi_core_gitops/apps/dev/bifrost-queue-broker-lims-pull/patch.yaml
+            yq e '.spec.template.spec.containers[] |= select(.name == "bifrost-queue-broker").image = ghcr.io/ssi-dk/bifrost-queue-broker-lims-pull:${{ needs.prepare_tag.outputs.tag }}' -i ./sofi_core_gitops/apps/dev/bifrost-queue-broker-lims-pull/patch.yaml
 
             # bifrost-queue-broker-lims-request
             yq e '.images[] |= select(.name == "ghcr.io/ssi-dk/bifrost-queue-broker-lims-request").newTag = "${{ needs.prepare_tag.outputs.tag }}"' -i ./sofi_core_gitops/apps/dev/bifrost-queue-broker-lims-request/kustomization.yaml
-            yq e '.spec.template.spec.containers[] |= select(.name == "ghcr.io/ssi-dk/bifrost-queue-broker").image = ghcr.io/ssi-dk/bifrost-queue-broker-lims-request:${{ needs.prepare_tag.outputs.tag }}' -i ./sofi_core_gitops/apps/dev/bifrost-queue-broker-lims-request/patch.yaml
+            yq e '.spec.template.spec.containers[] |= select(.name == "bifrost-queue-broker").image = ghcr.io/ssi-dk/bifrost-queue-broker-lims-request:${{ needs.prepare_tag.outputs.tag }}' -i ./sofi_core_gitops/apps/dev/bifrost-queue-broker-lims-request/patch.yaml
 
             # bifrost-queue-broker-tbr-pull
             yq e '.images[] |= select(.name == "ghcr.io/ssi-dk/bifrost-queue-broker-tbr-pull").newTag = "${{ needs.prepare_tag.outputs.tag }}"' -i ./sofi_core_gitops/apps/dev/bifrost-queue-broker-tbr-pull/kustomization.yaml
-            yq e '.spec.template.spec.containers[] |= select(.name == "ghcr.io/ssi-dk/bifrost-queue-broker").image = ghcr.io/ssi-dk/bifrost-queue-broker-tbr-pull:${{ needs.prepare_tag.outputs.tag }}' -i ./sofi_core_gitops/apps/dev/bifrost-queue-broker-tbr-pull/patch.yaml
+            yq e '.spec.template.spec.containers[] |= select(.name == "bifrost-queue-broker").image = ghcr.io/ssi-dk/bifrost-queue-broker-tbr-pull:${{ needs.prepare_tag.outputs.tag }}' -i ./sofi_core_gitops/apps/dev/bifrost-queue-broker-tbr-pull/patch.yaml
 
             # bifrost-queue-broker-tbr-request
             yq e '.images[] |= select(.name == "ghcr.io/ssi-dk/bifrost-queue-broker-tbr-request").newTag = "${{ needs.prepare_tag.outputs.tag }}"' -i ./sofi_core_gitops/apps/dev/bifrost-queue-broker-tbr-request/kustomization.yaml
-            yq e '.spec.template.spec.containers[] |= select(.name == "ghcr.io/ssi-dk/bifrost-queue-broker").image = ghcr.io/ssi-dk/bifrost-queue-broker-tbr-request:${{ needs.prepare_tag.outputs.tag }}' -i ./sofi_core_gitops/apps/dev/bifrost-queue-broker-tbr-request/patch.yaml
+            yq e '.spec.template.spec.containers[] |= select(.name == "bifrost-queue-broker").image = ghcr.io/ssi-dk/bifrost-queue-broker-tbr-request:${{ needs.prepare_tag.outputs.tag }}' -i ./sofi_core_gitops/apps/dev/bifrost-queue-broker-tbr-request/patch.yaml
 
             # bifrost-listener
             yq e '.images[] |= select(.name == "ghcr.io/ssi-dk/bifrost-listener").newTag = "${{ needs.prepare_tag.outputs.tag }}"' -i ./sofi_core_gitops/apps/dev/bifrost-listener/kustomization.yaml
@@ -191,19 +191,19 @@ jobs:
 
             # bifrost-queue-broker-lims-pull
             yq e '.images[] |= select(.name == "ghcr.io/ssi-dk/bifrost-queue-broker-lims-pull").newTag = "${{ needs.prepare_tag.outputs.tag }}"' -i ./sofi_core_gitops/apps/test/bifrost-queue-broker-lims-pull/kustomization.yaml
-            yq e '.spec.template.spec.containers[] |= select(.name == "ghcr.io/ssi-dk/bifrost-queue-broker").image = ghcr.io/ssi-dk/bifrost-queue-broker-lims-pull:${{ needs.prepare_tag.outputs.tag }}' -i ./sofi_core_gitops/apps/test/bifrost-queue-broker-lims-pull/patch.yaml
+            yq e '.spec.template.spec.containers[] |= select(.name == "bifrost-queue-broker").image = ghcr.io/ssi-dk/bifrost-queue-broker-lims-pull:${{ needs.prepare_tag.outputs.tag }}' -i ./sofi_core_gitops/apps/test/bifrost-queue-broker-lims-pull/patch.yaml
 
             # bifrost-queue-broker-lims-request
             yq e '.images[] |= select(.name == "ghcr.io/ssi-dk/bifrost-queue-broker-lims-request").newTag = "${{ needs.prepare_tag.outputs.tag }}"' -i ./sofi_core_gitops/apps/test/bifrost-queue-broker-lims-request/kustomization.yaml
-            yq e '.spec.template.spec.containers[] |= select(.name == "ghcr.io/ssi-dk/bifrost-queue-broker").image = ghcr.io/ssi-dk/bifrost-queue-broker-lims-request:${{ needs.prepare_tag.outputs.tag }}' -i ./sofi_core_gitops/apps/test/bifrost-queue-broker-lims-request/patch.yaml
+            yq e '.spec.template.spec.containers[] |= select(.name == "bifrost-queue-broker").image = ghcr.io/ssi-dk/bifrost-queue-broker-lims-request:${{ needs.prepare_tag.outputs.tag }}' -i ./sofi_core_gitops/apps/test/bifrost-queue-broker-lims-request/patch.yaml
 
             # bifrost-queue-broker-tbr-pull
             yq e '.images[] |= select(.name == "ghcr.io/ssi-dk/bifrost-queue-broker-tbr-pull").newTag = "${{ needs.prepare_tag.outputs.tag }}"' -i ./sofi_core_gitops/apps/test/bifrost-queue-broker-tbr-pull/kustomization.yaml
-            yq e '.spec.template.spec.containers[] |= select(.name == "ghcr.io/ssi-dk/bifrost-queue-broker").image = ghcr.io/ssi-dk/bifrost-queue-broker-tbr-pull:${{ needs.prepare_tag.outputs.tag }}' -i ./sofi_core_gitops/apps/test/bifrost-queue-broker-tbr-pull/patch.yaml
+            yq e '.spec.template.spec.containers[] |= select(.name == "bifrost-queue-broker").image = ghcr.io/ssi-dk/bifrost-queue-broker-tbr-pull:${{ needs.prepare_tag.outputs.tag }}' -i ./sofi_core_gitops/apps/test/bifrost-queue-broker-tbr-pull/patch.yaml
 
             # bifrost-queue-broker-tbr-request
             yq e '.images[] |= select(.name == "ghcr.io/ssi-dk/bifrost-queue-broker-tbr-request").newTag = "${{ needs.prepare_tag.outputs.tag }}"' -i ./sofi_core_gitops/apps/test/bifrost-queue-broker-tbr-request/kustomization.yaml
-            yq e '.spec.template.spec.containers[] |= select(.name == "ghcr.io/ssi-dk/bifrost-queue-broker").image = ghcr.io/ssi-dk/bifrost-queue-broker-tbr-request:${{ needs.prepare_tag.outputs.tag }}' -i ./sofi_core_gitops/apps/test/bifrost-queue-broker-tbr-request/patch.yaml
+            yq e '.spec.template.spec.containers[] |= select(.name == "bifrost-queue-broker").image = ghcr.io/ssi-dk/bifrost-queue-broker-tbr-request:${{ needs.prepare_tag.outputs.tag }}' -i ./sofi_core_gitops/apps/test/bifrost-queue-broker-tbr-request/patch.yaml
 
             # bifrost-listener
             yq e '.images[] |= select(.name == "ghcr.io/ssi-dk/bifrost-listener").newTag = "${{ needs.prepare_tag.outputs.tag }}"' -i ./sofi_core_gitops/apps/test/bifrost-listener/kustomization.yaml
@@ -246,19 +246,19 @@ jobs:
 
             # bifrost-queue-broker-lims-pull
             yq e '.images[] |= select(.name == "ghcr.io/ssi-dk/bifrost-queue-broker-lims-pull").newTag = "${{ needs.prepare_tag.outputs.tag }}"' -i ./sofi_core_gitops/apps/prod/bifrost-queue-broker-lims-pull/kustomization.yaml
-            yq e '.spec.template.spec.containers[] |= select(.name == "ghcr.io/ssi-dk/bifrost-queue-broker").image = ghcr.io/ssi-dk/bifrost-queue-broker-lims-pull:${{ needs.prepare_tag.outputs.tag }}' -i ./sofi_core_gitops/apps/prod/bifrost-queue-broker-lims-pull/patch.yaml
+            yq e '.spec.template.spec.containers[] |= select(.name == "bifrost-queue-broker").image = ghcr.io/ssi-dk/bifrost-queue-broker-lims-pull:${{ needs.prepare_tag.outputs.tag }}' -i ./sofi_core_gitops/apps/prod/bifrost-queue-broker-lims-pull/patch.yaml
 
             # bifrost-queue-broker-lims-request
             yq e '.images[] |= select(.name == "ghcr.io/ssi-dk/bifrost-queue-broker-lims-request").newTag = "${{ needs.prepare_tag.outputs.tag }}"' -i ./sofi_core_gitops/apps/prod/bifrost-queue-broker-lims-request/kustomization.yaml
-            yq e '.spec.template.spec.containers[] |= select(.name == "ghcr.io/ssi-dk/bifrost-queue-broker").image = ghcr.io/ssi-dk/bifrost-queue-broker-lims-request:${{ needs.prepare_tag.outputs.tag }}' -i ./sofi_core_gitops/apps/prod/bifrost-queue-broker-lims-request/patch.yaml
+            yq e '.spec.template.spec.containers[] |= select(.name == "bifrost-queue-broker").image = ghcr.io/ssi-dk/bifrost-queue-broker-lims-request:${{ needs.prepare_tag.outputs.tag }}' -i ./sofi_core_gitops/apps/prod/bifrost-queue-broker-lims-request/patch.yaml
 
             # bifrost-queue-broker-tbr-pull
             yq e '.images[] |= select(.name == "ghcr.io/ssi-dk/bifrost-queue-broker-tbr-pull").newTag = "${{ needs.prepare_tag.outputs.tag }}"' -i ./sofi_core_gitops/apps/prod/bifrost-queue-broker-tbr-pull/kustomization.yaml
-            yq e '.spec.template.spec.containers[] |= select(.name == "ghcr.io/ssi-dk/bifrost-queue-broker").image = ghcr.io/ssi-dk/bifrost-queue-broker-tbr-pull:${{ needs.prepare_tag.outputs.tag }}' -i ./sofi_core_gitops/apps/prod/bifrost-queue-broker-tbr-pull/patch.yaml
+            yq e '.spec.template.spec.containers[] |= select(.name == "bifrost-queue-broker").image = ghcr.io/ssi-dk/bifrost-queue-broker-tbr-pull:${{ needs.prepare_tag.outputs.tag }}' -i ./sofi_core_gitops/apps/prod/bifrost-queue-broker-tbr-pull/patch.yaml
 
             # bifrost-queue-broker-tbr-request
             yq e '.images[] |= select(.name == "ghcr.io/ssi-dk/bifrost-queue-broker-tbr-request").newTag = "${{ needs.prepare_tag.outputs.tag }}"' -i ./sofi_core_gitops/apps/prod/bifrost-queue-broker-tbr-request/kustomization.yaml
-            yq e '.spec.template.spec.containers[] |= select(.name == "ghcr.io/ssi-dk/bifrost-queue-broker").image = ghcr.io/ssi-dk/bifrost-queue-broker-tbr-request:${{ needs.prepare_tag.outputs.tag }}' -i ./sofi_core_gitops/apps/prod/bifrost-queue-broker-tbr-request/patch.yaml
+            yq e '.spec.template.spec.containers[] |= select(.name == "bifrost-queue-broker").image = ghcr.io/ssi-dk/bifrost-queue-broker-tbr-request:${{ needs.prepare_tag.outputs.tag }}' -i ./sofi_core_gitops/apps/prod/bifrost-queue-broker-tbr-request/patch.yaml
 
             # bifrost-listener
             yq e '.images[] |= select(.name == "ghcr.io/ssi-dk/bifrost-listener").newTag = "${{ needs.prepare_tag.outputs.tag }}"' -i ./sofi_core_gitops/apps/prod/bifrost-listener/kustomization.yaml
