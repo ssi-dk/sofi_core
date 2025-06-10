@@ -232,3 +232,4 @@ services:
     restart: on-failure
     volumes:
       - ./dmx_data:/dmx_data
+      
