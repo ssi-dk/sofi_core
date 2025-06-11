@@ -98,9 +98,14 @@ class LIMSPullingBrokerSync():
             if (
                 "output" in api_response
                 and "sapresponse" in api_response.output
-                and api_response.output.sapresponse.success
+                and (("success" in api_response.output.sapresponse 
+                      and api_response.output.sapresponse.success) 
+                     or ("succcess" in api_response.output.sapresponse 
+                         and api_response.output.sapresponse.succcess)) # sic - see lims.v1.yaml
             ):
                 transformed_batch.append(transform_lims_metadata(api_response))
+            else:
+                logging.debug(f"Skipping isolate: {element['isolate_id']} -- sapresponse unsuccessful")
 
         bulk_update_queries = self.upsert_lims_metadata_batch(transformed_batch)
         update_count = 0
