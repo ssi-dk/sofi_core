@@ -7,6 +7,7 @@ from typing import Dict, Literal, Tuple, overload
 
 from dateutil import parser
 from pymongo import MongoClient, mongo_client
+from pymongo.errors import EncryptionError
 from pymongo.encryption import Algorithm, ClientEncryption
 from pymongo.encryption_options import AutoEncryptionOpts
 
@@ -136,18 +137,23 @@ def get_collection(collection: str):
 
 def recursive_replace(data, replacement_fn, filter_list=None, filtered_parent=False):
     # If no filter_list is provided, then assume all leaf nodes in tree must be replaced
-    do_filter = not filter_list or filtered_parent
     if isinstance(data, (dict, list)):
         for k, v in data.items() if isinstance(data, dict) else enumerate(data):
             # If a key in the filter_list is seen at any node in the tree, leaf values
             # underneath that node must be replaced
+            do_filter = not filter_list or filtered_parent
+            if v is None:
+                continue # Filter out Nones, so we don't flood exception log
             if k in filter_list:
                 do_filter = True
             if (not (isinstance(v, (dict, list)))) and do_filter:
                 try:
                     replacement_text = replacement_fn(v)
                     data[k] = replacement_text
-                except:
+                except EncryptionError as e:
+                    logging.debug(f"{e}: {type(v)}")
+                except Exception as e:
+                    logging.debug(str(e))
                     pass
             else:
                 data[k] = recursive_replace(v, replacement_fn, filter_list, do_filter)
@@ -171,10 +177,11 @@ def encrypt_dict(encryption_client: ClientEncryption, val, filter_list=None):
 def coerce_date(dayfirst):
     def parse_value(v):
         try:
-            if isinstance(v, datetime):
+            if isinstance(v, datetime) or v is None:
                 return v
             return parser.parse(v, dayfirst=dayfirst) if v else None
-        except:
+        except Exception as e:
+            logging.debug(str(e))
             return None
     return parse_value
 
