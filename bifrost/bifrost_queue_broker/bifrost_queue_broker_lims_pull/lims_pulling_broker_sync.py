@@ -32,11 +32,9 @@ class LIMSPullingBrokerSync():
     def run(self):
         logging.info(f"Started {self.broker_name} thread.")
         interval = 60 * 10  # 10 minutes
-        start_time = time.time()
-        first_run = True
         while True:
             self.run_sync_job()
-            sleep(interval)
+            time.sleep(interval)
 
     def run_sync_job(self):
         batch_size = 200
