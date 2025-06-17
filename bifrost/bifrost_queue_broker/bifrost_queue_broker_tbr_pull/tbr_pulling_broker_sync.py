@@ -36,7 +36,8 @@ class TBRPullingBrokerSync():
         interval = 60 * 10  # 10 minutes
         start_time = time.time()
         first_run = True
-        while first_run or (time.time() - start_time) < interval:
+        while first_run or (time.time() - start_time) > interval:
+            start_time = time.time()
             first_run = False
             self.run_sync_job()
 
