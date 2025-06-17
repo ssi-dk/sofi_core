@@ -34,12 +34,9 @@ class TBRPullingBrokerSync():
     def run(self):
         logging.info(f"Started {self.broker_name} thread.")
         interval = 60 * 10  # 10 minutes
-        start_time = time.time()
-        first_run = True
-        while first_run or (time.time() - start_time) > interval:
-            start_time = time.time()
-            first_run = False
+        while True:
             self.run_sync_job()
+            sleep(interval)
 
     def run_sync_job(self):
         batch_size = 200
