@@ -36,7 +36,7 @@ class TBRPullingBrokerSync():
         interval = 60 * 10  # 10 minutes
         while True:
             self.run_sync_job()
-            sleep(interval)
+            time.sleep(interval)
 
     def run_sync_job(self):
         batch_size = 200
