@@ -34,8 +34,9 @@ class LIMSPullingBrokerSync():
         interval = 60 * 10  # 10 minutes
         start_time = time.time()
         first_run = True
-        while first_run or (time.time() - start_time) < interval:
+        while first_run or (time.time() - start_time) > interval:
             first_run = False
+            start_time = time.time()
             self.run_sync_job()
 
     def run_sync_job(self):
