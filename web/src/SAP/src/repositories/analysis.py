@@ -13,6 +13,7 @@ from ...common.database import (
     encrypt_dict,
     DB_NAME,
     ANALYSIS_COL_NAME,
+    PROJECT_PRIVACY_COL_NAME,
 )
 import sys
 from bson.objectid import ObjectId
@@ -21,7 +22,7 @@ def remove_id(item):
     item.pop("_id", None)
     return item
 
-def get_analysis_page(query, page_size, offset, columns, restrict_to_institution, unique_sequences=True):
+def get_analysis_page(query, page_size, offset, columns, institution, data_clearance, unique_sequences=True):
     conn, encryption_client = get_connection(with_enc=True)
 
     # TODO remove print later
@@ -31,8 +32,8 @@ def get_analysis_page(query, page_size, offset, columns, restrict_to_institution
 
     print(f"query after value encrypt: \n{q}")
 
-    if restrict_to_institution:
-        q["institution"] = restrict_to_institution
+    if data_clearance == "own-institution":
+        q["institution"] = institution
     column_projection = {x: 1 for x in columns}
     column_projection["id"] = { "$toString": "$_id" }
     mydb = conn[DB_NAME]
@@ -85,9 +86,24 @@ def get_analysis_page(query, page_size, offset, columns, restrict_to_institution
                 }
             }
         },
+        {
+            "$lookup": {
+                "from": PROJECT_PRIVACY_COL_NAME,
+                "localField": "project_id",
+                "foreignField": "project_id",
+                "as": "project_privacy",
+            }
+        } if data_clearance == "cross-institution" else {"$match": {}},
+        {
+            "$match": {
+                "$or": [
+                    {"project_privacy": {"$eq": []}},  # No privacy restrictions
+                    {"project_privacy.institution": institution}  # User has access to this institution
+                ]
+            }
+        } if data_clearance == "cross-institution" else {"$match": {}},
         {"$match": q},
         {"$sort": {"_id": pymongo.DESCENDING}},
-
         {
             "$group": {
             "_id": "$sequence_id",
@@ -110,13 +126,29 @@ def get_analysis_page(query, page_size, offset, columns, restrict_to_institution
     return list(analysis.aggregate(fetch_pipeline))
 
 
-def get_analysis_count(query):
+def get_analysis_count(query, institution, data_clearance):
     conn, encryption_client = get_connection(with_enc=True)
     mydb = conn[DB_NAME]
     analysis = mydb[ANALYSIS_COL_NAME]
     q = encrypt_dict(encryption_client, query, pii_columns())
 
     fetch_pipeline = [
+        {
+            "$lookup": {
+                "from": PROJECT_PRIVACY_COL_NAME,
+                "localField": "project_id",
+                "foreignField": "project_id",
+                "as": "project_privacy",
+            }
+        } if data_clearance == "cross-institution" else {"$match": {}},
+        {
+            "$match": {
+                "$or": [
+                    {"project_privacy": {"$eq": []}},  # No privacy restrictions
+                    {"project_privacy.institution": institution}  # User has access to this institution
+                ]
+            }
+        } if data_clearance == "cross-institution" else {"$match": {}},
         { "$match": q },
         {
             "$group": {
