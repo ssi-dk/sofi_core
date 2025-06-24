@@ -89,8 +89,8 @@ def get_analysis_page(query, page_size, offset, columns, institution, data_clear
         {
             "$lookup": {
                 "from": PROJECT_PRIVACY_COL_NAME,
-                "localField": "project_id",
-                "foreignField": "project_id",
+                "localField": "project_number",
+                "foreignField": "project_number",
                 "as": "project_privacy",
             }
         } if data_clearance == "cross-institution" else {"$match": {}},
@@ -136,8 +136,8 @@ def get_analysis_count(query, institution, data_clearance):
         {
             "$lookup": {
                 "from": PROJECT_PRIVACY_COL_NAME,
-                "localField": "project_id",
-                "foreignField": "project_id",
+                "localField": "project_number",
+                "foreignField": "project_number",
                 "as": "project_privacy",
             }
         } if data_clearance == "cross-institution" else {"$match": {}},
