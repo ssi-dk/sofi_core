@@ -167,7 +167,7 @@ def search_analysis(user, token_info, query: AnalysisQuery):
         token_info["sofi-data-clearance"],
     )
 
-    count = get_analysis_count(token["query"])
+    count = get_analysis_count(token["query"], token_info["institution"], token_info["sofi-data-clearance"])
     new_token = (
         None
         if len(items) < token["page_size"]
