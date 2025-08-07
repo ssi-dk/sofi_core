@@ -189,6 +189,19 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
       (c) => hiddenColumnIds.indexOf(c) === -1
     );
     setVisibleColumns(newVisibleColumns);
+
+    //Update approvable columns based on the current view
+    const newSelection = Object.keys(selection).reduce(
+      (acc, key) => {
+          acc[key] = {
+            original: selection[key].original,
+            cells:  getAllApprovableCellsInSelection(key, newVisibleColumns),
+          };
+          return acc;
+      },
+      {} as DataTableSelection<T>
+    );
+    onSelect(newSelection);
   }, [view, columns]);
 
   const { columnResizing } = state;
@@ -310,7 +323,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
       const { checked, indeterminate } = calcRowSelectionState(row);
       const id = row.original[primaryKey];
 
-      const newSelection = {
+      let newSelection = {
         ...selection,
       };
 
@@ -318,22 +331,9 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
         // Delete selection
         delete newSelection[id];
       } else {
-        // Add all approvable cells to selection
-        const cols = columns
-          .filter((x) => typeof x.accessor === "string")
-          .filter((x) => visibleColumns.indexOf(x.accessor as string) >= 0)
-          .filter((x) => canApproveColumn(x.accessor as string))
-          .filter((x) => !isJudgedCell(id, x.accessor as string))
-          .map((x) => x.accessor as keyof T);
-
-        const flags = cols.reduce((a, b) => {
-          a[b] = true;
-          return a;
-        }, {} as Record<keyof T, boolean>);
-
         newSelection[id] = {
           original: row.original,
-          cells: flags,
+          cells: getAllApprovableCellsInSelection(id, visibleColumns),
         };
       }
 
@@ -349,6 +349,24 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
       canApproveColumn,
       selection,
     ]
+  );
+
+  const getAllApprovableCellsInSelection = React.useCallback(
+    (id: string, newVisibleColumns: string[]) => {
+      // Add all approvable cells to selection
+      const cols = columns
+        .filter((x) => typeof x.accessor === "string")
+        .filter((x) => newVisibleColumns.indexOf(x.accessor as string) >= 0)
+        .filter((x) => canApproveColumn(x.accessor as string))
+        .filter((x) => !isJudgedCell(id, x.accessor as string))
+        .map((x) => x.accessor as keyof T);
+
+      return cols.reduce((a, b) => {
+        a[b] = true;
+        return a;
+      }, {} as Record<keyof T, boolean>);
+    }, 
+    [columns, canApproveColumn, isJudgedCell]
   );
 
   const onColumnResize = React.useCallback(
