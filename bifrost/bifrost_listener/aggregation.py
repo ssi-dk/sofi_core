@@ -527,10 +527,15 @@ def agg_pipeline(changed_ids=None):
                             "component": {
                                 "$arrayElemAt": [
                                     {
-                                        "$filter": {
-                                            "input": "$components",
-                                            "as": "component",
-                                            "cond": {"$regexMatch": {"input": "$$component.name", "regex": "^sp_ecoli"}}
+                                        "$sortArray":{
+                                            "input": {
+                                                "$filter": {
+                                                    "input": "$components",
+                                                    "as": "component",
+                                                    "cond": {"$regexMatch": {"input": "$$component.name", "regex": "^sp_ecoli"}}
+                                                }
+                                            },
+                                            "sortBy":{"name":-1}
                                         }
                                     },
                                     0
