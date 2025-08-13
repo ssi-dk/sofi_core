@@ -318,10 +318,15 @@ def agg_pipeline(changed_ids=None):
                             "component": {
                                 "$arrayElemAt": [
                                     {
-                                        "$filter": {
-                                            "input": "$components",
-                                            "as": "component",
-                                            "cond": {"$regexMatch": {"input": "$$component.name", "regex": "^min_read_check"}}
+                                        "$sortArray":{
+                                            "input": {
+                                                "$filter": {
+                                                    "input": "$components",
+                                                    "as": "component",
+                                                    "cond": {"$regexMatch": {"input": "$$component.name", "regex": "^min_read_check"}}
+                                                }
+                                            },
+                                            "sortBy":{"name":-1}
                                         }
                                     },
                                     0
@@ -337,10 +342,15 @@ def agg_pipeline(changed_ids=None):
                             "component": {
                                 "$arrayElemAt": [
                                     {
-                                        "$filter": {
-                                            "input": "$components",
-                                            "as": "component",
-                                            "cond": {"$regexMatch": {"input": "$$component.name", "regex": "^whats_my_species"}}
+                                        "$sortArray":{
+                                            "input": {
+                                                "$filter": {
+                                                    "input": "$components",
+                                                    "as": "component",
+                                                    "cond": {"$regexMatch": {"input": "$$component.name", "regex": "^whats_my_species"}}
+                                                }
+                                            },
+                                            "sortBy":{"name":-1}
                                         }
                                     },
                                     0
@@ -356,10 +366,15 @@ def agg_pipeline(changed_ids=None):
                             "component": {
                                 "$arrayElemAt": [
                                     {
-                                        "$filter": {
-                                            "input": "$components",
-                                            "as": "component",
-                                            "cond": {"$regexMatch": {"input": "$$component.name", "regex": "^assemblatron"}}
+                                        "$sortArray":{
+                                            "input": {
+                                                "$filter": {
+                                                    "input": "$components",
+                                                    "as": "component",
+                                                    "cond": {"$regexMatch": {"input": "$$component.name", "regex": "^assemblatron"}}
+                                                }
+                                            },
+                                            "sortBy":{"name":-1}
                                         }
                                     },
                                     0
@@ -375,10 +390,15 @@ def agg_pipeline(changed_ids=None):
                             "component": {
                                 "$arrayElemAt": [
                                     {
-                                        "$filter": {
-                                            "input": "$components",
-                                            "as": "component",
-                                            "cond": {"$regexMatch": {"input": "$$component.name", "regex": "^assembly_qc"}}
+                                        "$sortArray":{
+                                            "input": {
+                                                "$filter": {
+                                                    "input": "$components",
+                                                    "as": "component",
+                                                    "cond": {"$regexMatch": {"input": "$$component.name", "regex": "^assembly_qc"}}
+                                                }
+                                            },
+                                            "sortBy":{"name":-1}
                                         }
                                     },
                                     0
@@ -394,10 +414,15 @@ def agg_pipeline(changed_ids=None):
                             "component": {
                                 "$arrayElemAt": [
                                     {
-                                        "$filter": {
-                                            "input": "$components",
-                                            "as": "component",
-                                            "cond": {"$regexMatch": {"input": "$$component.name", "regex": "^ssi_stamper"}}
+                                        "$sortArray":{
+                                            "input": {
+                                                "$filter": {
+                                                    "input": "$components",
+                                                    "as": "component",
+                                                    "cond": {"$regexMatch": {"input": "$$component.name", "regex": "^ssi_stamper"}}
+                                                }
+                                            },
+                                            "sortBy":{"name":-1}
                                         }
                                     },
                                     0
@@ -413,10 +438,15 @@ def agg_pipeline(changed_ids=None):
                             "component": {
                                 "$arrayElemAt": [
                                     {
-                                        "$filter": {
-                                            "input": "$components",
-                                            "as": "component",
-                                            "cond": {"$regexMatch": {"input": "$$component.name", "regex": "^cge_mlst"}}
+                                        "$sortArray":{
+                                            "input": {
+                                                "$filter": {
+                                                    "input": "$components",
+                                                    "as": "component",
+                                                    "cond": {"$regexMatch": {"input": "$$component.name", "regex": "^cge_mlst"}}
+                                                }
+                                            },
+                                            "sortBy":{"name":-1}
                                         }
                                     },
                                     0
@@ -432,10 +462,15 @@ def agg_pipeline(changed_ids=None):
                             "component": {
                                 "$arrayElemAt": [
                                     {
-                                        "$filter": {
-                                            "input": "$components",
-                                            "as": "component",
-                                            "cond": {"$regexMatch": {"input": "$$component.name", "regex": "^cge_resfinder"}}
+                                        "$sortArray":{
+                                            "input": {
+                                                "$filter": {
+                                                    "input": "$components",
+                                                    "as": "component",
+                                                    "cond": {"$regexMatch": {"input": "$$component.name", "regex": "^cge_resfinder"}}
+                                                }
+                                            },
+                                            "sortBy":{"name":-1}
                                         }
                                     },
                                     0
@@ -451,10 +486,15 @@ def agg_pipeline(changed_ids=None):
                             "component": {
                                 "$arrayElemAt": [
                                     {
-                                        "$filter": {
-                                            "input": "$components",
-                                            "as": "component",
-                                            "cond": {"$regexMatch": {"input": "$$component.name", "regex": "^seqsero"}}
+                                        "$sortArray":{
+                                            "input": {
+                                                "$filter": {
+                                                    "input": "$components",
+                                                    "as": "component",
+                                                    "cond": {"$regexMatch": {"input": "$$component.name", "regex": "^seqsero"}}
+                                                }
+                                            },
+                                            "sortBy":{"name":-1}
                                         }
                                     },
                                     0
@@ -470,10 +510,15 @@ def agg_pipeline(changed_ids=None):
                             "component": {
                                 "$arrayElemAt": [
                                     {
-                                        "$filter": {
-                                            "input": "$components",
-                                            "as": "component",
-                                            "cond": {"$regexMatch": {"input": "$$component.name", "regex": "^enterobase"}}
+                                        "$sortArray":{
+                                            "input": {
+                                                "$filter": {
+                                                    "input": "$components",
+                                                    "as": "component",
+                                                    "cond": {"$regexMatch": {"input": "$$component.name", "regex": "^enterobase"}}
+                                                }
+                                            },
+                                            "sortBy":{"name":-1}
                                         }
                                     },
                                     0
@@ -489,10 +534,15 @@ def agg_pipeline(changed_ids=None):
                             "component": {
                                 "$arrayElemAt": [
                                     {
-                                        "$filter": {
-                                            "input": "$components",
-                                            "as": "component",
-                                            "cond": {"$regexMatch": {"input": "$$component.name", "regex": "^salmonella_subspecies_dtartrate"}}
+                                        "$sortArray":{
+                                            "input": {
+                                                "$filter": {
+                                                    "input": "$components",
+                                                    "as": "component",
+                                                    "cond": {"$regexMatch": {"input": "$$component.name", "regex": "^salmonella_subspecies_dtartrate"}}
+                                                }
+                                            },
+                                            "sortBy":{"name":-1}
                                         }
                                     },
                                     0
@@ -508,10 +558,15 @@ def agg_pipeline(changed_ids=None):
                             "component": {
                                 "$arrayElemAt": [
                                     {
-                                        "$filter": {
-                                            "input": "$components",
-                                            "as": "component",
-                                            "cond": {"$regexMatch": {"input": "$$component.name", "regex": "^chewbbaca"}}
+                                        "$sortArray":{
+                                            "input": {
+                                                "$filter": {
+                                                    "input": "$components",
+                                                    "as": "component",
+                                                    "cond": {"$regexMatch": {"input": "$$component.name", "regex": "^chewbbaca"}}
+                                                }
+                                            },
+                                            "sortBy":{"name":-1}
                                         }
                                     },
                                     0
@@ -551,10 +606,15 @@ def agg_pipeline(changed_ids=None):
                             "component": {
                                 "$arrayElemAt": [
                                     {
-                                        "$filter": {
-                                            "input": "$components",
-                                            "as": "component",
-                                            "cond": {"$regexMatch": {"input": "$$component.name", "regex": "^sp_cdiff"}}
+                                        "$sortArray":{
+                                            "input": {
+                                                "$filter": {
+                                                    "input": "$components",
+                                                    "as": "component",
+                                                    "cond": {"$regexMatch": {"input": "$$component.name", "regex": "^sp_cdiff"}}
+                                                }
+                                            },
+                                            "sortBy":{"name":-1}
                                         }
                                     },
                                     0
@@ -570,10 +630,15 @@ def agg_pipeline(changed_ids=None):
                             "component": {
                                 "$arrayElemAt": [
                                     {
-                                        "$filter": {
-                                            "input": "$components",
-                                            "as": "component",
-                                            "cond": {"$regexMatch": {"input": "$$component.name", "regex": "^amrfinderplus"}}
+                                        "$sortArray":{
+                                            "input": {
+                                                "$filter": {
+                                                    "input": "$components",
+                                                    "as": "component",
+                                                    "cond": {"$regexMatch": {"input": "$$component.name", "regex": "^amrfinderplus"}}
+                                                }
+                                            },
+                                            "sortBy":{"name":-1}
                                         }
                                     },
                                     0
