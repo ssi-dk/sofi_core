@@ -353,7 +353,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
       const { checked, indeterminate } = calcRowSelectionState(row);
       const id = row.original[primaryKey];
 
-      let newSelection = {
+      const newSelection = {
         ...selection,
       };
 
@@ -377,24 +377,6 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
       selection,
       getAllApprovableCellsInSelection
     ]
-  );
-
-  const getAllApprovableCellsInSelection = React.useCallback(
-    (id: string, newVisibleColumns: string[]) => {
-      // Add all approvable cells to selection
-      const cols = columns
-        .filter((x) => typeof x.accessor === "string")
-        .filter((x) => newVisibleColumns.indexOf(x.accessor as string) >= 0)
-        .filter((x) => canApproveColumn(x.accessor as string))
-        .filter((x) => !isJudgedCell(id, x.accessor as string))
-        .map((x) => x.accessor as keyof T);
-
-      return cols.reduce((a, b) => {
-        a[b] = true;
-        return a;
-      }, {} as Record<keyof T, boolean>);
-    }, 
-    [columns, canApproveColumn, isJudgedCell]
   );
 
   const onColumnResize = React.useCallback(
