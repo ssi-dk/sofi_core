@@ -165,6 +165,11 @@ make clean && make run
 
 -
 
+# Keycloak
+After setup, go to the keycloak admin page and login. 
+Switch realm to "Sofi", navigate to Clients -> Client list -> SOFI_APP -> Advanced -> Advanced settings
+Change the "Access token lifespan" to something more reasonable than 1 min, eg. 1 day. Otherwise your jwt token will expire after 1 min making the web UI troublesome.
+
 ## Project Structure
 
 Consult `docs/`.
