@@ -188,3 +188,27 @@ If there are any expiry errors in the status, rotate the certificates by doing:
 
 This should renew the certificates.
 Furthermore, check that the file "~/.kube/config" matches "/etc/rancher/k3s/k3s.yaml". If they do not match, create a backup and replace "~/.kube/config".
+
+## Renew SSL certificates
+### Convert pfx from SIT to use on SOFI
+To use the certificate files on the Delphi environment they must be converted to pem format and seperate in a public and private key part.
+This can be accomplished with the following commands
+#### Export key
+`openssl pkcs12 -in test_sofi-platform_dk-2024_03_21-81904.pfx -legacy -nocerts -out key.pem`
+#### Export public cert
+`openssl pkcs12 -in test_sofi-platform_dk-2024_03_21-81904.pfx -clcerts -nokeys -legacy -out cert.pem`
+#### Remove password from key
+`openssl rsa -in key.pem -out key-no-pass.key`
+#### Verify private key and public cert belongs together
+`openssl x509 -in sofi.test.crt -noout -modulus | openssl md5`
+
+`openssl rsa -modulus -noout -in sofi.test.pem | openssl md5`
+
+### Create certificate for machine
+Before the certificate is ready to be put on the machine, you must manually add the intermediate and root certificate to cert.pem, such that it contains all 3 certificates, one after the other.
+This has been done before by just `cat`-ing the certificates and appending that to cert.pem.
+
+Once you have cert.pem and key-no-pass.key, put these into /opt/sofi/secrets/certificates and kill the `sap-api` container in k9s.
+
+Sometimes the application will still try to use the old certificate. If this happens, do `:secrets` in k9s, delete the tls secret and create it again with
+`k create secret tls dev2.sofi-platform.dk-tls --cert=cert.pem --key=key-no-pass-key.key -n sofi` (change url if not dev). Then go back to `:pods` and kill `sap-api` again.
