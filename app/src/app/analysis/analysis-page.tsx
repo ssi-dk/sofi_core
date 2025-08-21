@@ -571,6 +571,8 @@ export default function AnalysisPage() {
       rowUpdating,
       cellUpdating,
       approvals,
+      data,
+      user
     ]
   );
 

@@ -219,6 +219,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
       },
       {} as DataTableSelection<T>
     );
+
     let selectionDiffers = false;
 
     Object.keys(newSelection).forEach((key) => {
