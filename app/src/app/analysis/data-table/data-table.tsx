@@ -219,8 +219,20 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
       },
       {} as DataTableSelection<T>
     );
-    onSelect(newSelection);
-  }, [view, columns, selection, onSelect, getAllApprovableCellsInSelection]);
+
+    let selectionDiffers = false;
+
+    Object.keys(newSelection).forEach((key) => {
+      if (
+        !selection[key] ||
+        JSON.stringify(selection[key].cells) !==
+          JSON.stringify(newSelection[key].cells)
+      ) {
+        selectionDiffers = true;
+      }
+    });
+    if (selectionDiffers) onSelect(newSelection);
+  }, [view, columns, onSelect, selection, getAllApprovableCellsInSelection]);
 
   const { columnResizing } = state;
 
@@ -296,6 +308,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [visibleApprovableColumns, onSelect, selection]);
+
 
   const calcRowSelectionState = React.useCallback(
     (row: Row<T>) => {
