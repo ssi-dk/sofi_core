@@ -104,6 +104,9 @@ class LIMSPullingBrokerSync():
                 transformed_batch.append(transform_lims_metadata(api_response))
             else:
                 logging.debug(f"Skipping isolate: {element['isolate_id']} -- sapresponse unsuccessful")
+                if("output" in api_response):
+                    if("sapresponse" in api_response.output):
+                        logging.debug(f"API Response: {api_response.output.sapresponse}")
 
         bulk_update_queries = self.upsert_lims_metadata_batch(transformed_batch)
         update_count = 0
