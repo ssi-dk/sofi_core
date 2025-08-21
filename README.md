@@ -178,3 +178,13 @@ First look at the [Database permission](#database-permission) section. Alternati
 ```shell
 sudo make run
 ```
+
+## k9s not showing any pods
+If `k9s` is broken, it can be because the internal k3s certificates have expired. You can check this by running `systemctl status k3s`.
+If there are any expiry errors in the status, rotate the certificates by doing:
+- `systemctl stop k3s`
+- `k3s certificate rotate`
+- `systemctl start k3s`
+
+This should renew the certificates.
+Furthermore, check that the file "~/.kube/config" matches "/etc/rancher/k3s/k3s.yaml". If they do not match, create a backup and replace "~/.kube/config".
