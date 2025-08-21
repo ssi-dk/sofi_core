@@ -171,6 +171,12 @@ Consult `docs/`.
 
 
 # Troubleshooting possible development errors
+## Environment overview
+- Dev: 10.45.129.10
+- Test: 10.45.129.12
+- Prod: 10.45.129.178
+
+Access via SSH from vdi.computerome.dk.
 
 ## bifrost_db container ERROR: child process failed, exited with 1
 When running make run. If the bifrost conainer keeps failing with an error message saying "ERROR: child process failed, exited with 1". Look for if "Error creating journal directory".
