@@ -16,8 +16,6 @@ PERMISSION_CONFIG: Union[Dict[str, List[str]], None] = None
 with open(os.getcwd() + "/permission-config.jsonc", encoding="utf-8") as js_file:
     PERMISSION_CONFIG = commentjson.loads(js_file.read())
 
-PATH = os.path.dirname(os.path.realpath(__file__))
-
 MICROREACT_ENCRYPTION_SECRET = os.environ.get(
     "MICROREACT_ENCRYPTION_SECRET"
 )
