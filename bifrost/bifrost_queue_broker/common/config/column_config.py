@@ -31,6 +31,7 @@ def gen_default_column(field_name: str) -> ColumnDict:
         "organizations": ["FVST", "SSI"],
         "field_name": field_name,
         "approves_with": [],
+        "cross_org_editable": False
     }
 
 

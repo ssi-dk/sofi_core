@@ -78,6 +78,12 @@ export interface Column  {
      * @memberof Column
      */
     approves_with?: Array<string>;
+    /**
+     * True if the column can be edited by users from other organizations
+     * @type {boolean}
+     * @memberof Column
+     */
+    cross_org_editable?: boolean;
 }
 
 export function ColumnFromJSON(json: any): Column {
@@ -91,6 +97,7 @@ export function ColumnFromJSON(json: any): Column {
         'organizations': !exists(json, 'organizations') ? undefined : (json['organizations'] as Array<any>).map(OrganizationFromJSON),
         'field_name': !exists(json, 'field_name') ? undefined : json['field_name'],
         'approves_with': !exists(json, 'approves_with') ? undefined : json['approves_with'],
+        'cross_org_editable': !exists(json, 'cross_org_editable') ? undefined : json['cross_org_editable'],
     };
 }
 
@@ -108,6 +115,7 @@ export function ColumnToJSON(value?: Column): any {
         'organizations': value.organizations === undefined ? undefined : (value.organizations as Array<any>).map(OrganizationToJSON),
         'field_name': value.field_name,
         'approves_with': value.approves_with,
+        'cross_org_editable': value.cross_org_editable,
     };
 }
 

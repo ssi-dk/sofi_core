@@ -35,6 +35,10 @@
       "items": {
         "type": "string"
       }
+    },
+    "cross_org_editable": {
+      "description": "True if the column is editable by both orgs no matter the owner",
+      "type": "boolean"
     }
   }
 }

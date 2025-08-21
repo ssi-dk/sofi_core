@@ -190,11 +190,11 @@ def submit_changes(
 ) -> Dict[str, Dict[str, Any]]:
     assert_user_has("approve", token_info)
     updates = list(map(lambda x: x, body.keys()))
-    allowed_cols = authorized_columns(token_info)
+    allowed_cols = authorized_columns(token_info, True)
     for identifier in updates:
         row = get_single_analysis(identifier)
         # Make sure user is allowed to modify this row
-        assert_authorized_to_edit(token_info, row)
+        assert_authorized_to_edit(token_info, row, body[identifier].keys())
         for col in body[identifier].keys():
             # Make sure is allowed to modify that column
             if not col in allowed_cols:
