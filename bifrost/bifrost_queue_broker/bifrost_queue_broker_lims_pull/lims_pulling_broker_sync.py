@@ -107,6 +107,10 @@ class LIMSPullingBrokerSync():
                 if("output" in api_response):
                     if("sapresponse" in api_response.output):
                         logging.debug(f"API Response: {api_response.output.sapresponse}")
+                    else:
+                        logging.debug(f"Missing sapresponse in API Response")
+                else:
+                    logging.debug(f"Missing output in API Response")
 
         bulk_update_queries = self.upsert_lims_metadata_batch(transformed_batch)
         update_count = 0
