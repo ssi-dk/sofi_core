@@ -1007,6 +1007,9 @@ components:
           type: array
           items:
             type: string
+        cross_org_editable:
+          description: True if the column can be edited by users from other organizations
+          type: boolean
 
     UserDefinedView:
       type: object

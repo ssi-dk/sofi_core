@@ -9,7 +9,12 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { Column, Row } from "react-table";
-import { AnalysisResult, AnalysisQuery, ApprovalStatus } from "sap-client";
+import {
+  AnalysisResult,
+  AnalysisQuery,
+  ApprovalStatus,
+  UserInfo,
+} from "sap-client";
 import { useMutation, useRequest } from "redux-query-react";
 import { useDispatch, useSelector } from "react-redux";
 import { requestAsync } from "redux-query";
@@ -78,6 +83,8 @@ export default function AnalysisPage() {
   const [{ isPending, isFinished }] = useRequest({
     ...requestPageOfAnalysis({ pageSize: 100 }, false),
   });
+
+  const user = useSelector<RootState>((s) => s.entities.user ?? {}) as UserInfo;
 
   useRequest({ ...fetchApprovalMatrix() });
 
@@ -439,12 +446,13 @@ export default function AnalysisPage() {
       if (cellUpdating(rowId, columnId)) {
         return <Skeleton width="100px" height="20px" />;
       }
-      if (
-        value !== 0 &&
-        value !== false &&
-        !value &&
-        !columnConfigs[columnId].editable
-      ) {
+      const rowInstitution = data.find((row) => row.sequence_id == rowId)
+        .institution;
+      const editIsAllowed = true ||
+        columnConfigs[columnId].editable ||
+        user.institution == rowInstitution ||
+        columnConfigs[columnId].cross_org_editable;
+      if (value !== 0 && value !== false && !value && !editIsAllowed) {
         return <div />;
       }
       let v = `${value}`;
@@ -514,7 +522,7 @@ export default function AnalysisPage() {
           );
         }
 
-        if (columnConfigs[columnId].editable) {
+        if (editIsAllowed) {
           return (
             <Box minWidth="100%" minHeight="100%">
               <Editable
