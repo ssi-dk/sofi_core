@@ -173,7 +173,13 @@ def update_analysis(change):
     analysis = mydb[ANALYSIS_COL_NAME]
     updates = map(lambda x: {**change[x], "id": x}, change.keys())
     for u in updates:
-        analysis.update_one({"sequence_id": u["id"]}, {"$set": u})
+        # Create update object with userchanged_ prefixed fields, this is used in the analysis pipeline to avoid changing fields that contain user data
+        update_data = u.copy()
+        # For each field being updated (except 'id'), add a userchanged_ version
+        for field_name in u.keys():
+            if field_name != "id":
+                update_data[f"userchanged_{field_name}"] = True
+        analysis.update_one({"sequence_id": update_data["id"]}, {"$set": update_data})
 
 
 def get_single_analysis(id: str) -> Dict[str, Any]:
