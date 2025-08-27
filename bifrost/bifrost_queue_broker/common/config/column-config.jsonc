@@ -223,10 +223,7 @@
   },
   {
     "field_name": "comment_qc",
-    "editable": true,
-    "organizations": [
-      "FVST"
-    ]
+    "editable": true
   },
   {
     "field_name": "comment_supplementary",
