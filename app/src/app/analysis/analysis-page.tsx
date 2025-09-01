@@ -644,21 +644,19 @@ export default function AnalysisPage() {
             lastSearchQuery={lastSearchQuery}
           />
           <Flex grow={1} width="100%" />
-          {!pageState.isNarrowed ? (
-            <ColumnConfigWidget onReorder={onReorderColumn}>
-              {(columnOrder || columns.map((x) => x.accessor as string)).map(
-                (column, i) => (
-                  <ColumnConfigNode
-                    key={column}
-                    index={i}
-                    columnName={column}
-                    onChecked={toggleColumn}
-                    isChecked={checkColumnIsVisible(column)}
-                  />
-                )
-              )}
-            </ColumnConfigWidget>
-          ) : null}
+          <ColumnConfigWidget onReorder={onReorderColumn}>
+            {(columnOrder || columns.map((x) => x.accessor as string)).map(
+              (column, i) => (
+                <ColumnConfigNode
+                  key={column}
+                  index={i}
+                  columnName={column}
+                  onChecked={toggleColumn}
+                  isChecked={checkColumnIsVisible(column)}
+                />
+              )
+            )}
+          </ColumnConfigWidget>
           <ExportButton
             data={filteredData}
             columns={columns.map((x) => x.accessor) as any}
