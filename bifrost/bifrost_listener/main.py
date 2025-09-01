@@ -59,17 +59,20 @@ def watch_loop():
                 changed_ids.append(ObjectId(doc_id))
 
             if has_change and elapsed_seconds(timer) > max_duration:
-                logging.info(f"Running aggregation on {len(changed_ids)} samples")
+                logging.info(f"Running aggregation on {len(changed_ids)} samples, ids: {changed_ids}")
+                startTime = time.process_time()
                 db.samples.aggregate(agg_pipeline(changed_ids))
+                timer = time.process_time()
+                logging.info(f"Aggregation complete {len(changed_ids)} samples, in {elapsed_seconds(timer - startTime)} ms")
                 changed_ids = []
                 has_change = False
-                timer = time.process_time()
 
 
 logging.info("bifrost_listener initialized")
 logging.info("Running first aggregation ...")
+timer = time.process_time()
 db.samples.aggregate(agg_pipeline())
-logging.info("Finished first aggregation.")
+logging.info(f"Finished first aggregation in {elapsed_seconds(time.process_time()-timer)} ms")
 while True:
     try:
         watch_loop()

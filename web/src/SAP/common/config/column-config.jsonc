@@ -90,12 +90,14 @@
   {
     "field_name": "cluster_id",
     "approvable": true,
-    "editable": true
+    "editable": true,
+    "cross_org_editable": true
   },
   {
     "field_name": "fud_number",
     "editable": true,
-    "approvable": true
+    "approvable": true,
+    "cross_org_editable": true
   },
   {
     "field_name": "date_epi",
@@ -202,7 +204,8 @@
     "editable": true,
     "organizations": [
       "FVST"
-    ]
+    ],
+    "cross_org_editable": true
   },
   {
     "field_name": "public_number",
@@ -210,11 +213,13 @@
   },
   {
     "field_name": "comment_cluster",
-    "editable": true
+    "editable": true,
+    "cross_org_editable": true
   },
   {
     "field_name": "comment",
-    "editable": true
+    "editable": true,
+    "cross_org_editable": true
   },
   {
     "field_name": "comment_qc",

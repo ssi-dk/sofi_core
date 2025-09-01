@@ -1152,6 +1152,7 @@ components:
         organizations:
         - null
         - null
+        cross_org_editable: true
         gdpr: true
         field_name: field_name
       properties:
@@ -1191,6 +1192,9 @@ components:
           items:
             type: string
           type: array
+        cross_org_editable:
+          description: True if the column can be edited by users from other organizations
+          type: boolean
     UserDefinedView:
       example:
         column_resizing:
