@@ -36,7 +36,7 @@ export const getNearestNeighbors = (params: NearestNeighborsRequest) => {
   base.update = {
     nearestNeighborsResponses: (oldValue, newValue) =>
       Object.assign(newValue, oldValue ?? {}), // Is the order correct??
-      // Object.assign(oldValue ?? {}, newValue),
+    // Object.assign(oldValue ?? {}, newValue),
   };
 
   // Force a network call to be made. Making it promise as well.

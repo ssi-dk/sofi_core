@@ -69,7 +69,8 @@ export const SendToMicroreactModal = (props: Props) => {
     const result = await sendToWorkspace();
 
     if (result.status >= 400) {
-      const errorMsg = result?.body?.message?.details ?? "An unknown error occurred";
+      const errorMsg =
+        result?.body?.message?.details ?? "An unknown error occurred";
       setErrorMessage(errorMsg);
     } else {
       setErrorMessage(null);
