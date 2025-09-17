@@ -207,32 +207,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
       (c) => hiddenColumnIds.indexOf(c) === -1
     );
     setVisibleColumns(newVisibleColumns);
-
-    //Update approvable columns based on the current view
-    const newSelection = Object.keys(selection).reduce(
-      (acc, key) => {
-          acc[key] = {
-            original: selection[key].original,
-            cells:  getAllApprovableCellsInSelection(key, newVisibleColumns),
-          };
-          return acc;
-      },
-      {} as DataTableSelection<T>
-    );
-
-    let selectionDiffers = false;
-
-    Object.keys(newSelection).forEach((key) => {
-      if (
-        !selection[key] ||
-        JSON.stringify(selection[key].cells) !==
-          JSON.stringify(newSelection[key].cells)
-      ) {
-        selectionDiffers = true;
-      }
-    });
-    if (selectionDiffers) onSelect(newSelection);
-  }, [view, columns, onSelect, selection, getAllApprovableCellsInSelection]);
+  }, [view, columns]);
 
   const { columnResizing } = state;
 
@@ -328,7 +303,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
         return { checked: true, indeterminate: false };
       }
       // Else, some cells selected
-      return { indeterminate: true, checked: false };
+      return { indeterminate: false, checked: true };
     },
     [primaryKey, visibleApprovableColumns, selection]
   );
@@ -344,7 +319,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
       if (c.length === rows.length) {
         return { checked: true, indeterminate: false };
       }
-      return { indeterminate: true, checked: false, visible: true };
+      return { indeterminate: false, checked: true, visible: true };
     },
     [rows, selection]
   );
@@ -362,9 +337,10 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
         // Delete selection
         delete newSelection[id];
       } else {
+        var cells = Object.keys(selection).length > 0 ? selection[Object.keys(selection)[0]].cells : getAllApprovableCellsInSelection(id, visibleColumns);
         newSelection[id] = {
           original: row.original,
-          cells: getAllApprovableCellsInSelection(id, visibleColumns),
+          cells,
         };
       }
 
@@ -392,28 +368,44 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
   const onSelectColumn = React.useCallback(
     (col: Column<T>) => {
       const { checked, indeterminate } = calcColSelectionState(col);
-      const sel = rows
-        .filter((r) => !isJudgedCell(r.original[primaryKey], col.id as string))
-        .map((r) => ({
-          [r.original[primaryKey]]: {
-            original: r.original,
-            cells: {
-              ...selection[r.original[primaryKey]]?.cells,
-              [col.id as string]: !checked && !indeterminate,
+      var incSel: DataTableSelection<T> = {};
+      if(col.id === "sequence_id"){
+        if(selection && Object.keys(selection).length > 0){
+        }else{
+          // Select all rows, all approvable cells
+          incSel = rows
+            .map((r) => ({
+              [r.original[primaryKey]]: {
+                original: r.original,
+                cells: getAllApprovableCellsInSelection(r.original[primaryKey], visibleColumns),
+              },
+            }))
+            .reduce((acc, val) => ({ ...acc, ...val }));
+        }
+      }else{
+        const sel = rows
+          .filter((r) => !isJudgedCell(r.original[primaryKey], col.id as string))
+          .map((r) => ({
+            [r.original[primaryKey]]: {
+              original: r.original,
+              cells: {
+                ...selection[r.original[primaryKey]]?.cells,
+                [col.id as string]: !checked && !indeterminate,
+              },
             },
-          },
-        }))
-        .reduce((acc, val) => ({ ...acc, ...val }));
-      const incSel: DataTableSelection<T> = { ...selection, ...sel };
-      getDependentColumns(col.id).forEach((c) => {
-        rows
-          .map((r) => r.original[primaryKey])
-          .forEach((r: string) => {
-            if (incSel[r]) {
-              incSel[r].cells[c] = !(selection[r] && selection[r].cells[c]);
-            }
-          });
-      });
+          }))
+          .reduce((acc, val) => ({ ...acc, ...val }));
+        incSel = { ...selection, ...sel };
+        getDependentColumns(col.id).forEach((c) => {
+          rows
+            .map((r) => r.original[primaryKey])
+            .forEach((r: string) => {
+              if (incSel[r]) {
+                incSel[r].cells[c] = !(selection[r] && selection[r].cells[c]);
+              }
+            });
+        });
+      }
       onSelect(incSel);
       onColumnResize(0);
     },

@@ -232,24 +232,27 @@ export const Judgement = <T extends NotEmpty>(props: Props<T>) => {
         onClick={onNarrowHandler}
         disabled={!isNarrowed && Object.keys(selection ?? {}).length === 0}
       >
-        {isNarrowed ? t("Return") : t("Stage")}
-      </Button>
-      <Button
-        leftIcon={<CheckIcon />}
-        margin="4px"
-        disabled={!isNarrowed}
-        onClick={approveSelection}
-      >
-        {t("Approve")}
-      </Button>
-      <Button
-        leftIcon={<NotAllowedIcon />}
-        margin="4px"
-        disabled={!isNarrowed}
-        onClick={rejectSelection}
-      >
-        {t("Reject")}
-      </Button>
+      {isNarrowed ? t("Return") : t("Stage")}
+        </Button>
+              {isNarrowed ? (
+        <Button
+          leftIcon={<CheckIcon />}
+          margin="4px"
+          disabled={!isNarrowed}
+          onClick={approveSelection}
+        >
+          {t("Approve")}
+        </Button>) : null}
+      {isNarrowed ? (
+        <Button
+          leftIcon={<NotAllowedIcon />}
+          margin="4px"
+          disabled={!isNarrowed}
+          onClick={rejectSelection}
+        >
+          {t("Reject")}
+        </Button>) : null
+      }
     </IfPermission>
   );
 };

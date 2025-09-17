@@ -208,11 +208,13 @@ export default function AnalysisPage() {
   const canSelectColumn = React.useCallback(
     (columnName: string) => {
       return (
+        !pageState.isNarrowed && columnName === "sequence_id" || 
+        pageState.isNarrowed &&
         columnConfigs[columnName]?.approvable &&
         !columnConfigs[columnName]?.computed
       );
     },
-    [columnConfigs]
+    [columnConfigs,pageState]
   );
 
   const [propFilters, setPropFilters] = React.useState(
@@ -340,7 +342,7 @@ export default function AnalysisPage() {
           let sequenceStyle = "cell";
           PRIMARY_APPROVAL_FIELDS.forEach((f) => {
             if (approvals[rowId][f] !== ApprovalStatus.approved)
-              sequenceStyle = "unapprovedCell";
+              sequenceStyle = pageState.isNarrowed ? "unapprovedCell" : "cell";
           });
           // Some species require serotype to also be provided before the sequence can be considered 'approved'
           const species = Species.find(
@@ -351,7 +353,7 @@ export default function AnalysisPage() {
             species["requires_serotype"] &&
             approvals[rowId]["serotype_final"] !== ApprovalStatus.approved
           ) {
-            sequenceStyle = "unapprovedCell";
+            sequenceStyle = pageState.isNarrowed ? "unapprovedCell" : "cell";
           }
           return sequenceStyle;
         }
@@ -362,9 +364,9 @@ export default function AnalysisPage() {
           return "rejectedCell";
         }
       }
-      return "unapprovedCell";
+      return pageState.isNarrowed ? "unapprovedCell" : "cell";
     },
-    [approvals, canApproveColumn, isPrimaryApprovalColumn]
+    [approvals, canApproveColumn, isPrimaryApprovalColumn, pageState, selection]
   );
 
   const getStickyCellStyle = React.useCallback(
@@ -636,13 +638,14 @@ export default function AnalysisPage() {
             onNarrowHandler={onNarrowHandler}
             getDependentColumns={getDependentColumns}
           />
+          {!pageState.isNarrowed ? (
           <AnalysisSelectionMenu
             selection={selection}
             isNarrowed={pageState.isNarrowed}
             data={filteredData}
             search={onSearch}
             lastSearchQuery={lastSearchQuery}
-          />
+          />) : null}
           <Flex grow={1} width="100%" />
           <ColumnConfigWidget onReorder={onReorderColumn}>
             {(columnOrder || columns.map((x) => x.accessor as string)).map(
@@ -686,7 +689,7 @@ export default function AnalysisPage() {
             renderCellControl={renderCellControl}
             primaryKey="sequence_id"
             selectionClassName={
-              pageState.isNarrowed ? "approvingCell" : "selectedCell"
+              pageState.isNarrowed ? "approvingCell" : ""
             }
             onSelect={onSelectCallback}
             selection={selection}
