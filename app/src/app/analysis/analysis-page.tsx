@@ -322,27 +322,34 @@ export default function AnalysisPage() {
 
   const getCellStyle = React.useCallback(
     (rowId: string, columnId: string, value: any, cell: any) => {
+      const rowSelectionClass = selection[rowId] && !pageState.isNarrowed ? " selectedRow" : "";
       if (
         value !== 0 &&
         value !== false &&
         !value &&
         !isPrimaryApprovalColumn(columnId)
       ) {
-        return "emptyCell";
+        return `emptyCell${rowSelectionClass}`;
       }
       if (`${value}` === "Invalid Date") {
-        return "emptyCell";
+        return `emptyCell${rowSelectionClass}`;
       }
       if (!canApproveColumn(columnId)) {
-        return "cell";
+        return `cell${rowSelectionClass}`;
       }
       if (approvals && approvals[rowId]) {
         // sequence_id changes color depending on if specific fields are approved
         if (columnId === "sequence_id") {
           let sequenceStyle = "cell";
           PRIMARY_APPROVAL_FIELDS.forEach((f) => {
-            if (approvals[rowId][f] !== ApprovalStatus.approved)
-              sequenceStyle = pageState.isNarrowed ? "unapprovedCell" : "cell";
+            if (approvals[rowId][f] !== ApprovalStatus.approved){
+              if(sequenceStyle != `rejectedCell`){
+                sequenceStyle = "unapprovedCell";
+              }
+              if(approvals[rowId][f] === ApprovalStatus.rejected){
+                sequenceStyle = `rejectedCell`;
+              }
+            }
           });
           // Some species require serotype to also be provided before the sequence can be considered 'approved'
           const species = Species.find(
@@ -351,20 +358,21 @@ export default function AnalysisPage() {
           if (
             species &&
             species["requires_serotype"] &&
-            approvals[rowId]["serotype_final"] !== ApprovalStatus.approved
+            approvals[rowId]["serotype_final"] !== ApprovalStatus.approved &&
+            sequenceStyle != `rejectedCell`
           ) {
-            sequenceStyle = pageState.isNarrowed ? "unapprovedCell" : "cell";
+            sequenceStyle = "unapprovedCell";
           }
-          return sequenceStyle;
+          return `${sequenceStyle}${rowSelectionClass}`;
         }
         if (approvals[rowId][columnId] === ApprovalStatus.approved) {
-          return "cell";
+          return `cell${rowSelectionClass}`;
         }
         if (approvals[rowId][columnId] === ApprovalStatus.rejected) {
-          return "rejectedCell";
+          return `rejectedCell${rowSelectionClass}`;
         }
       }
-      return pageState.isNarrowed ? "unapprovedCell" : "cell";
+      return `unapprovedCell${rowSelectionClass}`;
     },
     [approvals, canApproveColumn, isPrimaryApprovalColumn, pageState, selection]
   );
@@ -637,6 +645,7 @@ export default function AnalysisPage() {
             isNarrowed={pageState.isNarrowed}
             onNarrowHandler={onNarrowHandler}
             getDependentColumns={getDependentColumns}
+            checkColumnIsVisible={checkColumnIsVisible}
           />
           {!pageState.isNarrowed ? (
           <AnalysisSelectionMenu

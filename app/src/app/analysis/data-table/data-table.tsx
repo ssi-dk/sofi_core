@@ -337,7 +337,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
         // Delete selection
         delete newSelection[id];
       } else {
-        var cells = Object.keys(selection).length > 0 ? selection[Object.keys(selection)[0]].cells : getAllApprovableCellsInSelection(id, visibleColumns);
+        const cells = Object.keys(selection).length > 0 ? selection[Object.keys(selection)[0]].cells : getAllApprovableCellsInSelection(id, visibleColumns);
         newSelection[id] = {
           original: row.original,
           cells,
@@ -368,7 +368,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
   const onSelectColumn = React.useCallback(
     (col: Column<T>) => {
       const { checked, indeterminate } = calcColSelectionState(col);
-      var incSel: DataTableSelection<T> = {};
+      let incSel: DataTableSelection<T> = {};
       if(col.id === "sequence_id"){
         if(selection && Object.keys(selection).length > 0){
         }else{
@@ -418,6 +418,8 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
       getDependentColumns,
       onColumnResize,
       selection,
+      visibleColumns,
+      getAllApprovableCellsInSelection,
     ]
   );
 

@@ -15,6 +15,7 @@ type Props<T extends NotEmpty> = {
   isNarrowed: boolean;
   onNarrowHandler: () => void;
   getDependentColumns: (columnName: keyof T) => Array<keyof T>;
+  checkColumnIsVisible: (columnName: keyof T) => boolean;
 };
 
 type ErrorObject = {
@@ -24,7 +25,7 @@ type ErrorObject = {
 };
 
 export const Judgement = <T extends NotEmpty>(props: Props<T>) => {
-  const { isNarrowed, onNarrowHandler, getDependentColumns } = props;
+  const { isNarrowed, onNarrowHandler, getDependentColumns, checkColumnIsVisible } = props;
   const { t } = useTranslation();
   const toast = useToast();
 
@@ -126,7 +127,7 @@ export const Judgement = <T extends NotEmpty>(props: Props<T>) => {
 
     for (const [sequenceId, sequenceSelection] of Object.entries(selection)) {
       const approvedFields = Object.entries(sequenceSelection.cells)
-        .filter(([k, v]) => v)
+        .filter(([k, v]) => v && checkColumnIsVisible(k as keyof AnalysisResult))
         .map(([k, v]) => k);
       approvedFields.forEach((field) => {
         const needed = getDependentColumns(field as keyof AnalysisResult);
@@ -152,27 +153,27 @@ export const Judgement = <T extends NotEmpty>(props: Props<T>) => {
       const matrix = {};
       const requiredValues = {};
       Object.keys(selection).forEach((key) => {
-        matrix[key] = selection[key].cells;
+        matrix[key] = Object.fromEntries(Object.entries(selection[key].cells).filter(([k, v]) => checkColumnIsVisible(k as keyof AnalysisResult)));
         requiredValues[key] = {};
         requiredValues[key]["resfinder_version"] =
           selection[key].original.resfinder_version ?? "";
       });
       doApproval({ matrix, required_values: requiredValues });
     }
-  }, [selection, doApproval, setNeedsApproveNotify, getDependentColumns]);
+  }, [selection, doApproval, setNeedsApproveNotify, getDependentColumns, checkColumnIsVisible]);
 
   const rejectSelection = React.useCallback(() => {
     setNeedsRejectNotify(true);
     const matrix = {};
     const requiredValues = {};
     Object.keys(selection).forEach((key) => {
-      matrix[key] = selection[key].cells;
+      matrix[key] = Object.fromEntries(Object.entries(selection[key].cells).filter(([k, v]) => checkColumnIsVisible(k as keyof AnalysisResult)));
       requiredValues[key] = {};
       requiredValues[key]["resfinder_version"] =
         selection[key].original.resfinder_version ?? "";
     });
     doRejection({ matrix, required_values: requiredValues });
-  }, [selection, doRejection, setNeedsRejectNotify]);
+  }, [selection, doRejection, setNeedsRejectNotify, checkColumnIsVisible]);
 
   // Display approval toasts
   React.useEffect(() => {
