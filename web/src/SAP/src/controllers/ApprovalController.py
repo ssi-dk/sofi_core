@@ -15,6 +15,7 @@ import sys
 import datetime
 import uuid
 import logging
+import os
 from web.src.SAP.src.security.permission_check import (assert_user_has, assert_authorized_to_edit)
 from ..services.queue_service import post_and_await_approval
 
@@ -75,6 +76,7 @@ def create_approval(user, token_info, body: ApprovalRequest):
 
     update_analysis(analysis_timestamp_updates)
 
+
     errors_tuple = handle_approvals(appr, token_info["institution"])
     errors = []
     analysis_timestamp_reverts = {}
@@ -90,6 +92,7 @@ def create_approval(user, token_info, body: ApprovalRequest):
     # date_analysis_sofi timestamp
     update_analysis(analysis_timestamp_reverts)
 
+
     # Insert approval after matrix has been manipulated
     res = insert_approval(token_info["email"],token_info["institution"], appr)
 
@@ -101,10 +104,16 @@ def create_approval(user, token_info, body: ApprovalRequest):
 
 
 def handle_approvals(approvals: Approval, institution: str):
+
+    # Post_and_await_approval always fails when testing on local machine. Disable in debug mode or approvals have no sequences
+    if os.environ["DEBUG_MODE"] == "1":
+        return []
+
     errors = []
     for sequence_id, field_mask in approvals.matrix.items():
         if sequence_id in approvals.required_values:
             required_values = approvals.required_values[sequence_id]
+
         if error := post_and_await_approval(sequence_id, field_mask, institution, required_values):
             errors.append(error)
 

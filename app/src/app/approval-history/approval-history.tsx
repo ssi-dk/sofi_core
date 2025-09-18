@@ -57,6 +57,8 @@ export default function ApprovalHistory() {
 
   const [needsNotify, setNeedsNotify] = useState(true);
 
+  const [opendropdowns, setOpendropdowns] = useState<string[]>([]);
+
   const revokeItem = React.useCallback(
     (id: string) => {
       setNeedsNotify(true);
@@ -83,6 +85,11 @@ export default function ApprovalHistory() {
       setNeedsNotify(false);
     }
   }, [t, revocationLoadState, toast, needsNotify, setNeedsNotify]);
+
+
+  if (approvalHistory) {
+    console.log(approvalHistory)
+  }
 
   const content = (
     <Box textOverflow="hidden" minH="100vh">
