@@ -17,7 +17,7 @@ def remove_id(item):
     return item
 
 
-def find_approvals(user: str):
+def find_approvals(user: str, institution: str):
     conn = get_connection()
     mydb = conn[DB_NAME]
     approvals = mydb[APPROVALS_COL_NAME]
@@ -25,7 +25,7 @@ def find_approvals(user: str):
     return list(
         map(
             remove_id,
-            approvals.find({"approver": user}).sort("timestamp", pymongo.DESCENDING),
+            approvals.find({"$or": [{"approver": user},{"institution": institution}]}).sort("timestamp", pymongo.DESCENDING),
         )
     )
 
@@ -61,13 +61,13 @@ def get_approval_matrix(sequence_id: str):
     return {k: v for d in matrices for k, v in d.items()}[sequence_id]
 
 
-def insert_approval(username: str, approval: Approval):
+def insert_approval(username: str,institution: str, approval: Approval):
     conn = get_connection()
     mydb = conn[DB_NAME]
     approvals = mydb[APPROVALS_COL_NAME]
     appr = approval.to_dict()
     appr["approver"] = username
-    seqs = list(approval.matrix.keys())
+    appr["institution"] = institution
     appr["sequence_ids"] = list(approval.matrix.keys())
 
     return approvals.insert_one(appr)

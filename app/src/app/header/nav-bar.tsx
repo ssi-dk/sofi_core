@@ -25,7 +25,7 @@ function NavBar() {
       <IfPermission permission={Permission.approve}>
         <NavLink to="/approval-history">
           <Button leftIcon={<CalendarIcon />}>
-            {t("My approval history")}
+            {t("Approval history")}
           </Button>
         </NavLink>
       </IfPermission>

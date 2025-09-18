@@ -200,7 +200,7 @@ const resources = {
       Sequences: "Sekvenser",
       "Approved by": "Godkendt af",
       "Revoke approval": "Tilbagekald godkendelse",
-      "My approval history": "Min godkendelseshistorik",
+      "Approval history": "Godkendelseshistorik",
       "Analysis results": "Analyseresultater",
       approvals: "godkendelser",
       "Sign in failed": "Kunne ikke log på",
