@@ -41,8 +41,6 @@ def create_approval(user, token_info, body: ApprovalRequest):
             abort(404, description=f"Analysis '{sid}' not found.")
         assert_authorized_to_edit(token_info, s)
 
-    print("TOKEN INFO:",token_info,file=sys.stderr)
-
 
     appr = Approval()
     appr.matrix = body.matrix
