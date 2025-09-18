@@ -100,3 +100,4 @@ lib
 .idea
 
 pg/pgdata/*
+pg/pgdata
