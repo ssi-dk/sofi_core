@@ -30,17 +30,19 @@ def deep_merge(source, destination):
 
 
 def get_approvals(user, token_info):
-    return jsonify(find_approvals(token_info["email"]))
+    return jsonify(find_approvals(token_info["email"],token_info["institution"]))
 
 
 def create_approval(user, token_info, body: ApprovalRequest):
     assert_user_has("approve", token_info)
-    
     for sid in body.matrix.keys():
         s = get_single_analysis(sid)
         if s == None:
             abort(404, description=f"Analysis '{sid}' not found.")
         assert_authorized_to_edit(token_info, s)
+
+    print("TOKEN INFO:",token_info,file=sys.stderr)
+
 
     appr = Approval()
     appr.matrix = body.matrix
@@ -70,7 +72,7 @@ def create_approval(user, token_info, body: ApprovalRequest):
             time_fields.append("date_epi")
         for f in time_fields:
             seq_update[f] = appr.timestamp
-            appr.matrix[seq][f] = ApprovalStatus.APPROVED.value
+            appr.matrix[seq][f] = ApprovalStatus.APPROVED
         analysis_timestamp_updates[seq] = seq_update
 
     update_analysis(analysis_timestamp_updates)
@@ -91,7 +93,7 @@ def create_approval(user, token_info, body: ApprovalRequest):
     update_analysis(analysis_timestamp_reverts)
 
     # Insert approval after matrix has been manipulated
-    res = insert_approval(token_info["email"], appr)
+    res = insert_approval(token_info["email"],token_info["institution"], appr)
 
     return (
         jsonify({"success": appr.to_dict(), "error": errors})
