@@ -239,7 +239,7 @@ paths:
       tags:
       - approval
       x-openapi-router-controller: web.src.SAP.generated.controllers.approval_controller
-  /approvals/{approval_id}:
+  /approvals/{approval_id}/{sequences}:
     delete:
       description: Cancel a pending approval
       operationId: cancel_approval
@@ -248,6 +248,14 @@ paths:
         explode: true
         in: path
         name: approval_id
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: semicolon sperated sequence ids to rejoke approval
+        explode: true
+        in: path
+        name: sequences
         required: true
         schema:
           type: string

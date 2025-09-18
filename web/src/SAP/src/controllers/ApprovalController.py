@@ -15,6 +15,7 @@ import sys
 import datetime
 import uuid
 import logging
+import os
 from web.src.SAP.src.security.permission_check import (assert_user_has, assert_authorized_to_edit)
 from ..services.queue_service import post_and_await_approval
 
@@ -30,17 +31,17 @@ def deep_merge(source, destination):
 
 
 def get_approvals(user, token_info):
-    return jsonify(find_approvals(token_info["email"]))
+    return jsonify(find_approvals(token_info["email"],token_info["institution"]))
 
 
 def create_approval(user, token_info, body: ApprovalRequest):
     assert_user_has("approve", token_info)
-    
     for sid in body.matrix.keys():
         s = get_single_analysis(sid)
         if s == None:
             abort(404, description=f"Analysis '{sid}' not found.")
         assert_authorized_to_edit(token_info, s)
+
 
     appr = Approval()
     appr.matrix = body.matrix
@@ -70,10 +71,11 @@ def create_approval(user, token_info, body: ApprovalRequest):
             time_fields.append("date_epi")
         for f in time_fields:
             seq_update[f] = appr.timestamp
-            appr.matrix[seq][f] = ApprovalStatus.APPROVED.value
+            appr.matrix[seq][f] = ApprovalStatus.APPROVED
         analysis_timestamp_updates[seq] = seq_update
 
     update_analysis(analysis_timestamp_updates)
+
 
     errors_tuple = handle_approvals(appr, token_info["institution"])
     errors = []
@@ -90,8 +92,9 @@ def create_approval(user, token_info, body: ApprovalRequest):
     # date_analysis_sofi timestamp
     update_analysis(analysis_timestamp_reverts)
 
+
     # Insert approval after matrix has been manipulated
-    res = insert_approval(token_info["email"], appr)
+    res = insert_approval(token_info["email"],token_info["institution"], appr)
 
     return (
         jsonify({"success": appr.to_dict(), "error": errors})
@@ -101,19 +104,28 @@ def create_approval(user, token_info, body: ApprovalRequest):
 
 
 def handle_approvals(approvals: Approval, institution: str):
+
+    # Post_and_await_approval always fails when testing on local machine. Disable in debug mode or approvals have no sequences
+    if os.environ["DEBUG_MODE"] == "1":
+        return []
+
     errors = []
     for sequence_id, field_mask in approvals.matrix.items():
         if sequence_id in approvals.required_values:
             required_values = approvals.required_values[sequence_id]
+
         if error := post_and_await_approval(sequence_id, field_mask, institution, required_values):
             errors.append(error)
 
     return errors
 
 
-def cancel_approval(user, token_info, approval_id: str):
+def cancel_approval(user, token_info, approval_id: str, sequences: str):
     assert_user_has("approve", token_info)
-    res = revoke_approval(token_info["email"], approval_id)
+    res = revoke_approval(token_info["institution"], approval_id, sequences.split(";"))
+
+    if res is None:
+        abort(404)
     return None if res.modified_count > 0 else abort(404)
 
 

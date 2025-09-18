@@ -42,7 +42,7 @@ def post_and_await_approval(sequence_id, field_mask, user_institution, required_
     fields = {
         col: data.get(col, None)
         for col, val in field_mask.items()
-        if val == ApprovalStatus.APPROVED.value and col not in internal_fields
+        if val == ApprovalStatus.APPROVED and col not in internal_fields
     }
 
     institution = data.get("institution", user_institution)
@@ -55,7 +55,6 @@ def post_and_await_approval(sequence_id, field_mask, user_institution, required_
     for field, val in required_values.items():
         fields[field] = val  
 
-    print(data, file=sys.stderr)
     # TODO UNDO
     #    return None
 

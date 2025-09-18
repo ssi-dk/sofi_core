@@ -12,6 +12,9 @@ import {
   Tr,
   Th,
   Td,
+  Button,
+  Divider,
+  Tooltip,
 } from "@chakra-ui/react";
 import { CheckIcon, CloseIcon, TimeIcon, DeleteIcon } from "@chakra-ui/icons";
 import { DateTime } from "luxon";
@@ -51,16 +54,18 @@ export default function ApprovalHistory() {
   const { t } = useTranslation();
   const toast = useToast();
 
-  const [revocationLoadState, doRevoke] = useMutation((id: string) =>
-    revokeApproval({ approvalId: id })
+  const [revocationLoadState, doRevoke] = useMutation((id: string, sequences?: string[]) =>
+    revokeApproval({ approvalId: id, sequences: (sequences || approvalHistory.find(a => a.id === id)!.sequence_ids).join(";") })
   );
 
   const [needsNotify, setNeedsNotify] = useState(true);
 
+  const [opendropdowns, setOpendropdowns] = useState<string[]>([]);
+
   const revokeItem = React.useCallback(
-    (id: string) => {
+    (id: string, sequences?: string[]) => {
       setNeedsNotify(true);
-      doRevoke(id);
+      doRevoke(id,sequences);
     },
     [doRevoke, setNeedsNotify]
   );
@@ -84,6 +89,7 @@ export default function ApprovalHistory() {
     }
   }, [t, revocationLoadState, toast, needsNotify, setNeedsNotify]);
 
+
   const content = (
     <Box textOverflow="hidden" minH="100vh">
       <Flex
@@ -92,7 +98,7 @@ export default function ApprovalHistory() {
         gap={6}
         justifyContent="space-between"
       >
-        <Heading>{`${t("My approval history")}`}</Heading>
+        <Heading>{`${t("Approval history")}`}</Heading>
       </Flex>
       <Table variant="striped">
         <Thead>
@@ -122,13 +128,20 @@ export default function ApprovalHistory() {
                     <Flex overflow="hidden" flexDirection="column">
                       {Object.keys(h.matrix)?.map((x) => (
                         <React.Fragment key={x}>
-                          <Text
-                            as="pre"
-                            overflow="hidden"
-                            textOverflow="ellipsis"
-                          >
-                            {x}
-                          </Text>
+                          <Flex direction="row" align="center">
+                            <Text
+                              as="pre"
+                              overflow="hidden"
+                              textOverflow="ellipsis"
+                              >
+                              {x}
+                            </Text>
+                            {(h.status == ApprovalAllOfStatusEnum.submitted && Object.keys(h.matrix).length > 1) && <IconButton
+                              icon={<DeleteIcon />}
+                              aria-label={`${t("Revoke approval")}`}
+                              onClick={() => revokeItem(h.id,[x])}
+                            />}
+                          </Flex>
                           {Object.keys(h.matrix[x]).map((y) => (
                             <Text
                               key={`${x}-${y}`}
@@ -147,6 +160,17 @@ export default function ApprovalHistory() {
                           <Text as="pre">{`\n`}</Text>
                         </React.Fragment>
                       ))}
+                      {h.revoked_sequence_ids?.map(sid => (
+                        <Text
+                                key={`revoked-${sid}`}
+                              as="pre"
+                              overflow="hidden"
+                              textOverflow="ellipsis"
+                              textDecoration="line-through"
+                              >
+                              {sid}
+                            </Text>
+                      ))}
                     </Flex>
                   </Td>
                   <Td>
@@ -158,7 +182,7 @@ export default function ApprovalHistory() {
                         icon={<DeleteIcon />}
                         aria-label={`${t("Revoke approval")}`}
                         onClick={() => revokeItem(h.id)}
-                      />
+                        />
                     )}
                   </Td>
                 </Tr>

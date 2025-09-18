@@ -4,17 +4,19 @@ import six
 from .. import util
 from ...src.controllers import ApprovalController
 
-def cancel_approval(user, token_info, approval_id):  # noqa: E501
+def cancel_approval(user, token_info, approval_id, sequences):  # noqa: E501
     """cancel_approval
 
     Cancel a pending approval # noqa: E501
 
     :param approval_id: Id of approval to cancel
     :type approval_id: str
+    :param sequences: semicolon sperated sequence ids to rejoke approval
+    :type sequences: str
 
     :rtype: None
     """
-    return ApprovalController.cancel_approval(user, token_info, approval_id)
+    return ApprovalController.cancel_approval(user, token_info, approval_id, sequences)
 
 def create_approval(user, token_info, body=None):  # noqa: E501
     """create_approval
