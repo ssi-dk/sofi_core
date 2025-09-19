@@ -70,13 +70,13 @@ div[role="cell"] {
 
 /* Fix for header overflow ellipsis */
 div[role="columnheader"] div[role="tab"] {
-    width: 100%
+  width: 100%;
 }
 
 div[role="columnheader"] div[role="tab"] div {
-    width: calc(100% - 22px)
+  width: calc(100% - 22px);
 }
 div[role="columnheader"] div[role="tab"] span {
-    display: inline-block;
-    width: 100%;
+  display: inline-block;
+  width: 100%;
 }

@@ -62,6 +62,7 @@ services:
       - LIMS_API_USERNAME=${LIMS_API_USERNAME}
       - LIMS_API_PASSWORD=${LIMS_API_PASSWORD}
       - REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
+      - DEBUG_MODE=${DEBUG_MODE}
     volumes:
       - ${TBR_CLIENT_KEY}:/app/.certs/client.key:ro
       - ${TBR_CLIENT_CERT}:/app/.certs/client.pem:ro

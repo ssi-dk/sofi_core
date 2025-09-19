@@ -1,3 +1,4 @@
+from typing import List
 import pymongo
 import logging
 import json
@@ -69,18 +70,46 @@ def insert_approval(username: str,institution: str, approval: Approval):
     appr["approver"] = username
     appr["institution"] = institution
     appr["sequence_ids"] = list(approval.matrix.keys())
+    appr["revoked_sequence_ids"] = list([])
 
     return approvals.insert_one(appr)
 
 
-def revoke_approval(username: str, approval_id: str):
+def revoke_approval(institution: str, approval_id: str, sequences: List[str]):
     conn = get_connection()
     mydb = conn[DB_NAME]
     approvals = mydb[APPROVALS_COL_NAME]
 
-    return approvals.update_one(
-        {"id": approval_id, "approver": username}, {"$set": {"status": "cancelled"}}
-    )
+    # If all the sequences in the approval get cancelled, then revoke the whole aprroval
+    # Otherwise justt revoke the individual sequence
+
+
+    current_approval: dict | None = approvals.find_one({"id": approval_id, "institution": institution}) # type: ignore
+    if current_approval is None:
+        return None
+
+    if len(current_approval["sequence_ids"]) == len(sequences):
+        # Revoke full approval
+        return approvals.update_one(
+            {"id": approval_id}, {"$set": {"status": "cancelled"}}
+        )
+    else:
+        # partial revoke
+        new_seq_arr = list(filter(lambda s_id: s_id not in sequences,current_approval["sequence_ids"]))
+        new_matrix = current_approval["matrix"].copy()
+        for seq in sequences:
+            del new_matrix[seq]
+
+
+        return approvals.update_one({"id": approval_id},{"$set": {
+            "sequence_ids": new_seq_arr,
+            "revoked_sequence_ids": current_approval["revoked_sequence_ids"] + sequences if "revoked_sequence_ids" in current_approval else sequences, # Allows for revocation of older approvals which were not created after partial revokation was implemented/merged
+            "matrix": new_matrix
+        }})
+
+
+
+    
 
 
 def find_all_active_approvals():
