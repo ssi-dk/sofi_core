@@ -23,7 +23,6 @@ class IsolateReloadException(Exception):
 def post_and_await_reload(isolate_id, institution):
     req_id = refresh_metadata(isolate_id, institution)
     return_status = await_update_loop(req_id)
-    print(return_status, file=sys.stderr)
     # TODO UNDO
     #    return None
     if return_status == ProcessingStatus.DONE.value:

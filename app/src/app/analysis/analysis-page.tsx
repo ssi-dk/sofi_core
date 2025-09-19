@@ -448,8 +448,7 @@ export default function AnalysisPage() {
       }
       const rowInstitution = data.find((row) => row.sequence_id == rowId)
         .institution;
-      const editIsAllowed =
-        true ||
+      const editIsAllowed = true ||
         columnConfigs[columnId].editable ||
         user.institution == rowInstitution ||
         columnConfigs[columnId].cross_org_editable;
@@ -573,7 +572,7 @@ export default function AnalysisPage() {
       cellUpdating,
       approvals,
       data,
-      user,
+      user
     ]
   );
 
