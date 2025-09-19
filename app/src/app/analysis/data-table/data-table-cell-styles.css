@@ -101,7 +101,7 @@ div[role="cell"].approvingCell {
 }
 
 /* fix for cell text overflow */
-div[role="cell"] > div > div{
-    text-overflow: ellipsis;
-    overflow: hidden;
+div[role="cell"] > div > div {
+  text-overflow: ellipsis;
+  overflow: hidden;
 }

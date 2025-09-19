@@ -476,7 +476,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ApprovalMatrix"
-  '/approvals/{approval_id}':
+  '/approvals/{approval_id}/{sequences}':
     delete:
       description: Cancel a pending approval
       operationId: cancel_approval
@@ -490,6 +490,13 @@ paths:
           schema:
             type: string
           description: Id of approval to cancel
+          explode: true
+        - name: sequences
+          in: path
+          required: true
+          schema:
+            type: string
+          description: semicolon sperated sequence ids to rejoke approval
           explode: true
       responses:
         '204':

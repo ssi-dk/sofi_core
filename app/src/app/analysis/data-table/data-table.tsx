@@ -192,7 +192,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
         a[b] = true;
         return a;
       }, {} as Record<keyof T, boolean>);
-    }, 
+    },
     [columns, canApproveColumn, isJudgedCell]
   );
 
@@ -209,16 +209,13 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
     setVisibleColumns(newVisibleColumns);
 
     //Update approvable columns based on the current view
-    const newSelection = Object.keys(selection).reduce(
-      (acc, key) => {
-          acc[key] = {
-            original: selection[key].original,
-            cells:  getAllApprovableCellsInSelection(key, newVisibleColumns),
-          };
-          return acc;
-      },
-      {} as DataTableSelection<T>
-    );
+    const newSelection = Object.keys(selection).reduce((acc, key) => {
+      acc[key] = {
+        original: selection[key].original,
+        cells: getAllApprovableCellsInSelection(key, newVisibleColumns),
+      };
+      return acc;
+    }, {} as DataTableSelection<T>);
 
     let selectionDiffers = false;
 
@@ -309,7 +306,6 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [visibleApprovableColumns, onSelect, selection]);
 
-
   const calcRowSelectionState = React.useCallback(
     (row: Row<T>) => {
       const dataTableSelection = selection[row.original[primaryKey]];
@@ -376,7 +372,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
       visibleColumns,
       calcRowSelectionState,
       selection,
-      getAllApprovableCellsInSelection
+      getAllApprovableCellsInSelection,
     ]
   );
 

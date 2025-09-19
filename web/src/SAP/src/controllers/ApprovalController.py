@@ -120,9 +120,12 @@ def handle_approvals(approvals: Approval, institution: str):
     return errors
 
 
-def cancel_approval(user, token_info, approval_id: str):
+def cancel_approval(user, token_info, approval_id: str, sequences: str):
     assert_user_has("approve", token_info)
-    res = revoke_approval(token_info["email"], approval_id)
+    res = revoke_approval(token_info["institution"], approval_id, sequences.split(";"))
+
+    if res is None:
+        abort(404)
     return None if res.modified_count > 0 else abort(404)
 
 

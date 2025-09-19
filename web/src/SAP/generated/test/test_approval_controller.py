@@ -22,7 +22,7 @@ class TestApprovalController(BaseTestCase):
             'Authorization': 'Bearer special-key',
         }
         response = self.client.open(
-            '/api/approvals/{approval_id}'.format(approval_id='approval_id_example'),
+            '/api/approvals/{approval_id}/{sequences}'.format(approval_id='approval_id_example')sequences='sequences_example'),
             method='DELETE',
             headers=headers)
         self.assert200(response,
