@@ -1,6 +1,22 @@
+preserveValues = True
+
 def removeNullProperty(expr):
     return {"$ifNull": [expr, "$$REMOVE"]}
 
+def userChangedCondition(field_name, new_value_expr):
+    if(not preserveValues):
+        return {
+            field_name: new_value_expr
+        }
+    return {
+        field_name: {
+            "$cond": {
+                "if": f"$existing.userchanged_{field_name}",
+                "then": f"$existing.{field_name}",
+                "else": new_value_expr
+            }
+        }
+    }
 
 """
     From list, we are missing:
@@ -12,7 +28,6 @@ def removeNullProperty(expr):
     - Sero_serotype_finder
 """
 
-
 def agg_pipeline(changed_ids=None):
 
     pipeline = [
@@ -22,6 +37,18 @@ def agg_pipeline(changed_ids=None):
                 "localField": "categories.species_detection.summary.species",
                 "foreignField": "species",
                 "as": "mlstlookup",
+            }
+        },
+        # Add lookup field for isolate, since we can't do a lookup on a sub sub sub field. 
+        {
+            "$addFields": {
+                "lookupIsolate": "$categories.sample_info.summary.sample_name"
+            }
+        },
+        # Add lookup field for sofi_sequence_id, since we can't do a lookup on a sub sub sub field. 
+        {
+            "$addFields": {
+                "lookupSofi": "$categories.sample_info.summary.sofi_sequence_id"
             }
         },
         # Find all the sequences for the same isolate, and sort them such that the
@@ -46,8 +73,8 @@ def agg_pipeline(changed_ids=None):
         {
             "$lookup": {
                 "from": "sap_analysis_results",
-                "localField": "_id",
-                "foreignField": "_id",
+                "localField": "lookupSofi",
+                "foreignField": "sequence_id",
                 "as": "existing_data"
             }
         },
@@ -1538,3 +1565,804 @@ def agg_pipeline(changed_ids=None):
         pipeline.insert(0, {"$match": {"_id": {"$in": changed_ids}}})
 
     return pipeline
+
+def create_userchanged_migration_pipeline():
+    """
+    Creates a pipeline to set userchanged_ flags for fields that would be overwritten
+    by the aggregation pipeline when migrating from a setup without user change tracking.
+    Uses the global preserveValues setting to control field preservation.
+    """
+    global preserveValues
+
+    preserveValues = False
+
+    migration_pipeline = [
+        # Run the aggregation pipeline stages (excluding the final merge)
+        *agg_pipeline()[:-3],  # Remove the $merge stage
+        
+        # Store original data for comparison
+        {
+            "$addFields": {
+                "lookupSofi": "$categories.sample_info.summary.sofi_sequence_id"
+            }
+        },
+        {
+            "$lookup": {
+                "from": "sap_analysis_results",
+                "localField": "lookupSofi",
+                "foreignField": "sequence_id",
+                "as": "original_data_arr"
+            }
+        },
+        {
+            "$addFields": {
+                "original_data": {"$arrayElemAt": ["$original_data_arr", 0]}
+            }
+        },
+        # Compare original vs newly computed values and create userchanged_ flags
+        {
+            "$addFields": {
+                "userchanged_flags": {
+                    "$mergeObjects": [
+                        # Compare each field that uses userChangedCondition
+                        {
+                            "$cond": {
+                                "if": {"$ne": ["$original_data.isolate_id", "$isolate_id"]},
+                                "then": {"userchanged_isolate_id": True},
+                                "else": {}
+                            }
+                        },
+                        {
+                            "$cond": {
+                                "if": {"$ne": ["$original_data.sequence_id", "$sequence_id"]},
+                                "then": {"userchanged_sequence_id": True},
+                                "else": {}
+                            }
+                        },
+                        {
+                            "$cond": {
+                                "if": {"$ne": ["$original_data.run_id", "$run_id"]},
+                                "then": {"userchanged_run_id": True},
+                                "else": {}
+                            }
+                        },
+                        {
+                            "$cond": {
+                                "if": {"$ne": ["$original_data.date_run", "$date_run"]},
+                                "then": {"userchanged_date_run": True},
+                                "else": {}
+                            }
+                        },
+                        {
+                            "$cond": {
+                                "if": {"$ne": ["$original_data.institution", "$institution"]},
+                                "then": {"userchanged_institution": True},
+                                "else": {}
+                            }
+                        },
+                        {
+                            "$cond": {
+                                "if": {"$ne": ["$original_data.project_number", "$project_number"]},
+                                "then": {"userchanged_project_number": True},
+                                "else": {}
+                            }
+                        },
+                        {
+                            "$cond": {
+                                "if": {"$ne": ["$original_data.project_title", "$project_title"]},
+                                "then": {"userchanged_project_title": True},
+                                "else": {}
+                            }
+                        },
+                        {
+                            "$cond": {
+                                "if": {"$ne": ["$original_data.date_sofi", "$date_sofi"]},
+                                "then": {"userchanged_date_sofi": True},
+                                "else": {}
+                            }
+                        },
+                        {
+                            "$cond": {
+                                "if": {"$ne": ["$original_data.date_analysis_sofi", "$date_analysis_sofi"]},
+                                "then": {"userchanged_date_analysis_sofi": True},
+                                "else": {}
+                            }
+                        },
+                        {
+                            "$cond": {
+                                "if": {"$ne": ["$original_data.qc_detected_species", "$qc_detected_species"]},
+                                "then": {"userchanged_qc_detected_species": True},
+                                "else": {}
+                            }
+                        },
+                        {
+                            "$cond": {
+                                "if": {"$ne": ["$original_data.subspecies", "$subspecies"]},
+                                "then": {"userchanged_subspecies": True},
+                                "else": {}
+                            }
+                        },
+                        {
+                            "$cond": {
+                                "if": {"$ne": ["$original_data.sequence_filename", "$sequence_filename"]},
+                                "then": {"userchanged_sequence_filename": True},
+                                "else": {}
+                            }
+                        },
+                        {
+                            "$cond": {
+                                "if": {"$ne": ["$original_data.qc_provided_species", "$qc_provided_species"]},
+                                "then": {"userchanged_qc_provided_species": True},
+                                "else": {}
+                            }
+                        },
+                        {
+                            "$cond": {
+                                "if": {"$ne": ["$original_data.species_final", "$species_final"]},
+                                "then": {"userchanged_species_final": True},
+                                "else": {}
+                            }
+                        },
+                        {
+                            "$cond": {
+                                "if": {"$ne": ["$original_data.resistance_genes", "$resistance_genes"]},
+                                "then": {"userchanged_resistance_genes": True},
+                                "else": {}
+                            }
+                        },
+                        {
+                            "$cond": {
+                                "if": {"$ne": ["$original_data.amr_profile", "$amr_profile"]},
+                                "then": {"userchanged_amr_profile": True},
+                                "else": {}
+                            }
+                        },
+                        {
+                            "$cond": {
+                                "if": {"$ne": ["$original_data.resfinder_version", "$resfinder_version"]},
+                                "then": {"userchanged_resfinder_version": True},
+                                "else": {}
+                            }
+                        },
+                        {
+                            "$cond": {
+                                "if": {"$ne": ["$original_data.sero_enterobase", "$sero_enterobase"]},
+                                "then": {"userchanged_sero_enterobase": True},
+                                "else": {}
+                            }
+                        },
+                        {
+                            "$cond": {
+                                "if": {"$ne": ["$original_data.sero_seqsero", "$sero_seqsero"]},
+                                "then": {"userchanged_sero_seqsero": True},
+                                "else": {}
+                            }
+                        },
+                        {
+                            "$cond": {
+                                "if": {"$ne": ["$original_data.sero_antigen_seqsero", "$sero_antigen_seqsero"]},
+                                "then": {"userchanged_sero_antigen_seqsero": True},
+                                "else": {}
+                            }
+                        },
+                        {
+                            "$cond": {
+                                "if": {"$ne": ["$original_data.sero_serotype_finder", "$sero_serotype_finder"]},
+                                "then": {"userchanged_sero_serotype_finder": True},
+                                "else": {}
+                            }
+                        },
+                        {
+                            "$cond": {
+                                "if": {"$ne": ["$original_data.sero_d_tartrate", "$sero_d_tartrate"]},
+                                "then": {"userchanged_sero_d_tartrate": True},
+                                "else": {}
+                            }
+                        },
+                        {
+                            "$cond": {
+                                "if": {"$ne": ["$original_data.serotype_final", "$serotype_final"]},
+                                "then": {"userchanged_serotype_final": True},
+                                "else": {}
+                            }
+                        },
+                        {
+                            "$cond": {
+                                "if": {"$ne": ["$original_data.st_final", "$st_final"]},
+                                "then": {"userchanged_st_final": True},
+                                "else": {}
+                            }
+                        },
+                        # All AMR fields
+                        {
+                            "$cond": {
+                                "if": {"$ne": ["$original_data.amr_ami", "$amr_ami"]},
+                                "then": {"userchanged_amr_ami": True},
+                                "else": {}
+                            }
+                        },
+                        {
+                            "$cond": {
+                                "if": {"$ne": ["$original_data.amr_amp", "$amr_amp"]},
+                                "then": {"userchanged_amr_amp": True},
+                                "else": {}
+                            }
+                        },
+                        {
+                            "$cond": {
+                                "if": {"$ne": ["$original_data.amr_azi", "$amr_azi"]},
+                                "then": {"userchanged_amr_azi": True},
+                                "else": {}
+                            }
+                        },
+                        {
+                            "$cond": {
+                                "if": {"$ne": ["$original_data.amr_fep", "$amr_fep"]},
+                                "then": {"userchanged_amr_fep": True},
+                                "else": {}
+                            }
+                        },
+                        {
+                            "$cond": {
+                                "if": {"$ne": ["$original_data.amr_fot", "$amr_fot"]},
+                                "then": {"userchanged_amr_fot": True},
+                                "else": {}
+                            }
+                        },
+                        {
+                            "$cond": {
+                                "if": {"$ne": ["$original_data.amr_f_c", "$amr_f_c"]},
+                                "then": {"userchanged_amr_f_c": True},
+                                "else": {}
+                            }
+                        },
+                        {
+                            "$cond": {
+                                "if": {"$ne": ["$original_data.amr_fox", "$amr_fox"]},
+                                "then": {"userchanged_amr_fox": True},
+                                "else": {}
+                            }
+                        },
+                        {
+                            "$cond": {
+                                "if": {"$ne": ["$original_data.amr_taz", "$amr_taz"]},
+                                "then": {"userchanged_amr_taz": True},
+                                "else": {}
+                            }
+                        },
+                        {
+                            "$cond": {
+                                "if": {"$ne": ["$original_data.amr_t_c", "$amr_t_c"]},
+                                "then": {"userchanged_amr_t_c": True},
+                                "else": {}
+                            }
+                        },
+                        {
+                            "$cond": {
+                                "if": {"$ne": ["$original_data.amr_chl", "$amr_chl"]},
+                                "then": {"userchanged_amr_chl": True},
+                                "else": {}
+                            }
+                        },
+                        {
+                            "$cond": {
+                                "if": {"$ne": ["$original_data.amr_cip", "$amr_cip"]},
+                                "then": {"userchanged_amr_cip": True},
+                                "else": {}
+                            }
+                        },
+                        {
+                            "$cond": {
+                                "if": {"$ne": ["$original_data.amr_cli", "$amr_cli"]},
+                                "then": {"userchanged_amr_cli": True},
+                                "else": {}
+                            }
+                        },
+                        {
+                            "$cond": {
+                                "if": {"$ne": ["$original_data.amr_col", "$amr_col"]},
+                                "then": {"userchanged_amr_col": True},
+                                "else": {}
+                            }
+                        },
+                        {
+                            "$cond": {
+                                "if": {"$ne": ["$original_data.amr_dap", "$amr_dap"]},
+                                "then": {"userchanged_amr_dap": True},
+                                "else": {}
+                            }
+                        },
+                        {
+                            "$cond": {
+                                "if": {"$ne": ["$original_data.amr_etp", "$amr_etp"]},
+                                "then": {"userchanged_amr_etp": True},
+                                "else": {}
+                            }
+                        },
+                        {
+                            "$cond": {
+                                "if": {"$ne": ["$original_data.amr_ery", "$amr_ery"]},
+                                "then": {"userchanged_amr_ery": True},
+                                "else": {}
+                            }
+                        },
+                        {
+                            "$cond": {
+                                "if": {"$ne": ["$original_data.amr_fus", "$amr_fus"]},
+                                "then": {"userchanged_amr_fus": True},
+                                "else": {}
+                            }
+                        },
+                        {
+                            "$cond": {
+                                "if": {"$ne": ["$original_data.amr_gen", "$amr_gen"]},
+                                "then": {"userchanged_amr_gen": True},
+                                "else": {}
+                            }
+                        },
+                        {
+                            "$cond": {
+                                "if": {"$ne": ["$original_data.amr_imi", "$amr_imi"]},
+                                "then": {"userchanged_amr_imi": True},
+                                "else": {}
+                            }
+                        },
+                        {
+                            "$cond": {
+                                "if": {"$ne": ["$original_data.amr_kan", "$amr_kan"]},
+                                "then": {"userchanged_amr_kan": True},
+                                "else": {}
+                            }
+                        },
+                        {
+                            "$cond": {
+                                "if": {"$ne": ["$original_data.amr_lzd", "$amr_lzd"]},
+                                "then": {"userchanged_amr_lzd": True},
+                                "else": {}
+                            }
+                        },
+                        {
+                            "$cond": {
+                                "if": {"$ne": ["$original_data.amr_mero", "$amr_mero"]},
+                                "then": {"userchanged_amr_mero": True},
+                                "else": {}
+                            }
+                        },
+                        {
+                            "$cond": {
+                                "if": {"$ne": ["$original_data.amr_mup", "$amr_mup"]},
+                                "then": {"userchanged_amr_mup": True},
+                                "else": {}
+                            }
+                        },
+                        {
+                            "$cond": {
+                                "if": {"$ne": ["$original_data.amr_nal", "$amr_nal"]},
+                                "then": {"userchanged_amr_nal": True},
+                                "else": {}
+                            }
+                        },
+                        {
+                            "$cond": {
+                                "if": {"$ne": ["$original_data.amr_pen", "$amr_pen"]},
+                                "then": {"userchanged_amr_pen": True},
+                                "else": {}
+                            }
+                        },
+                        {
+                            "$cond": {
+                                "if": {"$ne": ["$original_data.amr_syn", "$amr_syn"]},
+                                "then": {"userchanged_amr_syn": True},
+                                "else": {}
+                            }
+                        },
+                        {
+                            "$cond": {
+                                "if": {"$ne": ["$original_data.amr_rif", "$amr_rif"]},
+                                "then": {"userchanged_amr_rif": True},
+                                "else": {}
+                            }
+                        },
+                        {
+                            "$cond": {
+                                "if": {"$ne": ["$original_data.amr_str", "$amr_str"]},
+                                "then": {"userchanged_amr_str": True},
+                                "else": {}
+                            }
+                        },
+                        {
+                            "$cond": {
+                                "if": {"$ne": ["$original_data.amr_sul", "$amr_sul"]},
+                                "then": {"userchanged_amr_sul": True},
+                                "else": {}
+                            }
+                        },
+                        {
+                            "$cond": {
+                                "if": {"$ne": ["$original_data.amr_tei", "$amr_tei"]},
+                                "then": {"userchanged_amr_tei": True},
+                                "else": {}
+                            }
+                        },
+                        {
+                            "$cond": {
+                                "if": {"$ne": ["$original_data.amr_trm", "$amr_trm"]},
+                                "then": {"userchanged_amr_trm": True},
+                                "else": {}
+                            }
+                        },
+                        {
+                            "$cond": {
+                                "if": {"$ne": ["$original_data.amr_tet", "$amr_tet"]},
+                                "then": {"userchanged_amr_tet": True},
+                                "else": {}
+                            }
+                        },
+                        {
+                            "$cond": {
+                                "if": {"$ne": ["$original_data.amr_tia", "$amr_tia"]},
+                                "then": {"userchanged_amr_tia": True},
+                                "else": {}
+                            }
+                        },
+                        {
+                            "$cond": {
+                                "if": {"$ne": ["$original_data.amr_tgc", "$amr_tgc"]},
+                                "then": {"userchanged_amr_tgc": True},
+                                "else": {}
+                            }
+                        },
+                        {
+                            "$cond": {
+                                "if": {"$ne": ["$original_data.amr_tmp", "$amr_tmp"]},
+                                "then": {"userchanged_amr_tmp": True},
+                                "else": {}
+                            }
+                        },
+                        {
+                            "$cond": {
+                                "if": {"$ne": ["$original_data.amr_van", "$amr_van"]},
+                                "then": {"userchanged_amr_van": True},
+                                "else": {}
+                            }
+                        },
+                        # Add remaining QC and other fields that use userChangedCondition
+                        {
+                            "$cond": {
+                                "if": {"$ne": ["$original_data.qc_action", "$qc_action"]},
+                                "then": {"userchanged_qc_action": True},
+                                "else": {}
+                            }
+                        },
+                        {
+                            "$cond": {
+                                "if": {"$ne": ["$original_data.qc_ambiguous_sites", "$qc_ambiguous_sites"]},
+                                "then": {"userchanged_qc_ambiguous_sites": True},
+                                "else": {}
+                            }
+                        },
+                        {
+                            "$cond": {
+                                "if": {"$ne": ["$original_data.qc_unclassified_reads", "$qc_unclassified_reads"]},
+                                "then": {"userchanged_qc_unclassified_reads": True},
+                                "else": {}
+                            }
+                        },
+                        {
+                            "$cond": {
+                                "if": {"$ne": ["$original_data.qc_db_id", "$qc_db_id"]},
+                                "then": {"userchanged_qc_db_id": True},
+                                "else": {}
+                            }
+                        },
+                        {
+                            "$cond": {
+                                "if": {"$ne": ["$original_data.qc_db_id2", "$qc_db_id2"]},
+                                "then": {"userchanged_qc_db_id2": True},
+                                "else": {}
+                            }
+                        },
+                        {
+                            "$cond": {
+                                "if": {"$ne": ["$original_data.qc_failed_tests", "$qc_failed_tests"]},
+                                "then": {"userchanged_qc_failed_tests": True},
+                                "else": {}
+                            }
+                        },
+                        {
+                            "$cond": {
+                                "if": {"$ne": ["$original_data.qc_genome1x", "$qc_genome1x"]},
+                                "then": {"userchanged_qc_genome1x": True},
+                                "else": {}
+                            }
+                        },
+                        {
+                            "$cond": {
+                                "if": {"$ne": ["$original_data.qc_genome10x", "$qc_genome10x"]},
+                                "then": {"userchanged_qc_genome10x": True},
+                                "else": {}
+                            }
+                        },
+                        {
+                            "$cond": {
+                                "if": {"$ne": ["$original_data.qc_gsize_diff1x10", "$qc_gsize_diff1x10"]},
+                                "then": {"userchanged_qc_gsize_diff1x10": True},
+                                "else": {}
+                            }
+                        },
+                        {
+                            "$cond": {
+                                "if": {"$ne": ["$original_data.qc_avg_coverage", "$qc_avg_coverage"]},
+                                "then": {"userchanged_qc_avg_coverage": True},
+                                "else": {}
+                            }
+                        },
+                        {
+                            "$cond": {
+                                "if": {"$ne": ["$original_data.qc_num_contigs", "$qc_num_contigs"]},
+                                "then": {"userchanged_qc_num_contigs": True},
+                                "else": {}
+                            }
+                        },
+                        {
+                            "$cond": {
+                                "if": {"$ne": ["$original_data.qc_num_reads", "$qc_num_reads"]},
+                                "then": {"userchanged_qc_num_reads": True},
+                                "else": {}
+                            }
+                        },
+                        # C. diff fields
+                        {
+                            "$cond": {
+                                "if": {"$ne": ["$original_data.trst", "$trst"]},
+                                "then": {"userchanged_trst": True},
+                                "else": {}
+                            }
+                        },
+                        {
+                            "$cond": {
+                                "if": {"$ne": ["$original_data.tcda", "$tcda"]},
+                                "then": {"userchanged_tcda": True},
+                                "else": {}
+                            }
+                        },
+                        {
+                            "$cond": {
+                                "if": {"$ne": ["$original_data.tcdb", "$tcdb"]},
+                                "then": {"userchanged_tcdb": True},
+                                "else": {}
+                            }
+                        },
+                        {
+                            "$cond": {
+                                "if": {"$ne": ["$original_data.del_117", "$del_117"]},
+                                "then": {"userchanged_del_117": True},
+                                "else": {}
+                            }
+                        },
+                        {
+                            "$cond": {
+                                "if": {"$ne": ["$original_data.a117t", "$a117t"]},
+                                "then": {"userchanged_a117t": True},
+                                "else": {}
+                            }
+                        },
+                        {
+                            "$cond": {
+                                "if": {"$ne": ["$original_data.cdiff_details", "$cdiff_details"]},
+                                "then": {"userchanged_cdiff_details": True},
+                                "else": {}
+                            }
+                        },
+                        # E. coli fields
+                        {
+                            "$cond": {
+                                "if": {"$ne": ["$original_data.adhaesion", "$adhaesion"]},
+                                "then": {"userchanged_adhaesion": True},
+                                "else": {}
+                            }
+                        },
+                        {
+                            "$cond": {
+                                "if": {"$ne": ["$original_data.toxin", "$toxin"]},
+                                "then": {"userchanged_toxin": True},
+                                "else": {}
+                            }
+                        },
+                        {
+                            "$cond": {
+                                "if": {"$ne": ["$original_data.toxin_details", "$toxin_details"]},
+                                "then": {"userchanged_toxin_details": True},
+                                "else": {}
+                            }
+                        },
+                        {
+                            "$cond": {
+                                "if": {"$ne": ["$original_data.virulence_genes", "$virulence_genes"]},
+                                "then": {"userchanged_virulence_genes": True},
+                                "else": {}
+                            }
+                        },
+                        # cgMLST fields
+                        {
+                            "$cond": {
+                                "if": {"$ne": ["$original_data.call_percent", "$call_percent"]},
+                                "then": {"userchanged_call_percent": True},
+                                "else": {}
+                            }
+                        },
+                        {
+                            "$cond": {
+                                "if": {"$ne": ["$original_data.multiple_alleles", "$multiple_alleles"]},
+                                "then": {"userchanged_multiple_alleles": True},
+                                "else": {}
+                            }
+                        },
+                        {
+                            "$cond": {
+                                "if": {"$ne": ["$original_data.cgmlst_schema", "$cgmlst_schema"]},
+                                "then": {"userchanged_cgmlst_schema": True},
+                                "else": {}
+                            }
+                        },
+                        # Bifrost component status fields
+                        {
+                            "$cond": {
+                                "if": {"$ne": ["$original_data.bifrost_min_read_check", "$bifrost_min_read_check"]},
+                                "then": {"userchanged_bifrost_min_read_check": True},
+                                "else": {}
+                            }
+                        },
+                        {
+                            "$cond": {
+                                "if": {"$ne": ["$original_data.bifrost_whats_my_species", "$bifrost_whats_my_species"]},
+                                "then": {"userchanged_bifrost_whats_my_species": True},
+                                "else": {}
+                            }
+                        },
+                        {
+                            "$cond": {
+                                "if": {"$ne": ["$original_data.bifrost_assemblatron", "$bifrost_assemblatron"]},
+                                "then": {"userchanged_bifrost_assemblatron": True},
+                                "else": {}
+                            }
+                        },
+                        {
+                            "$cond": {
+                                "if": {"$ne": ["$original_data.bifrost_assembly_qc", "$bifrost_assembly_qc"]},
+                                "then": {"userchanged_bifrost_assembly_qc": True},
+                                "else": {}
+                            }
+                        },
+                        {
+                            "$cond": {
+                                "if": {"$ne": ["$original_data.bifrost_ssi_stamper", "$bifrost_ssi_stamper"]},
+                                "then": {"userchanged_bifrost_ssi_stamper": True},
+                                "else": {}
+                            }
+                        },
+                        {
+                            "$cond": {
+                                "if": {"$ne": ["$original_data.bifrost_cge_mlst", "$bifrost_cge_mlst"]},
+                                "then": {"userchanged_bifrost_cge_mlst": True},
+                                "else": {}
+                            }
+                        },
+                        {
+                            "$cond": {
+                                "if": {"$ne": ["$original_data.bifrost_cge_resfinder", "$bifrost_cge_resfinder"]},
+                                "then": {"userchanged_bifrost_cge_resfinder": True},
+                                "else": {}
+                            }
+                        },
+                        {
+                            "$cond": {
+                                "if": {"$ne": ["$original_data.bifrost_seqsero", "$bifrost_seqsero"]},
+                                "then": {"userchanged_bifrost_seqsero": True},
+                                "else": {}
+                            }
+                        },
+                        {
+                            "$cond": {
+                                "if": {"$ne": ["$original_data.bifrost_enterobase", "$bifrost_enterobase"]},
+                                "then": {"userchanged_bifrost_enterobase": True},
+                                "else": {}
+                            }
+                        },
+                        {
+                            "$cond": {
+                                "if": {"$ne": ["$original_data.bifrost_salmonella_subspecies_dtartrate", "$bifrost_salmonella_subspecies_dtartrate"]},
+                                "then": {"userchanged_bifrost_salmonella_subspecies_dtartrate": True},
+                                "else": {}
+                            }
+                        },
+                        {
+                            "$cond": {
+                                "if": {"$ne": ["$original_data.bifrost_chewbbaca", "$bifrost_chewbbaca"]},
+                                "then": {"userchanged_bifrost_chewbbaca": True},
+                                "else": {}
+                            }
+                        },
+                        {
+                            "$cond": {
+                                "if": {"$ne": ["$original_data.bifrost_sp_ecoli", "$bifrost_sp_ecoli"]},
+                                "then": {"userchanged_bifrost_sp_ecoli": True},
+                                "else": {}
+                            }
+                        },
+                        {
+                            "$cond": {
+                                "if": {"$ne": ["$original_data.bifrost_sp_cdiff", "$bifrost_sp_cdiff"]},
+                                "then": {"userchanged_bifrost_sp_cdiff": True},
+                                "else": {}
+                            }
+                        },
+                        {
+                            "$cond": {
+                                "if": {"$ne": ["$original_data.bifrost_amrfinderplus", "$bifrost_amrfinderplus"]},
+                                "then": {"userchanged_bifrost_amrfinderplus": True},
+                                "else": {}
+                            }
+                        },
+                        {
+                            "$cond": {
+                                "if": {"$ne": ["$original_data.qc_main_sp_plus_uncl", "$qc_main_sp_plus_uncl"]},
+                                "then": {"userchanged_qc_main_sp_plus_uncl": True},
+                                "else": {}
+                            }
+                        },
+                        {
+                            "$cond": {
+                                "if": {"$ne": ["$original_data.qc_final", "$qc_final"]},
+                                "then": {"userchanged_qc_final": True},
+                                "else": {}
+                            }
+                        }
+                    ]
+                }
+            }
+        },
+        
+        {
+            "$replaceRoot": {
+                "newRoot": {
+                    "$mergeObjects": [
+                        "$original_data",
+                        "$userchanged_flags"
+                    ]
+                }
+            }
+        },
+        
+        # {
+        #    "$merge": {
+        #        "into": "sap_analysis_results",
+        #        "on": "_id",
+        #        "whenMatched": "merge"
+        #    }
+        # }
+    ]
+    print(migration_pipeline)
+    return migration_pipeline
+
+
+def run_userchanged_migration(db):
+    """
+    Execute the migration to set userchanged_ flags for existing data.
+    
+    Args:
+        db: MongoDB database connection
+    """
+    global preserveValues
+    
+    try:
+        collection = db["samples"]
+        pipeline = create_userchanged_migration_pipeline()
+        
+        # Execute the migration pipeline
+        collection.aggregate(pipeline)
+        
+        print(f"Migration completed.")
+        
+    finally:
+        preserveValues = True
