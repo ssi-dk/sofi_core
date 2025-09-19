@@ -85,6 +85,11 @@ div[role="cell"].emptyCell {
   border-left: 1px dashed rgba(0, 0, 0, 0.1);
 }
 
+div[role="cell"].selectedRow {
+  border: 1px solid #c4cbcfe7;
+  background-color: #d9e0e4e7;
+}
+
 div[role="cell"].isNotLatest::before {
   content: "*";
   font-size: 20px;
