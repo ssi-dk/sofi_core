@@ -1,5 +1,6 @@
 import json
 import os
+import sys
 from typing import Any, Dict, List, Union
 
 import commentjson
@@ -9,7 +10,7 @@ from jose.jwe import decrypt
 from keycloak import KeycloakAdmin
 from werkzeug.exceptions import Forbidden
 
-from ...common.config.column_config import columns
+from ...common.config.column_config import columns, gen_default_column
 
 PERMISSION_CONFIG: Union[Dict[str, List[str]], None] = None
 with open(os.getcwd() + "/permission-config.jsonc", encoding="utf-8") as js_file:
@@ -56,16 +57,22 @@ def assert_user_has(permission: str, token_info: Dict[str, str]):
         raise Forbidden(f"You lack -{permission}- permission")
 
 
-def authorized_to_edit(token_info: Dict[str, str], metadata: Dict[str, Any]):
+def authorized_to_edit(token_info: Dict[str, str], metadata: Dict[str, Any], changed_columns: List[str] = []) -> bool:
     # User must have the approve claim to do modifications
     if not user_has("approve", token_info):
         return False
     # I no institution, allow
     if not "institution" in metadata:
         return True
-    # When user's not from the same institution as the sample, they can't modify it
+    # When user's not from the same institution as the sample
     if token_info["institution"] == metadata["institution"]:
         return True
+    # if User has data_clearence cross-institution and changed_columns are all cross-org editable
+    cols = columns()
+    cross_org_editable = list(map(lambda c: c["field_name"], filter(lambda c: c["cross_org_editable"], cols)))
+    if token_info["sofi-data-clearance"] == "cross-institution":
+        if all(col in cross_org_editable for col in changed_columns):
+            return True
     # User needs 'L2' or higher clearance to modify data
     if token_info["sofi-data-clearance"] == "all":
         return True
@@ -73,13 +80,13 @@ def authorized_to_edit(token_info: Dict[str, str], metadata: Dict[str, Any]):
     return False
 
 
-def assert_authorized_to_edit(token_info: Dict[str, str], metadata: Dict[str, Any]):
-    if not authorized_to_edit(token_info, metadata):
+def assert_authorized_to_edit(token_info: Dict[str, str], metadata: Dict[str, Any], changed_columns: List[str] = []):
+    if not authorized_to_edit(token_info, metadata, changed_columns):
         isolate_id = metadata["isolate_id"]
         raise Forbidden(f"You are not authorized to edit isolate -{isolate_id}-")
 
 
-def authorized_columns(token_info: Dict[str, Any]) -> List[str]:
+def authorized_columns(token_info: Dict[str, Any], onlyEditable: bool = False) -> List[str]:
     data_clearance = token_info["sofi-data-clearance"]
     cols = columns()
     institution = token_info["institution"]
@@ -99,7 +106,7 @@ def authorized_columns(token_info: Dict[str, Any]) -> List[str]:
             map(
                 lambda c: c["field_name"],
                 filter(
-                    lambda c: not c["pii"] or institution in c["organizations"], cols
+                    lambda c: (not onlyEditable or c["editable"]) and (not c["pii"] or institution in c["organizations"] or c["cross_org_editable"]), cols
                 ),
             )
         )

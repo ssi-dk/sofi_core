@@ -178,6 +178,24 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
     useSortBy
   );
 
+  const getAllApprovableCellsInSelection = React.useCallback(
+    (id: string, newVisibleColumns: string[]) => {
+      // Add all approvable cells to selection
+      const cols = columns
+        .filter((x) => typeof x.accessor === "string")
+        .filter((x) => newVisibleColumns.indexOf(x.accessor as string) >= 0)
+        .filter((x) => canApproveColumn(x.accessor as string))
+        .filter((x) => !isJudgedCell(id, x.accessor as string))
+        .map((x) => x.accessor as keyof T);
+
+      return cols.reduce((a, b) => {
+        a[b] = true;
+        return a;
+      }, {} as Record<keyof T, boolean>);
+    }, 
+    [columns, canApproveColumn, isJudgedCell]
+  );
+
   // NOTE:
   // visibleColumns from useTable seems to be recalculated often, hence this
   // state and effect to handle memorization:
@@ -266,6 +284,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [visibleApprovableColumns, onSelect, selection]);
 
+
   const calcRowSelectionState = React.useCallback(
     (row: Row<T>) => {
       const dataTableSelection = selection[row.original[primaryKey]];
@@ -284,7 +303,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
         return { checked: true, indeterminate: false };
       }
       // Else, some cells selected
-      return { indeterminate: true, checked: false };
+      return { indeterminate: false, checked: true };
     },
     [primaryKey, visibleApprovableColumns, selection]
   );
@@ -300,7 +319,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
       if (c.length === rows.length) {
         return { checked: true, indeterminate: false };
       }
-      return { indeterminate: true, checked: false, visible: true };
+      return { indeterminate: false, checked: true, visible: true };
     },
     [rows, selection]
   );
@@ -318,22 +337,10 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
         // Delete selection
         delete newSelection[id];
       } else {
-        // Add all approvable cells to selection
-        const cols = columns
-          .filter((x) => typeof x.accessor === "string")
-          .filter((x) => visibleColumns.indexOf(x.accessor as string) >= 0)
-          .filter((x) => canApproveColumn(x.accessor as string))
-          .filter((x) => !isJudgedCell(id, x.accessor as string))
-          .map((x) => x.accessor as keyof T);
-
-        const flags = cols.reduce((a, b) => {
-          a[b] = true;
-          return a;
-        }, {} as Record<keyof T, boolean>);
-
+        const cells = Object.keys(selection).length > 0 ? selection[Object.keys(selection)[0]].cells : getAllApprovableCellsInSelection(id, visibleColumns);
         newSelection[id] = {
           original: row.original,
-          cells: flags,
+          cells,
         };
       }
 
@@ -342,12 +349,10 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
     [
       onSelect,
       primaryKey,
-      columns,
       visibleColumns,
-      isJudgedCell,
       calcRowSelectionState,
-      canApproveColumn,
       selection,
+      getAllApprovableCellsInSelection
     ]
   );
 
@@ -363,28 +368,44 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
   const onSelectColumn = React.useCallback(
     (col: Column<T>) => {
       const { checked, indeterminate } = calcColSelectionState(col);
-      const sel = rows
-        .filter((r) => !isJudgedCell(r.original[primaryKey], col.id as string))
-        .map((r) => ({
-          [r.original[primaryKey]]: {
-            original: r.original,
-            cells: {
-              ...selection[r.original[primaryKey]]?.cells,
-              [col.id as string]: !checked && !indeterminate,
+      let incSel: DataTableSelection<T> = {};
+      if(col.id === "sequence_id"){
+        if(selection && Object.keys(selection).length > 0){
+        }else{
+          // Select all rows, all approvable cells
+          incSel = rows
+            .map((r) => ({
+              [r.original[primaryKey]]: {
+                original: r.original,
+                cells: getAllApprovableCellsInSelection(r.original[primaryKey], visibleColumns),
+              },
+            }))
+            .reduce((acc, val) => ({ ...acc, ...val }));
+        }
+      }else{
+        const sel = rows
+          .filter((r) => !isJudgedCell(r.original[primaryKey], col.id as string))
+          .map((r) => ({
+            [r.original[primaryKey]]: {
+              original: r.original,
+              cells: {
+                ...selection[r.original[primaryKey]]?.cells,
+                [col.id as string]: !checked && !indeterminate,
+              },
             },
-          },
-        }))
-        .reduce((acc, val) => ({ ...acc, ...val }));
-      const incSel: DataTableSelection<T> = { ...selection, ...sel };
-      getDependentColumns(col.id).forEach((c) => {
-        rows
-          .map((r) => r.original[primaryKey])
-          .forEach((r: string) => {
-            if (incSel[r]) {
-              incSel[r].cells[c] = !(selection[r] && selection[r].cells[c]);
-            }
-          });
-      });
+          }))
+          .reduce((acc, val) => ({ ...acc, ...val }));
+        incSel = { ...selection, ...sel };
+        getDependentColumns(col.id).forEach((c) => {
+          rows
+            .map((r) => r.original[primaryKey])
+            .forEach((r: string) => {
+              if (incSel[r]) {
+                incSel[r].cells[c] = !(selection[r] && selection[r].cells[c]);
+              }
+            });
+        });
+      }
       onSelect(incSel);
       onColumnResize(0);
     },
@@ -397,6 +418,8 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
       getDependentColumns,
       onColumnResize,
       selection,
+      visibleColumns,
+      getAllApprovableCellsInSelection,
     ]
   );
 

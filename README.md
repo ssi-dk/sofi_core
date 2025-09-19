@@ -165,12 +165,23 @@ make clean && make run
 
 -
 
+# Keycloak
+After setup, go to the keycloak admin page and login. 
+Switch realm to "Sofi", navigate to Clients -> Client list -> SOFI_APP -> Advanced -> Advanced settings
+Change the "Access token lifespan" to something more reasonable than 1 min, eg. 1 day. Otherwise your jwt token will expire after 1 min making the web UI troublesome.
+
 ## Project Structure
 
 Consult `docs/`.
 
 
 # Troubleshooting possible development errors
+## Environment overview
+- Dev: 10.45.129.10
+- Test: 10.45.129.12
+- Prod: 10.45.129.178
+
+Access via SSH from vdi.computerome.dk.
 
 ## bifrost_db container ERROR: child process failed, exited with 1
 When running make run. If the bifrost conainer keeps failing with an error message saying "ERROR: child process failed, exited with 1". Look for if "Error creating journal directory".
@@ -178,3 +189,37 @@ First look at the [Database permission](#database-permission) section. Alternati
 ```shell
 sudo make run
 ```
+
+## k9s not showing any pods
+If `k9s` is broken, it can be because the internal k3s certificates have expired. You can check this by running `systemctl status k3s`.
+If there are any expiry errors in the status, rotate the certificates by doing:
+- `systemctl stop k3s`
+- `k3s certificate rotate`
+- `systemctl start k3s`
+
+This should renew the certificates.
+Furthermore, check that the file "~/.kube/config" matches "/etc/rancher/k3s/k3s.yaml". If they do not match, create a backup and replace "~/.kube/config".
+
+## Renew SSL certificates
+### Convert pfx from SIT to use on SOFI
+To use the certificate files on the Delphi environment they must be converted to pem format and seperate in a public and private key part.
+This can be accomplished with the following commands
+#### Export key
+`openssl pkcs12 -in test_sofi-platform_dk-2024_03_21-81904.pfx -legacy -nocerts -out key.pem`
+#### Export public cert
+`openssl pkcs12 -in test_sofi-platform_dk-2024_03_21-81904.pfx -clcerts -nokeys -legacy -out cert.pem`
+#### Remove password from key
+`openssl rsa -in key.pem -out key-no-pass.key`
+#### Verify private key and public cert belongs together
+`openssl x509 -in sofi.test.crt -noout -modulus | openssl md5`
+
+`openssl rsa -modulus -noout -in sofi.test.pem | openssl md5`
+
+### Create certificate for machine
+Before the certificate is ready to be put on the machine, you must manually add the intermediate and root certificate to cert.pem, such that it contains all 3 certificates, one after the other.
+This has been done before by just `cat`-ing the certificates and appending that to cert.pem.
+
+Once you have cert.pem and key-no-pass.key, put these into /opt/sofi/secrets/certificates and kill the `sap-api` container in k9s.
+
+Sometimes the application will still try to use the old certificate. If this happens, do `:secrets` in k9s, delete the tls secret and create it again with
+`k create secret tls dev2.sofi-platform.dk-tls --cert=cert.pem --key=key-no-pass-key.key -n sofi` (change url if not dev). Then go back to `:pods` and kill `sap-api` again.

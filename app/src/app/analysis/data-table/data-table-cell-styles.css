@@ -85,6 +85,11 @@ div[role="cell"].emptyCell {
   border-left: 1px dashed rgba(0, 0, 0, 0.1);
 }
 
+div[role="cell"].selectedRow {
+  border: 1px solid #c4cbcfe7;
+  background-color: #d9e0e4e7;
+}
+
 div[role="cell"].isNotLatest::before {
   content: "*";
   font-size: 20px;
@@ -98,4 +103,10 @@ div[role="cell"].approvingCell {
   font-weight: bold;
   /*  background-color: #faf089 !important; */
   box-shadow: inset 0 0 100px rgba(250, 250, 100, 0.8);
+}
+
+/* fix for cell text overflow */
+div[role="cell"] > div > div{
+    text-overflow: ellipsis;
+    overflow: hidden;
 }

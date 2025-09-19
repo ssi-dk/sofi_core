@@ -19,7 +19,7 @@ class Column(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, approvable=None, editable=None, editable_format=None, pii=None, gdpr=None, computed=None, organizations=None, field_name=None, approves_with=None):  # noqa: E501
+    def __init__(self, approvable=None, editable=None, editable_format=None, pii=None, gdpr=None, computed=None, organizations=None, field_name=None, approves_with=None, cross_org_editable=None):  # noqa: E501
         """Column - a model defined in OpenAPI
 
         :param approvable: The approvable of this Column.  # noqa: E501
@@ -40,6 +40,8 @@ class Column(Model):
         :type field_name: str
         :param approves_with: The approves_with of this Column.  # noqa: E501
         :type approves_with: List[str]
+        :param cross_org_editable: The cross_org_editable of this Column.  # noqa: E501
+        :type cross_org_editable: bool
         """
         self.openapi_types = {
             'approvable': bool,
@@ -51,6 +53,7 @@ class Column(Model):
             'organizations': List[Organization],
             'field_name': str,
             'approves_with': List[str],
+            'cross_org_editable': bool,
         }
 
         self.attribute_map = {
@@ -63,6 +66,7 @@ class Column(Model):
             'organizations': 'organizations',
             'field_name': 'field_name',
             'approves_with': 'approves_with',
+            'cross_org_editable': 'cross_org_editable',
         }
 
         self._approvable = approvable
@@ -74,6 +78,7 @@ class Column(Model):
         self._organizations = organizations
         self._field_name = field_name
         self._approves_with = approves_with
+        self._cross_org_editable = cross_org_editable
 
     @classmethod
     def from_dict(cls, dikt):
@@ -290,3 +295,26 @@ class Column(Model):
         """
 
         self._approves_with = approves_with
+
+    @property
+    def cross_org_editable(self):
+        """Gets the cross_org_editable of this Column.
+
+        True if the column can be edited by users from other organizations  # noqa: E501
+
+        :return: The cross_org_editable of this Column.
+        :rtype: bool
+        """
+        return self._cross_org_editable
+
+    @cross_org_editable.setter
+    def cross_org_editable(self, cross_org_editable):
+        """Sets the cross_org_editable of this Column.
+
+        True if the column can be edited by users from other organizations  # noqa: E501
+
+        :param cross_org_editable: The cross_org_editable of this Column.
+        :type cross_org_editable: bool
+        """
+
+        self._cross_org_editable = cross_org_editable
