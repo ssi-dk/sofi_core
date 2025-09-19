@@ -86,7 +86,7 @@ div[role="cell"].emptyCell {
 }
 
 div[role="cell"].selectedRow {
-  border: 1px solid lightgray;
+  border: 1px solid #c4cbcfe7;
   background-color: #d9e0e4e7;
 }
 
