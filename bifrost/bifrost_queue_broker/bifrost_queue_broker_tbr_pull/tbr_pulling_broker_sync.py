@@ -33,7 +33,11 @@ class TBRPullingBrokerSync():
     def run(self):
         logging.info(f"Started {self.broker_name} thread.")
         interval = 60 * 10  # 10 minutes
-        while True:
+        ## Try running for only a week, then quit and let the container restart
+        weeks_iterations = 6*24*7
+        iteration = 0
+        while iteration < weeks_iterations:
+            iteration += 1
             t0 = time.time()
             try:
                 self.run_sync_job()
