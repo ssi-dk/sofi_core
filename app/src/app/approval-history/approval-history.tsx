@@ -92,7 +92,7 @@ export default function ApprovalHistory() {
         gap={6}
         justifyContent="space-between"
       >
-        <Heading>{`${t("My approval history")}`}</Heading>
+        <Heading>{`${t("Approval history")}`}</Heading>
       </Flex>
       <Table variant="striped">
         <Thead>
