@@ -67,7 +67,6 @@ export const sendRejection = (params: ApprovalRequest) =>
 export const revokeApproval = (params: CancelApprovalRequest) => {
   // use generated api client as base
   const base = cancelApproval<ApprovalSlice>(params);
-  console.log(base);
   // template the full path for the url
   base.url = getUrl(base.url);
   // define the update strategy for our state
