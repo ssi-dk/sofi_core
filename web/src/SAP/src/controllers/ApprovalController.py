@@ -70,7 +70,7 @@ def create_approval(user, token_info, body: ApprovalRequest):
             time_fields.append("date_epi")
         for f in time_fields:
             seq_update[f] = appr.timestamp
-            appr.matrix[seq][f] = ApprovalStatus.APPROVED
+            appr.matrix[seq][f] = ApprovalStatus.APPROVED.value
         analysis_timestamp_updates[seq] = seq_update
 
     update_analysis(analysis_timestamp_updates)
