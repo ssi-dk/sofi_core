@@ -4,7 +4,7 @@ import pymongo
 import subprocess
 import time
 from bson.objectid import ObjectId
-from aggregation import agg_pipeline
+from aggregation import agg_pipeline, create_userchanged_migration_pipeline
 
 LOGLEVEL = os.environ.get("LOG_LEVEL", "INFO").upper()
 
@@ -69,10 +69,17 @@ def watch_loop():
 
 
 logging.info("bifrost_listener initialized")
+
+logging.info("Running update non tracked userchanged fields ...")
+timer = time.process_time()
+db.samples.aggregate(create_userchanged_migration_pipeline())
+logging.info(f"Finished update non tracked userchanged fields {elapsed_seconds(time.process_time()-timer)} ms")
+
 logging.info("Running first aggregation ...")
 timer = time.process_time()
 db.samples.aggregate(agg_pipeline())
 logging.info(f"Finished first aggregation in {elapsed_seconds(time.process_time()-timer)} ms")
+
 while True:
     try:
         watch_loop()
