@@ -72,7 +72,7 @@ logging.info("bifrost_listener initialized")
 
 logging.info("Running update non tracked userchanged fields ...")
 timer = time.process_time()
-print(db.samples.aggregate(create_userchanged_migration_pipeline()))
+db.samples.aggregate(create_userchanged_migration_pipeline())
 logging.info(f"Finished update non tracked userchanged fields {elapsed_seconds(time.process_time()-timer)} ms")
 
 logging.info("Running first aggregation ...")
