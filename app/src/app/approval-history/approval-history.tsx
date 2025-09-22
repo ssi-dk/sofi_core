@@ -16,7 +16,7 @@ import {
   Divider,
   Tooltip,
 } from "@chakra-ui/react";
-import { CheckIcon, CloseIcon, TimeIcon, DeleteIcon } from "@chakra-ui/icons";
+import { CheckIcon, CloseIcon, TimeIcon, DeleteIcon, ChevronDownIcon, ChevronRightIcon } from "@chakra-ui/icons";
 import { DateTime } from "luxon";
 import { Approval, ApprovalAllOfStatusEnum } from "sap-client";
 import { useMutation, useRequest } from "redux-query-react";
@@ -54,20 +54,40 @@ export default function ApprovalHistory() {
   const { t } = useTranslation();
   const toast = useToast();
 
-  const [revocationLoadState, doRevoke] = useMutation((id: string, sequences?: string[]) =>
-    revokeApproval({ approvalId: id, sequences: (sequences || approvalHistory.find(a => a.id === id)!.sequence_ids).join(";") })
+  const [
+    revocationLoadState,
+    doRevoke,
+  ] = useMutation((id: string, sequences?: string[]) =>
+    revokeApproval({
+      approvalId: id,
+      sequences: (
+        sequences || approvalHistory.find((a) => a.id === id)!.sequence_ids
+      ).join(";"),
+    })
   );
 
   const [needsNotify, setNeedsNotify] = useState(true);
 
   const [opendropdowns, setOpendropdowns] = useState<string[]>([]);
+  const [expandedRows, setExpandedRows] = useState<string[]>([]);
 
   const revokeItem = React.useCallback(
     (id: string, sequences?: string[]) => {
       setNeedsNotify(true);
-      doRevoke(id,sequences);
+      doRevoke(id, sequences);
     },
     [doRevoke, setNeedsNotify]
+  );
+
+  const toggleRowExpansion = React.useCallback(
+    (approvalId: string) => {
+      setExpandedRows(prev => 
+        prev.includes(approvalId) 
+          ? prev.filter(id => id !== approvalId)
+          : [...prev, approvalId]
+      );
+    },
+    []
   );
 
   // Display approval toasts
@@ -89,7 +109,6 @@ export default function ApprovalHistory() {
     }
   }, [t, revocationLoadState, toast, needsNotify, setNeedsNotify]);
 
-
   const content = (
     <Box textOverflow="hidden" minH="100vh">
       <Flex
@@ -100,18 +119,22 @@ export default function ApprovalHistory() {
       >
         <Heading>{`${t("Approval history")}`}</Heading>
       </Flex>
-      <Table variant="striped">
+      <Table variant="striped" tableLayout="fixed" width="100%">
         <Thead>
           <Tr>
-            <Th>{t("Time")}</Th>
-            <Th>{t("Approved by")}</Th>
-            <Th>{t("Sequences")}</Th>
-            <Th>{t("Status")}</Th>
+            <Th width="150px">{t("Time")}</Th>
+            <Th width="150px">{t("Approved by")}</Th>
+            <Th width="auto">{t("Sequences")}</Th>
+            <Th width="80px">{t("Status")}</Th>
+            <Th width="80px"></Th>
           </Tr>
         </Thead>
         <Tbody>
           {approvalHistory &&
             approvalHistory.map((h) => {
+              const isExpanded = expandedRows.includes(h.id);
+              const sequenceKeys = Object.keys(h.matrix);
+              
               return (
                 <Tr verticalAlign="top" key={h.id}>
                   <Td>
@@ -126,51 +149,100 @@ export default function ApprovalHistory() {
                   </Td>
                   <Td>
                     <Flex overflow="hidden" flexDirection="column">
-                      {Object.keys(h.matrix)?.map((x) => (
-                        <React.Fragment key={x}>
-                          <Flex direction="row" align="center">
-                            <Text
-                              as="pre"
-                              overflow="hidden"
-                              textOverflow="ellipsis"
-                              >
-                              {x}
+                      <Flex 
+                        direction="row" 
+                        align="center" 
+                        cursor="pointer"
+                        onClick={() => toggleRowExpansion(h.id)}
+                        _hover={{ backgroundColor: "gray.50" }}
+                        p={1}
+                        borderRadius="md"
+                      >
+                        <IconButton
+                          icon={isExpanded ? <ChevronDownIcon /> : <ChevronRightIcon />}
+                          aria-label={isExpanded ? "Collapse" : "Expand"}
+                          size="sm"
+                          variant="ghost"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toggleRowExpansion(h.id);
+                          }}
+                        />
+                        <Text fontSize="sm" color="gray.600">
+                          {sequenceKeys.length} sequence{sequenceKeys.length !== 1 ? 's' : ''}
+                          {!isExpanded && sequenceKeys.length > 0 && (
+                            <Text as="span" ml={2} color="gray.500">
+                              ({sequenceKeys.join(', ')})
                             </Text>
-                            {(h.status == ApprovalAllOfStatusEnum.submitted && Object.keys(h.matrix).length > 1) && <IconButton
-                              icon={<DeleteIcon />}
-                              aria-label={`${t("Revoke approval")}`}
-                              onClick={() => revokeItem(h.id,[x])}
-                            />}
-                          </Flex>
-                          {Object.keys(h.matrix[x]).map((y) => (
-                            <Text
-                              key={`${x}-${y}`}
-                              as="pre"
-                              overflow="hidden"
-                              textOverflow="ellipsis"
-                              color={
-                                h.matrix[x][y] === "approved"
-                                  ? "gray.900"
-                                  : "red.700"
-                              }
-                            >
-                              {`    ${y}`}
-                            </Text>
+                          )}
+                        </Text>
+                      </Flex>
+                      
+                      {isExpanded && (
+                        <>
+                          {sequenceKeys.map((x) => (
+                            <React.Fragment key={x}>
+                              <Flex direction="row" align="center" mt={2} wrap="wrap">
+                                <Text
+                                  fontWeight="semibold"
+                                  mr={2}
+                                >
+                                  {x}:
+                                </Text>
+                                <Text
+                                  overflow="hidden"
+                                  textOverflow="ellipsis"
+                                  fontSize="sm"
+                                >
+                                  {Object.keys(h.matrix[x]).map((y, index) => (
+                                    <Text
+                                      key={`${x}-${y}`}
+                                      as="span"
+                                      color={
+                                        h.matrix[x][y] === "approved"
+                                          ? "gray.900"
+                                          : "red.700"
+                                      }
+                                    >
+                                      {y}{index < Object.keys(h.matrix[x]).length - 1 ? ", " : ""}
+                                    </Text>
+                                  ))}
+                                </Text>
+                                {h.status == ApprovalAllOfStatusEnum.submitted &&
+                                  sequenceKeys.length > 1 && (
+                                    <IconButton
+                                      icon={<DeleteIcon />}
+                                      aria-label={`${t("Revoke approval")}`}
+                                      onClick={() => revokeItem(h.id, [x])}
+                                      size="sm"
+                                      ml={2}
+                                    />
+                                  )}
+                              </Flex>
+                            </React.Fragment>
                           ))}
-                          <Text as="pre">{`\n`}</Text>
-                        </React.Fragment>
-                      ))}
-                      {h.revoked_sequence_ids?.map(sid => (
-                        <Text
+                        </>
+                      )}
+                      
+                      {/* Show revoked sequences if any exist */}
+                      {(h as any).revoked_sequence_ids?.length > 0 && (
+                        <Flex direction="row" align="center" mt={2} wrap="wrap">
+                          <Text fontWeight="semibold" mr={2} color="gray.500">
+                            {t("Revoked")}:
+                          </Text>
+                          <Text fontSize="sm" color="gray.500">
+                            {(h as any).revoked_sequence_ids.map((sid: string, index: number) => (
+                              <Text
                                 key={`revoked-${sid}`}
-                              as="pre"
-                              overflow="hidden"
-                              textOverflow="ellipsis"
-                              textDecoration="line-through"
+                                as="span"
+                                textDecoration="line-through"
                               >
-                              {sid}
-                            </Text>
-                      ))}
+                                {sid}{index < (h as any).revoked_sequence_ids.length - 1 ? ", " : ""}
+                              </Text>
+                            ))}
+                          </Text>
+                        </Flex>
+                      )}
                     </Flex>
                   </Td>
                   <Td>
@@ -182,7 +254,7 @@ export default function ApprovalHistory() {
                         icon={<DeleteIcon />}
                         aria-label={`${t("Revoke approval")}`}
                         onClick={() => revokeItem(h.id)}
-                        />
+                      />
                     )}
                   </Td>
                 </Tr>

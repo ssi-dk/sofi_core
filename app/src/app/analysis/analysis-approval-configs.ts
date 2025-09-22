@@ -75,15 +75,20 @@ export const revokeApproval = (params: CancelApprovalRequest) => {
       const sequences = params.sequences.split(";");
 
       const newValue: Approval[] = JSON.parse(JSON.stringify(oldValue));
-      const approval = newValue.find(x => x.id === params.approvalId)!
+      const approval = newValue.find((x) => x.id === params.approvalId)!;
 
-      if (sequences.length < approval.sequence_ids.length){
+      if (sequences.length < approval.sequence_ids.length) {
         // partial revoke
-        sequences.forEach(seq => {
-          delete approval.matrix[seq]
-        })
-        approval.sequence_ids = approval.sequence_ids.filter(sid => !sequences.find(s => s === sid));
-        approval.revoked_sequence_ids = [...(approval.revoked_sequence_ids || []),...sequences]
+        sequences.forEach((seq) => {
+          delete approval.matrix[seq];
+        });
+        approval.sequence_ids = approval.sequence_ids.filter(
+          (sid) => !sequences.find((s) => s === sid)
+        );
+        approval.revoked_sequence_ids = [
+          ...(approval.revoked_sequence_ids || []),
+          ...sequences,
+        ];
       } else {
         // full revoke
         approval.status = ApprovalAllOfStatusEnum.cancelled;
