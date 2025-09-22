@@ -204,7 +204,6 @@ def submit_changes(
     res = dict()
     for u in updates:
         res[u] = get_single_analysis(u)
-    print(res)
     return jsonify(res)
 
 
