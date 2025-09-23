@@ -233,7 +233,6 @@ export default function ApprovalHistory() {
                                       size="sm"
                                       flexShrink={0}
                                       variant="ghost"
-                                      bg={isStripedRow ? "white" : "gray.100"}
                                       _hover={{
                                         bg: isStripedRow ? "gray.50" : "gray.200"
                                       }}
@@ -276,7 +275,6 @@ export default function ApprovalHistory() {
                         aria-label={`${t("Revoke approval")}`}
                         onClick={() => revokeItem(h.id)}
                         variant="ghost"
-                        bg={isStripedRow ? "white" : "gray.100"}
                         _hover={{
                           bg: isStripedRow ? "gray.50" : "gray.200"
                         }}
