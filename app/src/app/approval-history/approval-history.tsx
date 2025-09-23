@@ -70,6 +70,7 @@ export default function ApprovalHistory() {
 
   const [opendropdowns, setOpendropdowns] = useState<string[]>([]);
   const [expandedRows, setExpandedRows] = useState<string[]>([]);
+  const [hoveredSequence, setHoveredSequence] = useState<string | null>(null);
 
   const revokeItem = React.useCallback(
     (id: string, sequences?: string[]) => {
@@ -131,9 +132,10 @@ export default function ApprovalHistory() {
         </Thead>
         <Tbody>
           {approvalHistory &&
-            approvalHistory.map((h) => {
+            approvalHistory.map((h, idx) => {
               const isExpanded = expandedRows.includes(h.id);
               const sequenceKeys = Object.keys(h.matrix);
+              const isStripedRow = idx % 2 === 1; // Chakra UI striped rows: odd indices are grey
               
               return (
                 <Tr verticalAlign="top" key={h.id}>
@@ -182,40 +184,59 @@ export default function ApprovalHistory() {
                         <>
                           {sequenceKeys.map((x) => (
                             <React.Fragment key={x}>
-                              <Flex direction="row" align="center" mt={2} wrap="wrap">
-                                <Text
-                                  fontWeight="semibold"
-                                  mr={2}
-                                >
-                                  {x}:
-                                </Text>
-                                <Text
-                                  overflow="hidden"
-                                  textOverflow="ellipsis"
-                                  fontSize="sm"
-                                >
-                                  {Object.keys(h.matrix[x]).map((y, index) => (
-                                    <Text
-                                      key={`${x}-${y}`}
-                                      as="span"
-                                      color={
-                                        h.matrix[x][y] === "approved"
-                                          ? "gray.900"
-                                          : "red.700"
-                                      }
-                                    >
-                                      {y}{index < Object.keys(h.matrix[x]).length - 1 ? ", " : ""}
-                                    </Text>
-                                  ))}
-                                </Text>
+                              <Flex 
+                                direction="row" 
+                                align="center" 
+                                justify="space-between"
+                                mt={2} 
+                                width="100%"
+                                bg={hoveredSequence === x ? "gray.50" : "transparent"}
+                                borderRadius="md"
+                                p={2}
+                              >
+                                <Flex direction="row" align="center" flex={1}>
+                                  <Text
+                                    fontWeight="semibold"
+                                    mr={2}
+                                  >
+                                    {x}:
+                                  </Text>
+                                  <Text
+                                    overflow="hidden"
+                                    textOverflow="ellipsis"
+                                    fontSize="sm"
+                                    flex={1}
+                                  >
+                                    {Object.keys(h.matrix[x]).map((y, index) => (
+                                      <Text
+                                        key={`${x}-${y}`}
+                                        as="span"
+                                        color={
+                                          h.matrix[x][y] === "approved"
+                                            ? "gray.900"
+                                            : "red.700"
+                                        }
+                                      >
+                                        {y}{index < Object.keys(h.matrix[x]).length - 1 ? ", " : ""}
+                                      </Text>
+                                    ))}
+                                  </Text>
+                                </Flex>
                                 {h.status == ApprovalAllOfStatusEnum.submitted &&
                                   sequenceKeys.length > 1 && (
                                     <IconButton
                                       icon={<DeleteIcon />}
                                       aria-label={`${t("Revoke approval")}`}
                                       onClick={() => revokeItem(h.id, [x])}
+                                      onMouseEnter={() => setHoveredSequence(x)}
+                                      onMouseLeave={() => setHoveredSequence(null)}
                                       size="sm"
-                                      ml={2}
+                                      flexShrink={0}
+                                      variant="ghost"
+                                      bg={isStripedRow ? "white" : "gray.100"}
+                                      _hover={{
+                                        bg: isStripedRow ? "gray.50" : "gray.200"
+                                      }}
                                     />
                                   )}
                               </Flex>
@@ -254,6 +275,11 @@ export default function ApprovalHistory() {
                         icon={<DeleteIcon />}
                         aria-label={`${t("Revoke approval")}`}
                         onClick={() => revokeItem(h.id)}
+                        variant="ghost"
+                        bg={isStripedRow ? "white" : "gray.100"}
+                        _hover={{
+                          bg: isStripedRow ? "gray.50" : "gray.200"
+                        }}
                       />
                     )}
                   </Td>
