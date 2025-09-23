@@ -12,9 +12,6 @@ import {
   Tr,
   Th,
   Td,
-  Button,
-  Divider,
-  Tooltip,
 } from "@chakra-ui/react";
 import { CheckIcon, CloseIcon, TimeIcon, DeleteIcon, ChevronDownIcon, ChevronRightIcon } from "@chakra-ui/icons";
 import { DateTime } from "luxon";
@@ -67,8 +64,6 @@ export default function ApprovalHistory() {
   );
 
   const [needsNotify, setNeedsNotify] = useState(true);
-
-  const [opendropdowns, setOpendropdowns] = useState<string[]>([]);
   const [expandedRows, setExpandedRows] = useState<string[]>([]);
   const [hoveredSequence, setHoveredSequence] = useState<string | null>(null);
 
