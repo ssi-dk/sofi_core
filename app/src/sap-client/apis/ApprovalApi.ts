@@ -25,6 +25,7 @@ import {
 
 export interface CancelApprovalRequest {
     approvalId: string;
+    sequences: string;
 }
 
 export interface CreateApprovalRequest {
@@ -40,6 +41,10 @@ function cancelApprovalRaw<T>(requestParameters: CancelApprovalRequest, requestC
         throw new runtime.RequiredError('approvalId','Required parameter requestParameters.approvalId was null or undefined when calling cancelApproval.');
     }
 
+    if (requestParameters.sequences === null || requestParameters.sequences === undefined) {
+        throw new runtime.RequiredError('sequences','Required parameter requestParameters.sequences was null or undefined when calling cancelApproval.');
+    }
+
     let queryParameters = null;
 
 
@@ -50,7 +55,7 @@ function cancelApprovalRaw<T>(requestParameters: CancelApprovalRequest, requestC
 
     meta.authType = ['bearer'];
     const config: QueryConfig<T> = {
-        url: `${runtime.Configuration.basePath}/approvals/{approval_id}`.replace(`{${"approval_id"}}`, encodeURIComponent(String(requestParameters.approvalId))),
+        url: `${runtime.Configuration.basePath}/approvals/{approval_id}/{sequences}`.replace(`{${"approval_id"}}`, encodeURIComponent(String(requestParameters.approvalId))).replace(`{${"sequences"}}`, encodeURIComponent(String(requestParameters.sequences))),
         meta,
         update: requestConfig.update,
         queryKey: requestConfig.queryKey,

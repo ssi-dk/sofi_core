@@ -9,10 +9,7 @@ import {
   useToast,
   UseToastOptions,
 } from "@chakra-ui/react";
-import {
-  AnalysisResult,
-  NearestNeighborsRequest,
-} from "sap-client";
+import { AnalysisResult, NearestNeighborsRequest } from "sap-client";
 import { DataTableSelection } from "../data-table/data-table";
 import {
   Button,
@@ -78,9 +75,10 @@ export const NearestNeighborModal = (props: Props) => {
       state.entities.nearestNeighborsResponses
   );
 
-  const [{ isPending, isFinished, status }, searchNearestNeighbors] = useMutation(
-    (req: NearestNeighborsRequest) => getNearestNeighbors(req)
-  );
+  const [
+    { isPending, isFinished, status },
+    searchNearestNeighbors,
+  ] = useMutation((req: NearestNeighborsRequest) => getNearestNeighbors(req));
 
   const handleSearchComplete = useCallback(() => {
     const newSelection = { ...selection };
@@ -106,13 +104,10 @@ export const NearestNeighborModal = (props: Props) => {
     newReqs,
   ]);
 
-  useEffect(() => { // Collector
-    if (
-      !isSearching ||
-      isPending ||
-      !isFinished
-    ) {
-      return
+  useEffect(() => {
+    // Collector
+    if (!isSearching || isPending || !isFinished) {
+      return;
     }
     const ids = newReqs.map((req) => {
       return serializeNNRequest(req);
@@ -125,11 +120,11 @@ export const NearestNeighborModal = (props: Props) => {
           return;
         }
         if (
-          searchIndex !== 0 && 
-          ! ids.every((index) => nearestNeighborsResponses[index] !== undefined)
+          searchIndex !== 0 &&
+          !ids.every((index) => nearestNeighborsResponses[index] !== undefined)
         ) {
           // Wait for the last result
-          console.log()
+          console.log();
           return;
         }
         // Needs a rewrite
@@ -142,7 +137,10 @@ export const NearestNeighborModal = (props: Props) => {
             }
           });
         }
-        showToast(`Found ${Object.keys(neighbors).length} neighbor(s).`,"success");
+        showToast(
+          `Found ${Object.keys(neighbors).length} neighbor(s).`,
+          "success"
+        );
         if (Object.values(neighbors).length) {
           const newSelection = Object.assign({}, selection);
           Object.values(neighbors).forEach((n) => {
@@ -151,14 +149,14 @@ export const NearestNeighborModal = (props: Props) => {
               original: n,
             };
           });
-          dispatch(setSelection(newSelection))
+          dispatch(setSelection(newSelection));
         }
-      } else{
+      } else {
         showToast(`Error`, "error");
       }
       onClose();
     }
-  },[
+  }, [
     t,
     showToast,
     isSearching,
@@ -173,7 +171,8 @@ export const NearestNeighborModal = (props: Props) => {
     newReqs,
   ]);
 
-  useEffect(() => { // Reset
+  useEffect(() => {
+    // Reset
     if (!isSearching) {
       setSearchIndex(0);
     }
@@ -192,19 +191,18 @@ export const NearestNeighborModal = (props: Props) => {
       return;
     }
     if (searchIndex < newReqs.length) {
-      console.log(newReqs[searchIndex])
+      console.log(newReqs[searchIndex]);
       searchNearestNeighbors(newReqs[searchIndex]);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchIndex, isSearching, newReqs]);
 
   const onSearch = useCallback(async () => {
-    const requests =  Object.values(selection).map(item => ({
-        id: item.original.id,
-        cutoff: cutoff,
-        unknownsAreDiffs: unknownsAreDiffs,
-      })
-    );
+    const requests = Object.values(selection).map((item) => ({
+      id: item.original.id,
+      cutoff: cutoff,
+      unknownsAreDiffs: unknownsAreDiffs,
+    }));
     setNewReqs(requests);
     setIsSearching(true);
   }, [setIsSearching, setNewReqs, cutoff, unknownsAreDiffs, selection]);

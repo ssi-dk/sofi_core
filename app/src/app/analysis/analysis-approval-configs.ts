@@ -72,9 +72,28 @@ export const revokeApproval = (params: CancelApprovalRequest) => {
   // define the update strategy for our state
   base.update = {
     approvals: (oldValue) => {
-      const newValue = JSON.parse(JSON.stringify(oldValue));
-      const modded = newValue.filter((x) => x.id === params.approvalId)[0];
-      modded.status = ApprovalAllOfStatusEnum.cancelled;
+      const sequences = params.sequences.split(";");
+
+      const newValue: Approval[] = JSON.parse(JSON.stringify(oldValue));
+      const approval = newValue.find((x) => x.id === params.approvalId)!;
+
+      if (sequences.length < approval.sequence_ids.length) {
+        // partial revoke
+        sequences.forEach((seq) => {
+          delete approval.matrix[seq];
+        });
+        approval.sequence_ids = approval.sequence_ids.filter(
+          (sid) => !sequences.find((s) => s === sid)
+        );
+        approval.revoked_sequence_ids = [
+          ...(approval.revoked_sequence_ids || []),
+          ...sequences,
+        ];
+      } else {
+        // full revoke
+        approval.status = ApprovalAllOfStatusEnum.cancelled;
+      }
+
       return newValue;
     },
   };
