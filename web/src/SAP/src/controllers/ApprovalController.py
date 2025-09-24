@@ -64,18 +64,13 @@ def create_approval(user, token_info, body: ApprovalRequest):
 
         existing_matrix.update(fields)
         time_fields = find_approved_categories(body.matrix[seq])
-
-        # When approving date_epi, automatically generate the timestamp
-        if fields.get("date_epi", False):
-            seq_update["date_epi"] = appr.timestamp
-            time_fields.append("date_epi")
+        
         for f in time_fields:
             seq_update[f] = appr.timestamp
             appr.matrix[seq][f] = ApprovalStatus.APPROVED
         analysis_timestamp_updates[seq] = seq_update
 
     update_analysis(analysis_timestamp_updates)
-
 
     errors_tuple = handle_approvals(appr, token_info["institution"])
     errors = []
@@ -104,9 +99,10 @@ def create_approval(user, token_info, body: ApprovalRequest):
 
 
 def handle_approvals(approvals: Approval, institution: str):
-
     # Post_and_await_approval always fails when testing on local machine. Disable in debug mode or approvals have no sequences
     if os.environ["DEBUG_MODE"] == "1":
+        print("Skipping approval posting in debug mode, would approve/reject:", file=sys.stderr)
+        print(approvals, file=sys.stderr)
         return []
 
     errors = []
@@ -140,7 +136,7 @@ def full_approval_matrix(user, token_info):
 def find_approved_categories(fields: Dict[str, ApprovalStatus]):
     time_fields = []
     for f in fields:
-        if fields[f] == "approved":
+        if fields[f] == ApprovalStatus.APPROVED:
             if f == "st_final":
                 time_fields.append("date_approved_st")
             elif f == "qc_final":
@@ -155,5 +151,7 @@ def find_approved_categories(fields: Dict[str, ApprovalStatus]):
                 time_fields.append("date_approved_amr")
             elif f == "cdiff_details":
                 time_fields.append("date_approved_cdiff")
+            elif f == "date_epi":
+                time_fields.append("date_epi")
 
     return time_fields
