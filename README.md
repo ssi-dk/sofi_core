@@ -223,3 +223,6 @@ Once you have cert.pem and key-no-pass.key, put these into /opt/sofi/secrets/cer
 
 Sometimes the application will still try to use the old certificate. If this happens, do `:secrets` in k9s, delete the tls secret and create it again with
 `k create secret tls dev2.sofi-platform.dk-tls --cert=cert.pem --key=key-no-pass-key.key -n sofi` (change url if not dev). Then go back to `:pods` and kill `sap-api` again.
+
+## Access logs
+In order to access the logs on dev, test and prod servers, use the vdi.computerome VM's. From there ssh with X11 using `ssh -X username@10.45.129.10` (Dev ip, for test or prod ip see _Environment overview_). From inside the desired server, open a browser like firefox, and access the /grafana/ endpoint. On the dev server this would be https://dev2.sofi-platform.dk/grafana/. In the explore page, you can query the different apps by the `service_name` label.
