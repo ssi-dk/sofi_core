@@ -109,10 +109,7 @@ export default function AnalysisPage() {
   const columns = React.useMemo(
     () =>
       Object.keys(columnConfigs || []).map(
-        (k) =>
-          {
-            console.log("MEMO WITH COLUMNS:", columnConfigs)
-            return ({
+        (k) =>({
             accessor: k,
             sortType: !k.startsWith("date")
               ? "alphanumeric"
@@ -123,7 +120,7 @@ export default function AnalysisPage() {
                   return aDate - bDate;
                 },
             Header: t(k),
-          } as Column<AnalysisResult>)}
+          } as Column<AnalysisResult>)
       ),
     [columnConfigs, t]
   );
