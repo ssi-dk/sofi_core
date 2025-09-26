@@ -48,13 +48,13 @@ export const ColumnConfigWidget: React.FC<ColumnConfigWidgetProps> = ({
     (s) => s.view.view
   ) as UserDefinedViewInternal;
 
-  const selectAllViews = useCallback(() => {
+  const selectAllColumns = useCallback(() => {
     view.hiddenColumns.forEach(hiddenId => {
          dispatch(toggleColumnVisibility(hiddenId))
     })
   },[view.hiddenColumns.join()]) // Needs to join into string or it will not update, since array comparisons check for pointer equality
 
-  const deselectAllViews = useCallback(() => {
+  const deselectAllColumns = useCallback(() => {
       const renderedColumns = children as {key: string}[]
       renderedColumns.forEach(r => {
         const key = r["key"]
@@ -102,8 +102,8 @@ export const ColumnConfigWidget: React.FC<ColumnConfigWidgetProps> = ({
               <PopoverCloseButton />
               <Heading size="sm">Visible columns</Heading>
               <Flex direction="row" >
-                <Button size="sm" marginRight={2} onClick={selectAllViews}>Select all</Button>
-                <Button size="sm" onClick={deselectAllViews}>Deselect all</Button>
+                <Button size="sm" marginRight={2} onClick={selectAllColumns}>Select all</Button>
+                <Button size="sm" onClick={deselectAllColumns}>Deselect all</Button>
                 
               </Flex>
               <Divider />
