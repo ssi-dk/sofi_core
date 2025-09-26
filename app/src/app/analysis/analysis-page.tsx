@@ -65,7 +65,6 @@ export default function AnalysisPage() {
   const dispatch = useDispatch();
   const toast = useToast();
 
-
   const [isModalOpen, setModalOpen] = useState(false);
   const [modalInfo, setModalInfo] = useState({
     rowId: "",
@@ -109,7 +108,8 @@ export default function AnalysisPage() {
   const columns = React.useMemo(
     () =>
       Object.keys(columnConfigs || []).map(
-        (k) =>({
+        (k) =>
+          ({
             accessor: k,
             sortType: !k.startsWith("date")
               ? "alphanumeric"
