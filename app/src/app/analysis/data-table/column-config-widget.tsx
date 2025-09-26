@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useCallback } from "react";
 import {
   Box,
+  Button,
   Divider,
+  Flex,
   Heading,
   IconButton,
   Popover,
@@ -10,11 +12,18 @@ import {
   PopoverContent,
   PopoverTrigger,
   Portal,
+  Spacer,
   Stack,
+  Text,
   useDisclosure,
 } from "@chakra-ui/react";
 import { SettingsIcon } from "@chakra-ui/icons";
 import { DragDropContext, Droppable, DropResult } from "react-beautiful-dnd";
+import { UserDefinedViewInternal } from "models/user-defined-view-internal";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "app/root-reducer";
+import { toggleColumnVisibility } from "../view-selector/analysis-view-selection-config";
+import { ColumnSlice } from "../analysis-query-configs";
 
 const Form: React.FC = ({ children }) => {
   return <Stack spacing={4}>{children}</Stack>;
@@ -33,6 +42,28 @@ export const ColumnConfigWidget: React.FC<ColumnConfigWidgetProps> = ({
   children,
 }) => {
   const { onOpen, onClose, isOpen } = useDisclosure();
+  const dispatch = useDispatch();
+
+  const view = useSelector<RootState>(
+    (s) => s.view.view
+  ) as UserDefinedViewInternal;
+
+  const selectAllViews = useCallback(() => {
+    view.hiddenColumns.forEach(hiddenId => {
+         dispatch(toggleColumnVisibility(hiddenId))
+    })
+  },[view.hiddenColumns.join()]) // Needs to join into string or it will not update, since array comparisons check for pointer equality
+
+  const deselectAllViews = useCallback(() => {
+      const renderedColumns = children as {key: string}[]
+      renderedColumns.forEach(r => {
+        const key = r["key"]
+        if (!view.hiddenColumns.find(c => c == key)) {
+          dispatch(toggleColumnVisibility(key))
+        }
+      })
+
+  },[view.hiddenColumns.join(), children])
 
   const onDragEnd = React.useCallback(
     (result: DropResult) => {
@@ -70,6 +101,11 @@ export const ColumnConfigWidget: React.FC<ColumnConfigWidgetProps> = ({
               <PopoverArrow />
               <PopoverCloseButton />
               <Heading size="sm">Visible columns</Heading>
+              <Flex direction="row" >
+                <Button size="sm" marginRight={2} onClick={selectAllViews}>Select all</Button>
+                <Button size="sm" onClick={deselectAllViews}>Deselect all</Button>
+                
+              </Flex>
               <Divider />
               <Box maxHeight="90vh" overflowY="auto">
                 <Form>

@@ -65,6 +65,7 @@ export default function AnalysisPage() {
   const dispatch = useDispatch();
   const toast = useToast();
 
+
   const [isModalOpen, setModalOpen] = useState(false);
   const [modalInfo, setModalInfo] = useState({
     rowId: "",
@@ -109,7 +110,9 @@ export default function AnalysisPage() {
     () =>
       Object.keys(columnConfigs || []).map(
         (k) =>
-          ({
+          {
+            console.log("MEMO WITH COLUMNS:", columnConfigs)
+            return ({
             accessor: k,
             sortType: !k.startsWith("date")
               ? "alphanumeric"
@@ -120,7 +123,7 @@ export default function AnalysisPage() {
                   return aDate - bDate;
                 },
             Header: t(k),
-          } as Column<AnalysisResult>)
+          } as Column<AnalysisResult>)}
       ),
     [columnConfigs, t]
   );
