@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import { useCallback, Fragment, FC } from "react";
 import {
   Box,
   Button,
@@ -12,9 +12,7 @@ import {
   PopoverContent,
   PopoverTrigger,
   Portal,
-  Spacer,
   Stack,
-  Text,
   useDisclosure,
 } from "@chakra-ui/react";
 import { SettingsIcon } from "@chakra-ui/icons";
@@ -23,9 +21,8 @@ import { UserDefinedViewInternal } from "models/user-defined-view-internal";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "app/root-reducer";
 import { toggleColumnVisibility } from "../view-selector/analysis-view-selection-config";
-import { ColumnSlice } from "../analysis-query-configs";
 
-const Form: React.FC = ({ children }) => {
+const Form: FC = ({ children }) => {
   return <Stack spacing={4}>{children}</Stack>;
 };
 
@@ -37,7 +34,7 @@ type ColumnConfigWidgetProps = {
   ) => void;
 };
 
-export const ColumnConfigWidget: React.FC<ColumnConfigWidgetProps> = ({
+export const ColumnConfigWidget: FC<ColumnConfigWidgetProps> = ({
   onReorder,
   children,
 }) => {
@@ -65,7 +62,7 @@ export const ColumnConfigWidget: React.FC<ColumnConfigWidgetProps> = ({
 
   },[view.hiddenColumns.join(), children])
 
-  const onDragEnd = React.useCallback(
+  const onDragEnd = useCallback(
     (result: DropResult) => {
       if (!result.destination) {
         return;
@@ -80,7 +77,7 @@ export const ColumnConfigWidget: React.FC<ColumnConfigWidgetProps> = ({
   );
 
   return (
-    <React.Fragment>
+    <Fragment>
       <Popover
         isOpen={isOpen}
         onOpen={onOpen}
@@ -128,6 +125,6 @@ export const ColumnConfigWidget: React.FC<ColumnConfigWidgetProps> = ({
           </Portal>
         )}
       </Popover>
-    </React.Fragment>
+    </Fragment>
   );
 };
