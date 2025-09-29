@@ -45,13 +45,13 @@ export const ColumnConfigWidget: FC<ColumnConfigWidgetProps> = ({
     (s) => s.view.view
   ) as UserDefinedViewInternal;
 
-  const selectAllColumns = useCallback(() => {
+  const selectAllColumns = () => {
     view.hiddenColumns.forEach(hiddenId => {
          dispatch(toggleColumnVisibility(hiddenId))
     })
-  }, [dispatch, view.hiddenColumns]) 
+  };
 
-  const deselectAllColumns = useCallback(() => {
+  const deselectAllColumns = () => {
       const renderedColumns = children as { key: string }[]
       renderedColumns.forEach(r => {
         const key = r["key"]
@@ -59,7 +59,7 @@ export const ColumnConfigWidget: FC<ColumnConfigWidgetProps> = ({
           dispatch(toggleColumnVisibility(key))
         }
       })
-  }, [dispatch, view.hiddenColumns, children])
+  };
 
   const onDragEnd = useCallback(
     (result: DropResult) => {
