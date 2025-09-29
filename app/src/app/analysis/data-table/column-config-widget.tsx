@@ -49,18 +49,17 @@ export const ColumnConfigWidget: FC<ColumnConfigWidgetProps> = ({
     view.hiddenColumns.forEach(hiddenId => {
          dispatch(toggleColumnVisibility(hiddenId))
     })
-  },[view.hiddenColumns.join()]) // Needs to join into string or it will not update, since array comparisons check for pointer equality
+  }, [dispatch, view.hiddenColumns]) 
 
   const deselectAllColumns = useCallback(() => {
-      const renderedColumns = children as {key: string}[]
+      const renderedColumns = children as { key: string }[]
       renderedColumns.forEach(r => {
         const key = r["key"]
         if (!view.hiddenColumns.find(c => c == key)) {
           dispatch(toggleColumnVisibility(key))
         }
       })
-
-  },[view.hiddenColumns.join(), children])
+  }, [dispatch, view.hiddenColumns, children])
 
   const onDragEnd = useCallback(
     (result: DropResult) => {
