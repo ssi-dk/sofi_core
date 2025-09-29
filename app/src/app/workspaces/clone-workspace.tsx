@@ -11,15 +11,15 @@ type Props = {
   samples: string[];
 };
 
-export function CloneWorkspace(props: Props) {
+export function CloneWorkspace({ id, samples }: Props) {
   const { t } = useTranslation();
   const toast = useToast();
 
   const [
     cloneWorkspaceQueryState,
     cloneWorkspaceMutation,
-  ] = useMutation((name: string, id: string) =>
-    cloneWorkspace({ name, id, samples: props.samples })
+  ] = useMutation((name: string, workspaceId: string) =>
+    cloneWorkspace({ name, id: workspaceId, samples: samples })
   );
 
   const [needsNotify, setNeedsNotify] = useState(true);
@@ -28,9 +28,9 @@ export function CloneWorkspace(props: Props) {
     const name = prompt("Workspace name");
     if (name) {
       setNeedsNotify(true);
-      cloneWorkspaceMutation(name, props.id);
+      cloneWorkspaceMutation(name, id);
     }
-  }, [cloneWorkspaceMutation, setNeedsNotify, props.id]);
+  }, [cloneWorkspaceMutation, setNeedsNotify, id]);
 
   useEffect(() => {
     if (

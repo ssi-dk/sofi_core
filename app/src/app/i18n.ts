@@ -1,8 +1,6 @@
-import { template } from "@babel/core";
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
 import { AnalysisResult } from "sap-client";
-import { isTemplateExpression } from "typescript";
 import { invertMap } from "utils";
 
 /**
@@ -162,8 +160,6 @@ const fieldDisplayNames = {
   } as { [key in keyof AnalysisResult]: string },
 };
 
-const analysisType: AnalysisResult = {} as AnalysisResult;
-
 /**
  * Same as fieldDisplayNames, but for all other portions of the UI.
  */
@@ -237,7 +233,7 @@ i18n
   .init({
     resources,
     lng: "en",
-    //debug: true, // prints translation misses to the console
+    // debug: true, // prints translation misses to the console
 
     keySeparator: false, // we do not use keys in form messages.welcome
 

@@ -107,7 +107,7 @@ export const ColumnConfigWidget: FC<ColumnConfigWidgetProps> = ({
                 <Form>
                   <DragDropContext onDragEnd={onDragEnd}>
                     <Droppable droppableId="columnDroppable">
-                      {(provided, snapshot) => (
+                      {(provided, _) => (
                         <div
                           {...provided.droppableProps}
                           ref={provided.innerRef}

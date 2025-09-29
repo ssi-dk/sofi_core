@@ -36,8 +36,8 @@ function useInnerElementType(
   Cell,
   columnWidth,
   rowHeight,
-  scrollbarWidth,
-  scrollbarHeight
+  _scrollbarWidth,
+  _scrollbarHeight
 ) {
   return React.useMemo(
     () =>
@@ -134,8 +134,6 @@ function useInnerElementType(
 
           const marginTop =
             i === 1 ? sumRowsHeights(rowIndex) - hardcodedOffset : undefined;
-          const a = scrollbarWidth;
-          const b = scrollbarHeight;
 
           children.push(
             React.createElement(Cell, {
@@ -161,7 +159,7 @@ function useInnerElementType(
           </div>
         );
       }),
-    [Cell, columnWidth, rowHeight, scrollbarWidth, scrollbarHeight]
+    [Cell, columnWidth, rowHeight]
   );
 }
 

@@ -10,8 +10,8 @@ type Props = {
   sequences: IsolateWithData;
 };
 
-export const AnalysisHistoryTable = (props: Props) => {
-  const sortedIds = Object.keys(props.sequences).sort().reverse();
+export const AnalysisHistoryTable = ({ sequences }: Props) => {
+  const sortedIds = Object.keys(sequences).sort().reverse();
 
   return (
     <ScrollSync>
@@ -19,8 +19,8 @@ export const AnalysisHistoryTable = (props: Props) => {
         {sortedIds.map((id, index) => (
           <IsolateListItem
             key={`isolate-${index}`}
-            sequenceId={props.sequences[id].sequence_id}
-            analysisData={props.sequences[id]}
+            sequenceId={sequences[id].sequence_id}
+            analysisData={sequences[id]}
           />
         ))}
       </List>

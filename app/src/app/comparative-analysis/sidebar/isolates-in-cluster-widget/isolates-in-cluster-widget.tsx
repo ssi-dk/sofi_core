@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Flex, Heading } from "@chakra-ui/react";
+import { Flex } from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
 import FilterBox from "../filter-box";
 

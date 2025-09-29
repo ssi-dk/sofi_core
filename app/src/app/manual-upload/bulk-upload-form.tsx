@@ -68,8 +68,14 @@ export default function BulkUploadForm() {
   );
 
   const onFilesChange = React.useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) =>
-      setMetadataTsv(e.target.files![0]),
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const files = e.target.files;
+      if (files && files.length > 0) {
+        setMetadataTsv(files[0]);
+      } else {
+        setMetadataTsv(null);
+      }
+    },
     [setMetadataTsv]
   );
 
