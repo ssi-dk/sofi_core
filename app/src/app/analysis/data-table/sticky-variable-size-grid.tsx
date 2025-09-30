@@ -35,9 +35,7 @@ function getShownIndicies(children) {
 function useInnerElementType(
   Cell,
   columnWidth,
-  rowHeight,
-  _scrollbarWidth,
-  _scrollbarHeight
+  rowHeight
 ) {
   return React.useMemo(
     () =>
@@ -171,30 +169,16 @@ export const StickyVariableSizeGrid: React.FC<StickyVariableSizeGridProps> = (
   props: StickyVariableSizeGridProps
 ) => {
   const { gridRef, children, columnWidth, rowHeight } = props;
-  const [currentScrollbarWidth, setScrollbarWidth] = useState(0);
-  const [currentScrollbarHeight, setScrollbarHeight] = useState(0);
-
-  const scrollbarSizeChange = ({ height, width }) => {
-    if (width !== currentScrollbarWidth) {
-      setScrollbarWidth(width);
-    }
-    if (height !== currentScrollbarHeight) {
-      setScrollbarHeight(height);
-    }
-  };
 
   return (
     <React.Fragment>
-      <ScrollbarSize onChange={scrollbarSizeChange} />
       <Grid
         {...props}
         ref={gridRef}
         innerElementType={useInnerElementType(
           children,
           columnWidth,
-          rowHeight,
-          currentScrollbarWidth,
-          currentScrollbarHeight
+          rowHeight
         )}
       />
     </React.Fragment>
