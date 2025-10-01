@@ -100,7 +100,7 @@ def create_approval(user, token_info, body: ApprovalRequest):
 
 def handle_approvals(approvals: Approval, institution: str):
     # Post_and_await_approval always fails when testing on local machine. Disable in debug mode or approvals have no sequences
-    if os.environ["DEBUG_MODE"] == "1":
+    if "DEBUG_MODE" in os.environ and  os.environ["DEBUG_MODE"] == "1":
         print("Skipping approval posting in debug mode, would approve/reject:", file=sys.stderr)
         print(approvals, file=sys.stderr)
         return []

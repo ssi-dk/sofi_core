@@ -31,8 +31,6 @@ import {
 import { Checkbox } from "@chakra-ui/react";
 import { useMutation } from "redux-query-react";
 import { setSelection } from "../analysis-selection-configs";
-import { sequencesFromIsolateId } from "../analysis-details/analysis-history-configs";
-import { isTemplateExpression, preProcessFile } from "typescript";
 
 type Props = {
   selection: DataTableSelection<AnalysisResult>;
@@ -79,30 +77,6 @@ export const NearestNeighborModal = (props: Props) => {
     { isPending, isFinished, status },
     searchNearestNeighbors,
   ] = useMutation((req: NearestNeighborsRequest) => getNearestNeighbors(req));
-
-  const handleSearchComplete = useCallback(() => {
-    const newSelection = { ...selection };
-    let totalhits = 0;
-    Object.values(newReqs).forEach((value) => {
-      const neighbors =
-        nearestNeighborsResponses[serializeNNRequest(value)].result;
-      totalhits += neighbors.length;
-      Object.values(neighbors).forEach((n) => {
-        newSelection[n.sequence_id] = { cells: {}, original: n };
-      });
-    });
-    dispatch(setSelection(newSelection));
-    showToast(`Found ${totalhits} neighbor(s)`, "success");
-    setIsSearching(false);
-    onClose();
-  }, [
-    dispatch,
-    nearestNeighborsResponses,
-    onClose,
-    selection,
-    showToast,
-    newReqs,
-  ]);
 
   useEffect(() => {
     // Collector
@@ -177,14 +151,6 @@ export const NearestNeighborModal = (props: Props) => {
       setSearchIndex(0);
     }
   }, [isSearching]);
-
-  // useEffect(() => {
-  //   if (searchIndex === 0) {
-  //     return;
-  //   }
-  //   searchNearestNeighbors(searchIndex);
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [searchIndex]);
 
   useEffect(() => {
     if (!isSearching || newReqs.length == 0) {

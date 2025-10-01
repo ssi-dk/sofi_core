@@ -1,10 +1,8 @@
 import React from "react";
 import { Box } from "@chakra-ui/react";
 import { useSelector } from "react-redux";
-import { useRequest } from "redux-query-react";
 import {
   ComparativeAnalysisNewickSlice,
-  getComparativeAnalysisNewick,
 } from "./comparative-analysis-configs";
 import Header from "../header/header";
 import Tree from "./phylo/phylo";
@@ -17,10 +15,6 @@ const newickTreeSelector = (state: {
 export default function ComparativeAnalysis() {
   const [selected, setSelected] = React.useState([]);
   const newickTree = useSelector(newickTreeSelector);
-  const jobId = "1";
-  const [{ isPending, status }, refresh] = useRequest(
-    getComparativeAnalysisNewick(jobId)
-  );
 
   const newickData = React.useMemo(() => newickTree, [newickTree]);
   const leafColors = React.useMemo(() => ({}), []);
@@ -34,8 +28,6 @@ export default function ComparativeAnalysis() {
   );
 
   const sidebarWidth = "300px";
-  // const reset = React.useCallback((_e) => {setSelected(["Bovine"])}, [setSelected])
-  // <button onClick={reset}>Set selected</button>
   return (
     <Box
       display="grid"

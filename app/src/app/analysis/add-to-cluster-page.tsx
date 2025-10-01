@@ -16,7 +16,7 @@ export function AddToCluster() {
   const [isRequired, setIsRequired] = React.useState(false);
 
   const [
-    addToClusterQueryState,
+    ,
     addToClusterMutation,
   ] = useMutation((cluster: string, samples: string[]) =>
     AddToClusterRequest({ clusterid: cluster, samples: samples })

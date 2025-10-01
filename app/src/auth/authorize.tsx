@@ -15,10 +15,9 @@ import {
   Environment,
   getAccessToken,
   getIsLoggingIn,
-  setIsLoggingIn,
 } from "./environment";
 
-export const Authorize = (props: { children: React.ReactNode }) => {
+export const Authorize = ({ children }: { children: React.ReactNode }) => {
   const toast = useToast();
   const { t } = useTranslation();
 
@@ -29,7 +28,7 @@ export const Authorize = (props: { children: React.ReactNode }) => {
     Environment.crypto
   );
   const redirect = () => {
-    //setIsLoggingIn();
+    // setIsLoggingIn();
     AuthorizationServiceConfiguration.fetchFromIssuer(
       Environment.openIdConnectUrl,
       new FetchRequestor()
@@ -61,9 +60,9 @@ export const Authorize = (props: { children: React.ReactNode }) => {
     return getAccessToken();
   };
 
-  const [{ isPending, isFinished }] = useRequest(requestUserInfo());
+  const [{ isFinished }] = useRequest(requestUserInfo());
   if (isLoggedIn() && isFinished) {
-    return <React.Fragment>{props.children}</React.Fragment>;
+    return <React.Fragment>{children}</React.Fragment>;
   }
 
   if (!isLoggedIn() && !getIsLoggingIn()) {

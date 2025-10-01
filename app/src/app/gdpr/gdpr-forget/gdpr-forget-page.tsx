@@ -11,7 +11,7 @@ import {
 import "@compiled/react";
 import { ExtractDataFromPiRequest, PersonalIdentifierType } from "sap-client";
 import { useMutation } from "redux-query-react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { forgetPersonalData, ForgetPiiResponse } from "./gdpr-forget-configs";
 import { inputForm } from "./gdpr-forget-styles";
@@ -24,7 +24,6 @@ interface PersonalDataState {
 
 const formstateToRequest = (state: PersonalDataState) => {
   if (state.type && state.value && state.value.length > 0) {
-    const trimmed = state.value.trim();
     return {
       identifierType: state.type,
       identifier: state.value,

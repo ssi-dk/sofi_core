@@ -1,5 +1,5 @@
-import React, { useRef, useEffect, useCallback, useMemo } from "react";
-import { Container, Box } from "@chakra-ui/react";
+import React, { useRef, useEffect, useCallback } from "react";
+import { Box } from "@chakra-ui/react";
 
 import createTree from "@cgps/phylocanvas/createTree";
 
@@ -26,53 +26,41 @@ function initPhylocanvas(canvas, newick, styles, onSelected) {
     },
     [
       contextMenuPlugin,
-      interactionsPlugin, // orders matters
+      interactionsPlugin,
       scaleBarPlugin,
       function (tree, decorate) {
         decorate("selectNode", (delegate, args) => {
           delegate(...args);
-          // console.log('tree nodes', tree.nodes.leafNodes);
-          // console.log("selectNode");
-          const { selectedIds } = tree.state;
           onSelected(tree.state.selectedIds);
-          // if (selectedIds && selectedIds.length) {
-          // } else {
-          //   // const ids = tree.nodes.leafNodes.map((value) => value.id);
-          //   actions.deselectIDs();
-          // }
         });
       },
       // on view subtree
-      (tree, decorate) => {
+      (_, decorate) => {
         decorate("setRoot", (delegate, args) => {
           delegate(...args);
-          const ids = tree.nodes.leafNodes.map((value) => value.id);
-          // console.log("setRoot", ids, args);
-          // actions.setWorkingIDs(ids);
         });
       },
       // on redraw original tree/re-root tree
-      (tree, decorate) => {
+      (_, decorate) => {
         decorate("setSource", (delegate, args) => {
           delegate(...args);
-          const ids = tree.nodes.leafNodes.map((value) => value.id);
-          // console.log("setSource", ids, args);
-          // actions.setWorkingIDs(ids);
         });
       },
     ]
   );
 }
 
-export default function Tree(props: {
+export default function Tree({
+  newick_data,
+  leaf_colors,
+  selectedIDs,
+  onSelected,
+}: {
   newick_data: string;
   leaf_colors: { [index: string]: { fillStyle: string } };
   selectedIDs: Array<string>;
   onSelected: (ids) => void;
 }) {
-  // console.log('newick_data', props.newick_data)
-  // console.log('selectedIDs', props.selectedIDs)
-
   const canvas = useRef<HTMLCanvasElement | null>(null);
   const tree = useRef(null);
 
@@ -92,7 +80,7 @@ export default function Tree(props: {
 
   useEffect(() => {
     window.addEventListener("resize", updateWidthAndHeight);
-    //clean up
+    // clean up
     return () => window.removeEventListener("resize", updateWidthAndHeight);
   });
 
@@ -100,16 +88,14 @@ export default function Tree(props: {
     if (canvas.current) {
       canvas.current.width = canvas.current.parentElement.clientWidth;
       canvas.current.height = canvas.current.parentElement.clientHeight;
-      if (props.newick_data) {
+      if (newick_data) {
         tree.current = initPhylocanvas(
           canvas.current,
-          props.newick_data,
-          props.leaf_colors,
-          props.onSelected
+          newick_data,
+          leaf_colors,
+          onSelected
         );
-        // const ids = tree.current.nodes.leafNodes.map((value) => value.id);
-        // props.setWorkingIDs(ids);
-        // console.log(tree.current);
+
         tree.current.contextMenu.el.oncontextmenu = disableContextMenu;
       }
     }
@@ -121,19 +107,19 @@ export default function Tree(props: {
       }
     };
   }, [
-    props.leaf_colors,
-    props.newick_data,
-    props.onSelected,
+    leaf_colors,
+    newick_data,
+    onSelected,
     disableContextMenu,
   ]);
 
   useEffect(() => {
     if (tree.current && tree.current.state.selectedIds) {
       tree.current.setState({
-        selectedIds: props.selectedIDs,
+        selectedIds: selectedIDs,
       });
     }
-  }, [props.selectedIDs]);
+  }, [selectedIDs]);
 
   return (
     <Box borderRadius="2" width="100%" height="100%">

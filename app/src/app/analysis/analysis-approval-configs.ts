@@ -75,7 +75,12 @@ export const revokeApproval = (params: CancelApprovalRequest) => {
       const sequences = params.sequences.split(";");
 
       const newValue: Approval[] = JSON.parse(JSON.stringify(oldValue));
-      const approval = newValue.find((x) => x.id === params.approvalId)!;
+      const approval = newValue.find((x) => x.id === params.approvalId);
+
+      if (!approval) {
+        console.error(`Approval with id ${params.approvalId} not found`);
+        return oldValue; // Return the old value unchanged if approval not found
+      }
 
       if (sequences.length < approval.sequence_ids.length) {
         // partial revoke
