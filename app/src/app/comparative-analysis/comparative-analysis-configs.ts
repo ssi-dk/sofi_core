@@ -1,4 +1,3 @@
-import { QueryConfig } from "redux-query";
 import {
   NewickTreeResponse,
   getComparativeNewickData,

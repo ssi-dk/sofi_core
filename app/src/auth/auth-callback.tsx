@@ -18,7 +18,9 @@ import { useToast } from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
 import { Loading } from "loading";
 
-export const Callback = (props: {
+export const Callback = ({
+  location,
+}: {
   location: {
     search: string | string[][] | Record<string, string> | URLSearchParams;
   };
@@ -68,14 +70,6 @@ export const Callback = (props: {
           setRefreshToken(tokenResp.refreshToken);
           clearIsLoggingIn();
 
-          const profile = await fetch(
-            `${Environment.openIdConnectUrl}${Environment.userInfoEndpoint}`,
-            {
-              headers: {
-                authorization: `Bearer ${tokenResp.accessToken}`,
-              },
-            }
-          );
           window.location.replace("/");
         } else {
           setAuthError(error);
@@ -85,7 +79,7 @@ export const Callback = (props: {
       }
     });
 
-    const params = new URLSearchParams(props.location.search);
+    const params = new URLSearchParams(location.search);
     const code = params.get("code");
 
     if (!code) {

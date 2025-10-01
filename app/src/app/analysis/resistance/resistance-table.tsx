@@ -200,7 +200,7 @@ export const ResistanceTable = (props: Props) => {
                           phenotype?.genes ?? {}
                         ).join(", ");
 
-                        let backgroundColor = "#9D9D9D"; //Default gray color
+                        let backgroundColor = "#9D9D9D"; // Default gray color
                         if (phenotype) {
                           for (const gene of Object.values(phenotype.genes)) {
                             if (gene.ref_seq_length === gene.alignment_length) {

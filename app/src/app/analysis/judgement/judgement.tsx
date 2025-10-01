@@ -128,7 +128,7 @@ export const Judgement = <T extends NotEmpty>(props: Props<T>) => {
     for (const [sequenceId, sequenceSelection] of Object.entries(selection)) {
       const approvedFields = Object.entries(sequenceSelection.cells)
         .filter(([k, v]) => v && checkColumnIsVisible(k as keyof AnalysisResult))
-        .map(([k, v]) => k);
+        .map(([k, _]) => k);
       approvedFields.forEach((field) => {
         const needed = getDependentColumns(field as keyof AnalysisResult);
         for (const e of needed) {
@@ -153,7 +153,7 @@ export const Judgement = <T extends NotEmpty>(props: Props<T>) => {
       const matrix = {};
       const requiredValues = {};
       Object.keys(selection).forEach((key) => {
-        matrix[key] = Object.fromEntries(Object.entries(selection[key].cells).filter(([k, v]) => checkColumnIsVisible(k as keyof AnalysisResult)));
+        matrix[key] = Object.fromEntries(Object.entries(selection[key].cells).filter(([k, _]) => checkColumnIsVisible(k as keyof AnalysisResult)));
         requiredValues[key] = {};
         requiredValues[key]["resfinder_version"] =
           selection[key].original.resfinder_version ?? "";
@@ -167,7 +167,7 @@ export const Judgement = <T extends NotEmpty>(props: Props<T>) => {
     const matrix = {};
     const requiredValues = {};
     Object.keys(selection).forEach((key) => {
-      matrix[key] = Object.fromEntries(Object.entries(selection[key].cells).filter(([k, v]) => checkColumnIsVisible(k as keyof AnalysisResult)));
+      matrix[key] = Object.fromEntries(Object.entries(selection[key].cells).filter(([k, _]) => checkColumnIsVisible(k as keyof AnalysisResult)));
       requiredValues[key] = {};
       requiredValues[key]["resfinder_version"] =
         selection[key].original.resfinder_version ?? "";

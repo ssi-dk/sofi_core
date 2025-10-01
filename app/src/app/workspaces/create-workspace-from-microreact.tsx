@@ -16,7 +16,7 @@ export function CreateWorkspaceFromMicroreact() {
   const [isRequired, setIsRequired] = React.useState(false);
 
   const [
-    createWorkspaceQueryState,
+    ,
     createWorkspaceMutation,
   ] = useMutation((workspaceName: string, samples: string[]) =>
     createWorkspaceFromSequenceIds({ name: workspaceName, samples: samples })

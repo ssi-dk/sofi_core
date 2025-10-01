@@ -53,8 +53,14 @@ export default function MultiUploadForm() {
   }, [t, toast, status, setMetadataTSV, setSelectedFiles]);
 
   const metadataChange = React.useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) =>
-      setMetadataTSV(e.target.files![0]),
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const files = e.target.files;
+      if (files && files.length > 0) {
+        setMetadataTSV(files[0]);
+      } else {
+        setMetadataTSV(null);
+      }
+    },
     [setMetadataTSV]
   );
   const selectedFilesChange = React.useCallback(

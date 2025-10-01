@@ -1,5 +1,3 @@
-import { AnalysisResultAllOfQcFailedTests } from "../../../sap-client";
-
 const transform = (value: any, key: string | number | symbol) => {
   if (!value && value !== 0 && value !== false) {
     return "";

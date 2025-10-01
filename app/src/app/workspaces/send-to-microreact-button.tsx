@@ -6,13 +6,13 @@ type Props = {
   workspace: string;
 };
 
-export const SendToMicroreactButton = (props: Props) => {
+export const SendToMicroreactButton = ({ workspace }: Props) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
     <>
       {isOpen ? (
-        <SendToMicroreactModal workspace={props.workspace} onClose={onClose} />
+        <SendToMicroreactModal workspace={ workspace } onClose={onClose} />
       ) : null}
 
       <Button onClick={onOpen}>Send to Microreact</Button>

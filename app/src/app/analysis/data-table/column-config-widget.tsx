@@ -45,22 +45,21 @@ export const ColumnConfigWidget: FC<ColumnConfigWidgetProps> = ({
     (s) => s.view.view
   ) as UserDefinedViewInternal;
 
-  const selectAllColumns = useCallback(() => {
+  const selectAllColumns = () => {
     view.hiddenColumns.forEach(hiddenId => {
          dispatch(toggleColumnVisibility(hiddenId))
     })
-  },[view.hiddenColumns.join()]) // Needs to join into string or it will not update, since array comparisons check for pointer equality
+  };
 
-  const deselectAllColumns = useCallback(() => {
-      const renderedColumns = children as {key: string}[]
+  const deselectAllColumns = () => {
+      const renderedColumns = children as { key: string }[]
       renderedColumns.forEach(r => {
         const key = r["key"]
         if (!view.hiddenColumns.find(c => c == key)) {
           dispatch(toggleColumnVisibility(key))
         }
       })
-
-  },[view.hiddenColumns.join(), children])
+  };
 
   const onDragEnd = useCallback(
     (result: DropResult) => {
@@ -108,7 +107,7 @@ export const ColumnConfigWidget: FC<ColumnConfigWidgetProps> = ({
                 <Form>
                   <DragDropContext onDragEnd={onDragEnd}>
                     <Droppable droppableId="columnDroppable">
-                      {(provided, snapshot) => (
+                      {(provided, _) => (
                         <div
                           {...provided.droppableProps}
                           ref={provided.innerRef}
