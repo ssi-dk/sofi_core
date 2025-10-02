@@ -99,8 +99,10 @@ Make sure to edit your `/etc/hosts` file (`c:\windows\system32\drivers\etc\hosts
 
 ```
 127.0.0.1	dev.sofi-platform.dk
-127.0.0.1	dev2.sofi-platform.dk
+{k3s traefik address}	dev2.sofi-platform.dk
 ```
+Where `{k3s traefik address}` can be found by running `sudo k3s kubectl get svc -A -o jsonpath='{.items[?(@.metadata.name=="traefik")].status.loadBalancer.ingress[0].ip}' on the wsl machine. Note that that step is only needed when testing the configuration found in the sofi_core_gitops repo.
+`
 
 Setting `SOFI_HOSTNAME` to `localhost` or `127.0.0.1` is not currently supported.
 
