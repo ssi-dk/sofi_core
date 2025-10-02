@@ -414,7 +414,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
       rows,
       calcColSelectionState,
       onSelect,
-      isJudgedCell,
+      canApproveColumn,
       getDependentColumns,
       onColumnResize,
       selection,
