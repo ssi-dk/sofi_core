@@ -1,7 +1,10 @@
 import logging
+import time
+import pymongo
 from pymongo import CursorType
+from pymongo.errors import PyMongoError
+from bson.objectid import ObjectId
 from ..shared import ProcessingStatus
-from time import sleep
 
 
 class RequestBrokerSync():
@@ -12,30 +15,102 @@ class RequestBrokerSync():
         self.broker_name = name
         self.listener_match = matcher
         self.request_callback = callback
-        self.sleep_time = 10
+        self.max_duration = 2.0  # Max seconds to wait before processing batch
+        self.resume_token = None
+        self.timer = time.process_time()
+
+    def elapsed_seconds(self, duration: float):
+        return (time.process_time() - duration) * 1000
+
+    def watch_loop(self):
+        # Create change stream pipeline matching your listener pattern
+        pipeline = [
+            {
+                "$match": {
+                    "operationType": {"$in": ["insert", "update"]},
+                    # Match documents that have our listener criteria
+                    **{f"fullDocument.{k}": v for k, v in self.listener_match.items()}
+                }
+            }
+        ]
+        
+        options = {}
+        
+        with self.col.watch(pipeline, **options) as stream:
+            has_change = False
+            pending_records = []
+            
+            while stream.alive:
+                change = stream.try_next()
+                # Update resume token even when no changes are returned
+                self.resume_token = stream.resume_token
+
+                if change is not None:
+                    if has_change == False:
+                        self.timer = time.process_time()
+                        has_change = True
+                    
+                    doc_id = change["documentKey"]["_id"]
+                    pending_records.append(ObjectId(doc_id))
+                    logging.debug(f"{self.broker_name} detected change for {doc_id}")
+
+                # Process batch when timeout reached or stream becomes inactive
+                if has_change and self.elapsed_seconds(self.timer) > self.max_duration:
+                    self._process_batch(pending_records)
+                    pending_records = []
+                    has_change = False
+
+    def _process_batch(self, record_ids):
+        """Process a batch of record IDs atomically"""
+        if not record_ids:
+            return
+            
+        logging.info(f"{self.broker_name} processing batch of {len(record_ids)} records: {record_ids}")
+        start_time = time.process_time()
+        
+        processed_count = 0
+        for record_id in record_ids:
+            # Atomically lock and retrieve the record
+            record = self.col.find_one_and_update(
+                {
+                    "_id": record_id,
+                    **self.listener_match,
+                    "status": ProcessingStatus.WAITING.value,
+                },
+                {"$set": {"status": ProcessingStatus.PROCESSING.value}},
+                return_document=True
+            )
+            
+            if record is not None:
+                logging.info(f"{self.broker_name} successfully locked and processing {record['_id']}")
+                try:
+                    self.request_callback(record)
+                    self.mark_done(record)
+                    processed_count += 1
+                except Exception as e:
+                    logging.error(f"{self.broker_name} error processing {record['_id']}: {e}")
+                    self.mark_error(record)
+            else:
+                logging.debug(f"{self.broker_name} could not lock {record_id}, already processed or doesn't match criteria")
+        
+        elapsed_ms = self.elapsed_seconds(start_time)
+        logging.info(f"{self.broker_name} batch complete: processed {processed_count}/{len(record_ids)} records in {elapsed_ms} ms")
 
     def run(self):
         logging.info(f"Started {self.broker_name} thread.")
+        
         while True:
-            logging.info(f"{self.broker_name} listening for requests.")
-            cursor = self.col.find(
-                self.listener_match, cursor_type=CursorType.NON_TAILABLE
-            )
-            for record in cursor:
-                    logging.info(f"{self.broker_name} trying to DB lock {record['_id']}")
-                    # We cannot change size of documents in capped collections
-                    # so the "locking" should be the same length in both get and update.
-                    self.col.update(
-                        {
-                            "_id": record["_id"],
-                            "status": ProcessingStatus.WAITING.value,
-                        },
-                        {"$set": {"status": ProcessingStatus.PROCESSING.value}},
-                    )
-                    self.request_callback(record)
-                    self.mark_done(record)
-            logging.info(f"{self.broker_name} finished processing requests. Sleeping for {self.sleep_time}s.")
-            sleep(self.sleep_time)
+            try:
+                logging.info(f"{self.broker_name} starting change stream monitoring.")
+                self.watch_loop()
+            except PyMongoError as e:
+                logging.error(f"{self.broker_name} MongoDB error: {e}")
+                if self.resume_token is None:
+                    logging.error(f"{self.broker_name} Resume token error. Restarting without resume token...")
+                # Continue the loop to restart the change stream
+            except Exception as e:
+                logging.error(f"{self.broker_name} unexpected error: {e}")
+                # Continue the loop to restart
 
     def mark_done(self, record):
         record["status"] = ProcessingStatus.DONE.value
