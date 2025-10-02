@@ -380,11 +380,11 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
                 cells: getAllApprovableCellsInSelection(r.original[primaryKey], visibleColumns),
               },
             }))
-            .reduce((acc, val) => ({ ...acc, ...val }));
+            .reduce((acc, val) => ({ ...acc, ...val }), {});
         }
       }else{
         const sel = rows
-          .filter((r) => !isJudgedCell(r.original[primaryKey], col.id as string))
+          .filter((r) => canApproveColumn(col.id as string))
           .map((r) => ({
             [r.original[primaryKey]]: {
               original: r.original,
@@ -394,7 +394,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
               },
             },
           }))
-          .reduce((acc, val) => ({ ...acc, ...val }));
+          .reduce((acc, val) => ({ ...acc, ...val }), {});
         incSel = { ...selection, ...sel };
         getDependentColumns(col.id).forEach((c) => {
           rows
