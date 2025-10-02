@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Box } from "@chakra-ui/react";
 import { PropFilter, RangeFilter } from "utils";
-import { AnalysisResult } from "sap-client";
+import { AnalysisResult, QueryExpression, QueryOperand } from "sap-client";
 import MetaFilter from "./meta-filter/meta-filter";
 import AnalysisFilter from "./analysis-filter/analysis-filter";
 
