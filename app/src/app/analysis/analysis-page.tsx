@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
   Box,
   Flex,
@@ -17,6 +17,7 @@ import {
   QueryExpressionFromJSON,
   QueryExpression,
   QueryOperator,
+  QueryOperand,
 } from "sap-client";
 import { useMutation, useRequest } from "redux-query-react";
 import { useDispatch, useSelector } from "react-redux";
@@ -183,40 +184,57 @@ export default function AnalysisPage() {
     {} as RangeFilter<AnalysisResult>
   );
 
-  const rewriteSearchPropsToAPIQuery = (q: QueryExpression, propFilter: Object) => {
-
-    let result: QueryExpression = q;
-
-    const mergeValues = (value: Object, prev: QueryExpression): QueryExpression => {
-      if (prev.left) {
-        return {
-          left: value,
-          operator: QueryOperator.AND,
-          right: prev
-        }
-      } else {
-        return { left: value }
+  const mergeFilters =(searchExpression: QueryExpression, propFilter: PropFilter<AnalysisResult> ) => {
+    // Recursively search searchExpression, and merge into list
+    const recurseSearchTree = (e?: QueryExpression):{field: string, term: string}[] => {
+      if (!e) {
+        return []
       }
+      if ("field" in e && "term" in e && e.field && e.term) {
+        return [{field: e.field.toString(), term: e.term.toString()}]
+      }
+      return [...recurseSearchTree(e.left),...recurseSearchTree(e.right)]
     }
+    const searchFields = recurseSearchTree(searchExpression)
+
+    // Search field takes priority, so add first
+    const searchMap = new Map<string,string>();
+    searchFields.forEach(({field,term}) => searchMap.set(field,term))
 
     Object.keys(propFilter).forEach(key => {
       const value = propFilter[key] as string[];
       if (value.length == 0) { // When an argument is removed from the filter it still remains, it is just empty.
         return;
       } else {
-        result = mergeValues({field: key, term: value[0],quoted: true}, result)
+        if (!searchMap.has(key)) {
+          searchMap.set(key,value[0].toString())
+        }
       }
     })
-    return result;
+
+    const searchList: QueryOperand[] = [...searchMap].map((f) => ({field: f[0], term: f[1]}) );
+
+    switch (searchMap.size) {
+      case 0:
+          return {}
+      case 1:
+          return {left: searchList[0]}
+      default:
+        return searchList.reduce((l,r) => ({left: l, operator: QueryOperator.AND, right: r})) as QueryExpression
+    }
   }
+
 
   const onSearch = React.useCallback(
     (q: AnalysisQuery, pageSize: number) => {
 
+
+      const newQ = mergeFilters(q.expression || {},propFilters);
+
       dispatch({ type: "RESET/Analysis" });
       setLastSearchQuery(q);
 
-      const newQ = rewriteSearchPropsToAPIQuery(q.expression || {}, propFilters);
+      // const newQ = rewriteSearchPropsToAPIQuery(q.expression || {}, propFilters);
 
       // if we got an empty expression, just request a page
       if (newQ && Object.keys(newQ).length === 0) {
