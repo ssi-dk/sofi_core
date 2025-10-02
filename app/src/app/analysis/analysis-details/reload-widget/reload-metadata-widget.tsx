@@ -1,14 +1,9 @@
 import React, { useState } from "react";
 import { Button, useToast } from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
-import { useSelector } from "react-redux";
 import { useMutation } from "redux-query-react";
-import { MetadataReloadResponse, Organization } from "sap-client";
+import { Organization } from "sap-client";
 import { reloadMetadataByIsolate } from "./reload-configs";
-
-const getReloadResponse = (state: {
-  entities: { reloadResponse: MetadataReloadResponse };
-}) => state.entities.reloadResponse;
 
 type ReloadMetadataWidgetProps = {
   isolateId: string;
@@ -24,8 +19,6 @@ const ReloadMetadataWidget = (props: ReloadMetadataWidgetProps) => {
   const [{ isPending, status }, reloadMetadata] = useMutation(() =>
     reloadMetadataByIsolate(isolateId, institution)
   );
-
-  const analysisHistory = useSelector(getReloadResponse) ?? {};
 
   const reloadClick = React.useCallback(() => {
     setNeedsNotify(true);

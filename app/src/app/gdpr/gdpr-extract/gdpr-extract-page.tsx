@@ -4,17 +4,12 @@ import {
   Input,
   Button,
   Select,
-  Textarea,
   VStack,
-  Spacer,
-  Flex,
   Box,
 } from "@chakra-ui/react";
-import { css } from "@compiled/react";
 import { rightPane, inputForm } from "./gdpr-extract-styles";
 import { ExtractDataFromPiRequest, PersonalIdentifierType } from "sap-client";
 import { requestAsync } from "redux-query";
-import { useRequest } from "redux-query-react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "app/root-reducer";
@@ -27,7 +22,6 @@ interface PersonalDataState {
 
 const formstateToRequest = (state: PersonalDataState) => {
   if (state.type && state.value && state.value.length > 0) {
-    const trimmed = state.value.trim();
     return {
       identifierType: state.type,
       identifier: state.value,
@@ -39,7 +33,7 @@ const formstateToRequest = (state: PersonalDataState) => {
 
 const GdprExtractPage = () => {
   const { t } = useTranslation();
-  const [loading, setLoading] = useState(false);
+  const [loading, ] = useState(false);
   const [formState, setFormState] = useState({
     type: null,
     value: "",
@@ -69,10 +63,10 @@ const GdprExtractPage = () => {
   );
 
   const fetchClick = React.useCallback(
-    (e) => {
+    (_) => {
       const req = formstateToRequest(formState);
       if (req) {
-        //setLoading(true);
+        // setLoading(true);
         dispatch(requestAsync(extractPersonalData(req)));
       }
     },
@@ -80,7 +74,7 @@ const GdprExtractPage = () => {
   );
 
   const donwloadFile = React.useCallback(
-    (e) => {
+    (_) => {
       const element = document.createElement("a");
       // Something is funky with the typing here, so we have to do this casting..
       const file = new Blob([((data as any) as Array<string>).join("")], {

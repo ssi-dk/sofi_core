@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState } from "react";
+import React from "react";
 import "@compiled/react";
 import {
   Tabs,
@@ -7,7 +7,6 @@ import {
   Tab,
   TabPanel,
   Box,
-  Flex,
 } from "@chakra-ui/react";
 import { IfPermission } from "auth/if-permission";
 import { Permission } from "sap-client";

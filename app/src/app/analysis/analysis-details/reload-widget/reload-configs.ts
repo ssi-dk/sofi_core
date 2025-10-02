@@ -2,7 +2,6 @@ import {
   reloadMetadata,
   MetadataReloadRequest,
   MetadataReloadResponse,
-  AnalysisResult,
   Organization,
 } from "sap-client";
 import { getUrl } from "service";
@@ -26,6 +25,5 @@ export const reloadMetadataByIsolate = (
       ...newValue,
     }),
   };
-  //base.force = true;
   return base;
 };

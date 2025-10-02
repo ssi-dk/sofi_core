@@ -22,7 +22,7 @@ export const ColumnConfigNode: React.FC<ColumnConfigNodeProps> = ({
 
   return (
     <Draggable key={columnName} draggableId={columnName} index={index}>
-      {(provided, snapshot) => (
+      {(provided, _) => (
         <div
           ref={provided.innerRef}
           {...provided.draggableProps}

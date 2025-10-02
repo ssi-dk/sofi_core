@@ -54,14 +54,19 @@ export default function ApprovalHistory() {
   const [
     revocationLoadState,
     doRevoke,
-  ] = useMutation((id: string, sequences?: string[]) =>
-    revokeApproval({
+  ] = useMutation((id: string, sequences?: string[]) => {
+    const approval = approvalHistory.find((a) => a.id === id);
+    
+    if (!sequences && !approval) {
+      console.error(`Approval with id ${id} not found`);
+      throw new Error(`Approval with id ${id} not found`);
+    }
+    
+    return revokeApproval({
       approvalId: id,
-      sequences: (
-        sequences || approvalHistory.find((a) => a.id === id)!.sequence_ids
-      ).join(";"),
-    })
-  );
+      sequences: (sequences || approval?.sequence_ids || []).join(";"),
+    });
+  });
 
   const [needsNotify, setNeedsNotify] = useState(true);
   const [expandedRows, setExpandedRows] = useState<string[]>([]);

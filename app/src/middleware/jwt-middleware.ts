@@ -1,4 +1,4 @@
-import { actionTypes, mutateAsync } from "redux-query";
+import { actionTypes } from "redux-query";
 import { getAccessToken } from "auth/environment";
 
 const {
@@ -8,7 +8,7 @@ const {
   MUTATE_FAILURE,
 } = actionTypes;
 
-export const jwtMiddleware = (store) => (next) => (action) => {
+export const jwtMiddleware = (_) => (next) => (action) => {
   if (
     action &&
     (action.type === MUTATE_ASYNC || action.type === REQUEST_ASYNC)

@@ -35,9 +35,7 @@ function getShownIndicies(children) {
 function useInnerElementType(
   Cell,
   columnWidth,
-  rowHeight,
-  scrollbarWidth,
-  scrollbarHeight
+  rowHeight
 ) {
   return React.useMemo(
     () =>
@@ -134,8 +132,6 @@ function useInnerElementType(
 
           const marginTop =
             i === 1 ? sumRowsHeights(rowIndex) - hardcodedOffset : undefined;
-          const a = scrollbarWidth;
-          const b = scrollbarHeight;
 
           children.push(
             React.createElement(Cell, {
@@ -161,7 +157,7 @@ function useInnerElementType(
           </div>
         );
       }),
-    [Cell, columnWidth, rowHeight, scrollbarWidth, scrollbarHeight]
+    [Cell, columnWidth, rowHeight]
   );
 }
 
@@ -173,30 +169,16 @@ export const StickyVariableSizeGrid: React.FC<StickyVariableSizeGridProps> = (
   props: StickyVariableSizeGridProps
 ) => {
   const { gridRef, children, columnWidth, rowHeight } = props;
-  const [currentScrollbarWidth, setScrollbarWidth] = useState(0);
-  const [currentScrollbarHeight, setScrollbarHeight] = useState(0);
-
-  const scrollbarSizeChange = ({ height, width }) => {
-    if (width !== currentScrollbarWidth) {
-      setScrollbarWidth(width);
-    }
-    if (height !== currentScrollbarHeight) {
-      setScrollbarHeight(height);
-    }
-  };
 
   return (
     <React.Fragment>
-      <ScrollbarSize onChange={scrollbarSizeChange} />
       <Grid
         {...props}
         ref={gridRef}
         innerElementType={useInnerElementType(
           children,
           columnWidth,
-          rowHeight,
-          currentScrollbarWidth,
-          currentScrollbarHeight
+          rowHeight
         )}
       />
     </React.Fragment>
