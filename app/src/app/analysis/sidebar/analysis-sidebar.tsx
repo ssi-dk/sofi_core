@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Box } from "@chakra-ui/react";
 import { PropFilter, RangeFilter } from "utils";
-import { AnalysisResult } from "sap-client";
+import { AnalysisResult, QueryExpression, QueryOperand } from "sap-client";
 import MetaFilter from "./meta-filter/meta-filter";
 import AnalysisFilter from "./analysis-filter/analysis-filter";
 
@@ -10,10 +10,12 @@ type AnalysisSidebarProps = {
   onPropFilterChange: (filter: PropFilter<AnalysisResult>) => void;
   onRangeFilterChange: (filter: RangeFilter<AnalysisResult>) => void;
   isDisabled: boolean;
+  queryOperands: QueryOperand[]
+  clearFieldFromSearch: (field: keyof AnalysisResult) => void;
 };
 
 function AnalysisSidebar(props: AnalysisSidebarProps) {
-  const { data, onPropFilterChange, onRangeFilterChange, isDisabled } = props;
+  const { data, onPropFilterChange, onRangeFilterChange, isDisabled,queryOperands,clearFieldFromSearch } = props;
 
   const sortUnique = React.useCallback(
     (items: string[]) => Array.from(new Set(items)).sort(),
@@ -71,6 +73,8 @@ function AnalysisSidebar(props: AnalysisSidebarProps) {
   return (
     <>
       <MetaFilter
+        clearFieldFromSearch={clearFieldFromSearch}
+        queryOperands={queryOperands}
         organisations={organisations}
         projects={projects}
         projectNrs={projectNrs}
@@ -86,6 +90,8 @@ function AnalysisSidebar(props: AnalysisSidebarProps) {
       />
       <Box m={3} />
       <AnalysisFilter
+        clearFieldFromSearch={clearFieldFromSearch}
+        queryOperands={queryOperands}
         sts={sts}
         serotypeFinals={serotypes}
         providedSpecies={providedSpecies}

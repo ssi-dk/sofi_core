@@ -156,7 +156,6 @@ def search_analysis(user, token_info, query: AnalysisQuery):
     }
 
     token = parse_paging_token(query.paging_token) or default_token
-    print(default_token["query"], file=sys.stderr)
 
     items = get_analysis_page(
         token["query"],

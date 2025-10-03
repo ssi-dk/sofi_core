@@ -2,6 +2,7 @@ from .visitor import on, when
 import re
 import sys
 from datetime import datetime, timedelta
+import dateutil
 from ....common.config.column_config import pii_columns
 from ....generated.models.query_expression import (
     QueryExpression,
@@ -61,7 +62,7 @@ def coerce_term(term: str):
         except Exception:
             pass
         try:
-            return datetime.fromisoformat(term)
+            return dateutil.parser.isoparse(term)
         except Exception:
             raise
     except Exception:
@@ -73,13 +74,24 @@ def structure_wildcard(field, node):
         if field == "cpr_nr":   # because cpr is saved as a string in the DB, so don't convert even when consists of only digits
             return node.term
         return coerce_term(node.term)
-    coerced = coerce_term(node.term)
-    if isinstance(coerced, str):
-        return check_for_wildcard(field, coerced)
-    elif isinstance(coerced, datetime):
-        return {"$gte": coerced, "$lte": coerced + timedelta(days=1)}
-    else:
-        return {"$in": [coerced, node.term]}
+    
+    if node.term is not None:
+        coerced = coerce_term(node.term)
+        if isinstance(coerced, str):
+            return check_for_wildcard(field, coerced)
+        elif isinstance(coerced, datetime):
+            return {"$gte": coerced, "$lte": coerced + timedelta(days=1)}
+        else:
+            return {"$in": [coerced, node.term]}
+    elif node.term_max is not None or node.term_min is not None:
+        coerced_min = coerce_term(node.term_min)
+        coerced_max = coerce_term(node.term_max)
+        if coerced_max is None:
+            return {"$gte": coerced_min}  
+        if coerced_min is None:
+            return {"$lte": coerced_max}
+
+        return {"$gte": coerce_term(node.term_min), "$lte": coerce_term(node.term_max)}
 
 
 def structure_ranged(field, node):
@@ -190,6 +202,6 @@ class AbstractSyntaxTreeVisitor(object):
             return structure_operator(
                 operator, left.accept(self, is_negated), right.accept(self, is_negated)
             )
-        elif node.field and (node.term or node.inclusive):  # presence of inclusivity denotes a range-based query
+        elif node.field and (node.term or node.inclusive or node.term_max or node.term_min):  # presence of inclusivity,min or max denotes a range-based query
             is_negated = is_negated or (node.prefix is not None and "-" in node.prefix)
             return structure_leaf(node, is_negated)
