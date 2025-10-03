@@ -70,8 +70,8 @@ function MetaFilter(props: MetaFilterProps) {
     ) => (d: Date) => {
       cb(d);
       const opposite = end === "min" ? "max" : "min";
-      const minDate = new Date(0);
-      const maxDate = new Date(new Date().getTime() + 24 * 60 * 60 * 1000); // tomorrow
+      const minDate = null;
+      const maxDate = null;
       const oppositeValue =
         opposite === "min"
           ? rangeFilterState[field]?.min ?? minDate
@@ -79,7 +79,7 @@ function MetaFilter(props: MetaFilterProps) {
       const val = d !== null ? d : end === "min" ? minDate : maxDate;
       const resolvedState = {
         ...rangeFilterState,
-        [field]: { [end]: val, [opposite]: oppositeValue },
+        [field]: (val ||oppositeValue) ? { [end]: val, [opposite]: oppositeValue } : undefined,
       };
       setRangeFilterState(resolvedState);
       onRangeFilterChange(resolvedState);

@@ -193,12 +193,12 @@ export default function AnalysisPage() {
   const onSearch = React.useCallback(
     (q: AnalysisQuery, pageSize: number) => {
       
-      const recurseSearchTree = (e?: QueryExpression):{field: string, term: string}[] => {
+      const recurseSearchTree = (e?: QueryExpression |QueryOperand):QueryOperand[] => {
         if (!e) {
           return []
         }
-        if ("field" in e && "term" in e && e.field && e.term) {
-          return [{field: e.field.toString(), term: e.term.toString()}]
+        if ("field" in e && e.field) {
+          return [{field: e.field.toString(), term: e.term?.toString(),term_max: e.term_max, term_min: e.term_min}]
         }
         return [...recurseSearchTree(e.left),...recurseSearchTree(e.right)]
       }
@@ -214,13 +214,12 @@ export default function AnalysisPage() {
         
         // To check equality of expressions, they need to be sorted and converted to strings since 
         // js checks object and array equality by pointer equality
-        const str1 = l1.map(({field,term}) => `${field}=${term}`).join(",")
-        const str2 = l2.map(({field,term}) => `${field}=${term}`).join(",")
-
+        const str1 = l1.map(({field,term,term_min,term_max}) => `${field}=${term || term_min + term_max}`).join(",")
+        const str2 = l2.map(({field,term,term_min,term_max}) => `${field}=${term || term_min + term_max}`).join(",")
         return str1 === str2
       }
 
-      const mergeFilters =(searchExpression: QueryExpression, propFilter: PropFilter<AnalysisResult> ) => {
+      const mergeFilters =(searchExpression: QueryExpression, propFilter: PropFilter<AnalysisResult> ,rangeFilter: RangeFilter<AnalysisResult>) => {
         
         const searchFields = recurseSearchTree(searchExpression)
 
@@ -239,9 +238,28 @@ export default function AnalysisPage() {
           }
         })
 
-        const searchList: QueryOperand[] = [...searchMap].map((f) => ({field: f[0], term: f[1]}) );
+        const searchList: (QueryOperand & QueryExpression)[] = [...searchMap].map((f) => ({field: f[0], term: f[1]}) );
 
-        switch (searchMap.size) {
+
+        console.log("Computing range filter:",rangeFilter)
+
+        // Range filters cannot be searched for in the search bar, so we do not need to filter them away
+        // with the map
+        Object.keys(rangeFilter).forEach(key => {
+          const value = rangeFilter[key] as {min: Date |null, max: Date |null} | undefined;
+          if (!value) {
+            return;
+          }
+          if (value.min && value.max) {
+            searchList.push({field: key, term_max: value.max.toISOString(), term_min: value.min.toISOString()})
+          } else if(value.min) {
+            searchList.push({field: key, term_min: value.min.toISOString()})
+          } else if (value.max) {
+            searchList.push({field: key, term_max: value.max.toISOString()})
+          }
+        })
+
+        switch (searchList.length) {
           case 0:
               return {}
           case 1:
@@ -252,11 +270,11 @@ export default function AnalysisPage() {
       }
 
       // Since we now do api calls on every filter change, we should avoid unnessecary work
-      const newExpression = mergeFilters(q.expression || {},propFilters);
+      const newExpression = mergeFilters(q.expression || {},propFilters,rangeFilters);
       if (checkExpressionEquality(newExpression,lastSearchQuery.expression)) {
         return;
       }
-      console.log("Changes to search query!");
+      console.log("Changes to search query!", newExpression);
       const newQ = {expression: newExpression};
 
       dispatch({ type: "RESET/Analysis" });

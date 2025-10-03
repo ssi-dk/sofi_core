@@ -2,6 +2,7 @@ from .visitor import on, when
 import re
 import sys
 from datetime import datetime, timedelta
+import dateutil
 from ....common.config.column_config import pii_columns
 from ....generated.models.query_expression import (
     QueryExpression,
@@ -61,10 +62,13 @@ def coerce_term(term: str):
         except Exception:
             pass
         try:
-            return datetime.fromisoformat(term)
-        except Exception:
+            print("ATTEMPTING DATETIME",term,file=sys.stderr)
+            return dateutil.parser.isoparse(term)
+        except Exception as err:
+            print("Failed to parse",term,"into datetime with err",err,file=sys.stderr)
             raise
     except Exception:
+        print("STRING FALLBACK!",term,file=sys.stderr)
         return term
 
 
@@ -73,13 +77,25 @@ def structure_wildcard(field, node):
         if field == "cpr_nr":   # because cpr is saved as a string in the DB, so don't convert even when consists of only digits
             return node.term
         return coerce_term(node.term)
-    coerced = coerce_term(node.term)
-    if isinstance(coerced, str):
-        return check_for_wildcard(field, coerced)
-    elif isinstance(coerced, datetime):
-        return {"$gte": coerced, "$lte": coerced + timedelta(days=1)}
-    else:
-        return {"$in": [coerced, node.term]}
+    
+    if node.term is not None:
+        coerced = coerce_term(node.term)
+        if isinstance(coerced, str):
+            return check_for_wildcard(field, coerced)
+        elif isinstance(coerced, datetime):
+            return {"$gte": coerced, "$lte": coerced + timedelta(days=1)}
+        else:
+            return {"$in": [coerced, node.term]}
+    elif node.term_max is not None or node.term_min is not None:
+        coerced_min = coerce_term(node.term_min)
+        coerced_max = coerce_term(node.term_max)
+        print("COERCED:",coerced_max,type(coerced_max),coerced_min,type(coerced_min),file=sys.stderr)
+        if coerced_max is None:
+            return {"$gte": coerced_min}  
+        if coerced_min is None:
+            return {"$lte": coerced_max}
+
+        return {"$gte": coerce_term(node.term_min), "$lte": coerce_term(node.term_max)}
 
 
 def structure_ranged(field, node):
