@@ -17,7 +17,7 @@ import uuid
 import logging
 import os
 from web.src.SAP.src.security.permission_check import (assert_user_has, assert_authorized_to_edit)
-from ..services.queue_service import post_and_await_approval
+from ..services.queue_service import await_approval, post_approval
 
 
 def deep_merge(source, destination):
@@ -105,13 +105,30 @@ def handle_approvals(approvals: Approval, institution: str):
         print(approvals, file=sys.stderr)
         return []
 
-    errors = []
+    # First, post all approvals and collect request IDs
+    approval_requests = []
     for sequence_id, field_mask in approvals.matrix.items():
+        required_values = {}
         if sequence_id in approvals.required_values:
             required_values = approvals.required_values[sequence_id]
 
-        if error := post_and_await_approval(sequence_id, field_mask, institution, required_values):
-            errors.append(error)
+        try:
+            req_id, seq_id = post_approval(sequence_id, field_mask, institution, required_values)
+            approval_requests.append((req_id, seq_id))
+        except Exception as e:
+            # Handle posting errors
+            approval_requests.append((None, sequence_id, str(e)))
+
+    # Then, await all approvals and collect errors
+    errors = []
+    for request_data in approval_requests:
+        if len(request_data) == 3:  # Error case from posting
+            _, sequence_id, error_msg = request_data
+            errors.append((sequence_id, error_msg))
+        else:
+            req_id, sequence_id = request_data
+            if error := await_approval(req_id, sequence_id):
+                errors.append(error)
 
     return errors
 
