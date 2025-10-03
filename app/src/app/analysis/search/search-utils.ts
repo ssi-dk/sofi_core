@@ -1,7 +1,7 @@
 import { QueryExpression, QueryOperand } from "sap-client";
 
 const HISTORY_STORAGE_KEY = "searchHistory"
-const MAX_HISTORY_LEN = 10;
+const MAX_HISTORY_LEN = 5;
 
 export type SearchItem = {pinned: boolean, timestamp: string, query: QueryExpression}
 export type SearchHistory = SearchItem[]
@@ -25,6 +25,17 @@ export const deRegisterHistoryCB = (cb: () => void) => {
 const saveSearchHistory = (history: SearchHistory) =>  {
     const rawJson = JSON.stringify(history)
     localStorage.setItem(HISTORY_STORAGE_KEY,rawJson);
+}
+
+export const setPinned = (item: SearchItem, pinned: boolean) => {
+    const history = getSearchHistory()
+    history.forEach(h => {
+        if (h.timestamp == item.timestamp) {
+            h.pinned = pinned
+        }
+    })
+    saveSearchHistory(history);
+    callbacks.forEach(cb => cb());
 }
 
 export const appendToSearchHistory = (query: QueryExpression) => {
