@@ -90,6 +90,8 @@ function AnalysisSidebar(props: AnalysisSidebarProps) {
       />
       <Box m={3} />
       <AnalysisFilter
+        clearFieldFromSearch={clearFieldFromSearch}
+        queryOperands={queryOperands}
         sts={sts}
         serotypeFinals={serotypes}
         providedSpecies={providedSpecies}

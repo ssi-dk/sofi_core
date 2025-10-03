@@ -186,7 +186,6 @@ export default function AnalysisPage() {
 
 
   const clearFieldFromSearch = (field: keyof AnalysisResult) => {
-    console.log("CLEARING",field);
     let recurseAndModify = (ex?: QueryExpression |QueryOperand):QueryExpression => {
       if (!ex) {
         return undefined;
@@ -273,7 +272,6 @@ export default function AnalysisPage() {
         return;
       }
       const newQ = {expression: newExpression};
-      console.log("QUERY:",newQ);
 
       dispatch({ type: "RESET/Analysis" });
       setLastSearchQuery(newQ);
