@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { Text, Flex } from "@chakra-ui/react";
+import { Text, Flex, OrderedList } from "@chakra-ui/react";
 import Select, { ActionMeta, OptionTypeBase, ValueType } from "react-select";
 import { selectTheme } from "app/app.styles";
 import { useTranslation } from "react-i18next";
-import { AnalysisResult, DataClearance, Organization, QueryExpression, QueryOperand } from "sap-client";
+import { AnalysisResult, DataClearance, Organization, QueryOperand  } from "sap-client";
 import { IfPermission } from "auth/if-permission";
 import { PropFilter, RangeFilter } from "utils";
 import FilterBox from "../filter-box";
 import DatePicker from "./date-picker";
+import { displayOperandName } from "app/analysis/search/search-utils";
 
 type MetaFilterProps = {
   organisations: string[];
@@ -22,6 +23,7 @@ type MetaFilterProps = {
   onPropFilterChange: (resultingFilter: PropFilter<AnalysisResult>) => void;
   onRangeFilterChange: (resultingFilter: RangeFilter<AnalysisResult>) => void;
   isDisabled: boolean;
+  queryOperands: QueryOperand[]
 };
 
 function MetaFilter(props: MetaFilterProps) {
@@ -38,6 +40,7 @@ function MetaFilter(props: MetaFilterProps) {
     onPropFilterChange,
     onRangeFilterChange,
     isDisabled,
+    queryOperands
   } = props;
 
   const { t } = useTranslation();
@@ -96,7 +99,7 @@ function MetaFilter(props: MetaFilterProps) {
     [projects]
   );
   const projectNrOptions = React.useMemo(
-    () => projectNrs.filter(Boolean).map((x) => ({ value: x, label: x })),
+    () => projectNrs.filter(Boolean).map((x) => ({ value: x.toString(), label: x.toString() })),
     [projectNrs]
   );
   const dyreartOptions = React.useMemo(
@@ -139,7 +142,7 @@ function MetaFilter(props: MetaFilterProps) {
           default:
             break;
         }
-        console.log("MANUAL CHANGE TO",field);
+        console.log("MANUAL CHANGE FOR:",field);
         const resolvedState = {
           ...propFilterState,
           [field]: [...(value?.values() || [])].map((x) => x.value),
@@ -151,6 +154,20 @@ function MetaFilter(props: MetaFilterProps) {
     },
     [setPropFilterState, onPropFilterChange, propFilterState]
   );
+
+  // When a query changes, set all UI filter to match the query, this is useful when choosing a query from the user history
+  useEffect(() => {
+    const newPropFilterState = {} as { [K in keyof AnalysisResult]: ValueType<OptionTypeBase, true> };
+
+    queryOperands.forEach(op => {
+      if (op.field && op.term) {
+        newPropFilterState[op.field] = [op.term];
+      }
+    })
+    setPropFilterState(newPropFilterState)
+  },[queryOperands.map(displayOperandName).join(",")])
+
+  const valueBuilder = (key: keyof AnalysisResult) => propFilterState[key]?.map(i => ({label: i, value: i})) || undefined
 
   return (
     <FilterBox title="Metadata filter">
@@ -174,6 +191,7 @@ function MetaFilter(props: MetaFilterProps) {
       <Text mt={2}>{t("institution")}</Text>
       <Select
         options={organisationOptions}
+        value={valueBuilder("institution")}
         isMulti
         theme={selectTheme}
         onChange={onChangeBuilder("institution")}
@@ -184,6 +202,7 @@ function MetaFilter(props: MetaFilterProps) {
           <Text mt={2}>{t("project_title")}</Text>
           <Select
             options={projectOptions}
+            value={valueBuilder("project_title")}
             isMulti
             theme={selectTheme}
             onChange={onChangeBuilder("project_title")}
@@ -194,6 +213,7 @@ function MetaFilter(props: MetaFilterProps) {
           <Text mt={2}>{t("project_number")}</Text>
           <Select
             options={projectNrOptions}
+            value={valueBuilder("project_number")}
             isMulti
             theme={selectTheme}
             onChange={onChangeBuilder("project_number")}
@@ -222,6 +242,7 @@ function MetaFilter(props: MetaFilterProps) {
       <Select
         options={dyreartOptions}
         isMulti
+        value={valueBuilder("animal_species")}
         theme={selectTheme}
         onChange={onChangeBuilder("animal_species")}
         isDisabled={isDisabled}
@@ -232,6 +253,8 @@ function MetaFilter(props: MetaFilterProps) {
           <Select
             options={runIdsOptions}
             isMulti
+            value={valueBuilder("run_id")}
+
             theme={selectTheme}
             onChange={onChangeBuilder("run_id")}
             isDisabled={isDisabled}
@@ -242,6 +265,7 @@ function MetaFilter(props: MetaFilterProps) {
           <Select
             options={isolateIdsOptions}
             isMulti
+            value={valueBuilder("isolate_id")}
             theme={selectTheme}
             onChange={onChangeBuilder("isolate_id")}
             isDisabled={isDisabled}
@@ -256,6 +280,7 @@ function MetaFilter(props: MetaFilterProps) {
         <Select
           options={cprOptions}
           isMulti
+          value={valueBuilder("cpr_nr")}
           theme={selectTheme}
           onChange={onChangeBuilder("cpr_nr")}
           isDisabled={isDisabled}
@@ -267,6 +292,7 @@ function MetaFilter(props: MetaFilterProps) {
           <Select
             options={fudOptions}
             isMulti
+            value={valueBuilder("fud_number")}
             theme={selectTheme}
             onChange={onChangeBuilder("fud_number")}
             isDisabled={isDisabled}
@@ -277,6 +303,7 @@ function MetaFilter(props: MetaFilterProps) {
           <Select
             options={clusterOptions}
             isMulti
+            value={valueBuilder("cluster_id")}
             theme={selectTheme}
             onChange={onChangeBuilder("cluster_id")}
             isDisabled={isDisabled}
@@ -287,4 +314,4 @@ function MetaFilter(props: MetaFilterProps) {
   );
 }
 
-export default MetaFilter;
+export default React.memo(MetaFilter);
