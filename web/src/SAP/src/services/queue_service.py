@@ -34,7 +34,8 @@ def post_and_await_reload(isolate_id, institution):
         return {"error": f"Could not reload isolate {isolate_id} due to an error."}, 500
 
 
-def post_and_await_approval(sequence_id, field_mask, user_institution, required_values):
+def post_approval(sequence_id, field_mask, user_institution, required_values):
+    """Post approval data and return request ID for tracking."""
     data = get_analysis_with_metadata(sequence_id)
     internal_fields = internal_approval_fields()
 
@@ -58,6 +59,11 @@ def post_and_await_approval(sequence_id, field_mask, user_institution, required_
     #    return None
 
     req_id = approve_data(isolate_id, sequence_id, fields, institution)
+    return req_id, sequence_id
+
+
+def await_approval(req_id, sequence_id):
+    """Wait for approval process to complete and return result."""
     return_status = await_update_loop(req_id)
 
     if return_status == ProcessingStatus.DONE.value:
@@ -67,3 +73,9 @@ def post_and_await_approval(sequence_id, field_mask, user_institution, required_
             sequence_id,
             f"Could not approve isolate {sequence_id} due to an error.",
         )
+
+
+def post_and_await_approval(sequence_id, field_mask, user_institution, required_values):
+    """Legacy function that combines post and await operations."""
+    req_id, sequence_id = post_approval(sequence_id, field_mask, user_institution, required_values)
+    return await_approval(req_id, sequence_id)

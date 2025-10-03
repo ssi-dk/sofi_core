@@ -15,7 +15,7 @@ class RequestBrokerSync():
         self.broker_name = name
         self.listener_match = matcher
         self.request_callback = callback
-        self.max_duration = 2.0  # Max seconds to wait before processing batch
+        self.max_duration = 1.0  # Max seconds to wait before processing batch
         self.resume_token = None
         self.timer = time.process_time()
 
