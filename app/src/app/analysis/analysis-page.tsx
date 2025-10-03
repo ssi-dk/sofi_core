@@ -66,6 +66,8 @@ import { appendToSearchHistory, checkExpressionEquality, recurseSearchTree } fro
 // as 'approved' also.
 const PRIMARY_APPROVAL_FIELDS = ["st_final", "qc_final"];
 
+export type SearchQuery = AnalysisQuery & {clearAllFields?: boolean};
+
 export default function AnalysisPage() {
   const { t } = useTranslation();
   const dispatch = useDispatch();
@@ -180,7 +182,7 @@ export default function AnalysisPage() {
     expression: {},
   });
 
-  const [rawTextSearchQuery, setRawTextSearchQuery] = useState<AnalysisQuery>({
+  const [rawSearchQuery, setRawSearchQuery] = useState<SearchQuery>({
     expression: {},
   });
 
@@ -202,7 +204,7 @@ export default function AnalysisPage() {
         right: recurseAndModify(ex.right)
       }
     }
-    setRawTextSearchQuery(old => ({expression: recurseAndModify(old.expression)}))
+    setRawSearchQuery(old => ({expression: recurseAndModify(old.expression)}))
   }
 
 
@@ -297,8 +299,8 @@ export default function AnalysisPage() {
   );
 
   useEffect(() => {
-    onSearch(rawTextSearchQuery, PAGE_SIZE)
-  },[onSearch,rawTextSearchQuery])
+    onSearch(rawSearchQuery, PAGE_SIZE)
+  },[onSearch,rawSearchQuery])
 
 
   const { hiddenColumns } = view;
@@ -727,7 +729,7 @@ export default function AnalysisPage() {
       <Box role="navigation" gridColumn="2 / 4" pb={5}>
         <Flex justifyContent="flex-end">
           <AnalysisSearch
-            onSearchChange={setRawTextSearchQuery}
+            onSearchChange={setRawSearchQuery}
             isDisabled={pageState.isNarrowed}
           />
           <Box minW="250px" ml="5">
@@ -839,7 +841,7 @@ export default function AnalysisPage() {
         sidebar={
           <AnalysisSidebar
             clearFieldFromSearch={clearFieldFromSearch}
-            queryOperands={recurseSearchTree(rawTextSearchQuery.expression)}
+            queryOperands={recurseSearchTree( rawSearchQuery.clearAllFields ? lastSearchQuery.expression : rawSearchQuery.expression)}
             data={data}
             onPropFilterChange={onPropFilterChange}
             onRangeFilterChange={onRangeFilterChange}

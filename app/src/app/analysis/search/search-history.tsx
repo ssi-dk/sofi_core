@@ -3,9 +3,10 @@ import { useEffect, useState } from "react";
 import { deRegisterHistoryCB, displayOperandName, getSearchHistory, recurseSearchTree, registerHistoryCB, SearchHistory, setPinned } from "./search-utils";
 import { SearchIcon, StarIcon } from "@chakra-ui/icons";
 import { AnalysisQuery } from "sap-client";
+import { SearchQuery } from "../analysis-page";
 
 const SearchHistoryMenu = (props: {
-    onSearchChange: (query: AnalysisQuery) => void
+    onSearchChange: (query: SearchQuery) => void
 }) => {
     const {onSearchChange} = props;
     const [searchHistory, setSearchHistory]= useState<SearchHistory>([]);
@@ -33,7 +34,7 @@ const SearchHistoryMenu = (props: {
                     aria-label="Search database"
                     icon={<SearchIcon />}
                     ml="1"
-                    onClick={() => onSearchChange({expression: s.query})}
+                    onClick={() => onSearchChange({expression: s.query, clearAllFields: true})}
                     style={{marginRight: "4px"}}
                 />
                 <p>

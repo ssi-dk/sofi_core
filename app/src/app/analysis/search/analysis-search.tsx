@@ -18,9 +18,10 @@ import { recurseTree } from "utils";
 import { getFieldInternalName } from "app/i18n";
 import SearchHelpModal from "./search-help-modal";
 import SearchHistoryMenu from "./search-history";
+import { SearchQuery } from "../analysis-page";
 
 type AnalysisSearchProps = {
-  onSearchChange: (query: AnalysisQuery) => void;
+  onSearchChange: (query: SearchQuery) => void;
   isDisabled: boolean;
 };
 
