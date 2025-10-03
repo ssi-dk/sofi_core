@@ -12,7 +12,6 @@ import {
   PopoverContent,
 } from "@chakra-ui/react";
 import { CloseIcon, SearchIcon, QuestionIcon, TimeIcon } from "@chakra-ui/icons";
-import { AnalysisQuery } from "sap-client";
 import { parse as luceneParse } from "lucene";
 import { recurseTree } from "utils";
 import { getFieldInternalName } from "app/i18n";

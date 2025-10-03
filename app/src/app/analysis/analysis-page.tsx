@@ -225,8 +225,8 @@ export default function AnalysisPage() {
         const searchFields = recurseSearchTree(searchExpression)
 
         // Search field takes priority, so add first
-        const searchMap = new Map<string,string>();
-        searchFields.forEach(({field,term}) => searchMap.set(field,term))
+        const searchMap = new Map<string,{term?: string, term_max?: string, term_min?: string}>();
+        searchFields.forEach(({field,term,term_max, term_min}) => searchMap.set(field,{term,term_max,term_min}))
 
         Object.keys(propFilter).forEach(key => {
           const value = propFilter[key] as string[];
@@ -234,12 +234,12 @@ export default function AnalysisPage() {
             return;
           } else {
             if (!searchMap.has(key)) {
-              searchMap.set(key,value[0].toString())
+              searchMap.set(key,{term: value[0]})
             }
           }
         })
 
-        const searchList: (QueryOperand & QueryExpression)[] = [...searchMap].map((f) => ({field: f[0], term: f[1]}) );
+        const searchList: (QueryOperand & QueryExpression)[] = [...searchMap].map((f) => ({field: f[0], ...f[1]}) );
 
 
         // Range filters cannot be searched for in the search bar, so we do not need to filter them away
@@ -274,6 +274,7 @@ export default function AnalysisPage() {
         return;
       }
       const newQ = {expression: newExpression};
+      console.log("EXPRESSION:",newQ)
 
       dispatch({ type: "RESET/Analysis" });
       setLastSearchQuery(newQ);
