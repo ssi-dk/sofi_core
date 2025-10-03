@@ -24,6 +24,7 @@ type MetaFilterProps = {
   onRangeFilterChange: (resultingFilter: RangeFilter<AnalysisResult>) => void;
   isDisabled: boolean;
   queryOperands: QueryOperand[]
+  clearFieldFromSearch: (field: keyof AnalysisResult) => void
 };
 
 function MetaFilter(props: MetaFilterProps) {
@@ -40,7 +41,8 @@ function MetaFilter(props: MetaFilterProps) {
     onPropFilterChange,
     onRangeFilterChange,
     isDisabled,
-    queryOperands
+    queryOperands,
+    clearFieldFromSearch,
   } = props;
 
   const { t } = useTranslation();
@@ -142,7 +144,10 @@ function MetaFilter(props: MetaFilterProps) {
           default:
             break;
         }
-        console.log("MANUAL CHANGE FOR:",field);
+        if (!Boolean(value) || value.length == 0) {
+          clearFieldFromSearch(field);
+        }
+
         const resolvedState = {
           ...propFilterState,
           [field]: [...(value?.values() || [])].map((x) => x.value),
