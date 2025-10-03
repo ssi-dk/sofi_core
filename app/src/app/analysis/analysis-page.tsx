@@ -241,8 +241,6 @@ export default function AnalysisPage() {
         const searchList: (QueryOperand & QueryExpression)[] = [...searchMap].map((f) => ({field: f[0], term: f[1]}) );
 
 
-        console.log("Computing range filter:",rangeFilter)
-
         // Range filters cannot be searched for in the search bar, so we do not need to filter them away
         // with the map
         Object.keys(rangeFilter).forEach(key => {
@@ -274,7 +272,6 @@ export default function AnalysisPage() {
       if (checkExpressionEquality(newExpression,lastSearchQuery.expression)) {
         return;
       }
-      console.log("Changes to search query!", newExpression);
       const newQ = {expression: newExpression};
 
       dispatch({ type: "RESET/Analysis" });
