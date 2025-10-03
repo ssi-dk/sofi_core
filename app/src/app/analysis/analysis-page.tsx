@@ -172,6 +172,8 @@ export default function AnalysisPage() {
     (s) => s.view.view
   ) as UserDefinedViewInternal;
 
+  const displayData = useMemo(() => [...Object.keys(selection).filter(key => !data.find(seq => seq.sequence_id === key)).map(key => selection[key].original),...data], [selection,data]) 
+
   const [lastSearchQuery, setLastSearchQuery] = useState<AnalysisQuery>({
     expression: {},
   });
@@ -549,7 +551,7 @@ export default function AnalysisPage() {
       if (cellUpdating(rowId, columnId)) {
         return <Skeleton width="100px" height="20px" />;
       }
-      const rowInstitution = data.find((row) => row.sequence_id == rowId)
+      const rowInstitution = displayData.find((row) => row.sequence_id == rowId)
         .institution;
       const editIsAllowed = true ||
         columnConfigs[columnId].editable ||
@@ -719,6 +721,9 @@ export default function AnalysisPage() {
     [dispatch]
   );
 
+
+  
+  
   const content = (
     <React.Fragment>
       <Box role="navigation" gridColumn="2 / 4" pb={5}>
@@ -786,7 +791,7 @@ export default function AnalysisPage() {
             data={
               pageState.isNarrowed
                 ? Object.keys(selection).map((key) => selection[key].original)
-                : data
+                : displayData
             }
             renderCellControl={renderCellControl}
             primaryKey="sequence_id"
