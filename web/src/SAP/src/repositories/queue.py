@@ -32,11 +32,11 @@ def await_update_loop(object_id):
     conn = get_connection()
     mydb = conn[DB_NAME]
     queue = mydb[QUEUE_COL_NAME]
-    result = {"status": ProcessingStatus.WAITING.value}
+    result = queue.find_one({"_id": object_id})
     waiting_statuses = [ProcessingStatus.WAITING.value, ProcessingStatus.PROCESSING.value]
     while max_tries > 0 and (not result or (result["status"] in waiting_statuses)):
-        result = queue.find_one({"_id": object_id})
         time.sleep(0.4)
+        result = queue.find_one({"_id": object_id})
         max_tries -= 1
 
     return result["status"] if result else ProcessingStatus.ERROR.value
