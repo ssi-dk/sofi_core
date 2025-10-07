@@ -36,7 +36,6 @@ class RequestBrokerSync():
         ]
         
         options = {
-            "max_await_time_ms": 200, # Time to wait on try_next on no change
         }
         
         with self.col.watch(pipeline, **options) as stream:
