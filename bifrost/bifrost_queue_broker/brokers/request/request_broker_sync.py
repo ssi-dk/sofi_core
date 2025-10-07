@@ -49,19 +49,43 @@ class RequestBrokerSync():
                 self.resume_token = stream.resume_token
 
                 if change is not None:
-                    if collecting_batch == False:
-                        self.timer = time.monotonic()
-                        collecting_batch = True
-                    
                     doc_id = change["documentKey"]["_id"]
-                    pending_records.append(ObjectId(doc_id))
                     logging.debug(f"{self.broker_name} detected change for {doc_id}")
+                    self._process_record(doc_id)
 
-                # Process batch when timeout reached or stream becomes inactive
-                if collecting_batch and self.elapsed_seconds(self.timer) > self.batch_collect_duration:
-                    self._process_batch(pending_records)
-                    pending_records = []
-                    collecting_batch = False
+    def _process_record(self, record_id):
+        """Process a record ID"""
+        if not record_id:
+            return
+            
+        logging.info(f"{self.broker_name} processing  {record_id}")
+        start_time = time.monotonic()
+        
+        # Atomically lock and retrieve the record
+        record = self.col.find_one_and_update(
+            {
+                "_id": record_id,
+                **self.listener_match,
+                "status": ProcessingStatus.WAITING.value,
+            },
+            {"$set": {"status": ProcessingStatus.PROCESSING.value}},
+            return_document=True
+        )
+        
+        if record is not None:
+            logging.debug(f"{self.broker_name} successfully locked and processing {record['_id']}")
+            try:
+                self.request_callback(record)
+                self.mark_done(record)
+            except Exception as e:
+                logging.error(f"{self.broker_name} error processing {record['_id']}: {e}")
+                self.mark_error(record)
+        else:
+            logging.debug(f"{self.broker_name} could not lock {record_id}, already processed or doesn't match criteria")
+        
+        elapsed_ms = self.elapsed_seconds(start_time) * 1000
+        logging.info(f"{self.broker_name} complete: processed {record_id} in {elapsed_ms} ms")
+
 
     def _process_batch(self, record_ids):
         """Process a batch of record IDs atomically"""
