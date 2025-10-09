@@ -195,7 +195,7 @@ function MetaFilter(props: MetaFilterProps) {
     setRangeFilterState(newRangeFilterState)
   },[queryOperands])
 
-  const valueBuilder = (key: keyof AnalysisResult) => propFilterState[key]?.map(i => ({label: i, value: i})) || undefined
+  const valueBuilder = (key: keyof AnalysisResult) => propFilterState[key]?.map(i => ({label: i, value: i})) || []
 
   return (
     <FilterBox title="Metadata filter">

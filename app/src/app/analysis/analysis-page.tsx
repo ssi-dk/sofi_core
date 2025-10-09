@@ -100,10 +100,16 @@ export default function AnalysisPage() {
 
   const rootStateData = useSelector<RootState>((s) => s.entities.analysis);
 
-  // TODO: Figure out how to make this strongly typed
+  const [searchTerms, setSearchTerms] = useState<Set<string>>(new Set())
+
   const data = React.useMemo(() => {
     return Object.values(rootStateData ?? {}) as AnalysisResult[];
   }, [rootStateData]);
+
+  useEffect(() => {
+    const current = new Set(data.flatMap(Object.keys));
+    setSearchTerms(old => old.union(current))
+  },[data, setSearchTerms])
 
   const totalCount = useSelector<RootState>((s) =>
     s.entities.analysisTotalCount !== 0
@@ -181,6 +187,9 @@ export default function AnalysisPage() {
   const [lastSearchQuery, setLastSearchQuery] = useState<AnalysisQuery>({
     expression: {},
   });
+  const lastQueryOperands = useMemo(() => {
+    return recurseSearchTree(lastSearchQuery.expression);
+  },[lastSearchQuery])
 
   const [rawSearchQuery, setRawSearchQuery] = useState<SearchQuery>({
     expression: {},
@@ -218,7 +227,7 @@ export default function AnalysisPage() {
 
 
   const onSearch = React.useCallback(
-    (q: AnalysisQuery, pageSize: number) => {
+    (q: SearchQuery, pageSize: number) => {
 
       const mergeFilters =(searchExpression: QueryExpression, propFilter: PropFilter<AnalysisResult> ,rangeFilter: RangeFilter<AnalysisResult>) => {
         
@@ -269,7 +278,7 @@ export default function AnalysisPage() {
       }
 
       // Since we now do api calls on every filter change, we should avoid unnessecary work
-      const newExpression = mergeFilters(q.expression || {},propFilters,rangeFilters);
+      const newExpression = q.clearAllFields ? q.expression : mergeFilters(q.expression || {},propFilters,rangeFilters);
       if (checkExpressionEquality(newExpression,lastSearchQuery.expression)) {
         return;
       }
@@ -330,16 +339,19 @@ export default function AnalysisPage() {
 
   const onPropFilterChange = React.useCallback(
     (p: PropFilter<AnalysisResult>) => {
+      setRawSearchQuery(old =>( {...old, clearAllFields: false}))
       setPropFilters({ ...propFilters, ...p });
     },
-    [propFilters, setPropFilters]
+    [propFilters, setPropFilters,setRawSearchQuery]
   );
 
   const onRangeFilterChange = React.useCallback(
     (p: RangeFilter<AnalysisResult>) => {
       setRangeFilters({ ...rangeFilters, ...p });
+      setRawSearchQuery(old =>( {...old, clearAllFields: false}))
+
     },
-    [rangeFilters, setRangeFilters]
+    [rangeFilters, setRangeFilters, setRawSearchQuery]
   );
 
   
@@ -731,6 +743,7 @@ export default function AnalysisPage() {
           <AnalysisSearch
             onSearchChange={setRawSearchQuery}
             isDisabled={pageState.isNarrowed}
+            searchTerms={searchTerms}
           />
           <Box minW="250px" ml="5">
             <AnalysisViewSelector />
@@ -841,7 +854,7 @@ export default function AnalysisPage() {
         sidebar={
           <AnalysisSidebar
             clearFieldFromSearch={clearFieldFromSearch}
-            queryOperands={recurseSearchTree( rawSearchQuery.clearAllFields ? lastSearchQuery.expression : rawSearchQuery.expression)}
+            queryOperands={lastQueryOperands}
             data={data}
             onPropFilterChange={onPropFilterChange}
             onRangeFilterChange={onRangeFilterChange}
