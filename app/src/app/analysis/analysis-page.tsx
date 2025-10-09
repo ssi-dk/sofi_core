@@ -68,6 +68,8 @@ const PRIMARY_APPROVAL_FIELDS = ["st_final", "qc_final"];
 
 export type SearchQuery = AnalysisQuery & {clearAllFields?: boolean};
 
+let prevSearchTerms: Set<string> = new Set() // NEEDS to be outside the react component to prevent un-needed rerender
+
 export default function AnalysisPage() {
   const { t } = useTranslation();
   const dispatch = useDispatch();
@@ -100,22 +102,15 @@ export default function AnalysisPage() {
 
   const rootStateData = useSelector<RootState>((s) => s.entities.analysis);
 
-  const [searchTerms, setSearchTerms] = useState<Set<string>>(new Set())
-
   const data = React.useMemo(() => {
     return Object.values(rootStateData ?? {}) as AnalysisResult[];
   }, [rootStateData]);
 
-  useEffect(() => {
+  const searchTerms = useMemo(() => {
     const current = new Set(data.flatMap(Object.keys));
-    setSearchTerms(old => old.union(current))
-  },[data, setSearchTerms])
-
-  const totalCount = useSelector<RootState>((s) =>
-    s.entities.analysisTotalCount !== 0
-      ? s.entities.analysisTotalCount
-      : Object.keys(s.entities.analysis).length
-  ) as number;
+    prevSearchTerms = prevSearchTerms.union(current);
+    return prevSearchTerms;
+  }, [data]);
 
   const columnConfigs = useSelector<RootState>(
     (s) => s.entities.columns
