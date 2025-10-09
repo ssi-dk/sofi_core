@@ -59,7 +59,7 @@ function AnalysisFilter(props: AnalysisFilterProps) {
     setState(newState)
   },[queryOperands, setState])
 
-  const valueBuilder = (key: keyof AnalysisResult) => state[key]?.map(i => ({label: i, value: i})) || undefined
+  const valueBuilder = (key: keyof AnalysisResult) => state[key]?.map(i => ({label: i, value: i})) || []
 
   const onChangeBuilder: (
     field: keyof AnalysisResult
