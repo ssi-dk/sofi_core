@@ -182,7 +182,7 @@ export default function AnalysisPage() {
     (s) => s.view.view
   ) as UserDefinedViewInternal;
 
-  const displayData = useMemo(() => [...Object.keys(selection).filter(key => !data.find(seq => seq.sequence_id === key)).map(key => selection[key].original),...data], [selection,data]) 
+  const displayData = useMemo(() => [...Object.entries(selection).filter(([key,_]) => !data.find(seq => seq.sequence_id === key)).map(([_,value]) => value.original),...data], [selection,data]) 
 
   const [lastSearchQuery, setLastSearchQuery] = useState<AnalysisQuery>({
     expression: {},
@@ -610,11 +610,11 @@ export default function AnalysisPage() {
         }
         if (columnId === "st_alleles") {
           let acc = "";
-          Object.keys(value).map((k) => {
+          Object.entries(value).map(([k,v]) => {
             if (acc !== "") {
               acc += ", ";
             }
-            acc += `${k}: ${value[k]}`;
+            acc += `${k}: ${v}`;
           });
           v = acc;
         }
@@ -806,7 +806,7 @@ export default function AnalysisPage() {
             getStickyCellStyle={getStickyCellStyle}
             data={
               pageState.isNarrowed
-                ? Object.keys(selection).map((key) => selection[key].original)
+                ? Object.values(selection).map((v) => v.original)
                 : displayData
             }
             renderCellControl={renderCellControl}
