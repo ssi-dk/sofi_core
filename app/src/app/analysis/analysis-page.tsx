@@ -197,7 +197,7 @@ export default function AnalysisPage() {
 
 
   const clearFieldFromSearch = (field: keyof AnalysisResult) => {
-    let recurseAndModify = (ex?: QueryExpression |QueryOperand):QueryExpression => {
+    const recurseAndModify = (ex?: QueryExpression |QueryOperand):QueryExpression => {
       if (!ex) {
         return undefined;
       }
@@ -237,8 +237,7 @@ export default function AnalysisPage() {
         const searchMap = new Map<string,{term?: string, term_max?: string, term_min?: string}>();
         searchFields.forEach(({field,term,term_max, term_min}) => searchMap.set(field,{term,term_max,term_min}))
 
-        Object.keys(propFilter).forEach(key => {
-          const value = propFilter[key] as string[];
+        Object.entries(propFilter).forEach(([key, value]) => {
           if (value.length == 0) { // When an argument is removed from the filter it still remains, it is just empty.
             return;
           } else {
@@ -253,8 +252,8 @@ export default function AnalysisPage() {
 
         // Range filters cannot be searched for in the search bar, so we do not need to filter them away
         // with the map
-        Object.keys(rangeFilter).forEach(key => {
-          const value = rangeFilter[key] as {min: Date |null, max: Date |null} | undefined;
+        Object.entries(rangeFilter).forEach(([key,valueRaw]) => {
+          const value = valueRaw as {min: Date |null, max: Date |null} | undefined;
           if (!value) {
             return;
           }
@@ -281,6 +280,10 @@ export default function AnalysisPage() {
       const newExpression = q.clearAllFields ? q.expression : mergeFilters(q.expression || {},propFilters,rangeFilters);
       if (checkExpressionEquality(newExpression,lastSearchQuery.expression)) {
         return;
+      }
+      if (q.clearAllFields) {
+        setPropFilters({})
+        setRangeFilters({})
       }
       const newQ = {expression: newExpression};
 
