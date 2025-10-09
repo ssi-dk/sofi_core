@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   useTable,
   useBlockLayout,
@@ -199,15 +199,14 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
   // NOTE:
   // visibleColumns from useTable seems to be recalculated often, hence this
   // state and effect to handle memorization:
-  const [visibleColumns, setVisibleColumns] = React.useState<Array<string>>([]);
-  React.useEffect(() => {
+  const visibleColumns = useMemo(() => {
     const hiddenColumnIds = view.hiddenColumns;
     const allColumnIds = columns.map((c) => String(c.accessor));
     const newVisibleColumns = allColumnIds.filter(
       (c) => hiddenColumnIds.indexOf(c) === -1
     );
-    setVisibleColumns(newVisibleColumns);
-  }, [view, columns]);
+    return newVisibleColumns;
+  },[view, columns]);
 
   const { columnResizing } = state;
 
