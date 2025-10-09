@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import Select, { ActionMeta, OptionTypeBase, ValueType } from "react-select";
-import { AnalysisResult } from "sap-client";
+import { AnalysisResult, QueryOperand } from "sap-client";
 import { Text } from "@chakra-ui/react";
 import { selectTheme } from "app/app.styles";
 import { useTranslation } from "react-i18next";
@@ -57,7 +57,7 @@ function AnalysisFilter(props: AnalysisFilterProps) {
       }
     })
     setState(newState)
-  },[queryOperands.map(displayOperandName).join(",")])
+  },[queryOperands])
 
   const valueBuilder = (key: keyof AnalysisResult) => state[key]?.map(i => ({label: i, value: i})) || undefined
 
@@ -88,7 +88,7 @@ function AnalysisFilter(props: AnalysisFilterProps) {
         onFilterChange(resolvedState as any);
       };
     },
-    [setState, onFilterChange, state]
+    [setState, onFilterChange, state, clearFieldFromSearch]
   );
 
   return (

@@ -10,7 +10,6 @@ export type SearchHistory = SearchItem[]
 export const getSearchHistory = () => {
     const rawJson = localStorage.getItem(HISTORY_STORAGE_KEY);
     const history: SearchHistory = JSON.parse(rawJson) || [];
-    console.log("LOADED:",history);
     return history;
 
 }
@@ -38,6 +37,47 @@ export const setPinned = (item: SearchItem, pinned: boolean) => {
     saveSearchHistory(history);
     callbacks.forEach(cb => cb());
 }
+
+
+export const recurseSearchTree = (e?: QueryExpression |QueryOperand):QueryOperand[] => {
+    if (!e) {
+        return []
+    }
+    if ("field" in e && e.field) {
+        return [{field: e.field.toString(), term: e.term?.toString(),term_max: e.term_max, term_min: e.term_min}]
+    }
+    return [...recurseSearchTree(e.left),...recurseSearchTree(e.right)]
+}
+
+
+export const displayOperandName = ({field,term,term_max,term_min}: QueryOperand) => {
+    if (term) {
+        return `${field}=${term}`
+    } else if (term_max && term_min) {
+        return `${field} > ${term_min} & < ${term_max}`
+    } else if (term_max) {
+        return `${field} < ${term_max}`
+    } else if (term_min) {
+        return `${field} > ${term_min}`
+    }
+}
+
+export const checkExpressionEquality =(e1: QueryExpression, e2: QueryExpression) => {
+    const l1 = recurseSearchTree(e1);
+    const l2 = recurseSearchTree(e2);
+
+
+    
+    l1.sort((a,b) => a.field.localeCompare(b.field))
+    l2.sort((a,b) => a.field.localeCompare(b.field))
+    
+    // To check equality of expressions, they need to be sorted and converted to strings since 
+    // js checks object and array equality by pointer equality
+    const str1 = l1.map(displayOperandName).join(",")
+    const str2 = l2.map(displayOperandName).join(",")
+    return str1 === str2
+}
+
 
 export const appendToSearchHistory = (query: QueryExpression) => {
     if (recurseSearchTree(query).length == 0) {
@@ -70,42 +110,4 @@ export const appendToSearchHistory = (query: QueryExpression) => {
     }
 
     callbacks.forEach(c => c());
-}
-
-export const recurseSearchTree = (e?: QueryExpression |QueryOperand):QueryOperand[] => {
-    if (!e) {
-        return []
-    }
-    if ("field" in e && e.field) {
-        return [{field: e.field.toString(), term: e.term?.toString(),term_max: e.term_max, term_min: e.term_min}]
-    }
-    return [...recurseSearchTree(e.left),...recurseSearchTree(e.right)]
-}
-
-export const displayOperandName = ({field,term,term_max,term_min}: QueryOperand) => {
-    if (term) {
-        return `${field}=${term}`
-    } else if (term_max && term_min) {
-        return `${field} > ${term_min} & < ${term_max}`
-    } else if (term_max) {
-        return `${field} < ${term_max}`
-    } else if (term_min) {
-        return `${field} > ${term_min}`
-    }
-}
-
-export const checkExpressionEquality =(e1: QueryExpression, e2: QueryExpression) => {
-    const l1 = recurseSearchTree(e1);
-    const l2 = recurseSearchTree(e2);
-
-
-    
-    l1.sort((a,b) => a.field.localeCompare(b.field))
-    l2.sort((a,b) => a.field.localeCompare(b.field))
-    
-    // To check equality of expressions, they need to be sorted and converted to strings since 
-    // js checks object and array equality by pointer equality
-    const str1 = l1.map(displayOperandName).join(",")
-    const str2 = l2.map(displayOperandName).join(",")
-    return str1 === str2
 }

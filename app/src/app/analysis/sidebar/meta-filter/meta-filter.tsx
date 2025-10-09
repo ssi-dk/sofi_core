@@ -93,7 +93,7 @@ function MetaFilter(props: MetaFilterProps) {
       setRangeFilterState(resolvedState);
       onRangeFilterChange(resolvedState);
     },
-    [rangeFilterState, setRangeFilterState, onRangeFilterChange]
+    [rangeFilterState, setRangeFilterState, onRangeFilterChange,clearFieldFromSearch]
   );
 
   const organisationOptions = React.useMemo(
@@ -161,7 +161,7 @@ function MetaFilter(props: MetaFilterProps) {
         onPropFilterChange(resolvedState as any);
       };
     },
-    [setPropFilterState, onPropFilterChange, propFilterState]
+    [setPropFilterState, onPropFilterChange, propFilterState,clearFieldFromSearch]
   );
 
   // When a query changes, set all UI filter to match the query, this is useful when choosing a query from the user history
@@ -193,7 +193,7 @@ function MetaFilter(props: MetaFilterProps) {
 
     setPropFilterState(newPropFilterState)
     setRangeFilterState(newRangeFilterState)
-  },[queryOperands.map(displayOperandName).join(",")])
+  },[queryOperands])
 
   const valueBuilder = (key: keyof AnalysisResult) => propFilterState[key]?.map(i => ({label: i, value: i})) || undefined
 

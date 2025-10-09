@@ -274,7 +274,6 @@ export default function AnalysisPage() {
         return;
       }
       const newQ = {expression: newExpression};
-      console.log("EXPRESSION:",newQ)
 
       dispatch({ type: "RESET/Analysis" });
       setLastSearchQuery(newQ);
@@ -677,7 +676,7 @@ export default function AnalysisPage() {
       rowUpdating,
       cellUpdating,
       approvals,
-      data,
+      displayData,
       user
     ]
   );
