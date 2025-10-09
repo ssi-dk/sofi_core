@@ -252,17 +252,17 @@ export default function AnalysisPage() {
 
         // Range filters cannot be searched for in the search bar, so we do not need to filter them away
         // with the map
-        Object.entries(rangeFilter).forEach(([key,valueRaw]) => {
-          const value = valueRaw as {min: Date |null, max: Date |null} | undefined;
+        Object.entries(rangeFilter).forEach(([key,value]) => {
+      
           if (!value) {
             return;
           }
           if (value.min && value.max) {
-            searchList.push({field: key, term_max: value.max.toISOString(), term_min: value.min.toISOString()})
+            searchList.push({field: key, term_max: value.max as string, term_min: value.min as string})
           } else if(value.min) {
-            searchList.push({field: key, term_min: value.min.toISOString()})
+            searchList.push({field: key, term_min: value.min as string})
           } else if (value.max) {
-            searchList.push({field: key, term_max: value.max.toISOString()})
+            searchList.push({field: key, term_max: value.max as string})
           }
         })
 
