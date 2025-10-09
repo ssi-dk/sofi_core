@@ -75,7 +75,6 @@ function MetaFilter(props: MetaFilterProps) {
     ) => (d: Date) => {
       cb(d);
 
-      console.log(field,end,"changed. Old state:",rangeFilterState)
 
       const opposite = end === "min" ? "max" : "min";
       const minDate = null;
@@ -93,7 +92,6 @@ function MetaFilter(props: MetaFilterProps) {
       if (val == null && oppositeValue == null) {
         clearFieldFromSearch(field);
       }
-      console.log("resolved state:",resolvedState)
 
       setRangeFilterState(resolvedState);
       onRangeFilterChange(resolvedState);
