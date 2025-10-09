@@ -67,13 +67,8 @@ def authorized_to_edit(token_info: Dict[str, str], metadata: Dict[str, Any], cha
     # When user's not from the same institution as the sample
     if token_info["institution"] == metadata["institution"]:
         return True
-    # if User has data_clearence cross-institution and changed_columns are all cross-org editable
-    cols = columns()
-    cross_org_editable = list(map(lambda c: c["field_name"], filter(lambda c: c["cross_org_editable"], cols)))
-    if token_info["sofi-data-clearance"] == "cross-institution":
-        if all(col in cross_org_editable for col in changed_columns):
-            return True
-    # User needs 'L2' or higher clearance to modify data
+    
+    # User needs sofi-data-clearance="all" to modify data not in their own institution.
     if token_info["sofi-data-clearance"] == "all":
         return True
     # Default to false
