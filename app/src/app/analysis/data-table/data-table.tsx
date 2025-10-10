@@ -23,6 +23,9 @@ import { StickyVariableSizeGrid } from "./sticky-variable-size-grid";
 import DataTableColumnHeader from "./data-table-column-header";
 import "./data-table.css";
 import "./data-table-cell-styles.css";
+import { useSelector } from "react-redux";
+import { RootState } from "app/root-reducer";
+import { UserInfo } from "sap-client";
 
 export type ColumnReordering =
   | {
@@ -114,6 +117,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
     },
     [selection]
   );
+  const user = useSelector<RootState>((s) => s.entities.user ?? {}) as UserInfo;
 
   const [lastView, setLastView] = useState(view);
 
@@ -310,6 +314,13 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
 
   const calcColSelectionState = React.useCallback(
     (col: Column<T>) => {
+      //Special case for sequence_id, since it is used for approvals which have special access rules.
+      if (col.id === "sequence_id") {
+        const checked = Object.keys(selection).length === rows.filter(r => user.data_clearance === "all" || user.institution === r.original.institution).length;
+        return {checked, indeterminate: false};
+      }
+
+
       const c = Object.values(selection).filter(
         (x) => x.cells[col.id] === true
       );
@@ -373,7 +384,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
         if(selection && Object.keys(selection).length > 0){
         }else{
           // Select all rows, all approvable cells
-          incSel = rows
+          incSel = rows.filter(row => user.data_clearance === "all" || row.original.institution === user.institution)
             .map((r) => ({
               [r.original[primaryKey]]: {
                 original: r.original,
@@ -420,6 +431,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
       selection,
       visibleColumns,
       getAllApprovableCellsInSelection,
+      user,
     ]
   );
 
@@ -485,6 +497,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
       if (isInSelection(rowId, columnId)) {
         className = `${className} ${selectionClassName ?? ""}`;
       }
+      const canSelect = user.data_clearance == "all" ||  user.institution === row?.original?.institution;
 
       return (
         // eslint-disable-next-line jsx-a11y/click-events-have-key-events
@@ -498,7 +511,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
           <Flex minWidth="full" minHeight="full">
             {columnIndex === 0 && (
               <React.Fragment>
-                {onSelect ? (
+                {(onSelect && canSelect) ? (
                   <SelectionCheckBox
                     onClick={rowClickHandler(rows[rowIndex - 1])}
                     {...calcRowSelectionState(rows[rowIndex - 1])}
@@ -546,6 +559,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
       renderCellControl,
       cellClickHandler,
       onSelect,
+      user,
     ]
   );
 

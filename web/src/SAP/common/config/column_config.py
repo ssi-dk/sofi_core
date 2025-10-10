@@ -22,7 +22,7 @@ def gen_default_column(field_name: str) -> ColumnDict:
     return {
         "id": "",
         "approvable": False,
-        "internal_approval_only": False,
+        "internal_approval_only": True, # UNUSED! clearance level "all" required to approve cross-institution.
         "editable": False,
         "editable_format": None,
         "pii": False,
@@ -31,7 +31,7 @@ def gen_default_column(field_name: str) -> ColumnDict:
         "organizations": ["FVST", "SSI"],
         "field_name": field_name,
         "approves_with": [],
-        "cross_org_editable": False
+        "cross_org_editable": False # UNUSED! clearance level "all" required to modify cross-institution.
     }
 
 
