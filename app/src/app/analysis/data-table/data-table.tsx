@@ -314,6 +314,13 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
 
   const calcColSelectionState = React.useCallback(
     (col: Column<T>) => {
+      //Special case for sequence_id, since it is used for approvals which have special access rules.
+      if (col.id === "sequence_id") {
+        const checked = Object.keys(selection).length === rows.filter(r => user.data_clearance === "all" || user.institution === r.original.institution).length;
+        return {checked, indeterminate: false};
+      }
+
+
       const c = Object.values(selection).filter(
         (x) => x.cells[col.id] === true
       );
