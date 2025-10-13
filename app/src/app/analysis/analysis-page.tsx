@@ -577,7 +577,9 @@ export default function AnalysisPage() {
         .institution;
       const editIsAllowed = columnConfigs[columnId].editable ||
         user.institution == rowInstitution ||
-        columnConfigs[columnId].cross_org_editable;
+        columnConfigs[columnId].cross_org_editable || 
+        user.data_clearance === "all";
+        
       if (value !== 0 && value !== false && !value && !editIsAllowed) {
         return <div />;
       }
