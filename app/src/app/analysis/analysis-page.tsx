@@ -575,8 +575,7 @@ export default function AnalysisPage() {
       }
       const rowInstitution = displayData.find((row) => row.sequence_id == rowId)
         .institution;
-      const editIsAllowed = true ||
-        columnConfigs[columnId].editable ||
+      const editIsAllowed = columnConfigs[columnId].editable ||
         user.institution == rowInstitution ||
         columnConfigs[columnId].cross_org_editable;
       if (value !== 0 && value !== false && !value && !editIsAllowed) {
