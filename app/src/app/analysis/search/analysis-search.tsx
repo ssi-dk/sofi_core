@@ -51,7 +51,7 @@ const parseQuery = (input: string, onError) => {
 const checkQueryError = (input: string,searchTerms: Set<string>) => {
   let error: string| null = null;
 
-  let onError = (err: {description: string}) => {
+  const onError = (err: {description: string}) => {
     error = err.description;
   }
   const ast = parseQuery(input,onError)

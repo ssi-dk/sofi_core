@@ -49,6 +49,7 @@ type DataTableProps<T extends NotEmpty> = {
   primaryKey: keyof T;
   canSelectColumn: (columnName: string) => boolean;
   canApproveColumn: (columnName: string) => boolean;
+  canApproveRow: (rowId: string) => boolean;
   isJudgedCell: (rowId: string, columnName: string) => boolean;
   getDependentColumns: (columnName: keyof T) => Array<keyof T>;
   selectionClassName?: string;
@@ -99,6 +100,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
     approvableColumns,
     canSelectColumn,
     canApproveColumn,
+    canApproveRow,
     isJudgedCell,
     getDependentColumns,
     getCellStyle,
@@ -498,7 +500,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
           <Flex minWidth="full" minHeight="full">
             {columnIndex === 0 && (
               <React.Fragment>
-                {onSelect ? (
+                {(onSelect && canApproveRow(rowId)) ? (
                   <SelectionCheckBox
                     onClick={rowClickHandler(rows[rowIndex - 1])}
                     {...calcRowSelectionState(rows[rowIndex - 1])}
@@ -546,6 +548,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
       renderCellControl,
       cellClickHandler,
       onSelect,
+      canApproveRow
     ]
   );
 

@@ -398,6 +398,13 @@ export default function AnalysisPage() {
     [approvableColumns]
   );
 
+  const canApproveRow = React.useCallback(
+    (rowId: string) => {
+      return user.institution === (data.find((row) => row.sequence_id == rowId)?.institution);
+    },
+    [data, user]
+  );
+
   const isJudgedCell = React.useCallback(
     (rowId: string, columnName: string) => {
       if (!approvals[rowId]) {
@@ -599,24 +606,22 @@ export default function AnalysisPage() {
       } else if (typeof value === "object") {
         v = `${JSON.stringify(value)}`;
         if (columnId === "qc_failed_tests") {
-          let acc = "";
-          (value as Array<AnalysisResultAllOfQcFailedTests>).map((x) => {
+          v = (value as Array<AnalysisResultAllOfQcFailedTests>).reduce((acc, x) => {
             if (acc !== "") {
               acc += ", ";
             }
             acc += `${x.display_name}: ${x.reason}`;
-          });
-          v = acc;
+            return acc;
+          }, "");
         }
         if (columnId === "st_alleles") {
-          let acc = "";
-          Object.entries(value).map(([k,v]) => {
+          v = Object.entries(value).reduce((acc, [k, val]) => {
             if (acc !== "") {
               acc += ", ";
             }
-            acc += `${k}: ${v}`;
-          });
-          v = acc;
+            acc += `${k}: ${val}`;
+            return acc;
+          }, "");
         }
       }
       // cannot edit cells that have already been approved
@@ -799,6 +804,7 @@ export default function AnalysisPage() {
             setColumnSort={setColumnSort}
             canSelectColumn={canSelectColumn}
             canApproveColumn={canApproveColumn}
+            canApproveRow={canApproveRow}
             isJudgedCell={isJudgedCell}
             approvableColumns={approvableColumns}
             getDependentColumns={getDependentColumns}

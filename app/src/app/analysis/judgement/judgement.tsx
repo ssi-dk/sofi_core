@@ -41,6 +41,9 @@ export const Judgement = <T extends NotEmpty>(props: Props<T>) => {
   const approvalErrors = useSelector<RootState>(
     (s) => s.entities.approvalErrors
   ) as Array<string>;
+  const latestApprovalError = useSelector<RootState>(
+    (s) => s.judgmentReducer.lastApprovalError
+  ) as {message: string} | null;
 
   const selection = useSelector<RootState>(
     (s) => s.selection.selection
@@ -202,7 +205,7 @@ export const Judgement = <T extends NotEmpty>(props: Props<T>) => {
       } else {
         toast({
           title: t("Error"),
-          description: String(approvalStatus),
+          description: latestApprovalError ? latestApprovalError.message : String(approvalStatus),
           status: "error",
           duration: null,
           isClosable: true,
