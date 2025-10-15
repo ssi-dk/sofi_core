@@ -8,34 +8,34 @@ import { SearchQuery } from "../analysis-page";
 const SearchHistoryMenu = (props: {
     onSearchChange: (query: SearchQuery) => void
 }) => {
-    const {onSearchChange} = props;
-    const [searchHistory, setSearchHistory]= useState<SearchHistory>([]);
+    const { onSearchChange } = props;
+    const [searchHistory, setSearchHistory] = useState<SearchHistory>([]);
 
     useEffect(() => {
         const cb = () => setSearchHistory(getSearchHistory())
         cb();
         registerHistoryCB(cb)
         return () => deRegisterHistoryCB(cb)
-    },[])
+    }, [])
 
-    return <Flex direction="column" style={{margin: "3px"}}>
+    return <Flex direction="column" style={{ margin: "3px" }}>
         <b>Search history</b>
-        <Flex direction="column" style={{marginLeft: "6px"}}>
+        <Flex direction="column" style={{ marginLeft: "6px" }}>
             {/* TODO: Make pretty */}
-            {searchHistory.map(s => <Flex direction="row" alignItems="center" key={s.timestamp} style={{margin: "4px",border: "lightGray", borderWidth: "1px", borderRadius: "8px", borderStyle: "solid"}} >
+            {searchHistory.map(s => <Flex direction="row" alignItems="center" key={s.timestamp} style={{ margin: "4px", border: "lightGray", borderWidth: "1px", borderRadius: "8px", borderStyle: "solid" }} >
                 <IconButton
                     aria-label="Pin"
-                    icon={<StarIcon {...(s.pinned ? {color: "gold"} : {fillOpacity: 0, stroke:"black"})} />}
+                    icon={<StarIcon {...(s.pinned ? { color: "gold" } : { fillOpacity: 0, stroke: "black" })} />}
                     ml="1"
-                    onClick={() => setPinned(s,!s.pinned)}
-                    style={{margin: "4px"}}
+                    onClick={() => setPinned(s, !s.pinned)}
+                    style={{ margin: "4px" }}
                 />
                 <IconButton
                     aria-label="Search database"
                     icon={<SearchIcon />}
                     ml="1"
-                    onClick={() => onSearchChange({expression: s.query, clearAllFields: true})}
-                    style={{margin: "4px"}}
+                    onClick={() => onSearchChange({ expression: s.query, clearAllFields: true })}
+                    style={{ margin: "4px" }}
                 />
                 <p>
                     {recurseSearchTree(s.query).map(displayOperandName).join(", ")}
