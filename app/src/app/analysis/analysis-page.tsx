@@ -66,7 +66,7 @@ import { appendToSearchHistory, checkExpressionEquality, recurseSearchTree } fro
 // as 'approved' also.
 const PRIMARY_APPROVAL_FIELDS = ["st_final", "qc_final"];
 
-export type SearchQuery = AnalysisQuery & {clearAllFields?: boolean};
+export type SearchQuery = AnalysisQuery & { clearAllFields?: boolean };
 
 export default function AnalysisPage() {
   const { t } = useTranslation();
@@ -108,8 +108,8 @@ export default function AnalysisPage() {
 
   useEffect(() => {
     const current = new Set(data.flatMap(Object.keys));
-    setSearchTerms(old => old.union(current))
-  },[data, setSearchTerms])
+    setSearchTerms(old => new Set([...old, ...current]))
+  }, [data, setSearchTerms])
 
   const totalCount = useSelector<RootState>((s) =>
     s.entities.analysisTotalCount !== 0
@@ -182,14 +182,14 @@ export default function AnalysisPage() {
     (s) => s.view.view
   ) as UserDefinedViewInternal;
 
-  const displayData = useMemo(() => [...Object.entries(selection).filter(([key,_]) => !data.find(seq => seq.sequence_id === key)).map(([_,value]) => value.original),...data], [selection,data]) 
+  const displayData = useMemo(() => [...Object.entries(selection).filter(([key, _]) => !data.find(seq => seq.sequence_id === key)).map(([_, value]) => value.original), ...data], [selection, data])
 
   const [lastSearchQuery, setLastSearchQuery] = useState<AnalysisQuery>({
     expression: {},
   });
   const lastQueryOperands = useMemo(() => {
     return recurseSearchTree(lastSearchQuery.expression);
-  },[lastSearchQuery])
+  }, [lastSearchQuery])
 
   const [rawSearchQuery, setRawSearchQuery] = useState<SearchQuery>({
     expression: {},
@@ -197,15 +197,15 @@ export default function AnalysisPage() {
 
 
   const clearFieldFromSearch = (field: keyof AnalysisResult) => {
-    const recurseAndModify = (ex?: QueryExpression |QueryOperand):QueryExpression => {
+    const recurseAndModify = (ex?: QueryExpression | QueryOperand): QueryExpression => {
       if (!ex) {
         return undefined;
       }
       if ("field" in ex) {
-        if (ex.field == field){
+        if (ex.field == field) {
           return undefined;
         }
-        return {...ex}
+        return { ...ex }
       }
       return {
         ...ex,
@@ -213,7 +213,7 @@ export default function AnalysisPage() {
         right: recurseAndModify(ex.right)
       }
     }
-    setRawSearchQuery(old => ({expression: recurseAndModify(old.expression)}))
+    setRawSearchQuery(old => ({ expression: recurseAndModify(old.expression) }))
   }
 
 
@@ -229,63 +229,63 @@ export default function AnalysisPage() {
   const onSearch = React.useCallback(
     (q: SearchQuery, pageSize: number) => {
 
-      const mergeFilters =(searchExpression: QueryExpression, propFilter: PropFilter<AnalysisResult> ,rangeFilter: RangeFilter<AnalysisResult>) => {
-        
+      const mergeFilters = (searchExpression: QueryExpression, propFilter: PropFilter<AnalysisResult>, rangeFilter: RangeFilter<AnalysisResult>) => {
+
         const searchFields = recurseSearchTree(searchExpression)
 
         // Search field takes priority, so add first
-        const searchMap = new Map<string,{term?: string, term_max?: string, term_min?: string}>();
-        searchFields.forEach(({field,term,term_max, term_min}) => searchMap.set(field,{term,term_max,term_min}))
+        const searchMap = new Map<string, { term?: string, term_max?: string, term_min?: string }>();
+        searchFields.forEach(({ field, term, term_max, term_min }) => searchMap.set(field, { term, term_max, term_min }))
 
         Object.entries(propFilter).forEach(([key, value]) => {
           if (value.length == 0) { // When an argument is removed from the filter it still remains, it is just empty.
             return;
           } else {
             if (!searchMap.has(key)) {
-              searchMap.set(key,{term: value[0]})
+              searchMap.set(key, { term: value[0] })
             }
           }
         })
 
-        const searchList: (QueryOperand & QueryExpression)[] = [...searchMap].map((f) => ({field: f[0], ...f[1]}) );
+        const searchList: (QueryOperand & QueryExpression)[] = [...searchMap].map((f) => ({ field: f[0], ...f[1] }));
 
 
         // Range filters cannot be searched for in the search bar, so we do not need to filter them away
         // with the map
-        Object.entries(rangeFilter).forEach(([key,value]) => {
-      
+        Object.entries(rangeFilter).forEach(([key, value]) => {
+
           if (!value) {
             return;
           }
           if (value.min && value.max) {
-            searchList.push({field: key, term_max: value.max as string, term_min: value.min as string})
-          } else if(value.min) {
-            searchList.push({field: key, term_min: value.min as string})
+            searchList.push({ field: key, term_max: value.max as string, term_min: value.min as string })
+          } else if (value.min) {
+            searchList.push({ field: key, term_min: value.min as string })
           } else if (value.max) {
-            searchList.push({field: key, term_max: value.max as string})
+            searchList.push({ field: key, term_max: value.max as string })
           }
         })
 
         switch (searchList.length) {
           case 0:
-              return {}
+            return {}
           case 1:
-              return {left: searchList[0]}
+            return { left: searchList[0] }
           default:
-            return searchList.reduce((l,r) => ({left: l, operator: QueryOperator.AND, right: r})) as QueryExpression
+            return searchList.reduce((l, r) => ({ left: l, operator: QueryOperator.AND, right: r })) as QueryExpression
         }
       }
 
       // Since we now do api calls on every filter change, we should avoid unnessecary work
-      const newExpression = q.clearAllFields ? q.expression : mergeFilters(q.expression || {},propFilters,rangeFilters);
-      if (checkExpressionEquality(newExpression,lastSearchQuery.expression)) {
+      const newExpression = q.clearAllFields ? q.expression : mergeFilters(q.expression || {}, propFilters, rangeFilters);
+      if (checkExpressionEquality(newExpression, lastSearchQuery.expression)) {
         return;
       }
       if (q.clearAllFields) {
         setPropFilters({})
         setRangeFilters({})
       }
-      const newQ = {expression: newExpression};
+      const newQ = { expression: newExpression };
 
       dispatch({ type: "RESET/Analysis" });
       setLastSearchQuery(newQ);
@@ -307,12 +307,12 @@ export default function AnalysisPage() {
         );
       }
     },
-    [dispatch, propFilters, rangeFilters,lastSearchQuery]
+    [dispatch, propFilters, rangeFilters, lastSearchQuery]
   );
 
   useEffect(() => {
     onSearch(rawSearchQuery, PAGE_SIZE)
-  },[onSearch,rawSearchQuery])
+  }, [onSearch, rawSearchQuery])
 
 
   const { hiddenColumns } = view;
@@ -336,28 +336,28 @@ export default function AnalysisPage() {
         !columnConfigs[columnName]?.computed
       );
     },
-    [columnConfigs,pageState]
+    [columnConfigs, pageState]
   );
 
 
   const onPropFilterChange = React.useCallback(
     (p: PropFilter<AnalysisResult>) => {
-      setRawSearchQuery(old =>( {...old, clearAllFields: false}))
+      setRawSearchQuery(old => ({ ...old, clearAllFields: false }))
       setPropFilters({ ...propFilters, ...p });
     },
-    [propFilters, setPropFilters,setRawSearchQuery]
+    [propFilters, setPropFilters, setRawSearchQuery]
   );
 
   const onRangeFilterChange = React.useCallback(
     (p: RangeFilter<AnalysisResult>) => {
       setRangeFilters({ ...rangeFilters, ...p });
-      setRawSearchQuery(old =>( {...old, clearAllFields: false}))
+      setRawSearchQuery(old => ({ ...old, clearAllFields: false }))
 
     },
     [rangeFilters, setRangeFilters, setRawSearchQuery]
   );
 
-  
+
   const primaryApprovalColumns = React.useMemo(
     () =>
       Object.values(columnConfigs || {})
@@ -452,11 +452,11 @@ export default function AnalysisPage() {
         if (columnId === "sequence_id") {
           let sequenceStyle = "cell";
           PRIMARY_APPROVAL_FIELDS.forEach((f) => {
-            if (approvals[rowId][f] !== ApprovalStatus.approved){
-              if(sequenceStyle != `rejectedCell`){
+            if (approvals[rowId][f] !== ApprovalStatus.approved) {
+              if (sequenceStyle != `rejectedCell`) {
                 sequenceStyle = "unapprovedCell";
               }
-              if(approvals[rowId][f] === ApprovalStatus.rejected){
+              if (approvals[rowId][f] === ApprovalStatus.rejected) {
                 sequenceStyle = `rejectedCell`;
               }
             }
@@ -610,11 +610,11 @@ export default function AnalysisPage() {
         }
         if (columnId === "st_alleles") {
           let acc = "";
-          Object.entries(value).map(([k,v]) => {
+          Object.entries(value).map(([k, val]) => {
             if (acc !== "") {
               acc += ", ";
             }
-            acc += `${k}: ${v}`;
+            acc += `${k}: ${val}`;
           });
           v = acc;
         }
@@ -736,9 +736,6 @@ export default function AnalysisPage() {
     [dispatch]
   );
 
-
-  
-  
   const content = (
     <React.Fragment>
       <Box role="navigation" gridColumn="2 / 4" pb={5}>

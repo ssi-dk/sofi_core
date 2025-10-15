@@ -48,19 +48,19 @@ const parseQuery = (input: string, onError) => {
   }
 };
 
-const checkQueryError = (input: string,searchTerms: Set<string>) => {
-  let error: string| null = null;
+const checkQueryError = (input: string, searchTerms: Set<string>) => {
+  let error: string | null = null;
 
-  let onError = (err: {description: string}) => {
+  const onError = (err: { description: string }) => {
     error = err.description;
   }
-  const ast = parseQuery(input,onError)
+  const ast = parseQuery(input, onError)
   if (error)
     return error;
 
   const operands = recurseSearchTree(ast);
 
-  const invalidTerms = operands.map(o => o.field == "<implicit>" ? o.term : o.field).filter(field =>  !searchTerms.has(field.toLowerCase()))
+  const invalidTerms = operands.map(o => o.field == "<implicit>" ? o.term : o.field).filter(field => !searchTerms.has(field.toLowerCase()))
   if (invalidTerms.length) {
     return "Cannot search for " + invalidTerms.map(t => `"${t}"`).join(", ")
   }
@@ -69,7 +69,7 @@ const checkQueryError = (input: string,searchTerms: Set<string>) => {
 }
 
 const AnalysisSearch = (props: AnalysisSearchProps) => {
-  const { onSearchChange, isDisabled,searchTerms } = props;
+  const { onSearchChange, isDisabled, searchTerms } = props;
   const inputRef = React.useRef<HTMLInputElement>();
   const toast = useToast();
   const [input, setInput] = React.useState("");
@@ -78,8 +78,8 @@ const AnalysisSearch = (props: AnalysisSearchProps) => {
   ]);
 
   const error = useMemo(() => {
-   return checkQueryError(input,searchTerms)
-  },[input,searchTerms])
+    return checkQueryError(input, searchTerms)
+  }, [input, searchTerms])
 
   const submitQuery = React.useCallback(
     (q?: string, clearAllFields?: boolean) =>
@@ -94,7 +94,7 @@ const AnalysisSearch = (props: AnalysisSearchProps) => {
   const onClearButton = React.useCallback(() => {
     inputRef.current.value = "";
     clearInput();
-    submitQuery("",true);
+    submitQuery("", true);
   }, [clearInput, submitQuery]);
 
   const onEnterKey = React.useCallback(
@@ -134,14 +134,14 @@ const AnalysisSearch = (props: AnalysisSearchProps) => {
           </InputLeftElement>
 
           <InputRightElement width="18" marginRight="2">
-          {error && <Tooltip  label={error} >
-              <WarningIcon 
+            {error && <Tooltip label={error} >
+              <WarningIcon
                 color="orange.400"
                 cursor="pointer"
                 height="max"
-                marginRight="2" 
+                marginRight="2"
               />
-            </Tooltip> }
+            </Tooltip>}
             <CloseIcon
               color="gray.400"
               onClick={onClearButton}
@@ -157,7 +157,7 @@ const AnalysisSearch = (props: AnalysisSearchProps) => {
           onClick={submit}
           isDisabled={isDisabled}
         />
-        
+
       </React.Fragment>
       <Popover placement="bottom-start">
         <PopoverTrigger>
@@ -165,12 +165,12 @@ const AnalysisSearch = (props: AnalysisSearchProps) => {
             aria-label="Open history"
             icon={<TimeIcon />}
             ml="1"
-            />
+          />
         </PopoverTrigger>
         <PopoverContent>
-          <SearchHistoryMenu onSearchChange={onSearchChange}/>
+          <SearchHistoryMenu onSearchChange={onSearchChange} />
         </PopoverContent>
-    </Popover>
+      </Popover>
     </>
   );
 };
