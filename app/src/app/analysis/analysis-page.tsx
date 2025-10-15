@@ -174,9 +174,19 @@ export default function AnalysisPage() {
     [_submitChange, setLastUpdatedRow]
   );
 
-  const selection = useSelector<RootState>(
-    (s) => s.selection.selection
-  ) as DataTableSelection<AnalysisResult>;
+  const selection = useSelector<RootState>((s) => {
+    const fullSelection = s.selection
+      .selection as DataTableSelection<AnalysisResult>;
+    if (!pageState.isNarrowed) {
+      return fullSelection;
+    }
+    return Object.fromEntries(
+      Object.entries(fullSelection).filter(
+        ([_key, value]) => value.original.institution === user.institution
+      )
+    );
+  }) as DataTableSelection<AnalysisResult>;
+
   const approvals = useSelector<RootState>((s) => s.entities.approvalMatrix);
   const view = useSelector<RootState>(
     (s) => s.view.view
@@ -194,7 +204,6 @@ export default function AnalysisPage() {
   const [rawSearchQuery, setRawSearchQuery] = useState<SearchQuery>({
     expression: {},
   });
-
 
   const clearFieldFromSearch = (field: keyof AnalysisResult) => {
     const recurseAndModify = (ex?: QueryExpression | QueryOperand): QueryExpression => {
@@ -223,8 +232,6 @@ export default function AnalysisPage() {
   const [rangeFilters, setRangeFilters] = React.useState(
     {} as RangeFilter<AnalysisResult>
   );
-
-
 
   const onSearch = React.useCallback(
     (q: SearchQuery, pageSize: number) => {
@@ -568,10 +575,11 @@ export default function AnalysisPage() {
       }
       const rowInstitution = displayData.find((row) => row.sequence_id == rowId)
         .institution;
-      const editIsAllowed = true ||
-        columnConfigs[columnId].editable ||
+      const editIsAllowed = columnConfigs[columnId].editable ||
         user.institution == rowInstitution ||
-        columnConfigs[columnId].cross_org_editable;
+        columnConfigs[columnId].cross_org_editable || 
+        user.data_clearance === "all";
+        
       if (value !== 0 && value !== false && !value && !editIsAllowed) {
         return <div />;
       }
@@ -599,24 +607,22 @@ export default function AnalysisPage() {
       } else if (typeof value === "object") {
         v = `${JSON.stringify(value)}`;
         if (columnId === "qc_failed_tests") {
-          let acc = "";
-          (value as Array<AnalysisResultAllOfQcFailedTests>).map((x) => {
+          v = (value as Array<AnalysisResultAllOfQcFailedTests>).reduce((acc, x) => {
             if (acc !== "") {
               acc += ", ";
             }
             acc += `${x.display_name}: ${x.reason}`;
-          });
-          v = acc;
+            return acc;
+          }, "");
         }
         if (columnId === "st_alleles") {
-          let acc = "";
-          Object.entries(value).map(([k, val]) => {
+          v = Object.entries(value).reduce((acc, [k, val]) => {
             if (acc !== "") {
               acc += ", ";
             }
             acc += `${k}: ${val}`;
-          });
-          v = acc;
+            return acc;
+          }, "");
         }
       }
       // cannot edit cells that have already been approved
@@ -757,6 +763,7 @@ export default function AnalysisPage() {
             onNarrowHandler={onNarrowHandler}
             getDependentColumns={getDependentColumns}
             checkColumnIsVisible={checkColumnIsVisible}
+            selection={selection}
           />
           {!pageState.isNarrowed ? (
             <AnalysisSelectionMenu
