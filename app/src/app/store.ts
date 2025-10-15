@@ -9,6 +9,7 @@ import { jwtMiddleware } from "middleware/jwt-middleware";
 import { pagingMiddleware } from "middleware/paging-middleware";
 import { selectionMiddleware } from "middleware/selection-middleware";
 import { postApprovalRefreshMiddleware } from "middleware/post-approval-refresh-middleware";
+import { postApprovalFailedMiddleware } from "middleware/post-approval-failed-middleware";
 
 // selectors
 export const getQueries = (state: RootState) => state.queries;
@@ -20,6 +21,7 @@ const store = configureStore({
   reducer: createRootReducer(history),
   middleware: [
     ...getDefaultMiddleware({ serializableCheck: false }),
+    postApprovalFailedMiddleware,
     postApprovalRefreshMiddleware,
     pagingMiddleware,
     jwtMiddleware,
