@@ -51,6 +51,7 @@ module.exports = {
     "react/destructuring-assignment": "warn",
     "no-param-reassign": "off",
     "import/prefer-default-export": "off",
+    "@typescript-eslint/object-curly-spacing": 'warn',
     'prettier/prettier': [
       'off',
       {
