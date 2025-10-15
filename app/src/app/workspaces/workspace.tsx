@@ -187,7 +187,6 @@ export function Workspace(props: Props) {
               setNewColumnOrder={() => {}}
               canSelectColumn={() => false}
               canApproveColumn={() => false}
-              canApproveRow={() => false}
               isJudgedCell={() => false}
               approvableColumns={[]}
               getDependentColumns={() => []}
