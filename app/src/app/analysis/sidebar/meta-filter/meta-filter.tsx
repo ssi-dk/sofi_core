@@ -3,12 +3,7 @@ import { Text, Flex, OrderedList } from "@chakra-ui/react";
 import Select, { ActionMeta, OptionTypeBase, ValueType } from "react-select";
 import { selectTheme } from "app/app.styles";
 import { useTranslation } from "react-i18next";
-import {
-  AnalysisResult,
-  DataClearance,
-  Organization,
-  QueryOperand,
-} from "sap-client";
+import { AnalysisResult, DataClearance, Organization, QueryOperand } from "sap-client";
 import { IfPermission } from "auth/if-permission";
 import { PropFilter, RangeFilter } from "utils";
 import FilterBox from "../filter-box";
@@ -28,8 +23,8 @@ type MetaFilterProps = {
   onPropFilterChange: (resultingFilter: PropFilter<AnalysisResult>) => void;
   onRangeFilterChange: (resultingFilter: RangeFilter<AnalysisResult>) => void;
   isDisabled: boolean;
-  queryOperands: QueryOperand[];
-  clearFieldFromSearch: (field: keyof AnalysisResult) => void;
+  queryOperands: QueryOperand[]
+  clearFieldFromSearch: (field: keyof AnalysisResult) => void
 };
 
 function MetaFilter(props: MetaFilterProps) {
@@ -80,6 +75,7 @@ function MetaFilter(props: MetaFilterProps) {
     ) => (d: Date) => {
       cb(d);
 
+
       const opposite = end === "min" ? "max" : "min";
       const minDate = null;
       const maxDate = null;
@@ -90,10 +86,7 @@ function MetaFilter(props: MetaFilterProps) {
       const val = d !== null ? d : end === "min" ? minDate : maxDate;
       const resolvedState = {
         ...rangeFilterState,
-        [field]:
-          val || oppositeValue
-            ? { [end]: val, [opposite]: oppositeValue }
-            : undefined,
+        [field]: (val || oppositeValue) ? { [end]: val, [opposite]: oppositeValue } : undefined,
       };
 
       if (val == null && oppositeValue == null) {
@@ -103,12 +96,7 @@ function MetaFilter(props: MetaFilterProps) {
       setRangeFilterState(resolvedState);
       onRangeFilterChange(resolvedState);
     },
-    [
-      rangeFilterState,
-      setRangeFilterState,
-      onRangeFilterChange,
-      clearFieldFromSearch,
-    ]
+    [rangeFilterState, setRangeFilterState, onRangeFilterChange, clearFieldFromSearch]
   );
 
   const organisationOptions = React.useMemo(
@@ -120,10 +108,7 @@ function MetaFilter(props: MetaFilterProps) {
     [projects]
   );
   const projectNrOptions = React.useMemo(
-    () =>
-      projectNrs
-        .filter(Boolean)
-        .map((x) => ({ value: x.toString(), label: x.toString() })),
+    () => projectNrs.filter(Boolean).map((x) => ({ value: x.toString(), label: x.toString() })),
     [projectNrs]
   );
   const dyreartOptions = React.useMemo(
@@ -179,58 +164,51 @@ function MetaFilter(props: MetaFilterProps) {
         onPropFilterChange(resolvedState as any);
       };
     },
-    [
-      setPropFilterState,
-      onPropFilterChange,
-      propFilterState,
-      clearFieldFromSearch,
-    ]
+    [setPropFilterState, onPropFilterChange, propFilterState, clearFieldFromSearch]
   );
 
   // When a query changes, set all UI filter to match the query, this is useful when choosing a query from the user history
   useEffect(() => {
-    const newPropFilterState = {} as {
-      [K in keyof AnalysisResult]: ValueType<OptionTypeBase, true>;
-    };
+    const newPropFilterState = {} as { [K in keyof AnalysisResult]: ValueType<OptionTypeBase, true> };
     const newRangeFilterState = {} as {
       [K in keyof AnalysisResult]: {
         min: AnalysisResult[K] | null;
         max: AnalysisResult[K] | null;
       };
-    };
+    }
 
-    queryOperands.forEach((op) => {
+
+    queryOperands.forEach(op => {
       if (op.field && op.term) {
         newPropFilterState[op.field] = [op.term];
       } else if (op.field && (op.term_max || op.term_min)) {
-        newRangeFilterState[op.field] = { max: op.term_max, min: op.term_min };
+        newRangeFilterState[op.field] = { max: op.term_max, min: op.term_min }
 
         if (op.field === "date_sample") {
-          setSampledStartDate(op.term_min ? new Date(op.term_min) : null);
-          setSampledEndDate(op.term_max ? new Date(op.term_max) : null);
+          setSampledStartDate(op.term_min ? new Date(op.term_min) : null)
+          setSampledEndDate(op.term_max ? new Date(op.term_max) : null)
         }
         if (op.field === "date_received") {
-          setReceivedStartDate(op.term_min ? new Date(op.term_min) : null);
-          setReceivedEndDate(op.term_max ? new Date(op.term_max) : null);
+          setReceivedStartDate(op.term_min ? new Date(op.term_min) : null)
+          setReceivedEndDate(op.term_max ? new Date(op.term_max) : null)
         }
       }
-    });
+    })
 
-    if (!queryOperands.find((q) => q.field === "date_sample")) {
+    if (!queryOperands.find(q => q.field === "date_sample")) {
       setSampledStartDate(null);
       setSampledEndDate(null);
     }
-    if (!queryOperands.find((q) => q.field === "date_received")) {
+    if (!queryOperands.find(q => q.field === "date_received")) {
       setReceivedStartDate(null);
       setReceivedEndDate(null);
     }
 
-    setPropFilterState(newPropFilterState);
-    setRangeFilterState(newRangeFilterState);
-  }, [queryOperands]);
+    setPropFilterState(newPropFilterState)
+    setRangeFilterState(newRangeFilterState)
+  }, [queryOperands])
 
-  const valueBuilder = (key: keyof AnalysisResult) =>
-    propFilterState[key]?.map((i) => ({ label: i, value: i })) || [];
+  const valueBuilder = (key: keyof AnalysisResult) => propFilterState[key]?.map(i => ({ label: i.toString(), value: i.toString() })) || []
 
   return (
     <FilterBox title="Metadata filter">
@@ -317,6 +295,7 @@ function MetaFilter(props: MetaFilterProps) {
             options={runIdsOptions}
             isMulti
             value={valueBuilder("run_id")}
+
             theme={selectTheme}
             onChange={onChangeBuilder("run_id")}
             isDisabled={isDisabled}

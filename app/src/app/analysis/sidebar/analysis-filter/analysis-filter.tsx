@@ -14,8 +14,8 @@ type AnalysisFilterProps = {
   sts: string[];
   onFilterChange: (resultingFilter: PropFilter<AnalysisResult>) => void;
   isDisabled: boolean;
-  queryOperands: QueryOperand[];
-  clearFieldFromSearch: (field: keyof AnalysisResult) => void;
+  queryOperands: QueryOperand[]
+  clearFieldFromSearch: (field: keyof AnalysisResult) => void
 };
 
 function AnalysisFilter(props: AnalysisFilterProps) {
@@ -26,7 +26,7 @@ function AnalysisFilter(props: AnalysisFilterProps) {
     onFilterChange,
     isDisabled,
     queryOperands,
-    clearFieldFromSearch,
+    clearFieldFromSearch
   } = props;
 
   const providedSpeciesOptions = React.useMemo(
@@ -49,20 +49,17 @@ function AnalysisFilter(props: AnalysisFilterProps) {
 
   // When a query changes, set all UI filter to match the query, this is useful when choosing a query from the user history
   useEffect(() => {
-    const newState = {} as {
-      [K in keyof AnalysisResult]: ValueType<OptionTypeBase, true>;
-    };
+    const newState = {} as { [K in keyof AnalysisResult]: ValueType<OptionTypeBase, true> };
 
-    queryOperands.forEach((op) => {
+    queryOperands.forEach(op => {
       if (op.field && op.term) {
         newState[op.field] = [op.term];
       }
-    });
-    setState(newState);
-  }, [queryOperands, setState]);
+    })
+    setState(newState)
+  }, [queryOperands, setState])
 
-  const valueBuilder = (key: keyof AnalysisResult) =>
-    state[key]?.map((i) => ({ label: i, value: i })) || [];
+  const valueBuilder = (key: keyof AnalysisResult) => state[key]?.map(i => ({ value: i.toString(), label: i.toString() })) || []
 
   const onChangeBuilder: (
     field: keyof AnalysisResult
