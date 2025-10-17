@@ -38,6 +38,74 @@ const expression: QueryExpression = {
   },
 };
 
+const enforce_date = (d: Date | string) => (typeof d === "string" || d instanceof String) ? new Date(d) : d
+
+const display_value = (key: string, v: any) => {
+
+  if (!v) {
+    return ""
+  }
+
+  if (key.startsWith("date")) {
+    return enforce_date(v as string).toLocaleString();
+  }
+
+  if (typeof v === "string") {
+    return v
+  }
+  if (typeof v === "number") {
+    if (Math.floor(v) == v) {
+      return v;
+    }
+    const [int,rem] = v.toString().split(".");
+    return int + "." + rem.slice(0,2);
+  }
+  if (Array.isArray(v)) {
+    return v.map(v => v.toString()).join(", ")
+  }
+  if (typeof v === "object") {
+    return Object.entries(v).map(([k, v]) => k + ": " + v).join(", ")
+  }
+
+  console.log("Failed to determine type of", key, "This should be impossible.", typeof v);
+  return v.toString();
+}
+
+const ClusterTable = (props: { sequences: AnalysisResult[] }) => {
+  // To avoid user confusion we use a differently inner styled table
+  const { sequences } = props;
+
+  // Remove the headers where no sequences have values
+  const tableHeaders = [...new Set(sequences.flatMap(r => Object.keys(r).filter(k => r[k])))] as (keyof AnalysisResult)[]
+  
+  //Ensure sequence_id is first
+  const index = tableHeaders.indexOf("sequence_id");
+  tableHeaders.splice(index, 1); // 2nd parameter means remove one item only
+  tableHeaders.unshift("sequence_id");
+
+
+  return <div style={{ overflowX: "scroll", width: "50vw" }}>
+    <Table variant="striped">
+      <Thead>
+        <Tr>
+          {tableHeaders.map(key => <Th key={key} style={{border: "1px solid black"}}>{key}</Th>)}
+        </Tr>
+      </Thead>
+      <Tbody>
+        {
+          sequences.map((s,i) => <Tr key={s.sequence_id}>
+            {
+              tableHeaders.map(key => <Td key={key} style={{border: "1px solid black"}}>
+                {display_value(key, s[key])}
+                </Td>)
+            }
+          </Tr>)
+        }
+      </Tbody>
+    </Table>
+  </div>
+}
+
 export const Clusterspage = () => {
   const { t } = useTranslation();
   const toast = useToast();
@@ -55,33 +123,11 @@ export const Clusterspage = () => {
   ) as Record<string, AnalysisResult>;
   let data = reqState.isFinished ? rawDate : {};
 
-  const enforce_date = (d: Date | string) => ( typeof  d === "string" || d instanceof String) ? new Date(d) : d
 
-  const display_value = (key: string, v: any) => {
-    if (key.startsWith("date")) {
-        return enforce_date(v as string).toLocaleString();
-    }
 
-    if (typeof v === "string") {
-      return v
-    }
-    if (typeof v === "number") {
-      return v.toString()
-    }
-    if (Array.isArray(v)) {
-      return v.map(v => v.toString()).join(", ")
-    }
-    if (typeof v === "object") {
-      return Object.entries(v).map(([k,v]) => k + ": " + v).join(", ")
-    }
 
-    console.log("Failed to determine type of", key, "This should be impossible.", typeof v);
-    return v.toString();
-  }
-  
-  
   const date_mod = (v: AnalysisResult) => {
-    const {date_modified, date_received} = v;
+    const { date_modified, date_received } = v;
     if (date_modified) {
       return enforce_date(date_modified)
     }
@@ -234,38 +280,10 @@ export const Clusterspage = () => {
                           </ul>
                         </>
                       )}
-                      {openClusters.find((c) => c == cluster_id) && (
-                        <>
-                          <div >
-                            {sequences.map((s) => (
-                              <div key={s.sequence_id}>
-                                <span>
-                                  <b>
-                                    {t("Sequence")} {s.sequence_id}
-                                  </b>{" "}
-                                  (
-                                  {DateTime.fromJSDate(
-                                    date_mod(s)
-                                  ).toRelative()}
-                                  )
-                                </span>
-                                <ul style={{ marginLeft: "2rem" }}>
-                                  {Object.entries(s)
-                                    .filter(([_, v]) => !!v)
-                                    .map(([k, v]) => (
-                                      <li key={k}>
-                                        {k}={display_value(k,v)}
-                                      </li>
-                                    ))}
-                                </ul>
-                              </div>
-                            ))}
-                          </div>
-                        </>
-                      )}
+                      {openClusters.find((c) => c == cluster_id) && <ClusterTable sequences={sequences} />}
                     </Td>
                     <Td>
-                      {sequences.filter(s => date_mod(s).getTime() > (Date.now() - 60*60*24*7*1000)).length}
+                      {sequences.filter(s => date_mod(s).getTime() > (Date.now() - 60 * 60 * 24 * 7 * 1000)).length}
                     </Td>
                     <Td>
                       {date_mod(sequences[0]).toLocaleString("DK")} (
@@ -281,3 +299,4 @@ export const Clusterspage = () => {
     </>
   );
 };
+
