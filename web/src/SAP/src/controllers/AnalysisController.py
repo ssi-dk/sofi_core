@@ -198,6 +198,8 @@ def submit_changes(
             # Make sure is allowed to modify that column
             if not col in allowed_cols:
                 raise Forbidden(f"You are not authorized to edit column -{col}-")
+            
+
     # TODO: Verify that none of these cells are already approved
     update_analysis(body)
     res = dict()

@@ -83,6 +83,12 @@ export interface BaseMetadata  {
      * @type {Date}
      * @memberof BaseMetadata
      */
+    date_modified?: Date;
+    /**
+     * 
+     * @type {Date}
+     * @memberof BaseMetadata
+     */
     date_sofi?: Date;
     /**
      * 
@@ -115,6 +121,7 @@ export function BaseMetadataFromJSON(json: any): BaseMetadata {
         'project_title': !exists(json, 'project_title') ? undefined : json['project_title'],
         'date_sample': !exists(json, 'date_sample') ? undefined : new Date(json['date_sample']),
         'date_received': new Date(json['date_received']),
+        'date_modified': !exists(json, 'date_modified') ? undefined : new Date(json['date_modified']),
         'date_sofi': !exists(json, 'date_sofi') ? undefined : new Date(json['date_sofi']),
         'run_id': json['run_id'],
         'public_number': !exists(json, 'public_number') ? undefined : json['public_number'],
@@ -136,6 +143,7 @@ export function BaseMetadataToJSON(value?: BaseMetadata): any {
         'project_title': value.project_title,
         'date_sample': value.date_sample === undefined ? undefined : value.date_sample.toISOString(),
         'date_received': value.date_received.toISOString(),
+        'date_modified': value.date_modified === undefined ? undefined : value.date_modified.toISOString(),
         'date_sofi': value.date_sofi === undefined ? undefined : value.date_sofi.toISOString(),
         'run_id': value.run_id,
         'public_number': value.public_number,
