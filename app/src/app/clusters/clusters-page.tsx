@@ -1,14 +1,13 @@
 import Header from "app/header/header";
 import { RootState } from "app/root-reducer";
-import { useDispatch, useSelector } from "react-redux";
-import React, { useEffect, useMemo, useState } from "react";
+import { useSelector } from "react-redux";
+import React, { useMemo, useState } from "react";
 import { IfPermission } from "auth/if-permission";
 import {
   Box,
   Flex,
   IconButton,
   useToast,
-  Text,
   Heading,
   Table,
   Thead,
@@ -16,17 +15,13 @@ import {
   Tr,
   Th,
   Td,
-  Button,
 } from "@chakra-ui/react";
 import { AnalysisResult, Permission, QueryExpression, QueryOperator } from "sap-client";
 import { useTranslation } from "react-i18next";
-import { requestAsync } from "redux-query";
 import {
-  requestPageOfAnalysis,
   searchPageOfAnalysis,
 } from "app/analysis/analysis-query-configs";
 import { ChevronDownIcon, ChevronRightIcon } from "@chakra-ui/icons";
-import { rootCertificates } from "tls";
 import { DateTime } from "luxon";
 import { useRequest } from "redux-query-react";
 
@@ -57,8 +52,8 @@ const display_value = (key: string, v: any) => {
     if (Math.floor(v) == v) {
       return v;
     }
-    const [int,rem] = v.toString().split(".");
-    return int + "." + rem.slice(0,2);
+    const [int, rem] = v.toString().split(".");
+    return int + "." + rem.slice(0, 2);
   }
   if (Array.isArray(v)) {
     return v.map(v => v.toString()).join(", ")
@@ -77,7 +72,7 @@ const ClusterTable = (props: { sequences: AnalysisResult[] }) => {
 
   // Remove the headers where no sequences have values
   const tableHeaders = [...new Set(sequences.flatMap(r => Object.keys(r).filter(k => r[k])))] as (keyof AnalysisResult)[]
-  
+
   //Ensure sequence_id is first
   const index = tableHeaders.indexOf("sequence_id");
   tableHeaders.splice(index, 1); // 2nd parameter means remove one item only
@@ -88,16 +83,16 @@ const ClusterTable = (props: { sequences: AnalysisResult[] }) => {
     <Table variant="striped">
       <Thead>
         <Tr>
-          {tableHeaders.map(key => <Th key={key} style={{border: "1px solid black"}}>{key}</Th>)}
+          {tableHeaders.map(key => <Th key={key} style={{ border: "1px solid black" }}>{key}</Th>)}
         </Tr>
       </Thead>
       <Tbody>
         {
-          sequences.map((s,i) => <Tr key={s.sequence_id}>
+          sequences.map((s, i) => <Tr key={s.sequence_id}>
             {
-              tableHeaders.map(key => <Td key={key} style={{border: "1px solid black", background: i % 2 === 1 ? "white" : undefined}}>
+              tableHeaders.map(key => <Td key={key} style={{ border: "1px solid black", background: i % 2 === 1 ? "white" : undefined }}>
                 {display_value(key, s[key])}
-                </Td>)
+              </Td>)
             }
           </Tr>)
         }
