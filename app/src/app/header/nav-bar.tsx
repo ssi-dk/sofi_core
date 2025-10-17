@@ -1,12 +1,14 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-import { Button, Flex } from "@chakra-ui/react";
+import { Button, Flex,  } from "@chakra-ui/react";
 import {
   AttachmentIcon,
   CalendarIcon,
   EditIcon,
   LockIcon,
+  SunIcon,
   ViewIcon,
+  HamburgerIcon
 } from "@chakra-ui/icons";
 import { Permission } from "sap-client";
 import { IfPermission } from "auth/if-permission";
@@ -23,7 +25,7 @@ function NavBar() {
         <Button leftIcon={<ViewIcon />}>{t("Workspaces")}</Button>
       </NavLink>
       <NavLink to="/clusters">
-        <Button leftIcon={<ViewIcon />}>{t("Clusters")}</Button>
+        <Button leftIcon={<HamburgerIcon />}>{t("Clusters")}</Button>
       </NavLink>
       <IfPermission permission={Permission.approve}>
         <NavLink to="/approval-history">

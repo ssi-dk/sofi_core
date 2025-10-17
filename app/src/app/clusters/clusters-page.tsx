@@ -95,7 +95,7 @@ const ClusterTable = (props: { sequences: AnalysisResult[] }) => {
         {
           sequences.map((s,i) => <Tr key={s.sequence_id}>
             {
-              tableHeaders.map(key => <Td key={key} style={{border: "1px solid black"}}>
+              tableHeaders.map(key => <Td key={key} style={{border: "1px solid black", background: i % 2 === 1 ? "white" : undefined}}>
                 {display_value(key, s[key])}
                 </Td>)
             }
