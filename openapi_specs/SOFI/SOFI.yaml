@@ -1153,6 +1153,9 @@ components:
         date_received:
           format: date-time
           type: string
+        date_modified:
+          format: date-time
+          type: string
         date_sofi:
           format: date-time
           type: string
