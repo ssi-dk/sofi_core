@@ -25,7 +25,12 @@ type ErrorObject = {
 };
 
 export const Judgement = <T extends NotEmpty>(props: Props<T>) => {
-  const { isNarrowed, onNarrowHandler, getDependentColumns, checkColumnIsVisible } = props;
+  const {
+    isNarrowed,
+    onNarrowHandler,
+    getDependentColumns,
+    checkColumnIsVisible,
+  } = props;
   const { t } = useTranslation();
   const toast = useToast();
 
@@ -127,7 +132,9 @@ export const Judgement = <T extends NotEmpty>(props: Props<T>) => {
 
     for (const [sequenceId, sequenceSelection] of Object.entries(selection)) {
       const approvedFields = Object.entries(sequenceSelection.cells)
-        .filter(([k, v]) => v && checkColumnIsVisible(k as keyof AnalysisResult))
+        .filter(
+          ([k, v]) => v && checkColumnIsVisible(k as keyof AnalysisResult)
+        )
         .map(([k, _]) => k);
       approvedFields.forEach((field) => {
         const needed = getDependentColumns(field as keyof AnalysisResult);
@@ -153,21 +160,35 @@ export const Judgement = <T extends NotEmpty>(props: Props<T>) => {
       const matrix = {};
       const requiredValues = {};
       Object.keys(selection).forEach((key) => {
-        matrix[key] = Object.fromEntries(Object.entries(selection[key].cells).filter(([k, _]) => checkColumnIsVisible(k as keyof AnalysisResult)));
+        matrix[key] = Object.fromEntries(
+          Object.entries(selection[key].cells).filter(([k, _]) =>
+            checkColumnIsVisible(k as keyof AnalysisResult)
+          )
+        );
         requiredValues[key] = {};
         requiredValues[key]["resfinder_version"] =
           selection[key].original.resfinder_version ?? "";
       });
       doApproval({ matrix, required_values: requiredValues });
     }
-  }, [selection, doApproval, setNeedsApproveNotify, getDependentColumns, checkColumnIsVisible]);
+  }, [
+    selection,
+    doApproval,
+    setNeedsApproveNotify,
+    getDependentColumns,
+    checkColumnIsVisible,
+  ]);
 
   const rejectSelection = React.useCallback(() => {
     setNeedsRejectNotify(true);
     const matrix = {};
     const requiredValues = {};
     Object.keys(selection).forEach((key) => {
-      matrix[key] = Object.fromEntries(Object.entries(selection[key].cells).filter(([k, _]) => checkColumnIsVisible(k as keyof AnalysisResult)));
+      matrix[key] = Object.fromEntries(
+        Object.entries(selection[key].cells).filter(([k, _]) =>
+          checkColumnIsVisible(k as keyof AnalysisResult)
+        )
+      );
       requiredValues[key] = {};
       requiredValues[key]["resfinder_version"] =
         selection[key].original.resfinder_version ?? "";
@@ -233,9 +254,9 @@ export const Judgement = <T extends NotEmpty>(props: Props<T>) => {
         onClick={onNarrowHandler}
         disabled={!isNarrowed && Object.keys(selection ?? {}).length === 0}
       >
-      {isNarrowed ? t("Return") : t("Stage")}
-        </Button>
-              {isNarrowed ? (
+        {isNarrowed ? t("Return") : t("Stage")}
+      </Button>
+      {isNarrowed ? (
         <Button
           leftIcon={<CheckIcon />}
           margin="4px"
@@ -243,7 +264,8 @@ export const Judgement = <T extends NotEmpty>(props: Props<T>) => {
           onClick={approveSelection}
         >
           {t("Approve")}
-        </Button>) : null}
+        </Button>
+      ) : null}
       {isNarrowed ? (
         <Button
           leftIcon={<NotAllowedIcon />}
@@ -252,8 +274,8 @@ export const Judgement = <T extends NotEmpty>(props: Props<T>) => {
           onClick={rejectSelection}
         >
           {t("Reject")}
-        </Button>) : null
-      }
+        </Button>
+      ) : null}
     </IfPermission>
   );
 };

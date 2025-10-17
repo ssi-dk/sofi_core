@@ -44,12 +44,6 @@ export interface ApprovalAllOf  {
     sequence_ids?: Array<string>;
     /**
      * 
-     * @type {Array<string>}
-     * @memberof ApprovalAllOf
-     */
-    revoked_sequence_ids?: Array<string>;
-    /**
-     * 
      * @type {string}
      * @memberof ApprovalAllOf
      */

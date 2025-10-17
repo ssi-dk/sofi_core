@@ -165,6 +165,7 @@ def search_analysis(user, token_info, query: AnalysisQuery):
         token_info["institution"],
         token_info["sofi-data-clearance"],
     )
+    print("FOUND ITEMS IN DB:",items,file=sys.stderr)
 
     count = get_analysis_count(token["query"], token_info["institution"], token_info["sofi-data-clearance"])
     new_token = (
@@ -189,6 +190,10 @@ def submit_changes(
 ) -> Dict[str, Dict[str, Any]]:
     assert_user_has("approve", token_info)
     updates = list(map(lambda x: x, body.keys()))
+
+    
+
+
     allowed_cols = authorized_columns(token_info, True)
     for identifier in updates:
         row = get_single_analysis(identifier)
@@ -198,6 +203,14 @@ def submit_changes(
             # Make sure is allowed to modify that column
             if not col in allowed_cols:
                 raise Forbidden(f"You are not authorized to edit column -{col}-")
+            
+
+    # Inject date_modified
+    for seqname in body.keys():
+        body[seqname]["date_modified"] = datetime.now()
+        print("FOR",seqname,"CHANGE",body[seqname],file=sys.stderr)
+
+
     # TODO: Verify that none of these cells are already approved
     update_analysis(body)
     res = dict()

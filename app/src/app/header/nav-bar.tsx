@@ -22,11 +22,12 @@ function NavBar() {
       <NavLink to="/workspaces">
         <Button leftIcon={<ViewIcon />}>{t("Workspaces")}</Button>
       </NavLink>
+      <NavLink to="/clusters">
+        <Button leftIcon={<ViewIcon />}>{t("Clusters")}</Button>
+      </NavLink>
       <IfPermission permission={Permission.approve}>
         <NavLink to="/approval-history">
-          <Button leftIcon={<CalendarIcon />}>
-            {t("Approval history")}
-          </Button>
+          <Button leftIcon={<CalendarIcon />}>{t("Approval history")}</Button>
         </NavLink>
       </IfPermission>
       <IfPermission permission={Permission.approve}>

@@ -1,4 +1,5 @@
 import os
+import sys
 from typing import Dict, List, Union
 import commentjson
 import functools
@@ -41,6 +42,7 @@ def columns() -> List[Dict[str, str]]:
     cols: Dict[str, ColumnDict] = {}
     # build up dictionary of default configs
     openapi_columns = analysis.openapi_types.items()
+    print("OPENAPI COLS:",openapi_columns,file=sys.stderr)
     for attr, _ in openapi_columns:
         if attr == "id":
             continue

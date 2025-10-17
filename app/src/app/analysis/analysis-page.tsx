@@ -60,13 +60,17 @@ import { Health } from "./health/health";
 import { Debug } from "./debug";
 import { AnalysisSelectionMenu } from "./analysis-selection-menu";
 import { CellConfirmModal } from "./data-table/cell-confirm-modal";
-import { appendToSearchHistory, checkExpressionEquality, recurseSearchTree } from "./search/search-utils";
+import {
+  appendToSearchHistory,
+  checkExpressionEquality,
+  recurseSearchTree,
+} from "./search/search-utils";
 
 // When the fields in this array are 'approved', a given sequence is rendered
 // as 'approved' also.
 const PRIMARY_APPROVAL_FIELDS = ["st_final", "qc_final"];
 
-export type SearchQuery = AnalysisQuery & {clearAllFields?: boolean};
+export type SearchQuery = AnalysisQuery & { clearAllFields?: boolean };
 
 export default function AnalysisPage() {
   const { t } = useTranslation();
@@ -100,7 +104,7 @@ export default function AnalysisPage() {
 
   const rootStateData = useSelector<RootState>((s) => s.entities.analysis);
 
-  const [searchTerms, setSearchTerms] = useState<Set<string>>(new Set())
+  const [searchTerms, setSearchTerms] = useState<Set<string>>(new Set());
 
   const data = React.useMemo(() => {
     return Object.values(rootStateData ?? {}) as AnalysisResult[];
@@ -108,8 +112,8 @@ export default function AnalysisPage() {
 
   useEffect(() => {
     const current = new Set(data.flatMap(Object.keys));
-    setSearchTerms(old => old.union(current))
-  },[data, setSearchTerms])
+    setSearchTerms((old) => old.union(current));
+  }, [data, setSearchTerms]);
 
   const totalCount = useSelector<RootState>((s) =>
     s.entities.analysisTotalCount !== 0
@@ -125,18 +129,18 @@ export default function AnalysisPage() {
     () =>
       Object.keys(columnConfigs || []).map(
         (k) =>
-        ({
-          accessor: k,
-          sortType: !k.startsWith("date")
-            ? "alphanumeric"
-            : (a, b, column) => {
-              const aDate = a.original[column]?.getTime() ?? 0;
-              const bDate = b.original[column]?.getTime() ?? 0;
+          ({
+            accessor: k,
+            sortType: !k.startsWith("date")
+              ? "alphanumeric"
+              : (a, b, column) => {
+                  const aDate = a.original[column]?.getTime() ?? 0;
+                  const bDate = b.original[column]?.getTime() ?? 0;
 
-              return aDate - bDate;
-            },
-          Header: t(k),
-        } as Column<AnalysisResult>)
+                  return aDate - bDate;
+                },
+            Header: t(k),
+          } as Column<AnalysisResult>)
       ),
     [columnConfigs, t]
   );
@@ -182,40 +186,50 @@ export default function AnalysisPage() {
     (s) => s.view.view
   ) as UserDefinedViewInternal;
 
-  const displayData = useMemo(() => [...Object.entries(selection).filter(([key,_]) => !data.find(seq => seq.sequence_id === key)).map(([_,value]) => value.original),...data], [selection,data]) 
+  const displayData = useMemo(
+    () => [
+      ...Object.entries(selection)
+        .filter(([key, _]) => !data.find((seq) => seq.sequence_id === key))
+        .map(([_, value]) => value.original),
+      ...data,
+    ],
+    [selection, data]
+  );
 
   const [lastSearchQuery, setLastSearchQuery] = useState<AnalysisQuery>({
     expression: {},
   });
   const lastQueryOperands = useMemo(() => {
     return recurseSearchTree(lastSearchQuery.expression);
-  },[lastSearchQuery])
+  }, [lastSearchQuery]);
 
   const [rawSearchQuery, setRawSearchQuery] = useState<SearchQuery>({
     expression: {},
   });
 
-
   const clearFieldFromSearch = (field: keyof AnalysisResult) => {
-    const recurseAndModify = (ex?: QueryExpression |QueryOperand):QueryExpression => {
+    const recurseAndModify = (
+      ex?: QueryExpression | QueryOperand
+    ): QueryExpression => {
       if (!ex) {
         return undefined;
       }
       if ("field" in ex) {
-        if (ex.field == field){
+        if (ex.field == field) {
           return undefined;
         }
-        return {...ex}
+        return { ...ex };
       }
       return {
         ...ex,
         left: recurseAndModify(ex.left),
-        right: recurseAndModify(ex.right)
-      }
-    }
-    setRawSearchQuery(old => ({expression: recurseAndModify(old.expression)}))
-  }
-
+        right: recurseAndModify(ex.right),
+      };
+    };
+    setRawSearchQuery((old) => ({
+      expression: recurseAndModify(old.expression),
+    }));
+  };
 
   const [propFilters, setPropFilters] = React.useState(
     {} as PropFilter<AnalysisResult>
@@ -224,74 +238,91 @@ export default function AnalysisPage() {
     {} as RangeFilter<AnalysisResult>
   );
 
-
-
   const onSearch = React.useCallback(
     (q: SearchQuery, pageSize: number) => {
-
-      const mergeFilters =(searchExpression: QueryExpression, propFilter: PropFilter<AnalysisResult> ,rangeFilter: RangeFilter<AnalysisResult>) => {
-        
-        const searchFields = recurseSearchTree(searchExpression)
+      const mergeFilters = (
+        searchExpression: QueryExpression,
+        propFilter: PropFilter<AnalysisResult>,
+        rangeFilter: RangeFilter<AnalysisResult>
+      ) => {
+        const searchFields = recurseSearchTree(searchExpression);
 
         // Search field takes priority, so add first
-        const searchMap = new Map<string,{term?: string, term_max?: string, term_min?: string}>();
-        searchFields.forEach(({field,term,term_max, term_min}) => searchMap.set(field,{term,term_max,term_min}))
+        const searchMap = new Map<
+          string,
+          { term?: string; term_max?: string; term_min?: string }
+        >();
+        searchFields.forEach(({ field, term, term_max, term_min }) =>
+          searchMap.set(field, { term, term_max, term_min })
+        );
 
         Object.entries(propFilter).forEach(([key, value]) => {
-          if (value.length == 0) { // When an argument is removed from the filter it still remains, it is just empty.
+          if (value.length == 0) {
+            // When an argument is removed from the filter it still remains, it is just empty.
             return;
           } else {
             if (!searchMap.has(key)) {
-              searchMap.set(key,{term: value[0]})
+              searchMap.set(key, { term: value[0] });
             }
           }
-        })
+        });
 
-        const searchList: (QueryOperand & QueryExpression)[] = [...searchMap].map((f) => ({field: f[0], ...f[1]}) );
-
+        const searchList: (QueryOperand & QueryExpression)[] = [
+          ...searchMap,
+        ].map((f) => ({ field: f[0], ...f[1] }));
 
         // Range filters cannot be searched for in the search bar, so we do not need to filter them away
         // with the map
-        Object.entries(rangeFilter).forEach(([key,value]) => {
-      
+        Object.entries(rangeFilter).forEach(([key, value]) => {
           if (!value) {
             return;
           }
           if (value.min && value.max) {
-            searchList.push({field: key, term_max: value.max as string, term_min: value.min as string})
-          } else if(value.min) {
-            searchList.push({field: key, term_min: value.min as string})
+            searchList.push({
+              field: key,
+              term_max: value.max as string,
+              term_min: value.min as string,
+            });
+          } else if (value.min) {
+            searchList.push({ field: key, term_min: value.min as string });
           } else if (value.max) {
-            searchList.push({field: key, term_max: value.max as string})
+            searchList.push({ field: key, term_max: value.max as string });
           }
-        })
+        });
 
         switch (searchList.length) {
           case 0:
-              return {}
+            return {};
           case 1:
-              return {left: searchList[0]}
+            return { left: searchList[0] };
           default:
-            return searchList.reduce((l,r) => ({left: l, operator: QueryOperator.AND, right: r})) as QueryExpression
+            return searchList.reduce((l, r) => ({
+              left: l,
+              operator: QueryOperator.AND,
+              right: r,
+            })) as QueryExpression;
         }
-      }
+      };
 
       // Since we now do api calls on every filter change, we should avoid unnessecary work
-      const newExpression = q.clearAllFields ? q.expression : mergeFilters(q.expression || {},propFilters,rangeFilters);
-      if (checkExpressionEquality(newExpression,lastSearchQuery.expression)) {
+      const newExpression = q.clearAllFields
+        ? q.expression
+        : mergeFilters(q.expression || {}, propFilters, rangeFilters);
+      if (checkExpressionEquality(newExpression, lastSearchQuery.expression)) {
         return;
       }
       if (q.clearAllFields) {
-        setPropFilters({})
-        setRangeFilters({})
+        setPropFilters({});
+        setRangeFilters({});
       }
-      const newQ = {expression: newExpression};
+      const newQ = { expression: newExpression };
 
       dispatch({ type: "RESET/Analysis" });
       setLastSearchQuery(newQ);
       appendToSearchHistory(newExpression);
 
       // if we got an empty expression, just request a page
+      console.log(newQ);
       if (newExpression && Object.keys(newExpression).length === 0) {
         dispatch(
           requestAsync({
@@ -301,19 +332,20 @@ export default function AnalysisPage() {
       } else {
         dispatch(
           requestAsync({
-            ...searchPageOfAnalysis({ query: { expression: newExpression, page_size: pageSize } }),
+            ...searchPageOfAnalysis({
+              query: { expression: newExpression, page_size: pageSize },
+            }),
             queryKey: JSON.stringify(newQ),
           })
         );
       }
     },
-    [dispatch, propFilters, rangeFilters,lastSearchQuery]
+    [dispatch, propFilters, rangeFilters, lastSearchQuery]
   );
 
   useEffect(() => {
-    onSearch(rawSearchQuery, PAGE_SIZE)
-  },[onSearch,rawSearchQuery])
-
+    onSearch(rawSearchQuery, PAGE_SIZE);
+  }, [onSearch, rawSearchQuery]);
 
   const { hiddenColumns } = view;
 
@@ -330,34 +362,31 @@ export default function AnalysisPage() {
   const canSelectColumn = React.useCallback(
     (columnName: string) => {
       return (
-        !pageState.isNarrowed && columnName === "sequence_id" ||
-        pageState.isNarrowed &&
-        columnConfigs[columnName]?.approvable &&
-        !columnConfigs[columnName]?.computed
+        (!pageState.isNarrowed && columnName === "sequence_id") ||
+        (pageState.isNarrowed &&
+          columnConfigs[columnName]?.approvable &&
+          !columnConfigs[columnName]?.computed)
       );
     },
-    [columnConfigs,pageState]
+    [columnConfigs, pageState]
   );
-
 
   const onPropFilterChange = React.useCallback(
     (p: PropFilter<AnalysisResult>) => {
-      setRawSearchQuery(old =>( {...old, clearAllFields: false}))
+      setRawSearchQuery((old) => ({ ...old, clearAllFields: false }));
       setPropFilters({ ...propFilters, ...p });
     },
-    [propFilters, setPropFilters,setRawSearchQuery]
+    [propFilters, setPropFilters, setRawSearchQuery]
   );
 
   const onRangeFilterChange = React.useCallback(
     (p: RangeFilter<AnalysisResult>) => {
       setRangeFilters({ ...rangeFilters, ...p });
-      setRawSearchQuery(old =>( {...old, clearAllFields: false}))
-
+      setRawSearchQuery((old) => ({ ...old, clearAllFields: false }));
     },
     [rangeFilters, setRangeFilters, setRawSearchQuery]
   );
 
-  
   const primaryApprovalColumns = React.useMemo(
     () =>
       Object.values(columnConfigs || {})
@@ -432,7 +461,8 @@ export default function AnalysisPage() {
 
   const getCellStyle = React.useCallback(
     (rowId: string, columnId: string, value: any, cell: any) => {
-      const rowSelectionClass = selection[rowId] && !pageState.isNarrowed ? " selectedRow" : "";
+      const rowSelectionClass =
+        selection[rowId] && !pageState.isNarrowed ? " selectedRow" : "";
       if (
         value !== 0 &&
         value !== false &&
@@ -452,11 +482,11 @@ export default function AnalysisPage() {
         if (columnId === "sequence_id") {
           let sequenceStyle = "cell";
           PRIMARY_APPROVAL_FIELDS.forEach((f) => {
-            if (approvals[rowId][f] !== ApprovalStatus.approved){
-              if(sequenceStyle != `rejectedCell`){
+            if (approvals[rowId][f] !== ApprovalStatus.approved) {
+              if (sequenceStyle != `rejectedCell`) {
                 sequenceStyle = "unapprovedCell";
               }
-              if(approvals[rowId][f] === ApprovalStatus.rejected){
+              if (approvals[rowId][f] === ApprovalStatus.rejected) {
                 sequenceStyle = `rejectedCell`;
               }
             }
@@ -568,7 +598,8 @@ export default function AnalysisPage() {
       }
       const rowInstitution = displayData.find((row) => row.sequence_id == rowId)
         .institution;
-      const editIsAllowed = true ||
+      const editIsAllowed =
+        true ||
         columnConfigs[columnId].editable ||
         user.institution == rowInstitution ||
         columnConfigs[columnId].cross_org_editable;
@@ -610,7 +641,7 @@ export default function AnalysisPage() {
         }
         if (columnId === "st_alleles") {
           let acc = "";
-          Object.entries(value).map(([k,v]) => {
+          Object.entries(value).map(([k, v]) => {
             if (acc !== "") {
               acc += ", ";
             }
@@ -692,7 +723,7 @@ export default function AnalysisPage() {
       cellUpdating,
       approvals,
       displayData,
-      user
+      user,
     ]
   );
 
@@ -736,9 +767,6 @@ export default function AnalysisPage() {
     [dispatch]
   );
 
-
-  
-  
   const content = (
     <React.Fragment>
       <Box role="navigation" gridColumn="2 / 4" pb={5}>
@@ -768,7 +796,8 @@ export default function AnalysisPage() {
               data={data}
               search={onSearch}
               lastSearchQuery={lastSearchQuery}
-            />) : null}
+            />
+          ) : null}
           <Flex grow={1} width="100%" />
           <ColumnConfigWidget onReorder={onReorderColumn}>
             {(columnOrder || columns.map((x) => x.accessor as string)).map(
@@ -811,9 +840,7 @@ export default function AnalysisPage() {
             }
             renderCellControl={renderCellControl}
             primaryKey="sequence_id"
-            selectionClassName={
-              pageState.isNarrowed ? "approvingCell" : ""
-            }
+            selectionClassName={pageState.isNarrowed ? "approvingCell" : ""}
             onSelect={onSelectCallback}
             selection={selection}
             onDetailsClick={openDetailsView}

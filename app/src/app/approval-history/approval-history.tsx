@@ -13,7 +13,14 @@ import {
   Th,
   Td,
 } from "@chakra-ui/react";
-import { CheckIcon, CloseIcon, TimeIcon, DeleteIcon, ChevronDownIcon, ChevronRightIcon } from "@chakra-ui/icons";
+import {
+  CheckIcon,
+  CloseIcon,
+  TimeIcon,
+  DeleteIcon,
+  ChevronDownIcon,
+  ChevronRightIcon,
+} from "@chakra-ui/icons";
 import { DateTime } from "luxon";
 import { Approval, ApprovalAllOfStatusEnum } from "sap-client";
 import { useMutation, useRequest } from "redux-query-react";
@@ -51,22 +58,21 @@ export default function ApprovalHistory() {
   const { t } = useTranslation();
   const toast = useToast();
 
-  const [
-    revocationLoadState,
-    doRevoke,
-  ] = useMutation((id: string, sequences?: string[]) => {
-    const approval = approvalHistory.find((a) => a.id === id);
-    
-    if (!sequences && !approval) {
-      console.error(`Approval with id ${id} not found`);
-      throw new Error(`Approval with id ${id} not found`);
+  const [revocationLoadState, doRevoke] = useMutation(
+    (id: string, sequences?: string[]) => {
+      const approval = approvalHistory.find((a) => a.id === id);
+
+      if (!sequences && !approval) {
+        console.error(`Approval with id ${id} not found`);
+        throw new Error(`Approval with id ${id} not found`);
+      }
+
+      return revokeApproval({
+        approvalId: id,
+        sequences: (sequences || approval?.sequence_ids || []).join(";"),
+      });
     }
-    
-    return revokeApproval({
-      approvalId: id,
-      sequences: (sequences || approval?.sequence_ids || []).join(";"),
-    });
-  });
+  );
 
   const [needsNotify, setNeedsNotify] = useState(true);
   const [expandedRows, setExpandedRows] = useState<string[]>([]);
@@ -80,16 +86,13 @@ export default function ApprovalHistory() {
     [doRevoke, setNeedsNotify]
   );
 
-  const toggleRowExpansion = React.useCallback(
-    (approvalId: string) => {
-      setExpandedRows(prev => 
-        prev.includes(approvalId) 
-          ? prev.filter(id => id !== approvalId)
-          : [...prev, approvalId]
-      );
-    },
-    []
-  );
+  const toggleRowExpansion = React.useCallback((approvalId: string) => {
+    setExpandedRows((prev) =>
+      prev.includes(approvalId)
+        ? prev.filter((id) => id !== approvalId)
+        : [...prev, approvalId]
+    );
+  }, []);
 
   // Display approval toasts
   React.useMemo(() => {
@@ -136,7 +139,7 @@ export default function ApprovalHistory() {
               const isExpanded = expandedRows.includes(h.id);
               const sequenceKeys = Object.keys(h.matrix);
               const isStripedRow = idx % 2 === 1; // Chakra UI striped rows: odd indices are grey
-              
+
               return (
                 <Tr verticalAlign="top" key={h.id}>
                   <Td>
@@ -151,9 +154,9 @@ export default function ApprovalHistory() {
                   </Td>
                   <Td>
                     <Flex overflow="hidden" flexDirection="column">
-                      <Flex 
-                        direction="row" 
-                        align="center" 
+                      <Flex
+                        direction="row"
+                        align="center"
                         cursor="pointer"
                         onClick={() => toggleRowExpansion(h.id)}
                         _hover={{ backgroundColor: "gray.50" }}
@@ -161,7 +164,13 @@ export default function ApprovalHistory() {
                         borderRadius="md"
                       >
                         <IconButton
-                          icon={isExpanded ? <ChevronDownIcon /> : <ChevronRightIcon />}
+                          icon={
+                            isExpanded ? (
+                              <ChevronDownIcon />
+                            ) : (
+                              <ChevronRightIcon />
+                            )
+                          }
                           aria-label={isExpanded ? "Collapse" : "Expand"}
                           size="sm"
                           variant="ghost"
@@ -171,34 +180,36 @@ export default function ApprovalHistory() {
                           }}
                         />
                         <Text fontSize="sm" color="gray.600">
-                          {sequenceKeys.length} sequence{sequenceKeys.length !== 1 ? 's' : ''}
+                          {sequenceKeys.length} sequence
+                          {sequenceKeys.length !== 1 ? "s" : ""}
                           {!isExpanded && sequenceKeys.length > 0 && (
                             <Text as="span" ml={2} color="gray.500">
-                              ({sequenceKeys.join(', ')})
+                              ({sequenceKeys.join(", ")})
                             </Text>
                           )}
                         </Text>
                       </Flex>
-                      
+
                       {isExpanded && (
                         <>
                           {sequenceKeys.map((x) => (
                             <React.Fragment key={x}>
-                              <Flex 
-                                direction="row" 
-                                align="center" 
+                              <Flex
+                                direction="row"
+                                align="center"
                                 justify="space-between"
-                                mt={2} 
+                                mt={2}
                                 width="100%"
-                                bg={hoveredSequence === x ? "gray.50" : "transparent"}
+                                bg={
+                                  hoveredSequence === x
+                                    ? "gray.50"
+                                    : "transparent"
+                                }
                                 borderRadius="md"
                                 p={2}
                               >
                                 <Flex direction="row" align="center" flex={1}>
-                                  <Text
-                                    fontWeight="semibold"
-                                    mr={2}
-                                  >
+                                  <Text fontWeight="semibold" mr={2}>
                                     {x}:
                                   </Text>
                                   <Text
@@ -207,34 +218,45 @@ export default function ApprovalHistory() {
                                     fontSize="sm"
                                     flex={1}
                                   >
-                                    {Object.keys(h.matrix[x]).map((y, index) => (
-                                      <Text
-                                        key={`${x}-${y}`}
-                                        as="span"
-                                        color={
-                                          h.matrix[x][y] === "approved"
-                                            ? "gray.900"
-                                            : "red.700"
-                                        }
-                                      >
-                                        {y}{index < Object.keys(h.matrix[x]).length - 1 ? ", " : ""}
-                                      </Text>
-                                    ))}
+                                    {Object.keys(h.matrix[x]).map(
+                                      (y, index) => (
+                                        <Text
+                                          key={`${x}-${y}`}
+                                          as="span"
+                                          color={
+                                            h.matrix[x][y] === "approved"
+                                              ? "gray.900"
+                                              : "red.700"
+                                          }
+                                        >
+                                          {y}
+                                          {index <
+                                          Object.keys(h.matrix[x]).length - 1
+                                            ? ", "
+                                            : ""}
+                                        </Text>
+                                      )
+                                    )}
                                   </Text>
                                 </Flex>
-                                {h.status == ApprovalAllOfStatusEnum.submitted &&
+                                {h.status ==
+                                  ApprovalAllOfStatusEnum.submitted &&
                                   sequenceKeys.length > 1 && (
                                     <IconButton
                                       icon={<DeleteIcon />}
                                       aria-label={`${t("Revoke approval")}`}
                                       onClick={() => revokeItem(h.id, [x])}
                                       onMouseEnter={() => setHoveredSequence(x)}
-                                      onMouseLeave={() => setHoveredSequence(null)}
+                                      onMouseLeave={() =>
+                                        setHoveredSequence(null)
+                                      }
                                       size="sm"
                                       flexShrink={0}
                                       variant="ghost"
                                       _hover={{
-                                        bg: isStripedRow ? "gray.50" : "gray.200"
+                                        bg: isStripedRow
+                                          ? "gray.50"
+                                          : "gray.200",
                                       }}
                                     />
                                   )}
@@ -243,7 +265,7 @@ export default function ApprovalHistory() {
                           ))}
                         </>
                       )}
-                      
+
                       {/* Show revoked sequences if any exist */}
                       {(h as any).revoked_sequence_ids?.length > 0 && (
                         <Flex direction="row" align="center" mt={2} wrap="wrap">
@@ -251,15 +273,21 @@ export default function ApprovalHistory() {
                             {t("Revoked")}:
                           </Text>
                           <Text fontSize="sm" color="gray.500">
-                            {(h as any).revoked_sequence_ids.map((sid: string, index: number) => (
-                              <Text
-                                key={`revoked-${sid}`}
-                                as="span"
-                                textDecoration="line-through"
-                              >
-                                {sid}{index < (h as any).revoked_sequence_ids.length - 1 ? ", " : ""}
-                              </Text>
-                            ))}
+                            {(h as any).revoked_sequence_ids.map(
+                              (sid: string, index: number) => (
+                                <Text
+                                  key={`revoked-${sid}`}
+                                  as="span"
+                                  textDecoration="line-through"
+                                >
+                                  {sid}
+                                  {index <
+                                  (h as any).revoked_sequence_ids.length - 1
+                                    ? ", "
+                                    : ""}
+                                </Text>
+                              )
+                            )}
                           </Text>
                         </Flex>
                       )}
@@ -276,7 +304,7 @@ export default function ApprovalHistory() {
                         onClick={() => revokeItem(h.id)}
                         variant="ghost"
                         _hover={{
-                          bg: isStripedRow ? "gray.50" : "gray.200"
+                          bg: isStripedRow ? "gray.50" : "gray.200",
                         }}
                       />
                     )}

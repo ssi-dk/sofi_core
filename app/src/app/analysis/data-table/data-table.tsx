@@ -192,7 +192,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
         a[b] = true;
         return a;
       }, {} as Record<keyof T, boolean>);
-    }, 
+    },
     [columns, canApproveColumn, isJudgedCell]
   );
 
@@ -284,7 +284,6 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [visibleApprovableColumns, onSelect, selection]);
 
-
   const calcRowSelectionState = React.useCallback(
     (row: Row<T>) => {
       const dataTableSelection = selection[row.original[primaryKey]];
@@ -337,7 +336,10 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
         // Delete selection
         delete newSelection[id];
       } else {
-        const cells = Object.keys(selection).length > 0 ? selection[Object.keys(selection)[0]].cells : getAllApprovableCellsInSelection(id, visibleColumns);
+        const cells =
+          Object.keys(selection).length > 0
+            ? selection[Object.keys(selection)[0]].cells
+            : getAllApprovableCellsInSelection(id, visibleColumns);
         newSelection[id] = {
           original: row.original,
           cells,
@@ -352,7 +354,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
       visibleColumns,
       calcRowSelectionState,
       selection,
-      getAllApprovableCellsInSelection
+      getAllApprovableCellsInSelection,
     ]
   );
 
@@ -369,20 +371,23 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
     (col: Column<T>) => {
       const { checked, indeterminate } = calcColSelectionState(col);
       let incSel: DataTableSelection<T> = {};
-      if(col.id === "sequence_id"){
-        if(selection && Object.keys(selection).length > 0){
-        }else{
+      if (col.id === "sequence_id") {
+        if (selection && Object.keys(selection).length > 0) {
+        } else {
           // Select all rows, all approvable cells
           incSel = rows
             .map((r) => ({
               [r.original[primaryKey]]: {
                 original: r.original,
-                cells: getAllApprovableCellsInSelection(r.original[primaryKey], visibleColumns),
+                cells: getAllApprovableCellsInSelection(
+                  r.original[primaryKey],
+                  visibleColumns
+                ),
               },
             }))
             .reduce((acc, val) => ({ ...acc, ...val }), {});
         }
-      }else{
+      } else {
         const sel = rows
           .filter((r) => canApproveColumn(col.id as string))
           .map((r) => ({
