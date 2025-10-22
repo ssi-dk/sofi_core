@@ -193,7 +193,7 @@ export default function AnalysisPage() {
     {} as RangeFilter<AnalysisResult>
   );
 
-  const rewriteSearchPropsToAPIQuery = (q: QueryExpression, propFilter: Object) => {
+  const rewriteSearchPropsToMongoQuery = (q: QueryExpression, propFilter: Object) => {
 
     let result: QueryExpression = q;
 
@@ -226,7 +226,7 @@ export default function AnalysisPage() {
       dispatch({ type: "RESET/Analysis" });
       setLastSearchQuery(q);
 
-      const newQ = rewriteSearchPropsToAPIQuery(q.expression || {}, propFilters);
+      const newQ = rewriteSearchPropsToMongoQuery(q.expression || {}, propFilters);
 
       // if we got an empty expression, just request a page
       if (newQ && Object.keys(newQ).length === 0) {
@@ -289,6 +289,16 @@ export default function AnalysisPage() {
   useEffect(() => {
     onSearch(lastSearchQuery, PAGE_SIZE)
   },[propFilters,rangeFilters,onSearch,lastSearchQuery])
+
+  const composedFilter = React.useCallback(
+    (a) => predicateBuilder(propFilters, rangeFilters)(a),
+    [propFilters, rangeFilters]
+  );
+
+  const filteredData = React.useMemo(() => data.filter(composedFilter), [
+    composedFilter,
+    data,
+  ]);
 
   const primaryApprovalColumns = React.useMemo(
     () =>
@@ -694,7 +704,7 @@ export default function AnalysisPage() {
             <AnalysisSelectionMenu
               selection={selection}
               isNarrowed={pageState.isNarrowed}
-              data={data}
+              data={filteredData}
               search={onSearch}
               lastSearchQuery={lastSearchQuery}
             />) : null}
@@ -713,7 +723,7 @@ export default function AnalysisPage() {
             )}
           </ColumnConfigWidget>
           <ExportButton
-            data={data}
+            data={filteredData}
             columns={columns.map((x) => x.accessor) as any}
             selection={selection}
           />
@@ -736,7 +746,7 @@ export default function AnalysisPage() {
             data={
               pageState.isNarrowed
                 ? Object.keys(selection).map((key) => selection[key].original)
-                : data
+                : filteredData
             }
             renderCellControl={renderCellControl}
             primaryKey="sequence_id"
@@ -785,7 +795,7 @@ export default function AnalysisPage() {
       <HalfHolyGrailLayout
         sidebar={
           <AnalysisSidebar
-            data={data}
+            data={filteredData}
             onPropFilterChange={onPropFilterChange}
             onRangeFilterChange={onRangeFilterChange}
             isDisabled={pageState.isNarrowed}
