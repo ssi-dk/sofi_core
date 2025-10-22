@@ -202,6 +202,6 @@ class AbstractSyntaxTreeVisitor(object):
             return structure_operator(
                 operator, left.accept(self, is_negated), right.accept(self, is_negated)
             )
-        elif node.field and (node.term or node.inclusive or node.term_max or node.term_min):  # presence of inclusivity,min or max denotes a range-based query
+        elif node.field and (node.term or node.inclusive):  # presence of inclusivity denotes a range-based query
             is_negated = is_negated or (node.prefix is not None and "-" in node.prefix)
             return structure_leaf(node, is_negated)

@@ -284,8 +284,6 @@ export default function AnalysisPage() {
       }
       const newQ = {expression: newExpression};
 
-      console.log("QUERY:",newExpression);
-
       dispatch({ type: "RESET/Analysis" });
       setLastSearchQuery(newQ);
 
