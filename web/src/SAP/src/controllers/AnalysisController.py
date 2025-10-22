@@ -147,7 +147,6 @@ def search_analysis(user, token_info, query: AnalysisQuery):
         or query.expression.__dict__.get("_left", None) is None
         and query.expression.__dict__.get("_operator", None) is None
     )
-    print("RAWQUERY:",query,file=sys.stderr)
     default_token = {
         "page_size": query.page_size or 1000,
         "offset": 0,
@@ -157,7 +156,7 @@ def search_analysis(user, token_info, query: AnalysisQuery):
     }
 
     token = parse_paging_token(query.paging_token) or default_token
-    print("QUERY:",default_token["query"], file=sys.stderr)
+    print(default_token["query"], file=sys.stderr)
 
     items = get_analysis_page(
         token["query"],

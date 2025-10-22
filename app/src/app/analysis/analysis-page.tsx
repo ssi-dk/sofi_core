@@ -14,9 +14,6 @@ import {
   AnalysisQuery,
   ApprovalStatus,
   UserInfo,
-  QueryExpressionFromJSON,
-  QueryExpression,
-  QueryOperator,
 } from "sap-client";
 import { useMutation, useRequest } from "redux-query-react";
 import { useDispatch, useSelector } from "react-redux";
@@ -82,11 +79,9 @@ export default function AnalysisPage() {
     setDetailsIsolate(undefined);
   }, []);
 
-  const PAGE_SIZE = 100;
-
   const [columnLoadState] = useRequest(requestColumns());
   const [{ isPending, isFinished }] = useRequest({
-    ...requestPageOfAnalysis({ pageSize: PAGE_SIZE }, false),
+    ...requestPageOfAnalysis({ pageSize: 100 }, false),
   });
 
   const user = useSelector<RootState>((s) => s.entities.user ?? {}) as UserInfo;
@@ -114,18 +109,18 @@ export default function AnalysisPage() {
     () =>
       Object.keys(columnConfigs || []).map(
         (k) =>
-        ({
-          accessor: k,
-          sortType: !k.startsWith("date")
-            ? "alphanumeric"
-            : (a, b, column) => {
-              const aDate = a.original[column]?.getTime() ?? 0;
-              const bDate = b.original[column]?.getTime() ?? 0;
+          ({
+            accessor: k,
+            sortType: !k.startsWith("date")
+              ? "alphanumeric"
+              : (a, b, column) => {
+                  const aDate = a.original[column]?.getTime() ?? 0;
+                  const bDate = b.original[column]?.getTime() ?? 0;
 
-              return aDate - bDate;
-            },
-          Header: t(k),
-        } as Column<AnalysisResult>)
+                  return aDate - bDate;
+                },
+            Header: t(k),
+          } as Column<AnalysisResult>)
       ),
     [columnConfigs, t]
   );
@@ -185,51 +180,12 @@ export default function AnalysisPage() {
     expression: {},
   });
 
-
-  const [propFilters, setPropFilters] = React.useState(
-    {} as PropFilter<AnalysisResult>
-  );
-  const [rangeFilters, setRangeFilters] = React.useState(
-    {} as RangeFilter<AnalysisResult>
-  );
-
-  const rewriteSearchPropsToMongoQuery = (q: QueryExpression, propFilter: Object) => {
-
-    let result: QueryExpression = q;
-
-    const mergeValues = (value: Object, prev: QueryExpression): QueryExpression => {
-      if (prev.left) {
-        return {
-          left: value,
-          operator: QueryOperator.AND,
-          right: prev
-        }
-      } else {
-        return { left: value }
-      }
-    }
-
-    Object.keys(propFilter).forEach(key => {
-      const value = propFilter[key] as string[];
-      if (value.length == 0) { // When an argument is removed from the filter it still remains, it is just empty.
-        return;
-      } else {
-        result = mergeValues({field: key, term: value[0],quoted: true}, result)
-      }
-    })
-    return result;
-  }
-
   const onSearch = React.useCallback(
     (q: AnalysisQuery, pageSize: number) => {
-
       dispatch({ type: "RESET/Analysis" });
       setLastSearchQuery(q);
-
-      const newQ = rewriteSearchPropsToMongoQuery(q.expression || {}, propFilters);
-
       // if we got an empty expression, just request a page
-      if (newQ && Object.keys(newQ).length === 0) {
+      if (q.expression && Object.keys(q.expression).length === 0) {
         dispatch(
           requestAsync({
             ...requestPageOfAnalysis({ pageSize: pageSize }, false),
@@ -238,13 +194,13 @@ export default function AnalysisPage() {
       } else {
         dispatch(
           requestAsync({
-            ...searchPageOfAnalysis({ query: { expression: newQ, page_size: pageSize } }),
-            queryKey: JSON.stringify({expression: newQ}),
+            ...searchPageOfAnalysis({ query: { ...q, page_size: pageSize } }),
+            queryKey: JSON.stringify(q),
           })
         );
       }
     },
-    [dispatch, propFilters, rangeFilters]
+    [dispatch]
   );
 
   const { hiddenColumns } = view;
@@ -262,7 +218,7 @@ export default function AnalysisPage() {
   const canSelectColumn = React.useCallback(
     (columnName: string) => {
       return (
-        !pageState.isNarrowed && columnName === "sequence_id" ||
+        !pageState.isNarrowed && columnName === "sequence_id" || 
         pageState.isNarrowed &&
         columnConfigs[columnName]?.approvable &&
         !columnConfigs[columnName]?.computed
@@ -271,6 +227,12 @@ export default function AnalysisPage() {
     [columnConfigs, pageState]
   );
 
+  const [propFilters, setPropFilters] = React.useState(
+    {} as PropFilter<AnalysisResult>
+  );
+  const [rangeFilters, setRangeFilters] = React.useState(
+    {} as RangeFilter<AnalysisResult>
+  );
 
   const onPropFilterChange = React.useCallback(
     (p: PropFilter<AnalysisResult>) => {
@@ -285,10 +247,6 @@ export default function AnalysisPage() {
     },
     [rangeFilters, setRangeFilters]
   );
-
-  useEffect(() => {
-    onSearch(lastSearchQuery, PAGE_SIZE)
-  },[propFilters,rangeFilters,onSearch,lastSearchQuery])
 
   const composedFilter = React.useCallback(
     (a) => predicateBuilder(propFilters, rangeFilters)(a),
@@ -701,13 +659,13 @@ export default function AnalysisPage() {
             selection={selection}
           />
           {!pageState.isNarrowed ? (
-            <AnalysisSelectionMenu
-              selection={selection}
-              isNarrowed={pageState.isNarrowed}
-              data={filteredData}
-              search={onSearch}
-              lastSearchQuery={lastSearchQuery}
-            />) : null}
+          <AnalysisSelectionMenu
+            selection={selection}
+            isNarrowed={pageState.isNarrowed}
+            data={filteredData}
+            search={onSearch}
+            lastSearchQuery={lastSearchQuery}
+          />) : null}
           <Flex grow={1} width="100%" />
           <ColumnConfigWidget onReorder={onReorderColumn}>
             {(columnOrder || columns.map((x) => x.accessor as string)).map(
@@ -761,6 +719,11 @@ export default function AnalysisPage() {
         </Box>
         <Box role="status" gridColumn="2 / 4" margin={2}>
           {isPending && `${t("Fetching...")} ${data.length}`}
+          {isFinished &&
+            !pageState.isNarrowed &&
+            `${t("Showing")} ${filteredData.length} ${t(
+              "of"
+            )} ${totalCount} ${t("records")}.`}
           {!pageState.isNarrowed && Object.keys(selection).length > 0
             ? ` ${Object.keys(selection).length} selected.`
             : null}
