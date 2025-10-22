@@ -62,10 +62,13 @@ def coerce_term(term: str):
         except Exception:
             pass
         try:
+            print("ATTEMPTING DATETIME",term,file=sys.stderr)
             return dateutil.parser.isoparse(term)
-        except Exception:
+        except Exception as err:
+            print("Failed to parse",term,"into datetime with err",err,file=sys.stderr)
             raise
     except Exception:
+        print("STRING FALLBACK!",term,file=sys.stderr)
         return term
 
 
@@ -86,6 +89,7 @@ def structure_wildcard(field, node):
     elif node.term_max is not None or node.term_min is not None:
         coerced_min = coerce_term(node.term_min)
         coerced_max = coerce_term(node.term_max)
+        print("COERCED:",coerced_max,type(coerced_max),coerced_min,type(coerced_min),file=sys.stderr)
         if coerced_max is None:
             return {"$gte": coerced_min}  
         if coerced_min is None:
