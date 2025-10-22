@@ -74,9 +74,6 @@ function MetaFilter(props: MetaFilterProps) {
       cb: React.Dispatch<React.SetStateAction<Date>>
     ) => (d: Date) => {
       cb(d);
-
-      console.log(field,end,"changed. Old state:",rangeFilterState)
-
       const opposite = end === "min" ? "max" : "min";
       const minDate = null;
       const maxDate = null;
@@ -89,11 +86,9 @@ function MetaFilter(props: MetaFilterProps) {
         ...rangeFilterState,
         [field]: (val || oppositeValue) ? { [end]: val, [opposite]: oppositeValue } : undefined,
       };
-
       if (val == null && oppositeValue == null) {
         clearFieldFromSearch(field);
       }
-      console.log("resolved state:",resolvedState)
 
       setRangeFilterState(resolvedState);
       onRangeFilterChange(resolvedState);
@@ -179,12 +174,11 @@ function MetaFilter(props: MetaFilterProps) {
       };
     }
 
-
     queryOperands.forEach(op => {
       if (op.field && op.term) {
         newPropFilterState[op.field] = [op.term];
       } else if (op.field && (op.term_max || op.term_min)) {
-        newRangeFilterState[op.field] = { max: op.term_max, min: op.term_min }
+        newRangeFilterState[op.field] = {term_max: op.term_max, term_min: op.term_min}
 
         if (op.field === "date_sample") {
           setSampledStartDate(op.term_min ? new Date(op.term_min) : null)
@@ -196,15 +190,6 @@ function MetaFilter(props: MetaFilterProps) {
         }
       }
     })
-
-    if (!queryOperands.find(q => q.field === "date_sample")) {
-      setSampledStartDate(null);
-      setSampledEndDate(null);
-    }
-    if (!queryOperands.find(q => q.field === "date_received")) {
-      setReceivedStartDate(null);
-      setReceivedEndDate(null);
-    }
 
     setPropFilterState(newPropFilterState)
     setRangeFilterState(newRangeFilterState)

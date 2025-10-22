@@ -22,20 +22,20 @@ const SearchHistoryMenu = (props: {
         <b>Search history</b>
         <Flex direction="column" style={{ marginLeft: "6px" }}>
             {/* TODO: Make pretty */}
-            {searchHistory.map(s => <Flex direction="row" alignItems="center" key={s.timestamp} style={{ margin: "4px", border: "lightGray", borderWidth: "1px", borderRadius: "8px", borderStyle: "solid" }} >
+            {searchHistory.map(s => <Flex direction="row" alignItems="center" key={s.timestamp} style={{margin: "4px",background: "lightgray", borderRadius: "4px"}} >
                 <IconButton
                     aria-label="Pin"
                     icon={<StarIcon {...(s.pinned ? { color: "gold" } : { fillOpacity: 0, stroke: "black" })} />}
                     ml="1"
-                    onClick={() => setPinned(s, !s.pinned)}
-                    style={{ margin: "4px" }}
+                    onClick={() => setPinned(s,!s.pinned)}
+                    style={{marginRight: "4px"}}
                 />
                 <IconButton
                     aria-label="Search database"
                     icon={<SearchIcon />}
                     ml="1"
-                    onClick={() => onSearchChange({ expression: s.query, clearAllFields: true })}
-                    style={{ margin: "4px" }}
+                    onClick={() => onSearchChange({expression: s.query, clearAllFields: true})}
+                    style={{marginRight: "4px"}}
                 />
                 <p>
                     {recurseSearchTree(s.query).map(displayOperandName).join(", ")}
