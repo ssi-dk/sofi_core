@@ -66,10 +66,6 @@ import { appendToSearchHistory, checkExpressionEquality, recurseSearchTree } fro
 // as 'approved' also.
 const PRIMARY_APPROVAL_FIELDS = ["st_final", "qc_final"];
 
-export type SearchQuery = AnalysisQuery & { clearAllFields?: boolean };
-
-let prevSearchTerms: Set<string> = new Set() // NEEDS to be outside the react component to prevent un-needed rerender
-
 export default function AnalysisPage() {
   const { t } = useTranslation();
   const dispatch = useDispatch();
@@ -194,7 +190,7 @@ export default function AnalysisPage() {
     expression: {},
   });
 
-  const [rawSearchQuery, setRawSearchQuery] = useState<SearchQuery>({
+  const [rawTextSearchQuery, setRawTextSearchQuery] = useState<AnalysisQuery>({
     expression: {},
   });
 
@@ -215,7 +211,7 @@ export default function AnalysisPage() {
         right: recurseAndModify(ex.right)
       }
     }
-    setRawSearchQuery(old => ({ expression: recurseAndModify(old.expression) }))
+    setRawTextSearchQuery(old => ({expression: recurseAndModify(old.expression)}))
   }
 
 
@@ -308,8 +304,8 @@ export default function AnalysisPage() {
   );
 
   useEffect(() => {
-    onSearch(rawSearchQuery, PAGE_SIZE)
-  }, [onSearch, rawSearchQuery])
+    onSearch(rawTextSearchQuery, PAGE_SIZE)
+  },[onSearch,rawTextSearchQuery])
 
 
   const { hiddenColumns } = view;
@@ -735,7 +731,7 @@ export default function AnalysisPage() {
       <Box role="navigation" gridColumn="2 / 4" pb={5}>
         <Flex justifyContent="flex-end">
           <AnalysisSearch
-            onSearchChange={setRawSearchQuery}
+            onSearchChange={setRawTextSearchQuery}
             isDisabled={pageState.isNarrowed}
           />
           <Box minW="250px" ml="5">
@@ -848,7 +844,7 @@ export default function AnalysisPage() {
         sidebar={
           <AnalysisSidebar
             clearFieldFromSearch={clearFieldFromSearch}
-            queryOperands={recurseSearchTree( rawSearchQuery.clearAllFields ? lastSearchQuery.expression : rawSearchQuery.expression)}
+            queryOperands={recurseSearchTree(rawTextSearchQuery.expression)}
             data={data}
             onPropFilterChange={onPropFilterChange}
             onRangeFilterChange={onRangeFilterChange}
