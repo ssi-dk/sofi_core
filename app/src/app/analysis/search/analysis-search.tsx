@@ -27,6 +27,7 @@ type AnalysisSearchProps = {
 const parseQuery = (input: string, toast) => {
   try {
     const ast = luceneParse(input);
+    console.log(ast);
     recurseTree(ast, (x) => {
       if (x["field"]) {
         // translate display names to internal names

@@ -10,6 +10,7 @@ export type SearchHistory = SearchItem[]
 export const getSearchHistory = () => {
     const rawJson = localStorage.getItem(HISTORY_STORAGE_KEY);
     const history: SearchHistory = JSON.parse(rawJson) || [];
+    console.log("LOADED:",history);
     return history;
 
 }
@@ -38,8 +39,40 @@ export const setPinned = (item: SearchItem, pinned: boolean) => {
     callbacks.forEach(cb => cb());
 }
 
+export const appendToSearchHistory = (query: QueryExpression) => {
+    if (recurseSearchTree(query).length == 0) {
+        // Ignore empty searches
+        return;
+    }
 
-export const recurseSearchTree = (e?: QueryExpression | QueryOperand): QueryOperand[] => {
+    const current = getSearchHistory();
+    
+    // Check if matches existing search
+    const existing = current.find(c => checkExpressionEquality(c.query,query))
+    if (existing) {
+        // Move existing to top
+        const withoutExisting = current.filter(c => c !== existing)
+        existing.timestamp = new Date().toISOString();
+        saveSearchHistory([existing,...withoutExisting])
+    } else {
+        const item: SearchItem = {pinned: false, query,timestamp: new Date().toISOString()};
+
+        let nonPinnedCount = 0
+
+        const newHistory = [item,...current].filter(c => {
+            if (c.pinned){
+                return true
+            }
+            nonPinnedCount+=1;
+            return nonPinnedCount <= MAX_HISTORY_LEN;
+        })
+        saveSearchHistory(newHistory);
+    }
+
+    callbacks.forEach(c => c());
+}
+
+export const recurseSearchTree = (e?: QueryExpression |QueryOperand):QueryOperand[] => {
     if (!e) {
         return []
     }
@@ -49,8 +82,7 @@ export const recurseSearchTree = (e?: QueryExpression | QueryOperand): QueryOper
     return [...recurseSearchTree(e.left), ...recurseSearchTree(e.right)]
 }
 
-
-export const displayOperandName = ({ field, term, term_max, term_min }: QueryOperand) => {
+export const displayOperandName = ({field,term,term_max,term_min}: QueryOperand) => {
     if (term) {
         return `${field}=${term}`
     } else if (term_max && term_min) {
@@ -76,38 +108,4 @@ export const checkExpressionEquality = (e1: QueryExpression, e2: QueryExpression
     const str1 = l1.map(displayOperandName).join(",")
     const str2 = l2.map(displayOperandName).join(",")
     return str1 === str2
-}
-
-
-export const appendToSearchHistory = (query: QueryExpression) => {
-    if (recurseSearchTree(query).length == 0) {
-        // Ignore empty searches
-        return;
-    }
-
-    const current = getSearchHistory();
-
-    // Check if matches existing search
-    const existing = current.find(c => checkExpressionEquality(c.query, query))
-    if (existing) {
-        // Move existing to top
-        const withoutExisting = current.filter(c => c !== existing)
-        existing.timestamp = new Date().toISOString();
-        saveSearchHistory([existing, ...withoutExisting])
-    } else {
-        const item: SearchItem = { pinned: false, query, timestamp: new Date().toISOString() };
-
-        let nonPinnedCount = 0
-
-        const newHistory = [item, ...current].filter(c => {
-            if (c.pinned) {
-                return true
-            }
-            nonPinnedCount += 1;
-            return nonPinnedCount <= MAX_HISTORY_LEN;
-        })
-        saveSearchHistory(newHistory);
-    }
-
-    callbacks.forEach(c => c());
 }
