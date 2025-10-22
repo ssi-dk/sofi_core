@@ -54,11 +54,11 @@ export const displayOperandName = ({ field, term, term_max, term_min }: QueryOpe
     if (term) {
         return `${field}=${term}`
     } else if (term_max && term_min) {
-        return `${new Date(term_min).toLocaleDateString()} < ${field} < ${new Date(term_max).toLocaleDateString()}`
+        return `${field} > ${term_min} & < ${term_max}`
     } else if (term_max) {
-        return `${field} < ${new Date(term_max).toLocaleDateString()}`
+        return `${field} < ${term_max}`
     } else if (term_min) {
-        return `${field} > ${new Date(term_min).toLocaleDateString()}`
+        return `${field} > ${term_min}`
     }
 }
 

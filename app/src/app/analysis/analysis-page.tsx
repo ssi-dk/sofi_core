@@ -291,7 +291,7 @@ export default function AnalysisPage() {
 
       dispatch({ type: "RESET/Analysis" });
       setLastSearchQuery(newQ);
-      appendToSearchHistory(newExpression);
+      appendToSearchHistory(newQ.expression);
 
       // if we got an empty expression, just request a page
       if (newExpression && Object.keys(newExpression).length === 0) {
