@@ -10,7 +10,6 @@ export type SearchHistory = SearchItem[]
 export const getSearchHistory = () => {
     const rawJson = localStorage.getItem(HISTORY_STORAGE_KEY);
     const history: SearchHistory = JSON.parse(rawJson) || [];
-    console.log("LOADED:",history);
     return history;
 
 }
@@ -40,6 +39,7 @@ export const setPinned = (item: SearchItem, pinned: boolean) => {
 }
 
 export const appendToSearchHistory = (query: QueryExpression) => {
+
     if (recurseSearchTree(query).length == 0) {
         // Ignore empty searches
         return;
