@@ -58,8 +58,8 @@ function MetaFilter(props: MetaFilterProps) {
   const [rangeFilterState, setRangeFilterState] = React.useState(
     {} as {
       [K in keyof AnalysisResult]: {
-        min: AnalysisResult[K] | null;
-        max: AnalysisResult[K] | null;
+        min: AnalysisResult[K];
+        max: AnalysisResult[K];
       };
     }
   );
@@ -86,10 +86,6 @@ function MetaFilter(props: MetaFilterProps) {
         ...rangeFilterState,
         [field]: (val || oppositeValue) ? { [end]: val, [opposite]: oppositeValue } : undefined,
       };
-      if (val == null && oppositeValue == null) {
-        clearFieldFromSearch(field);
-      }
-
       setRangeFilterState(resolvedState);
       onRangeFilterChange(resolvedState);
     },
@@ -167,32 +163,13 @@ function MetaFilter(props: MetaFilterProps) {
   // When a query changes, set all UI filter to match the query, this is useful when choosing a query from the user history
   useEffect(() => {
     const newPropFilterState = {} as { [K in keyof AnalysisResult]: ValueType<OptionTypeBase, true> };
-    const newRangeFilterState = {} as {
-      [K in keyof AnalysisResult]: {
-        min: AnalysisResult[K] | null;
-        max: AnalysisResult[K] | null;
-      };
-    }
 
     queryOperands.forEach(op => {
       if (op.field && op.term) {
         newPropFilterState[op.field] = [op.term];
-      } else if (op.field && (op.term_max || op.term_min)) {
-        newRangeFilterState[op.field] = {term_max: op.term_max, term_min: op.term_min}
-
-        if (op.field === "date_sample") {
-          setSampledStartDate(op.term_min ? new Date(op.term_min) : null)
-          setSampledEndDate(op.term_max ? new Date(op.term_max) : null)
-        }
-        if (op.field === "date_received") {
-          setReceivedStartDate(op.term_min ? new Date(op.term_min) : null)
-          setReceivedEndDate(op.term_max ? new Date(op.term_max) : null)
-        }
       }
     })
-
     setPropFilterState(newPropFilterState)
-    setRangeFilterState(newRangeFilterState)
   },[queryOperands.map(displayOperandName).join(",")])
 
   const valueBuilder = (key: keyof AnalysisResult) => propFilterState[key]?.map(i => ({label: i, value: i})) || undefined
