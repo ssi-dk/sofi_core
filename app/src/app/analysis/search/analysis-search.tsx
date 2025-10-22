@@ -16,7 +16,7 @@ import { getFieldInternalName } from "app/i18n";
 import SearchHelpModal from "./search-help-modal";
 
 type AnalysisSearchProps = {
-  onSearchChange: (query: AnalysisQuery) => void;
+  onSubmit: (query: AnalysisQuery, pageSize: number) => void;
   isDisabled: boolean;
 };
 
@@ -43,7 +43,7 @@ const parseQuery = (input: string, toast) => {
 };
 
 const AnalysisSearch = (props: AnalysisSearchProps) => {
-  const { onSearchChange, isDisabled } = props;
+  const { onSubmit, isDisabled } = props;
   const inputRef = React.useRef<HTMLInputElement>();
   const toast = useToast();
   const [input, setInput] = React.useState("");
@@ -53,8 +53,8 @@ const AnalysisSearch = (props: AnalysisSearchProps) => {
 
   const submitQuery = React.useCallback(
     (q?: string) =>
-      onSearchChange({ expression: parseQuery(q || input, toast) }),
-    [onSearchChange, input, toast]
+      onSubmit({ expression: parseQuery(q || input, toast) }, 100),
+    [onSubmit, input, toast]
   );
 
   const submit = React.useCallback(() => submitQuery(), [submitQuery]);

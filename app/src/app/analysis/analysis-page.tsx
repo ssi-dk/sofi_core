@@ -186,10 +186,6 @@ export default function AnalysisPage() {
     expression: {},
   });
 
-  const [rawTextSearchQuery, setRawTextSearchQuery] = useState<AnalysisQuery>({
-    expression: {},
-  });
-
 
   const [propFilters, setPropFilters] = React.useState(
     {} as PropFilter<AnalysisResult>
@@ -198,80 +194,60 @@ export default function AnalysisPage() {
     {} as RangeFilter<AnalysisResult>
   );
 
+  const mergeFilters =(searchExpression: QueryExpression, propFilter: PropFilter<AnalysisResult> ) => {
+    // Recursively search searchExpression, and merge into list
+    const recurseSearchTree = (e?: QueryExpression):{field: string, term: string}[] => {
+      if (!e) {
+        return []
+      }
+      if ("field" in e && "term" in e && e.field && e.term) {
+        return [{field: e.field.toString(), term: e.term.toString()}]
+      }
+      return [...recurseSearchTree(e.left),...recurseSearchTree(e.right)]
+    }
+    const searchFields = recurseSearchTree(searchExpression)
+
+    // Search field takes priority, so add first
+    const searchMap = new Map<string,string>();
+    searchFields.forEach(({field,term}) => searchMap.set(field,term))
+
+    Object.keys(propFilter).forEach(key => {
+      const value = propFilter[key] as string[];
+      if (value.length == 0) { // When an argument is removed from the filter it still remains, it is just empty.
+        return;
+      } else {
+        if (!searchMap.has(key)) {
+          searchMap.set(key,value[0].toString())
+        }
+      }
+    })
+
+    const searchList: QueryOperand[] = [...searchMap].map((f) => ({field: f[0], term: f[1]}) );
+
+    switch (searchMap.size) {
+      case 0:
+          return {}
+      case 1:
+          return {left: searchList[0]}
+      default:
+        return searchList.reduce((l,r) => ({left: l, operator: QueryOperator.AND, right: r})) as QueryExpression
+    }
+  }
+
+
   const onSearch = React.useCallback(
     (q: AnalysisQuery, pageSize: number) => {
-      
-      const recurseSearchTree = (e?: QueryExpression):{field: string, term: string}[] => {
-        if (!e) {
-          return []
-        }
-        if ("field" in e && "term" in e && e.field && e.term) {
-          return [{field: e.field.toString(), term: e.term.toString()}]
-        }
-        return [...recurseSearchTree(e.left),...recurseSearchTree(e.right)]
-      }
-
-      const checkExpressionEquality =(e1: QueryExpression, e2: QueryExpression) => {
-        const l1 = recurseSearchTree(e1);
-        const l2 = recurseSearchTree(e2);
 
 
-        
-        l1.sort((a,b) => a.field.localeCompare(b.field))
-        l2.sort((a,b) => a.field.localeCompare(b.field))
-        
-        // To check equality of expressions, they need to be sorted and converted to strings since 
-        // js checks object and array equality by pointer equality
-        const str1 = l1.map(({field,term}) => `${field}=${term}`).join(",")
-        const str2 = l2.map(({field,term}) => `${field}=${term}`).join(",")
-
-        return str1 === str2
-      }
-
-      const mergeFilters =(searchExpression: QueryExpression, propFilter: PropFilter<AnalysisResult> ) => {
-        
-        const searchFields = recurseSearchTree(searchExpression)
-
-        // Search field takes priority, so add first
-        const searchMap = new Map<string,string>();
-        searchFields.forEach(({field,term}) => searchMap.set(field,term))
-
-        Object.keys(propFilter).forEach(key => {
-          const value = propFilter[key] as string[];
-          if (value.length == 0) { // When an argument is removed from the filter it still remains, it is just empty.
-            return;
-          } else {
-            if (!searchMap.has(key)) {
-              searchMap.set(key,value[0].toString())
-            }
-          }
-        })
-
-        const searchList: QueryOperand[] = [...searchMap].map((f) => ({field: f[0], term: f[1]}) );
-
-        switch (searchMap.size) {
-          case 0:
-            return {}
-          case 1:
-            return { left: searchList[0] }
-          default:
-            return searchList.reduce((l, r) => ({ left: l, operator: QueryOperator.AND, right: r })) as QueryExpression
-        }
-      }
-
-      // Since we now do api calls on every filter change, we should avoid unnessecary work
-      const newExpression = mergeFilters(q.expression || {},propFilters);
-      if (checkExpressionEquality(newExpression,lastSearchQuery.expression)) {
-        return;
-      }
-      console.log("Changes to search query!");
-      const newQ = {expression: newExpression};
+      const newQ = mergeFilters(q.expression || {},propFilters);
 
       dispatch({ type: "RESET/Analysis" });
-      setLastSearchQuery(newQ);
+      setLastSearchQuery(q);
+
+      // const newQ = rewriteSearchPropsToAPIQuery(q.expression || {}, propFilters);
 
       // if we got an empty expression, just request a page
-      if (newExpression && Object.keys(newExpression).length === 0) {
+      if (newQ && Object.keys(newQ).length === 0) {
         dispatch(
           requestAsync({
             ...requestPageOfAnalysis({ pageSize: pageSize }, false),
@@ -280,19 +256,14 @@ export default function AnalysisPage() {
       } else {
         dispatch(
           requestAsync({
-            ...searchPageOfAnalysis({ query: { expression: newExpression, page_size: pageSize } }),
-            queryKey: JSON.stringify(newQ),
+            ...searchPageOfAnalysis({ query: { expression: newQ, page_size: pageSize } }),
+            queryKey: JSON.stringify({expression: newQ}),
           })
         );
       }
     },
-    [dispatch, propFilters, rangeFilters, lastSearchQuery]
+    [dispatch, propFilters, rangeFilters]
   );
-
-  useEffect(() => {
-    onSearch(rawTextSearchQuery, PAGE_SIZE)
-  },[onSearch,rawTextSearchQuery])
-
 
   const { hiddenColumns } = view;
 
@@ -333,6 +304,9 @@ export default function AnalysisPage() {
     [rangeFilters, setRangeFilters]
   );
 
+  useEffect(() => {
+    onSearch(lastSearchQuery, PAGE_SIZE)
+  },[propFilters,rangeFilters,onSearch,lastSearchQuery])
 
   const primaryApprovalColumns = React.useMemo(
     () =>
@@ -717,7 +691,7 @@ export default function AnalysisPage() {
       <Box role="navigation" gridColumn="2 / 4" pb={5}>
         <Flex justifyContent="flex-end">
           <AnalysisSearch
-            onSearchChange={setRawTextSearchQuery}
+            onSubmit={onSearch}
             isDisabled={pageState.isNarrowed}
           />
           <Box minW="250px" ml="5">

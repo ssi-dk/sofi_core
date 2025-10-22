@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Text, Flex } from "@chakra-ui/react";
 import Select, { ActionMeta, OptionTypeBase, ValueType } from "react-select";
 import { selectTheme } from "app/app.styles";
 import { useTranslation } from "react-i18next";
-import { AnalysisResult, DataClearance, Organization, QueryExpression, QueryOperand } from "sap-client";
+import { AnalysisResult, DataClearance, Organization } from "sap-client";
 import { IfPermission } from "auth/if-permission";
 import { PropFilter, RangeFilter } from "utils";
 import FilterBox from "../filter-box";
@@ -88,39 +88,39 @@ function MetaFilter(props: MetaFilterProps) {
   );
 
   const organisationOptions = React.useMemo(
-    () => organisations.filter(Boolean).map((x) => ({ value: x, label: x })),
+    () => organisations.map((x) => ({ value: x, label: x })),
     [organisations]
   );
   const projectOptions = React.useMemo(
-    () => projects.filter(Boolean).map((x) => ({ value: x, label: x })),
+    () => projects.map((x) => ({ value: x, label: x })),
     [projects]
   );
   const projectNrOptions = React.useMemo(
-    () => projectNrs.filter(Boolean).map((x) => ({ value: x, label: x })),
+    () => projectNrs.map((x) => ({ value: x, label: x })),
     [projectNrs]
   );
   const dyreartOptions = React.useMemo(
-    () => dyreart.filter(Boolean).map((x) => ({ value: x, label: x })),
+    () => dyreart.map((x) => ({ value: x, label: x })),
     [dyreart]
   );
   const runIdsOptions = React.useMemo(
-    () => runIds.filter(Boolean).map((x) => ({ value: x, label: x })),
+    () => runIds.map((x) => ({ value: x, label: x })),
     [runIds]
   );
   const isolateIdsOptions = React.useMemo(
-    () => isolateIds.filter(Boolean).map((x) => ({ value: x, label: x })),
+    () => isolateIds.map((x) => ({ value: x, label: x })),
     [isolateIds]
   );
   const cprOptions = React.useMemo(
-    () => cprs.filter(Boolean).map((x) => ({ value: x, label: x })),
+    () => cprs.map((x) => ({ value: x, label: x })),
     [cprs]
   );
   const fudOptions = React.useMemo(
-    () => fuds.filter(Boolean).map((x) => ({ value: x, label: x })),
+    () => fuds.map((x) => ({ value: x, label: x })),
     [fuds]
   );
   const clusterOptions = React.useMemo(
-    () => clusters.filter(Boolean).map((x) => ({ value: x, label: x })),
+    () => clusters.map((x) => ({ value: x, label: x })),
     [clusters]
   );
 
@@ -139,7 +139,6 @@ function MetaFilter(props: MetaFilterProps) {
           default:
             break;
         }
-        console.log("MANUAL CHANGE TO",field);
         const resolvedState = {
           ...propFilterState,
           [field]: [...(value?.values() || [])].map((x) => x.value),
@@ -287,4 +286,4 @@ function MetaFilter(props: MetaFilterProps) {
   );
 }
 
-export default MetaFilter;
+export default React.memo(MetaFilter);
