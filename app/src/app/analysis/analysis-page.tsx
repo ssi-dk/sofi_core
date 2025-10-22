@@ -59,7 +59,6 @@ import { Health } from "./health/health";
 import { Debug } from "./debug";
 import { AnalysisSelectionMenu } from "./analysis-selection-menu";
 import { CellConfirmModal } from "./data-table/cell-confirm-modal";
-import { appendToSearchHistory, checkExpressionEquality, recurseSearchTree } from "./search/search-utils";
 
 // When the fields in this array are 'approved', a given sequence is rendered
 // as 'approved' also.
@@ -203,6 +202,32 @@ export default function AnalysisPage() {
 
   const onSearch = React.useCallback(
     (q: AnalysisQuery, pageSize: number) => {
+      
+      const recurseSearchTree = (e?: QueryExpression |QueryOperand):QueryOperand[] => {
+        if (!e) {
+          return []
+        }
+        if ("field" in e && e.field) {
+          return [{field: e.field.toString(), term: e.term?.toString(),term_max: e.term_max, term_min: e.term_min}]
+        }
+        return [...recurseSearchTree(e.left),...recurseSearchTree(e.right)]
+      }
+
+      const checkExpressionEquality =(e1: QueryExpression, e2: QueryExpression) => {
+        const l1 = recurseSearchTree(e1);
+        const l2 = recurseSearchTree(e2);
+
+
+        
+        l1.sort((a,b) => a.field.localeCompare(b.field))
+        l2.sort((a,b) => a.field.localeCompare(b.field))
+        
+        // To check equality of expressions, they need to be sorted and converted to strings since 
+        // js checks object and array equality by pointer equality
+        const str1 = l1.map(({field,term,term_min,term_max}) => `${field}=${term || term_min + term_max}`).join(",")
+        const str2 = l2.map(({field,term,term_min,term_max}) => `${field}=${term || term_min + term_max}`).join(",")
+        return str1 === str2
+      }
 
       const mergeFilters = (searchExpression: QueryExpression, propFilter: PropFilter<AnalysisResult>, rangeFilter: RangeFilter<AnalysisResult>) => {
 
@@ -259,9 +284,10 @@ export default function AnalysisPage() {
       }
       const newQ = {expression: newExpression};
 
+      console.log("QUERY:",newExpression);
+
       dispatch({ type: "RESET/Analysis" });
       setLastSearchQuery(newQ);
-      appendToSearchHistory(newQ.expression);
 
       // if we got an empty expression, just request a page
       if (newExpression && Object.keys(newExpression).length === 0) {
@@ -822,7 +848,6 @@ export default function AnalysisPage() {
       <HalfHolyGrailLayout
         sidebar={
           <AnalysisSidebar
-            queryOperands={recurseSearchTree(rawTextSearchQuery.expression)}
             data={data}
             onPropFilterChange={onPropFilterChange}
             onRangeFilterChange={onRangeFilterChange}

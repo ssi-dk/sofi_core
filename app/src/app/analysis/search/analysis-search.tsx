@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   Input,
   InputGroup,
@@ -7,17 +7,13 @@ import {
   useToast,
   useDisclosure,
   InputLeftElement,
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
 } from "@chakra-ui/react";
-import { CloseIcon, SearchIcon, QuestionIcon, TimeIcon } from "@chakra-ui/icons";
+import { CloseIcon, SearchIcon, QuestionIcon } from "@chakra-ui/icons";
 import { AnalysisQuery } from "sap-client";
 import { parse as luceneParse } from "lucene";
 import { recurseTree } from "utils";
 import { getFieldInternalName } from "app/i18n";
 import SearchHelpModal from "./search-help-modal";
-import SearchHistoryMenu from "./search-history";
 
 type AnalysisSearchProps = {
   onSearchChange: (query: AnalysisQuery) => void;
@@ -84,59 +80,44 @@ const AnalysisSearch = (props: AnalysisSearchProps) => {
   } = useDisclosure();
 
   return (
-    <>
-      <React.Fragment>
-        <SearchHelpModal
-          isOpen={isSearchHelpModalOpen}
-          onClose={onSearchHelpModalClose}
-        />
-        <InputGroup>
-          <Input
-            ref={inputRef}
-            placeholder={`species_final:"Escherichia coli"`}
-            onInput={onInput}
-            onKeyDown={onEnterKey}
-            onSubmit={submit}
-            isDisabled={isDisabled}
-          />
-          <InputLeftElement>
-            <QuestionIcon
-              color="gray.400"
-              onClick={onSearchHelpModalOpen}
-              cursor="pointer"
-            />
-          </InputLeftElement>
-
-          <InputRightElement>
-            <CloseIcon
-              color="gray.400"
-              onClick={onClearButton}
-              cursor="pointer"
-            />
-          </InputRightElement>
-        </InputGroup>
-        <IconButton
-          aria-label="Search database"
-          icon={<SearchIcon />}
-          ml="1"
-          onClick={submit}
+    <React.Fragment>
+      <SearchHelpModal
+        isOpen={isSearchHelpModalOpen}
+        onClose={onSearchHelpModalClose}
+      />
+      <InputGroup>
+        <Input
+          ref={inputRef}
+          placeholder={`species_final:"Escherichia coli"`}
+          onInput={onInput}
+          onKeyDown={onEnterKey}
+          onSubmit={submit}
           isDisabled={isDisabled}
         />
-
-      </React.Fragment>
-      <Popover placement="bottom-start">
-        <PopoverTrigger>
-          <IconButton
-            aria-label="Open history"
-            icon={<TimeIcon />}
-            ml="1"
+        <InputLeftElement>
+          <QuestionIcon
+            color="gray.400"
+            onClick={onSearchHelpModalOpen}
+            cursor="pointer"
           />
-        </PopoverTrigger>
-        <PopoverContent>
-          <SearchHistoryMenu onSearchChange={onSearchChange} />
-        </PopoverContent>
-      </Popover>
-    </>
+        </InputLeftElement>
+
+        <InputRightElement>
+          <CloseIcon
+            color="gray.400"
+            onClick={onClearButton}
+            cursor="pointer"
+          />
+        </InputRightElement>
+      </InputGroup>
+      <IconButton
+        aria-label="Search database"
+        icon={<SearchIcon />}
+        ml="1"
+        onClick={submit}
+        isDisabled={isDisabled}
+      />
+    </React.Fragment>
   );
 };
 

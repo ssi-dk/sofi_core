@@ -10,11 +10,10 @@ type AnalysisSidebarProps = {
   onPropFilterChange: (filter: PropFilter<AnalysisResult>) => void;
   onRangeFilterChange: (filter: RangeFilter<AnalysisResult>) => void;
   isDisabled: boolean;
-  queryOperands: QueryOperand[]
 };
 
 function AnalysisSidebar(props: AnalysisSidebarProps) {
-  const { data, onPropFilterChange, onRangeFilterChange, isDisabled,queryOperands } = props;
+  const { data, onPropFilterChange, onRangeFilterChange, isDisabled } = props;
 
   const sortUnique = React.useCallback(
     (items: string[]) => Array.from(new Set(items)).sort(),
@@ -72,7 +71,6 @@ function AnalysisSidebar(props: AnalysisSidebarProps) {
   return (
     <>
       <MetaFilter
-        queryOperands={queryOperands}
         organisations={organisations}
         projects={projects}
         projectNrs={projectNrs}
