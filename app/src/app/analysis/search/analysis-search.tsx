@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useState } from "react";
 import {
   Input,
   InputGroup,
@@ -10,24 +10,21 @@ import {
   Popover,
   PopoverTrigger,
   PopoverContent,
-  Tooltip,
 } from "@chakra-ui/react";
-import { CloseIcon, SearchIcon, QuestionIcon, TimeIcon, WarningIcon } from "@chakra-ui/icons";
+import { CloseIcon, SearchIcon, QuestionIcon, TimeIcon } from "@chakra-ui/icons";
 import { parse as luceneParse } from "lucene";
 import { recurseTree } from "utils";
 import { getFieldInternalName } from "app/i18n";
 import SearchHelpModal from "./search-help-modal";
 import SearchHistoryMenu from "./search-history";
 import { SearchQuery } from "../analysis-page";
-import { recurseSearchTree } from "./search-utils";
 
 type AnalysisSearchProps = {
   onSearchChange: (query: SearchQuery) => void;
   isDisabled: boolean;
-  searchTerms: Set<string>
 };
 
-const parseQuery = (input: string, onError) => {
+const parseQuery = (input: string, toast) => {
   try {
     const ast = luceneParse(input);
     recurseTree(ast, (x) => {
@@ -38,7 +35,7 @@ const parseQuery = (input: string, onError) => {
     });
     return ast;
   } catch (ex) {
-    onError({
+    toast({
       title: "Invalid query syntax",
       description: `${ex}`,
       status: "error",
@@ -48,28 +45,8 @@ const parseQuery = (input: string, onError) => {
   }
 };
 
-const checkQueryError = (input: string, searchTerms: Set<string>) => {
-  let error: string | null = null;
-
-  const onError = (err: { description: string }) => {
-    error = err.description;
-  }
-  const ast = parseQuery(input, onError)
-  if (error)
-    return error;
-
-  const operands = recurseSearchTree(ast);
-
-  const invalidTerms = operands.map(o => o.field == "<implicit>" ? o.term : o.field).filter(field => !searchTerms.has(field.toLowerCase()))
-  if (invalidTerms.length) {
-    return "Cannot search for " + invalidTerms.map(t => `"${t}"`).join(", ")
-  }
-
-  return null;
-}
-
 const AnalysisSearch = (props: AnalysisSearchProps) => {
-  const { onSearchChange, isDisabled, searchTerms } = props;
+  const { onSearchChange, isDisabled } = props;
   const inputRef = React.useRef<HTMLInputElement>();
   const toast = useToast();
   const [input, setInput] = React.useState("");
@@ -77,13 +54,9 @@ const AnalysisSearch = (props: AnalysisSearchProps) => {
     setInput,
   ]);
 
-  const error = useMemo(() => {
-    return checkQueryError(input, searchTerms)
-  }, [input, searchTerms])
-
   const submitQuery = React.useCallback(
-    (q?: string, clearAllFields?: boolean) =>
-      onSearchChange({ expression: parseQuery(q == undefined ? input : q, toast), clearAllFields }),
+    (q?: string) =>
+      onSearchChange({ expression: parseQuery(q || input, toast) }),
     [onSearchChange, input, toast]
   );
 
@@ -94,7 +67,7 @@ const AnalysisSearch = (props: AnalysisSearchProps) => {
   const onClearButton = React.useCallback(() => {
     inputRef.current.value = "";
     clearInput();
-    submitQuery("", true);
+    submitQuery("");
   }, [clearInput, submitQuery]);
 
   const onEnterKey = React.useCallback(
@@ -133,21 +106,12 @@ const AnalysisSearch = (props: AnalysisSearchProps) => {
             />
           </InputLeftElement>
 
-          <InputRightElement width="18" marginRight="2">
-            {error && <Tooltip label={error} >
-              <WarningIcon
-                color="orange.400"
-                cursor="pointer"
-                height="max"
-                marginRight="2"
-              />
-            </Tooltip>}
+          <InputRightElement>
             <CloseIcon
               color="gray.400"
               onClick={onClearButton}
               cursor="pointer"
             />
-
           </InputRightElement>
         </InputGroup>
         <IconButton
