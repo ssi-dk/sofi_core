@@ -18,7 +18,6 @@ import {
   QueryExpression,
   QueryOperator,
   QueryOperand,
-  ExceptionFromJSON,
 } from "sap-client";
 import { useMutation, useRequest } from "redux-query-react";
 import { useDispatch, useSelector } from "react-redux";
@@ -194,27 +193,6 @@ export default function AnalysisPage() {
     expression: {},
   });
 
-  const clearFieldFromSearch = (field: keyof AnalysisResult) => {
-    console.log("CLEARING",field);
-    let recurseAndModify = (ex?: QueryExpression |QueryOperand):QueryExpression => {
-      if (!ex) {
-        return undefined;
-      }
-      if ("field" in ex) {
-        if (ex.field == field) {
-          return undefined;
-        }
-        return { ...ex }
-      }
-      return {
-        ...ex,
-        left: recurseAndModify(ex.left),
-        right: recurseAndModify(ex.right)
-      }
-    }
-    setRawTextSearchQuery(old => ({expression: recurseAndModify(old.expression)}))
-  }
-
 
   const [propFilters, setPropFilters] = React.useState(
     {} as PropFilter<AnalysisResult>
@@ -280,7 +258,6 @@ export default function AnalysisPage() {
         return;
       }
       const newQ = {expression: newExpression};
-      console.log("QUERY:",newQ);
 
       dispatch({ type: "RESET/Analysis" });
       setLastSearchQuery(newQ);
@@ -845,7 +822,6 @@ export default function AnalysisPage() {
       <HalfHolyGrailLayout
         sidebar={
           <AnalysisSidebar
-            clearFieldFromSearch={clearFieldFromSearch}
             queryOperands={recurseSearchTree(rawTextSearchQuery.expression)}
             data={data}
             onPropFilterChange={onPropFilterChange}
