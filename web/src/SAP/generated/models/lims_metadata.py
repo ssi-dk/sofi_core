@@ -23,7 +23,7 @@ class LimsMetadata(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, id=None, sequence_id=None, sequence_filename=None, isolate_id=None, institution=None, project_number=None, project_title=None, date_sample=None, date_received=None, date_modified=None, date_sofi=None, run_id=None, public_number=None, primary_isolate=None, chr_number=None, cvr_number=None, aut_number=None, product_type=None, product=None, origin_country=None, animal_species=None, sample_info=None):  # noqa: E501
+    def __init__(self, id=None, sequence_id=None, sequence_filename=None, isolate_id=None, institution=None, project_number=None, project_title=None, date_sample=None, date_received=None, date_sofi=None, run_id=None, public_number=None, primary_isolate=None, chr_number=None, cvr_number=None, aut_number=None, product_type=None, product=None, origin_country=None, animal_species=None, sample_info=None):  # noqa: E501
         """LimsMetadata - a model defined in OpenAPI
 
         :param id: The id of this LimsMetadata.  # noqa: E501
@@ -44,8 +44,6 @@ class LimsMetadata(Model):
         :type date_sample: datetime
         :param date_received: The date_received of this LimsMetadata.  # noqa: E501
         :type date_received: datetime
-        :param date_modified: The date_modified of this LimsMetadata.  # noqa: E501
-        :type date_modified: datetime
         :param date_sofi: The date_sofi of this LimsMetadata.  # noqa: E501
         :type date_sofi: datetime
         :param run_id: The run_id of this LimsMetadata.  # noqa: E501
@@ -81,7 +79,6 @@ class LimsMetadata(Model):
             'project_title': str,
             'date_sample': datetime,
             'date_received': datetime,
-            'date_modified': datetime,
             'date_sofi': datetime,
             'run_id': str,
             'public_number': str,
@@ -106,7 +103,6 @@ class LimsMetadata(Model):
             'project_title': 'project_title',
             'date_sample': 'date_sample',
             'date_received': 'date_received',
-            'date_modified': 'date_modified',
             'date_sofi': 'date_sofi',
             'run_id': 'run_id',
             'public_number': 'public_number',
@@ -130,7 +126,6 @@ class LimsMetadata(Model):
         self._project_title = project_title
         self._date_sample = date_sample
         self._date_received = date_received
-        self._date_modified = date_modified
         self._date_sofi = date_sofi
         self._run_id = run_id
         self._public_number = public_number
@@ -353,27 +348,6 @@ class LimsMetadata(Model):
             raise ValueError("Invalid value for `date_received`, must not be `None`")  # noqa: E501
 
         self._date_received = date_received
-
-    @property
-    def date_modified(self):
-        """Gets the date_modified of this LimsMetadata.
-
-
-        :return: The date_modified of this LimsMetadata.
-        :rtype: datetime
-        """
-        return self._date_modified
-
-    @date_modified.setter
-    def date_modified(self, date_modified):
-        """Sets the date_modified of this LimsMetadata.
-
-
-        :param date_modified: The date_modified of this LimsMetadata.
-        :type date_modified: datetime
-        """
-
-        self._date_modified = date_modified
 
     @property
     def date_sofi(self):

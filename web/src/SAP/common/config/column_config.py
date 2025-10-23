@@ -1,5 +1,4 @@
 import os
-import sys
 from typing import Dict, List, Union
 import commentjson
 import functools
