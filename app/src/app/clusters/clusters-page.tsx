@@ -219,7 +219,7 @@ export const Clusterspage = () => {
                   <Th>{t("Species")}</Th>
                   <Th>{t("Sequences")}</Th>
                   <Th>{t("New sequences")}</Th>
-                  <Th>{t("Latest modification")}</Th>
+                  <Th>{t("Latest sample date")}</Th>
                   {/* <Th width="80px"></Th> */}
                 </Tr>
               </Thead>
