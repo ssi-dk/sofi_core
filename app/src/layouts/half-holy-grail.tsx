@@ -11,7 +11,11 @@ type HalfHolyGrailLayoutProps = {
 /**
  * Top-level layout component for a page with header and left sidebar
  */
-const HalfHolyGrailLayout = ({ sidebarWidth, sidebar, content }: HalfHolyGrailLayoutProps) => {
+const HalfHolyGrailLayout = ({
+  sidebarWidth,
+  sidebar,
+  content,
+}: HalfHolyGrailLayoutProps) => {
   const computedSidebarWidth = sidebarWidth ?? (sidebar ? "300px" : "0px");
 
   return (

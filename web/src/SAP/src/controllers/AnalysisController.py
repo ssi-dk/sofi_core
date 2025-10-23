@@ -99,7 +99,7 @@ def get_analysis_history(user, token_info, isolate_id):
     audit_query(token_info, items)
     return jsonify(response)
 
-def get_analysis(user, token_info, paging_token, page_size):
+def get_analysis(user, token_info, paging_token, page_size,analysis_sorting):
     assert_user_has("search", token_info)
     default_token = {"page_size": page_size or 100, "offset": 0}
     token = parse_paging_token(paging_token) or default_token

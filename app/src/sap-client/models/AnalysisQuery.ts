@@ -13,6 +13,9 @@
 
 import { exists, mapValues } from '../runtime';
 import {
+    AnalysisSorting,
+    AnalysisSortingFromJSON,
+    AnalysisSortingToJSON,
     QueryExpression,
     QueryExpressionFromJSON,
     QueryExpressionToJSON,
@@ -44,6 +47,12 @@ export interface AnalysisQuery  {
     expression?: QueryExpression;
     /**
      * 
+     * @type {AnalysisSorting}
+     * @memberof AnalysisQuery
+     */
+    analysis_sorting?: AnalysisSorting;
+    /**
+     * 
      * @type {object}
      * @memberof AnalysisQuery
      */
@@ -55,6 +64,7 @@ export function AnalysisQueryFromJSON(json: any): AnalysisQuery {
         'paging_token': !exists(json, 'paging_token') ? undefined : json['paging_token'],
         'page_size': !exists(json, 'page_size') ? undefined : json['page_size'],
         'expression': !exists(json, 'expression') ? undefined : QueryExpressionFromJSON(json['expression']),
+        'analysis_sorting': !exists(json, 'analysis_sorting') ? undefined : AnalysisSortingFromJSON(json['analysis_sorting']),
         'filters': !exists(json, 'filters') ? undefined : json['filters'],
     };
 }
@@ -67,6 +77,7 @@ export function AnalysisQueryToJSON(value?: AnalysisQuery): any {
         'paging_token': value.paging_token,
         'page_size': value.page_size,
         'expression': QueryExpressionToJSON(value.expression),
+        'analysis_sorting': AnalysisSortingToJSON(value.analysis_sorting),
         'filters': value.filters,
     };
 }

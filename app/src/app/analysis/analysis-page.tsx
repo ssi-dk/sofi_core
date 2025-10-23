@@ -24,6 +24,7 @@ import {
   QueryOperator,
   QueryOperand,
   FilterOptions,
+  AnalysisSorting,
 } from "sap-client";
 import { useMutation, useRequest } from "redux-query-react";
 import { useDispatch, useSelector } from "react-redux";
@@ -70,7 +71,6 @@ import {
   buildQueryFromFilters,
   checkExpressionEquality,
   checkSortEquality,
-  ColumnSort,
   recurseSearchTree,
 } from "./search/search-utils";
 
@@ -94,10 +94,12 @@ export default function AnalysisPage() {
   const nextPageTokenRef = useRef<string | null>(null);
   const currentPageRef = useRef(0);
   const [isModalOpen, setModalOpen] = useState(false);
-  const [prevColumnSort, setPrevColumnSort] = React.useState<ColumnSort>(
-    undefined
-  );
-  const [columnSort, setColumnSort] = React.useState<ColumnSort>(undefined);
+  const [prevColumnSort, setPrevColumnSort] = React.useState<
+    AnalysisSorting & { column: string; ascending: boolean }
+  >(undefined);
+  const [columnSort, setColumnSort] = React.useState<
+    AnalysisSorting & { column: string; ascending: boolean }
+  >(undefined);
   const [modalInfo, setModalInfo] = useState({
     rowId: "",
     columnId: "",
@@ -115,7 +117,7 @@ export default function AnalysisPage() {
 
   const [columnLoadState] = useRequest(requestColumns());
   const [{ isPending, isFinished }] = useRequest({
-    ...requestPageOfAnalysis({ pageSize: PAGE_SIZE }, false),
+    ...requestPageOfAnalysis({ pageSize: PAGE_SIZE,analysisSorting: null }, false),
   });
 
   const user = useSelector<RootState>((s) => s.entities.user ?? {}) as UserInfo;
@@ -471,7 +473,10 @@ export default function AnalysisPage() {
       if (newExpression && Object.keys(newExpression).length === 0) {
         dispatch(
           requestAsync({
-            ...requestPageOfAnalysis({ pageSize: pageSize }, false), // false for replace mode
+            ...requestPageOfAnalysis(
+              { pageSize: pageSize, analysisSorting: columnSort || null },
+              false
+            ), // false for replace mode
           })
         );
       } else {
@@ -480,6 +485,7 @@ export default function AnalysisPage() {
             ...searchPageOfAnalysis(
               {
                 query: {
+                  analysis_sorting: columnSort,
                   expression: newExpression,
                   page_size: pageSize,
                 },

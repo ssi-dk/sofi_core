@@ -3,7 +3,7 @@ import { createAction, createReducer } from "@reduxjs/toolkit";
 export const setFailedApproval = createAction<string>("Approval_Failed");
 
 const initialState = {
-  lastApprovalError: null
+  lastApprovalError: null,
 };
 
 export const judgmentReducer = createReducer(initialState, (builder) => {

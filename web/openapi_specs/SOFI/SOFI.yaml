@@ -276,6 +276,12 @@ paths:
           schema:
             type: number
             default: 100
+        - name: analysis_sorting
+          in: query
+          required: false,
+          schema:
+            nullable: true
+            $ref: "#/components/schemas/AnalysisSorting"
       responses:
         '200':
           description: Page of isolates
@@ -910,6 +916,16 @@ components:
         prefix:
           nullable: true
           type: string
+    AnalysisSorting: 
+      type: object
+      properties:
+        column:
+          nullable: false
+          type: string
+          description: Name of the column to sort
+        ascending:
+          nullable: false
+          type: boolean
 
     QueryExpression:
       type: object
@@ -934,6 +950,9 @@ components:
           nullable: true
         expression:
           $ref: "#/components/schemas/QueryExpression"
+        analysis_sorting: 
+          nullable: true
+          $ref: "#/components/schemas/AnalysisSorting"
         filters:
           type: object
 

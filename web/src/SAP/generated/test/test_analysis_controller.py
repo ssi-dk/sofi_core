@@ -8,6 +8,7 @@ from six import BytesIO
 from web.src.SAP.generated.models.analysis_history import AnalysisHistory  # noqa: E501
 from web.src.SAP.generated.models.analysis_query import AnalysisQuery  # noqa: E501
 from web.src.SAP.generated.models.analysis_result import AnalysisResult  # noqa: E501
+from web.src.SAP.generated.models.analysis_sorting import AnalysisSorting  # noqa: E501
 from web.src.SAP.generated.models.column import Column  # noqa: E501
 from web.src.SAP.generated.models.metadata_reload_request import MetadataReloadRequest  # noqa: E501
 from web.src.SAP.generated.models.metadata_reload_response import MetadataReloadResponse  # noqa: E501
@@ -24,7 +25,8 @@ class TestAnalysisController(BaseTestCase):
         
         """
         query_string = [('paging_token', None)
-                        ('page_size', 100)]
+                        ('page_size', 100)
+                        ('analysis_sorting', {})]
         headers = { 
             'Accept': 'application/json',
             'Authorization': 'Bearer special-key',
@@ -115,6 +117,10 @@ class TestAnalysisController(BaseTestCase):
         
         """
         query = {
+  "analysis_sorting" : {
+    "column" : "column",
+    "ascending" : true
+  },
   "paging_token" : "paging_token",
   "expression" : {
     "left" : {

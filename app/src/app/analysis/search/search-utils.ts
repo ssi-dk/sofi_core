@@ -1,6 +1,7 @@
 import { Square } from "@chakra-ui/react";
 import {
   AnalysisResult,
+  AnalysisSorting,
   QueryExpression,
   QueryOperand,
   QueryOperator,
@@ -248,8 +249,7 @@ export const displayOperandName = ({
   }
 };
 
-export type ColumnSort = { column: string; ascending: boolean } | undefined;
-export const checkSortEquality = <T>(s1: ColumnSort, s2: ColumnSort) => {
+export const checkSortEquality = (s1: AnalysisSorting, s2: AnalysisSorting) => {
   if (s1 === s2) {
     return true;
   }
