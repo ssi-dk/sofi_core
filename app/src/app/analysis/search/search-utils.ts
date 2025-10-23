@@ -1,4 +1,10 @@
-import { QueryExpression, QueryOperand, QueryOperator } from "sap-client";
+import { Square } from "@chakra-ui/react";
+import {
+  AnalysisResult,
+  QueryExpression,
+  QueryOperand,
+  QueryOperator,
+} from "sap-client";
 
 const HISTORY_STORAGE_KEY = "searchHistory";
 const MAX_HISTORY_LEN = 5;
@@ -240,6 +246,27 @@ export const displayOperandName = ({
   } else if (term_min) {
     return `${field} > ${new Date(term_min).toLocaleDateString()}`;
   }
+};
+
+export type ColumnSort = { column: string; ascending: boolean } | undefined;
+export const checkSortEquality = <T>(s1: ColumnSort, s2: ColumnSort) => {
+  if (s1 === s2) {
+    return true;
+  }
+  if (typeof s1 !== typeof s2) {
+    // Checking for undefined
+    return false;
+  }
+
+  // The comparison objects are recreated on every search, therefore we need to do more complicated equality:
+  if (s1.column !== s2.column) {
+    return false;
+  }
+  if (s1.ascending !== s2.ascending) {
+    return false;
+  }
+
+  return true;
 };
 
 export const checkExpressionEquality = (

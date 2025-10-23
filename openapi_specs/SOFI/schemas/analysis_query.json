@@ -22,6 +22,10 @@
     "query_expression": {
       "type": "object",
       "$ref": "./query_expression.json"
+    },
+    "analysis_sorting": {
+      "type": "object",
+      "$ref": "./analysis_sorting.json"
     }
   }
 }

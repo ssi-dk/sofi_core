@@ -69,6 +69,8 @@ import {
   appendToSearchHistory,
   buildQueryFromFilters,
   checkExpressionEquality,
+  checkSortEquality,
+  ColumnSort,
   recurseSearchTree,
 } from "./search/search-utils";
 
@@ -92,6 +94,10 @@ export default function AnalysisPage() {
   const nextPageTokenRef = useRef<string | null>(null);
   const currentPageRef = useRef(0);
   const [isModalOpen, setModalOpen] = useState(false);
+  const [prevColumnSort, setPrevColumnSort] = React.useState<ColumnSort>(
+    undefined
+  );
+  const [columnSort, setColumnSort] = React.useState<ColumnSort>(undefined);
   const [modalInfo, setModalInfo] = useState({
     rowId: "",
     columnId: "",
@@ -374,7 +380,7 @@ export default function AnalysisPage() {
         },
         true
       );
-       dispatch(requestAsync(requestConfig));
+      dispatch(requestAsync(requestConfig));
     } catch (error) {
       console.error("Error loading next page:", error);
       toast({
@@ -387,23 +393,10 @@ export default function AnalysisPage() {
       setIsLoadingNextPage(false);
       isLoadingRef.current = false;
     }
-  }, [
-    isPending,
-    dispatch,
-    toast
-  ]);
+  }, [isPending, dispatch, toast]);
 
   const onSearch = React.useCallback(
     (q: SearchQuery, pageSize: number) => {
-      // Reset pagination state when starting a new search
-      setIsLoadingNextPage(false);
-      setNextPageToken(null);
-
-      // Update refs immediately
-      nextPageTokenRef.current = null;
-      isLoadingRef.current = false;
-
-      // ...rest of existing onSearch logic remains the same...
       const mergeFilters = (
         searchExpression: QueryExpression,
         propFilter: PropFilter<AnalysisResult>,
@@ -421,8 +414,12 @@ export default function AnalysisPage() {
         ) {
           return {
             operator: QueryOperator.AND,
-            left: searchExpression.operator ? searchExpression : searchExpression.left,
-            right: filterExpression.operator ? filterExpression : filterExpression.left,
+            left: searchExpression.operator
+              ? searchExpression
+              : searchExpression.left,
+            right: filterExpression.operator
+              ? filterExpression
+              : filterExpression.left,
           };
         } else if (filterExpression) {
           return filterExpression;
@@ -436,12 +433,31 @@ export default function AnalysisPage() {
         }
       };
 
+      console.log("ATTEMPTED SEARCH UPDATE");
+
       const newExpression = q.clearAllFields
         ? q.expression
         : mergeFilters(q.expression || {}, propFilters, rangeFilters);
-      if (checkExpressionEquality(newExpression, lastSearchQuery.expression)) {
+      if (
+        checkExpressionEquality(newExpression, lastSearchQuery.expression) &&
+        checkSortEquality(columnSort, prevColumnSort)
+      ) {
         return;
       }
+      setPrevColumnSort(columnSort);
+
+      // Reset pagination state when starting a new search
+      setIsLoadingNextPage(false);
+      setNextPageToken(null);
+
+      // Update refs immediately
+      nextPageTokenRef.current = null;
+      isLoadingRef.current = false;
+
+      console.log("CONFIRMED SEARCH UPDATE");
+
+      // ...rest of existing onSearch logic remains the same...
+
       if (q.clearAllFields) {
         setPropFilters({});
         setRangeFilters({});
@@ -475,7 +491,7 @@ export default function AnalysisPage() {
         );
       }
     },
-    [dispatch, propFilters, rangeFilters, lastSearchQuery]
+    [dispatch, propFilters, rangeFilters, lastSearchQuery, columnSort]
   );
 
   useEffect(() => {
@@ -882,8 +898,6 @@ export default function AnalysisPage() {
   const [columnReorder, setColumnReorder] = React.useState(
     undefined as ColumnReordering
   );
-
-  const [columnSort, setColumnSort] = React.useState(undefined);
 
   const onReorderColumn = React.useCallback(
     (sourceIdx: number, destIdx: number, draggableId: string) => {
