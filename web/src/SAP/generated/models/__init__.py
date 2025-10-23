@@ -20,7 +20,9 @@ from .clone_workspace import CloneWorkspace
 from .column import Column
 from .create_workspace import CreateWorkspace
 from .data_clearance import DataClearance
+from .date_range import DateRange
 from .exception import Exception
+from .filter_options import FilterOptions
 from .gene import Gene
 from .health_response import HealthResponse
 from .health_status import HealthStatus

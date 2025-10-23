@@ -796,6 +796,7 @@ components:
         - total_count
         - items
         - approval_matrix
+        - filter_options
       properties:
         paging_token:
           type: string
@@ -808,6 +809,72 @@ components:
             $ref: '#/components/schemas/AnalysisResult'
         approval_matrix:
           $ref: '#/components/schemas/ApprovalMatrix'
+        filter_options:
+          $ref: '#/components/schemas/FilterOptions'
+
+    FilterOptions:
+      type: object
+      properties:
+        date_sample:
+          $ref: '#/components/schemas/DateRange'
+        date_received:
+          $ref: '#/components/schemas/DateRange'
+        institutions:
+          type: array
+          items:
+            type: string
+        project_titles:
+          type: array
+          items:
+            type: string
+        project_numbers:
+          type: array
+          items:
+            type: string
+        animals:
+          type: array
+          items:
+            type: string
+        run_ids:
+          type: array
+          items:
+            type: string
+        isolate_ids:
+          type: array
+          items:
+            type: string
+        fud_nos:
+          type: array
+          items:
+            type: string
+        cluster_ids:
+          type: array
+          items:
+            type: string
+        qc_provided_species:
+          type: array
+          items:
+            type: string
+        serotype_finals:
+          type: array
+          items:
+            type: string
+        st_finals:
+          type: array
+          items:
+            type: string
+
+    DateRange:
+      type: object
+      properties:
+        min:
+          type: string
+          format: date-time
+          nullable: true
+        max:
+          type: string
+          format: date-time
+          nullable: true
 
     QueryOperator:
       type: string
@@ -1061,6 +1128,10 @@ components:
             type: object
             additionalProperties:
               type: string
+        revoked_sequence_ids:
+          type: array
+          items:
+            type: string
 
     Approval:
       allOf:

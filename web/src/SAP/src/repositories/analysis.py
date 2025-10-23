@@ -261,3 +261,175 @@ def get_analysis_with_metadata(sequence_id: str) -> Dict[str, Any]:
         return res[0]
     else:
         return None
+
+def get_filter_metadata(authorized_columns, institution, data_clearance):
+    """
+    Get filter metadata without applying any query filters.
+    Returns min/max dates and distinct values for various fields.
+    """
+    conn = get_connection()
+    mydb = conn[DB_NAME]
+    analysis = mydb[ANALYSIS_COL_NAME]
+    
+    # Base pipeline for joining metadata collections (same as get_analysis_page)
+    base_pipeline = [
+        {
+            "$lookup": {
+                "from": TBR_METADATA_COL_NAME,
+                "localField": "isolate_id",
+                "foreignField": "isolate_id",
+                "as": "metadata",
+            }
+        },
+        {
+            "$replaceRoot": {
+                "newRoot": {
+                    "$mergeObjects": [{"$arrayElemAt": ["$metadata", 0]}, "$$ROOT"]
+                }
+            }
+        },
+        {
+            "$lookup": {
+                "from": LIMS_METADATA_COL_NAME,
+                "localField": "isolate_id",
+                "foreignField": "isolate_id",
+                "as": "metadata",
+            }
+        },
+        {
+            "$replaceRoot": {
+                "newRoot": {
+                    "$mergeObjects": [{"$arrayElemAt": ["$metadata", 0]}, "$$ROOT"]
+                }
+            }
+        },
+        {
+            "$lookup": {
+                "from": MANUAL_METADATA_COL_NAME,
+                "localField": "isolate_id",
+                "foreignField": "isolate_id",
+                "as": "metadata",
+            }
+        },
+        {
+            "$replaceRoot": {
+                "newRoot": {
+                    "$mergeObjects": [{"$arrayElemAt": ["$metadata", 0]}, "$$ROOT"]
+                }
+            }
+        },
+        {
+            "$lookup": {
+                "from": PROJECT_PRIVACY_COL_NAME,
+                "localField": "project_number",
+                "foreignField": "project_number",
+                "as": "project_privacy",
+            }
+        } if data_clearance == "cross-institution" else {"$match": {}},
+        {
+            "$match": {
+                "$or": [
+                    {"project_privacy": {"$eq": []}},  # No privacy restrictions
+                    {"project_privacy.institution": institution}  # User has access to this institution
+                ]
+            }
+        } if data_clearance == "cross-institution" else {"$match": {}},
+    ]
+    
+    # Apply institution filter for own-institution clearance
+    if data_clearance == "own-institution":
+        base_pipeline.append({"$match": {"institution": institution}})
+    
+    # Filter out None stages
+    base_pipeline = list(filter(lambda x: x != {"$match": {}}, base_pipeline))
+    
+    metadata = {}
+    
+    # Get date ranges for date_sample
+    if "date_sample" in authorized_columns:
+        date_sample_pipeline = base_pipeline + [
+            {
+                "$match": {
+                    "date_sample": {"$exists": True, "$ne": None}
+                }
+            },
+            {
+                "$group": {
+                    "_id": None,
+                    "min_date": {"$min": "$date_sample"},
+                    "max_date": {"$max": "$date_sample"}
+                }
+            }
+        ]
+        
+        result = list(analysis.aggregate(date_sample_pipeline))
+        if result:
+            metadata["min_date_sample"] = result[0]["min_date"]
+            metadata["max_date_sample"] = result[0]["max_date"]
+    
+    # Get date ranges for date_received
+    if "date_received" in authorized_columns:
+        date_received_pipeline = base_pipeline + [
+            {
+                "$match": {
+                    "date_received": {"$exists": True, "$ne": None}
+                }
+            },
+            {
+                "$group": {
+                    "_id": None,
+                    "min_date": {"$min": "$date_received"},
+                    "max_date": {"$max": "$date_received"}
+                }
+            }
+        ]
+        
+        result = list(analysis.aggregate(date_received_pipeline))
+        if result:
+            metadata["min_date_received"] = result[0]["min_date"]
+            metadata["max_date_received"] = result[0]["max_date"]
+    
+    # Define categorical fields and their corresponding authorization check names
+    categorical_fields = {
+        "institutions": "institution",
+        "project_titles": "project_title", 
+        "project_numbers": "project_number",
+        "animals": "animal",
+        "run_ids": "run_id",
+        "isolate_ids": "isolate_id",
+        "fud_nos": "fud_no",
+        "cluster_ids": "cluster_id",
+        "qc_provided_species": "qc_provided_species",
+        "serotype_finals": "serotype_final",
+        "st_finals": "st_final"
+    }
+    
+    # Get distinct values for categorical fields
+    for metadata_key, field_name in categorical_fields.items():
+        if field_name in authorized_columns:
+            distinct_pipeline = base_pipeline + [
+                {
+                    "$match": {
+                        field_name: {"$exists": True, "$ne": None, "$ne": ""}
+                    }
+                },
+                {
+                    "$group": {
+                        "_id": f"${field_name}"
+                    }
+                },
+                {
+                    "$sort": {"_id": 1}
+                },
+                {
+                    "$project": {
+                        "_id": 0,
+                        "value": "$_id"
+                    }
+                }
+            ]
+            
+            result = list(analysis.aggregate(distinct_pipeline))
+            metadata[metadata_key] = [item["value"] for item in result if item["value"] is not None]
+    
+    return metadata

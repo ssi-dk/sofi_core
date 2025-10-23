@@ -1,13 +1,6 @@
 import React from "react";
 import "@compiled/react";
-import {
-  Tabs,
-  TabList,
-  TabPanels,
-  Tab,
-  TabPanel,
-  Box,
-} from "@chakra-ui/react";
+import { Tabs, TabList, TabPanels, Tab, TabPanel, Box } from "@chakra-ui/react";
 import { IfPermission } from "auth/if-permission";
 import { Permission } from "sap-client";
 import { useTranslation } from "react-i18next";

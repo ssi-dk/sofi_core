@@ -19,6 +19,9 @@ import {
     ApprovalStatus,
     ApprovalStatusFromJSON,
     ApprovalStatusToJSON,
+    FilterOptions,
+    FilterOptionsFromJSON,
+    FilterOptionsToJSON,
 } from './';
 
 /**
@@ -51,6 +54,12 @@ export interface PageOfAnalysis  {
      * @memberof PageOfAnalysis
      */
     approval_matrix: { [key: string]: { [key: string]: ApprovalStatus; }; };
+    /**
+     * 
+     * @type {FilterOptions}
+     * @memberof PageOfAnalysis
+     */
+    filter_options: FilterOptions;
 }
 
 export function PageOfAnalysisFromJSON(json: any): PageOfAnalysis {
@@ -59,6 +68,7 @@ export function PageOfAnalysisFromJSON(json: any): PageOfAnalysis {
         'total_count': json['total_count'],
         'items': (json['items'] as Array<any>).map(AnalysisResultFromJSON),
         'approval_matrix': json['approval_matrix'],
+        'filter_options': FilterOptionsFromJSON(json['filter_options']),
     };
 }
 
@@ -71,6 +81,7 @@ export function PageOfAnalysisToJSON(value?: PageOfAnalysis): any {
         'total_count': value.total_count,
         'items': (value.items as Array<any>).map(AnalysisResultToJSON),
         'approval_matrix': value.approval_matrix,
+        'filter_options': FilterOptionsToJSON(value.filter_options),
     };
 }
 

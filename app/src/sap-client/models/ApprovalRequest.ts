@@ -36,12 +36,19 @@ export interface ApprovalRequest  {
      * @memberof ApprovalRequest
      */
     required_values?: { [key: string]: { [key: string]: string; }; };
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof ApprovalRequest
+     */
+    revoked_sequence_ids?: Array<string>;
 }
 
 export function ApprovalRequestFromJSON(json: any): ApprovalRequest {
     return {
         'matrix': json['matrix'],
         'required_values': !exists(json, 'required_values') ? undefined : json['required_values'],
+        'revoked_sequence_ids': !exists(json, 'revoked_sequence_ids') ? undefined : json['revoked_sequence_ids'],
     };
 }
 
@@ -52,6 +59,7 @@ export function ApprovalRequestToJSON(value?: ApprovalRequest): any {
     return {
         'matrix': value.matrix,
         'required_values': value.required_values,
+        'revoked_sequence_ids': value.revoked_sequence_ids,
     };
 }
 
