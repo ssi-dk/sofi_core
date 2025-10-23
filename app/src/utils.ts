@@ -19,7 +19,7 @@ export type PropFilter<T extends NotEmpty> = Partial<
 
 export type RangeFilter<T extends NotEmpty> = Partial<
   {
-    [k in keyof T]: { min: T[k]; max: T[k] };
+    [k in keyof T]: { min: T[k] |null; max: T[k] |null };
   }
 >;
 
