@@ -197,6 +197,9 @@ export function Workspace(props: Props) {
               primaryKey="sequence_id"
               selection={{}}
               view={view}
+              onLoadNextPage={null}
+              hasMoreData={false}
+              isLoadingNextPage={false}
             />
           </Box>
         </Box>

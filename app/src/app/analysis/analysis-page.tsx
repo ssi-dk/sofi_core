@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import {
   Box,
   Flex,
@@ -14,11 +20,10 @@ import {
   AnalysisQuery,
   ApprovalStatus,
   UserInfo,
-  QueryExpressionFromJSON,
   QueryExpression,
   QueryOperator,
   QueryOperand,
-  ExceptionFromJSON,
+  FilterOptions,
 } from "sap-client";
 import { useMutation, useRequest } from "redux-query-react";
 import { useDispatch, useSelector } from "react-redux";
@@ -27,7 +32,7 @@ import { useTranslation } from "react-i18next";
 import { OptionTypeBase } from "react-select";
 import { UserDefinedViewInternal } from "models";
 import { RootState } from "app/root-reducer";
-import { predicateBuilder, PropFilter, RangeFilter } from "utils";
+import { PropFilter, RangeFilter } from "utils";
 import { Loading } from "loading";
 import DataTable, {
   ColumnReordering,
@@ -60,7 +65,12 @@ import { Health } from "./health/health";
 import { Debug } from "./debug";
 import { AnalysisSelectionMenu } from "./analysis-selection-menu";
 import { CellConfirmModal } from "./data-table/cell-confirm-modal";
-import { appendToSearchHistory, checkExpressionEquality, recurseSearchTree } from "./search/search-utils";
+import {
+  appendToSearchHistory,
+  buildQueryFromFilters,
+  checkExpressionEquality,
+  recurseSearchTree,
+} from "./search/search-utils";
 
 // When the fields in this array are 'approved', a given sequence is rendered
 // as 'approved' also.
@@ -68,13 +78,19 @@ const PRIMARY_APPROVAL_FIELDS = ["st_final", "qc_final"];
 
 export type SearchQuery = AnalysisQuery & { clearAllFields?: boolean };
 
-let prevSearchTerms: Set<string> = new Set() // NEEDS to be outside the react component to prevent un-needed rerender
+let prevSearchTerms: Set<string> = new Set(); // NEEDS to be outside the react component to prevent un-needed rerender
 
 export default function AnalysisPage() {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const toast = useToast();
 
+  const [currentPage, setCurrentPage] = useState(0);
+  const [isLoadingNextPage, setIsLoadingNextPage] = useState(false);
+  const isLoadingRef = useRef(false);
+  const [nextPageToken, setNextPageToken] = useState<string | null>(null);
+  const nextPageTokenRef = useRef<string | null>(null);
+  const currentPageRef = useRef(0);
   const [isModalOpen, setModalOpen] = useState(false);
   const [modalInfo, setModalInfo] = useState({
     rowId: "",
@@ -102,9 +118,63 @@ export default function AnalysisPage() {
 
   const rootStateData = useSelector<RootState>((s) => s.entities.analysis);
 
+  const filterOptions = (useSelector<RootState>(
+    (s) => s.entities.filterOptions
+  ) as FilterOptions) || {
+    date_sample: { min: null, max: null },
+    date_received: { min: null, max: null },
+    institutions: [],
+    project_titles: [],
+    project_numbers: [],
+    animals: [],
+    run_ids: [],
+    isolate_ids: [],
+    fud_nos: [],
+    cluster_ids: [],
+    qc_provided_species: [],
+    serotype_finals: [],
+    st_finals: [],
+  };
+
+  const totalCount = useSelector<RootState>((s) =>
+    s.entities.analysisTotalCount !== 0
+      ? s.entities.analysisTotalCount
+      : Object.keys(s.entities.analysis).length
+  ) as number;
+
   const data = React.useMemo(() => {
     return Object.values(rootStateData ?? {}) as AnalysisResult[];
   }, [rootStateData]);
+
+  const currentPagingToken = useSelector<RootState>(
+    (s) => s.entities.analysisPagingToken
+  ) as string;
+
+  // Update hasMoreData to check if we have a paging token
+  const hasMoreData = useMemo(() => {
+    return (
+      data.length < totalCount &&
+      currentPagingToken !== null &&
+      currentPagingToken !== undefined
+    );
+  }, [data.length, totalCount, currentPagingToken]);
+
+  // Keep a ref for immediate access in async operations
+  const hasMoreDataRef = useRef(hasMoreData);
+  // Update the ref when hasMoreData changes
+  useEffect(() => {
+    hasMoreDataRef.current = hasMoreData;
+  }, [hasMoreData]);
+
+  // Update nextPageTokenRef when currentPagingToken changes
+  useEffect(() => {
+    nextPageTokenRef.current = currentPagingToken;
+    setNextPageToken(currentPagingToken);
+  }, [currentPagingToken]);
+
+  useEffect(() => {
+    isLoadingRef.current = isLoadingNextPage;
+  }, [isLoadingNextPage]);
 
   const searchTerms = useMemo(() => {
     const current = new Set(data.flatMap(Object.keys));
@@ -120,18 +190,18 @@ export default function AnalysisPage() {
     () =>
       Object.keys(columnConfigs || []).map(
         (k) =>
-        ({
-          accessor: k,
-          sortType: !k.startsWith("date")
-            ? "alphanumeric"
-            : (a, b, column) => {
-              const aDate = a.original[column]?.getTime() ?? 0;
-              const bDate = b.original[column]?.getTime() ?? 0;
+          ({
+            accessor: k,
+            sortType: !k.startsWith("date")
+              ? "alphanumeric"
+              : (a, b, column) => {
+                  const aDate = a.original[column]?.getTime() ?? 0;
+                  const bDate = b.original[column]?.getTime() ?? 0;
 
-              return aDate - bDate;
-            },
-          Header: t(k),
-        } as Column<AnalysisResult>)
+                  return aDate - bDate;
+                },
+            Header: t(k),
+          } as Column<AnalysisResult>)
       ),
     [columnConfigs, t]
   );
@@ -187,39 +257,26 @@ export default function AnalysisPage() {
     (s) => s.view.view
   ) as UserDefinedViewInternal;
 
-  const displayData = useMemo(() => [...Object.entries(selection).filter(([key, _]) => !data.find(seq => seq.sequence_id === key)).map(([_, value]) => value.original), ...data], [selection, data])
+  const displayData = useMemo(
+    () => [
+      ...Object.entries(selection)
+        .filter(([key, _]) => !data.find((seq) => seq.sequence_id === key))
+        .map(([_, value]) => value.original),
+      ...data,
+    ],
+    [selection, data]
+  );
 
   const [lastSearchQuery, setLastSearchQuery] = useState<AnalysisQuery>({
     expression: {},
   });
   const lastQueryOperands = useMemo(() => {
     return recurseSearchTree(lastSearchQuery.expression);
-  }, [lastSearchQuery])
+  }, [lastSearchQuery]);
 
   const [rawSearchQuery, setRawSearchQuery] = useState<SearchQuery>({
     expression: {},
   });
-
-  const clearFieldFromSearch = (field: keyof AnalysisResult) => {
-    const recurseAndModify = (ex?: QueryExpression | QueryOperand): QueryExpression => {
-      if (!ex) {
-        return undefined;
-      }
-      if ("field" in ex) {
-        if (ex.field == field) {
-          return undefined;
-        }
-        return { ...ex }
-      }
-      return {
-        ...ex,
-        left: recurseAndModify(ex.left),
-        right: recurseAndModify(ex.right)
-      }
-    }
-    setRawSearchQuery(old => ({ expression: recurseAndModify(old.expression) }))
-  }
-
 
   const [propFilters, setPropFilters] = React.useState(
     {} as PropFilter<AnalysisResult>
@@ -227,65 +284,167 @@ export default function AnalysisPage() {
   const [rangeFilters, setRangeFilters] = React.useState(
     {} as RangeFilter<AnalysisResult>
   );
+  const clearFieldFromSearch = (field: keyof AnalysisResult) => {
+    const recurseAndModify = (
+      ex?: QueryExpression | QueryOperand
+    ): QueryExpression => {
+      if (!ex) {
+        return undefined;
+      }
+      if ("field" in ex) {
+        if (ex.field == field) {
+          return undefined;
+        }
+        return { ...ex };
+      }
 
-  const onSearch = React.useCallback(
-    (q: SearchQuery, pageSize: number) => {
+      // For OR expressions, we need to check if both sides relate to the field being cleared
+      if (ex.operator === "OR") {
+        const left = recurseAndModify(ex.left);
+        const right = recurseAndModify(ex.right);
 
-      const mergeFilters = (searchExpression: QueryExpression, propFilter: PropFilter<AnalysisResult>, rangeFilter: RangeFilter<AnalysisResult>) => {
-
-        const searchFields = recurseSearchTree(searchExpression)
-
-        // Search field takes priority, so add first
-        const searchMap = new Map<string, { term?: string, term_max?: string, term_min?: string }>();
-        searchFields.forEach(({ field, term, term_max, term_min }) => searchMap.set(field, { term, term_max, term_min }))
-
-        Object.entries(propFilter).forEach(([key, value]) => {
-          if (value.length == 0) { // When an argument is removed from the filter it still remains, it is just empty.
-            return;
-          } else {
-            if (!searchMap.has(key)) {
-              searchMap.set(key, { term: value[0] })
-            }
-          }
-        })
-
-        const searchList: (QueryOperand & QueryExpression)[] = [...searchMap].map((f) => ({ field: f[0], ...f[1] }));
-
-
-        // Range filters cannot be searched for in the search bar, so we do not need to filter them away
-        // with the map
-        Object.entries(rangeFilter).forEach(([key, value]) => {
-
-          if (!value) {
-            return;
-          }
-          if (value.min && value.max) {
-            searchList.push({ field: key, term_max: value.max as string, term_min: value.min as string })
-          } else if (value.min) {
-            searchList.push({ field: key, term_min: value.min as string })
-          } else if (value.max) {
-            searchList.push({ field: key, term_max: value.max as string })
-          }
-        })
-
-        switch (searchList.length) {
-          case 0:
-            return {}
-          case 1:
-            return { left: searchList[0] }
-          default:
-            return searchList.reduce((l, r) => ({ left: l, operator: QueryOperator.AND, right: r })) as QueryExpression
+        if (!left && !right) {
+          return undefined;
+        } else if (!left) {
+          return right;
+        } else if (!right) {
+          return left;
+        } else {
+          return { ...ex, left, right };
         }
       }
 
-      // Since we now do api calls on every filter change, we should avoid unnessecary work
-      const newExpression = q.clearAllFields ? q.expression : mergeFilters(q.expression || {}, propFilters, rangeFilters);
+      return {
+        ...ex,
+        left: recurseAndModify(ex.left),
+        right: recurseAndModify(ex.right),
+      };
+    };
+
+    // Also clear from prop filters
+    setPropFilters((prev) => {
+      const newFilters = { ...prev };
+      delete newFilters[field];
+      return newFilters;
+    });
+
+    // Also clear from range filters
+    setRangeFilters((prev) => {
+      const newFilters = { ...prev };
+      delete newFilters[field];
+      return newFilters;
+    });
+
+    setRawSearchQuery((old) => ({
+      expression: recurseAndModify(old.expression),
+    }));
+  };
+
+  useEffect(() => {
+    isLoadingRef.current = isLoadingNextPage;
+  }, [isLoadingNextPage]);
+
+  useEffect(() => {
+    hasMoreDataRef.current = hasMoreData;
+  }, [hasMoreData]);
+
+  useEffect(() => {
+    currentPageRef.current = currentPage;
+  }, [currentPage]);
+
+  const loadNextPage = useCallback(async () => {
+    // Use refs for immediate state check to prevent race conditions
+    if (
+      isLoadingRef.current ||
+      !hasMoreDataRef.current ||
+      isPending ||
+      !nextPageTokenRef.current
+    ) {
+      return;
+    }
+
+    // Set loading state immediately
+    isLoadingRef.current = true;
+    setIsLoadingNextPage(true);
+
+    try {
+      const requestConfig = requestPageOfAnalysis(
+        {
+          pagingToken: nextPageTokenRef.current,
+        },
+        true
+      );
+       dispatch(requestAsync(requestConfig));
+    } catch (error) {
+      console.error("Error loading next page:", error);
+      toast({
+        title: "Error loading more results",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    } finally {
+      setIsLoadingNextPage(false);
+      isLoadingRef.current = false;
+    }
+  }, [
+    isPending,
+    dispatch,
+    toast
+  ]);
+
+  const onSearch = React.useCallback(
+    (q: SearchQuery, pageSize: number) => {
+      // Reset pagination state when starting a new search
+      setIsLoadingNextPage(false);
+      setNextPageToken(null);
+
+      // Update refs immediately
+      nextPageTokenRef.current = null;
+      isLoadingRef.current = false;
+
+      // ...rest of existing onSearch logic remains the same...
+      const mergeFilters = (
+        searchExpression: QueryExpression,
+        propFilter: PropFilter<AnalysisResult>,
+        rangeFilter: RangeFilter<AnalysisResult>
+      ) => {
+        const filterExpression = buildQueryFromFilters(propFilter, rangeFilter);
+        searchExpression = Object.fromEntries(
+          Object.entries(searchExpression).filter(([_, v]) => !!v)
+        ) as QueryExpression;
+
+        if (
+          searchExpression &&
+          Object.keys(searchExpression).length > 0 &&
+          filterExpression
+        ) {
+          return {
+            operator: QueryOperator.AND,
+            left: searchExpression.operator ? searchExpression : searchExpression.left,
+            right: filterExpression.operator ? filterExpression : filterExpression.left,
+          };
+        } else if (filterExpression) {
+          return filterExpression;
+        } else if (
+          searchExpression &&
+          Object.keys(searchExpression).length > 0
+        ) {
+          return searchExpression;
+        } else {
+          return {};
+        }
+      };
+
+      const newExpression = q.clearAllFields
+        ? q.expression
+        : mergeFilters(q.expression || {}, propFilters, rangeFilters);
       if (checkExpressionEquality(newExpression, lastSearchQuery.expression)) {
         return;
       }
       if (q.clearAllFields) {
-        setPropFilters({})
-        setRangeFilters({})
+        setPropFilters({});
+        setRangeFilters({});
       }
       const newQ = { expression: newExpression };
 
@@ -293,17 +452,24 @@ export default function AnalysisPage() {
       setLastSearchQuery(newQ);
       appendToSearchHistory(newExpression);
 
-      // if we got an empty expression, just request a page
       if (newExpression && Object.keys(newExpression).length === 0) {
         dispatch(
           requestAsync({
-            ...requestPageOfAnalysis({ pageSize: pageSize }, false),
+            ...requestPageOfAnalysis({ pageSize: pageSize }, false), // false for replace mode
           })
         );
       } else {
         dispatch(
           requestAsync({
-            ...searchPageOfAnalysis({ query: { expression: newExpression, page_size: pageSize } }),
+            ...searchPageOfAnalysis(
+              {
+                query: {
+                  expression: newExpression,
+                  page_size: pageSize,
+                },
+              },
+              false
+            ), // false for replace mode
             queryKey: JSON.stringify(newQ),
           })
         );
@@ -313,9 +479,8 @@ export default function AnalysisPage() {
   );
 
   useEffect(() => {
-    onSearch(rawSearchQuery, PAGE_SIZE)
-  }, [onSearch, rawSearchQuery])
-
+    onSearch(rawSearchQuery, PAGE_SIZE);
+  }, [onSearch, rawSearchQuery]);
 
   const { hiddenColumns } = view;
 
@@ -332,19 +497,18 @@ export default function AnalysisPage() {
   const canSelectColumn = React.useCallback(
     (columnName: string) => {
       return (
-        !pageState.isNarrowed && columnName === "sequence_id" ||
-        pageState.isNarrowed &&
-        columnConfigs[columnName]?.approvable &&
-        !columnConfigs[columnName]?.computed
+        (!pageState.isNarrowed && columnName === "sequence_id") ||
+        (pageState.isNarrowed &&
+          columnConfigs[columnName]?.approvable &&
+          !columnConfigs[columnName]?.computed)
       );
     },
     [columnConfigs, pageState]
   );
 
-
   const onPropFilterChange = React.useCallback(
     (p: PropFilter<AnalysisResult>) => {
-      setRawSearchQuery(old => ({ ...old, clearAllFields: false }))
+      setRawSearchQuery((old) => ({ ...old, clearAllFields: false }));
       setPropFilters({ ...propFilters, ...p });
     },
     [propFilters, setPropFilters, setRawSearchQuery]
@@ -353,12 +517,10 @@ export default function AnalysisPage() {
   const onRangeFilterChange = React.useCallback(
     (p: RangeFilter<AnalysisResult>) => {
       setRangeFilters({ ...rangeFilters, ...p });
-      setRawSearchQuery(old => ({ ...old, clearAllFields: false }))
-
+      setRawSearchQuery((old) => ({ ...old, clearAllFields: false }));
     },
     [rangeFilters, setRangeFilters, setRawSearchQuery]
   );
-
 
   const primaryApprovalColumns = React.useMemo(
     () =>
@@ -434,7 +596,8 @@ export default function AnalysisPage() {
 
   const getCellStyle = React.useCallback(
     (rowId: string, columnId: string, value: any, cell: any) => {
-      const rowSelectionClass = selection[rowId] && !pageState.isNarrowed ? " selectedRow" : "";
+      const rowSelectionClass =
+        selection[rowId] && !pageState.isNarrowed ? " selectedRow" : "";
       if (
         value !== 0 &&
         value !== false &&
@@ -570,11 +733,12 @@ export default function AnalysisPage() {
       }
       const rowInstitution = displayData.find((row) => row.sequence_id == rowId)
         .institution;
-      const editIsAllowed = columnConfigs[columnId].editable ||
+      const editIsAllowed =
+        columnConfigs[columnId].editable ||
         user.institution == rowInstitution ||
-        columnConfigs[columnId].cross_org_editable || 
+        columnConfigs[columnId].cross_org_editable ||
         user.data_clearance === "all";
-        
+
       if (value !== 0 && value !== false && !value && !editIsAllowed) {
         return <div />;
       }
@@ -602,13 +766,16 @@ export default function AnalysisPage() {
       } else if (typeof value === "object") {
         v = `${JSON.stringify(value)}`;
         if (columnId === "qc_failed_tests") {
-          v = (value as Array<AnalysisResultAllOfQcFailedTests>).reduce((acc, x) => {
-            if (acc !== "") {
-              acc += ", ";
-            }
-            acc += `${x.display_name}: ${x.reason}`;
-            return acc;
-          }, "");
+          v = (value as Array<AnalysisResultAllOfQcFailedTests>).reduce(
+            (acc, x) => {
+              if (acc !== "") {
+                acc += ", ";
+              }
+              acc += `${x.display_name}: ${x.reason}`;
+              return acc;
+            },
+            ""
+          );
         }
         if (columnId === "st_alleles") {
           v = Object.entries(value).reduce((acc, [k, val]) => {
@@ -693,7 +860,7 @@ export default function AnalysisPage() {
       cellUpdating,
       approvals,
       displayData,
-      user
+      user,
     ]
   );
 
@@ -767,7 +934,8 @@ export default function AnalysisPage() {
               data={data}
               search={onSearch}
               lastSearchQuery={lastSearchQuery}
-            />) : null}
+            />
+          ) : null}
           <Flex grow={1} width="100%" />
           <ColumnConfigWidget onReorder={onReorderColumn}>
             {(columnOrder || columns.map((x) => x.accessor as string)).map(
@@ -810,23 +978,31 @@ export default function AnalysisPage() {
             }
             renderCellControl={renderCellControl}
             primaryKey="sequence_id"
-            selectionClassName={
-              pageState.isNarrowed ? "approvingCell" : ""
-            }
+            selectionClassName={pageState.isNarrowed ? "approvingCell" : ""}
             onSelect={onSelectCallback}
             selection={selection}
             onDetailsClick={openDetailsView}
             view={view}
+            onLoadNextPage={loadNextPage}
+            hasMoreData={hasMoreData}
+            isLoadingNextPage={isLoadingNextPage}
           />
         </Box>
+
         <Box role="status" gridColumn="2 / 4" margin={2}>
           {isPending && `${t("Fetching...")} ${data.length}`}
+          {isFinished &&
+            !pageState.isNarrowed &&
+            `${t("Showing")} ${data.length} ${t("of")} ${totalCount} ${t(
+              "records"
+            )}.`}
           {!pageState.isNarrowed && Object.keys(selection).length > 0
             ? ` ${Object.keys(selection).length} selected.`
             : null}
           {isFinished &&
             pageState.isNarrowed &&
             `${t("Staging")} ${Object.keys(selection).length} ${t("records")}.`}
+          {isLoadingRef.current && " Loading more results..."}
         </Box>
       </Box>
       <CellConfirmModal
@@ -858,6 +1034,7 @@ export default function AnalysisPage() {
             clearFieldFromSearch={clearFieldFromSearch}
             queryOperands={lastQueryOperands}
             data={data}
+            filterOptions={filterOptions}
             onPropFilterChange={onPropFilterChange}
             onRangeFilterChange={onRangeFilterChange}
             isDisabled={pageState.isNarrowed}
