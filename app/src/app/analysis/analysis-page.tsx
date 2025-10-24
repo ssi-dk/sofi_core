@@ -375,6 +375,8 @@ export default function AnalysisPage() {
     isLoadingRef.current = true;
     setIsLoadingNextPage(true);
 
+    console.log("LOADING NEXT PAGE!!");
+
     try {
       const requestConfig = requestPageOfAnalysis(
         {
@@ -435,8 +437,6 @@ export default function AnalysisPage() {
         }
       };
 
-      console.log("ATTEMPTED SEARCH UPDATE");
-
       const newExpression = q.clearAllFields
         ? q.expression
         : mergeFilters(q.expression || {}, propFilters, rangeFilters);
@@ -455,8 +455,6 @@ export default function AnalysisPage() {
       // Update refs immediately
       nextPageTokenRef.current = null;
       isLoadingRef.current = false;
-
-      console.log("CONFIRMED SEARCH UPDATE");
 
       // ...rest of existing onSearch logic remains the same...
 

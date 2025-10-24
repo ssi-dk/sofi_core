@@ -60,9 +60,9 @@ def parse_paging_token(token):
     else:
         return None
 
-def render_paging_token(page_size, query, offset):
+def render_paging_token(page_size, query, offset, sorting):
     query = serialize_query_for_json(query)
-    body = {"page_size": int(page_size), "query": query, "offset": int(offset)}
+    body = {"page_size": int(page_size), "query": query, "offset": int(offset), "analysis_sorting": sorting}
     return str(base64.b64encode(json.dumps(body).encode("utf8")), encoding="utf8")
 
 
@@ -104,13 +104,14 @@ def get_analysis(user, token_info, paging_token, page_size,sorting_column=None, 
     default_token = {"page_size": page_size or 100, "offset": 0}
     token = parse_paging_token(paging_token) or default_token
 
-    # sorting  = analysis_sorting if "column" in analysis_sorting else None
     sorting = None
     if sorting_column is not None and sorting_ascending is not None:
         sorting = {
             "column": sorting_column,
             "ascending": sorting_ascending
         }
+    elif "analysis_sorting" in token:
+        sorting = token["analysis_sorting"]
     
     items = get_analysis_page(
         token.get("query", {}),
@@ -138,6 +139,7 @@ def get_analysis(user, token_info, paging_token, page_size,sorting_column=None, 
             token["page_size"],
             token.get("query", {}),
             token["offset"] + token["page_size"],
+            sorting
         )
     )
     response = {
@@ -200,9 +202,6 @@ def search_analysis(user, token_info, query: AnalysisQuery):
     }
 
     token = parse_paging_token(query.paging_token) or default_token
-    print("DEBUG****", file=sys.stderr)
-    print(token["query"], file=sys.stderr)
-    print("END DEBUG****", file=sys.stderr)
     items = get_analysis_page(
         token["query"],
         token["page_size"],
@@ -218,7 +217,7 @@ def search_analysis(user, token_info, query: AnalysisQuery):
         None
         if len(items) < token["page_size"]
         else render_paging_token(
-            token["page_size"], token["query"], token["offset"] + token["page_size"]
+            token["page_size"], token["query"], token["offset"] + token["page_size"], token["analysis_sorting"]
         )
     )
     response = {
