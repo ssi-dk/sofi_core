@@ -22,15 +22,20 @@ def remove_id(item):
     item.pop("_id", None)
     return item
 
-def get_analysis_page(query, page_size, offset, columns, institution, data_clearance, unique_sequences=True):
+def get_analysis_page(query, page_size, offset, columns, institution, data_clearance, unique_sequences=True, sorting=None):
     conn, encryption_client = get_connection(with_enc=True)
 
-    # TODO remove print later
-    print(f"query before value encrypt: \n{query}")
+
+    if sorting is not None:
+        sort_obj = {
+            sorting["column"]: pymongo.DESCENDING if sorting["ascending"] else pymongo.ASCENDING,  # For some reason, the frontend defines ascending=true as a decending ordering.
+            "_id": pymongo.DESCENDING 
+        }
+        sort_step = {"$sort": sort_obj}
+    else:
+        sort_step = {"$sort": {"_id": pymongo.DESCENDING}} if unique_sequences else None
 
     q = encrypt_dict(encryption_client, query, pii_columns())
-
-    print(f"query after value encrypt: \n{q}")
 
     if data_clearance == "own-institution":
         q["institution"] = institution
@@ -111,11 +116,10 @@ def get_analysis_page(query, page_size, offset, columns, institution, data_clear
             }
         } if unique_sequences else None,
         { "$replaceRoot": { "newRoot": "$record" } } if unique_sequences else None,
-        {"$sort": {"_id": pymongo.DESCENDING}} if unique_sequences else None,
-
+        {"$project": column_projection},
+        sort_step,
         {"$skip": offset},
         {"$limit": (int(page_size))},
-        {"$project": column_projection},
         {"$unset": ["_id", "metadata"]},
     ]
 
