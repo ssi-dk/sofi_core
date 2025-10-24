@@ -497,7 +497,7 @@ export default function AnalysisPage() {
         );
       }
     },
-    [dispatch, propFilters, rangeFilters, lastSearchQuery, , prevColumnSort]
+    [dispatch, propFilters, rangeFilters, lastSearchQuery, columnSort, prevColumnSort]
   );
 
   useEffect(() => {
