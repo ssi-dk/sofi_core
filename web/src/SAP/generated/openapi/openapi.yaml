@@ -36,6 +36,22 @@ paths:
           default: 100
           type: number
         style: form
+      - explode: true
+        in: query
+        name: sorting_column
+        required: false
+        schema:
+          format: byte
+          type: string
+        style: form
+      - explode: true
+        in: query
+        name: sorting_ascending
+        required: false
+        schema:
+          format: byte
+          type: boolean
+        style: form
       responses:
         "200":
           content:
@@ -1045,6 +1061,19 @@ components:
           nullable: true
           type: string
       type: object
+    AnalysisSorting:
+      example:
+        column: column
+        ascending: true
+      properties:
+        column:
+          description: Name of the column to sort
+          nullable: false
+          type: string
+        ascending:
+          nullable: false
+          type: boolean
+      type: object
     QueryExpression:
       example:
         left:
@@ -1073,6 +1102,9 @@ components:
       type: object
     AnalysisQuery:
       example:
+        analysis_sorting:
+          column: column
+          ascending: true
         paging_token: paging_token
         expression:
           left:
@@ -1105,6 +1137,8 @@ components:
           type: integer
         expression:
           $ref: '#/components/schemas/QueryExpression'
+        analysis_sorting:
+          $ref: '#/components/schemas/AnalysisSorting'
         filters:
           type: object
     HealthResponse:
