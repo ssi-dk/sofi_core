@@ -24,7 +24,9 @@ class TestAnalysisController(BaseTestCase):
         
         """
         query_string = [('paging_token', None)
-                        ('page_size', 100)]
+                        ('page_size', 100)
+                        ('sorting_column', None)
+                        ('sorting_ascending', True)]
         headers = { 
             'Accept': 'application/json',
             'Authorization': 'Bearer special-key',
@@ -115,6 +117,10 @@ class TestAnalysisController(BaseTestCase):
         
         """
         query = {
+  "analysis_sorting" : {
+    "column" : "column",
+    "ascending" : true
+  },
   "paging_token" : "paging_token",
   "expression" : {
     "left" : {

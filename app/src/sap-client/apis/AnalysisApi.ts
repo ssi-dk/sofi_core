@@ -41,6 +41,8 @@ import {
 export interface GetAnalysisRequest {
     pagingToken?: string;
     pageSize?: number;
+    sortingColumn?: string;
+    sortingAscending?: boolean;
 }
 
 export interface GetAnalysisHistoryRequest {
@@ -80,6 +82,16 @@ function getAnalysisRaw<T>(requestParameters: GetAnalysisRequest, requestConfig:
 
     if (requestParameters.pageSize !== undefined) {
         queryParameters['page_size'] = requestParameters.pageSize;
+    }
+
+
+    if (requestParameters.sortingColumn !== undefined) {
+        queryParameters['sorting_column'] = requestParameters.sortingColumn;
+    }
+
+
+    if (requestParameters.sortingAscending !== undefined) {
+        queryParameters['sorting_ascending'] = requestParameters.sortingAscending;
     }
 
     const headerParameters : runtime.HttpHeaders = {};

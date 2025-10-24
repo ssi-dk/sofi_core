@@ -6,9 +6,11 @@ from datetime import date, datetime  # noqa: F401
 from typing import List, Dict  # noqa: F401
 
 from web.src.SAP.generated.models.base_model_ import Model
+from web.src.SAP.generated.models.analysis_sorting import AnalysisSorting
 from web.src.SAP.generated.models.query_expression import QueryExpression
 from web.src.SAP.generated import util
 
+from web.src.SAP.generated.models.analysis_sorting import AnalysisSorting  # noqa: E501
 from web.src.SAP.generated.models.query_expression import QueryExpression  # noqa: E501
 
 class AnalysisQuery(Model):
@@ -19,7 +21,7 @@ class AnalysisQuery(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, paging_token=None, page_size=100, expression=None, filters=None):  # noqa: E501
+    def __init__(self, paging_token=None, page_size=100, expression=None, analysis_sorting=None, filters=None):  # noqa: E501
         """AnalysisQuery - a model defined in OpenAPI
 
         :param paging_token: The paging_token of this AnalysisQuery.  # noqa: E501
@@ -28,6 +30,8 @@ class AnalysisQuery(Model):
         :type page_size: int
         :param expression: The expression of this AnalysisQuery.  # noqa: E501
         :type expression: QueryExpression
+        :param analysis_sorting: The analysis_sorting of this AnalysisQuery.  # noqa: E501
+        :type analysis_sorting: AnalysisSorting
         :param filters: The filters of this AnalysisQuery.  # noqa: E501
         :type filters: object
         """
@@ -35,6 +39,7 @@ class AnalysisQuery(Model):
             'paging_token': bytearray,
             'page_size': int,
             'expression': QueryExpression,
+            'analysis_sorting': AnalysisSorting,
             'filters': object,
         }
 
@@ -42,12 +47,14 @@ class AnalysisQuery(Model):
             'paging_token': 'paging_token',
             'page_size': 'page_size',
             'expression': 'expression',
+            'analysis_sorting': 'analysis_sorting',
             'filters': 'filters',
         }
 
         self._paging_token = paging_token
         self._page_size = page_size
         self._expression = expression
+        self._analysis_sorting = analysis_sorting
         self._filters = filters
 
     @classmethod
@@ -125,6 +132,27 @@ class AnalysisQuery(Model):
         """
 
         self._expression = expression
+
+    @property
+    def analysis_sorting(self):
+        """Gets the analysis_sorting of this AnalysisQuery.
+
+
+        :return: The analysis_sorting of this AnalysisQuery.
+        :rtype: AnalysisSorting
+        """
+        return self._analysis_sorting
+
+    @analysis_sorting.setter
+    def analysis_sorting(self, analysis_sorting):
+        """Sets the analysis_sorting of this AnalysisQuery.
+
+
+        :param analysis_sorting: The analysis_sorting of this AnalysisQuery.
+        :type analysis_sorting: AnalysisSorting
+        """
+
+        self._analysis_sorting = analysis_sorting
 
     @property
     def filters(self):

@@ -9,6 +9,7 @@ from .analysis_query import AnalysisQuery
 from .analysis_result import AnalysisResult
 from .analysis_result_all_of import AnalysisResultAllOf
 from .analysis_result_all_of_qc_failed_tests import AnalysisResultAllOfQcFailedTests
+from .analysis_sorting import AnalysisSorting
 from .approval import Approval
 from .approval_all_of import ApprovalAllOf
 from .approval_request import ApprovalRequest
