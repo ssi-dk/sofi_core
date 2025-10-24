@@ -375,8 +375,6 @@ export default function AnalysisPage() {
     isLoadingRef.current = true;
     setIsLoadingNextPage(true);
 
-    console.log("LOADING NEXT PAGE!!");
-
     try {
       const requestConfig = requestPageOfAnalysis(
         {
