@@ -198,7 +198,7 @@ def search_analysis(user, token_info, query: AnalysisQuery):
         "analysis_sorting": {
             "column": query.analysis_sorting.column,
             "ascending": query.analysis_sorting.ascending
-        }
+        } if query.analysis_sorting is not None else None
     }
 
     token = parse_paging_token(query.paging_token) or default_token
