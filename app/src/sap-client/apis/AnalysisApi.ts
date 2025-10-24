@@ -24,9 +24,6 @@ import {
     AnalysisResult,
     AnalysisResultFromJSON,
     AnalysisResultToJSON,
-    AnalysisSorting,
-    AnalysisSortingFromJSON,
-    AnalysisSortingToJSON,
     Column,
     ColumnFromJSON,
     ColumnToJSON,
@@ -44,7 +41,8 @@ import {
 export interface GetAnalysisRequest {
     pagingToken?: string;
     pageSize?: number;
-    analysisSorting?: AnalysisSorting;
+    sortingColumn?: string;
+    sortingAscending?: boolean;
 }
 
 export interface GetAnalysisHistoryRequest {
@@ -87,8 +85,13 @@ function getAnalysisRaw<T>(requestParameters: GetAnalysisRequest, requestConfig:
     }
 
 
-    if (requestParameters.analysisSorting !== undefined) {
-        queryParameters['analysis_sorting'] = requestParameters.analysisSorting;
+    if (requestParameters.sortingColumn !== undefined) {
+        queryParameters['sorting_column'] = requestParameters.sortingColumn;
+    }
+
+
+    if (requestParameters.sortingAscending !== undefined) {
+        queryParameters['sorting_ascending'] = requestParameters.sortingAscending;
     }
 
     const headerParameters : runtime.HttpHeaders = {};

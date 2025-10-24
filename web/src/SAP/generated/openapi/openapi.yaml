@@ -38,10 +38,19 @@ paths:
         style: form
       - explode: true
         in: query
-        name: analysis_sorting
+        name: sorting_column
         required: false
         schema:
-          $ref: '#/components/schemas/AnalysisSorting'
+          format: byte
+          type: string
+        style: form
+      - explode: true
+        in: query
+        name: sorting_ascending
+        required: false
+        schema:
+          format: byte
+          type: boolean
         style: form
       responses:
         "200":

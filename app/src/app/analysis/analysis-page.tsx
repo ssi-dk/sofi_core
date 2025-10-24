@@ -117,7 +117,7 @@ export default function AnalysisPage() {
 
   const [columnLoadState] = useRequest(requestColumns());
   const [{ isPending, isFinished }] = useRequest({
-    ...requestPageOfAnalysis({ pageSize: PAGE_SIZE,analysisSorting: null }, false),
+    ...requestPageOfAnalysis({ pageSize: PAGE_SIZE }, false),
   });
 
   const user = useSelector<RootState>((s) => s.entities.user ?? {}) as UserInfo;
@@ -474,7 +474,11 @@ export default function AnalysisPage() {
         dispatch(
           requestAsync({
             ...requestPageOfAnalysis(
-              { pageSize: pageSize, analysisSorting: columnSort || null },
+              {
+                pageSize: pageSize,
+                sortingColumn: columnSort?.column,
+                sortingAscending: columnSort?.ascending,
+              },
               false
             ), // false for replace mode
           })

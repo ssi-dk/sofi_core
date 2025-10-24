@@ -276,12 +276,18 @@ paths:
           schema:
             type: number
             default: 100
-        - name: analysis_sorting
+        - name: sorting_column
           in: query
-          required: false,
+          required: false
           schema:
-            nullable: true
-            $ref: "#/components/schemas/AnalysisSorting"
+            type: string
+            format: byte
+        - name: sorting_ascending
+          in: query
+          required: false
+          schema:
+            type: boolean
+            format: byte
       responses:
         '200':
           description: Page of isolates

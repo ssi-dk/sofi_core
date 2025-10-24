@@ -22,8 +22,21 @@ def remove_id(item):
     item.pop("_id", None)
     return item
 
-def get_analysis_page(query, page_size, offset, columns, institution, data_clearance, unique_sequences=True):
+def get_analysis_page(query, page_size, offset, columns, institution, data_clearance, unique_sequences=True, sorting=None):
     conn, encryption_client = get_connection(with_enc=True)
+
+
+    print("PAGE SORTING:",sorting,file=sys.stderr)
+
+
+
+    if sorting is not None:
+        sort_obj = {sorting["column"]: pymongo.DESCENDING if sorting["ascending"] else pymongo.ASCENDING }
+        sort_step = {"$sort": sort_obj}
+    else:
+        sort_step = {"$sort": {"_id": pymongo.DESCENDING}} if unique_sequences else None
+
+    print("SORT STEP:",sort_step,file=sys.stderr)
 
     # TODO remove print later
     print(f"query before value encrypt: \n{query}")
@@ -111,15 +124,18 @@ def get_analysis_page(query, page_size, offset, columns, institution, data_clear
             }
         } if unique_sequences else None,
         { "$replaceRoot": { "newRoot": "$record" } } if unique_sequences else None,
-        {"$sort": {"_id": pymongo.DESCENDING}} if unique_sequences else None,
-
+        {"$project": column_projection},
+        sort_step,
         {"$skip": offset},
         {"$limit": (int(page_size))},
-        {"$project": column_projection},
         {"$unset": ["_id", "metadata"]},
     ]
 
     fetch_pipeline = list(filter(lambda x: x != None, fetch_pipeline))
+
+    print("PIPELINE:",file=sys.stderr)
+    for step in fetch_pipeline:
+        print("STEP:",step,file=sys.stderr)
 
     # return list(map(remove_id, samples.find(query).sort('run_date',pymongo.DESCENDING).skip(offset).limit(int(page_size) + 2)))
     # For now, there is no handing of missing metadata, so the full_analysis table is used. The above aggregate pipeline should work though.

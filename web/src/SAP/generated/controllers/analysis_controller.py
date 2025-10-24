@@ -4,7 +4,7 @@ import six
 from .. import util
 from ...src.controllers import AnalysisController
 
-def get_analysis(user, token_info, paging_token=None, page_size=None, analysis_sorting=None):  # noqa: E501
+def get_analysis(user, token_info, paging_token=None, page_size=None, sorting_column=None, sorting_ascending=None):  # noqa: E501
     """get_analysis
 
     Page through all the analysis in the system # noqa: E501
@@ -13,15 +13,14 @@ def get_analysis(user, token_info, paging_token=None, page_size=None, analysis_s
     :type paging_token: str
     :param page_size: 
     :type page_size: 
-    :param analysis_sorting: 
-    :type analysis_sorting: dict | bytes
+    :param sorting_column: 
+    :type sorting_column: str
+    :param sorting_ascending: 
+    :type sorting_ascending: bool
 
     :rtype: PageOfAnalysis
     """
-    if connexion.request.is_json:
-        from ..models import  AnalysisSorting
-        analysis_sorting =  AnalysisSorting.from_dict(connexion.request.get_json())  # noqa: E501
-    return AnalysisController.get_analysis(user, token_info, paging_token, page_size, analysis_sorting)
+    return AnalysisController.get_analysis(user, token_info, paging_token, page_size, sorting_column, sorting_ascending)
 
 def get_analysis_history(user, token_info, isolate_id):  # noqa: E501
     """get_analysis_history

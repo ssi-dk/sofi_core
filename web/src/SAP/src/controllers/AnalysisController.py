@@ -99,10 +99,18 @@ def get_analysis_history(user, token_info, isolate_id):
     audit_query(token_info, items)
     return jsonify(response)
 
-def get_analysis(user, token_info, paging_token, page_size,analysis_sorting):
+def get_analysis(user, token_info, paging_token, page_size,sorting_column=None, sorting_ascending=None):
     assert_user_has("search", token_info)
     default_token = {"page_size": page_size or 100, "offset": 0}
     token = parse_paging_token(paging_token) or default_token
+
+    # sorting  = analysis_sorting if "column" in analysis_sorting else None
+    sorting = None
+    if sorting_column is not None and sorting_ascending is not None:
+        sorting = {
+            "column": sorting_column,
+            "ascending": sorting_ascending
+        }
     
     items = get_analysis_page(
         token.get("query", {}),
@@ -110,8 +118,11 @@ def get_analysis(user, token_info, paging_token, page_size,analysis_sorting):
         token["offset"],
         authorized_columns(token_info),
         token_info["institution"],
-        token_info["sofi-data-clearance"]
+        token_info["sofi-data-clearance"],
+        sorting=sorting
     )
+
+
     count = get_analysis_count(token.get("query", {}), token_info["institution"], token_info["sofi-data-clearance"])
 
     filter_metadata = get_filter_metadata(
@@ -182,6 +193,10 @@ def search_analysis(user, token_info, query: AnalysisQuery):
         "query": visitor.visit(query.expression)
         if not expr_empty
         else (query.filters if not None else {}),
+        "analysis_sorting": {
+            "column": query.analysis_sorting.column,
+            "ascending": query.analysis_sorting.ascending
+        }
     }
 
     token = parse_paging_token(query.paging_token) or default_token
@@ -195,6 +210,7 @@ def search_analysis(user, token_info, query: AnalysisQuery):
         authorized_columns(token_info),
         token_info["institution"],
         token_info["sofi-data-clearance"],
+        sorting=token["analysis_sorting"]
     )
 
     count = get_analysis_count(token["query"], token_info["institution"], token_info["sofi-data-clearance"])
