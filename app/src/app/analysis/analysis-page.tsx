@@ -158,8 +158,18 @@ export default function AnalysisPage() {
     [_submitChange, setLastUpdatedRow]
   );
 
-  const selection = useSelector<RootState>((s) => s.selection
-      .selection as DataTableSelection<AnalysisResult>) as DataTableSelection<AnalysisResult>;
+  const selection = useSelector<RootState>((s) => {
+    const fullSelection = s.selection
+      .selection as DataTableSelection<AnalysisResult>;
+    if (!pageState.isNarrowed) {
+      return fullSelection;
+    }
+    return Object.fromEntries(
+      Object.entries(fullSelection).filter(
+        ([_key, value]) => value.original.institution === user.institution
+      )
+    );
+  }) as DataTableSelection<AnalysisResult>;
   const approvals = useSelector<RootState>((s) => s.entities.approvalMatrix);
   const view = useSelector<RootState>(
     (s) => s.view.view
