@@ -7,7 +7,14 @@ import {
   EditableInput,
   Skeleton,
   useToast,
+  Button,
+  Menu, 
+  MenuList, 
+  MenuButton, 
+  MenuItem
 } from "@chakra-ui/react";
+import { HamburgerIcon,  EditIcon, DeleteIcon } from "@chakra-ui/icons";
+
 import { Column, Row } from "react-table";
 import {
   AnalysisResult,
@@ -64,6 +71,8 @@ export default function AnalysisPage() {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const toast = useToast();
+
+  const [workspace,setWorkspace] = useState<DataTableSelection<AnalysisResult> | null>(null)
 
   const [isModalOpen, setModalOpen] = useState(false);
   const [modalInfo, setModalInfo] = useState({
@@ -658,14 +667,66 @@ export default function AnalysisPage() {
             selection={selection}
           />
           {!pageState.isNarrowed ? (
-          <AnalysisSelectionMenu
+            <AnalysisSelectionMenu
             selection={selection}
             isNarrowed={pageState.isNarrowed}
             data={filteredData}
             search={onSearch}
             lastSearchQuery={lastSearchQuery}
-          />) : null}
-          <Flex grow={1} width="100%" />
+            />) : null}
+
+          <Button marginLeft={2} onClick={() => {
+            setWorkspace(selection);
+          }}>
+            {workspace ? "Save" : "Make"} workspace
+          </Button>
+
+          <Flex grow={1} />
+          <Menu>
+            <MenuButton marginRight={2} as={Button} leftIcon={<HamburgerIcon />}>
+              Workspaces
+
+            </MenuButton>
+            <MenuList>
+              <MenuItem width={"100%"}>
+                <div style={{display: "flex", width: "100%", flexDirection: "row", justifyContent: "space-between", alignItems: "center"}}>
+                  <div>
+                    {new Date("2025/10/30").toLocaleDateString()}
+                  </div>
+                  <div>
+                    <EditIcon margin={2} />
+                    <DeleteIcon margin={2} />
+                  </div>
+                </div>
+              </MenuItem> 
+              <MenuItem width={"100%"}>
+                <div style={{display: "flex", width: "100%", flexDirection: "row", justifyContent: "space-between", alignItems: "center"}}>
+                  <div>
+                    {new Date("2025/10/27").toLocaleDateString()}
+                  </div>
+                  <div>
+                    <EditIcon margin={2} />
+                    <DeleteIcon margin={2} />
+                  </div>
+                </div>
+              </MenuItem> 
+              <MenuItem width={"100%"}>
+              <div style={{display: "flex", width: "100%", flexDirection: "row", justifyContent: "space-between", alignItems: "center"}}>
+                <div>
+                  Workspace med et navn!
+                </div>
+                <div>
+                  <EditIcon margin={2} />
+                  <DeleteIcon margin={2} />
+                </div>
+              </div>
+              </MenuItem> 
+
+            </MenuList>
+            
+          </Menu>
+          
+
           <ColumnConfigWidget onReorder={onReorderColumn}>
             {(columnOrder || columns.map((x) => x.accessor as string)).map(
               (column, i) => (
@@ -701,9 +762,10 @@ export default function AnalysisPage() {
             getCellStyle={getCellStyle}
             getStickyCellStyle={getStickyCellStyle}
             data={
+              
               pageState.isNarrowed
                 ? Object.keys(selection).map((key) => selection[key].original)
-                : filteredData
+                : workspace ? Object.keys(workspace).map((key) => workspace[key].original) : filteredData
             }
             renderCellControl={renderCellControl}
             primaryKey="sequence_id"

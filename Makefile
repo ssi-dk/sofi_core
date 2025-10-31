@@ -79,7 +79,7 @@ ${mkfile_dir}/app/src/sap-client : $(shell find ${mkfile_dir}/openapi_specs/SOFI
 		-o /mnt/app/src/sap-client
 	cp -r "${mkfile_dir}/app/src/sap-client/src/"* "${mkfile_dir}/app/src/sap-client"
 	rm -rf "${mkfile_dir}/app/src/sap-client/src/"
-	npx yarn --cwd "${mkfile_dir}/app/" prettier --write src/
+# 	npx yarn --cwd "${mkfile_dir}/app/" prettier --write src/
 
 ${mkfile_dir}/web/src/SAP/generated : $(shell find ${mkfile_dir}/openapi_specs/SOFI/ -type f)
 	# Generate flask api
