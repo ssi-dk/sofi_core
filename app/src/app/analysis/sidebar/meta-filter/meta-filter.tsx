@@ -9,6 +9,7 @@ import {
   Organization,
   QueryOperand,
   FilterOptions,
+  DateRange,
 } from "sap-client";
 import { IfPermission } from "auth/if-permission";
 import { PropFilter, RangeFilter } from "utils";
@@ -56,6 +57,14 @@ function MetaFilter(props: MetaFilterProps) {
   // eslint-disable-next-line
   type RangeEnd = keyof RangeFilter<any>[0];
 
+  const maxDate = (date1: DateRange | null) => {
+    return date1?.max ? new Date(date1.max) : null;
+  }
+  
+  const minDate = (date: DateRange | null) => {
+    return date?.min ? new Date(date.min) : null;
+  }
+
   const onDateChange = React.useCallback(
     (
       field: keyof AnalysisResult,
@@ -67,33 +76,25 @@ function MetaFilter(props: MetaFilterProps) {
       const opposite = end === "min" ? "max" : "min";
 
       // Use filter options for default min/max dates
-      const minDate =
+      const minimumDate =
         field === "date_sample"
-          ? filterOptions.date_sample?.min
-            ? new Date(filterOptions.date_sample.min)
-            : null
+          ? minDate(filterOptions.date_sample)
           : field === "date_received"
-          ? filterOptions.date_received?.min
-            ? new Date(filterOptions.date_received.min)
-            : null
+          ? minDate(filterOptions.date_received)
           : null;
 
-      const maxDate =
+      const maximumDate =
         field === "date_sample"
-          ? filterOptions.date_sample?.max
-            ? new Date(filterOptions.date_sample.max)
-            : null
+          ? maxDate(filterOptions.date_sample)
           : field === "date_received"
-          ? filterOptions.date_received?.max
-            ? new Date(filterOptions.date_received.max)
-            : null
+          ? maxDate(filterOptions.date_received)
           : null;
 
       const oppositeValue =
         opposite === "min"
-          ? rangeFilterState[field]?.min ?? minDate
-          : rangeFilterState[field]?.max ?? maxDate;
-      const val = d !== null ? d : end === "min" ? minDate : maxDate;
+          ? rangeFilterState[field]?.min ?? minimumDate
+          : rangeFilterState[field]?.max ?? maximumDate;
+      const val = d !== null ? d : end === "min" ? minimumDate : maximumDate;
       const resolvedState = {
         ...rangeFilterState,
         [field]:
