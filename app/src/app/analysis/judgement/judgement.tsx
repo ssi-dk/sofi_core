@@ -16,6 +16,7 @@ type Props<T extends NotEmpty> = {
   onNarrowHandler: () => void;
   getDependentColumns: (columnName: keyof T) => Array<keyof T>;
   checkColumnIsVisible: (columnName: keyof T) => boolean;
+  selection: DataTableSelection<T>;
 };
 
 type ErrorObject = {
@@ -25,7 +26,7 @@ type ErrorObject = {
 };
 
 export const Judgement = <T extends NotEmpty>(props: Props<T>) => {
-  const { isNarrowed, onNarrowHandler, getDependentColumns, checkColumnIsVisible } = props;
+  const { isNarrowed, onNarrowHandler, getDependentColumns, checkColumnIsVisible, selection } = props;
   const { t } = useTranslation();
   const toast = useToast();
 
@@ -41,10 +42,9 @@ export const Judgement = <T extends NotEmpty>(props: Props<T>) => {
   const approvalErrors = useSelector<RootState>(
     (s) => s.entities.approvalErrors
   ) as Array<string>;
-
-  const selection = useSelector<RootState>(
-    (s) => s.selection.selection
-  ) as DataTableSelection<AnalysisResult>;
+  const latestApprovalError = useSelector<RootState>(
+    (s) => s.judgmentReducer.lastApprovalError
+  ) as { message: string } | null;
 
   const [
     { isPending: pendingApproval, status: approvalStatus },
@@ -202,7 +202,7 @@ export const Judgement = <T extends NotEmpty>(props: Props<T>) => {
       } else {
         toast({
           title: t("Error"),
-          description: String(approvalStatus),
+          description: latestApprovalError ? latestApprovalError.message : String(approvalStatus),
           status: "error",
           duration: null,
           isClosable: true,
@@ -219,6 +219,7 @@ export const Judgement = <T extends NotEmpty>(props: Props<T>) => {
     toast,
     needsApproveNotify,
     pendingApproval,
+    latestApprovalError,
   ]);
 
   if (pendingApproval || pendingRejection) {
