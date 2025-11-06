@@ -32,15 +32,15 @@ const expression: QueryExpression = {
   },
 };
 
-const enforce_date = (d: Date | string) => (typeof d === "string" || d instanceof String) ? new Date(d) : d
+const enforceDate = (d: Date | string) => (typeof d === "string" || d instanceof String) ? new Date(d) : d
 
-const display_value = (key: string, v: any) => {
+const displayValue = (key: string, v: any) => {
   if (!v) {
     return ""
   }
 
   if (key.startsWith("date")) {
-    return enforce_date(v as string).toLocaleString();
+    return enforceDate(v as string).toLocaleString();
   }
 
   if (typeof v === "string") {
@@ -54,10 +54,10 @@ const display_value = (key: string, v: any) => {
     return int + "." + rem.slice(0, 2);
   }
   if (Array.isArray(v)) {
-    return v.map(v => v.toString()).join(", ")
+    return v.map(arr_v => arr_v.toString()).join(", ")
   }
   if (typeof v === "object") {
-    return Object.entries(v).map(([k, v]) => k + ": " + v).join(", ")
+    return Object.entries(v).map(([k, obj_v]) => k + ": " + obj_v).join(", ")
   }
 
   console.log("Failed to determine type of", key, "This should be impossible.", typeof v);
@@ -88,7 +88,7 @@ const ClusterTable = (props: { sequences: AnalysisResult[] }) => {
           sequences.map((s, i) => <Tr key={s.sequence_id}>
             {
               tableHeaders.map(key => <Td key={key} style={{ border: "1px solid black", background: i % 2 === 1 ? "white" : undefined }}>
-                {display_value(key, s[key])}
+                {displayValue(key, s[key])}
               </Td>)
             }
           </Tr>)
@@ -111,17 +111,17 @@ export const Clusterspage = () => {
     }),
   });
 
-  let rawDate = useSelector<RootState>(
+  const rawDate = useSelector<RootState>(
     (root) => root.entities.analysis
   ) as Record<string, AnalysisResult>;
-  let data = reqState.isFinished ? rawDate : {};
+  const data = reqState.isFinished ? rawDate : {};
 
-  const date_run = (v: AnalysisResult) => {
-    const {  date_run,date_received } = v;
-    return enforce_date(date_run || date_received);
+  const dateRun = (v: AnalysisResult) => {
+    const {  date_run: dateRun,date_received: dateReceived } = v;
+    return enforceDate(dateRun || dateReceived);
   }
 
-  const [clusters, speciesMap] = useMemo(() => {
+  const [clusters, speciesMapMemo] = useMemo(() => {
     const clusterMap = new Map<string, AnalysisResult[]>();
     if (data) {
       Object.values(data)
@@ -140,13 +140,13 @@ export const Clusterspage = () => {
 
     clusterList.forEach(([_, sequences]) =>
       sequences.sort(
-        (a, b) => date_run(b).getTime() - date_run(a).getTime()
+        (a, b) => dateRun(b).getTime() - dateRun(a).getTime()
       )
     );
 
     clusterList.sort(
       ([_akey, a], [_bkey, b]) =>
-        date_run(b[0]).getTime() - date_run(a[0]).getTime()
+        dateRun(b[0]).getTime() - dateRun(a[0]).getTime()
     );
 
     const speciesMap = new Map(
@@ -172,7 +172,7 @@ export const Clusterspage = () => {
       })
     );
 
-    return [clusterList, speciesMap];
+    return [clusterList, speciesMap, toast];
   }, [data]);
 
   
@@ -222,7 +222,7 @@ export const Clusterspage = () => {
                 {clusters.map(([cluster_id, sequences]) => (
                   <Tr key={cluster_id} verticalAlign="top">
                     <Td>{cluster_id}</Td>
-                    <Td>{[...speciesMap.get(cluster_id)].join(", ")}</Td>
+                    <Td>{[...speciesMapMemo.get(cluster_id)].join(", ")}</Td>
                     <Td style={{ minWidth: "20rem" }}>
                       <Flex
                         _hover={{ backgroundColor: "gray.50" }}
@@ -259,7 +259,7 @@ export const Clusterspage = () => {
                               <li key={s.sequence_id}>
                                 {s.sequence_id} (
                                 {DateTime.fromJSDate(
-                                  date_run(s)
+                                  dateRun(s)
                                 ).toRelative()}
                                 )
                               </li>
@@ -270,10 +270,10 @@ export const Clusterspage = () => {
                       {openClusters.find((c) => c == cluster_id) && <ClusterTable sequences={sequences} />}
                     </Td>
                     <Td>
-                      {sequences.filter(s => date_run(s).getTime() > (Date.now() - 60 * 60 * 24 * 7 * 1000)).length}
+                      {sequences.filter(s => dateRun(s).getTime() > (Date.now() - 60 * 60 * 24 * 7 * 1000)).length}
                     </Td>
                     <Td>
-                      {date_run(sequences[0]).toLocaleString("DK")} (
+                      {dateRun(sequences[0]).toLocaleString("DK")} (
                       {sequences[0].sequence_id})
                     </Td>
                   </Tr>
