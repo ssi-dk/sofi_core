@@ -31,7 +31,7 @@ jobs:
         uses: ietf-tools/semver-action@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          branch: master
+          branch: ${{ github.ref }}
           patchAll: true
 
       - name: Push tag
