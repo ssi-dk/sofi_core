@@ -16,7 +16,7 @@ import {
   Th,
   Td,
 } from "@chakra-ui/react";
-import { AnalysisResult, Permission, QueryExpression, QueryOperator } from "sap-client";
+import { AnalysisResult, Permission, QueryExpression } from "sap-client";
 import { useTranslation } from "react-i18next";
 import {
   searchPageOfAnalysis,
@@ -24,7 +24,6 @@ import {
 import { ChevronDownIcon, ChevronRightIcon } from "@chakra-ui/icons";
 import { DateTime } from "luxon";
 import { useRequest } from "redux-query-react";
-
 
 const expression: QueryExpression = {
   left: {
@@ -36,7 +35,6 @@ const expression: QueryExpression = {
 const enforce_date = (d: Date | string) => (typeof d === "string" || d instanceof String) ? new Date(d) : d
 
 const display_value = (key: string, v: any) => {
-
   if (!v) {
     return ""
   }
@@ -78,7 +76,6 @@ const ClusterTable = (props: { sequences: AnalysisResult[] }) => {
   tableHeaders.splice(index, 1); // 2nd parameter means remove one item only
   tableHeaders.unshift("sequence_id");
 
-
   return <div style={{ overflowX: "scroll", width: "50vw" }}>
     <Table variant="striped">
       <Thead>
@@ -105,6 +102,7 @@ export const Clusterspage = () => {
   const { t } = useTranslation();
   const toast = useToast();
 
+  const [openClusters, setOpenClusters] = useState<string[]>([]);
 
   const [reqState] = useRequest({
     ...searchPageOfAnalysis({ query: { expression, page_size: 100 } }),
@@ -117,9 +115,6 @@ export const Clusterspage = () => {
     (root) => root.entities.analysis
   ) as Record<string, AnalysisResult>;
   let data = reqState.isFinished ? rawDate : {};
-
-
-
 
   const date_run = (v: AnalysisResult) => {
     const {  date_run,date_received } = v;
@@ -180,7 +175,7 @@ export const Clusterspage = () => {
     return [clusterList, speciesMap];
   }, [data]);
 
-  const [openClusters, setOpenClusters] = useState<string[]>([]);
+  
 
   const switchOpen = (c) => (e: Event) => {
     e.stopPropagation();
