@@ -40,6 +40,8 @@ def create_approval(user, token_info, body: ApprovalRequest):
         s = get_single_analysis(sid)
         if s == None:
             abort(404, description=f"Analysis '{sid}' not found.")
+        if "institution" in s and s["institution"] != token_info["institution"]:
+            abort(403, description=f"Not authorized to approve analysis '{sid}'. Non authorized institution.")
         assert_authorized_to_edit(token_info, s)
 
 
