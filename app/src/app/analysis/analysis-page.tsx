@@ -72,7 +72,7 @@ export default function AnalysisPage() {
   const dispatch = useDispatch();
   const toast = useToast();
 
-  const [workspace,setWorkspace] = useState<DataTableSelection<AnalysisResult> | null>(null)
+  const [workspace, setWorkspace] = useState<DataTableSelection<AnalysisResult> | null>(null);
 
   const [isModalOpen, setModalOpen] = useState(false);
   const [modalInfo, setModalInfo] = useState({
@@ -675,11 +675,15 @@ export default function AnalysisPage() {
             lastSearchQuery={lastSearchQuery}
             />) : null}
 
-          <Button marginLeft={2} onClick={() => {
+          <Button marginLeft={2} disabled={Object.keys(selection).length == 0 && !workspace} onClick={() => {
             setWorkspace(selection);
           }}>
             {workspace ? "Save" : "Make"} workspace
           </Button>
+          {workspace && <Button marginLeft={2} onClick={() => {
+            setWorkspace(null);
+          }}> Leave workspace
+            </Button>}
 
           <Flex grow={1} />
           <Menu>
