@@ -162,8 +162,8 @@ export const Clusterspage = () => {
         if (speciesSet.size > 1) {
           toast({
             title: "Inconsistent species",
-            description: `Multiple different species found for ${cluster_id}: ${speciesSet
-              .values()
+            description: `Multiple different species found for ${cluster_id}: ${[...speciesSet
+              .values()]
               .reduce((a, b) => `${a}, ${b}`)}`,
             status: "error",
             duration: 3000,
