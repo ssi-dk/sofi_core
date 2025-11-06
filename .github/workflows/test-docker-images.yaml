@@ -1,0 +1,56 @@
+name: Test Docker Images
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build_check:
+    name: Build all Docker images
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        include:
+          - name: sap-web
+            dockerfile: app/Dockerfile
+            path: app
+          - name: microreact
+            dockerfile: microreact/Dockerfile
+            path: microreact
+          - name: sap-api
+            dockerfile: web/Dockerfile
+            path: web
+          - name: bifrost-queue-broker-lims-pull
+            dockerfile: bifrost/bifrost_queue_broker/bifrost_queue_broker_lims_pull/Dockerfile
+            path: bifrost/bifrost_queue_broker
+          - name: bifrost-queue-broker-lims-request
+            dockerfile: bifrost/bifrost_queue_broker/bifrost_queue_broker_lims_request/Dockerfile
+            path: bifrost/bifrost_queue_broker
+          - name: bifrost-queue-broker-tbr-pull
+            dockerfile: bifrost/bifrost_queue_broker/bifrost_queue_broker_tbr_pull/Dockerfile
+            path: bifrost/bifrost_queue_broker
+          - name: bifrost-queue-broker-tbr-request
+            dockerfile: bifrost/bifrost_queue_broker/bifrost_queue_broker_tbr_request/Dockerfile
+            path: bifrost/bifrost_queue_broker
+          - name: bifrost-listener
+            dockerfile: bifrost/bifrost_listener/Dockerfile
+            path: bifrost/bifrost_listener
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build image
+        uses: docker/build-push-action@v5
+        with:
+          context: ${{ matrix.path }}
+          file: ${{ matrix.dockerfile }}
+          push: false
+          load: false
+          platforms: linux/amd64
+          tags: test/${{ matrix.name }}:check
