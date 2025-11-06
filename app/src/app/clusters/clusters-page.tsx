@@ -114,7 +114,9 @@ export const Clusterspage = () => {
   const rawDate = useSelector<RootState>(
     (root) => root.entities.analysis
   ) as Record<string, AnalysisResult>;
-  const data = reqState.isFinished ? rawDate : {};
+  const data = useMemo(() => reqState.isFinished ? rawDate : {}, 
+    [reqState.isFinished, rawDate]
+  );
 
   const dateRun = (v: AnalysisResult) => {
     const {  date_run: date,date_received: dateReceived } = v;
