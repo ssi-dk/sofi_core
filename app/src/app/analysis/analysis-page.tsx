@@ -168,6 +168,41 @@ export default function AnalysisPage() {
   const [lastSearchQuery, setLastSearchQuery] = useState<AnalysisQuery>({
     expression: {},
   });
+  const lastQueryOperands = useMemo(() => {
+    return recurseSearchTree(lastSearchQuery.expression);
+  }, [lastSearchQuery])
+
+  const [rawSearchQuery, setRawSearchQuery] = useState<SearchQuery>({
+    expression: {},
+  });
+
+  const clearFieldFromSearch = (field: keyof AnalysisResult) => {
+    const recurseAndModify = (ex?: QueryExpression | QueryOperand): QueryExpression => {
+      if (!ex) {
+        return undefined;
+      }
+      if ("field" in ex) {
+        if (ex.field == field) {
+          return undefined;
+        }
+        return { ...ex }
+      }
+      return {
+        ...ex,
+        left: recurseAndModify(ex.left),
+        right: recurseAndModify(ex.right)
+      }
+    }
+    setRawSearchQuery(old => ({ expression: recurseAndModify(old.expression) }))
+  }
+
+
+  const [propFilters, setPropFilters] = React.useState(
+    {} as PropFilter<AnalysisResult>
+  );
+  const [rangeFilters, setRangeFilters] = React.useState(
+    {} as RangeFilter<AnalysisResult>
+  );
 
   const onSearch = React.useCallback(
     (q: AnalysisQuery, pageSize: number) => {
@@ -457,10 +492,11 @@ export default function AnalysisPage() {
       }
       const rowInstitution = data.find((row) => row.sequence_id == rowId)
         .institution;
-      const editIsAllowed = true ||
-        columnConfigs[columnId].editable ||
+      const editIsAllowed = columnConfigs[columnId].editable ||
         user.institution == rowInstitution ||
-        columnConfigs[columnId].cross_org_editable;
+        columnConfigs[columnId].cross_org_editable || 
+        user.data_clearance === "all";
+        
       if (value !== 0 && value !== false && !value && !editIsAllowed) {
         return <div />;
       }
@@ -488,24 +524,22 @@ export default function AnalysisPage() {
       } else if (typeof value === "object") {
         v = `${JSON.stringify(value)}`;
         if (columnId === "qc_failed_tests") {
-          let acc = "";
-          (value as Array<AnalysisResultAllOfQcFailedTests>).map((x) => {
+          v = (value as Array<AnalysisResultAllOfQcFailedTests>).reduce((acc, x) => {
             if (acc !== "") {
               acc += ", ";
             }
             acc += `${x.display_name}: ${x.reason}`;
-          });
-          v = acc;
+            return acc;
+          }, "");
         }
         if (columnId === "st_alleles") {
-          let acc = "";
-          Object.keys(value).map((k) => {
+          v = Object.entries(value).reduce((acc, [k, val]) => {
             if (acc !== "") {
               acc += ", ";
             }
-            acc += `${k}: ${value[k]}`;
-          });
-          v = acc;
+            acc += `${k}: ${val}`;
+            return acc;
+          }, "");
         }
       }
       // cannot edit cells that have already been approved
