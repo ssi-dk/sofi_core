@@ -117,8 +117,8 @@ export const Clusterspage = () => {
   const data = reqState.isFinished ? rawDate : {};
 
   const dateRun = (v: AnalysisResult) => {
-    const {  date_run: dateRun,date_received: dateReceived } = v;
-    return enforceDate(dateRun || dateReceived);
+    const {  date_run: date,date_received: dateReceived } = v;
+    return enforceDate(date || dateReceived);
   }
 
   const [clusters, speciesMapMemo] = useMemo(() => {
@@ -173,7 +173,7 @@ export const Clusterspage = () => {
     );
 
     return [clusterList, speciesMap, toast];
-  }, [data]);
+  }, [data, toast]);
 
   
 
