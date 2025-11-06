@@ -1,12 +1,11 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-import { Button, Flex,  } from "@chakra-ui/react";
+import { Button, Flex } from "@chakra-ui/react";
 import {
   AttachmentIcon,
   CalendarIcon,
   EditIcon,
   LockIcon,
-  SunIcon,
   ViewIcon,
   HamburgerIcon
 } from "@chakra-ui/icons";
