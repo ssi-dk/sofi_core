@@ -5,6 +5,11 @@ on:
     branches:
       - "master"
   workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch to build'
+        required: true
+        default: 'master'
 
 jobs:
   # This job finds the lastest tag and bumps it based on the conventional commit.
@@ -20,6 +25,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.branch }}
+          submodules: recursive
 
       # Defaults to patch version, will bump minor on "feat" commit
 
