@@ -159,7 +159,7 @@ export default function AnalysisPage() {
   );
 
   const selection = useSelector<RootState>((s) => s.selection
-      .selection as DataTableSelection<AnalysisResult>) as DagtaTableSelection<AnalysisResult>;
+      .selection as DataTableSelection<AnalysisResult>) as DataTableSelection<AnalysisResult>;
   const approvals = useSelector<RootState>((s) => s.entities.approvalMatrix);
   const view = useSelector<RootState>(
     (s) => s.view.view
@@ -168,34 +168,6 @@ export default function AnalysisPage() {
   const [lastSearchQuery, setLastSearchQuery] = useState<AnalysisQuery>({
     expression: {},
   });
-  const lastQueryOperands = useMemo(() => {
-    return recurseSearchTree(lastSearchQuery.expression);
-  }, [lastSearchQuery])
-
-  const [rawSearchQuery, setRawSearchQuery] = useState<SearchQuery>({
-    expression: {},
-  });
-
-  const clearFieldFromSearch = (field: keyof AnalysisResult) => {
-    const recurseAndModify = (ex?: QueryExpression | QueryOperand): QueryExpression => {
-      if (!ex) {
-        return undefined;
-      }
-      if ("field" in ex) {
-        if (ex.field == field) {
-          return undefined;
-        }
-        return { ...ex }
-      }
-      return {
-        ...ex,
-        left: recurseAndModify(ex.left),
-        right: recurseAndModify(ex.right)
-      }
-    }
-    setRawSearchQuery(old => ({ expression: recurseAndModify(old.expression) }))
-  }
-
 
   const [propFilters, setPropFilters] = React.useState(
     {} as PropFilter<AnalysisResult>
@@ -249,13 +221,6 @@ export default function AnalysisPage() {
       );
     },
     [columnConfigs,pageState]
-  );
-
-  const [propFilters, setPropFilters] = React.useState(
-    {} as PropFilter<AnalysisResult>
-  );
-  const [rangeFilters, setRangeFilters] = React.useState(
-    {} as RangeFilter<AnalysisResult>
   );
 
   const onPropFilterChange = React.useCallback(
