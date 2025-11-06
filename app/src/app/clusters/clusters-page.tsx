@@ -153,11 +153,11 @@ export const Clusterspage = () => {
 
     const speciesMap = new Map(
       clusterList.map(([cluster_id, list]) => {
-        const speciesSet = list
+        const speciesSet: Set<string> = list
           .filter((r) => r.species_final)
           .reduce(
             (set, value) => set.add(value.qc_provided_species),
-            new Set()
+            new Set<string>()
           );
         if (speciesSet.size > 1) {
           toast({
