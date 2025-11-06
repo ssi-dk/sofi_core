@@ -179,7 +179,7 @@ export const Clusterspage = () => {
 
   
 
-  const switchOpen = (c) => (e: MouseEvent) => {
+  const switchOpen = (c) => (e: any) => {
     e.stopPropagation();
     if (openClusters.find((oc) => oc == c)) {
       setOpenClusters((o) => o.filter((oc) => oc != c));
