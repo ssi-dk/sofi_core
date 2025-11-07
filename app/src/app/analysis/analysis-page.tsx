@@ -284,7 +284,7 @@ export default function AnalysisPage() {
   const [rangeFilters, setRangeFilters] = React.useState(
     {} as RangeFilter<AnalysisResult>
   );
-  const [approvalFilter, setApprovalFilter] = React.useState<ApprovalStatus[]>([]);
+  const [approvalFilters, setApprovalFilters] = React.useState<ApprovalStatus[]>([]);
 
   const clearFieldFromSearch = useCallback( (field: string) => {
     const recurseAndModify = (
@@ -330,13 +330,13 @@ export default function AnalysisPage() {
     });
 
     if (field == "approval_status") {
-      setApprovalFilter([]);
+      setApprovalFilters([]);
     }
 
     setRawSearchQuery((old) => ({
       expression: recurseAndModify(old.expression),
     }));
-  },[setPropFilters, setRangeFilters, setRawSearchQuery, setApprovalFilter]);
+  },[setPropFilters, setRangeFilters, setRawSearchQuery, setApprovalFilters]);
 
   useEffect(() => {
     isLoadingRef.current = isLoadingNextPage;
@@ -438,7 +438,7 @@ export default function AnalysisPage() {
 
       const newExpression = q.clearAllFields
         ? q.expression
-        : mergeFilters(q.expression || {}, propFilters, rangeFilters, approvalFilter);
+        : mergeFilters(q.expression || {}, propFilters, rangeFilters, approvalFilters);
       
       if (checkExpressionEquality(newExpression, lastSearchQuery.expression)) {
         return;
@@ -446,7 +446,7 @@ export default function AnalysisPage() {
       if (q.clearAllFields) {
         setPropFilters({});
         setRangeFilters({});
-        setApprovalFilter([]);
+        setApprovalFilters([]);
       }
       const newQ = { expression: newExpression };
 
@@ -477,7 +477,7 @@ export default function AnalysisPage() {
         );
       }
     },
-    [dispatch, propFilters, rangeFilters, lastSearchQuery, approvalFilter]
+    [dispatch, propFilters, rangeFilters, lastSearchQuery, approvalFilters]
   );
 
   useEffect(() => {
@@ -525,7 +525,7 @@ export default function AnalysisPage() {
   );
 
   const onApprovalFilterChange = useCallback((values) => {
-    setApprovalFilter(values);
+    setApprovalFilters(values);
     setRawSearchQuery((old) => ({ ...old, clearAllFields: false }));
   },[])
 

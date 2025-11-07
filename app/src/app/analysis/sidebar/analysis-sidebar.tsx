@@ -10,7 +10,7 @@ type AnalysisSidebarProps = {
   filterOptions: FilterOptions;
   onPropFilterChange: (filter: PropFilter<AnalysisResult>) => void;
   onRangeFilterChange: (filter: RangeFilter<AnalysisResult>) => void;
-  onApprovalFilterChange: (resultingFilter: [ApprovalStatus]) => void;
+  onApprovalFilterChange: (resultingFilter: ApprovalStatus[]) => void;
   isDisabled: boolean;
   queryOperands: QueryOperand[];
   clearFieldFromSearch: (field: string) => void;
