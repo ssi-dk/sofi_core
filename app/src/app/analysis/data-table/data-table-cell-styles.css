@@ -91,12 +91,10 @@ div[role="cell"].selectedRow {
 }
 
 div[role="cell"].selectedRow.rejectedCell {
-  border: 1px solid #c4cbcfe7;
   background-color: #ECC9CB;
 }
 
 div[role="cell"].selectedRow.unapprovedCell {
-  border: 1px solid #c4cbcfe7;
   background-color: #B5D7EC;
 }
 
