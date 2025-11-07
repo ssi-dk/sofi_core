@@ -90,16 +90,6 @@ div[role="cell"].selectedRow {
   background-color: #d9e0e4e7;
 }
 
-div[role="cell"].selectedRow.rejectedCell {
-  border: 1px solid #c4cbcfe7;
-  background-color: #ECC9CB;
-}
-
-div[role="cell"].selectedRow.unapprovedCell {
-  border: 1px solid #c4cbcfe7;
-  background-color: #B5D7EC;
-}
-
 div[role="cell"].isNotLatest::before {
   content: "*";
   font-size: 20px;
