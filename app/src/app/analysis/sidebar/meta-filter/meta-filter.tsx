@@ -275,13 +275,6 @@ function MetaFilter(props: MetaFilterProps) {
         if (!newApprovalFilterState.find(nv => nv === v)) {
           newApprovalFilterState.push(v);
         }
-
-        if (!newPropFilterState[op.field]) {
-          newPropFilterState[op.field] = [];
-        }
-        if (!newPropFilterState[op.field].includes(op.term)) {
-          newPropFilterState[op.field].push(op.term);
-        }
       } else if (op.field && op.term) {
         if (!newPropFilterState[op.field]) {
           newPropFilterState[op.field] = [];

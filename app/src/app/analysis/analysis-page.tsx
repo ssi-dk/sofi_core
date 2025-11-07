@@ -285,7 +285,7 @@ export default function AnalysisPage() {
     {} as RangeFilter<AnalysisResult>
   );
   const [approvalFilter, setApprovalFilter] = React.useState<ApprovalStatus[]>([]);
-  const clearFieldFromSearch = (field: string) => {
+  const clearFieldFromSearchRaw = (field: string) => {
     const recurseAndModify = (
       ex?: QueryExpression | QueryOperand
     ): QueryExpression => {
@@ -299,27 +299,19 @@ export default function AnalysisPage() {
         return { ...ex };
       }
 
-      // For OR expressions, we need to check if both sides relate to the field being cleared
-      if (ex.operator === "OR") {
-        const left = recurseAndModify(ex.left);
-        const right = recurseAndModify(ex.right);
+    
+      const left = recurseAndModify(ex.left);
+      const right = recurseAndModify(ex.right);
 
-        if (!left && !right) {
-          return undefined;
-        } else if (!left) {
-          return right;
-        } else if (!right) {
-          return left;
-        } else {
-          return { ...ex, left, right };
-        }
+      if (!left && !right) {
+        return undefined;
+      } else if (!left) {
+        return right;
+      } else if (!right) {
+        return left;
+      } else {
+        return { ...ex, left, right };
       }
-
-      return {
-        ...ex,
-        left: recurseAndModify(ex.left),
-        right: recurseAndModify(ex.right),
-      };
     };
 
     // Also clear from prop filters
@@ -340,6 +332,8 @@ export default function AnalysisPage() {
       expression: recurseAndModify(old.expression),
     }));
   };
+
+  const clearFieldFromSearch = useMemo(() => clearFieldFromSearchRaw, [setPropFilters, setRangeFilters, setRawSearchQuery])
 
   useEffect(() => {
     isLoadingRef.current = isLoadingNextPage;
