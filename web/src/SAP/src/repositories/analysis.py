@@ -29,7 +29,7 @@ def get_analysis_page(query, page_size, offset, columns, institution, data_clear
 
     if data_clearance == "own-institution":
         q["institution"] = institution
-    column_projection = {x: 1 for x in [*columns,"approval_status"]}
+    column_projection = {x: 1 for x in columns}
     column_projection["id"] = { "$toString": "$_id" }
     mydb = conn[DB_NAME]
     analysis = mydb[ANALYSIS_COL_NAME]
