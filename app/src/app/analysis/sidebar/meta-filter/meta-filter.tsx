@@ -215,7 +215,7 @@ function MetaFilter(props: MetaFilterProps) {
     onApprovalFilterChange(values);
 
 
-  },[setApprovalFilterState]);
+  },[setApprovalFilterState, clearFieldFromSearch, onApprovalFilterChange]);
     
 
   const onChangeBuilder: (
@@ -271,7 +271,7 @@ function MetaFilter(props: MetaFilterProps) {
 
     queryOperands.forEach((op) => {
       if (op.field == "approval_status") {
-        let v = op.term as ApprovalStatus;
+        const v = op.term as ApprovalStatus;
         if (!newApprovalFilterState.find(nv => nv === v)) {
           newApprovalFilterState.push(v);
         }
