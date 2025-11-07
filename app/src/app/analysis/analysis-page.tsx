@@ -408,7 +408,7 @@ export default function AnalysisPage() {
         rangeFilter: RangeFilter<AnalysisResult>,
         approvalFilter: ApprovalStatus[],
       ) => {
-        const filterExpression = buildQueryFromFilters(propFilter, rangeFilter,approvalFilter);
+        const filterExpression = buildQueryFromFilters(propFilter, rangeFilter, approvalFilter);
         searchExpression = Object.fromEntries(
           Object.entries(searchExpression).filter(([_, v]) => !!v)
         ) as QueryExpression;

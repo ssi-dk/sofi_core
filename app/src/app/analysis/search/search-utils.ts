@@ -308,7 +308,7 @@ export const buildQueryFromFilters = (
     }
   });
   if (approvalFilter.length > 0) {
-    const orExpression = createOrExpression("approval_status", approvalFilter)
+    const orExpression = createOrExpression("approval_status", approvalFilter);
     if (orExpression) {
       expressions.push(orExpression);
     }
