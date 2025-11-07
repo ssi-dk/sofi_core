@@ -140,8 +140,6 @@ def get_analysis_page(query, page_size, offset, columns, institution, data_clear
 
     fetch_pipeline = list(filter(lambda x: x != None, fetch_pipeline))
 
-
-
     # return list(map(remove_id, samples.find(query).sort('run_date',pymongo.DESCENDING).skip(offset).limit(int(page_size) + 2)))
     # For now, there is no handing of missing metadata, so the full_analysis table is used. The above aggregate pipeline should work though.
     return list(analysis.aggregate(fetch_pipeline))
@@ -204,7 +202,11 @@ def get_analysis_count(query, institution, data_clearance):
         { "$project": { "count": "$record"}}
     ]
 
-    return list(analysis.aggregate(fetch_pipeline))
+    res = list(analysis.aggregate(fetch_pipeline))
+    if len(res) == 1:
+        return res[0]["count"]
+    else:
+        return 0
 
 def update_analysis(change):
     conn = get_connection()
