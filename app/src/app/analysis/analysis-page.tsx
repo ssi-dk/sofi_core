@@ -396,7 +396,6 @@ export default function AnalysisPage() {
       // Reset pagination state when starting a new search
       setIsLoadingNextPage(false);
       setNextPageToken(null);
-      
 
       // Update refs immediately
       nextPageTokenRef.current = null;
@@ -439,7 +438,6 @@ export default function AnalysisPage() {
       const newExpression = q.clearAllFields
         ? q.expression
         : mergeFilters(q.expression || {}, propFilters, rangeFilters, approvalFilters);
-      
       if (checkExpressionEquality(newExpression, lastSearchQuery.expression)) {
         return;
       }

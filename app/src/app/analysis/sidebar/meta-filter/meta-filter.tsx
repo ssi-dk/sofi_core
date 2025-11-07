@@ -206,7 +206,6 @@ function MetaFilter(props: MetaFilterProps) {
     }
     const values = Array.isArray(val) ? val.map((x) => x.value) : [];
 
-
     if (values.length === 0) {
       clearFieldFromSearch("approval_status");
     }
@@ -214,9 +213,7 @@ function MetaFilter(props: MetaFilterProps) {
     setApprovalFilterState(values);
     onApprovalFilterChange(values);
 
-
   },[setApprovalFilterState, clearFieldFromSearch, onApprovalFilterChange]);
-    
 
   const onChangeBuilder: (
     field: keyof AnalysisResult
@@ -311,7 +308,6 @@ function MetaFilter(props: MetaFilterProps) {
 
     setPropFilterState(newPropFilterState);
     setRangeFilterState(newRangeFilterState);
-
     setApprovalFilterState(newApprovalFilterState);
   }, [queryOperands]);
 
