@@ -305,11 +305,14 @@ function MetaFilter(props: MetaFilterProps) {
       setReceivedEndDate(null);
     }
 
+    if (!queryOperands.find((q) => q.field === "approval_status")) {
+      setApprovalFilterState([]);
+    }
+
     setPropFilterState(newPropFilterState);
     setRangeFilterState(newRangeFilterState);
 
     setApprovalFilterState(newApprovalFilterState);
-
   }, [queryOperands]);
 
   const valueBuilder = (key: keyof AnalysisResult) => {

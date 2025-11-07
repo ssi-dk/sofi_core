@@ -285,7 +285,8 @@ export default function AnalysisPage() {
     {} as RangeFilter<AnalysisResult>
   );
   const [approvalFilter, setApprovalFilter] = React.useState<ApprovalStatus[]>([]);
-  const clearFieldFromSearchRaw = (field: string) => {
+
+  const clearFieldFromSearch = useCallback( (field: string) => {
     const recurseAndModify = (
       ex?: QueryExpression | QueryOperand
     ): QueryExpression => {
@@ -328,12 +329,14 @@ export default function AnalysisPage() {
       return newFilters;
     });
 
+    if (field == "approval_status") {
+      setApprovalFilter([]);
+    }
+
     setRawSearchQuery((old) => ({
       expression: recurseAndModify(old.expression),
     }));
-  };
-
-  const clearFieldFromSearch = useMemo(() => clearFieldFromSearchRaw, [setPropFilters, setRangeFilters, setRawSearchQuery])
+  },[setPropFilters, setRangeFilters, setRawSearchQuery, setApprovalFilter]);
 
   useEffect(() => {
     isLoadingRef.current = isLoadingNextPage;
@@ -443,6 +446,7 @@ export default function AnalysisPage() {
       if (q.clearAllFields) {
         setPropFilters({});
         setRangeFilters({});
+        setApprovalFilter([]);
       }
       const newQ = { expression: newExpression };
 
