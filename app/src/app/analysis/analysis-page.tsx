@@ -284,7 +284,8 @@ export default function AnalysisPage() {
   const [rangeFilters, setRangeFilters] = React.useState(
     {} as RangeFilter<AnalysisResult>
   );
-  const clearFieldFromSearch = (field: keyof AnalysisResult) => {
+  const [approvalFilter, setApprovalFilter] = React.useState<ApprovalStatus[]>([]);
+  const clearFieldFromSearch = (field: string) => {
     const recurseAndModify = (
       ex?: QueryExpression | QueryOperand
     ): QueryExpression => {
@@ -398,6 +399,7 @@ export default function AnalysisPage() {
       // Reset pagination state when starting a new search
       setIsLoadingNextPage(false);
       setNextPageToken(null);
+      
 
       // Update refs immediately
       nextPageTokenRef.current = null;
@@ -407,9 +409,10 @@ export default function AnalysisPage() {
       const mergeFilters = (
         searchExpression: QueryExpression,
         propFilter: PropFilter<AnalysisResult>,
-        rangeFilter: RangeFilter<AnalysisResult>
+        rangeFilter: RangeFilter<AnalysisResult>,
+        approvalFilter: ApprovalStatus[],
       ) => {
-        const filterExpression = buildQueryFromFilters(propFilter, rangeFilter);
+        const filterExpression = buildQueryFromFilters(propFilter, rangeFilter,approvalFilter);
         searchExpression = Object.fromEntries(
           Object.entries(searchExpression).filter(([_, v]) => !!v)
         ) as QueryExpression;
@@ -438,7 +441,8 @@ export default function AnalysisPage() {
 
       const newExpression = q.clearAllFields
         ? q.expression
-        : mergeFilters(q.expression || {}, propFilters, rangeFilters);
+        : mergeFilters(q.expression || {}, propFilters, rangeFilters, approvalFilter);
+      
       if (checkExpressionEquality(newExpression, lastSearchQuery.expression)) {
         return;
       }
@@ -475,7 +479,7 @@ export default function AnalysisPage() {
         );
       }
     },
-    [dispatch, propFilters, rangeFilters, lastSearchQuery]
+    [dispatch, propFilters, rangeFilters, lastSearchQuery, approvalFilter]
   );
 
   useEffect(() => {
@@ -521,6 +525,11 @@ export default function AnalysisPage() {
     },
     [rangeFilters, setRangeFilters, setRawSearchQuery]
   );
+
+  const onApprovalFilterChange = useCallback((values) => {
+    setApprovalFilter(values);
+    setRawSearchQuery((old) => ({ ...old, clearAllFields: false }));
+  },[])
 
   const primaryApprovalColumns = React.useMemo(
     () =>
@@ -1037,6 +1046,7 @@ export default function AnalysisPage() {
             filterOptions={filterOptions}
             onPropFilterChange={onPropFilterChange}
             onRangeFilterChange={onRangeFilterChange}
+            onApprovalFilterChange={onApprovalFilterChange}
             isDisabled={pageState.isNarrowed}
           />
         }

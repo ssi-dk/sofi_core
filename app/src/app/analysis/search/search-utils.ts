@@ -1,4 +1,4 @@
-import { QueryExpression, QueryOperand, QueryOperator } from "sap-client";
+import { ApprovalStatus, QueryExpression, QueryOperand, QueryOperator } from "sap-client";
 
 const HISTORY_STORAGE_KEY = "searchHistory";
 const MAX_HISTORY_LEN = 5;
@@ -282,7 +282,8 @@ export const checkExpressionEquality = (
 // Helper function to build query expression from filter state
 export const buildQueryFromFilters = (
   propFilters: { [field: string]: string[] },
-  rangeFilters: { [field: string]: { min?: any; max?: any } }
+  rangeFilters: { [field: string]: { min?: any; max?: any } },
+  approvalFilter: ApprovalStatus[],
 ): QueryExpression => {
   const expressions: QueryExpression[] = [];
 
@@ -306,6 +307,12 @@ export const buildQueryFromFilters = (
       } as QueryOperand);
     }
   });
+  if (approvalFilter.length > 0) {
+    const orExpression = createOrExpression("approval_status", approvalFilter)
+    if (orExpression) {
+      expressions.push(orExpression);
+    }
+  }
 
   return createAndExpression(expressions);
 };

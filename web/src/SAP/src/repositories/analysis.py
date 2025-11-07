@@ -25,16 +25,11 @@ def remove_id(item):
 def get_analysis_page(query, page_size, offset, columns, institution, data_clearance, unique_sequences=True):
     conn, encryption_client = get_connection(with_enc=True)
 
-    # TODO remove print later
-    print(f"query before value encrypt: \n{query}")
-
     q = encrypt_dict(encryption_client, query, pii_columns())
-
-    print(f"query after value encrypt: \n{q}")
 
     if data_clearance == "own-institution":
         q["institution"] = institution
-    column_projection = {x: 1 for x in columns}
+    column_projection = {x: 1 for x in [*columns,"approval_status"]}
     column_projection["id"] = { "$toString": "$_id" }
     mydb = conn[DB_NAME]
     analysis = mydb[ANALYSIS_COL_NAME]
@@ -102,6 +97,30 @@ def get_analysis_page(query, page_size, offset, columns, institution, data_clear
                 ]
             }
         } if data_clearance == "cross-institution" else {"$match": {}},
+        {"$lookup": {
+            "from": "sap_approvals",
+            "let": { "seqId": "$sequence_id" },
+            "pipeline": [
+                { "$project": { "status": 1, "matrixKeys": { "$objectToArray": "$matrix" } } },
+                { "$unwind": "$matrixKeys" },
+                { "$match": { "$expr": { "$eq": ["$matrixKeys.k", "$$seqId"] } } },
+                { "$limit": 1 }
+            ],
+            "as": "approval_info"
+            }
+        },
+        {
+            "$addFields": {
+                "approval_status": {
+                    "$ifNull": [{ "$arrayElemAt": ["$approval_info.matrixKeys.v.sequence_id", 0] }, "pending"]
+                }
+            }
+        },
+        {
+            "$project": {
+                "approval_info": 0
+            }
+        },
         {"$match": q},
         {"$sort": {"_id": pymongo.DESCENDING}},
         {
@@ -121,10 +140,11 @@ def get_analysis_page(query, page_size, offset, columns, institution, data_clear
 
     fetch_pipeline = list(filter(lambda x: x != None, fetch_pipeline))
 
+
+
     # return list(map(remove_id, samples.find(query).sort('run_date',pymongo.DESCENDING).skip(offset).limit(int(page_size) + 2)))
     # For now, there is no handing of missing metadata, so the full_analysis table is used. The above aggregate pipeline should work though.
     return list(analysis.aggregate(fetch_pipeline))
-
 
 def get_analysis_count(query, institution, data_clearance):
     conn, encryption_client = get_connection(with_enc=True)
@@ -149,6 +169,30 @@ def get_analysis_count(query, institution, data_clearance):
                 ]
             }
         } if data_clearance == "cross-institution" else {"$match": {}},
+        {"$lookup": {
+            "from": "sap_approvals",
+            "let": { "seqId": "$sequence_id" },
+            "pipeline": [
+                { "$project": { "status": 1, "matrixKeys": { "$objectToArray": "$matrix" } } },
+                { "$unwind": "$matrixKeys" },
+                { "$match": { "$expr": { "$eq": ["$matrixKeys.k", "$$seqId"] } } },
+                { "$limit": 1 }
+            ],
+            "as": "approval_info"
+            }
+        },
+        {
+            "$addFields": {
+                "approval_status": {
+                    "$ifNull": [{ "$arrayElemAt": ["$approval_info.matrixKeys.v.sequence_id", 0] }, "pending"]
+                }
+            }
+        },
+        {
+            "$project": {
+                "approval_info": 0
+            }
+        },
         { "$match": q },
         {
             "$group": {
@@ -160,12 +204,7 @@ def get_analysis_count(query, institution, data_clearance):
         { "$project": { "count": "$record"}}
     ]
 
-    res = list(analysis.aggregate(fetch_pipeline))
-    if len(res) == 1:
-        return res[0]["count"]
-    else:
-        return 0
-
+    return list(analysis.aggregate(fetch_pipeline))
 
 def update_analysis(change):
     conn = get_connection()
