@@ -114,8 +114,14 @@ export default function AnalysisPage() {
           sortType: !k.startsWith("date")
             ? "alphanumeric"
             : (a, b, column) => {
-              const aDate = a.original[column]?.getTime() ?? 0;
-              const bDate = b.original[column]?.getTime() ?? 0;
+              const enforceDate = (d: Date | string | undefined) => {
+                if (typeof d == "string") {
+                  return new Date(d)
+                }
+                return d;
+              }
+              const aDate = enforceDate(a.original[column])?.getTime() ?? 0;
+              const bDate = enforceDate(b.original[column])?.getTime() ?? 0;
 
               return aDate - bDate;
             },
