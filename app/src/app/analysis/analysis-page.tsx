@@ -671,7 +671,6 @@ export default function AnalysisPage() {
           </ColumnConfigWidget>
           <ExportButton
             data={filteredData}
-            columns={columns.map((x) => x.accessor) as any}
             selection={selection}
           />
         </Flex>
