@@ -159,7 +159,7 @@ export default function AnalysisPage() {
   );
 
   const selection = useSelector<RootState>((s) => s.selection
-      .selection as DataTableSelection<AnalysisResult>) as DagtaTableSelection<AnalysisResult>;
+      .selection as DataTableSelection<AnalysisResult>) as DataTableSelection<AnalysisResult>;
   const approvals = useSelector<RootState>((s) => s.entities.approvalMatrix);
   const view = useSelector<RootState>(
     (s) => s.view.view
