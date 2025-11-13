@@ -455,8 +455,7 @@ export default function AnalysisPage() {
       if (cellUpdating(rowId, columnId)) {
         return <Skeleton width="100px" height="20px" />;
       }
-      const rowInstitution = data.find((row) => row.sequence_id == rowId)
-        .institution;
+      const rowInstitution = data.find((row) => row.sequence_id == rowId)?.institution;
       const editIsAllowed = true ||
         columnConfigs[columnId].editable ||
         user.institution == rowInstitution ||
