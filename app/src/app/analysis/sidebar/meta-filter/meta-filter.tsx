@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Text, Flex } from "@chakra-ui/react";
 import Select, { ActionMeta, OptionTypeBase, ValueType } from "react-select";
 import { selectTheme } from "app/app.styles";
@@ -10,6 +10,7 @@ import {
   QueryOperand,
   FilterOptions,
   DateRange,
+  ApprovalStatus,
 } from "sap-client";
 import { IfPermission } from "auth/if-permission";
 import { PropFilter, RangeFilter } from "utils";
@@ -20,16 +21,24 @@ type MetaFilterProps = {
   filterOptions: FilterOptions;
   onPropFilterChange: (resultingFilter: PropFilter<AnalysisResult>) => void;
   onRangeFilterChange: (resultingFilter: RangeFilter<AnalysisResult>) => void;
+  onApprovalFilterChange: (resultingFilter: ApprovalStatus[]) => void;
   isDisabled: boolean;
   queryOperands: QueryOperand[];
-  clearFieldFromSearch: (field: keyof AnalysisResult) => void;
+  clearFieldFromSearch: (field: string) => void;
 };
+
+const approvalFilterOptions = [
+  {label: "Approved", value: ApprovalStatus.approved},
+  {label: "Rejected", value: ApprovalStatus.rejected},
+  {label: "Pending", value: ApprovalStatus.pending}
+]
 
 function MetaFilter(props: MetaFilterProps) {
   const {
     filterOptions,
     onPropFilterChange,
     onRangeFilterChange,
+    onApprovalFilterChange,
     isDisabled,
     queryOperands,
     clearFieldFromSearch,
@@ -53,6 +62,8 @@ function MetaFilter(props: MetaFilterProps) {
       };
     }
   );
+
+  const [approvalFilterState, setApprovalFilterState] = useState<ApprovalStatus[]>([]);
 
   // eslint-disable-next-line
   type RangeEnd = keyof RangeFilter<any>[0];
@@ -183,6 +194,27 @@ function MetaFilter(props: MetaFilterProps) {
     [filterOptions.cluster_ids]
   );
 
+  const onApprovalChange = useCallback((
+    val: ValueType<OptionTypeBase, true>,
+    action: ActionMeta<OptionTypeBase>
+  ) => {
+    if (action.action == "clear") {
+      setApprovalFilterState([]);
+      onApprovalFilterChange([]);
+      clearFieldFromSearch("approval_status");
+      return;
+    }
+    const values = Array.isArray(val) ? val.map((x) => x.value) : [];
+
+    if (values.length === 0) {
+      clearFieldFromSearch("approval_status");
+    }
+
+    setApprovalFilterState(values);
+    onApprovalFilterChange(values);
+
+  },[setApprovalFilterState, clearFieldFromSearch, onApprovalFilterChange]);
+
   const onChangeBuilder: (
     field: keyof AnalysisResult
   ) => (
@@ -232,9 +264,15 @@ function MetaFilter(props: MetaFilterProps) {
         max: AnalysisResult[K] | null;
       };
     };
+    const newApprovalFilterState: ApprovalStatus[] = [];
 
     queryOperands.forEach((op) => {
-      if (op.field && op.term) {
+      if (op.field == "approval_status") {
+        const v = op.term as ApprovalStatus;
+        if (!newApprovalFilterState.find(nv => nv === v)) {
+          newApprovalFilterState.push(v);
+        }
+      } else if (op.field && op.term) {
         if (!newPropFilterState[op.field]) {
           newPropFilterState[op.field] = [];
         }
@@ -264,8 +302,13 @@ function MetaFilter(props: MetaFilterProps) {
       setReceivedEndDate(null);
     }
 
+    if (!queryOperands.find((q) => q.field === "approval_status")) {
+      setApprovalFilterState([]);
+    }
+
     setPropFilterState(newPropFilterState);
     setRangeFilterState(newRangeFilterState);
+    setApprovalFilterState(newApprovalFilterState);
   }, [queryOperands]);
 
   const valueBuilder = (key: keyof AnalysisResult) => {
@@ -303,6 +346,15 @@ function MetaFilter(props: MetaFilterProps) {
         isMulti
         theme={selectTheme}
         onChange={onChangeBuilder("institution")}
+        isDisabled={isDisabled}
+      />
+      <Text mt={2}>{t("Approved")}</Text>
+      <Select
+        options={approvalFilterOptions}
+        value={approvalFilterState.map(v => approvalFilterOptions.find(f => f.value === v)!)}
+        isMulti
+        theme={selectTheme}
+        onChange={onApprovalChange}
         isDisabled={isDisabled}
       />
       <Flex justifyContent="space-between" direction="row">

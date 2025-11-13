@@ -284,7 +284,9 @@ export default function AnalysisPage() {
   const [rangeFilters, setRangeFilters] = React.useState(
     {} as RangeFilter<AnalysisResult>
   );
-  const clearFieldFromSearch = (field: keyof AnalysisResult) => {
+  const [approvalFilters, setApprovalFilters] = React.useState<ApprovalStatus[]>([]);
+
+  const clearFieldFromSearch = useCallback( (field: string) => {
     const recurseAndModify = (
       ex?: QueryExpression | QueryOperand
     ): QueryExpression => {
@@ -298,27 +300,19 @@ export default function AnalysisPage() {
         return { ...ex };
       }
 
-      // For OR expressions, we need to check if both sides relate to the field being cleared
-      if (ex.operator === "OR") {
-        const left = recurseAndModify(ex.left);
-        const right = recurseAndModify(ex.right);
+    
+      const left = recurseAndModify(ex.left);
+      const right = recurseAndModify(ex.right);
 
-        if (!left && !right) {
-          return undefined;
-        } else if (!left) {
-          return right;
-        } else if (!right) {
-          return left;
-        } else {
-          return { ...ex, left, right };
-        }
+      if (!left && !right) {
+        return undefined;
+      } else if (!left) {
+        return right;
+      } else if (!right) {
+        return left;
+      } else {
+        return { ...ex, left, right };
       }
-
-      return {
-        ...ex,
-        left: recurseAndModify(ex.left),
-        right: recurseAndModify(ex.right),
-      };
     };
 
     // Also clear from prop filters
@@ -335,10 +329,14 @@ export default function AnalysisPage() {
       return newFilters;
     });
 
+    if (field == "approval_status") {
+      setApprovalFilters([]);
+    }
+
     setRawSearchQuery((old) => ({
       expression: recurseAndModify(old.expression),
     }));
-  };
+  },[setPropFilters, setRangeFilters, setRawSearchQuery, setApprovalFilters]);
 
   useEffect(() => {
     isLoadingRef.current = isLoadingNextPage;
@@ -407,9 +405,10 @@ export default function AnalysisPage() {
       const mergeFilters = (
         searchExpression: QueryExpression,
         propFilter: PropFilter<AnalysisResult>,
-        rangeFilter: RangeFilter<AnalysisResult>
+        rangeFilter: RangeFilter<AnalysisResult>,
+        approvalFilter: ApprovalStatus[],
       ) => {
-        const filterExpression = buildQueryFromFilters(propFilter, rangeFilter);
+        const filterExpression = buildQueryFromFilters(propFilter, rangeFilter, approvalFilter);
         searchExpression = Object.fromEntries(
           Object.entries(searchExpression).filter(([_, v]) => !!v)
         ) as QueryExpression;
@@ -438,13 +437,14 @@ export default function AnalysisPage() {
 
       const newExpression = q.clearAllFields
         ? q.expression
-        : mergeFilters(q.expression || {}, propFilters, rangeFilters);
+        : mergeFilters(q.expression || {}, propFilters, rangeFilters, approvalFilters);
       if (checkExpressionEquality(newExpression, lastSearchQuery.expression)) {
         return;
       }
       if (q.clearAllFields) {
         setPropFilters({});
         setRangeFilters({});
+        setApprovalFilters([]);
       }
       const newQ = { expression: newExpression };
 
@@ -475,7 +475,7 @@ export default function AnalysisPage() {
         );
       }
     },
-    [dispatch, propFilters, rangeFilters, lastSearchQuery]
+    [dispatch, propFilters, rangeFilters, lastSearchQuery, approvalFilters]
   );
 
   useEffect(() => {
@@ -521,6 +521,11 @@ export default function AnalysisPage() {
     },
     [rangeFilters, setRangeFilters, setRawSearchQuery]
   );
+
+  const onApprovalFilterChange = useCallback((values) => {
+    setApprovalFilters(values);
+    setRawSearchQuery((old) => ({ ...old, clearAllFields: false }));
+  },[])
 
   const primaryApprovalColumns = React.useMemo(
     () =>
@@ -1037,6 +1042,7 @@ export default function AnalysisPage() {
             filterOptions={filterOptions}
             onPropFilterChange={onPropFilterChange}
             onRangeFilterChange={onRangeFilterChange}
+            onApprovalFilterChange={onApprovalFilterChange}
             isDisabled={pageState.isNarrowed}
           />
         }
