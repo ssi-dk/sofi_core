@@ -24,6 +24,7 @@ import {
   QueryOperator,
   QueryOperand,
   FilterOptions,
+  AnalysisSorting,
 } from "sap-client";
 import { useMutation, useRequest } from "redux-query-react";
 import { useDispatch, useSelector } from "react-redux";
@@ -69,6 +70,7 @@ import {
   appendToSearchHistory,
   buildQueryFromFilters,
   checkExpressionEquality,
+  checkSortEquality,
   recurseSearchTree,
 } from "./search/search-utils";
 
@@ -92,6 +94,12 @@ export default function AnalysisPage() {
   const nextPageTokenRef = useRef<string | null>(null);
   const currentPageRef = useRef(0);
   const [isModalOpen, setModalOpen] = useState(false);
+  const [prevColumnSort, setPrevColumnSort] = React.useState<
+    AnalysisSorting & { column: string; ascending: boolean }
+  >(undefined);
+  const [columnSort, setColumnSort] = React.useState<
+    AnalysisSorting & { column: string; ascending: boolean }
+  >(undefined);
   const [modalInfo, setModalInfo] = useState({
     rowId: "",
     columnId: "",
@@ -372,7 +380,7 @@ export default function AnalysisPage() {
         },
         true
       );
-       dispatch(requestAsync(requestConfig));
+      dispatch(requestAsync(requestConfig));
     } catch (error) {
       console.error("Error loading next page:", error);
       toast({
@@ -385,23 +393,10 @@ export default function AnalysisPage() {
       setIsLoadingNextPage(false);
       isLoadingRef.current = false;
     }
-  }, [
-    isPending,
-    dispatch,
-    toast
-  ]);
+  }, [isPending, dispatch, toast]);
 
   const onSearch = React.useCallback(
     (q: SearchQuery, pageSize: number) => {
-      // Reset pagination state when starting a new search
-      setIsLoadingNextPage(false);
-      setNextPageToken(null);
-
-      // Update refs immediately
-      nextPageTokenRef.current = null;
-      isLoadingRef.current = false;
-
-      // ...rest of existing onSearch logic remains the same...
       const mergeFilters = (
         searchExpression: QueryExpression,
         propFilter: PropFilter<AnalysisResult>,
@@ -420,8 +415,12 @@ export default function AnalysisPage() {
         ) {
           return {
             operator: QueryOperator.AND,
-            left: searchExpression.operator ? searchExpression : searchExpression.left,
-            right: filterExpression.operator ? filterExpression : filterExpression.left,
+            left: searchExpression.operator
+              ? searchExpression
+              : searchExpression.left,
+            right: filterExpression.operator
+              ? filterExpression
+              : filterExpression.left,
           };
         } else if (filterExpression) {
           return filterExpression;
@@ -438,9 +437,24 @@ export default function AnalysisPage() {
       const newExpression = q.clearAllFields
         ? q.expression
         : mergeFilters(q.expression || {}, propFilters, rangeFilters, approvalFilters);
-      if (checkExpressionEquality(newExpression, lastSearchQuery.expression)) {
+      if (
+        checkExpressionEquality(newExpression, lastSearchQuery.expression) &&
+        checkSortEquality(columnSort, prevColumnSort)
+      ) {
         return;
       }
+      setPrevColumnSort(columnSort);
+
+      // Reset pagination state when starting a new search
+      setIsLoadingNextPage(false);
+      setNextPageToken(null);
+
+      // Update refs immediately
+      nextPageTokenRef.current = null;
+      isLoadingRef.current = false;
+
+      // ...rest of existing onSearch logic remains the same...
+
       if (q.clearAllFields) {
         setPropFilters({});
         setRangeFilters({});
@@ -455,7 +469,14 @@ export default function AnalysisPage() {
       if (newExpression && Object.keys(newExpression).length === 0) {
         dispatch(
           requestAsync({
-            ...requestPageOfAnalysis({ pageSize: pageSize }, false), // false for replace mode
+            ...requestPageOfAnalysis(
+              {
+                pageSize: pageSize,
+                sortingColumn: columnSort?.column,
+                sortingAscending: columnSort?.ascending,
+              },
+              false
+            ), // false for replace mode
           })
         );
       } else {
@@ -464,6 +485,7 @@ export default function AnalysisPage() {
             ...searchPageOfAnalysis(
               {
                 query: {
+                  analysis_sorting: columnSort,
                   expression: newExpression,
                   page_size: pageSize,
                 },
@@ -475,7 +497,7 @@ export default function AnalysisPage() {
         );
       }
     },
-    [dispatch, propFilters, rangeFilters, lastSearchQuery, approvalFilters]
+    [dispatch, propFilters, rangeFilters, lastSearchQuery, approvalFilters, columnSort, prevColumnSort, setPrevColumnSort]
   );
 
   useEffect(() => {
@@ -887,8 +909,6 @@ export default function AnalysisPage() {
   const [columnReorder, setColumnReorder] = React.useState(
     undefined as ColumnReordering
   );
-
-  const [columnSort, setColumnSort] = React.useState(undefined);
 
   const onReorderColumn = React.useCallback(
     (sourceIdx: number, destIdx: number, draggableId: string) => {
