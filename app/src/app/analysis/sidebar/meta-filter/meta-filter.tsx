@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Text, Flex } from "@chakra-ui/react";
 import Select, { ActionMeta, OptionTypeBase, ValueType } from "react-select";
 import { selectTheme } from "app/app.styles";
@@ -9,6 +9,8 @@ import {
   Organization,
   QueryOperand,
   FilterOptions,
+  DateRange,
+  ApprovalStatus,
 } from "sap-client";
 import { IfPermission } from "auth/if-permission";
 import { PropFilter, RangeFilter } from "utils";
@@ -19,16 +21,24 @@ type MetaFilterProps = {
   filterOptions: FilterOptions;
   onPropFilterChange: (resultingFilter: PropFilter<AnalysisResult>) => void;
   onRangeFilterChange: (resultingFilter: RangeFilter<AnalysisResult>) => void;
+  onApprovalFilterChange: (resultingFilter: ApprovalStatus[]) => void;
   isDisabled: boolean;
   queryOperands: QueryOperand[];
-  clearFieldFromSearch: (field: keyof AnalysisResult) => void;
+  clearFieldFromSearch: (field: string) => void;
 };
+
+const approvalFilterOptions = [
+  {label: "Approved", value: ApprovalStatus.approved},
+  {label: "Rejected", value: ApprovalStatus.rejected},
+  {label: "Pending", value: ApprovalStatus.pending}
+]
 
 function MetaFilter(props: MetaFilterProps) {
   const {
     filterOptions,
     onPropFilterChange,
     onRangeFilterChange,
+    onApprovalFilterChange,
     isDisabled,
     queryOperands,
     clearFieldFromSearch,
@@ -53,8 +63,18 @@ function MetaFilter(props: MetaFilterProps) {
     }
   );
 
+  const [approvalFilterState, setApprovalFilterState] = useState<ApprovalStatus[]>([]);
+
   // eslint-disable-next-line
   type RangeEnd = keyof RangeFilter<any>[0];
+
+  const maxDate = (date1: DateRange | null) => {
+    return date1?.max ? new Date(date1.max) : null;
+  }
+  
+  const minDate = (date: DateRange | null) => {
+    return date?.min ? new Date(date.min) : null;
+  }
 
   const onDateChange = React.useCallback(
     (
@@ -67,33 +87,25 @@ function MetaFilter(props: MetaFilterProps) {
       const opposite = end === "min" ? "max" : "min";
 
       // Use filter options for default min/max dates
-      const minDate =
+      const minimumDate =
         field === "date_sample"
-          ? filterOptions.date_sample?.min
-            ? new Date(filterOptions.date_sample.min)
-            : null
+          ? minDate(filterOptions.date_sample)
           : field === "date_received"
-          ? filterOptions.date_received?.min
-            ? new Date(filterOptions.date_received.min)
-            : null
+          ? minDate(filterOptions.date_received)
           : null;
 
-      const maxDate =
+      const maximumDate =
         field === "date_sample"
-          ? filterOptions.date_sample?.max
-            ? new Date(filterOptions.date_sample.max)
-            : null
+          ? maxDate(filterOptions.date_sample)
           : field === "date_received"
-          ? filterOptions.date_received?.max
-            ? new Date(filterOptions.date_received.max)
-            : null
+          ? maxDate(filterOptions.date_received)
           : null;
 
       const oppositeValue =
         opposite === "min"
-          ? rangeFilterState[field]?.min ?? minDate
-          : rangeFilterState[field]?.max ?? maxDate;
-      const val = d !== null ? d : end === "min" ? minDate : maxDate;
+          ? rangeFilterState[field]?.min ?? minimumDate
+          : rangeFilterState[field]?.max ?? maximumDate;
+      const val = d !== null ? d : end === "min" ? minimumDate : maximumDate;
       const resolvedState = {
         ...rangeFilterState,
         [field]:
@@ -182,6 +194,27 @@ function MetaFilter(props: MetaFilterProps) {
     [filterOptions.cluster_ids]
   );
 
+  const onApprovalChange = useCallback((
+    val: ValueType<OptionTypeBase, true>,
+    action: ActionMeta<OptionTypeBase>
+  ) => {
+    if (action.action == "clear") {
+      setApprovalFilterState([]);
+      onApprovalFilterChange([]);
+      clearFieldFromSearch("approval_status");
+      return;
+    }
+    const values = Array.isArray(val) ? val.map((x) => x.value) : [];
+
+    if (values.length === 0) {
+      clearFieldFromSearch("approval_status");
+    }
+
+    setApprovalFilterState(values);
+    onApprovalFilterChange(values);
+
+  },[setApprovalFilterState, clearFieldFromSearch, onApprovalFilterChange]);
+
   const onChangeBuilder: (
     field: keyof AnalysisResult
   ) => (
@@ -231,9 +264,15 @@ function MetaFilter(props: MetaFilterProps) {
         max: AnalysisResult[K] | null;
       };
     };
+    const newApprovalFilterState: ApprovalStatus[] = [];
 
     queryOperands.forEach((op) => {
-      if (op.field && op.term) {
+      if (op.field == "approval_status") {
+        const v = op.term as ApprovalStatus;
+        if (!newApprovalFilterState.find(nv => nv === v)) {
+          newApprovalFilterState.push(v);
+        }
+      } else if (op.field && op.term) {
         if (!newPropFilterState[op.field]) {
           newPropFilterState[op.field] = [];
         }
@@ -263,8 +302,13 @@ function MetaFilter(props: MetaFilterProps) {
       setReceivedEndDate(null);
     }
 
+    if (!queryOperands.find((q) => q.field === "approval_status")) {
+      setApprovalFilterState([]);
+    }
+
     setPropFilterState(newPropFilterState);
     setRangeFilterState(newRangeFilterState);
+    setApprovalFilterState(newApprovalFilterState);
   }, [queryOperands]);
 
   const valueBuilder = (key: keyof AnalysisResult) => {
@@ -302,6 +346,15 @@ function MetaFilter(props: MetaFilterProps) {
         isMulti
         theme={selectTheme}
         onChange={onChangeBuilder("institution")}
+        isDisabled={isDisabled}
+      />
+      <Text mt={2}>{t("Approved")}</Text>
+      <Select
+        options={approvalFilterOptions}
+        value={approvalFilterState.map(v => approvalFilterOptions.find(f => f.value === v)!)}
+        isMulti
+        theme={selectTheme}
+        onChange={onApprovalChange}
         isDisabled={isDisabled}
       />
       <Flex justifyContent="space-between" direction="row">

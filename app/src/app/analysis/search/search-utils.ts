@@ -1,7 +1,6 @@
 import { Square } from "@chakra-ui/react";
 import {
-  AnalysisResult,
-  AnalysisSorting,
+ApprovalStatus,  AnalysisSorting,
   QueryExpression,
   QueryOperand,
   QueryOperator,
@@ -309,7 +308,8 @@ export const checkExpressionEquality = (
 // Helper function to build query expression from filter state
 export const buildQueryFromFilters = (
   propFilters: { [field: string]: string[] },
-  rangeFilters: { [field: string]: { min?: any; max?: any } }
+  rangeFilters: { [field: string]: { min?: any; max?: any } },
+  approvalFilter: ApprovalStatus[],
 ): QueryExpression => {
   const expressions: QueryExpression[] = [];
 
@@ -333,6 +333,12 @@ export const buildQueryFromFilters = (
       } as QueryOperand);
     }
   });
+  if (approvalFilter.length > 0) {
+    const orExpression = createOrExpression("approval_status", approvalFilter);
+    if (orExpression) {
+      expressions.push(orExpression);
+    }
+  }
 
   return createAndExpression(expressions);
 };

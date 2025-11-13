@@ -10,9 +10,10 @@ type AnalysisSidebarProps = {
   filterOptions: FilterOptions;
   onPropFilterChange: (filter: PropFilter<AnalysisResult>) => void;
   onRangeFilterChange: (filter: RangeFilter<AnalysisResult>) => void;
+  onApprovalFilterChange: (resultingFilter: ApprovalStatus[]) => void;
   isDisabled: boolean;
   queryOperands: QueryOperand[];
-  clearFieldFromSearch: (field: keyof AnalysisResult) => void;
+  clearFieldFromSearch: (field: string) => void;
 };
 
 function AnalysisSidebar(props: AnalysisSidebarProps) {
@@ -21,6 +22,7 @@ function AnalysisSidebar(props: AnalysisSidebarProps) {
     filterOptions,
     onPropFilterChange,
     onRangeFilterChange,
+    onApprovalFilterChange,
     isDisabled,
     queryOperands,
     clearFieldFromSearch,
@@ -53,6 +55,7 @@ function AnalysisSidebar(props: AnalysisSidebarProps) {
         filterOptions={filterOptions}
         onPropFilterChange={onPropFilterChange}
         onRangeFilterChange={onRangeFilterChange}
+        onApprovalFilterChange={onApprovalFilterChange}
         isDisabled={isDisabled}
       />
       <Box m={3} />
