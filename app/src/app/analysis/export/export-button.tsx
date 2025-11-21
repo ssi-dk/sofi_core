@@ -8,14 +8,13 @@ import { DataTableSelection } from "../data-table/data-table";
 
 type ExportButtonProps = {
   data: AnalysisResult[];
-  columns: (keyof AnalysisResult)[];
   selection: DataTableSelection<AnalysisResult>;
 };
 
 const isSelectionEmpty = (sel) => Object.keys(sel).length === 0;
 
 const ExportButton = (props: ExportButtonProps) => {
-  const { data, columns, selection } = props;
+  const { data,  selection } = props;
 
   let exportData = data;
   if (!isSelectionEmpty(selection)) {
@@ -26,21 +25,10 @@ const ExportButton = (props: ExportButtonProps) => {
   }
 
   const download = React.useCallback(() => {
-    const tableState = spyDataTable();
-    let columnsToExport = columns;
-
-    if (tableState.columnOrder && tableState.columnOrder.length) {
-      columnsToExport = tableState.columnOrder;
-    }
-    if (tableState.hiddenColumns && tableState.hiddenColumns.length) {
-      columnsToExport = columnsToExport.filter(
-        (x) => tableState.hiddenColumns.indexOf(x) < 0
-      );
-    }
-
-    const tsv = convertToCsv<AnalysisResult>(exportData, columnsToExport, "\t");
+    const keys = Object.keys(exportData[0]) as (keyof AnalysisResult)[]
+    const tsv = convertToCsv<AnalysisResult>(exportData, keys, "\t");
     downloadFile(tsv, "sofi-export.tsv");
-  }, [columns, exportData]);
+  }, [exportData]);
 
   return (
     <IconButton
