@@ -158,8 +158,19 @@ export default function AnalysisPage() {
     [_submitChange, setLastUpdatedRow]
   );
 
-  const selection = useSelector<RootState>((s) => s.selection
-      .selection as DataTableSelection<AnalysisResult>) as DataTableSelection<AnalysisResult>;
+  const selection = useSelector<RootState>((s) => {
+    const fullSelection = s.selection
+      .selection as DataTableSelection<AnalysisResult>;
+    if (!pageState.isNarrowed) {
+      return fullSelection;
+    }
+    return Object.fromEntries(
+      Object.entries(fullSelection).filter(
+        ([_key, value]) => value.original.institution === user.institution
+      )
+    );
+  }) as DataTableSelection<AnalysisResult>;
+
   const approvals = useSelector<RootState>((s) => s.entities.approvalMatrix);
   const view = useSelector<RootState>(
     (s) => s.view.view
@@ -168,6 +179,13 @@ export default function AnalysisPage() {
   const [lastSearchQuery, setLastSearchQuery] = useState<AnalysisQuery>({
     expression: {},
   });
+
+  const [propFilters, setPropFilters] = React.useState(
+    {} as PropFilter<AnalysisResult>
+  );
+  const [rangeFilters, setRangeFilters] = React.useState(
+    {} as RangeFilter<AnalysisResult>
+  );
 
   const onSearch = React.useCallback(
     (q: AnalysisQuery, pageSize: number) => {
@@ -207,20 +225,13 @@ export default function AnalysisPage() {
   const canSelectColumn = React.useCallback(
     (columnName: string) => {
       return (
-        !pageState.isNarrowed && columnName === "sequence_id" || 
-        pageState.isNarrowed &&
-        columnConfigs[columnName]?.approvable &&
-        !columnConfigs[columnName]?.computed
+        (!pageState.isNarrowed && columnName === "sequence_id") ||
+        (pageState.isNarrowed &&
+          columnConfigs[columnName]?.approvable &&
+          !columnConfigs[columnName]?.computed)
       );
     },
-    [columnConfigs,pageState]
-  );
-
-  const [propFilters, setPropFilters] = React.useState(
-    {} as PropFilter<AnalysisResult>
-  );
-  const [rangeFilters, setRangeFilters] = React.useState(
-    {} as RangeFilter<AnalysisResult>
+    [columnConfigs, pageState]
   );
 
   const onPropFilterChange = React.useCallback(
@@ -321,7 +332,8 @@ export default function AnalysisPage() {
 
   const getCellStyle = React.useCallback(
     (rowId: string, columnId: string, value: any, cell: any) => {
-      const rowSelectionClass = selection[rowId] && !pageState.isNarrowed ? " selectedRow" : "";
+      const rowSelectionClass =
+        selection[rowId] && !pageState.isNarrowed ? " selectedRow" : "";
       if (
         value !== 0 &&
         value !== false &&
@@ -341,11 +353,11 @@ export default function AnalysisPage() {
         if (columnId === "sequence_id") {
           let sequenceStyle = "cell";
           PRIMARY_APPROVAL_FIELDS.forEach((f) => {
-            if (approvals[rowId][f] !== ApprovalStatus.approved){
-              if(sequenceStyle != `rejectedCell`){
+            if (approvals[rowId][f] !== ApprovalStatus.approved) {
+              if (sequenceStyle != `rejectedCell`) {
                 sequenceStyle = "unapprovedCell";
               }
-              if(approvals[rowId][f] === ApprovalStatus.rejected){
+              if (approvals[rowId][f] === ApprovalStatus.rejected) {
                 sequenceStyle = `rejectedCell`;
               }
             }
@@ -455,11 +467,14 @@ export default function AnalysisPage() {
       if (cellUpdating(rowId, columnId)) {
         return <Skeleton width="100px" height="20px" />;
       }
-      const rowInstitution = data.find((row) => row.sequence_id == rowId)?.institution;
-      const editIsAllowed = true ||
+      const rowInstitution = data.find((row) => row.sequence_id == rowId)
+        ?.institution;
+      const editIsAllowed =
         columnConfigs[columnId].editable ||
         user.institution == rowInstitution ||
-        columnConfigs[columnId].cross_org_editable;
+        columnConfigs[columnId].cross_org_editable ||
+        user.data_clearance === "all";
+
       if (value !== 0 && value !== false && !value && !editIsAllowed) {
         return <div />;
       }
@@ -487,24 +502,25 @@ export default function AnalysisPage() {
       } else if (typeof value === "object") {
         v = `${JSON.stringify(value)}`;
         if (columnId === "qc_failed_tests") {
-          let acc = "";
-          (value as Array<AnalysisResultAllOfQcFailedTests>).map((x) => {
-            if (acc !== "") {
-              acc += ", ";
-            }
-            acc += `${x.display_name}: ${x.reason}`;
-          });
-          v = acc;
+          v = (value as Array<AnalysisResultAllOfQcFailedTests>).reduce(
+            (acc, x) => {
+              if (acc !== "") {
+                acc += ", ";
+              }
+              acc += `${x.display_name}: ${x.reason}`;
+              return acc;
+            },
+            ""
+          );
         }
         if (columnId === "st_alleles") {
-          let acc = "";
-          Object.keys(value).map((k) => {
+          v = Object.entries(value).reduce((acc, [k, val]) => {
             if (acc !== "") {
               acc += ", ";
             }
-            acc += `${k}: ${value[k]}`;
-          });
-          v = acc;
+            acc += `${k}: ${val}`;
+            return acc;
+          }, "");
         }
       }
       // cannot edit cells that have already been approved
@@ -580,7 +596,7 @@ export default function AnalysisPage() {
       cellUpdating,
       approvals,
       data,
-      user
+      user,
     ]
   );
 
@@ -647,13 +663,14 @@ export default function AnalysisPage() {
             selection={selection}
           />
           {!pageState.isNarrowed ? (
-          <AnalysisSelectionMenu
-            selection={selection}
-            isNarrowed={pageState.isNarrowed}
-            data={filteredData}
-            search={onSearch}
-            lastSearchQuery={lastSearchQuery}
-          />) : null}
+            <AnalysisSelectionMenu
+              selection={selection}
+              isNarrowed={pageState.isNarrowed}
+              data={filteredData}
+              search={onSearch}
+              lastSearchQuery={lastSearchQuery}
+            />
+          ) : null}
           <Flex grow={1} width="100%" />
           <ColumnConfigWidget onReorder={onReorderColumn}>
             {(columnOrder || columns.map((x) => x.accessor as string)).map(
@@ -696,9 +713,7 @@ export default function AnalysisPage() {
             }
             renderCellControl={renderCellControl}
             primaryKey="sequence_id"
-            selectionClassName={
-              pageState.isNarrowed ? "approvingCell" : ""
-            }
+            selectionClassName={pageState.isNarrowed ? "approvingCell" : ""}
             onSelect={onSelectCallback}
             selection={selection}
             onDetailsClick={openDetailsView}
