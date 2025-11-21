@@ -180,35 +180,6 @@ export default function AnalysisPage() {
     expression: {},
   });
 
-  const lastQueryOperands = useMemo(() => {
-    return recurseSearchTree(lastSearchQuery.expression);
-  }, [lastSearchQuery])
-
-  const [rawSearchQuery, setRawSearchQuery] = useState<SearchQuery>({
-    expression: {},
-  });
-
-  const clearFieldFromSearch = (field: keyof AnalysisResult) => {
-    const recurseAndModify = (ex?: QueryExpression | QueryOperand): QueryExpression => {
-      if (!ex) {
-        return undefined;
-      }
-      if ("field" in ex) {
-        if (ex.field == field) {
-          return undefined;
-        }
-        return { ...ex }
-      }
-      return {
-        ...ex,
-        left: recurseAndModify(ex.left),
-        right: recurseAndModify(ex.right)
-      }
-    }
-    setRawSearchQuery(old => ({ expression: recurseAndModify(old.expression) }))
-  }
-
-
   const [propFilters, setPropFilters] = React.useState(
     {} as PropFilter<AnalysisResult>
   );
@@ -254,20 +225,13 @@ export default function AnalysisPage() {
   const canSelectColumn = React.useCallback(
     (columnName: string) => {
       return (
-        !pageState.isNarrowed && columnName === "sequence_id" || 
-        pageState.isNarrowed &&
-        columnConfigs[columnName]?.approvable &&
-        !columnConfigs[columnName]?.computed
+        (!pageState.isNarrowed && columnName === "sequence_id") ||
+        (pageState.isNarrowed &&
+          columnConfigs[columnName]?.approvable &&
+          !columnConfigs[columnName]?.computed)
       );
     },
-    [columnConfigs,pageState]
-  );
-
-  const [propFilters, setPropFilters] = React.useState(
-    {} as PropFilter<AnalysisResult>
-  );
-  const [rangeFilters, setRangeFilters] = React.useState(
-    {} as RangeFilter<AnalysisResult>
+    [columnConfigs, pageState]
   );
 
   const onPropFilterChange = React.useCallback(
@@ -368,7 +332,8 @@ export default function AnalysisPage() {
 
   const getCellStyle = React.useCallback(
     (rowId: string, columnId: string, value: any, cell: any) => {
-      const rowSelectionClass = selection[rowId] && !pageState.isNarrowed ? " selectedRow" : "";
+      const rowSelectionClass =
+        selection[rowId] && !pageState.isNarrowed ? " selectedRow" : "";
       if (
         value !== 0 &&
         value !== false &&
@@ -388,11 +353,11 @@ export default function AnalysisPage() {
         if (columnId === "sequence_id") {
           let sequenceStyle = "cell";
           PRIMARY_APPROVAL_FIELDS.forEach((f) => {
-            if (approvals[rowId][f] !== ApprovalStatus.approved){
-              if(sequenceStyle != `rejectedCell`){
+            if (approvals[rowId][f] !== ApprovalStatus.approved) {
+              if (sequenceStyle != `rejectedCell`) {
                 sequenceStyle = "unapprovedCell";
               }
-              if(approvals[rowId][f] === ApprovalStatus.rejected){
+              if (approvals[rowId][f] === ApprovalStatus.rejected) {
                 sequenceStyle = `rejectedCell`;
               }
             }
@@ -502,12 +467,14 @@ export default function AnalysisPage() {
       if (cellUpdating(rowId, columnId)) {
         return <Skeleton width="100px" height="20px" />;
       }
-      const rowInstitution = displayData.find((row) => row.sequence_id == rowId)?.institution;
-      const editIsAllowed = columnConfigs[columnId].editable ||
+      const rowInstitution = data.find((row) => row.sequence_id == rowId)
+        ?.institution;
+      const editIsAllowed =
+        columnConfigs[columnId].editable ||
         user.institution == rowInstitution ||
-        columnConfigs[columnId].cross_org_editable || 
+        columnConfigs[columnId].cross_org_editable ||
         user.data_clearance === "all";
-        
+
       if (value !== 0 && value !== false && !value && !editIsAllowed) {
         return <div />;
       }
@@ -535,13 +502,16 @@ export default function AnalysisPage() {
       } else if (typeof value === "object") {
         v = `${JSON.stringify(value)}`;
         if (columnId === "qc_failed_tests") {
-          v = (value as Array<AnalysisResultAllOfQcFailedTests>).reduce((acc, x) => {
-            if (acc !== "") {
-              acc += ", ";
-            }
-            acc += `${x.display_name}: ${x.reason}`;
-            return acc;
-          }, "");
+          v = (value as Array<AnalysisResultAllOfQcFailedTests>).reduce(
+            (acc, x) => {
+              if (acc !== "") {
+                acc += ", ";
+              }
+              acc += `${x.display_name}: ${x.reason}`;
+              return acc;
+            },
+            ""
+          );
         }
         if (columnId === "st_alleles") {
           v = Object.entries(value).reduce((acc, [k, val]) => {
@@ -626,7 +596,7 @@ export default function AnalysisPage() {
       cellUpdating,
       approvals,
       data,
-      user
+      user,
     ]
   );
 
@@ -693,13 +663,14 @@ export default function AnalysisPage() {
             selection={selection}
           />
           {!pageState.isNarrowed ? (
-          <AnalysisSelectionMenu
-            selection={selection}
-            isNarrowed={pageState.isNarrowed}
-            data={filteredData}
-            search={onSearch}
-            lastSearchQuery={lastSearchQuery}
-          />) : null}
+            <AnalysisSelectionMenu
+              selection={selection}
+              isNarrowed={pageState.isNarrowed}
+              data={filteredData}
+              search={onSearch}
+              lastSearchQuery={lastSearchQuery}
+            />
+          ) : null}
           <Flex grow={1} width="100%" />
           <ColumnConfigWidget onReorder={onReorderColumn}>
             {(columnOrder || columns.map((x) => x.accessor as string)).map(
@@ -742,9 +713,7 @@ export default function AnalysisPage() {
             }
             renderCellControl={renderCellControl}
             primaryKey="sequence_id"
-            selectionClassName={
-              pageState.isNarrowed ? "approvingCell" : ""
-            }
+            selectionClassName={pageState.isNarrowed ? "approvingCell" : ""}
             onSelect={onSelectCallback}
             selection={selection}
             onDetailsClick={openDetailsView}
