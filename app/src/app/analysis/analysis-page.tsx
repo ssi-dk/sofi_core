@@ -109,18 +109,24 @@ export default function AnalysisPage() {
     () =>
       Object.keys(columnConfigs || []).map(
         (k) =>
-          ({
-            accessor: k,
-            sortType: !k.startsWith("date")
-              ? "alphanumeric"
-              : (a, b, column) => {
-                  const aDate = a.original[column]?.getTime() ?? 0;
-                  const bDate = b.original[column]?.getTime() ?? 0;
+        ({
+          accessor: k,
+          sortType: !k.startsWith("date")
+            ? "alphanumeric"
+            : (a, b, column) => {
+              const enforceDate = (d: Date | string | undefined) => {
+                if (typeof d == "string") {
+                  return new Date(d)
+                }
+                return d;
+              }
+              const aDate = enforceDate(a.original[column])?.getTime() ?? 0;
+              const bDate = enforceDate(b.original[column])?.getTime() ?? 0;
 
-                  return aDate - bDate;
-                },
-            Header: t(k),
-          } as Column<AnalysisResult>)
+              return aDate - bDate;
+            },
+          Header: t(k),
+        } as Column<AnalysisResult>)
       ),
     [columnConfigs, t]
   );
@@ -159,7 +165,7 @@ export default function AnalysisPage() {
   );
 
   const selection = useSelector<RootState>((s) => s.selection
-      .selection as DataTableSelection<AnalysisResult>) as DataTableSelection<AnalysisResult>;
+    .selection as DataTableSelection<AnalysisResult>) as DataTableSelection<AnalysisResult>;
   const approvals = useSelector<RootState>((s) => s.entities.approvalMatrix);
   const view = useSelector<RootState>(
     (s) => s.view.view
@@ -214,13 +220,13 @@ export default function AnalysisPage() {
   const canSelectColumn = React.useCallback(
     (columnName: string) => {
       return (
-        !pageState.isNarrowed && columnName === "sequence_id" || 
+        !pageState.isNarrowed && columnName === "sequence_id" ||
         pageState.isNarrowed &&
         columnConfigs[columnName]?.approvable &&
         !columnConfigs[columnName]?.computed
       );
     },
-    [columnConfigs,pageState]
+    [columnConfigs, pageState]
   );
 
   const onPropFilterChange = React.useCallback(
@@ -341,11 +347,11 @@ export default function AnalysisPage() {
         if (columnId === "sequence_id") {
           let sequenceStyle = "cell";
           PRIMARY_APPROVAL_FIELDS.forEach((f) => {
-            if (approvals[rowId][f] !== ApprovalStatus.approved){
-              if(sequenceStyle != `rejectedCell`){
+            if (approvals[rowId][f] !== ApprovalStatus.approved) {
+              if (sequenceStyle != `rejectedCell`) {
                 sequenceStyle = "unapprovedCell";
               }
-              if(approvals[rowId][f] === ApprovalStatus.rejected){
+              if (approvals[rowId][f] === ApprovalStatus.rejected) {
                 sequenceStyle = `rejectedCell`;
               }
             }
@@ -455,13 +461,12 @@ export default function AnalysisPage() {
       if (cellUpdating(rowId, columnId)) {
         return <Skeleton width="100px" height="20px" />;
       }
-      const rowInstitution = data.find((row) => row.sequence_id == rowId)
-        .institution;
+      const rowInstitution = data.find((row) => row.sequence_id == rowId)?.institution;
       const editIsAllowed = columnConfigs[columnId].editable ||
         user.institution == rowInstitution ||
-        columnConfigs[columnId].cross_org_editable || 
+        columnConfigs[columnId].cross_org_editable ||
         user.data_clearance === "all";
-        
+
       if (value !== 0 && value !== false && !value && !editIsAllowed) {
         return <div />;
       }
@@ -647,13 +652,13 @@ export default function AnalysisPage() {
             selection={selection}
           />
           {!pageState.isNarrowed ? (
-          <AnalysisSelectionMenu
-            selection={selection}
-            isNarrowed={pageState.isNarrowed}
-            data={filteredData}
-            search={onSearch}
-            lastSearchQuery={lastSearchQuery}
-          />) : null}
+            <AnalysisSelectionMenu
+              selection={selection}
+              isNarrowed={pageState.isNarrowed}
+              data={filteredData}
+              search={onSearch}
+              lastSearchQuery={lastSearchQuery}
+            />) : null}
           <Flex grow={1} width="100%" />
           <ColumnConfigWidget onReorder={onReorderColumn}>
             {(columnOrder || columns.map((x) => x.accessor as string)).map(
