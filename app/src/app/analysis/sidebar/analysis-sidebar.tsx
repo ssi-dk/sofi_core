@@ -6,7 +6,6 @@ import MetaFilter from "./meta-filter/meta-filter";
 import AnalysisFilter from "./analysis-filter/analysis-filter";
 
 type AnalysisSidebarProps = {
-  data: AnalysisResult[];
   filterOptions: FilterOptions;
   onPropFilterChange: (filter: PropFilter<AnalysisResult>) => void;
   onRangeFilterChange: (filter: RangeFilter<AnalysisResult>) => void;
@@ -18,7 +17,6 @@ type AnalysisSidebarProps = {
 
 function AnalysisSidebar(props: AnalysisSidebarProps) {
   const {
-    data,
     filterOptions,
     onPropFilterChange,
     onRangeFilterChange,
@@ -27,25 +25,6 @@ function AnalysisSidebar(props: AnalysisSidebarProps) {
     queryOperands,
     clearFieldFromSearch,
   } = props;
-
-  const sortUnique = React.useCallback(
-    (items: string[]) => Array.from(new Set(items)).sort(),
-    []
-  );
-
-  // Keep these for AnalysisFilter - they still derive from current data
-  const sts = React.useMemo(
-    () => sortUnique(data.map((x) => `${x.st_final}`)),
-    [data, sortUnique]
-  );
-  const serotypes = React.useMemo(
-    () => sortUnique(data.map((x) => x.serotype_final)),
-    [data, sortUnique]
-  );
-  const providedSpecies = React.useMemo(
-    () => sortUnique(data.map((x) => x.qc_provided_species)),
-    [data, sortUnique]
-  );
 
   return (
     <>
@@ -62,9 +41,9 @@ function AnalysisSidebar(props: AnalysisSidebarProps) {
       <AnalysisFilter
         clearFieldFromSearch={clearFieldFromSearch}
         queryOperands={queryOperands}
-        sts={sts}
-        serotypeFinals={serotypes}
-        providedSpecies={providedSpecies}
+        sts={filterOptions.st_finals}
+        serotypeFinals={filterOptions.serotype_finals}
+        providedSpecies={filterOptions.qc_provided_species}
         onFilterChange={onPropFilterChange}
         isDisabled={isDisabled}
       />

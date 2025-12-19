@@ -443,4 +443,7 @@ def get_filter_metadata(authorized_columns, institution, data_clearance):
         "serotype_finals": distinct_values["serotype_final"],
         "st_finals": distinct_values["st_final"]
     }
+    for k in metadata.keys():
+        metadata[k] = list(filter(lambda v: v is not None,metadata[k]))
+
     return metadata

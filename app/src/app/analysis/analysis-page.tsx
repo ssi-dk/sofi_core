@@ -1060,7 +1060,6 @@ export default function AnalysisPage() {
           <AnalysisSidebar
             clearFieldFromSearch={clearFieldFromSearch}
             queryOperands={lastQueryOperands}
-            data={data}
             filterOptions={filterOptions}
             onPropFilterChange={onPropFilterChange}
             onRangeFilterChange={onRangeFilterChange}
