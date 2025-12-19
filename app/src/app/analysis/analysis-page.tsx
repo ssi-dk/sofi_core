@@ -253,18 +253,9 @@ export default function AnalysisPage() {
     [_submitChange, setLastUpdatedRow]
   );
 
-  const selection = useSelector<RootState>((s) => {
-    const fullSelection = s.selection
-      .selection as DataTableSelection<AnalysisResult>;
-    if (!pageState.isNarrowed) {
-      return fullSelection;
-    }
-    return Object.fromEntries(
-      Object.entries(fullSelection).filter(
-        ([_key, value]) => value.original.institution === user.institution
-      )
-    );
-  }) as DataTableSelection<AnalysisResult>;
+  const selection = useSelector<RootState>((s) => 
+      s.selection.selection as DataTableSelection<AnalysisResult>
+  ) as DataTableSelection<AnalysisResult>;
 
   const approvals = useSelector<RootState>((s) => s.entities.approvalMatrix);
   const view = useSelector<RootState>(
@@ -272,13 +263,19 @@ export default function AnalysisPage() {
   ) as UserDefinedViewInternal;
 
   const displayData = useMemo(
-    () => [
-      ...Object.entries(selection)
-        .filter(([key, _]) => !data.find((seq) => seq.sequence_id === key))
-        .map(([_, value]) => value.original),
-      ...data,
-    ],
-    [selection, data]
+    () => {
+      const selectionValues = Object.values(selection).map(v => v.original)
+
+      if (pageState.isNarrowed) {
+        return selectionValues
+      } 
+      return[
+        ...selectionValues,
+        ...data,
+      ]
+      
+  },
+    [selection, data,pageState.isNarrowed]
   );
 
   const [lastSearchQuery, setLastSearchQuery] = useState<AnalysisQuery>({
@@ -402,13 +399,6 @@ export default function AnalysisPage() {
       isLoadingRef.current = false;
     }
   }, [isPending, dispatch, toast]);
-
-  const [propFilters, setPropFilters] = React.useState(
-    {} as PropFilter<AnalysisResult>
-  );
-  const [rangeFilters, setRangeFilters] = React.useState(
-    {} as RangeFilter<AnalysisResult>
-  );
 
   const onSearch = React.useCallback(
     (q: SearchQuery, pageSize: number) => {
@@ -971,7 +961,7 @@ export default function AnalysisPage() {
             <AnalysisSelectionMenu
               selection={selection}
               isNarrowed={pageState.isNarrowed}
-              data={data}
+              data={displayData}
               search={onSearch}
               lastSearchQuery={lastSearchQuery}
             />
@@ -991,7 +981,7 @@ export default function AnalysisPage() {
             )}
           </ColumnConfigWidget>
           <ExportButton
-            data={data}
+            data={displayData}
             columns={columns.map((x) => x.accessor) as any}
             selection={selection}
           />
@@ -1012,9 +1002,7 @@ export default function AnalysisPage() {
             getCellStyle={getCellStyle}
             getStickyCellStyle={getStickyCellStyle}
             data={
-              pageState.isNarrowed
-                ? Object.values(selection).map((v) => v.original)
-                : displayData
+              displayData
             }
             renderCellControl={renderCellControl}
             primaryKey="sequence_id"
