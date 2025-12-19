@@ -1,4 +1,5 @@
 # import .database
+from datetime import datetime
 from typing import Any, Dict
 import pymongo
 import logging
@@ -312,11 +313,18 @@ def get_analysis_with_metadata(sequence_id: str) -> Dict[str, Any]:
     else:
         return None
 
-def get_filter_metadata(authorized_columns, institution, data_clearance):
+def get_filter_metadata(authorized_columns, institution, data_clearance, cache={}):
     """
     Get filter metadata without applying any query filters.
     Returns min/max dates and distinct values for various fields.
     """
+
+    # This function is ~~very~~ slow. Around 4 secs on 800 rows, and is executed on every query.
+    # Temporary fix using a cache. Cache resets every hour
+    if "value" in cache and "timestamp" in cache and (datetime.now() -  cache["timestamp"]).total_seconds() < 3600:
+        print("MD CACHE HIT",file=sys.stderr)
+        return cache["value"]
+
     conn = get_connection()
     mydb = conn[DB_NAME]
     analysis = mydb[ANALYSIS_COL_NAME]
@@ -482,4 +490,7 @@ def get_filter_metadata(authorized_columns, institution, data_clearance):
             result = list(analysis.aggregate(distinct_pipeline))
             metadata[metadata_key] = [item["value"] for item in result if item["value"] is not None]
     
+    cache["value"] = metadata
+    cache["timestamp"] = datetime.now()
+
     return metadata
