@@ -322,7 +322,6 @@ def get_filter_metadata(authorized_columns, institution, data_clearance, cache={
     # This function is ~~very~~ slow. Around 4 secs on 800 rows, and is executed on every query.
     # Temporary fix using a cache. Cache resets every hour
     if "value" in cache and "timestamp" in cache and (datetime.now() -  cache["timestamp"]).total_seconds() < 3600:
-        print("MD CACHE HIT",file=sys.stderr)
         return cache["value"]
 
     conn = get_connection()
