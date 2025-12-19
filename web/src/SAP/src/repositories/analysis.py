@@ -313,23 +313,30 @@ def get_analysis_with_metadata(sequence_id: str) -> Dict[str, Any]:
     else:
         return None
 
-def get_filter_metadata(authorized_columns, institution, data_clearance, cache={}):
+def get_filter_metadata(authorized_columns, institution, data_clearance):
     """
     Get filter metadata without applying any query filters.
     Returns min/max dates and distinct values for various fields.
     """
 
-    # This function is ~~very~~ slow. Around 4 secs on 800 rows, and is executed on every query.
-    # Temporary fix using a cache. Cache resets every hour
-    if "value" in cache and "timestamp" in cache and (datetime.now() -  cache["timestamp"]).total_seconds() < 3600:
-        return cache["value"]
+    distinct = ["institution","project_title","project_number","animal","run_id","isolate_id","fud_no","cluster_id","qc_provided_species","serotype_final","st_final"]
+    distinct_group = {"_id": None}
 
-    conn = get_connection()
+    for field in distinct:
+        distinct_group[field] = {"$addToSet": f"${field}"}
+
+
+    conn, encryption_client = get_connection(with_enc=True)
+
+    q = encrypt_dict(encryption_client, {}, pii_columns())
+
+    if data_clearance == "own-institution":
+        q["institution"] = institution
+    column_projection = {x: 1 for x in authorized_columns}
+    column_projection["id"] = { "$toString": "$_id" }
     mydb = conn[DB_NAME]
     analysis = mydb[ANALYSIS_COL_NAME]
-    
-    # Base pipeline for joining metadata collections (same as get_analysis_page)
-    base_pipeline = [
+    pipeline = [
         {
             "$lookup": {
                 "from": TBR_METADATA_COL_NAME,
@@ -391,105 +398,49 @@ def get_filter_metadata(authorized_columns, institution, data_clearance, cache={
                 ]
             }
         } if data_clearance == "cross-institution" else {"$match": {}},
+        {"$lookup": {
+            "from": "sap_approvals",
+            "let": { "seqId": "$sequence_id" },
+            "pipeline": [
+                { "$project": { "status": 1, "matrixKeys": { "$objectToArray": "$matrix" } } },
+                { "$unwind": "$matrixKeys" },
+                { "$match": { "$expr": { "$eq": ["$matrixKeys.k", "$$seqId"] } } },
+                { "$limit": 1 }
+            ],
+            "as": "approval_info"
+            }
+        },
+        {
+            "$addFields": {
+                "approval_status": {
+                    "$ifNull": [{ "$arrayElemAt": ["$approval_info.matrixKeys.v.sequence_id", 0] }, "pending"]
+                }
+            }
+        },
+        {
+            "$project": {
+                "approval_info": 0
+            }
+        },
+        {"$match": q},
+        {"$project": column_projection},
+        {"$unset": ["_id", "metadata"]},
+        {"$group": distinct_group},
+        {"$project": {"_id": 0}}
     ]
-    
-    # Apply institution filter for own-institution clearance
-    if data_clearance == "own-institution":
-        base_pipeline.append({"$match": {"institution": institution}})
-    
-    # Filter out None stages
-    base_pipeline = list(filter(lambda x: x != {"$match": {}}, base_pipeline))
-    
-    metadata = {}
-    
-    # Get date ranges for date_sample
-    if "date_sample" in authorized_columns:
-        date_sample_pipeline = base_pipeline + [
-            {
-                "$match": {
-                    "date_sample": {"$exists": True, "$ne": None}
-                }
-            },
-            {
-                "$group": {
-                    "_id": None,
-                    "min_date": {"$min": "$date_sample"},
-                    "max_date": {"$max": "$date_sample"}
-                }
-            }
-        ]
-        
-        result = list(analysis.aggregate(date_sample_pipeline))
-        if result:
-            metadata["min_date_sample"] = result[0]["min_date"]
-            metadata["max_date_sample"] = result[0]["max_date"]
-    
-    # Get date ranges for date_received
-    if "date_received" in authorized_columns:
-        date_received_pipeline = base_pipeline + [
-            {
-                "$match": {
-                    "date_received": {"$exists": True, "$ne": None}
-                }
-            },
-            {
-                "$group": {
-                    "_id": None,
-                    "min_date": {"$min": "$date_received"},
-                    "max_date": {"$max": "$date_received"}
-                }
-            }
-        ]
-        
-        result = list(analysis.aggregate(date_received_pipeline))
-        if result:
-            metadata["min_date_received"] = result[0]["min_date"]
-            metadata["max_date_received"] = result[0]["max_date"]
-    
-    # Define categorical fields and their corresponding authorization check names
-    categorical_fields = {
-        "institutions": "institution",
-        "project_titles": "project_title", 
-        "project_numbers": "project_number",
-        "animals": "animal",
-        "run_ids": "run_id",
-        "isolate_ids": "isolate_id",
-        "fud_nos": "fud_no",
-        "cluster_ids": "cluster_id",
-        "qc_provided_species": "qc_provided_species",
-        "serotype_finals": "serotype_final",
-        "st_finals": "st_final"
-    }
-    
-    # Get distinct values for categorical fields
-    for metadata_key, field_name in categorical_fields.items():
-        if field_name in authorized_columns:
-            distinct_pipeline = base_pipeline + [
-                {
-                    "$match": {
-                        field_name: {"$exists": True, "$ne": None, "$ne": ""}
-                    }
-                },
-                {
-                    "$group": {
-                        "_id": f"${field_name}"
-                    }
-                },
-                {
-                    "$sort": {"_id": 1}
-                },
-                {
-                    "$project": {
-                        "_id": 0,
-                        "value": "$_id"
-                    }
-                }
-            ]
-            
-            result = list(analysis.aggregate(distinct_pipeline))
-            metadata[metadata_key] = [item["value"] for item in result if item["value"] is not None]
-    
-    cache["value"] = metadata
-    cache["timestamp"] = datetime.now()
 
+    result = list(analysis.aggregate(pipeline))
+    distinct_values = result[0] if result else {}
+
+    metadata = {
+        "institutions": distinct_values["institution"],
+        "project_titles": distinct_values["project_title"],
+        "project_numbers": distinct_values["project_number"],
+        "run_ids": distinct_values["run_id"],
+        "isolate_ids": distinct_values["isolate_id"],
+        "cluster_ids": distinct_values["cluster_id"],
+        "qc_provided_species": distinct_values["qc_provided_species"],
+        "serotype_finals": distinct_values["serotype_final"],
+        "st_finals": distinct_values["st_final"]
+    }
     return metadata
