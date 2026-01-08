@@ -22,6 +22,7 @@ class Resistance(Model):
     """
     SENSITIV = "Sensitiv"
     RESISTENT = "Resistent"
+    NO_DATA = "No data"
     def __init__(self):  # noqa: E501
         """Resistance - a model defined in OpenAPI
 

@@ -18,7 +18,8 @@
  */
 export enum Resistance {
     Sensitiv = 'Sensitiv',
-    Resistent = 'Resistent'
+    Resistent = 'Resistent',
+    No_data = 'No data'
 }
 
 export function ResistanceFromJSON(json: any): Resistance {
