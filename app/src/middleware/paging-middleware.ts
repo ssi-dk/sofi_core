@@ -6,7 +6,7 @@ const { REQUEST_SUCCESS } = actionTypes;
 export const pagingMiddleware = (store) => (next) => (action) => {
   if (action && action.type === REQUEST_SUCCESS) {
     // ugly hack
-    if (action.url.indexOf("/api/analysis") > -1) {
+    if (false && action.url.indexOf("/api/analysis") > -1) {
       if (action.entities.autoPage) {
         // we want to page the analysis results automatically
         const pagingToken = action.responseBody.paging_token;

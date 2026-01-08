@@ -9,6 +9,7 @@ from .analysis_query import AnalysisQuery
 from .analysis_result import AnalysisResult
 from .analysis_result_all_of import AnalysisResultAllOf
 from .analysis_result_all_of_qc_failed_tests import AnalysisResultAllOfQcFailedTests
+from .analysis_sorting import AnalysisSorting
 from .approval import Approval
 from .approval_all_of import ApprovalAllOf
 from .approval_request import ApprovalRequest
@@ -20,7 +21,9 @@ from .clone_workspace import CloneWorkspace
 from .column import Column
 from .create_workspace import CreateWorkspace
 from .data_clearance import DataClearance
+from .date_range import DateRange
 from .exception import Exception
+from .filter_options import FilterOptions
 from .gene import Gene
 from .health_response import HealthResponse
 from .health_status import HealthStatus
