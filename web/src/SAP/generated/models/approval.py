@@ -23,13 +23,15 @@ class Approval(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, matrix=None, required_values=None, id=None, approver=None, timestamp=None, sequence_ids=None, status=None):  # noqa: E501
+    def __init__(self, matrix=None, required_values=None, revoked_sequence_ids=None, id=None, approver=None, timestamp=None, sequence_ids=None, status=None):  # noqa: E501
         """Approval - a model defined in OpenAPI
 
         :param matrix: The matrix of this Approval.  # noqa: E501
         :type matrix: Dict[str, Dict[str, ApprovalStatus]]
         :param required_values: The required_values of this Approval.  # noqa: E501
         :type required_values: Dict[str, Dict[str, str]]
+        :param revoked_sequence_ids: The revoked_sequence_ids of this Approval.  # noqa: E501
+        :type revoked_sequence_ids: List[str]
         :param id: The id of this Approval.  # noqa: E501
         :type id: str
         :param approver: The approver of this Approval.  # noqa: E501
@@ -44,6 +46,7 @@ class Approval(Model):
         self.openapi_types = {
             'matrix': Dict[str, Dict[str, ApprovalStatus]],
             'required_values': Dict[str, Dict[str, str]],
+            'revoked_sequence_ids': List[str],
             'id': str,
             'approver': str,
             'timestamp': datetime,
@@ -54,6 +57,7 @@ class Approval(Model):
         self.attribute_map = {
             'matrix': 'matrix',
             'required_values': 'required_values',
+            'revoked_sequence_ids': 'revoked_sequence_ids',
             'id': 'id',
             'approver': 'approver',
             'timestamp': 'timestamp',
@@ -63,6 +67,7 @@ class Approval(Model):
 
         self._matrix = matrix
         self._required_values = required_values
+        self._revoked_sequence_ids = revoked_sequence_ids
         self._id = id
         self._approver = approver
         self._timestamp = timestamp
@@ -123,6 +128,27 @@ class Approval(Model):
         """
 
         self._required_values = required_values
+
+    @property
+    def revoked_sequence_ids(self):
+        """Gets the revoked_sequence_ids of this Approval.
+
+
+        :return: The revoked_sequence_ids of this Approval.
+        :rtype: List[str]
+        """
+        return self._revoked_sequence_ids
+
+    @revoked_sequence_ids.setter
+    def revoked_sequence_ids(self, revoked_sequence_ids):
+        """Sets the revoked_sequence_ids of this Approval.
+
+
+        :param revoked_sequence_ids: The revoked_sequence_ids of this Approval.
+        :type revoked_sequence_ids: List[str]
+        """
+
+        self._revoked_sequence_ids = revoked_sequence_ids
 
     @property
     def id(self):

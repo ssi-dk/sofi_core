@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import {
   Box,
   Flex,
@@ -14,6 +20,11 @@ import {
   AnalysisQuery,
   ApprovalStatus,
   UserInfo,
+  QueryExpression,
+  QueryOperator,
+  QueryOperand,
+  FilterOptions,
+  AnalysisSorting,
 } from "sap-client";
 import { useMutation, useRequest } from "redux-query-react";
 import { useDispatch, useSelector } from "react-redux";
@@ -22,7 +33,7 @@ import { useTranslation } from "react-i18next";
 import { OptionTypeBase } from "react-select";
 import { UserDefinedViewInternal } from "models";
 import { RootState } from "app/root-reducer";
-import { predicateBuilder, PropFilter, RangeFilter } from "utils";
+import { PropFilter, RangeFilter } from "utils";
 import { Loading } from "loading";
 import DataTable, {
   ColumnReordering,
@@ -55,17 +66,40 @@ import { Health } from "./health/health";
 import { Debug } from "./debug";
 import { AnalysisSelectionMenu } from "./analysis-selection-menu";
 import { CellConfirmModal } from "./data-table/cell-confirm-modal";
+import {
+  appendToSearchHistory,
+  buildQueryFromFilters,
+  checkExpressionEquality,
+  checkSortEquality,
+  recurseSearchTree,
+} from "./search/search-utils";
 
 // When the fields in this array are 'approved', a given sequence is rendered
 // as 'approved' also.
 const PRIMARY_APPROVAL_FIELDS = ["st_final", "qc_final"];
+
+export type SearchQuery = AnalysisQuery & { clearAllFields?: boolean };
+
+let prevSearchTerms: Set<string> = new Set(); // NEEDS to be outside the react component to prevent un-needed rerender
 
 export default function AnalysisPage() {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const toast = useToast();
 
+  const [currentPage, setCurrentPage] = useState(0);
+  const [isLoadingNextPage, setIsLoadingNextPage] = useState(false);
+  const isLoadingRef = useRef(false);
+  const [nextPageToken, setNextPageToken] = useState<string | null>(null);
+  const nextPageTokenRef = useRef<string | null>(null);
+  const currentPageRef = useRef(0);
   const [isModalOpen, setModalOpen] = useState(false);
+  const [prevColumnSort, setPrevColumnSort] = React.useState<
+    AnalysisSorting & { column: string; ascending: boolean }
+  >(undefined);
+  const [columnSort, setColumnSort] = React.useState<
+    AnalysisSorting & { column: string; ascending: boolean }
+  >(undefined);
   const [modalInfo, setModalInfo] = useState({
     rowId: "",
     columnId: "",
@@ -79,9 +113,11 @@ export default function AnalysisPage() {
     setDetailsIsolate(undefined);
   }, []);
 
+  const PAGE_SIZE = 100;
+
   const [columnLoadState] = useRequest(requestColumns());
   const [{ isPending, isFinished }] = useRequest({
-    ...requestPageOfAnalysis({ pageSize: 100 }, false),
+    ...requestPageOfAnalysis({ pageSize: PAGE_SIZE }, false),
   });
 
   const user = useSelector<RootState>((s) => s.entities.user ?? {}) as UserInfo;
@@ -90,16 +126,69 @@ export default function AnalysisPage() {
 
   const rootStateData = useSelector<RootState>((s) => s.entities.analysis);
 
-  // TODO: Figure out how to make this strongly typed
-  const data = React.useMemo(() => {
-    return Object.values(rootStateData ?? {}) as AnalysisResult[];
-  }, [rootStateData]);
+  const filterOptions = (useSelector<RootState>(
+    (s) => s.entities.filterOptions
+  ) as FilterOptions) || {
+    date_sample: { min: null, max: null },
+    date_received: { min: null, max: null },
+    institutions: [],
+    project_titles: [],
+    project_numbers: [],
+    animals: [],
+    run_ids: [],
+    isolate_ids: [],
+    fud_nos: [],
+    cluster_ids: [],
+    qc_provided_species: [],
+    serotype_finals: [],
+    st_finals: [],
+  };
 
   const totalCount = useSelector<RootState>((s) =>
     s.entities.analysisTotalCount !== 0
       ? s.entities.analysisTotalCount
       : Object.keys(s.entities.analysis).length
   ) as number;
+
+  const data = React.useMemo(() => {
+    return Object.values(rootStateData ?? {}) as AnalysisResult[];
+  }, [rootStateData]);
+
+  const currentPagingToken = useSelector<RootState>(
+    (s) => s.entities.analysisPagingToken
+  ) as string;
+
+  // Update hasMoreData to check if we have a paging token
+  const hasMoreData = useMemo(() => {
+    return (
+      data.length < totalCount &&
+      currentPagingToken !== null &&
+      currentPagingToken !== undefined
+    );
+  }, [data.length, totalCount, currentPagingToken]);
+
+  // Keep a ref for immediate access in async operations
+  const hasMoreDataRef = useRef(hasMoreData);
+  // Update the ref when hasMoreData changes
+  useEffect(() => {
+    hasMoreDataRef.current = hasMoreData;
+  }, [hasMoreData]);
+
+  // Update nextPageTokenRef when currentPagingToken changes
+  useEffect(() => {
+    nextPageTokenRef.current = currentPagingToken;
+    setNextPageToken(currentPagingToken);
+  }, [currentPagingToken]);
+
+  useEffect(() => {
+    isLoadingRef.current = isLoadingNextPage;
+  }, [isLoadingNextPage]);
+
+  const searchTerms = useMemo(() => {
+    const current = new Set(data.flatMap(Object.keys));
+    prevSearchTerms = new Set(...prevSearchTerms, ...current);
+    return prevSearchTerms;
+  }, [data]);
 
   const columnConfigs = useSelector<RootState>(
     (s) => s.entities.columns
@@ -114,8 +203,14 @@ export default function AnalysisPage() {
             sortType: !k.startsWith("date")
               ? "alphanumeric"
               : (a, b, column) => {
-                  const aDate = a.original[column]?.getTime() ?? 0;
-                  const bDate = b.original[column]?.getTime() ?? 0;
+                  const enforceDate = (d: Date | string | undefined) => {
+                    if (typeof d == "string") {
+                      return new Date(d)
+                    }
+                    return d;
+                  }
+                  const aDate = enforceDate(a.original[column])?.getTime() ?? 0;
+                  const bDate = enforceDate(b.original[column])?.getTime() ?? 0;
 
                   return aDate - bDate;
                 },
@@ -158,25 +253,39 @@ export default function AnalysisPage() {
     [_submitChange, setLastUpdatedRow]
   );
 
-  const selection = useSelector<RootState>((s) => {
-    const fullSelection = s.selection
-      .selection as DataTableSelection<AnalysisResult>;
-    if (!pageState.isNarrowed) {
-      return fullSelection;
-    }
-    return Object.fromEntries(
-      Object.entries(fullSelection).filter(
-        ([_key, value]) => value.original.institution === user.institution
-      )
-    );
-  }) as DataTableSelection<AnalysisResult>;
+  const selection = useSelector<RootState>((s) => 
+      s.selection.selection as DataTableSelection<AnalysisResult>
+  ) as DataTableSelection<AnalysisResult>;
 
   const approvals = useSelector<RootState>((s) => s.entities.approvalMatrix);
   const view = useSelector<RootState>(
     (s) => s.view.view
   ) as UserDefinedViewInternal;
 
+  const displayData = useMemo(
+    () => {
+      const selectionValues = Object.values(selection).map(v => v.original)
+
+      if (pageState.isNarrowed) {
+        return selectionValues
+      } 
+      return[
+        ...selectionValues,
+        ...data,
+      ]
+      
+  },
+    [selection, data,pageState.isNarrowed]
+  );
+
   const [lastSearchQuery, setLastSearchQuery] = useState<AnalysisQuery>({
+    expression: {},
+  });
+  const lastQueryOperands = useMemo(() => {
+    return recurseSearchTree(lastSearchQuery.expression);
+  }, [lastSearchQuery]);
+
+  const [rawSearchQuery, setRawSearchQuery] = useState<SearchQuery>({
     expression: {},
   });
 
@@ -186,29 +295,218 @@ export default function AnalysisPage() {
   const [rangeFilters, setRangeFilters] = React.useState(
     {} as RangeFilter<AnalysisResult>
   );
+  const [approvalFilters, setApprovalFilters] = React.useState<ApprovalStatus[]>([]);
+
+  const clearFieldFromSearch = useCallback( (field: string) => {
+    const recurseAndModify = (
+      ex?: QueryExpression | QueryOperand
+    ): QueryExpression => {
+      if (!ex) {
+        return undefined;
+      }
+      if ("field" in ex) {
+        if (ex.field == field) {
+          return undefined;
+        }
+        return { ...ex };
+      }
+
+    
+      const left = recurseAndModify(ex.left);
+      const right = recurseAndModify(ex.right);
+
+      if (!left && !right) {
+        return undefined;
+      } else if (!left) {
+        return right;
+      } else if (!right) {
+        return left;
+      } else {
+        return { ...ex, left, right };
+      }
+    };
+
+    // Also clear from prop filters
+    setPropFilters((prev) => {
+      const newFilters = { ...prev };
+      delete newFilters[field];
+      return newFilters;
+    });
+
+    // Also clear from range filters
+    setRangeFilters((prev) => {
+      const newFilters = { ...prev };
+      delete newFilters[field];
+      return newFilters;
+    });
+
+    if (field == "approval_status") {
+      setApprovalFilters([]);
+    }
+
+    setRawSearchQuery((old) => ({
+      expression: recurseAndModify(old.expression),
+    }));
+  },[setPropFilters, setRangeFilters, setRawSearchQuery, setApprovalFilters]);
+
+  useEffect(() => {
+    isLoadingRef.current = isLoadingNextPage;
+  }, [isLoadingNextPage]);
+
+  useEffect(() => {
+    hasMoreDataRef.current = hasMoreData;
+  }, [hasMoreData]);
+
+  useEffect(() => {
+    currentPageRef.current = currentPage;
+  }, [currentPage]);
+
+  const loadNextPage = useCallback(async () => {
+    // Use refs for immediate state check to prevent race conditions
+    if (
+      isLoadingRef.current ||
+      !hasMoreDataRef.current ||
+      isPending ||
+      !nextPageTokenRef.current
+    ) {
+      return;
+    }
+
+    // Set loading state immediately
+    isLoadingRef.current = true;
+    setIsLoadingNextPage(true);
+
+
+    try {
+      const requestConfig = requestPageOfAnalysis(
+        {
+          pagingToken: nextPageTokenRef.current,
+        },
+        true
+      );
+      dispatch(requestAsync(requestConfig));
+    } catch (error) {
+      console.error("Error loading next page:", error);
+      toast({
+        title: "Error loading more results",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    } finally {
+      setIsLoadingNextPage(false);
+      isLoadingRef.current = false;
+    }
+  }, [isPending, dispatch, toast]);
 
   const onSearch = React.useCallback(
-    (q: AnalysisQuery, pageSize: number) => {
+    (q: SearchQuery, pageSize: number) => {
+      const mergeFilters = (
+        searchExpression: QueryExpression,
+        propFilter: PropFilter<AnalysisResult>,
+        rangeFilter: RangeFilter<AnalysisResult>,
+        approvalFilter: ApprovalStatus[],
+      ) => {
+        const filterExpression = buildQueryFromFilters(propFilter, rangeFilter, approvalFilter);
+        searchExpression = Object.fromEntries(
+          Object.entries(searchExpression).filter(([_, v]) => !!v)
+        ) as QueryExpression;
+
+        if (
+          searchExpression &&
+          Object.keys(searchExpression).length > 0 &&
+          filterExpression
+        ) {
+          return {
+            operator: QueryOperator.AND,
+            left: searchExpression.operator
+              ? searchExpression
+              : searchExpression.left,
+            right: filterExpression.operator
+              ? filterExpression
+              : filterExpression.left,
+          };
+        } else if (filterExpression) {
+          return filterExpression;
+        } else if (
+          searchExpression &&
+          Object.keys(searchExpression).length > 0
+        ) {
+          return searchExpression;
+        } else {
+          return {};
+        }
+      };
+
+      const newExpression = q.clearAllFields
+        ? q.expression
+        : mergeFilters(q.expression || {}, propFilters, rangeFilters, approvalFilters);
+      if (
+        checkExpressionEquality(newExpression, lastSearchQuery.expression) &&
+        checkSortEquality(columnSort, prevColumnSort)
+      ) {
+        return;
+      }
+      setPrevColumnSort(columnSort);
+
+      // Reset pagination state when starting a new search
+      setIsLoadingNextPage(false);
+      setNextPageToken(null);
+
+      // Update refs immediately
+      nextPageTokenRef.current = null;
+      isLoadingRef.current = false;
+
+      // ...rest of existing onSearch logic remains the same...
+
+      if (q.clearAllFields) {
+        setPropFilters({});
+        setRangeFilters({});
+        setApprovalFilters([]);
+      }
+      const newQ = { expression: newExpression };
+
       dispatch({ type: "RESET/Analysis" });
-      setLastSearchQuery(q);
-      // if we got an empty expression, just request a page
-      if (q.expression && Object.keys(q.expression).length === 0) {
+      setLastSearchQuery(newQ);
+      appendToSearchHistory(newExpression);
+
+      if (newExpression && Object.keys(newExpression).length === 0) {
         dispatch(
           requestAsync({
-            ...requestPageOfAnalysis({ pageSize: pageSize }, false),
+            ...requestPageOfAnalysis(
+              {
+                pageSize: pageSize,
+                sortingColumn: columnSort?.column,
+                sortingAscending: columnSort?.ascending,
+              },
+              false
+            ), // false for replace mode
           })
         );
       } else {
         dispatch(
           requestAsync({
-            ...searchPageOfAnalysis({ query: { ...q, page_size: pageSize } }),
-            queryKey: JSON.stringify(q),
+            ...searchPageOfAnalysis(
+              {
+                query: {
+                  analysis_sorting: columnSort,
+                  expression: newExpression,
+                  page_size: pageSize,
+                },
+              },
+              false
+            ), // false for replace mode
+            queryKey: JSON.stringify(newQ),
           })
         );
       }
     },
-    [dispatch]
+    [dispatch, propFilters, rangeFilters, lastSearchQuery, approvalFilters, columnSort, prevColumnSort, setPrevColumnSort]
   );
+
+  useEffect(() => {
+    onSearch(rawSearchQuery, PAGE_SIZE);
+  }, [onSearch, rawSearchQuery]);
 
   const { hiddenColumns } = view;
 
@@ -236,27 +534,24 @@ export default function AnalysisPage() {
 
   const onPropFilterChange = React.useCallback(
     (p: PropFilter<AnalysisResult>) => {
+      setRawSearchQuery((old) => ({ ...old, clearAllFields: false }));
       setPropFilters({ ...propFilters, ...p });
     },
-    [propFilters, setPropFilters]
+    [propFilters, setPropFilters, setRawSearchQuery]
   );
 
   const onRangeFilterChange = React.useCallback(
     (p: RangeFilter<AnalysisResult>) => {
       setRangeFilters({ ...rangeFilters, ...p });
+      setRawSearchQuery((old) => ({ ...old, clearAllFields: false }));
     },
-    [rangeFilters, setRangeFilters]
+    [rangeFilters, setRangeFilters, setRawSearchQuery]
   );
 
-  const composedFilter = React.useCallback(
-    (a) => predicateBuilder(propFilters, rangeFilters)(a),
-    [propFilters, rangeFilters]
-  );
-
-  const filteredData = React.useMemo(() => data.filter(composedFilter), [
-    composedFilter,
-    data,
-  ]);
+  const onApprovalFilterChange = useCallback((values) => {
+    setApprovalFilters(values);
+    setRawSearchQuery((old) => ({ ...old, clearAllFields: false }));
+  },[])
 
   const primaryApprovalColumns = React.useMemo(
     () =>
@@ -467,8 +762,8 @@ export default function AnalysisPage() {
       if (cellUpdating(rowId, columnId)) {
         return <Skeleton width="100px" height="20px" />;
       }
-      const rowInstitution = data.find((row) => row.sequence_id == rowId)
-        ?.institution;
+      const rowInstitution = displayData.find((row) => row.sequence_id == rowId)
+        .institution;
       const editIsAllowed =
         columnConfigs[columnId].editable ||
         user.institution == rowInstitution ||
@@ -595,7 +890,7 @@ export default function AnalysisPage() {
       rowUpdating,
       cellUpdating,
       approvals,
-      data,
+      displayData,
       user,
     ]
   );
@@ -618,8 +913,6 @@ export default function AnalysisPage() {
   const [columnReorder, setColumnReorder] = React.useState(
     undefined as ColumnReordering
   );
-
-  const [columnSort, setColumnSort] = React.useState(undefined);
 
   const onReorderColumn = React.useCallback(
     (sourceIdx: number, destIdx: number, draggableId: string) => {
@@ -645,8 +938,9 @@ export default function AnalysisPage() {
       <Box role="navigation" gridColumn="2 / 4" pb={5}>
         <Flex justifyContent="flex-end">
           <AnalysisSearch
-            onSubmit={onSearch}
+            onSearchChange={setRawSearchQuery}
             isDisabled={pageState.isNarrowed}
+            searchTerms={searchTerms}
           />
           <Box minW="250px" ml="5">
             <AnalysisViewSelector />
@@ -666,7 +960,7 @@ export default function AnalysisPage() {
             <AnalysisSelectionMenu
               selection={selection}
               isNarrowed={pageState.isNarrowed}
-              data={filteredData}
+              data={displayData}
               search={onSearch}
               lastSearchQuery={lastSearchQuery}
             />
@@ -686,7 +980,7 @@ export default function AnalysisPage() {
             )}
           </ColumnConfigWidget>
           <ExportButton
-            data={filteredData}
+            data={displayData}
             columns={columns.map((x) => x.accessor) as any}
             selection={selection}
           />
@@ -707,9 +1001,7 @@ export default function AnalysisPage() {
             getCellStyle={getCellStyle}
             getStickyCellStyle={getStickyCellStyle}
             data={
-              pageState.isNarrowed
-                ? Object.keys(selection).map((key) => selection[key].original)
-                : filteredData
+              displayData
             }
             renderCellControl={renderCellControl}
             primaryKey="sequence_id"
@@ -718,21 +1010,26 @@ export default function AnalysisPage() {
             selection={selection}
             onDetailsClick={openDetailsView}
             view={view}
+            onLoadNextPage={loadNextPage}
+            hasMoreData={hasMoreData}
+            isLoadingNextPage={isLoadingNextPage}
           />
         </Box>
+
         <Box role="status" gridColumn="2 / 4" margin={2}>
           {isPending && `${t("Fetching...")} ${data.length}`}
           {isFinished &&
             !pageState.isNarrowed &&
-            `${t("Showing")} ${filteredData.length} ${t(
-              "of"
-            )} ${totalCount} ${t("records")}.`}
+            `${t("Showing")} ${data.length} ${t("of")} ${totalCount} ${t(
+              "records"
+            )}.`}
           {!pageState.isNarrowed && Object.keys(selection).length > 0
             ? ` ${Object.keys(selection).length} selected.`
             : null}
           {isFinished &&
             pageState.isNarrowed &&
             `${t("Staging")} ${Object.keys(selection).length} ${t("records")}.`}
+          {isLoadingRef.current && " Loading more results..."}
         </Box>
       </Box>
       <CellConfirmModal
@@ -761,9 +1058,12 @@ export default function AnalysisPage() {
       <HalfHolyGrailLayout
         sidebar={
           <AnalysisSidebar
-            data={filteredData}
+            clearFieldFromSearch={clearFieldFromSearch}
+            queryOperands={lastQueryOperands}
+            filterOptions={filterOptions}
             onPropFilterChange={onPropFilterChange}
             onRangeFilterChange={onRangeFilterChange}
+            onApprovalFilterChange={onApprovalFilterChange}
             isDisabled={pageState.isNarrowed}
           />
         }

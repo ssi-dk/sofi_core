@@ -106,12 +106,7 @@ export default function Tree({
         console.log("tree cleanup");
       }
     };
-  }, [
-    leaf_colors,
-    newick_data,
-    onSelected,
-    disableContextMenu,
-  ]);
+  }, [leaf_colors, newick_data, onSelected, disableContextMenu]);
 
   useEffect(() => {
     if (tree.current && tree.current.state.selectedIds) {

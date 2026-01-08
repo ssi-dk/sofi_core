@@ -30,12 +30,9 @@ const FilterHelpModal = (props: Props) => {
         <ModalCloseButton />
         <ModalBody overflowY="auto" px="7">
           <Box>
-            Filters can be applied to filter out irrelevant results from the
-            current results.
+            Filters can be used to search for relevant results. They are
+            eqvivalent to the search bar.
           </Box>
-          <br />
-          <Heading size="s">NB!</Heading>
-          <Box>Filters only work on the currently displayed results.</Box>
         </ModalBody>
         <ModalFooter>
           <Button colorScheme="blue" mr={3} onClick={onClose}>
