@@ -1307,6 +1307,7 @@ components:
       enum:
       - Sensitiv
       - Resistent
+      - No data
       type: string
     BaseMetadata:
       properties:
