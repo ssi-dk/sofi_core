@@ -1025,7 +1025,7 @@ def agg_pipeline(changed_ids=None):
                                                     "in": {
                                                         "$switch": {
                                                             "branches": [
-                                                                {"case": {"$eq": ["$$amr", None]}, "then": "Sensitiv"},
+                                                                {"case": {"$eq": ["$$amr", None]}, "then": "No data"},
                                                                 {"case": {"$eq": ["$$amr", "$null"]}, "then": "Sensitiv"},
                                                                 {"case": {"$eq": ["$$amr.genes", "$null"]}, "then": "Sensitiv"},
                                                                 {"case": {"$ne": ["$$amr.genes", "$null"]}, "then": "Resistent"}
