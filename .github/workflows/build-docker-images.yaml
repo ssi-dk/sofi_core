@@ -23,7 +23,7 @@ jobs:
         with:
           ref: ${{ github.ref }}
           submodules: recursive
-          patchAll
+          patchAll: true
 
       # Defaults to patch version, will bump minor on "feat" commit
 
