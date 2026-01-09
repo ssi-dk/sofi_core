@@ -135,7 +135,7 @@ def agg_pipeline(changed_ids=None):
                             "$reduce": {
                                 "input": {
                                     "$map": {
-                                        "input": {"$objectToArray": "$$CURRENT.resistance.report.phenotypes"},
+                                        "input": {"$objectToArray": "$categories.resistance.report.phenotypes"},
                                         "as": "phenotype",
                                         "in": {
                                             "$reduce": {
