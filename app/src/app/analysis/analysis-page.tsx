@@ -344,9 +344,14 @@ export default function AnalysisPage() {
       setApprovalFilters([]);
     }
 
-    setRawSearchQuery((old) => ({
-      expression: recurseAndModify(old.expression),
-    }));
+    setRawSearchQuery((old) => {
+      const mergedExpression = recurseAndModify(old.expression);
+      // When deleting fields, it is sometimes left in an invalid state without the root operator. This adds it back in.
+      const newExpression: QueryExpression = "left" in mergedExpression ? mergedExpression : {left: mergedExpression}
+      return {
+        expression: newExpression
+      }
+    });
   },[setPropFilters, setRangeFilters, setRawSearchQuery, setApprovalFilters]);
 
   useEffect(() => {
