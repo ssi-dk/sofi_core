@@ -43,6 +43,7 @@ jobs:
           tag_prefix: ""
 
   # Build the Docker images and push to the GitHub container registry
+  # This tests what happens when we make a release from another branch.
 
   build_and_push:
     needs: prepare_tag
