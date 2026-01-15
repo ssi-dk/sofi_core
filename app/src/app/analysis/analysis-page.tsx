@@ -290,7 +290,7 @@ export default function AnalysisPage() {
       ]
       
   },
-    [selection, data,pageState.isNarrowed]
+    [selection, data,pageState.isNarrowed, workspace]
   );
 
   const [lastSearchQuery, setLastSearchQuery] = useState<AnalysisQuery>({
