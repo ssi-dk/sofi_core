@@ -8,10 +8,12 @@ from typing import List, Dict  # noqa: F401
 from web.src.SAP.generated.models.base_model_ import Model
 from web.src.SAP.generated.models.analysis_result import AnalysisResult
 from web.src.SAP.generated.models.approval_status import ApprovalStatus
+from web.src.SAP.generated.models.filter_options import FilterOptions
 from web.src.SAP.generated import util
 
 from web.src.SAP.generated.models.analysis_result import AnalysisResult  # noqa: E501
 from web.src.SAP.generated.models.approval_status import ApprovalStatus  # noqa: E501
+from web.src.SAP.generated.models.filter_options import FilterOptions  # noqa: E501
 
 class PageOfAnalysis(Model):
 
@@ -21,7 +23,7 @@ class PageOfAnalysis(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, paging_token=None, total_count=None, items=None, approval_matrix=None):  # noqa: E501
+    def __init__(self, paging_token=None, total_count=None, items=None, approval_matrix=None, filter_options=None):  # noqa: E501
         """PageOfAnalysis - a model defined in OpenAPI
 
         :param paging_token: The paging_token of this PageOfAnalysis.  # noqa: E501
@@ -32,12 +34,15 @@ class PageOfAnalysis(Model):
         :type items: List[AnalysisResult]
         :param approval_matrix: The approval_matrix of this PageOfAnalysis.  # noqa: E501
         :type approval_matrix: Dict[str, Dict[str, ApprovalStatus]]
+        :param filter_options: The filter_options of this PageOfAnalysis.  # noqa: E501
+        :type filter_options: FilterOptions
         """
         self.openapi_types = {
             'paging_token': str,
             'total_count': int,
             'items': List[AnalysisResult],
             'approval_matrix': Dict[str, Dict[str, ApprovalStatus]],
+            'filter_options': FilterOptions,
         }
 
         self.attribute_map = {
@@ -45,12 +50,14 @@ class PageOfAnalysis(Model):
             'total_count': 'total_count',
             'items': 'items',
             'approval_matrix': 'approval_matrix',
+            'filter_options': 'filter_options',
         }
 
         self._paging_token = paging_token
         self._total_count = total_count
         self._items = items
         self._approval_matrix = approval_matrix
+        self._filter_options = filter_options
 
     @classmethod
     def from_dict(cls, dikt):
@@ -154,3 +161,26 @@ class PageOfAnalysis(Model):
             raise ValueError("Invalid value for `approval_matrix`, must not be `None`")  # noqa: E501
 
         self._approval_matrix = approval_matrix
+
+    @property
+    def filter_options(self):
+        """Gets the filter_options of this PageOfAnalysis.
+
+
+        :return: The filter_options of this PageOfAnalysis.
+        :rtype: FilterOptions
+        """
+        return self._filter_options
+
+    @filter_options.setter
+    def filter_options(self, filter_options):
+        """Sets the filter_options of this PageOfAnalysis.
+
+
+        :param filter_options: The filter_options of this PageOfAnalysis.
+        :type filter_options: FilterOptions
+        """
+        if filter_options is None:
+            raise ValueError("Invalid value for `filter_options`, must not be `None`")  # noqa: E501
+
+        self._filter_options = filter_options

@@ -1,0 +1,79 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "FilterOptions",
+  "type": "object",
+  "properties": {
+    "date_sample": {
+      "$ref": "./date_range.json"
+    },
+    "date_received": {
+      "$ref": "./date_range.json"
+    },
+    "institutions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "project_titles": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "project_numbers": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "animals": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "run_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "isolate_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "fud_nos": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "cluster_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "qc_provided_species": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "serotype_finals": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "st_finals": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

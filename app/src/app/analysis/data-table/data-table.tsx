@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
   useTable,
   useBlockLayout,
@@ -10,7 +10,7 @@ import {
   TableState,
   IdType,
 } from "react-table";
-import { VariableSizeGrid } from "react-window";
+import { GridOnScrollProps, VariableSizeGrid } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
 import { Flex, IconButton } from "@chakra-ui/react";
 import { ExternalLinkIcon } from "@chakra-ui/icons";
@@ -73,10 +73,14 @@ type DataTableProps<T extends NotEmpty> = {
     columnIndex: number,
     original: T
   ) => JSX.Element;
+  onLoadNextPage: () => void;
+  hasMoreData: boolean;
+  isLoadingNextPage: boolean;
 };
 
 function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
   const dataGridRef = React.useRef<VariableSizeGrid>(null);
+  const scrollTimeoutRef = React.useRef<NodeJS.Timeout>();
 
   const defaultColumn = React.useMemo(
     () => ({
@@ -106,6 +110,9 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
     renderCellControl,
     view,
     selection,
+    onLoadNextPage,
+    hasMoreData,
+    isLoadingNextPage,
   } = props;
 
   const isInSelection = React.useCallback(
@@ -113,6 +120,38 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
       return selection[rowId]?.cells?.[columnId];
     },
     [selection]
+  );
+
+  const handleScroll = useCallback(
+    (scrollProps: GridOnScrollProps) => {
+      // Clear previous timeout
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current);
+      }
+
+      const { scrollTop } = scrollProps;
+      // Get the grid element to calculate scroll dimensions
+      const gridElement = dataGridRef.current;
+      if (!gridElement) return;
+
+      // Access the underlying DOM element
+      const scrollElement = (gridElement as any)._outerRef;
+      if (!scrollElement) return;
+
+      const { scrollHeight, clientHeight } = scrollElement;
+      const scrollPercentage = (scrollTop + clientHeight) / scrollHeight;
+
+      // Load next page when user scrolls to 80% of the content
+      if (
+        scrollPercentage > 0.8 &&
+        hasMoreData &&
+        !isLoadingNextPage &&
+        onLoadNextPage
+      ) {
+        onLoadNextPage();
+      }
+    },
+    [hasMoreData, isLoadingNextPage, onLoadNextPage]
   );
 
   const [lastView, setLastView] = useState(view);
@@ -206,7 +245,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
       (c) => hiddenColumnIds.indexOf(c) === -1
     );
     return newVisibleColumns;
-  },[view, columns]);
+  }, [view, columns]);
 
   const { columnResizing } = state;
 
@@ -248,7 +287,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
 
     column?.toggleSortBy(columnSort.ascending);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [columnSort]);
+  }, [columnSort, data]);
 
   // Make data table configuration externally visible
   exportDataTable(state);
@@ -593,6 +632,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
                 overscanColumnCount={2}
                 width={width}
                 columnCount={visibleColumnInstances.length}
+                onScroll={onLoadNextPage ? handleScroll : undefined}
               >
                 {RenderCell}
               </StickyVariableSizeGrid>

@@ -1,12 +1,6 @@
 /** @jsxImportSource @compiled/react */
 import React, { ChangeEvent, useState } from "react";
-import {
-  Input,
-  Button,
-  Select,
-  VStack,
-  Box,
-} from "@chakra-ui/react";
+import { Input, Button, Select, VStack, Box } from "@chakra-ui/react";
 import { rightPane, inputForm } from "./gdpr-extract-styles";
 import { ExtractDataFromPiRequest, PersonalIdentifierType } from "sap-client";
 import { requestAsync } from "redux-query";
@@ -33,7 +27,7 @@ const formstateToRequest = (state: PersonalDataState) => {
 
 const GdprExtractPage = () => {
   const { t } = useTranslation();
-  const [loading, ] = useState(false);
+  const [loading] = useState(false);
   const [formState, setFormState] = useState({
     type: null,
     value: "",

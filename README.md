@@ -226,5 +226,35 @@ Once you have cert.pem and key-no-pass.key, put these into /opt/sofi/secrets/cer
 Sometimes the application will still try to use the old certificate. If this happens, do `:secrets` in k9s, delete the tls secret and create it again with
 `k create secret tls dev2.sofi-platform.dk-tls --cert=cert.pem --key=key-no-pass-key.key -n sofi` (change url if not dev). Then go back to `:pods` and kill `sap-api` again.
 
+
+## Create log buckets
+The servers do not automatically create the minio buckets needed for logging to work. In order to create them, do the following steps:
+ - Port forward loki-minio as root
+   ```
+   sudo su
+   /usr/local/bin/k3s kubectl port-forward -n sofi svc/loki-minio 9000:9000 &
+   ```
+ - Download minio cli: 
+   ```
+   curl --progress-bar -L https://dl.min.io/aistor/mc/release/linux-amd64/mc \
+      --create-dirs \
+      -o $HOME/aistor-binaries/mc
+
+   chmod +x ~/aistor-binaries/mc
+   ```
+- Set the minio alias
+  ```
+  mc alias set loki-minio http://localhost:9000 root-user supersecretpassword
+  ```
+- Create the buckets
+  ```
+  mc mb loki-minio/chunks
+  mc mb loki-minio/ruler
+  mc mb loki-minio/admin
+  ```
+   
+
 ## Access logs
-In order to access the logs on dev, test and prod servers, use the vdi.computerome VM's. From there ssh with X11 using `ssh -X username@10.45.129.10` (Dev ip, for test or prod ip see _Environment overview_). From inside the desired server, open a browser like firefox, and access the /grafana/ endpoint. On the dev server this would be https://dev2.sofi-platform.dk/grafana/. In the explore page, you can query the different apps by the `service_name` label.
+In order to access the logs on dev, test and prod servers, use the vdi.computerome VM's. From there ssh with X11 using `ssh -X username@10.45.129.10` (Dev ip, for test or prod ip see _Environment overview_). From inside the desired server, open a browser like firefox ~~and access the /grafana/ endpoint. On the dev server this would be https://dev2.sofi-platform.dk/grafana/. In the explore page, you can query the different apps by the `service_name` label.~~
+
+The /grafana/ endpoint temporarily does not work. Instead, have two ssh sessions open in the server at the same time. In one session, open k9s as root and begin a portforwarding (shift-f) on the grafana pod. While k9s is open, in a x11 ssh session open firefox and go to `localhost:3000/grafana/`. In the explore page, you can query the different apps by the `service_name` label.

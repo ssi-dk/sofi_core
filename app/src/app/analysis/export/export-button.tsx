@@ -17,13 +17,6 @@ const isSelectionEmpty = (sel) => Object.keys(sel).length === 0;
 const ExportButton = (props: ExportButtonProps) => {
   const { data, columns, selection } = props;
 
-  let exportData = data;
-  if (!isSelectionEmpty(selection)) {
-    const filteredData = data.filter((item) =>
-      selection.hasOwnProperty(item.sequence_id)
-    );
-    exportData = filteredData;
-  }
 
   const download = React.useCallback(() => {
     const tableState = spyDataTable();
@@ -38,9 +31,9 @@ const ExportButton = (props: ExportButtonProps) => {
       );
     }
 
-    const tsv = convertToCsv<AnalysisResult>(exportData, columnsToExport, "\t");
+    const tsv = convertToCsv<AnalysisResult>(data, columnsToExport, "\t");
     downloadFile(tsv, "sofi-export.tsv");
-  }, [columns, exportData]);
+  }, [columns, data]);
 
   return (
     <IconButton

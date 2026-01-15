@@ -16,6 +16,7 @@ from ..repositories.analysis import (
     get_analysis_with_metadata,
     update_analysis,
     get_single_analysis,
+    get_filter_metadata,
 )
 from web.src.SAP.src.security.permission_check import (
     assert_authorized_to_edit,
@@ -59,9 +60,9 @@ def parse_paging_token(token):
     else:
         return None
 
-def render_paging_token(page_size, query, offset):
+def render_paging_token(page_size, query, offset, sorting):
     query = serialize_query_for_json(query)
-    body = {"page_size": int(page_size), "query": query, "offset": int(offset)}
+    body = {"page_size": int(page_size), "query": query, "offset": int(offset), "analysis_sorting": sorting}
     return str(base64.b64encode(json.dumps(body).encode("utf8")), encoding="utf8")
 
 
@@ -98,10 +99,19 @@ def get_analysis_history(user, token_info, isolate_id):
     audit_query(token_info, items)
     return jsonify(response)
 
-def get_analysis(user, token_info, paging_token, page_size):
+def get_analysis(user, token_info, paging_token, page_size,sorting_column=None, sorting_ascending=None):
     assert_user_has("search", token_info)
     default_token = {"page_size": page_size or 100, "offset": 0}
     token = parse_paging_token(paging_token) or default_token
+
+    sorting = None
+    if sorting_column is not None and sorting_ascending is not None:
+        sorting = {
+            "column": sorting_column,
+            "ascending": sorting_ascending
+        }
+    elif "analysis_sorting" in token:
+        sorting = token["analysis_sorting"]
     
     items = get_analysis_page(
         token.get("query", {}),
@@ -109,9 +119,19 @@ def get_analysis(user, token_info, paging_token, page_size):
         token["offset"],
         authorized_columns(token_info),
         token_info["institution"],
+        token_info["sofi-data-clearance"],
+        sorting=sorting
+    )
+
+
+    count = get_analysis_count(token.get("query", {}), token_info["institution"], token_info["sofi-data-clearance"])
+
+    filter_metadata = get_filter_metadata(
+        authorized_columns(token_info),
+        token_info["institution"],
         token_info["sofi-data-clearance"]
     )
-    count = get_analysis_count(token.get("query", {}), token_info["institution"], token_info["sofi-data-clearance"])
+
     new_token = (
         None
         if len(items) < token["page_size"]
@@ -119,6 +139,7 @@ def get_analysis(user, token_info, paging_token, page_size):
             token["page_size"],
             token.get("query", {}),
             token["offset"] + token["page_size"],
+            sorting
         )
     )
     response = {
@@ -126,6 +147,27 @@ def get_analysis(user, token_info, paging_token, page_size):
         "paging_token": new_token,
         "total_count": count,
         "approval_matrix": {},
+        "filter_options": {
+            "date_sample": {
+                "min": filter_metadata.get("min_date_sample"),
+                "max": filter_metadata.get("max_date_sample")
+            },
+            "date_received": {
+                "min": filter_metadata.get("min_date_received"),
+                "max": filter_metadata.get("max_date_received")
+            },
+            "institutions": filter_metadata.get("institutions", []),
+            "project_titles": filter_metadata.get("project_titles", []),
+            "project_numbers": filter_metadata.get("project_numbers", []),
+            "animals": filter_metadata.get("animals", []),
+            "run_ids": filter_metadata.get("run_ids", []),
+            "isolate_ids": filter_metadata.get("isolate_ids", []),
+            "fud_nos": filter_metadata.get("fud_nos", []),
+            "cluster_ids": filter_metadata.get("cluster_ids", []),
+            "qc_provided_species": filter_metadata.get("qc_provided_species", []),
+            "serotype_finals": filter_metadata.get("serotype_finals", []),
+            "st_finals": filter_metadata.get("st_finals", [])
+        }
     }
     audit_query(token_info, items)
     return jsonify(response)
@@ -153,11 +195,13 @@ def search_analysis(user, token_info, query: AnalysisQuery):
         "query": visitor.visit(query.expression)
         if not expr_empty
         else (query.filters if not None else {}),
+        "analysis_sorting": {
+            "column": query.analysis_sorting.column,
+            "ascending": query.analysis_sorting.ascending
+        } if query.analysis_sorting is not None else None
     }
 
     token = parse_paging_token(query.paging_token) or default_token
-    print(default_token["query"], file=sys.stderr)
-
     items = get_analysis_page(
         token["query"],
         token["page_size"],
@@ -165,6 +209,7 @@ def search_analysis(user, token_info, query: AnalysisQuery):
         authorized_columns(token_info),
         token_info["institution"],
         token_info["sofi-data-clearance"],
+        sorting=token["analysis_sorting"]
     )
 
     count = get_analysis_count(token["query"], token_info["institution"], token_info["sofi-data-clearance"])
@@ -172,7 +217,7 @@ def search_analysis(user, token_info, query: AnalysisQuery):
         None
         if len(items) < token["page_size"]
         else render_paging_token(
-            token["page_size"], token["query"], token["offset"] + token["page_size"]
+            token["page_size"], token["query"], token["offset"] + token["page_size"], token["analysis_sorting"]
         )
     )
     response = {

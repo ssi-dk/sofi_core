@@ -36,6 +36,22 @@ paths:
           default: 100
           type: number
         style: form
+      - explode: true
+        in: query
+        name: sorting_column
+        required: false
+        schema:
+          format: byte
+          type: string
+        style: form
+      - explode: true
+        in: query
+        name: sorting_ascending
+        required: false
+        schema:
+          format: byte
+          type: boolean
+        style: form
       responses:
         "200":
           content:
@@ -828,6 +844,46 @@ components:
         items:
         - null
         - null
+        filter_options:
+          date_sample:
+            min: 2000-01-23T04:56:07.000+00:00
+            max: 2000-01-23T04:56:07.000+00:00
+          isolate_ids:
+          - isolate_ids
+          - isolate_ids
+          st_finals:
+          - st_finals
+          - st_finals
+          cluster_ids:
+          - cluster_ids
+          - cluster_ids
+          run_ids:
+          - run_ids
+          - run_ids
+          institutions:
+          - institutions
+          - institutions
+          project_numbers:
+          - project_numbers
+          - project_numbers
+          qc_provided_species:
+          - qc_provided_species
+          - qc_provided_species
+          project_titles:
+          - project_titles
+          - project_titles
+          fud_nos:
+          - fud_nos
+          - fud_nos
+          serotype_finals:
+          - serotype_finals
+          - serotype_finals
+          date_received:
+            min: 2000-01-23T04:56:07.000+00:00
+            max: 2000-01-23T04:56:07.000+00:00
+          animals:
+          - animals
+          - animals
       properties:
         paging_token:
           nullable: true
@@ -844,11 +900,119 @@ components:
               $ref: '#/components/schemas/ApprovalStatus'
             type: object
           type: object
+        filter_options:
+          $ref: '#/components/schemas/FilterOptions'
       required:
       - approval_matrix
+      - filter_options
       - items
       - paging_token
       - total_count
+    FilterOptions:
+      example:
+        date_sample:
+          min: 2000-01-23T04:56:07.000+00:00
+          max: 2000-01-23T04:56:07.000+00:00
+        isolate_ids:
+        - isolate_ids
+        - isolate_ids
+        st_finals:
+        - st_finals
+        - st_finals
+        cluster_ids:
+        - cluster_ids
+        - cluster_ids
+        run_ids:
+        - run_ids
+        - run_ids
+        institutions:
+        - institutions
+        - institutions
+        project_numbers:
+        - project_numbers
+        - project_numbers
+        qc_provided_species:
+        - qc_provided_species
+        - qc_provided_species
+        project_titles:
+        - project_titles
+        - project_titles
+        fud_nos:
+        - fud_nos
+        - fud_nos
+        serotype_finals:
+        - serotype_finals
+        - serotype_finals
+        date_received:
+          min: 2000-01-23T04:56:07.000+00:00
+          max: 2000-01-23T04:56:07.000+00:00
+        animals:
+        - animals
+        - animals
+      properties:
+        date_sample:
+          $ref: '#/components/schemas/DateRange'
+        date_received:
+          $ref: '#/components/schemas/DateRange'
+        institutions:
+          items:
+            type: string
+          type: array
+        project_titles:
+          items:
+            type: string
+          type: array
+        project_numbers:
+          items:
+            type: string
+          type: array
+        animals:
+          items:
+            type: string
+          type: array
+        run_ids:
+          items:
+            type: string
+          type: array
+        isolate_ids:
+          items:
+            type: string
+          type: array
+        fud_nos:
+          items:
+            type: string
+          type: array
+        cluster_ids:
+          items:
+            type: string
+          type: array
+        qc_provided_species:
+          items:
+            type: string
+          type: array
+        serotype_finals:
+          items:
+            type: string
+          type: array
+        st_finals:
+          items:
+            type: string
+          type: array
+      type: object
+    DateRange:
+      example:
+        min: 2000-01-23T04:56:07.000+00:00
+        max: 2000-01-23T04:56:07.000+00:00
+      properties:
+        min:
+          format: date-time
+          nullable: true
+          type: string
+        max:
+          format: date-time
+          nullable: true
+          type: string
+      type: object
     QueryOperator:
       enum:
       - AND
@@ -897,6 +1061,19 @@ components:
           nullable: true
           type: string
       type: object
+    AnalysisSorting:
+      example:
+        column: column
+        ascending: true
+      properties:
+        column:
+          description: Name of the column to sort
+          nullable: false
+          type: string
+        ascending:
+          nullable: false
+          type: boolean
+      type: object
     QueryExpression:
       example:
         left:
@@ -925,6 +1102,9 @@ components:
       type: object
     AnalysisQuery:
       example:
+        analysis_sorting:
+          column: column
+          ascending: true
         paging_token: paging_token
         expression:
           left:
@@ -957,6 +1137,8 @@ components:
           type: integer
         expression:
           $ref: '#/components/schemas/QueryExpression'
+        analysis_sorting:
+          $ref: '#/components/schemas/AnalysisSorting'
         filters:
           type: object
     HealthResponse:
@@ -1241,6 +1423,9 @@ components:
       type: object
     ApprovalRequest:
       example:
+        revoked_sequence_ids:
+        - revoked_sequence_ids
+        - revoked_sequence_ids
         required_values:
           key:
             key: required_values
@@ -1260,6 +1445,10 @@ components:
               type: string
             type: object
           type: object
+        revoked_sequence_ids:
+          items:
+            type: string
+          type: array
       required:
       - matrix
       type: object
@@ -1307,6 +1496,7 @@ components:
       enum:
       - Sensitiv
       - Resistent
+      - No data
       type: string
     BaseMetadata:
       properties:

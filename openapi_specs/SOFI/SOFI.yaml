@@ -276,6 +276,18 @@ paths:
           schema:
             type: number
             default: 100
+        - name: sorting_column
+          in: query
+          required: false
+          schema:
+            type: string
+            format: byte
+        - name: sorting_ascending
+          in: query
+          required: false
+          schema:
+            type: boolean
+            format: byte
       responses:
         '200':
           description: Page of isolates
@@ -796,6 +808,7 @@ components:
         - total_count
         - items
         - approval_matrix
+        - filter_options
       properties:
         paging_token:
           type: string
@@ -808,6 +821,72 @@ components:
             $ref: '#/components/schemas/AnalysisResult'
         approval_matrix:
           $ref: '#/components/schemas/ApprovalMatrix'
+        filter_options:
+          $ref: '#/components/schemas/FilterOptions'
+
+    FilterOptions:
+      type: object
+      properties:
+        date_sample:
+          $ref: '#/components/schemas/DateRange'
+        date_received:
+          $ref: '#/components/schemas/DateRange'
+        institutions:
+          type: array
+          items:
+            type: string
+        project_titles:
+          type: array
+          items:
+            type: string
+        project_numbers:
+          type: array
+          items:
+            type: string
+        animals:
+          type: array
+          items:
+            type: string
+        run_ids:
+          type: array
+          items:
+            type: string
+        isolate_ids:
+          type: array
+          items:
+            type: string
+        fud_nos:
+          type: array
+          items:
+            type: string
+        cluster_ids:
+          type: array
+          items:
+            type: string
+        qc_provided_species:
+          type: array
+          items:
+            type: string
+        serotype_finals:
+          type: array
+          items:
+            type: string
+        st_finals:
+          type: array
+          items:
+            type: string
+
+    DateRange:
+      type: object
+      properties:
+        min:
+          type: string
+          format: date-time
+          nullable: true
+        max:
+          type: string
+          format: date-time
+          nullable: true
 
     QueryOperator:
       type: string
@@ -843,6 +922,16 @@ components:
         prefix:
           nullable: true
           type: string
+    AnalysisSorting: 
+      type: object
+      properties:
+        column:
+          nullable: false
+          type: string
+          description: Name of the column to sort
+        ascending:
+          nullable: false
+          type: boolean
 
     QueryExpression:
       type: object
@@ -867,6 +956,9 @@ components:
           nullable: true
         expression:
           $ref: "#/components/schemas/QueryExpression"
+        analysis_sorting: 
+          nullable: true
+          $ref: "#/components/schemas/AnalysisSorting"
         filters:
           type: object
 
@@ -1061,6 +1153,10 @@ components:
             type: object
             additionalProperties:
               type: string
+        revoked_sequence_ids:
+          type: array
+          items:
+            type: string
 
     Approval:
       allOf:
@@ -1121,7 +1217,7 @@ components:
 
     Resistance:
       type: string
-      enum: ["Sensitiv", "Resistent"]
+      enum: ["Sensitiv", "Resistent","No data"]
 
     BaseMetadata:
       required:

@@ -101,3 +101,6 @@ lib
 
 pg/pgdata/*
 pg/pgdata
+
+# Unused lefthook config
+lefthook.yml
