@@ -285,7 +285,7 @@ export default function AnalysisPage() {
       }
 
       return[
-        ...selectionValues,
+        ...selectionValues.filter(sv => !data.find(d => d.sequence_id == sv.sequence_id)),
         ...data,
       ]
       
