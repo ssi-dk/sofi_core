@@ -971,14 +971,14 @@ export default function AnalysisPage() {
             checkColumnIsVisible={checkColumnIsVisible}
             selection={selection}
           />
-          {!pageState.isNarrowed ? (
+          {!pageState.isNarrowed && (
             <AnalysisSelectionMenu
              selection={selection}
               isNarrowed={pageState.isNarrowed}
               data={displayData}
               search={onSearch}
               lastSearchQuery={lastSearchQuery}
-            />}
+            />)}
 
           <Button marginLeft={2} disabled={Object.keys(selection).length == 0 && !workspace} onClick={() => {
             setWorkspace(selection);
