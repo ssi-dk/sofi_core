@@ -97,7 +97,7 @@ export const createWorkspace = (params: CreateWorkspace) => {
     if (!response.id) {
       return undefined;
     }
-    return { workspaces: [{ id: response.id, name: params.name }] };
+    return { workspaces: [{ id: response.id, name: params.name, samples: params.samples }] };
   };
 
   base.update = {
@@ -168,6 +168,21 @@ export const updateWorkspace = (params: PostWorkspaceRequest) => {
   const base = postWorkspaceApi(params);
   base.url = getUrl(base.url);
 
+  base.update = {
+    workspaces: (oldValue) => {
+      
+      return oldValue.map(ws => {
+        if (ws.id != params.workspaceId) {
+          return ws
+        }
+        return {
+          ...ws,
+          samples: [...new Set([...ws.samples,...params.updateWorkspace.samples])]
+        }
+      })
+    }
+
+  }
   base.force = true;
   return base;
 };

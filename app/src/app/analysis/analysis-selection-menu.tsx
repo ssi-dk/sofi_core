@@ -14,6 +14,7 @@ import { useDispatch } from "react-redux";
 import { SendToWorkspaceMenuItem } from "app/workspaces/send-to-workspace-menu-item";
 import { AnalysisQuery } from "sap-client";
 
+
 type Props = {
   selection: DataTableSelection<AnalysisResult>;
   isNarrowed: boolean;
@@ -23,7 +24,7 @@ type Props = {
 };
 
 export const AnalysisSelectionMenu = (props: Props) => {
-  const { selection, isNarrowed, data, search, lastSearchQuery } = props;
+  const { selection, isNarrowed, data, search, lastSearchQuery, workspace } = props;
   const dispatch = useDispatch();
 
   const onClear = useCallback(() => {
@@ -49,7 +50,7 @@ export const AnalysisSelectionMenu = (props: Props) => {
         <MenuList>
           <ResistanceMenuItem selection={selection} disabled={disabled} />
           <NearestNeighborMenuItem selection={selection} disabled={disabled} />
-          <SendToWorkspaceMenuItem selection={selection} disabled={disabled} />
+          {/* <SendToWorkspaceMenuItem selection={selection} disabled={disabled} /> */}
           <MenuItem
             aria-label="Select All In view"
             title="SelectAllInView"

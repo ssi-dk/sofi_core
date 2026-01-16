@@ -14,12 +14,13 @@ import {
   Skeleton,
   useToast,
   Button,
+  IconButton,
   Menu, 
   MenuList, 
   MenuButton, 
   MenuItem
 } from "@chakra-ui/react";
-import { HamburgerIcon,  EditIcon, DeleteIcon } from "@chakra-ui/icons";
+import { HamburgerIcon, AddIcon, EditIcon, DeleteIcon, CheckIcon } from "@chakra-ui/icons";
 
 import { Column, Row } from "react-table";
 import {
@@ -32,6 +33,7 @@ import {
   QueryOperand,
   FilterOptions,
   AnalysisSorting,
+  Workspace,
 } from "sap-client";
 import { useMutation, useRequest } from "redux-query-react";
 import { useDispatch, useSelector } from "react-redux";
@@ -42,6 +44,8 @@ import { UserDefinedViewInternal } from "models";
 import { RootState } from "app/root-reducer";
 import { PropFilter, RangeFilter } from "utils";
 import { Loading } from "loading";
+import { fetchWorkspaces,createWorkspace, updateWorkspace } from "../workspaces/workspaces-query-configs";
+import { SendToMicroreactButton } from "../workspaces/send-to-microreact-button";
 import DataTable, {
   ColumnReordering,
   DataTableSelection,
@@ -80,6 +84,7 @@ import {
   checkSortEquality,
   recurseSearchTree,
 } from "./search/search-utils";
+import { svgElements } from "framer-motion/types/render/svg/supported-elements";
 
 // When the fields in this array are 'approved', a given sequence is rendered
 // as 'approved' also.
@@ -94,7 +99,51 @@ export default function AnalysisPage() {
   const dispatch = useDispatch();
   const toast = useToast();
 
-  const [workspace, setWorkspace] = useState<DataTableSelection<AnalysisResult> | null>(null);
+  const [workspace, setWorkspace] = useState<Workspace | null>(null);
+  const [workspacesQueryState] = useRequest(fetchWorkspaces());
+  const workspaces = useSelector<RootState>((s) =>
+      Object.values(s.entities.workspaces ?? {})
+  ) as Array<Workspace>;
+
+
+
+
+  const [workspaceCreationState, sendToWorkspace] = useMutation((name: string) => {
+      return createWorkspace({
+        name,
+        samples: workspace.samples,
+      });
+    }
+  );
+  const [workspaceAddState, addToWorkspace] = useMutation(
+    (workspaceId: string) => {
+      const samples = Object.values(selection).map((s) => s.original.id);
+
+      return updateWorkspace({
+        workspaceId,
+        updateWorkspace: { samples },
+      });
+    }
+  );
+
+  useEffect(() => {
+    if (workspace) {
+      const maybeUpdatedWorkspace = workspaces.find(ws => ws.id === workspace.id);
+      
+      // Does not exist in temp workspaces, so null check is needed
+      if (maybeUpdatedWorkspace) {
+        if (maybeUpdatedWorkspace.samples !== workspace.samples) {
+          setWorkspace(maybeUpdatedWorkspace);
+        }
+      }
+    }
+  },[workspaces, workspace])
+
+  useEffect(() => {
+    if (workspaceCreationState.status === 200) {
+      setWorkspace(workspaces[workspaces.length - 1]);
+    }
+  },[workspaceCreationState])
 
   const [currentPage, setCurrentPage] = useState(0);
   const [isLoadingNextPage, setIsLoadingNextPage] = useState(false);
@@ -271,27 +320,25 @@ export default function AnalysisPage() {
     (s) => s.view.view
   ) as UserDefinedViewInternal;
 
-  const displayData = useMemo(
-    () => {
-      const selectionValues = Object.values(selection).map(v => v.original)
+  const displayData = useMemo(() => {
+    const selectionValues = Object.values(selection).map(v => v.original)
 
-      if (pageState.isNarrowed) {
-        return selectionValues
-      } 
+    if (pageState.isNarrowed) {
+      return selectionValues
+    } 
 
-      if (workspace) {
-        // Show selection outside workspace in the workspace? Maybe use this to add rows to workspace?
-        return Object.keys(workspace).map((key) => workspace[key].original);
-      }
-
+    if (workspace) {
       return[
-        ...selectionValues.filter(sv => !data.find(d => d.sequence_id == sv.sequence_id)),
-        ...data,
+        ...selectionValues.filter(sv => !workspace.samples!.find(sid => sid == sv.id)),
+        ...data.filter(d => workspace.samples!.find( s => s === d.id) ),
       ]
-      
-  },
-    [selection, data,pageState.isNarrowed, workspace]
-  );
+    }
+
+    return[
+      ...selectionValues.filter(sv => !data.find(d => d.sequence_id == sv.sequence_id)),
+      ...data,
+    ]
+  }, [selection, data,pageState.isNarrowed, workspace]);
 
   const [lastSearchQuery, setLastSearchQuery] = useState<AnalysisQuery>({
     expression: {},
@@ -963,14 +1010,15 @@ export default function AnalysisPage() {
         </Flex>
       </Box>
       <Box role="main" gridColumn="2 / 4" borderWidth="1px" rounded="md">
-        <Flex m={2} alignItems="center">
+        <Flex m={2} alignItems="center" flexDirection="row" justify="space-between">
+          <Flex flexDirection="row" alignItems = "center">
           <Judgement<AnalysisResult>
             isNarrowed={pageState.isNarrowed}
             onNarrowHandler={onNarrowHandler}
             getDependentColumns={getDependentColumns}
             checkColumnIsVisible={checkColumnIsVisible}
             selection={selection}
-          />
+            />
           {!pageState.isNarrowed && (
             <AnalysisSelectionMenu
              selection={selection}
@@ -980,81 +1028,88 @@ export default function AnalysisPage() {
               lastSearchQuery={lastSearchQuery}
             />)}
 
-          <Button marginLeft={2} disabled={Object.keys(selection).length == 0 && !workspace} onClick={() => {
-            setWorkspace(selection);
+          {(!workspace || workspace.id !== "temp-workspace") && Object.keys(selection).length > 0 && <Button marginLeft={2} paddingX={3} onClick={() => {
+            // Make a temp workspace
+            setWorkspace({
+              id: "temp-workspace",
+              name: "temp-workspace",
+              samples: Object.values(selection).map(s => s.original.id)
+            });
+            dispatch(setSelection({}));
           }}>
-            {workspace ? "Save" : "Make"} workspace
-          </Button>
-          {workspace && <Button marginLeft={2} onClick={() => {
+            Make workspace
+          </Button>}
+
+          {workspace && workspace.id === "temp-workspace" && <Button marginLeft={2} paddingX={3} onClick={() => {
+            const workspaceName = prompt("Workspace name");
+            sendToWorkspace(workspaceName);
+          }}>
+            Save workspace
+          </Button>}
+          {workspace && <Button marginLeft={2} paddingX={3} onClick={() => {
             setWorkspace(null);
           }}> Leave workspace
             </Button>}
+            {workspace && <SendToMicroreactButton workspace={workspace} />}
+          </Flex>
+          <Flex alignItems="center" justify="space-between">
 
-          <Flex grow={1} />
-          <Menu>
-            <MenuButton marginRight={2} as={Button} leftIcon={<HamburgerIcon />}>
-              Workspaces
+            <Menu >
+              <MenuButton style={{minWidth: "8rem"}} marginX={2} paddingX={2} as={Button} leftIcon={<HamburgerIcon />}>
+                Workspaces
 
-            </MenuButton>
-            <MenuList>
-              <MenuItem width={"100%"}>
-                <div style={{display: "flex", width: "100%", flexDirection: "row", justifyContent: "space-between", alignItems: "center"}}>
-                  <div>
-                    {new Date("2025/10/30").toLocaleDateString()}
-                  </div>
-                  <div>
-                    <EditIcon margin={2} />
-                    <DeleteIcon margin={2} />
-                  </div>
-                </div>
-              </MenuItem> 
-              <MenuItem width={"100%"}>
-                <div style={{display: "flex", width: "100%", flexDirection: "row", justifyContent: "space-between", alignItems: "center"}}>
-                  <div>
-                    {new Date("2025/10/27").toLocaleDateString()}
-                  </div>
-                  <div>
-                    <EditIcon margin={2} />
-                    <DeleteIcon margin={2} />
-                  </div>
-                </div>
-              </MenuItem> 
-              <MenuItem width={"100%"}>
-              <div style={{display: "flex", width: "100%", flexDirection: "row", justifyContent: "space-between", alignItems: "center"}}>
-                <div>
-                  Workspace med et navn!
-                </div>
-                <div>
-                  <EditIcon margin={2} />
-                  <DeleteIcon margin={2} />
-                </div>
-              </div>
-              </MenuItem> 
+              </MenuButton>
+              <MenuList>
+                {workspaces.map(w => {
 
-            </MenuList>
-            
-          </Menu>
+                  const fullySelected = Object.values(selection).map(sv => sv.original.id).every(id => w.samples.find(sid => sid ===id));
+                  return (<div  key={w.id} width={"100%"}>
+                  <div style={{display: "flex", width: "100%", flexDirection: "row", justifyContent: "space-between", alignItems: "center"}}>
+                    <Button onClick={() => {
+                      setWorkspace(w);
+                    }}>
+                      {w.name}
+                    </Button>
+                    <div>
+                      {Object.values(selection).length > 0 && <IconButton disabled={fullySelected} margin={2} onClick={(e) => {
+                        addToWorkspace(w.id);
+                        e.preventDefault();
+                        e.stopPropagation();
+                      }}
+                      icon={ fullySelected ? <CheckIcon/> : <AddIcon />}
+                      
+                      /> }
+                      <EditIcon margin={2} />
+                      <DeleteIcon margin={2} />
+                    </div>
+                  </div>
+                </div>) }
+                )}
+              </MenuList>
+              
+            </Menu>
           
 
-          <Flex grow={1} width="100%" />
-          <ColumnConfigWidget onReorder={onReorderColumn}>
-            {(columnOrder || columns.map((x) => x.accessor as string)).map(
-              (column, i) => (
-                <ColumnConfigNode
+            <Flex grow={1} width="100%" />
+            <ColumnConfigWidget onReorder={onReorderColumn}>
+              {(columnOrder || columns.map((x) => x.accessor as string)).map(
+                (column, i) => (
+                  <ColumnConfigNode
                   key={column}
-                  index={i}
-                  columnName={column}
-                  onChecked={toggleColumn}
-                  isChecked={checkColumnIsVisible(column)}
-                />
-              )
-            )}
-          </ColumnConfigWidget>
-          <ExportButton
-            data={displayData}
-            columns={columns.map((x) => x.accessor) as any}
-            selection={selection}
-          />
+                    index={i}
+                    columnName={column}
+                    onChecked={toggleColumn}
+                    isChecked={checkColumnIsVisible(column)}
+                  />
+                )
+              )}
+            </ColumnConfigWidget>
+            <ExportButton
+              data={displayData}
+              columns={columns.map((x) => x.accessor) as any}
+              selection={selection}
+              />
+          </Flex>
         </Flex>
 
         <Box height="calc(100vh - 250px)">

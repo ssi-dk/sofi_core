@@ -1843,6 +1843,11 @@ components:
           items:
             $ref: '#/components/schemas/AnalysisResult'
           title: Samples
+        sequence_ids:
+          type: array
+          items: 
+            type: string
+          title: SequenceIds
         microreact:
           $ref: '#/components/schemas/MicroreactProject'
           title: Microreact

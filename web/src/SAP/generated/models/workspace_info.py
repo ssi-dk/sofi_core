@@ -21,7 +21,7 @@ class WorkspaceInfo(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, id=None, name=None, samples=None, microreact=None):  # noqa: E501
+    def __init__(self, id=None, name=None, samples=None, sequence_ids=None, microreact=None):  # noqa: E501
         """WorkspaceInfo - a model defined in OpenAPI
 
         :param id: The id of this WorkspaceInfo.  # noqa: E501
@@ -30,6 +30,8 @@ class WorkspaceInfo(Model):
         :type name: str
         :param samples: The samples of this WorkspaceInfo.  # noqa: E501
         :type samples: List[AnalysisResult]
+        :param sequence_ids: The sequence_ids of this WorkspaceInfo.  # noqa: E501
+        :type sequence_ids: List[str]
         :param microreact: The microreact of this WorkspaceInfo.  # noqa: E501
         :type microreact: MicroreactProject
         """
@@ -37,6 +39,7 @@ class WorkspaceInfo(Model):
             'id': str,
             'name': str,
             'samples': List[AnalysisResult],
+            'sequence_ids': List[str],
             'microreact': MicroreactProject,
         }
 
@@ -44,12 +47,14 @@ class WorkspaceInfo(Model):
             'id': 'id',
             'name': 'name',
             'samples': 'samples',
+            'sequence_ids': 'sequence_ids',
             'microreact': 'microreact',
         }
 
         self._id = id
         self._name = name
         self._samples = samples
+        self._sequence_ids = sequence_ids
         self._microreact = microreact
 
     @classmethod
@@ -129,6 +134,27 @@ class WorkspaceInfo(Model):
             raise ValueError("Invalid value for `samples`, must not be `None`")  # noqa: E501
 
         self._samples = samples
+
+    @property
+    def sequence_ids(self):
+        """Gets the sequence_ids of this WorkspaceInfo.
+
+
+        :return: The sequence_ids of this WorkspaceInfo.
+        :rtype: List[str]
+        """
+        return self._sequence_ids
+
+    @sequence_ids.setter
+    def sequence_ids(self, sequence_ids):
+        """Sets the sequence_ids of this WorkspaceInfo.
+
+
+        :param sequence_ids: The sequence_ids of this WorkspaceInfo.
+        :type sequence_ids: List[str]
+        """
+
+        self._sequence_ids = sequence_ids
 
     @property
     def microreact(self):

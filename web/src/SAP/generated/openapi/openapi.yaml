@@ -1898,6 +1898,9 @@ components:
       type: object
     WorkspaceInfo:
       example:
+        sequence_ids:
+        - sequence_ids
+        - sequence_ids
         name: name
         microreact:
           id: id
@@ -1917,6 +1920,11 @@ components:
           items:
             $ref: '#/components/schemas/AnalysisResult'
           title: Samples
+          type: array
+        sequence_ids:
+          items:
+            type: string
+          title: SequenceIds
           type: array
         microreact:
           $ref: '#/components/schemas/MicroreactProject'
