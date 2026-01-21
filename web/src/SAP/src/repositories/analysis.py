@@ -156,8 +156,6 @@ def get_analysis_page(query, page_size, offset, columns, institution, data_clear
 
     fetch_pipeline = list(filter(lambda x: x != None, fetch_pipeline))
 
-    print("PIPELINE:",fetch_pipeline,file=sys.stderr)
-
     # return list(map(remove_id, samples.find(query).sort('run_date',pymongo.DESCENDING).skip(offset).limit(int(page_size) + 2)))
     # For now, there is no handing of missing metadata, so the full_analysis table is used. The above aggregate pipeline should work though.
     return list(analysis.aggregate(fetch_pipeline))
@@ -226,8 +224,6 @@ def get_analysis_count(query, institution, data_clearance,workspace_items: Optio
     ]
 
     fetch_pipeline = list(filter(lambda x: x != None, fetch_pipeline))
-
-    print("COUNT PIPELINE:",fetch_pipeline,file=sys.stderr)
 
     res = list(analysis.aggregate(fetch_pipeline))
     if len(res) == 1:
@@ -321,9 +317,6 @@ def get_analysis_with_metadata(sequence_id: str) -> Dict[str, Any]:
     ]
 
     res = list(analysis.aggregate(fetch_pipeline))
-
-    print("is in analysis.py result")
-    print(res)
 
     if len(res) == 1:
         return res[0]

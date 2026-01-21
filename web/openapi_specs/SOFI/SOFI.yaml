@@ -71,6 +71,28 @@ paths:
       tags:
         - workspaces
       x-openapi-router-controller: web.src.SAP.generated.controllers.workspaces_controller
+  /workspace/{workspace_id}/remove:
+    post:
+      description: Remove samples from workspace
+      operationId: remove_workspace_samples
+      tags:
+        - workspaces
+      x-openapi-router-controller: web.src.SAP.generated.controllers.workspaces_controller
+      parameters:
+        - name: workspace_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Id of workspace to update
+      requestBody:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UpdateWorkspace"
+      responses:
+        '204':
+          description: Workspace updated successfully.
   /workspace/{workspace_id}/{sample_id}:
     delete:
       description: Delete sample from workspace
@@ -180,7 +202,27 @@ paths:
       responses:
         '204':
           description: Workspace updated successfully.
-
+  # /workspaces/search:
+  #   get:
+  #     description: Search for workspaces
+  #     operationId: search_workspaces
+  #     tags:
+  #       - workspaces
+  #     x-openapi-router-controller: web.src.SAP.generated.controllers.workspaces_controller
+  #     parameters:
+  #       - name: query
+  #         in: path
+  #         required: true
+  #         schema:
+  #           type: string
+  #         description: String used to search workspaces
+  #     responses:
+  #       '200':
+  #         description: Workspace
+  #         content:
+  #           application/json:
+  #             schema:
+  #               $ref: '#/components/schemas/WorkspaceInfo'
   /microreact_integration:
     post:
       description: Send to Microreact

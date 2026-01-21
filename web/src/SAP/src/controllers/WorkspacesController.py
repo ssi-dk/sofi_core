@@ -1,5 +1,8 @@
+import sys
 from flask import abort
 from flask.json import jsonify
+
+from web.src.SAP.generated.models.update_workspace import UpdateWorkspace
 from ..repositories.workspaces import get_workspaces as get_workspaces_db
 from ..repositories.workspaces import delete_workspace as delete_workspace_db
 from ..repositories.workspaces import delete_workspace_sample as delete_workspace_sample_db
@@ -7,6 +10,7 @@ from ..repositories.workspaces import create_workspace as create_workspace_db
 from ..repositories.workspaces import create_workspace_from_sequence_ids as create_workspace_from_sequence_ids_db
 from ..repositories.workspaces import clone_workspace as clone_workspace_db
 from ..repositories.workspaces import update_workspace as update_workspace_db
+from ..repositories.workspaces import remove_from_workspace as remove_from_workspace_db
 from ..repositories.workspaces import get_workspace as get_workspace_db
 from ..repositories.workspaces import get_workspace_data as get_workspace_data_db
 from ..utils import validate_sample_ids
@@ -60,6 +64,10 @@ def get_workspace(user, token_info, workspace_id: str):
 def delete_workspace_sample(user, token_info, workspace_id, sample_id):
     res = delete_workspace_sample_db(user, workspace_id, sample_id)
     return None if res.modified_count > 0 else abort(404)
+
+def remove_workspace_samples(user,token_info, workspace_id, update):
+    remove_from_workspace_db(user,workspace_id,update.samples)
+    
 
 def get_workspace_data(user, token_info, workspace_id):
     res = get_workspace_data_db(user, token_info, workspace_id)

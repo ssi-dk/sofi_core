@@ -11,6 +11,7 @@ import {
   PostWorkspaceRequest,
   DeleteWorkspaceSampleRequest,
   cloneWorkspace as cloneWorkspaceApi,
+  removeWorkspaceSamples as removeWorkspaceSamplesApi,
 } from "sap-client";
 import {
   CreateWorkspace,
@@ -186,3 +187,28 @@ export const updateWorkspace = (params: PostWorkspaceRequest) => {
   base.force = true;
   return base;
 };
+
+
+export const removeWorkspaceSamples = (params: PostWorkspaceRequest) => {
+  const base = removeWorkspaceSamplesApi(params);
+  base.url = getUrl(base.url);
+
+  base.update = {
+    workspaces: (oldValue) => {
+      
+      return oldValue.map(ws => {
+        if (ws.id != params.workspaceId) {
+          return ws
+        }
+        return {
+          ...ws,
+          samples: ws.samples.filter(sid => !params.updateWorkspace.samples.find(rid => sid === rid))
+        }
+      })
+    }
+
+  }
+  base.force = true;
+  return base;
+};
+

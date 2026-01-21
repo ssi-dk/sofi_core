@@ -641,6 +641,30 @@ paths:
       tags:
       - workspaces
       x-openapi-router-controller: web.src.SAP.generated.controllers.workspaces_controller
+  /workspace/{workspace_id}/remove:
+    post:
+      description: Remove samples from workspace
+      operationId: remove_workspace_samples
+      parameters:
+      - description: Id of workspace to update
+        explode: false
+        in: path
+        name: workspace_id
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateWorkspace'
+      responses:
+        "204":
+          description: Workspace updated successfully.
+      tags:
+      - workspaces
+      x-openapi-router-controller: web.src.SAP.generated.controllers.workspaces_controller
   /workspace/{workspace_id}/{sample_id}:
     delete:
       description: Delete sample from workspace

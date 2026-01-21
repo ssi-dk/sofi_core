@@ -182,6 +182,27 @@ class TestWorkspacesController(BaseTestCase):
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
 
+    def test_remove_workspace_samples(self):
+        """Test case for remove_workspace_samples
+
+        
+        """
+        update_workspace = {
+  "samples" : [ "samples", "samples" ]
+}
+        headers = { 
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer special-key',
+        }
+        response = self.client.open(
+            '/api/workspace/{workspace_id}/remove'.format(workspace_id='workspace_id_example'),
+            method='POST',
+            headers=headers,
+            data=json.dumps(update_workspace),
+            content_type='application/json')
+        self.assert200(response,
+                       'Response body is : ' + response.data.decode('utf-8'))
+
 
 if __name__ == '__main__':
     unittest.main()

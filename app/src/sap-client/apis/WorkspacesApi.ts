@@ -66,6 +66,11 @@ export interface PostWorkspaceRequest {
     updateWorkspace?: UpdateWorkspace;
 }
 
+export interface RemoveWorkspaceSamplesRequest {
+    workspaceId: string;
+    updateWorkspace?: UpdateWorkspace;
+}
+
 
 /**
  */
@@ -471,5 +476,53 @@ function postWorkspaceRaw<T>(requestParameters: PostWorkspaceRequest, requestCon
 */
 export function postWorkspace<T>(requestParameters: PostWorkspaceRequest, requestConfig?: runtime.TypedQueryConfig<T, void>): QueryConfig<T> {
     return postWorkspaceRaw(requestParameters, requestConfig);
+}
+
+/**
+ * Remove samples from workspace
+ */
+function removeWorkspaceSamplesRaw<T>(requestParameters: RemoveWorkspaceSamplesRequest, requestConfig: runtime.TypedQueryConfig<T, void> = {}): QueryConfig<T> {
+    if (requestParameters.workspaceId === null || requestParameters.workspaceId === undefined) {
+        throw new runtime.RequiredError('workspaceId','Required parameter requestParameters.workspaceId was null or undefined when calling removeWorkspaceSamples.');
+    }
+
+    let queryParameters = null;
+
+
+    const headerParameters : runtime.HttpHeaders = {};
+
+    headerParameters['Content-Type'] = 'application/json';
+
+
+    const { meta = {} } = requestConfig;
+
+    meta.authType = ['bearer'];
+    const config: QueryConfig<T> = {
+        url: `${runtime.Configuration.basePath}/workspace/{workspace_id}/remove`.replace(`{${"workspace_id"}}`, encodeURIComponent(String(requestParameters.workspaceId))),
+        meta,
+        update: requestConfig.update,
+        queryKey: requestConfig.queryKey,
+        optimisticUpdate: requestConfig.optimisticUpdate,
+        force: requestConfig.force,
+        rollback: requestConfig.rollback,
+        options: {
+            method: 'POST',
+            headers: headerParameters,
+        },
+        body: queryParameters || UpdateWorkspaceToJSON(requestParameters.updateWorkspace),
+    };
+
+    const { transform: requestTransform } = requestConfig;
+    if (requestTransform) {
+    }
+
+    return config;
+}
+
+/**
+* Remove samples from workspace
+*/
+export function removeWorkspaceSamples<T>(requestParameters: RemoveWorkspaceSamplesRequest, requestConfig?: runtime.TypedQueryConfig<T, void>): QueryConfig<T> {
+    return removeWorkspaceSamplesRaw(requestParameters, requestConfig);
 }
 

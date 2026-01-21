@@ -45,7 +45,7 @@ import { UserDefinedViewInternal } from "models";
 import { RootState } from "app/root-reducer";
 import { PropFilter, RangeFilter } from "utils";
 import { Loading } from "loading";
-import { fetchWorkspaces,createWorkspace, updateWorkspace } from "../workspaces/workspaces-query-configs";
+import { fetchWorkspaces,createWorkspace, updateWorkspace, removeWorkspaceSamples } from "../workspaces/workspaces-query-configs";
 import { SendToMicroreactButton } from "../workspaces/send-to-microreact-button";
 import DataTable, {
   ColumnReordering,
@@ -122,6 +122,16 @@ export default function AnalysisPage() {
       const samples = Object.values(selection).map((s) => s.original.id);
 
       return updateWorkspace({
+        workspaceId,
+        updateWorkspace: { samples },
+      });
+    }
+  );
+  const [workspaceRemoveState, removeFromWorkspace] = useMutation(
+    (workspaceId: string) => {
+      const samples = Object.values(selection).map((s) => s.original.id);
+
+      return removeWorkspaceSamples({
         workspaceId,
         updateWorkspace: { samples },
       });
@@ -1047,7 +1057,6 @@ export default function AnalysisPage() {
           }}>
             Make workspace
           </Button>}
-
           {workspace && workspace.id === "temp-workspace" && <Button marginLeft={2} paddingX={3} onClick={() => {
             const workspaceName = prompt("Workspace name");
             sendToWorkspace(workspaceName);
@@ -1062,7 +1071,7 @@ export default function AnalysisPage() {
           </Flex>
           <Flex alignItems="center" justify="space-between">
 
-            <WorkspaceMenu workspaces={workspaces} workspace={workspace} selection={selection} addToWorkspace={addToWorkspace} setWorkspace={setWorkspace} />
+            <WorkspaceMenu workspaces={workspaces} workspace={workspace} selection={selection} addToWorkspace={addToWorkspace} removeFromWorkspace={removeFromWorkspace} setWorkspace={setWorkspace} />
           
 
             <Flex grow={1} width="100%" />

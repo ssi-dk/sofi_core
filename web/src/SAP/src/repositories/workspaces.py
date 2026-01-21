@@ -76,17 +76,10 @@ def get_workspace_sequences(user: str, workspace_id: str):
         query["_id"] = ObjectId(workspace_id)
     else:
         query["name"] = workspace_id
-    
-    print("GET WS QUERY:",query,file=sys.stderr)
 
     workspace = trim(
         workspaces.find_one(query)
     )
-
-    print("WS QUERY RES:",workspace,file=sys.stderr)
-
-    
-
 
     if workspace is None:
         raise LookupError("Failed to find workspace with id " + workspace_id)
@@ -106,16 +99,9 @@ def get_workspace(user: str, workspace_id: str):
     else:
         query["name"] = workspace_id
     
-    print("GET WS QUERY:",query,file=sys.stderr)
-
     workspace = trim(
         workspaces.find_one(query)
     )
-
-    print("WS QUERY RES:",workspace,file=sys.stderr)
-
-    
-
 
     if workspace is None:
         return workspace
@@ -221,6 +207,12 @@ def clone_workspace(user: str, cloneWorkspaceInfo: CloneWorkspace):
         }
     )
 
+def remove_from_workspace(user, workspace_id: str, samples: List[str]):
+    workspaces = get_collection(WORKSPACES_COL_NAME)
+    update_filter = my_workspaces_query(user)
+    update_filter["_id"] = ObjectId(workspace_id)
+    update = {"$pullAll": {"samples": samples}}
+    return workspaces.update_one(update_filter, update)
 
 def update_workspace(user: str, workspace_id: str, workspace: UpdateWorkspace):
     workspaces = get_collection(WORKSPACES_COL_NAME)
