@@ -18,7 +18,8 @@ import {
   Menu, 
   MenuList, 
   MenuButton, 
-  MenuItem
+  MenuItem,
+  Input
 } from "@chakra-ui/react";
 import { HamburgerIcon, AddIcon, EditIcon, DeleteIcon, CheckIcon } from "@chakra-ui/icons";
 
@@ -84,6 +85,7 @@ import {
   checkSortEquality,
   recurseSearchTree,
 } from "./search/search-utils";
+import {WorkspaceMenu} from "./workspace-menu"
 import { svgElements } from "framer-motion/types/render/svg/supported-elements";
 
 // When the fields in this array are 'approved', a given sequence is rendered
@@ -1060,40 +1062,7 @@ export default function AnalysisPage() {
           </Flex>
           <Flex alignItems="center" justify="space-between">
 
-            <Menu >
-              <MenuButton style={{minWidth: "8rem"}} marginX={2} paddingX={2} as={Button} leftIcon={<HamburgerIcon />}>
-                Workspaces
-
-              </MenuButton>
-              <MenuList>
-                {workspaces.map(w => {
-
-                  const fullySelected = Object.values(selection).map(sv => sv.original.id).every(id => w.samples.find(sid => sid ===id));
-                  return (<div  key={w.id} width={"100%"}>
-                  <div style={{display: "flex", width: "100%", flexDirection: "row", justifyContent: "space-between", alignItems: "center"}}>
-                    <Button onClick={() => {
-                      setWorkspace(w);
-                    }}>
-                      {w.name}
-                    </Button>
-                    <div>
-                      {Object.values(selection).length > 0 && <IconButton disabled={fullySelected} margin={2} onClick={(e) => {
-                        addToWorkspace(w.id);
-                        e.preventDefault();
-                        e.stopPropagation();
-                      }}
-                      icon={ fullySelected ? <CheckIcon/> : <AddIcon />}
-                      
-                      /> }
-                      <EditIcon margin={2} />
-                      <DeleteIcon margin={2} />
-                    </div>
-                  </div>
-                </div>) }
-                )}
-              </MenuList>
-              
-            </Menu>
+            <WorkspaceMenu workspaces={workspaces} workspace={workspace} selection={selection} addToWorkspace={addToWorkspace} setWorkspace={setWorkspace} />
           
 
             <Flex grow={1} width="100%" />

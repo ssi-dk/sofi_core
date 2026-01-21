@@ -180,7 +180,27 @@ paths:
       responses:
         '204':
           description: Workspace updated successfully.
-
+  /workspaces/search:
+    get:
+      description: Search for workspaces
+      operationId: search_workspaces
+      tags:
+        - workspaces
+      x-openapi-router-controller: web.src.SAP.generated.controllers.workspaces_controller
+      parameters:
+        - name: query
+          in: path
+          required: true
+          schema:
+            type: string
+          description: String used to search workspaces
+      responses:
+        '200':
+          description: Workspace
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkspaceInfo'
   /microreact_integration:
     post:
       description: Send to Microreact
