@@ -485,6 +485,10 @@ def rewrite_str_range_query(q: Dict[str,Any]):
                 # Irrelevant range. Simply skip
                 continue
 
+            if lteNumber - gteNumber > 10000:
+                # Far to big range. Ignore
+                continue
+
             allowedValues = [prefix + str(index) for index in range(gteNumber,lteNumber+1)]
             q[key] = {"$in": allowedValues}
         except ValueError:
