@@ -53,8 +53,10 @@ function AnalysisFilter(props: AnalysisFilterProps) {
       [K in keyof AnalysisResult]: ValueType<OptionTypeBase, true>;
     };
 
+    const usedFields = ["qc_provided_species", "serotype_final", "st_final"];
+
     queryOperands.forEach((op) => {
-      if (op.field && op.term) {
+      if (op.field && op.term && usedFields.includes(op.field)) {
         newState[op.field] = [op.term];
       }
     });
