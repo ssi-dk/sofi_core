@@ -491,8 +491,4 @@ def rewrite_str_range_query(q: Dict[str,Any]):
             # Failed to parse number. Simply skip
             continue
 
-
-        # Both non-number sections are identical. Extract the remaining number
-        # lteNumber = re.sub('')
-
     return q
