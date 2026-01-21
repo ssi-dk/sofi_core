@@ -11,10 +11,9 @@ jobs:
 
   prepare_tag:
     outputs:
-      tag: ${{ steps.semver.outputs.next }}
+      tag: ${{ steps.tag_version.outputs.new_tag }}
     permissions:
       contents: write
-
     runs-on: ubuntu-latest
 
     steps:
@@ -26,23 +25,13 @@ jobs:
           ref: ${{ github.ref }}
           submodules: recursive
 
-      # Defaults to patch version, will bump minor on "feat" commit
-
-      - name: Get Next Version
-        id: semver
-        uses: ietf-tools/semver-action@v1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          branch: master
-          patchAll: true
-
-      - name: Push tag
+      - name: Create tag
         id: tag_version
         uses: mathieudutour/github-tag-action@v6.2
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          custom_tag: ${{ steps.semver.outputs.next }}
           tag_prefix: ""
+
 
   # Build the Docker images and push to the GitHub container registry
 
