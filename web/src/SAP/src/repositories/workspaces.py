@@ -68,17 +68,54 @@ def get_workspaces(user: str):
     return found_workspaces
 
 
-# UNUSED IN NEW ITERATION
+def get_workspace_sequences(user: str, workspace_id: str):
+    workspaces = get_collection(WORKSPACES_COL_NAME)
+
+    query = my_workspaces_query(user)
+    if ObjectId.is_valid(workspace_id):
+        query["_id"] = ObjectId(workspace_id)
+    else:
+        query["name"] = workspace_id
+    
+    print("GET WS QUERY:",query,file=sys.stderr)
+
+    workspace = trim(
+        workspaces.find_one(query)
+    )
+
+    print("WS QUERY RES:",workspace,file=sys.stderr)
+
+    
+
+
+    if workspace is None:
+        raise LookupError("Failed to find workspace with id " + workspace_id)
+
+    if workspace["samples"] is None:
+        return []
+
+    return workspace["samples"]
+
+# UNUSED IN NEW ITERATIO. ALSO DOES NOT WORK. THIS ALWAYS CRASHES
 def get_workspace(user: str, workspace_id: str):
     workspaces = get_collection(WORKSPACES_COL_NAME)
+
+    query = my_workspaces_query(user)
     if ObjectId.is_valid(workspace_id):
-        workspace = trim(
-            workspaces.find_one({"created_by": user, "_id": ObjectId(workspace_id)})
-        )
+        query["_id"] = ObjectId(workspace_id)
     else:
-        workspace = trim(
-            workspaces.find_one({"created_by": user, "name": workspace_id})
-        )
+        query["name"] = workspace_id
+    
+    print("GET WS QUERY:",query,file=sys.stderr)
+
+    workspace = trim(
+        workspaces.find_one(query)
+    )
+
+    print("WS QUERY RES:",workspace,file=sys.stderr)
+
+    
+
 
     if workspace is None:
         return workspace

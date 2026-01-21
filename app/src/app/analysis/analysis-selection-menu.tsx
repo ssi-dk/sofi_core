@@ -24,7 +24,7 @@ type Props = {
 };
 
 export const AnalysisSelectionMenu = (props: Props) => {
-  const { selection, isNarrowed, data, search, lastSearchQuery, workspace } = props;
+  const { selection, isNarrowed, data, search, lastSearchQuery} = props;
   const dispatch = useDispatch();
 
   const onClear = useCallback(() => {

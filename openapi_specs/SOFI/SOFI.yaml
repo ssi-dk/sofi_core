@@ -961,6 +961,11 @@ components:
           $ref: "#/components/schemas/AnalysisSorting"
         filters:
           type: object
+        workspace_id:
+          nullable: true
+          type: string
+          format: byte
+
 
     HealthResponse:
       type: object

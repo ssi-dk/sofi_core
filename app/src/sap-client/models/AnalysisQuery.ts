@@ -57,6 +57,12 @@ export interface AnalysisQuery  {
      * @memberof AnalysisQuery
      */
     filters?: object;
+    /**
+     * 
+     * @type {string}
+     * @memberof AnalysisQuery
+     */
+    workspace_id?: string;
 }
 
 export function AnalysisQueryFromJSON(json: any): AnalysisQuery {
@@ -66,6 +72,7 @@ export function AnalysisQueryFromJSON(json: any): AnalysisQuery {
         'expression': !exists(json, 'expression') ? undefined : QueryExpressionFromJSON(json['expression']),
         'analysis_sorting': !exists(json, 'analysis_sorting') ? undefined : AnalysisSortingFromJSON(json['analysis_sorting']),
         'filters': !exists(json, 'filters') ? undefined : json['filters'],
+        'workspace_id': !exists(json, 'workspace_id') ? undefined : json['workspace_id'],
     };
 }
 
@@ -79,6 +86,7 @@ export function AnalysisQueryToJSON(value?: AnalysisQuery): any {
         'expression': QueryExpressionToJSON(value.expression),
         'analysis_sorting': AnalysisSortingToJSON(value.analysis_sorting),
         'filters': value.filters,
+        'workspace_id': value.workspace_id,
     };
 }
 

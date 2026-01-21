@@ -343,6 +343,7 @@ export default function AnalysisPage() {
   const [lastSearchQuery, setLastSearchQuery] = useState<AnalysisQuery>({
     expression: {},
   });
+  const [lastSearchWs, setLastSearchWs] = useState<Workspace | null>(null);
   const lastQueryOperands = useMemo(() => {
     return recurseSearchTree(lastSearchQuery.expression);
   }, [lastSearchQuery]);
@@ -505,7 +506,7 @@ export default function AnalysisPage() {
         : mergeFilters(q.expression || {}, propFilters, rangeFilters, approvalFilters);
       if (
         checkExpressionEquality(newExpression, lastSearchQuery.expression) &&
-        checkSortEquality(columnSort, prevColumnSort)
+        checkSortEquality(columnSort, prevColumnSort) && lastSearchWs === workspace
       ) {
         return;
       }
@@ -530,9 +531,13 @@ export default function AnalysisPage() {
 
       dispatch({ type: "RESET/Analysis" });
       setLastSearchQuery(newQ);
+      setLastSearchWs(workspace);
       appendToSearchHistory(newExpression);
 
-      if (newExpression && Object.keys(newExpression).length === 0) {
+      const searchingWithWs = workspace && workspace.id != "temp-workspace";
+
+
+      if (newExpression && !searchingWithWs && Object.keys(newExpression).length === 0) {
         dispatch(
           requestAsync({
             ...requestPageOfAnalysis(
@@ -554,6 +559,7 @@ export default function AnalysisPage() {
                   analysis_sorting: columnSort,
                   expression: newExpression,
                   page_size: pageSize,
+                  workspace_id: searchingWithWs ? workspace.id : undefined
                 },
               },
               false
@@ -563,7 +569,7 @@ export default function AnalysisPage() {
         );
       }
     },
-    [dispatch, propFilters, rangeFilters, lastSearchQuery, approvalFilters, columnSort, prevColumnSort, setPrevColumnSort]
+    [dispatch, propFilters, rangeFilters, lastSearchQuery, approvalFilters, columnSort, prevColumnSort, setPrevColumnSort, workspace,setLastSearchWs,lastSearchWs]
   );
 
   useEffect(() => {
@@ -1146,7 +1152,7 @@ export default function AnalysisPage() {
           {isPending && `${t("Fetching...")} ${data.length}`}
           {isFinished &&
             !pageState.isNarrowed &&
-            `${t("Showing")} ${data.length} ${t("of")} ${totalCount} ${t(
+            `${t("Showing")} ${displayData.length} ${t("of")} ${totalCount} ${t(
               "records"
             )}.`}
           {!pageState.isNarrowed && Object.keys(selection).length > 0

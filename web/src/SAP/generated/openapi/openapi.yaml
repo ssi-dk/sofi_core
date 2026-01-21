@@ -1102,6 +1102,7 @@ components:
       type: object
     AnalysisQuery:
       example:
+        workspace_id: workspace_id
         analysis_sorting:
           column: column
           ascending: true
@@ -1141,6 +1142,10 @@ components:
           $ref: '#/components/schemas/AnalysisSorting'
         filters:
           type: object
+        workspace_id:
+          format: byte
+          nullable: true
+          type: string
     HealthResponse:
       example:
         exception:

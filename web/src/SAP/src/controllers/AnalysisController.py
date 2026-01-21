@@ -9,6 +9,7 @@ from werkzeug.exceptions import Forbidden
 from flask import current_app as app
 from ...generated.models.organization import Organization
 from web.src.SAP.src.security.gdpr_logger import audit_query
+from ..repositories.workspaces import get_workspace_sequences as get_workspace_sequences_db
 from flask.json import jsonify
 from ..repositories.analysis import (
     get_analysis_page,
@@ -92,6 +93,7 @@ def get_analysis_history(user, token_info, isolate_id):
         token_info["institution"],
         token_info["sofi-data-clearance"],
         False,
+        workspace_items=None
     )
     response = {
         "items": items,
@@ -120,7 +122,7 @@ def get_analysis(user, token_info, paging_token, page_size,sorting_column=None, 
         authorized_columns(token_info),
         token_info["institution"],
         token_info["sofi-data-clearance"],
-        sorting=sorting
+        sorting=sorting,
     )
 
 
@@ -201,6 +203,12 @@ def search_analysis(user, token_info, query: AnalysisQuery):
         } if query.analysis_sorting is not None else None
     }
 
+    print("QUERY:",query,query.workspace_id,file=sys.stderr)
+
+    workspace_items = get_workspace_sequences_db(user,query.workspace_id) if query.workspace_id is not None else None
+
+    print("WORKSPACE ITEMS:",workspace_items,file=sys.stderr)
+
     token = parse_paging_token(query.paging_token) or default_token
     items = get_analysis_page(
         token["query"],
@@ -209,10 +217,11 @@ def search_analysis(user, token_info, query: AnalysisQuery):
         authorized_columns(token_info),
         token_info["institution"],
         token_info["sofi-data-clearance"],
-        sorting=token["analysis_sorting"]
+        sorting=token["analysis_sorting"],
+        workspace_items=workspace_items
     )
 
-    count = get_analysis_count(token["query"], token_info["institution"], token_info["sofi-data-clearance"])
+    count = get_analysis_count(token["query"], token_info["institution"], token_info["sofi-data-clearance"],workspace_items=workspace_items)
     new_token = (
         None
         if len(items) < token["page_size"]
