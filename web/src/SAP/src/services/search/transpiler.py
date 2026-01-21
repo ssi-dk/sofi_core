@@ -80,18 +80,23 @@ def structure_wildcard(field, node):
         if isinstance(coerced, str):
             return check_for_wildcard(field, coerced)
         elif isinstance(coerced, datetime):
-            return {"$gte": coerced, "$lte": coerced + timedelta(days=1)}
+            return {"$gte": coerced.isoformat(), "$lte": (coerced + timedelta(days=1)).isoformat()}
         else:
             return {"$in": [coerced, node.term]}
     elif node.term_max is not None or node.term_min is not None:
         coerced_min = coerce_term(node.term_min)
         coerced_max = coerce_term(node.term_max)
-        if coerced_max is None:
-            return {"$gte": coerced_min}  
-        if coerced_min is None:
-            return {"$lte": coerced_max}
 
-        return {"$gte": coerce_term(node.term_min), "$lte": coerce_term(node.term_max)}
+        # Force correct types. This will never fail but otherwise it complains
+        if not ((coerced_max is None or isinstance(coerced_max,datetime)) and (coerced_min is None or isinstance(coerced_min,datetime))):
+            raise TypeError("Non-date values as term_min or term_max in search query.")
+
+        if coerced_max is None:
+            return {"$gte": coerced_min.isoformat()}  
+        if coerced_min is None:
+            return {"$lte": coerced_max.isoformat()}
+
+        return {"$gte": coerced_min.isoformat(), "$lte": coerced_max.isoformat()}
 
 
 def structure_ranged(field, node):
