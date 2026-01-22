@@ -146,13 +146,23 @@ def get_workspace_data(user: str, token_info: Dict[str, str], workspace_id: str)
     return send_file(file, download_name="proj.csv", mimetype="text/csv")
 
 
-def delete_workspace(user: str, workspace_id: str):
+def leave_workspace(user: str, workspace_id: str):
     workspaces = get_collection(WORKSPACES_COL_NAME)
 
     query = my_workspaces_query(user)
     query["_id"] = ObjectId(workspace_id)
 
-    return workspaces.delete_one(query)
+    
+    res = workspaces.update_one(query,{
+        "$pull": {
+            "members": user,
+            "favorites": user
+        }
+    })
+
+    # Delete the workspace if it has no members
+    workspaces.delete_many({"members": {"$size": 0}})
+    return res
 
 # TODO: Change this to accept multipel samples
 def delete_workspace_sample(user: str, workspace_id: str, sample_id: str):

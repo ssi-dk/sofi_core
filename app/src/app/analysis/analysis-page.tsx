@@ -107,7 +107,9 @@ export default function AnalysisPage() {
       Object.values(s.entities.workspaces ?? {})
   ) as Array<Workspace>;
 
-
+  const selection = useSelector<RootState>((s) => 
+      s.selection.selection as DataTableSelection<AnalysisResult>
+  ) as DataTableSelection<AnalysisResult>;
 
 
   const [workspaceCreationState, sendToWorkspace] = useMutation((name: string) => {
@@ -155,7 +157,7 @@ export default function AnalysisPage() {
     if (workspaceCreationState.status === 200) {
       setWorkspace(workspaces[workspaces.length - 1]);
     }
-  },[workspaceCreationState])
+  },[workspaceCreationState, workspaces])
 
   const [currentPage, setCurrentPage] = useState(0);
   const [isLoadingNextPage, setIsLoadingNextPage] = useState(false);
@@ -323,9 +325,7 @@ export default function AnalysisPage() {
     [_submitChange, setLastUpdatedRow]
   );
 
-  const selection = useSelector<RootState>((s) => 
-      s.selection.selection as DataTableSelection<AnalysisResult>
-  ) as DataTableSelection<AnalysisResult>;
+  
 
   const approvals = useSelector<RootState>((s) => s.entities.approvalMatrix);
   const view = useSelector<RootState>(
@@ -1067,7 +1067,7 @@ export default function AnalysisPage() {
             setWorkspace(null);
           }}> Leave workspace
             </Button>}
-            {workspace && <SendToMicroreactButton workspace={workspace} />}
+            {workspace && <SendToMicroreactButton workspace={workspace.id} />}
           </Flex>
           <Flex alignItems="center" justify="space-between">
 

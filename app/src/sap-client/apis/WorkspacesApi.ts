@@ -47,10 +47,6 @@ export interface CreateWorkspaceFromSequenceIdsRequest {
     createWorkspace?: CreateWorkspace;
 }
 
-export interface DeleteWorkspaceRequest {
-    workspaceId: string;
-}
-
 export interface DeleteWorkspaceSampleRequest {
     workspaceId: string;
     sampleId: string;
@@ -64,6 +60,10 @@ export interface GetWorkspaceDataRequest {
     workspaceId: string;
 }
 
+export interface LeaveWorkspaceRequest {
+    workspaceId: string;
+}
+
 export interface PostWorkspaceRequest {
     workspaceId: string;
     updateWorkspace?: UpdateWorkspace;
@@ -74,8 +74,8 @@ export interface RemoveWorkspaceSamplesRequest {
     updateWorkspace?: UpdateWorkspace;
 }
 
-export interface SetFavoriteRequest {
-    setFavorite?: SetFavorite;
+export interface SetWsFavoriteRequest {
+    setFavorite: SetFavorite;
 }
 
 
@@ -203,52 +203,6 @@ function createWorkspaceFromSequenceIdsRaw<T>(requestParameters: CreateWorkspace
 */
 export function createWorkspaceFromSequenceIds<T>(requestParameters: CreateWorkspaceFromSequenceIdsRequest, requestConfig?: runtime.TypedQueryConfig<T, void>): QueryConfig<T> {
     return createWorkspaceFromSequenceIdsRaw(requestParameters, requestConfig);
-}
-
-/**
- * Delete an existing workspace
- */
-function deleteWorkspaceRaw<T>(requestParameters: DeleteWorkspaceRequest, requestConfig: runtime.TypedQueryConfig<T, void> = {}): QueryConfig<T> {
-    if (requestParameters.workspaceId === null || requestParameters.workspaceId === undefined) {
-        throw new runtime.RequiredError('workspaceId','Required parameter requestParameters.workspaceId was null or undefined when calling deleteWorkspace.');
-    }
-
-    let queryParameters = null;
-
-
-    const headerParameters : runtime.HttpHeaders = {};
-
-
-    const { meta = {} } = requestConfig;
-
-    meta.authType = ['bearer'];
-    const config: QueryConfig<T> = {
-        url: `${runtime.Configuration.basePath}/workspaces/{workspace_id}`.replace(`{${"workspace_id"}}`, encodeURIComponent(String(requestParameters.workspaceId))),
-        meta,
-        update: requestConfig.update,
-        queryKey: requestConfig.queryKey,
-        optimisticUpdate: requestConfig.optimisticUpdate,
-        force: requestConfig.force,
-        rollback: requestConfig.rollback,
-        options: {
-            method: 'DELETE',
-            headers: headerParameters,
-        },
-        body: queryParameters,
-    };
-
-    const { transform: requestTransform } = requestConfig;
-    if (requestTransform) {
-    }
-
-    return config;
-}
-
-/**
-* Delete an existing workspace
-*/
-export function deleteWorkspace<T>(requestParameters: DeleteWorkspaceRequest, requestConfig?: runtime.TypedQueryConfig<T, void>): QueryConfig<T> {
-    return deleteWorkspaceRaw(requestParameters, requestConfig);
 }
 
 /**
@@ -438,6 +392,52 @@ export function getWorkspaces<T>( requestConfig?: runtime.TypedQueryConfig<T, Ar
 }
 
 /**
+ * Leave an existing workspace
+ */
+function leaveWorkspaceRaw<T>(requestParameters: LeaveWorkspaceRequest, requestConfig: runtime.TypedQueryConfig<T, void> = {}): QueryConfig<T> {
+    if (requestParameters.workspaceId === null || requestParameters.workspaceId === undefined) {
+        throw new runtime.RequiredError('workspaceId','Required parameter requestParameters.workspaceId was null or undefined when calling leaveWorkspace.');
+    }
+
+    let queryParameters = null;
+
+
+    const headerParameters : runtime.HttpHeaders = {};
+
+
+    const { meta = {} } = requestConfig;
+
+    meta.authType = ['bearer'];
+    const config: QueryConfig<T> = {
+        url: `${runtime.Configuration.basePath}/workspaces/{workspace_id}`.replace(`{${"workspace_id"}}`, encodeURIComponent(String(requestParameters.workspaceId))),
+        meta,
+        update: requestConfig.update,
+        queryKey: requestConfig.queryKey,
+        optimisticUpdate: requestConfig.optimisticUpdate,
+        force: requestConfig.force,
+        rollback: requestConfig.rollback,
+        options: {
+            method: 'DELETE',
+            headers: headerParameters,
+        },
+        body: queryParameters,
+    };
+
+    const { transform: requestTransform } = requestConfig;
+    if (requestTransform) {
+    }
+
+    return config;
+}
+
+/**
+* Leave an existing workspace
+*/
+export function leaveWorkspace<T>(requestParameters: LeaveWorkspaceRequest, requestConfig?: runtime.TypedQueryConfig<T, void>): QueryConfig<T> {
+    return leaveWorkspaceRaw(requestParameters, requestConfig);
+}
+
+/**
  * Updates an existing workspace
  */
 function postWorkspaceRaw<T>(requestParameters: PostWorkspaceRequest, requestConfig: runtime.TypedQueryConfig<T, void> = {}): QueryConfig<T> {
@@ -536,7 +536,11 @@ export function removeWorkspaceSamples<T>(requestParameters: RemoveWorkspaceSamp
 /**
  * Add or remove the user from this workspaces\' favorite list
  */
-function setFavoriteRaw<T>(requestParameters: SetFavoriteRequest, requestConfig: runtime.TypedQueryConfig<T, void> = {}): QueryConfig<T> {
+function setWsFavoriteRaw<T>(requestParameters: SetWsFavoriteRequest, requestConfig: runtime.TypedQueryConfig<T, void> = {}): QueryConfig<T> {
+    if (requestParameters.setFavorite === null || requestParameters.setFavorite === undefined) {
+        throw new runtime.RequiredError('setFavorite','Required parameter requestParameters.setFavorite was null or undefined when calling setWsFavorite.');
+    }
+
     let queryParameters = null;
 
 
@@ -573,7 +577,7 @@ function setFavoriteRaw<T>(requestParameters: SetFavoriteRequest, requestConfig:
 /**
 * Add or remove the user from this workspaces\' favorite list
 */
-export function setFavorite<T>(requestParameters: SetFavoriteRequest, requestConfig?: runtime.TypedQueryConfig<T, void>): QueryConfig<T> {
-    return setFavoriteRaw(requestParameters, requestConfig);
+export function setWsFavorite<T>(requestParameters: SetWsFavoriteRequest, requestConfig?: runtime.TypedQueryConfig<T, void>): QueryConfig<T> {
+    return setWsFavoriteRaw(requestParameters, requestConfig);
 }
 

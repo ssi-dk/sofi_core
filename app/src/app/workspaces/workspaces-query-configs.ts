@@ -1,19 +1,19 @@
 import {
   getWorkspaces,
   Workspace,
-  deleteWorkspace as deleteWorkspaceApi,
+  leaveWorkspace as leaveWorkspaceApi,
   createWorkspace as createWorkspaceApi,
   createWorkspaceFromSequenceIds as createWorkspaceFromSequenceIdsApi,
   getWorkspace as getWorkspaceApi,
   postWorkspace as postWorkspaceApi,
   deleteWorkspaceSample as deleteWorkspaceSampleApi,
-  DeleteWorkspaceRequest,
+  LeaveWorkspaceRequest,
   PostWorkspaceRequest,
   DeleteWorkspaceSampleRequest,
   cloneWorkspace as cloneWorkspaceApi,
   removeWorkspaceSamples as removeWorkspaceSamplesApi,
-  setFavorite as setFavoriteApi,
-  SetFavoriteRequest,
+  setWsFavorite as setFavoriteApi,
+  SetWsFavoriteRequest,
 } from "sap-client";
 import {
   CreateWorkspace,
@@ -62,8 +62,8 @@ export const getWorkspace = (id: string) => {
   return base;
 };
 
-export const deleteWorkspace = (params: DeleteWorkspaceRequest) => {
-  const base = deleteWorkspaceApi(params);
+export const leaveWorkspace = (params: LeaveWorkspaceRequest) => {
+  const base = leaveWorkspaceApi(params);
   base.url = getUrl(base.url);
   base.update = {
     workspaces: (oldValue) => {
@@ -214,7 +214,7 @@ export const removeWorkspaceSamples = (params: PostWorkspaceRequest) => {
   return base;
 };
 
-export const setWorkspaceFavorite = (params: SetFavoriteRequest) => {
+export const setWorkspaceFavorite = (params: SetWsFavoriteRequest) => {
   const base = setFavoriteApi(params);
   base.url = getUrl(base.url);
 

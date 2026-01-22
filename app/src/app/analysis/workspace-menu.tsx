@@ -41,7 +41,7 @@ import DataTable, {
     DataTableSelection,
 } from "./data-table/data-table";
 import { useMutation } from "redux-query-react";
-import { setWorkspaceFavorite } from "../workspaces/workspaces-query-configs";
+import { setWorkspaceFavorite,leaveWorkspace } from "../workspaces/workspaces-query-configs";
 
 export type WorkspaceMenuProps = {
     workspaces: Workspace[],
@@ -55,6 +55,12 @@ export type WorkspaceMenuProps = {
 export const WorkspaceMenu = (props: WorkspaceMenuProps) => {
     const { workspaces, workspace, selection, addToWorkspace, removeFromWorkspace, setWorkspace } = props;
 
+    const [leaveWorkspaceState, leaveWs] = useMutation((workspaceId: string) => {
+        return leaveWorkspace({
+            workspaceId
+        });
+    })
+
     const [setFavoriteState, setFavorite] = useMutation((workspaceId: string, isFavorite: boolean) => {
           return setWorkspaceFavorite({
             setFavorite: {
@@ -65,7 +71,7 @@ export const WorkspaceMenu = (props: WorkspaceMenuProps) => {
     });
     const [searchStr, setSearchStr] = useState("");
 
-    const displayWorkspaces = useMemo(() => workspaces.filter(w => !searchStr || w.name.includes(searchStr)).sort((a,b) => b.isFavorite - a.isFavorite),[workspaces,searchStr])
+    const displayWorkspaces = useMemo(() => workspaces.filter(w => !searchStr || w.name.includes(searchStr)).sort((a,b) => Number(b.isFavorite) - Number(a.isFavorite)),[workspaces,searchStr])
 
 
     return <Menu >
@@ -84,9 +90,9 @@ export const WorkspaceMenu = (props: WorkspaceMenuProps) => {
 
                 return (<div key={w.id} style={wsStyle} >
                     <div style={{ display: "flex", width: "100%", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
-                        <div>
+                        <Flex direction="row" style={{flexGrow: 1}}>
                             <IconButton
-                                aria-label="Pin"
+                                aria-label="Pin workspace as favorite"
                                 icon={
                                     <StarIcon
                                         {...(w.isFavorite
@@ -103,17 +109,17 @@ export const WorkspaceMenu = (props: WorkspaceMenuProps) => {
                             }}>
                                 {w.name}
                             </Button>
-                        </div>
+                        </Flex>
                         <div>
                             {Object.values(selection).length > 0 && <>
-                                <IconButton disabled={fullySelected} marginX={1} onClick={(e) => {
+                                <IconButton aria-label="add selection to workspace" disabled={fullySelected} marginX={1} onClick={(e) => {
                                     addToWorkspace(w.id);
                                     e.preventDefault();
                                     e.stopPropagation();
                                 }}
                                     icon={fullySelected ? <CheckIcon /> : <AddIcon />}
                                 />
-                                <IconButton disabled={!fullySelected} marginX={1} onClick={(e) => {
+                                <IconButton aria-label="remove selection from workspace" disabled={!fullySelected} marginX={1} onClick={(e) => {
                                     removeFromWorkspace(w.id);
                                     e.preventDefault();
                                     e.stopPropagation();
@@ -121,8 +127,18 @@ export const WorkspaceMenu = (props: WorkspaceMenuProps) => {
                                     icon={fullySelected ? <MinusIcon /> : <NotAllowedIcon />}
                                 />
                             </>}
-                            <EditIcon margin={2} />
-                            <DeleteIcon margin={2} />
+                            {/* <EditIcon margin={2} /> */}
+                            <IconButton
+                                aria-label="leave workspace"
+                                icon={<DeleteIcon />}
+
+                                margin={2} onClick={() => {
+                                    if (confirm("Are you sure you want to leave this workspace.")) {
+                                        leaveWs(w.id);
+                                    }
+                                }} 
+                            />
+                                
                         </div>
                     </div>
                 </div>)

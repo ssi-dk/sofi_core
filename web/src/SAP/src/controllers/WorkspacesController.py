@@ -4,7 +4,7 @@ from flask.json import jsonify
 
 from web.src.SAP.generated.models.update_workspace import UpdateWorkspace
 from ..repositories.workspaces import get_workspaces as get_workspaces_db
-from ..repositories.workspaces import delete_workspace as delete_workspace_db
+from ..repositories.workspaces import leave_workspace as leave_workspace_db
 from ..repositories.workspaces import delete_workspace_sample as delete_workspace_sample_db
 from ..repositories.workspaces import create_workspace as create_workspace_db
 from ..repositories.workspaces import create_workspace_from_sequence_ids as create_workspace_from_sequence_ids_db
@@ -19,9 +19,9 @@ from ..utils import validate_sample_ids
 def get_workspaces(user, token_info):
     return jsonify(get_workspaces_db(user))
 
-def delete_workspace(user, token_info, workspace_id: str):
-    res = delete_workspace_db(user, workspace_id)
-    return None if res.deleted_count > 0 else abort(404)
+def leave_workspace(user, token_info, workspace_id: str):
+    res = leave_workspace_db(user, workspace_id)
+    return None if res.modified_count == 1 else abort(404)
 
 def create_workspace(user, token_info, body):
     if body.samples:
@@ -78,7 +78,7 @@ def get_workspace_data(user, token_info, workspace_id):
 
     return res
 
-def set_favorite(user, token_info, body):
+def set_ws_favorite(user, token_info, body):
     workspace_id = body.workspace_id
     is_favorite = body.is_favorite
     set_favorite_db(user, workspace_id, is_favorite)

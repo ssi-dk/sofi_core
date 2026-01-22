@@ -74,11 +74,13 @@ paths:
   /workspace/setFavorite:
     post:
       description: Add or remove the user from this workspaces' favorite list
-      operationId: set_favorite
+      x-codegen-request-body-name: set_favorite
+      operationId: set_ws_favorite
       tags:
         - workspaces
       x-openapi-router-controller: web.src.SAP.generated.controllers.workspaces_controller
       requestBody:
+        required: true
         content:
           application/json:
             schema:
@@ -181,8 +183,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/WorkspaceInfo'
     delete:
-      description: Delete an existing workspace
-      operationId: delete_workspace
+      description: Leave an existing workspace
+      operationId: leave_workspace
       tags:
         - workspaces
       x-openapi-router-controller: web.src.SAP.generated.controllers.workspaces_controller
@@ -195,7 +197,7 @@ paths:
           description: Id of workspace to delete
       responses:
         '204':
-          description: Workspace deleted successfully.
+          description: Workspace left successfully.
     post:
       description: Updates an existing workspace
       operationId: post_workspace
@@ -217,27 +219,6 @@ paths:
       responses:
         '204':
           description: Workspace updated successfully.
-  # /workspaces/search:
-  #   get:
-  #     description: Search for workspaces
-  #     operationId: search_workspaces
-  #     tags:
-  #       - workspaces
-  #     x-openapi-router-controller: web.src.SAP.generated.controllers.workspaces_controller
-  #     parameters:
-  #       - name: query
-  #         in: path
-  #         required: true
-  #         schema:
-  #           type: string
-  #         description: String used to search workspaces
-  #     responses:
-  #       '200':
-  #         description: Workspace
-  #         content:
-  #           application/json:
-  #             schema:
-  #               $ref: '#/components/schemas/WorkspaceInfo'
   /microreact_integration:
     post:
       description: Send to Microreact

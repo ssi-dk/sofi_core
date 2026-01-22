@@ -644,17 +644,19 @@ paths:
   /workspace/setFavorite:
     post:
       description: Add or remove the user from this workspaces' favorite list
-      operationId: set_favorite
+      operationId: set_ws_favorite
       requestBody:
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/SetFavorite'
+        required: true
       responses:
         "204":
           description: Favorite updated
       tags:
       - workspaces
+      x-codegen-request-body-name: set_favorite
       x-openapi-router-controller: web.src.SAP.generated.controllers.workspaces_controller
   /workspace/{workspace_id}/remove:
     post:
@@ -752,8 +754,8 @@ paths:
       x-openapi-router-controller: web.src.SAP.generated.controllers.workspaces_controller
   /workspaces/{workspace_id}:
     delete:
-      description: Delete an existing workspace
-      operationId: delete_workspace
+      description: Leave an existing workspace
+      operationId: leave_workspace
       parameters:
       - description: Id of workspace to delete
         explode: false
@@ -765,7 +767,7 @@ paths:
         style: simple
       responses:
         "204":
-          description: Workspace deleted successfully.
+          description: Workspace left successfully.
       tags:
       - workspaces
       x-openapi-router-controller: web.src.SAP.generated.controllers.workspaces_controller

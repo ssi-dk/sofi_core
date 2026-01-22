@@ -49,18 +49,6 @@ def create_workspace_from_sequence_ids(user, token_info, create_workspace=None):
         create_workspace = CreateWorkspace.from_dict(connexion.request.get_json())  # noqa: E501
     return WorkspacesController.create_workspace_from_sequence_ids(user, token_info, create_workspace)
 
-def delete_workspace(user, token_info, workspace_id):  # noqa: E501
-    """delete_workspace
-
-    Delete an existing workspace # noqa: E501
-
-    :param workspace_id: Id of workspace to delete
-    :type workspace_id: str
-
-    :rtype: None
-    """
-    return WorkspacesController.delete_workspace(user, token_info, workspace_id)
-
 def delete_workspace_sample(user, token_info, workspace_id, sample_id):  # noqa: E501
     """delete_workspace_sample
 
@@ -109,6 +97,18 @@ def get_workspaces(user, token_info):  # noqa: E501
     """
     return WorkspacesController.get_workspaces(user, token_info)
 
+def leave_workspace(user, token_info, workspace_id):  # noqa: E501
+    """leave_workspace
+
+    Leave an existing workspace # noqa: E501
+
+    :param workspace_id: Id of workspace to delete
+    :type workspace_id: str
+
+    :rtype: None
+    """
+    return WorkspacesController.leave_workspace(user, token_info, workspace_id)
+
 def post_workspace(user, token_info, workspace_id, update_workspace=None):  # noqa: E501
     """post_workspace
 
@@ -143,8 +143,8 @@ def remove_workspace_samples(user, token_info, workspace_id, update_workspace=No
         update_workspace = UpdateWorkspace.from_dict(connexion.request.get_json())  # noqa: E501
     return WorkspacesController.remove_workspace_samples(user, token_info, workspace_id, update_workspace)
 
-def set_favorite(user, token_info, set_favorite=None):  # noqa: E501
-    """set_favorite
+def set_ws_favorite(user, token_info, set_favorite):  # noqa: E501
+    """set_ws_favorite
 
     Add or remove the user from this workspaces&#39; favorite list # noqa: E501
 
@@ -156,4 +156,4 @@ def set_favorite(user, token_info, set_favorite=None):  # noqa: E501
     if connexion.request.is_json:
         from ..models import SetFavorite
         set_favorite = SetFavorite.from_dict(connexion.request.get_json())  # noqa: E501
-    return WorkspacesController.set_favorite(user, token_info, set_favorite)
+    return WorkspacesController.set_ws_favorite(user, token_info, set_favorite)

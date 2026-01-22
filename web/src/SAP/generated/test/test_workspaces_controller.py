@@ -84,21 +84,6 @@ class TestWorkspacesController(BaseTestCase):
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
 
-    def test_delete_workspace(self):
-        """Test case for delete_workspace
-
-        
-        """
-        headers = { 
-            'Authorization': 'Bearer special-key',
-        }
-        response = self.client.open(
-            '/api/workspaces/{workspace_id}'.format(workspace_id='workspace_id_example'),
-            method='DELETE',
-            headers=headers)
-        self.assert200(response,
-                       'Response body is : ' + response.data.decode('utf-8'))
-
     def test_delete_workspace_sample(self):
         """Test case for delete_workspace_sample
 
@@ -162,6 +147,21 @@ class TestWorkspacesController(BaseTestCase):
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
 
+    def test_leave_workspace(self):
+        """Test case for leave_workspace
+
+        
+        """
+        headers = { 
+            'Authorization': 'Bearer special-key',
+        }
+        response = self.client.open(
+            '/api/workspaces/{workspace_id}'.format(workspace_id='workspace_id_example'),
+            method='DELETE',
+            headers=headers)
+        self.assert200(response,
+                       'Response body is : ' + response.data.decode('utf-8'))
+
     def test_post_workspace(self):
         """Test case for post_workspace
 
@@ -204,8 +204,8 @@ class TestWorkspacesController(BaseTestCase):
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
 
-    def test_set_favorite(self):
-        """Test case for set_favorite
+    def test_set_ws_favorite(self):
+        """Test case for set_ws_favorite
 
         
         """
