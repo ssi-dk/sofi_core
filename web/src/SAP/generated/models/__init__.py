@@ -54,6 +54,7 @@ from .sample import Sample
 from .sample_categories import SampleCategories
 from .sample_categories_resistance import SampleCategoriesResistance
 from .sample_categories_resistance_report import SampleCategoriesResistanceReport
+from .set_favorite import SetFavorite
 from .single_upload_request import SingleUploadRequest
 from .tbr_metadata import TbrMetadata
 from .tbr_specific_metadata import TbrSpecificMetadata

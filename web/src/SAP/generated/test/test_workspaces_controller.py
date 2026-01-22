@@ -8,6 +8,7 @@ from six import BytesIO
 from web.src.SAP.generated.models.any_type import AnyType  # noqa: E501
 from web.src.SAP.generated.models.clone_workspace import CloneWorkspace  # noqa: E501
 from web.src.SAP.generated.models.create_workspace import CreateWorkspace  # noqa: E501
+from web.src.SAP.generated.models.set_favorite import SetFavorite  # noqa: E501
 from web.src.SAP.generated.models.update_workspace import UpdateWorkspace  # noqa: E501
 from web.src.SAP.generated.models.workspace import Workspace  # noqa: E501
 from web.src.SAP.generated.models.workspace_info import WorkspaceInfo  # noqa: E501
@@ -199,6 +200,28 @@ class TestWorkspacesController(BaseTestCase):
             method='POST',
             headers=headers,
             data=json.dumps(update_workspace),
+            content_type='application/json')
+        self.assert200(response,
+                       'Response body is : ' + response.data.decode('utf-8'))
+
+    def test_set_favorite(self):
+        """Test case for set_favorite
+
+        
+        """
+        set_favorite = {
+  "workspaceId" : "workspaceId",
+  "isFavorite" : true
+}
+        headers = { 
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer special-key',
+        }
+        response = self.client.open(
+            '/api/workspace/setFavorite',
+            method='POST',
+            headers=headers,
+            data=json.dumps(set_favorite),
             content_type='application/json')
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))

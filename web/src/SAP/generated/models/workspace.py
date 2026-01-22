@@ -17,30 +17,35 @@ class Workspace(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, id=None, name=None, samples=None):  # noqa: E501
+    def __init__(self, id=None, name=None, is_favorite=None, samples=None):  # noqa: E501
         """Workspace - a model defined in OpenAPI
 
         :param id: The id of this Workspace.  # noqa: E501
         :type id: str
         :param name: The name of this Workspace.  # noqa: E501
         :type name: str
+        :param is_favorite: The is_favorite of this Workspace.  # noqa: E501
+        :type is_favorite: bool
         :param samples: The samples of this Workspace.  # noqa: E501
         :type samples: List[str]
         """
         self.openapi_types = {
             'id': str,
             'name': str,
+            'is_favorite': bool,
             'samples': List[str],
         }
 
         self.attribute_map = {
             'id': 'id',
             'name': 'name',
+            'is_favorite': 'isFavorite',
             'samples': 'samples',
         }
 
         self._id = id
         self._name = name
+        self._is_favorite = is_favorite
         self._samples = samples
 
     @classmethod
@@ -99,6 +104,27 @@ class Workspace(Model):
             raise ValueError("Invalid value for `name`, must not be `None`")  # noqa: E501
 
         self._name = name
+
+    @property
+    def is_favorite(self):
+        """Gets the is_favorite of this Workspace.
+
+
+        :return: The is_favorite of this Workspace.
+        :rtype: bool
+        """
+        return self._is_favorite
+
+    @is_favorite.setter
+    def is_favorite(self, is_favorite):
+        """Sets the is_favorite of this Workspace.
+
+
+        :param is_favorite: The is_favorite of this Workspace.
+        :type is_favorite: bool
+        """
+
+        self._is_favorite = is_favorite
 
     @property
     def samples(self):

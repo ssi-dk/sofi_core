@@ -71,6 +71,22 @@ paths:
       tags:
         - workspaces
       x-openapi-router-controller: web.src.SAP.generated.controllers.workspaces_controller
+  /workspace/setFavorite:
+    post:
+      description: Add or remove the user from this workspaces' favorite list
+      operationId: set_favorite
+      tags:
+        - workspaces
+      x-openapi-router-controller: web.src.SAP.generated.controllers.workspaces_controller
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SetFavorite'
+      responses:
+        '204':
+          description: Favorite updated
   /workspace/{workspace_id}/remove:
     post:
       description: Remove samples from workspace
@@ -1805,6 +1821,9 @@ components:
         name:
           type: string
           title: Name
+        isFavorite:
+          type: boolean
+          title: IsFavorite
         samples:
           type: array
           items:
@@ -1814,7 +1833,16 @@ components:
       required:
       - id
       - name
-
+    SetFavorite:
+      type: object
+      properties:
+        workspaceId:
+          type: string
+        isFavorite:
+          type: boolean
+      required:
+        - isFavorite
+        - workspaceId
     MicroreactProject:
       properties:
         id:

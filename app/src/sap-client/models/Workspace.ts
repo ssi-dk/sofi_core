@@ -32,6 +32,12 @@ export interface Workspace  {
     name: string;
     /**
      * 
+     * @type {boolean}
+     * @memberof Workspace
+     */
+    isFavorite?: boolean;
+    /**
+     * 
      * @type {Array<string>}
      * @memberof Workspace
      */
@@ -42,6 +48,7 @@ export function WorkspaceFromJSON(json: any): Workspace {
     return {
         'id': json['id'],
         'name': json['name'],
+        'isFavorite': !exists(json, 'isFavorite') ? undefined : json['isFavorite'],
         'samples': !exists(json, 'samples') ? undefined : json['samples'],
     };
 }
@@ -53,6 +60,7 @@ export function WorkspaceToJSON(value?: Workspace): any {
     return {
         'id': value.id,
         'name': value.name,
+        'isFavorite': value.isFavorite,
         'samples': value.samples,
     };
 }

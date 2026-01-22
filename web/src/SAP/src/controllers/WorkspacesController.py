@@ -13,6 +13,7 @@ from ..repositories.workspaces import update_workspace as update_workspace_db
 from ..repositories.workspaces import remove_from_workspace as remove_from_workspace_db
 from ..repositories.workspaces import get_workspace as get_workspace_db
 from ..repositories.workspaces import get_workspace_data as get_workspace_data_db
+from ..repositories.workspaces import set_favorite as set_favorite_db
 from ..utils import validate_sample_ids
 
 def get_workspaces(user, token_info):
@@ -76,3 +77,8 @@ def get_workspace_data(user, token_info, workspace_id):
         return abort(404)
 
     return res
+
+def set_favorite(user, token_info, body):
+    workspace_id = body.workspace_id
+    is_favorite = body.is_favorite
+    set_favorite_db(user, workspace_id, is_favorite)

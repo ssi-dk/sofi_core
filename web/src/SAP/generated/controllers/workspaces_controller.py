@@ -142,3 +142,18 @@ def remove_workspace_samples(user, token_info, workspace_id, update_workspace=No
         from ..models import UpdateWorkspace
         update_workspace = UpdateWorkspace.from_dict(connexion.request.get_json())  # noqa: E501
     return WorkspacesController.remove_workspace_samples(user, token_info, workspace_id, update_workspace)
+
+def set_favorite(user, token_info, set_favorite=None):  # noqa: E501
+    """set_favorite
+
+    Add or remove the user from this workspaces&#39; favorite list # noqa: E501
+
+    :param set_favorite: 
+    :type set_favorite: dict | bytes
+
+    :rtype: None
+    """
+    if connexion.request.is_json:
+        from ..models import SetFavorite
+        set_favorite = SetFavorite.from_dict(connexion.request.get_json())  # noqa: E501
+    return WorkspacesController.set_favorite(user, token_info, set_favorite)

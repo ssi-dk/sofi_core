@@ -15,10 +15,19 @@ import io
 from flask import send_file
 
 
-def trim(item):
+def trim(item, user: str):
+
+
     item["id"] = str(item["_id"])
     item.pop("_id", None)
     item.pop("username", None)
+
+    if "favorites" in item:
+        item["isFavorite"] = user in item["favorites"]
+    else:
+        item["isFavorite"] = False
+
+    print("Post trim:",item, file=sys.stderr)
     return item
 
 
@@ -45,7 +54,7 @@ def my_workspaces_query(user: str)-> dict:
 def get_workspaces(user: str):
     workspaces = get_collection(WORKSPACES_COL_NAME)
 
-    found_workspaces = list(map(trim,
+    found_workspaces = list(map(lambda x: trim(x,user),
         workspaces.find(my_workspaces_query(user))
     ))
 
@@ -78,7 +87,8 @@ def get_workspace_sequences(user: str, workspace_id: str):
         query["name"] = workspace_id
 
     workspace = trim(
-        workspaces.find_one(query)
+        workspaces.find_one(query),
+        user
     )
 
     if workspace is None:
@@ -100,7 +110,8 @@ def get_workspace(user: str, workspace_id: str):
         query["name"] = workspace_id
     
     workspace = trim(
-        workspaces.find_one(query)
+        workspaces.find_one(query),
+        user
     )
 
     if workspace is None:
@@ -186,11 +197,13 @@ def clone_workspace(user: str, cloneWorkspaceInfo: CloneWorkspace):
         workspace = trim(
             workspaces.find_one(
                 {"created_by": user, "_id": ObjectId(cloneWorkspaceInfo.id)}
-            )
+            ),
+            user
         )
     else:
         workspace = trim(
-            workspaces.find_one({"created_by": user, "name": cloneWorkspaceInfo.id})
+            workspaces.find_one({"created_by": user, "name": cloneWorkspaceInfo.id}),
+            user
         )
 
     if workspace is None:
@@ -230,3 +243,23 @@ def update_microreact(microreact_reference):
     update_filter = {"_id": ObjectId(microreact_reference["id"])}
     update = {"$set": {"microreact": microreact_reference["microreact"]}}
     return workspaces.update_one(update_filter, update, upsert=True)
+
+def set_favorite(user: str, workspace_id: str, is_favorite: bool):
+    workspaces = get_collection(WORKSPACES_COL_NAME)
+
+    filter = my_workspaces_query(user)
+    filter["_id"] = ObjectId(workspace_id)
+
+    update = {
+        "$addToSet": {
+            "favorites": user
+        }
+    } if is_favorite else {
+        "$pull": {
+            "favorites": user
+        }
+    }
+
+    print("PERF FAV UPDATE:",filter,update,file=sys.stderr)
+    res = workspaces.update_one(filter, update)
+    print(res.matched_count,res.modified_count,file=sys.stderr)

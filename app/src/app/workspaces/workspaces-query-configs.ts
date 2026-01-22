@@ -12,6 +12,8 @@ import {
   DeleteWorkspaceSampleRequest,
   cloneWorkspace as cloneWorkspaceApi,
   removeWorkspaceSamples as removeWorkspaceSamplesApi,
+  setFavorite as setFavoriteApi,
+  SetFavoriteRequest,
 } from "sap-client";
 import {
   CreateWorkspace,
@@ -212,3 +214,26 @@ export const removeWorkspaceSamples = (params: PostWorkspaceRequest) => {
   return base;
 };
 
+export const setWorkspaceFavorite = (params: SetFavoriteRequest) => {
+  const base = setFavoriteApi(params);
+  base.url = getUrl(base.url);
+
+  base.update = {
+    workspaces: (oldValue) => {
+      const {workspaceId, isFavorite} = params.setFavorite;
+
+      return oldValue.map(ws => {
+        if (ws.id !== workspaceId) {
+          return ws;
+        }
+        return {
+          ...ws,
+          isFavorite
+        }
+      });
+    }
+  }
+
+  base.force = true;
+  return base;
+}
