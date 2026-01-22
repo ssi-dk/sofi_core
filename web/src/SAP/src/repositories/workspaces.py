@@ -27,7 +27,6 @@ def trim(item, user: str):
     else:
         item["isFavorite"] = False
 
-    print("Post trim:",item, file=sys.stderr)
     return item
 
 
@@ -260,6 +259,4 @@ def set_favorite(user: str, workspace_id: str, is_favorite: bool):
         }
     }
 
-    print("PERF FAV UPDATE:",filter,update,file=sys.stderr)
-    res = workspaces.update_one(filter, update)
-    print(res.matched_count,res.modified_count,file=sys.stderr)
+    return workspaces.update_one(filter, update)

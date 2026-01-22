@@ -203,11 +203,7 @@ def search_analysis(user, token_info, query: AnalysisQuery):
         } if query.analysis_sorting is not None else None
     }
 
-    print("QUERY:",query,query.workspace_id,file=sys.stderr)
-
     workspace_items = get_workspace_sequences_db(user,query.workspace_id) if query.workspace_id is not None else None
-
-    print("WORKSPACE ITEMS:",workspace_items,file=sys.stderr)
 
     token = parse_paging_token(query.paging_token) or default_token
     items = get_analysis_page(
