@@ -75,7 +75,7 @@ export interface RemoveWorkspaceSamplesRequest {
 }
 
 export interface SetWsFavoriteRequest {
-    setFavorite: SetFavorite;
+    setFavorite?: SetFavorite;
 }
 
 
@@ -537,10 +537,6 @@ export function removeWorkspaceSamples<T>(requestParameters: RemoveWorkspaceSamp
  * Add or remove the user from this workspaces\' favorite list
  */
 function setWsFavoriteRaw<T>(requestParameters: SetWsFavoriteRequest, requestConfig: runtime.TypedQueryConfig<T, void> = {}): QueryConfig<T> {
-    if (requestParameters.setFavorite === null || requestParameters.setFavorite === undefined) {
-        throw new runtime.RequiredError('setFavorite','Required parameter requestParameters.setFavorite was null or undefined when calling setWsFavorite.');
-    }
-
     let queryParameters = null;
 
 

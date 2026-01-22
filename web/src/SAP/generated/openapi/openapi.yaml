@@ -650,13 +650,11 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/SetFavorite'
-        required: true
       responses:
         "204":
           description: Favorite updated
       tags:
       - workspaces
-      x-codegen-request-body-name: set_favorite
       x-openapi-router-controller: web.src.SAP.generated.controllers.workspaces_controller
   /workspace/{workspace_id}/remove:
     post:
