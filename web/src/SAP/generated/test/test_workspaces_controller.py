@@ -12,6 +12,7 @@ from web.src.SAP.generated.models.set_favorite import SetFavorite  # noqa: E501
 from web.src.SAP.generated.models.update_workspace import UpdateWorkspace  # noqa: E501
 from web.src.SAP.generated.models.workspace import Workspace  # noqa: E501
 from web.src.SAP.generated.models.workspace_info import WorkspaceInfo  # noqa: E501
+from web.src.SAP.generated.models.workspace_search_query import WorkspaceSearchQuery  # noqa: E501
 from .test import BaseTestCase
 
 
@@ -95,6 +96,22 @@ class TestWorkspacesController(BaseTestCase):
         response = self.client.open(
             '/api/workspace/{workspace_id}/{sample_id}'.format(workspace_id='workspace_id_example')sample_id='sample_id_example'),
             method='DELETE',
+            headers=headers)
+        self.assert200(response,
+                       'Response body is : ' + response.data.decode('utf-8'))
+
+    def test_get_tags(self):
+        """Test case for get_tags
+
+        
+        """
+        headers = { 
+            'Accept': 'application/json',
+            'Authorization': 'Bearer special-key',
+        }
+        response = self.client.open(
+            '/api/workspace/tags',
+            method='GET',
             headers=headers)
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
@@ -222,6 +239,30 @@ class TestWorkspacesController(BaseTestCase):
             method='POST',
             headers=headers,
             data=json.dumps(set_favorite),
+            content_type='application/json')
+        self.assert200(response,
+                       'Response body is : ' + response.data.decode('utf-8'))
+
+    def test_ws_search(self):
+        """Test case for ws_search
+
+        
+        """
+        workspace_search_query = {
+  "withoutTags" : [ "withoutTags", "withoutTags" ],
+  "searchString" : "searchString",
+  "withTags" : [ "withTags", "withTags" ]
+}
+        headers = { 
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer special-key',
+        }
+        response = self.client.open(
+            '/api/workspace/search',
+            method='POST',
+            headers=headers,
+            data=json.dumps(workspace_search_query),
             content_type='application/json')
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))

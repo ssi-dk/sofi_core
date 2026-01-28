@@ -14,10 +14,33 @@ from ..repositories.samples import get_sample_id_from_sequence_id
 import io
 from flask import send_file
 
+def migrate_field(found_workspaces: List[Dict], fieldname: str, value) -> bool:
+    workspaces = get_collection(WORKSPACES_COL_NAME)
 
-def trim(item, user: str):
+    missing_field = [ObjectId(ws["id"]) for ws in filter(lambda ws: fieldname not in ws, found_workspaces)]
+    if len(missing_field) == 0:
+        return False
+    
+    result = workspaces.update_many(
+        {
+            "_id": {"$in": missing_field},
+        },
+        {
+            "$set": {fieldname: value},
+        }
+    )
+
+    return result.modified_count > 0
+
+def migrate_workspaces(found_workspaces: List[Dict],user:str,institution:str) -> bool:
+    return any([
+        migrate_field(found_workspaces,"members", [user]),
+        migrate_field(found_workspaces,"instifution",institution),
+        migrate_field(found_workspaces,"tags",[])
+    ])
 
 
+def trim(item, user: str) -> Dict:
     item["id"] = str(item["_id"])
     item.pop("_id", None)
     item.pop("username", None)
@@ -50,28 +73,16 @@ def my_workspaces_query(user: str)-> dict:
         }
 
 
-def get_workspaces(user: str):
+def get_workspaces(user: str, institution: str):
     workspaces = get_collection(WORKSPACES_COL_NAME)
 
     found_workspaces = list(map(lambda x: trim(x,user),
         workspaces.find(my_workspaces_query(user))
     ))
 
-
-    workspace_ids_missing_members = [ObjectId(ws["id"]) for ws in filter(lambda ws: "members" not in ws,found_workspaces)]
-
-    result = workspaces.update_many(
-        {
-            "_id": {"$in": workspace_ids_missing_members},
-        },
-        {
-            "$set": {"members": [user]}
-        }
-    )
-
-
-    if result.modified_count > 0:
-        return get_workspaces(user)
+    # If data model needs an update, then perform it and refetch. Otherwise return the data
+    if migrate_workspaces(found_workspaces,user,institution):
+        return get_workspaces(user,institution)
 
     return found_workspaces
 
@@ -98,7 +109,7 @@ def get_workspace_sequences(user: str, workspace_id: str):
 
     return workspace["samples"]
 
-# UNUSED IN NEW ITERATIO. ALSO DOES NOT WORK. THIS ALWAYS CRASHES
+# UNUSED IN NEW ITERATION. ALSO DOES NOT WORK. THIS ALWAYS CRASHES
 def get_workspace(user: str, workspace_id: str):
     workspaces = get_collection(WORKSPACES_COL_NAME)
 
@@ -270,3 +281,42 @@ def set_favorite(user: str, workspace_id: str, is_favorite: bool):
     }
 
     return workspaces.update_one(filter, update)
+
+
+def search_workspaces(user:str,institution: str, search_sting, with_tags: List[str], without_tags: List[str]):
+    workspaces = get_collection(WORKSPACES_COL_NAME)
+
+    query = {
+        "name": {"$regex": search_sting},
+        "institution": institution,
+        "tags": {"$nin": without_tags}
+    }
+    if len(with_tags) > 0:
+        query["tags"]["$in"] = with_tags
+
+
+    return list(map(lambda x: trim(x,user),
+        workspaces.find(query)
+    ))
+
+def get_all_tags(institution: str) ->  List[str]:
+    workspaces = get_collection(WORKSPACES_COL_NAME)
+
+    pipeline = [
+        {"$match": {"institution": institution}},
+        {"$unwind": "$tags"},
+        {"$group": {
+            "_id": "$tags",
+            "count": {"$sum": 1}
+        }},
+        {"$sort": {"count": -1}},
+        {"$project": {
+            "_id": 0,
+            "tag": "$_id",
+            "count": 1
+        }}
+    ]
+
+    return list(map(lambda t: t["tag"],workspaces.aggregate(pipeline)))
+
+    

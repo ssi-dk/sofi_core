@@ -60,3 +60,4 @@ export * from './UserDefinedViewSortBy';
 export * from './UserInfo';
 export * from './Workspace';
 export * from './WorkspaceInfo';
+export * from './WorkspaceSearchQuery';

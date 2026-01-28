@@ -63,6 +63,16 @@ def delete_workspace_sample(user, token_info, workspace_id, sample_id):  # noqa:
     """
     return WorkspacesController.delete_workspace_sample(user, token_info, workspace_id, sample_id)
 
+def get_tags(user, token_info):  # noqa: E501
+    """get_tags
+
+    Get all tags used in institution # noqa: E501
+
+
+    :rtype: List[str]
+    """
+    return WorkspacesController.get_tags(user, token_info)
+
 def get_workspace(user, token_info, workspace_id):  # noqa: E501
     """get_workspace
 
@@ -157,3 +167,18 @@ def set_ws_favorite(user, token_info, set_favorite=None):  # noqa: E501
         from ..models import SetFavorite
         set_favorite = SetFavorite.from_dict(connexion.request.get_json())  # noqa: E501
     return WorkspacesController.set_ws_favorite(user, token_info, set_favorite)
+
+def ws_search(user, token_info, workspace_search_query=None):  # noqa: E501
+    """ws_search
+
+    Search for a workspace with a search query # noqa: E501
+
+    :param workspace_search_query: 
+    :type workspace_search_query: dict | bytes
+
+    :rtype: List[Workspace]
+    """
+    if connexion.request.is_json:
+        from ..models import WorkspaceSearchQuery
+        workspace_search_query = WorkspaceSearchQuery.from_dict(connexion.request.get_json())  # noqa: E501
+    return WorkspacesController.ws_search(user, token_info, workspace_search_query)

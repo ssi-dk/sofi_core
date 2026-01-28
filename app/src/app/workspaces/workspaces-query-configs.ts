@@ -100,7 +100,11 @@ export const createWorkspace = (params: CreateWorkspace) => {
     if (!response.id) {
       return undefined;
     }
-    return { workspaces: [{ id: response.id, name: params.name, samples: params.samples }] };
+    return {
+      workspaces: [
+        { id: response.id, name: params.name, samples: params.samples },
+      ],
+    };
   };
 
   base.update = {
@@ -173,23 +177,22 @@ export const updateWorkspace = (params: PostWorkspaceRequest) => {
 
   base.update = {
     workspaces: (oldValue) => {
-      
-      return oldValue.map(ws => {
+      return oldValue.map((ws) => {
         if (ws.id != params.workspaceId) {
-          return ws
+          return ws;
         }
         return {
           ...ws,
-          samples: [...new Set([...ws.samples,...params.updateWorkspace.samples])]
-        }
-      })
-    }
-
-  }
+          samples: [
+            ...new Set([...ws.samples, ...params.updateWorkspace.samples]),
+          ],
+        };
+      });
+    },
+  };
   base.force = true;
   return base;
 };
-
 
 export const removeWorkspaceSamples = (params: PostWorkspaceRequest) => {
   const base = removeWorkspaceSamplesApi(params);
@@ -197,19 +200,19 @@ export const removeWorkspaceSamples = (params: PostWorkspaceRequest) => {
 
   base.update = {
     workspaces: (oldValue) => {
-      
-      return oldValue.map(ws => {
+      return oldValue.map((ws) => {
         if (ws.id != params.workspaceId) {
-          return ws
+          return ws;
         }
         return {
           ...ws,
-          samples: ws.samples.filter(sid => !params.updateWorkspace.samples.find(rid => sid === rid))
-        }
-      })
-    }
-
-  }
+          samples: ws.samples.filter(
+            (sid) => !params.updateWorkspace.samples.find((rid) => sid === rid)
+          ),
+        };
+      });
+    },
+  };
   base.force = true;
   return base;
 };
@@ -220,20 +223,20 @@ export const setWorkspaceFavorite = (params: SetWsFavoriteRequest) => {
 
   base.update = {
     workspaces: (oldValue) => {
-      const {workspaceId, isFavorite} = params.setFavorite;
+      const { workspaceId, isFavorite } = params.setFavorite;
 
-      return oldValue.map(ws => {
+      return oldValue.map((ws) => {
         if (ws.id !== workspaceId) {
           return ws;
         }
         return {
           ...ws,
-          isFavorite
-        }
+          isFavorite,
+        };
       });
-    }
-  }
+    },
+  };
 
   base.force = true;
   return base;
-}
+};

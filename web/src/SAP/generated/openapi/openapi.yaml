@@ -641,6 +641,27 @@ paths:
       tags:
       - workspaces
       x-openapi-router-controller: web.src.SAP.generated.controllers.workspaces_controller
+  /workspace/search:
+    post:
+      description: Search for a workspace with a search query
+      operationId: ws_search
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WorkspaceSearchQuery'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Workspace'
+                type: array
+          description: Result of ws search query
+      tags:
+      - workspaces
+      x-openapi-router-controller: web.src.SAP.generated.controllers.workspaces_controller
   /workspace/setFavorite:
     post:
       description: Add or remove the user from this workspaces' favorite list
@@ -653,6 +674,22 @@ paths:
       responses:
         "204":
           description: Favorite updated
+      tags:
+      - workspaces
+      x-openapi-router-controller: web.src.SAP.generated.controllers.workspaces_controller
+  /workspace/tags:
+    get:
+      description: Get all tags used in institution
+      operationId: get_tags
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  type: string
+                type: array
+          description: All tags used in institution
       tags:
       - workspaces
       x-openapi-router-controller: web.src.SAP.generated.controllers.workspaces_controller
@@ -1842,12 +1879,16 @@ components:
       type: string
     Workspace:
       example:
+        institution: institution
         name: name
         id: id
         samples:
         - samples
         - samples
         isFavorite: true
+        tags:
+        - tags
+        - tags
       properties:
         id:
           title: Id
@@ -1863,9 +1904,38 @@ components:
             type: string
           title: Samples
           type: array
+        institution:
+          type: string
+        tags:
+          items:
+            type: string
+          type: array
       required:
       - id
       - name
+      type: object
+    WorkspaceSearchQuery:
+      example:
+        withoutTags:
+        - withoutTags
+        - withoutTags
+        searchString: searchString
+        withTags:
+        - withTags
+        - withTags
+      properties:
+        searchString:
+          type: string
+        withTags:
+          items:
+            type: string
+          type: array
+        withoutTags:
+          items:
+            type: string
+          type: array
+      required:
+      - searchString
       type: object
     SetFavorite:
       example:

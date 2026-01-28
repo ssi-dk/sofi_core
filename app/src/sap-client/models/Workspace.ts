@@ -42,6 +42,18 @@ export interface Workspace  {
      * @memberof Workspace
      */
     samples?: Array<string>;
+    /**
+     * 
+     * @type {string}
+     * @memberof Workspace
+     */
+    institution?: string;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof Workspace
+     */
+    tags?: Array<string>;
 }
 
 export function WorkspaceFromJSON(json: any): Workspace {
@@ -50,6 +62,8 @@ export function WorkspaceFromJSON(json: any): Workspace {
         'name': json['name'],
         'isFavorite': !exists(json, 'isFavorite') ? undefined : json['isFavorite'],
         'samples': !exists(json, 'samples') ? undefined : json['samples'],
+        'institution': !exists(json, 'institution') ? undefined : json['institution'],
+        'tags': !exists(json, 'tags') ? undefined : json['tags'],
     };
 }
 
@@ -62,6 +76,8 @@ export function WorkspaceToJSON(value?: Workspace): any {
         'name': value.name,
         'isFavorite': value.isFavorite,
         'samples': value.samples,
+        'institution': value.institution,
+        'tags': value.tags,
     };
 }
 

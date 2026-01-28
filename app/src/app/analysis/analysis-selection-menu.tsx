@@ -14,7 +14,6 @@ import { useDispatch } from "react-redux";
 import { SendToWorkspaceMenuItem } from "app/workspaces/send-to-workspace-menu-item";
 import { AnalysisQuery } from "sap-client";
 
-
 type Props = {
   selection: DataTableSelection<AnalysisResult>;
   isNarrowed: boolean;
@@ -24,7 +23,7 @@ type Props = {
 };
 
 export const AnalysisSelectionMenu = (props: Props) => {
-  const { selection, isNarrowed, data, search, lastSearchQuery} = props;
+  const { selection, isNarrowed, data, search, lastSearchQuery } = props;
   const dispatch = useDispatch();
 
   const onClear = useCallback(() => {

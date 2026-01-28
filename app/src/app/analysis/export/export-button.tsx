@@ -17,7 +17,6 @@ const isSelectionEmpty = (sel) => Object.keys(sel).length === 0;
 const ExportButton = (props: ExportButtonProps) => {
   const { data, columns, selection } = props;
 
-
   const download = React.useCallback(() => {
     const tableState = spyDataTable();
     let columnsToExport = columns;

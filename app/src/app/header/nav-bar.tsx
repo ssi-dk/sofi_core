@@ -7,7 +7,7 @@ import {
   EditIcon,
   LockIcon,
   ViewIcon,
-  HamburgerIcon
+  HamburgerIcon,
 } from "@chakra-ui/icons";
 import { Permission } from "sap-client";
 import { IfPermission } from "auth/if-permission";

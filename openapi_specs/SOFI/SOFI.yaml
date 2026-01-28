@@ -71,6 +71,44 @@ paths:
       tags:
         - workspaces
       x-openapi-router-controller: web.src.SAP.generated.controllers.workspaces_controller
+  /workspace/search:
+    post:
+      description: Search for a workspace with a search query
+      operationId: ws_search
+      tags:
+        - workspaces
+      x-openapi-router-controller: web.src.SAP.generated.controllers.workspaces_controller
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WorkspaceSearchQuery'
+      responses:
+        '200':
+          description: Result of ws search query
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Workspace'
+  /workspace/tags:
+    get:
+      description: Get all tags used in institution
+      operationId: get_tags
+      tags:
+        - workspaces
+      x-openapi-router-controller: web.src.SAP.generated.controllers.workspaces_controller
+      responses:
+        '200':
+          description: All tags used in institution
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+  
   /workspace/setFavorite:
     post:
       description: Add or remove the user from this workspaces' favorite list
@@ -1806,11 +1844,32 @@ components:
           type: array
           items:
             type: string
-          title: Samples          
+          title: Samples
+        institution:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
       type: object
       required:
       - id
       - name
+    WorkspaceSearchQuery:
+      type: object
+      properties:
+        searchString:
+          type: string
+        withTags:
+          type: array
+          items: 
+            type: string
+        withoutTags:
+          type: array
+          items: 
+            type: string
+      required:
+        - searchString
     SetFavorite:
       type: object
       properties:

@@ -33,6 +33,9 @@ import {
     WorkspaceInfo,
     WorkspaceInfoFromJSON,
     WorkspaceInfoToJSON,
+    WorkspaceSearchQuery,
+    WorkspaceSearchQueryFromJSON,
+    WorkspaceSearchQueryToJSON,
 } from '../models';
 
 export interface CloneWorkspaceRequest {
@@ -76,6 +79,10 @@ export interface RemoveWorkspaceSamplesRequest {
 
 export interface SetWsFavoriteRequest {
     setFavorite?: SetFavorite;
+}
+
+export interface WsSearchRequest {
+    workspaceSearchQuery?: WorkspaceSearchQuery;
 }
 
 
@@ -253,6 +260,48 @@ function deleteWorkspaceSampleRaw<T>(requestParameters: DeleteWorkspaceSampleReq
 */
 export function deleteWorkspaceSample<T>(requestParameters: DeleteWorkspaceSampleRequest, requestConfig?: runtime.TypedQueryConfig<T, void>): QueryConfig<T> {
     return deleteWorkspaceSampleRaw(requestParameters, requestConfig);
+}
+
+/**
+ * Get all tags used in institution
+ */
+function getTagsRaw<T>( requestConfig: runtime.TypedQueryConfig<T, Array<string>> = {}): QueryConfig<T> {
+    let queryParameters = null;
+
+
+    const headerParameters : runtime.HttpHeaders = {};
+
+
+    const { meta = {} } = requestConfig;
+
+    meta.authType = ['bearer'];
+    const config: QueryConfig<T> = {
+        url: `${runtime.Configuration.basePath}/workspace/tags`,
+        meta,
+        update: requestConfig.update,
+        queryKey: requestConfig.queryKey,
+        optimisticUpdate: requestConfig.optimisticUpdate,
+        force: requestConfig.force,
+        rollback: requestConfig.rollback,
+        options: {
+            method: 'GET',
+            headers: headerParameters,
+        },
+        body: queryParameters,
+    };
+
+    const { transform: requestTransform } = requestConfig;
+    if (requestTransform) {
+    }
+
+    return config;
+}
+
+/**
+* Get all tags used in institution
+*/
+export function getTags<T>( requestConfig?: runtime.TypedQueryConfig<T, Array<string>>): QueryConfig<T> {
+    return getTagsRaw( requestConfig);
 }
 
 /**
@@ -575,5 +624,50 @@ function setWsFavoriteRaw<T>(requestParameters: SetWsFavoriteRequest, requestCon
 */
 export function setWsFavorite<T>(requestParameters: SetWsFavoriteRequest, requestConfig?: runtime.TypedQueryConfig<T, void>): QueryConfig<T> {
     return setWsFavoriteRaw(requestParameters, requestConfig);
+}
+
+/**
+ * Search for a workspace with a search query
+ */
+function wsSearchRaw<T>(requestParameters: WsSearchRequest, requestConfig: runtime.TypedQueryConfig<T, Array<Workspace>> = {}): QueryConfig<T> {
+    let queryParameters = null;
+
+
+    const headerParameters : runtime.HttpHeaders = {};
+
+    headerParameters['Content-Type'] = 'application/json';
+
+
+    const { meta = {} } = requestConfig;
+
+    meta.authType = ['bearer'];
+    const config: QueryConfig<T> = {
+        url: `${runtime.Configuration.basePath}/workspace/search`,
+        meta,
+        update: requestConfig.update,
+        queryKey: requestConfig.queryKey,
+        optimisticUpdate: requestConfig.optimisticUpdate,
+        force: requestConfig.force,
+        rollback: requestConfig.rollback,
+        options: {
+            method: 'POST',
+            headers: headerParameters,
+        },
+        body: queryParameters || WorkspaceSearchQueryToJSON(requestParameters.workspaceSearchQuery),
+    };
+
+    const { transform: requestTransform } = requestConfig;
+    if (requestTransform) {
+        config.transform = (body: ResponseBody, text: ResponseBody) => requestTransform(body.map(WorkspaceFromJSON), text);
+    }
+
+    return config;
+}
+
+/**
+* Search for a workspace with a search query
+*/
+export function wsSearch<T>(requestParameters: WsSearchRequest, requestConfig?: runtime.TypedQueryConfig<T, Array<Workspace>>): QueryConfig<T> {
+    return wsSearchRaw(requestParameters, requestConfig);
 }
 
