@@ -693,6 +693,20 @@ paths:
       tags:
       - workspaces
       x-openapi-router-controller: web.src.SAP.generated.controllers.workspaces_controller
+    post:
+      description: Add or remove a tag from a workspace
+      operationId: set_tag
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SetWsTag'
+      responses:
+        "204":
+          description: Successfully added or removed tag from workspace
+      tags:
+      - workspaces
+      x-openapi-router-controller: web.src.SAP.generated.controllers.workspaces_controller
   /workspace/{workspace_id}/remove:
     post:
       description: Remove samples from workspace
@@ -1936,6 +1950,24 @@ components:
           type: array
       required:
       - searchString
+      type: object
+    SetWsTag:
+      example:
+        tag: tag
+        addOrRemove: true
+        workspaceId: workspaceId
+      properties:
+        workspaceId:
+          type: string
+        tag:
+          type: string
+        addOrRemove:
+          description: true -> Adds tag to workspace. false -> remove tag from workspace
+          type: boolean
+      required:
+      - addOrRemove
+      - tag
+      - workspaceId
       type: object
     SetFavorite:
       example:

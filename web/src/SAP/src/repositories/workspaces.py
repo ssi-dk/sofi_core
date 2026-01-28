@@ -35,7 +35,7 @@ def migrate_field(found_workspaces: List[Dict], fieldname: str, value) -> bool:
 def migrate_workspaces(found_workspaces: List[Dict],user:str,institution:str) -> bool:
     return any([
         migrate_field(found_workspaces,"members", [user]),
-        migrate_field(found_workspaces,"instifution",institution),
+        migrate_field(found_workspaces,"institution",institution),
         migrate_field(found_workspaces,"tags",[])
     ])
 
@@ -319,4 +319,17 @@ def get_all_tags(institution: str) ->  List[str]:
 
     return list(map(lambda t: t["tag"],workspaces.aggregate(pipeline)))
 
-    
+def set_tag(user: str, workspace_id: str,tag: str, add_or_remove: bool):
+    workspaces = get_collection(WORKSPACES_COL_NAME)
+
+    query = my_workspaces_query(user)
+    query["_id"] = ObjectId(workspace_id)
+
+    if add_or_remove:
+        workspaces.update_one(query,{
+            "$addToSet": {"tags": tag}
+        })
+    else:
+        workspaces.update_one(query, {
+            "$pull": {"tags": tag}
+        })

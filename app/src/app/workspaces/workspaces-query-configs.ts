@@ -14,6 +14,9 @@ import {
   removeWorkspaceSamples as removeWorkspaceSamplesApi,
   setWsFavorite as setFavoriteApi,
   SetWsFavoriteRequest,
+  getTags as getTagsApi,
+  setTag as setTagApi,
+  SetTagRequest,
 } from "sap-client";
 import {
   CreateWorkspace,
@@ -92,7 +95,7 @@ export const removeWorkspaceSample = (params: DeleteWorkspaceSampleRequest) => {
   return base;
 };
 
-export const createWorkspace = (params: CreateWorkspace) => {
+export const createWorkspace = (params: CreateWorkspace, userInst: string) => {
   const base = createWorkspaceApi({ createWorkspace: params });
   base.url = getUrl(base.url);
 
@@ -102,7 +105,13 @@ export const createWorkspace = (params: CreateWorkspace) => {
     }
     return {
       workspaces: [
-        { id: response.id, name: params.name, samples: params.samples },
+        {
+          id: response.id,
+          name: params.name,
+          samples: params.samples,
+          tags: [],
+          institution: userInst,
+        },
       ],
     };
   };
@@ -232,6 +241,45 @@ export const setWorkspaceFavorite = (params: SetWsFavoriteRequest) => {
         return {
           ...ws,
           isFavorite,
+        };
+      });
+    },
+  };
+
+  base.force = true;
+  return base;
+};
+
+export const fetchWorkspaceTags = () => {
+  const base = getTagsApi();
+  base.url = getUrl(base.url);
+
+  base.transform = (response: Array<string>) => ({
+    tags: response,
+  });
+
+  base.update = {
+    tags: (_, newValue) => newValue,
+  };
+  base.force = true;
+  return base;
+};
+
+export const setWorkspaceTag = (params: SetTagRequest) => {
+  const base = setTagApi(params);
+  base.url = getUrl(base.url);
+
+  base.update = {
+    workspaces: (oldValue) => {
+      const { workspaceId, tag, addOrRemove } = params.setWsTag;
+
+      return oldValue.map((ws: Workspace) => {
+        if (ws.id !== workspaceId) {
+          return ws;
+        }
+        return {
+          ...ws,
+          tags: addOrRemove ? [tag,...ws.tags] : ws.tags.filter(t => t !== tag),
         };
       });
     },

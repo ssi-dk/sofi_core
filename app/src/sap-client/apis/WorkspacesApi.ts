@@ -24,6 +24,9 @@ import {
     SetFavorite,
     SetFavoriteFromJSON,
     SetFavoriteToJSON,
+    SetWsTag,
+    SetWsTagFromJSON,
+    SetWsTagToJSON,
     UpdateWorkspace,
     UpdateWorkspaceFromJSON,
     UpdateWorkspaceToJSON,
@@ -75,6 +78,10 @@ export interface PostWorkspaceRequest {
 export interface RemoveWorkspaceSamplesRequest {
     workspaceId: string;
     updateWorkspace?: UpdateWorkspace;
+}
+
+export interface SetTagRequest {
+    setWsTag?: SetWsTag;
 }
 
 export interface SetWsFavoriteRequest {
@@ -580,6 +587,50 @@ function removeWorkspaceSamplesRaw<T>(requestParameters: RemoveWorkspaceSamplesR
 */
 export function removeWorkspaceSamples<T>(requestParameters: RemoveWorkspaceSamplesRequest, requestConfig?: runtime.TypedQueryConfig<T, void>): QueryConfig<T> {
     return removeWorkspaceSamplesRaw(requestParameters, requestConfig);
+}
+
+/**
+ * Add or remove a tag from a workspace
+ */
+function setTagRaw<T>(requestParameters: SetTagRequest, requestConfig: runtime.TypedQueryConfig<T, void> = {}): QueryConfig<T> {
+    let queryParameters = null;
+
+
+    const headerParameters : runtime.HttpHeaders = {};
+
+    headerParameters['Content-Type'] = 'application/json';
+
+
+    const { meta = {} } = requestConfig;
+
+    meta.authType = ['bearer'];
+    const config: QueryConfig<T> = {
+        url: `${runtime.Configuration.basePath}/workspace/tags`,
+        meta,
+        update: requestConfig.update,
+        queryKey: requestConfig.queryKey,
+        optimisticUpdate: requestConfig.optimisticUpdate,
+        force: requestConfig.force,
+        rollback: requestConfig.rollback,
+        options: {
+            method: 'POST',
+            headers: headerParameters,
+        },
+        body: queryParameters || SetWsTagToJSON(requestParameters.setWsTag),
+    };
+
+    const { transform: requestTransform } = requestConfig;
+    if (requestTransform) {
+    }
+
+    return config;
+}
+
+/**
+* Add or remove a tag from a workspace
+*/
+export function setTag<T>(requestParameters: SetTagRequest, requestConfig?: runtime.TypedQueryConfig<T, void>): QueryConfig<T> {
+    return setTagRaw(requestParameters, requestConfig);
 }
 
 /**

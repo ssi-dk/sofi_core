@@ -28,6 +28,8 @@ import {
   DeleteIcon,
   CheckIcon,
 } from "@chakra-ui/icons";
+import { WsTag } from "./ws-tag";
+import { TagsMenu } from "./tags-menu";
 
 import { Column, Row } from "react-table";
 import {
@@ -112,8 +114,11 @@ export default function AnalysisPage() {
   const dispatch = useDispatch();
   const toast = useToast();
 
+  const user = useSelector<RootState>((s) => s.entities.user ?? {}) as UserInfo;
+
   const [workspace, setWorkspace] = useState<Workspace | null>(null);
   const [workspacesQueryState] = useRequest(fetchWorkspaces());
+
   const workspaces = useSelector<RootState>((s) =>
     Object.values(s.entities.workspaces ?? {})
   ) as Array<Workspace>;
@@ -124,10 +129,13 @@ export default function AnalysisPage() {
 
   const [workspaceCreationState, sendToWorkspace] = useMutation(
     (name: string) => {
-      return createWorkspace({
-        name,
-        samples: workspace.samples,
-      });
+      return createWorkspace(
+        {
+          name,
+          samples: workspace.samples,
+        },
+        user.institution
+      );
     }
   );
   const [workspaceAddState, addToWorkspace] = useMutation(
@@ -159,7 +167,8 @@ export default function AnalysisPage() {
 
       // Does not exist in temp workspaces, so null check is needed
       if (maybeUpdatedWorkspace) {
-        if (maybeUpdatedWorkspace.samples !== workspace.samples) {
+        // Check for equality in all fiels
+        if (Object.entries(maybeUpdatedWorkspace).find((key,value) => value !== workspace[key])) {
           setWorkspace(maybeUpdatedWorkspace);
         }
       }
@@ -204,8 +213,6 @@ export default function AnalysisPage() {
   const [{ isPending, isFinished }] = useRequest({
     ...requestPageOfAnalysis({ pageSize: PAGE_SIZE }, false),
   });
-
-  const user = useSelector<RootState>((s) => s.entities.user ?? {}) as UserInfo;
 
   useRequest({ ...fetchApprovalMatrix() });
 
@@ -1140,6 +1147,9 @@ export default function AnalysisPage() {
               </Button>
             )}
             {workspace && <SendToMicroreactButton workspace={workspace.id} />}
+            {workspace && workspace.id !== "temp-workspace" && (
+              <TagsMenu workspace={workspace} />
+            )}
           </Flex>
           <Flex alignItems="center" justify="space-between">
             <WorkspaceMenu

@@ -17,6 +17,7 @@ from ..repositories.workspaces import get_workspace_data as get_workspace_data_d
 from ..repositories.workspaces import set_favorite as set_favorite_db
 from ..repositories.workspaces import search_workspaces as search_workspaces_db
 from ..repositories.workspaces import get_all_tags as get_all_tags_db
+from ..repositories.workspaces import set_tag as set_tag_db
 
 
 from ..utils import validate_sample_ids
@@ -97,3 +98,6 @@ def ws_search(user, token_info, body):
 
 def get_tags(user,token_info):
     return jsonify(get_all_tags_db(token_info["institution"]))
+
+def set_tag(user,token_info,body):
+    set_tag_db(user,body.workspace_id,body.tag,body.add_or_remove)

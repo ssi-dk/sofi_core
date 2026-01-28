@@ -55,6 +55,8 @@ import {
   leaveWorkspace,
 } from "../workspaces/workspaces-query-configs";
 
+import { WsTag } from "./ws-tag";
+
 export type WorkspaceMenuProps = {
   workspaces: Workspace[];
   workspace: Workspace;
@@ -115,7 +117,7 @@ export const WorkspaceMenu = (props: WorkspaceMenuProps) => {
         style={{ maxHeight: "30rem", minWidth: "20rem", overflowY: "scroll" }}
       >
         <Input
-          style={{ width: "calc(100% - 1rem)" }}
+          style={{ width: "calc(100% - 1rem)",marginBottom: "0.5rem" }}
           marginX={2}
           variant="outline"
           placeholder="Search for workspaces"
@@ -143,7 +145,7 @@ export const WorkspaceMenu = (props: WorkspaceMenuProps) => {
                   alignItems: "center",
                 }}
               >
-                <Flex direction="row" style={{ flexGrow: 1 }}>
+                <Flex direction="row" style={{ flexGrow: 1 }} align="center">
                   <IconButton
                     aria-label="Pin workspace as favorite"
                     icon={
@@ -158,12 +160,29 @@ export const WorkspaceMenu = (props: WorkspaceMenuProps) => {
                     style={{ margin: "4px" }}
                   />
                   <Button
-                    style={{ flexGrow: 1, margin: "4px" }}
+                    style={{
+                      flexGrow: 1,
+                      margin: "4px",
+                      padding: "4px",
+                      height: "fit-content",
+                      minHeight: "2.5rem",
+                    }}
                     onClick={() => {
                       setWorkspace(w);
                     }}
                   >
-                    {w.name}
+                    <Flex direction="column">
+                      {w.name}
+                      <Flex
+                        direction="row"
+                        wrap="wrap"
+                        style={{ maxWidth: "14rem" }}
+                      >
+                        {w.tags.map((tag) => (
+                          <WsTag tag={tag} />
+                        ))}
+                      </Flex>
+                    </Flex>
                   </Button>
                 </Flex>
                 <div>

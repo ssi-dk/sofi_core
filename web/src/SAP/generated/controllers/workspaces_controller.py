@@ -153,6 +153,21 @@ def remove_workspace_samples(user, token_info, workspace_id, update_workspace=No
         update_workspace = UpdateWorkspace.from_dict(connexion.request.get_json())  # noqa: E501
     return WorkspacesController.remove_workspace_samples(user, token_info, workspace_id, update_workspace)
 
+def set_tag(user, token_info, set_ws_tag=None):  # noqa: E501
+    """set_tag
+
+    Add or remove a tag from a workspace # noqa: E501
+
+    :param set_ws_tag: 
+    :type set_ws_tag: dict | bytes
+
+    :rtype: None
+    """
+    if connexion.request.is_json:
+        from ..models import SetWsTag
+        set_ws_tag = SetWsTag.from_dict(connexion.request.get_json())  # noqa: E501
+    return WorkspacesController.set_tag(user, token_info, set_ws_tag)
+
 def set_ws_favorite(user, token_info, set_favorite=None):  # noqa: E501
     """set_ws_favorite
 

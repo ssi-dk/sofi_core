@@ -48,6 +48,7 @@ export * from './SampleCategories';
 export * from './SampleCategoriesResistance';
 export * from './SampleCategoriesResistanceReport';
 export * from './SetFavorite';
+export * from './SetWsTag';
 export * from './TbrMetadata';
 export * from './TbrSpecificMetadata';
 export * from './TreeMethod';
