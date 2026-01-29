@@ -117,6 +117,7 @@ class TestAnalysisController(BaseTestCase):
         
         """
         query = {
+  "workspace_id" : "workspace_id",
   "analysis_sorting" : {
     "column" : "column",
     "ascending" : true

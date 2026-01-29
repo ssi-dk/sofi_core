@@ -18,9 +18,7 @@ import {
 } from "@chakra-ui/react";
 import { AnalysisResult, Permission, QueryExpression } from "sap-client";
 import { useTranslation } from "react-i18next";
-import {
-  searchPageOfAnalysis,
-} from "app/analysis/analysis-query-configs";
+import { searchPageOfAnalysis } from "app/analysis/analysis-query-configs";
 import { ChevronDownIcon, ChevronRightIcon } from "@chakra-ui/icons";
 import { DateTime } from "luxon";
 import { useRequest } from "redux-query-react";
@@ -32,11 +30,12 @@ const expression: QueryExpression = {
   },
 };
 
-const enforceDate = (d: Date | string) => (typeof d === "string" || d instanceof String) ? new Date(d) : d
+const enforceDate = (d: Date | string) =>
+  typeof d === "string" || d instanceof String ? new Date(d) : d;
 
 const displayValue = (key: string, v: any) => {
   if (!v) {
-    return ""
+    return "";
   }
 
   if (key.startsWith("date")) {
@@ -44,7 +43,7 @@ const displayValue = (key: string, v: any) => {
   }
 
   if (typeof v === "string") {
-    return v
+    return v;
   }
   if (typeof v === "number") {
     if (Math.floor(v) == v) {
@@ -54,49 +53,70 @@ const displayValue = (key: string, v: any) => {
     return int + "." + rem.slice(0, 2);
   }
   if (Array.isArray(v)) {
-    return v.map(arr_v => arr_v.toString()).join(", ")
+    return v.map((arr_v) => arr_v.toString()).join(", ");
   }
   if (typeof v === "object") {
-    return Object.entries(v).map(([k, obj_v]) => k + ": " + obj_v).join(", ")
+    return Object.entries(v)
+      .map(([k, obj_v]) => k + ": " + obj_v)
+      .join(", ");
   }
 
-  console.log("Failed to determine type of", key, "This should be impossible.", typeof v);
+  console.log(
+    "Failed to determine type of",
+    key,
+    "This should be impossible.",
+    typeof v
+  );
   return v.toString();
-}
+};
 
 const ClusterTable = (props: { sequences: AnalysisResult[] }) => {
   // To avoid user confusion we use a differently inner styled table
   const { sequences } = props;
 
   // Remove the headers where no sequences have values
-  const tableHeaders = [...new Set(sequences.flatMap(r => Object.keys(r).filter(k => r[k])))] as (keyof AnalysisResult)[]
+  const tableHeaders = [
+    ...new Set(sequences.flatMap((r) => Object.keys(r).filter((k) => r[k]))),
+  ] as (keyof AnalysisResult)[];
 
   //Ensure sequence_id is first
   const index = tableHeaders.indexOf("sequence_id");
   tableHeaders.splice(index, 1); // 2nd parameter means remove one item only
   tableHeaders.unshift("sequence_id");
 
-  return <div style={{ overflowX: "scroll", width: "50vw" }}>
-    <Table variant="striped">
-      <Thead>
-        <Tr>
-          {tableHeaders.map(key => <Th key={key} style={{ border: "1px solid black" }}>{key}</Th>)}
-        </Tr>
-      </Thead>
-      <Tbody>
-        {
-          sequences.map((s, i) => <Tr key={s.sequence_id}>
-            {
-              tableHeaders.map(key => <Td key={key} style={{ border: "1px solid black", background: i % 2 === 1 ? "white" : undefined }}>
-                {displayValue(key, s[key])}
-              </Td>)
-            }
-          </Tr>)
-        }
-      </Tbody>
-    </Table>
-  </div>
-}
+  return (
+    <div style={{ overflowX: "scroll", width: "50vw" }}>
+      <Table variant="striped">
+        <Thead>
+          <Tr>
+            {tableHeaders.map((key) => (
+              <Th key={key} style={{ border: "1px solid black" }}>
+                {key}
+              </Th>
+            ))}
+          </Tr>
+        </Thead>
+        <Tbody>
+          {sequences.map((s, i) => (
+            <Tr key={s.sequence_id}>
+              {tableHeaders.map((key) => (
+                <Td
+                  key={key}
+                  style={{
+                    border: "1px solid black",
+                    background: i % 2 === 1 ? "white" : undefined,
+                  }}
+                >
+                  {displayValue(key, s[key])}
+                </Td>
+              ))}
+            </Tr>
+          ))}
+        </Tbody>
+      </Table>
+    </div>
+  );
+};
 
 export const Clusterspage = () => {
   const { t } = useTranslation();
@@ -111,17 +131,18 @@ export const Clusterspage = () => {
     }),
   });
 
-  const rawDate = useSelector<RootState>(
+  const rawData = useSelector<RootState>(
     (root) => root.entities.analysis
   ) as Record<string, AnalysisResult>;
-  const data = useMemo(() => reqState.isFinished ? rawDate : {}, 
-    [reqState.isFinished, rawDate]
-  );
+  const data = useMemo(() => (reqState.isFinished ? rawData : {}), [
+    reqState.isFinished,
+    rawData,
+  ]);
 
   const dateRun = (v: AnalysisResult) => {
-    const {  date_run: date,date_received: dateReceived } = v;
+    const { date_run: date, date_received: dateReceived } = v;
     return enforceDate(date || dateReceived);
-  }
+  };
 
   const [clusters, speciesMapMemo] = useMemo(() => {
     const clusterMap = new Map<string, AnalysisResult[]>();
@@ -141,9 +162,7 @@ export const Clusterspage = () => {
     const clusterList = [...clusterMap.entries()];
 
     clusterList.forEach(([_, sequences]) =>
-      sequences.sort(
-        (a, b) => dateRun(b).getTime() - dateRun(a).getTime()
-      )
+      sequences.sort((a, b) => dateRun(b).getTime() - dateRun(a).getTime())
     );
 
     clusterList.sort(
@@ -162,9 +181,9 @@ export const Clusterspage = () => {
         if (speciesSet.size > 1) {
           toast({
             title: "Inconsistent species",
-            description: `Multiple different species found for ${cluster_id}: ${[...speciesSet
-              .values()]
-              .reduce((a, b) => `${a}, ${b}`)}`,
+            description: `Multiple different species found for ${cluster_id}: ${[
+              ...speciesSet.values(),
+            ].reduce((a, b) => `${a}, ${b}`)}`,
             status: "error",
             duration: 3000,
             isClosable: true,
@@ -176,8 +195,6 @@ export const Clusterspage = () => {
 
     return [clusterList, speciesMap, toast];
   }, [data, toast]);
-
-  
 
   const switchOpen = (c) => (e: any) => {
     e.stopPropagation();
@@ -260,19 +277,24 @@ export const Clusterspage = () => {
                             {sequences.map((s) => (
                               <li key={s.sequence_id}>
                                 {s.sequence_id} (
-                                {DateTime.fromJSDate(
-                                  dateRun(s)
-                                ).toRelative()}
-                                )
+                                {DateTime.fromJSDate(dateRun(s)).toRelative()})
                               </li>
                             ))}
                           </ul>
                         </>
                       )}
-                      {openClusters.find((c) => c == cluster_id) && <ClusterTable sequences={sequences} />}
+                      {openClusters.find((c) => c == cluster_id) && (
+                        <ClusterTable sequences={sequences} />
+                      )}
                     </Td>
                     <Td>
-                      {sequences.filter(s => dateRun(s).getTime() > (Date.now() - 60 * 60 * 24 * 7 * 1000)).length}
+                      {
+                        sequences.filter(
+                          (s) =>
+                            dateRun(s).getTime() >
+                            Date.now() - 60 * 60 * 24 * 7 * 1000
+                        ).length
+                      }
                     </Td>
                     <Td>
                       {dateRun(sequences[0]).toLocaleString("DK")} (
@@ -288,4 +310,3 @@ export const Clusterspage = () => {
     </>
   );
 };
-

@@ -28,10 +28,10 @@ type MetaFilterProps = {
 };
 
 const approvalFilterOptions = [
-  {label: "Approved", value: ApprovalStatus.approved},
-  {label: "Rejected", value: ApprovalStatus.rejected},
-  {label: "Pending", value: ApprovalStatus.pending}
-]
+  { label: "Approved", value: ApprovalStatus.approved },
+  { label: "Rejected", value: ApprovalStatus.rejected },
+  { label: "Pending", value: ApprovalStatus.pending },
+];
 
 function MetaFilter(props: MetaFilterProps) {
   const {
@@ -63,18 +63,20 @@ function MetaFilter(props: MetaFilterProps) {
     }
   );
 
-  const [approvalFilterState, setApprovalFilterState] = useState<ApprovalStatus[]>([]);
+  const [approvalFilterState, setApprovalFilterState] = useState<
+    ApprovalStatus[]
+  >([]);
 
   // eslint-disable-next-line
   type RangeEnd = keyof RangeFilter<any>[0];
 
   const maxDate = (date1: DateRange | null) => {
     return date1?.max ? new Date(date1.max) : null;
-  }
-  
+  };
+
   const minDate = (date: DateRange | null) => {
     return date?.min ? new Date(date.min) : null;
-  }
+  };
 
   const onDateChange = React.useCallback(
     (
@@ -194,26 +196,28 @@ function MetaFilter(props: MetaFilterProps) {
     [filterOptions.cluster_ids]
   );
 
-  const onApprovalChange = useCallback((
-    val: ValueType<OptionTypeBase, true>,
-    action: ActionMeta<OptionTypeBase>
-  ) => {
-    if (action.action == "clear") {
-      setApprovalFilterState([]);
-      onApprovalFilterChange([]);
-      clearFieldFromSearch("approval_status");
-      return;
-    }
-    const values = Array.isArray(val) ? val.map((x) => x.value) : [];
+  const onApprovalChange = useCallback(
+    (
+      val: ValueType<OptionTypeBase, true>,
+      action: ActionMeta<OptionTypeBase>
+    ) => {
+      if (action.action == "clear") {
+        setApprovalFilterState([]);
+        onApprovalFilterChange([]);
+        clearFieldFromSearch("approval_status");
+        return;
+      }
+      const values = Array.isArray(val) ? val.map((x) => x.value) : [];
 
-    if (values.length === 0) {
-      clearFieldFromSearch("approval_status");
-    }
+      if (values.length === 0) {
+        clearFieldFromSearch("approval_status");
+      }
 
-    setApprovalFilterState(values);
-    onApprovalFilterChange(values);
-
-  },[setApprovalFilterState, clearFieldFromSearch, onApprovalFilterChange]);
+      setApprovalFilterState(values);
+      onApprovalFilterChange(values);
+    },
+    [setApprovalFilterState, clearFieldFromSearch, onApprovalFilterChange]
+  );
 
   const onChangeBuilder: (
     field: keyof AnalysisResult
@@ -269,11 +273,20 @@ function MetaFilter(props: MetaFilterProps) {
     queryOperands.forEach((op) => {
       if (op.field == "approval_status") {
         const v = op.term as ApprovalStatus;
-        if (!newApprovalFilterState.find(nv => nv === v)) {
+        if (!newApprovalFilterState.find((nv) => nv === v)) {
           newApprovalFilterState.push(v);
         }
       } else if (op.field && op.term) {
-        const usedFields = ["institution", "project_title", "project_number", "animal", "run_id", "isolate_id", "fud_no", "cluster_id"];
+        const usedFields = [
+          "institution",
+          "project_title",
+          "project_number",
+          "animal",
+          "run_id",
+          "isolate_id",
+          "fud_no",
+          "cluster_id",
+        ];
 
         if (usedFields.includes(op.field)) {
           if (!newPropFilterState[op.field]) {
@@ -355,7 +368,9 @@ function MetaFilter(props: MetaFilterProps) {
       <Text mt={2}>{t("Approved")}</Text>
       <Select
         options={approvalFilterOptions}
-        value={approvalFilterState.map(v => approvalFilterOptions.find(f => f.value === v)!)}
+        value={approvalFilterState.map(
+          (v) => approvalFilterOptions.find((f) => f.value === v)!
+        )}
         isMulti
         theme={selectTheme}
         onChange={onApprovalChange}

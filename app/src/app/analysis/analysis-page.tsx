@@ -13,7 +13,10 @@ import {
   EditableInput,
   Skeleton,
   useToast,
+  Button,
 } from "@chakra-ui/react";
+import { TagsMenu } from "./tags-menu";
+
 import { Column, Row } from "react-table";
 import {
   AnalysisResult,
@@ -25,6 +28,7 @@ import {
   QueryOperand,
   FilterOptions,
   AnalysisSorting,
+  Workspace,
 } from "sap-client";
 import { useMutation, useRequest } from "redux-query-react";
 import { useDispatch, useSelector } from "react-redux";
@@ -35,6 +39,13 @@ import { UserDefinedViewInternal } from "models";
 import { RootState } from "app/root-reducer";
 import { PropFilter, RangeFilter } from "utils";
 import { Loading } from "loading";
+import {
+  fetchWorkspaces,
+  createWorkspace,
+  updateWorkspace,
+  removeWorkspaceSamples,
+} from "../workspaces/workspaces-query-configs";
+import { SendToMicroreactButton } from "../workspaces/send-to-microreact-button";
 import DataTable, {
   ColumnReordering,
   DataTableSelection,
@@ -73,6 +84,7 @@ import {
   checkSortEquality,
   recurseSearchTree,
 } from "./search/search-utils";
+import { WorkspaceMenu } from "./workspace-menu";
 import { useInView } from "react-intersection-observer";
 
 // When the fields in this array are 'approved', a given sequence is rendered
@@ -88,10 +100,77 @@ export default function AnalysisPage() {
   const dispatch = useDispatch();
   const toast = useToast();
 
+  const user = useSelector<RootState>((s) => s.entities.user ?? {}) as UserInfo;
+
+  const [workspace, setWorkspace] = useState<Workspace | null>(null);
+  const [workspacesQueryState] = useRequest(fetchWorkspaces());
+
+  const workspaces = useSelector<RootState>((s) =>
+    Object.values(s.entities.workspaces ?? {})
+  ) as Array<Workspace>;
+
+  const selection = useSelector<RootState>(
+    (s) => s.selection.selection as DataTableSelection<AnalysisResult>
+  ) as DataTableSelection<AnalysisResult>;
+
+  const [workspaceCreationState, sendToWorkspace] = useMutation(
+    (name: string) => {
+      return createWorkspace(
+        {
+          name,
+          samples: workspace.samples,
+        },
+        user.institution
+      );
+    }
+  );
+  const [, addToWorkspace] = useMutation((workspaceId: string) => {
+    const samples = Object.values(selection).map((s) => s.original.id);
+
+    return updateWorkspace({
+      workspaceId,
+      updateWorkspace: { samples },
+    });
+  });
+  const [, removeFromWorkspace] = useMutation((workspaceId: string) => {
+    const samples = Object.values(selection).map((s) => s.original.id);
+
+    return removeWorkspaceSamples({
+      workspaceId,
+      updateWorkspace: { samples },
+    });
+  });
+
+  useEffect(() => {
+    if (workspace) {
+      const maybeUpdatedWorkspace = workspaces.find(
+        (ws) => ws.id === workspace.id
+      );
+
+      // Does not exist in temp workspaces, so null check is needed
+      if (maybeUpdatedWorkspace) {
+        // Check for equality in all fiels
+        if (
+          Object.entries(maybeUpdatedWorkspace).find(
+            ([key, value]) => value !== workspace[key]
+          )
+        ) {
+          setWorkspace(maybeUpdatedWorkspace);
+        }
+      }
+    }
+  }, [workspaces, workspace]);
+
+  useEffect(() => {
+    if (workspaceCreationState.status === 200) {
+      setWorkspace(workspaces[workspaces.length - 1]);
+    }
+  }, [workspaceCreationState, workspaces]);
+
   const [currentPage, setCurrentPage] = useState(0);
   const [isLoadingNextPage, setIsLoadingNextPage] = useState(false);
   const isLoadingRef = useRef(false);
-  const [nextPageToken, setNextPageToken] = useState<string | null>(null);
+  const [, setNextPageToken] = useState<string | null>(null);
   const nextPageTokenRef = useRef<string | null>(null);
   const currentPageRef = useRef(0);
   const [isModalOpen, setModalOpen] = useState(false);
@@ -120,8 +199,6 @@ export default function AnalysisPage() {
   const [{ isPending, isFinished }] = useRequest({
     ...requestPageOfAnalysis({ pageSize: PAGE_SIZE }, false),
   });
-
-  const user = useSelector<RootState>((s) => s.entities.user ?? {}) as UserInfo;
 
   useRequest({ ...fetchApprovalMatrix() });
 
@@ -206,10 +283,10 @@ export default function AnalysisPage() {
               : (a, b, column) => {
                   const enforceDate = (d: Date | string | undefined) => {
                     if (typeof d == "string") {
-                      return new Date(d)
+                      return new Date(d);
                     }
                     return d;
-                  }
+                  };
                   const aDate = enforceDate(a.original[column])?.getTime() ?? 0;
                   const bDate = enforceDate(b.original[column])?.getTime() ?? 0;
 
@@ -254,34 +331,39 @@ export default function AnalysisPage() {
     [_submitChange, setLastUpdatedRow]
   );
 
-  const selection = useSelector<RootState>((s) => 
-      s.selection.selection as DataTableSelection<AnalysisResult>
-  ) as DataTableSelection<AnalysisResult>;
-
   const approvals = useSelector<RootState>((s) => s.entities.approvalMatrix);
   const view = useSelector<RootState>(
     (s) => s.view.view
   ) as UserDefinedViewInternal;
 
-  const displayData = useMemo(
-    () => {
-      const selectionValues = Object.values(selection).map(v => v.original)
+  const displayData = useMemo(() => {
+    const selectionValues = Object.values(selection).map((v) => v.original);
 
-      if (pageState.isNarrowed) {
-        return selectionValues
-      } 
-      return[
-        ...selectionValues.filter(sv => !data.find(d => d.sequence_id == sv.sequence_id)),
-        ...data,
-      ]
-      
-  },
-    [selection, data,pageState.isNarrowed]
-  );
+    if (pageState.isNarrowed) {
+      return selectionValues;
+    }
+
+    if (workspace) {
+      return [
+        ...selectionValues.filter(
+          (sv) => !workspace.samples!.find((sid) => sid == sv.id)
+        ),
+        ...data.filter((d) => workspace.samples!.find((s) => s === d.id)),
+      ];
+    }
+
+    return [
+      ...selectionValues.filter(
+        (sv) => !data.find((d) => d.sequence_id == sv.sequence_id)
+      ),
+      ...data,
+    ];
+  }, [selection, data, pageState.isNarrowed, workspace]);
 
   const [lastSearchQuery, setLastSearchQuery] = useState<AnalysisQuery>({
     expression: {},
   });
+  const [lastSearchWs, setLastSearchWs] = useState<Workspace | null>(null);
   const lastQueryOperands = useMemo(() => {
     return recurseSearchTree(lastSearchQuery.expression);
   }, [lastSearchQuery]);
@@ -296,64 +378,71 @@ export default function AnalysisPage() {
   const [rangeFilters, setRangeFilters] = React.useState(
     {} as RangeFilter<AnalysisResult>
   );
-  const [approvalFilters, setApprovalFilters] = React.useState<ApprovalStatus[]>([]);
+  const [approvalFilters, setApprovalFilters] = React.useState<
+    ApprovalStatus[]
+  >([]);
 
-  const clearFieldFromSearch = useCallback( (field: string) => {
-    const recurseAndModify = (
-      ex?: QueryExpression | QueryOperand
-    ): QueryExpression => {
-      if (!ex) {
-        return undefined;
-      }
-      if ("field" in ex) {
-        if (ex.field == field) {
+  const clearFieldFromSearch = useCallback(
+    (field: string) => {
+      const recurseAndModify = (
+        ex?: QueryExpression | QueryOperand
+      ): QueryExpression => {
+        if (!ex) {
           return undefined;
         }
-        return { ...ex };
+        if ("field" in ex) {
+          if (ex.field == field) {
+            return undefined;
+          }
+          return { ...ex };
+        }
+
+        const left = recurseAndModify(ex.left);
+        const right = recurseAndModify(ex.right);
+
+        if (!left && !right) {
+          return undefined;
+        } else if (!left) {
+          return right;
+        } else if (!right) {
+          return left;
+        } else {
+          return { ...ex, left, right };
+        }
+      };
+
+      // Also clear from prop filters
+      setPropFilters((prev) => {
+        const newFilters = { ...prev };
+        delete newFilters[field];
+        return newFilters;
+      });
+
+      // Also clear from range filters
+      setRangeFilters((prev) => {
+        const newFilters = { ...prev };
+        delete newFilters[field];
+        return newFilters;
+      });
+
+      if (field == "approval_status") {
+        setApprovalFilters([]);
       }
 
-    
-      const left = recurseAndModify(ex.left);
-      const right = recurseAndModify(ex.right);
-
-      if (!left && !right) {
-        return undefined;
-      } else if (!left) {
-        return right;
-      } else if (!right) {
-        return left;
-      } else {
-        return { ...ex, left, right };
-      }
-    };
-
-    // Also clear from prop filters
-    setPropFilters((prev) => {
-      const newFilters = { ...prev };
-      delete newFilters[field];
-      return newFilters;
-    });
-
-    // Also clear from range filters
-    setRangeFilters((prev) => {
-      const newFilters = { ...prev };
-      delete newFilters[field];
-      return newFilters;
-    });
-
-    if (field == "approval_status") {
-      setApprovalFilters([]);
-    }
-
-    setRawSearchQuery((old) => {
-      const mergedExpression = recurseAndModify(old.expression);
-      // When deleting fields, it is sometimes left in an invalid state without the root operator. This adds it back in.
-      const newExpression: QueryExpression = mergedExpression && "left" in mergedExpression ? mergedExpression : {left: mergedExpression}
-      return {
-        expression: newExpression
-      }
-    });
-  },[setPropFilters, setRangeFilters, setRawSearchQuery, setApprovalFilters]);
+      setRawSearchQuery((old) => {
+        const mergedExpression = recurseAndModify(old.expression);
+        // When deleting fields, it is sometimes left in an invalid state without the root operator. This adds it back in.
+        const newExpression: QueryExpression =
+          mergedExpression && "left" in mergedExpression
+            ? mergedExpression
+            : { left: mergedExpression };
+        return {
+          expression: newExpression,
+        };
+      });
+    },
+    [setPropFilters, setRangeFilters, setRawSearchQuery, setApprovalFilters]
+  );
 
   useEffect(() => {
     isLoadingRef.current = isLoadingNextPage;
@@ -381,7 +470,6 @@ export default function AnalysisPage() {
     // Set loading state immediately
     isLoadingRef.current = true;
     setIsLoadingNextPage(true);
-
 
     try {
       const requestConfig = requestPageOfAnalysis(
@@ -419,9 +507,13 @@ export default function AnalysisPage() {
         searchExpression: QueryExpression,
         propFilter: PropFilter<AnalysisResult>,
         rangeFilter: RangeFilter<AnalysisResult>,
-        approvalFilter: ApprovalStatus[],
+        approvalFilter: ApprovalStatus[]
       ) => {
-        const filterExpression = buildQueryFromFilters(propFilter, rangeFilter, approvalFilter);
+        const filterExpression = buildQueryFromFilters(
+          propFilter,
+          rangeFilter,
+          approvalFilter
+        );
         searchExpression = Object.fromEntries(
           Object.entries(searchExpression).filter(([_, v]) => !!v)
         ) as QueryExpression;
@@ -456,11 +548,17 @@ export default function AnalysisPage() {
 
       const newExpression = q.clearAllFields
         ? q.expression
-        : mergeFilters(q.expression || {}, propFilters, rangeFilters, approvalFilters);
+        : mergeFilters(
+            q.expression || {},
+            propFilters,
+            rangeFilters,
+            approvalFilters
+          );
       if (
         !forceUpdate && 
         checkExpressionEquality(newExpression, lastSearchQuery.expression) &&
-        checkSortEquality(columnSort, prevColumnSort)
+        checkSortEquality(columnSort, prevColumnSort) &&
+        lastSearchWs === workspace
       ) {
         return;
       }
@@ -486,9 +584,16 @@ export default function AnalysisPage() {
 
       dispatch({ type: "RESET/Analysis" });
       setLastSearchQuery(newQ);
+      setLastSearchWs(workspace);
       appendToSearchHistory(newExpression);
 
-      if (newExpression && Object.keys(newExpression).length === 0) {
+      const searchingWithWs = workspace && workspace.id != "temp-workspace";
+
+      if (
+        newExpression &&
+        !searchingWithWs &&
+        Object.keys(newExpression).length === 0
+      ) {
         dispatch(
           requestAsync({
             ...requestPageOfAnalysis(
@@ -510,6 +615,7 @@ export default function AnalysisPage() {
                   analysis_sorting: columnSort,
                   expression: newExpression,
                   page_size: pageSize,
+                  workspace_id: searchingWithWs ? workspace.id : undefined,
                 },
               },
               false
@@ -519,7 +625,21 @@ export default function AnalysisPage() {
         );
       }
     },
-    [dispatch, propFilters, rangeFilters, lastSearchQuery, approvalFilters, columnSort, prevColumnSort, setPrevColumnSort, inView, prevInViewRef]
+    [
+      dispatch,
+      propFilters,
+      rangeFilters,
+      lastSearchQuery,
+      approvalFilters,
+      columnSort,
+      prevColumnSort,
+      setPrevColumnSort,
+      workspace,
+      setLastSearchWs,
+      lastSearchWs,
+      inView,
+      prevInViewRef
+    ]
   );
 
   useEffect(() => {
@@ -569,7 +689,7 @@ export default function AnalysisPage() {
   const onApprovalFilterChange = useCallback((values) => {
     setApprovalFilters(values);
     setRawSearchQuery((old) => ({ ...old, clearAllFields: false }));
-  },[])
+  }, []);
 
   const primaryApprovalColumns = React.useMemo(
     () =>
@@ -966,42 +1086,108 @@ export default function AnalysisPage() {
         </Flex>
       </Box>
       <Box role="main" gridColumn="2 / 4" borderWidth="1px" rounded="md" ref={ref}>
-        <Flex m={2} alignItems="center">
-          <Judgement<AnalysisResult>
-            isNarrowed={pageState.isNarrowed}
-            onNarrowHandler={onNarrowHandler}
-            getDependentColumns={getDependentColumns}
-            checkColumnIsVisible={checkColumnIsVisible}
-            selection={selection}
-          />
-          {!pageState.isNarrowed ? (
-            <AnalysisSelectionMenu
-              selection={selection}
+        <Flex
+          m={2}
+          alignItems="center"
+          flexDirection="row"
+          justify="space-between"
+        >
+          <Flex flexDirection="row" alignItems="center">
+            <Judgement<AnalysisResult>
               isNarrowed={pageState.isNarrowed}
-              data={displayData}
-              search={onSearch}
-              lastSearchQuery={lastSearchQuery}
+              onNarrowHandler={onNarrowHandler}
+              getDependentColumns={getDependentColumns}
+              checkColumnIsVisible={checkColumnIsVisible}
+              selection={selection}
             />
-          ) : null}
-          <Flex grow={1} width="100%" />
-          <ColumnConfigWidget onReorder={onReorderColumn}>
-            {(columnOrder || columns.map((x) => x.accessor as string)).map(
-              (column, i) => (
-                <ColumnConfigNode
-                  key={column}
-                  index={i}
-                  columnName={column}
-                  onChecked={toggleColumn}
-                  isChecked={checkColumnIsVisible(column)}
-                />
-              )
+            {!pageState.isNarrowed && (
+              <AnalysisSelectionMenu
+                selection={selection}
+                isNarrowed={pageState.isNarrowed}
+                data={displayData}
+                search={onSearch}
+                lastSearchQuery={lastSearchQuery}
+              />
             )}
-          </ColumnConfigWidget>
-          <ExportButton
-            data={displayData}
-            columns={columns.map((x) => x.accessor) as any}
-            selection={selection}
-          />
+
+            {(!workspace || workspace.id !== "temp-workspace") &&
+              Object.keys(selection).length > 0 && (
+                <Button
+                  marginLeft={2}
+                  paddingX={3}
+                  onClick={() => {
+                    // Make a temp workspace
+                    setWorkspace({
+                      id: "temp-workspace",
+                      name: "temp-workspace",
+                      samples: Object.values(selection).map(
+                        (s) => s.original.id
+                      ),
+                    });
+                    dispatch(setSelection({}));
+                  }}
+                >
+                  Make workspace
+                </Button>
+              )}
+            {workspace && workspace.id === "temp-workspace" && (
+              <Button
+                marginLeft={2}
+                paddingX={3}
+                onClick={() => {
+                  const workspaceName = prompt("Workspace name");
+                  sendToWorkspace(workspaceName);
+                }}
+              >
+                Save workspace
+              </Button>
+            )}
+            {workspace && (
+              <Button
+                marginLeft={2}
+                paddingX={3}
+                onClick={() => {
+                  setWorkspace(null);
+                }}
+              >
+                Leave workspace
+              </Button>
+            )}
+            {workspace && <SendToMicroreactButton workspace={workspace.id} />}
+            {workspace && workspace.id !== "temp-workspace" && (
+              <TagsMenu workspace={workspace} />
+            )}
+          </Flex>
+          <Flex alignItems="center" justify="space-between">
+            <WorkspaceMenu
+              workspaces={workspaces}
+              workspace={workspace}
+              selection={selection}
+              addToWorkspace={addToWorkspace}
+              removeFromWorkspace={removeFromWorkspace}
+              setWorkspace={setWorkspace}
+            />
+
+            <Flex grow={1} width="100%" />
+            <ColumnConfigWidget onReorder={onReorderColumn}>
+              {(columnOrder || columns.map((x) => x.accessor as string)).map(
+                (column, i) => (
+                  <ColumnConfigNode
+                    key={column}
+                    index={i}
+                    columnName={column}
+                    onChecked={toggleColumn}
+                    isChecked={checkColumnIsVisible(column)}
+                  />
+                )
+              )}
+            </ColumnConfigWidget>
+            <ExportButton
+              data={displayData}
+              columns={columns.map((x) => x.accessor) as any}
+              selection={selection}
+            />
+          </Flex>
         </Flex>
 
         <Box height="calc(100vh - 250px)">
@@ -1018,9 +1204,7 @@ export default function AnalysisPage() {
             getDependentColumns={getDependentColumns}
             getCellStyle={getCellStyle}
             getStickyCellStyle={getStickyCellStyle}
-            data={
-              displayData
-            }
+            data={displayData}
             renderCellControl={renderCellControl}
             primaryKey="sequence_id"
             selectionClassName={pageState.isNarrowed ? "approvingCell" : ""}
@@ -1038,7 +1222,7 @@ export default function AnalysisPage() {
           {isPending && `${t("Fetching...")} ${data.length}`}
           {isFinished &&
             !pageState.isNarrowed &&
-            `${t("Showing")} ${data.length} ${t("of")} ${totalCount} ${t(
+            `${t("Showing")} ${displayData.length} ${t("of")} ${totalCount} ${t(
               "records"
             )}.`}
           {!pageState.isNarrowed && Object.keys(selection).length > 0

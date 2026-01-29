@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { IconButton, useToast } from "@chakra-ui/react";
 import { useMutation } from "redux-query-react";
 import { useTranslation } from "react-i18next";
-import { deleteWorkspace } from "./workspaces-query-configs";
+import { leaveWorkspace } from "./workspaces-query-configs";
 import { DeleteIcon } from "@chakra-ui/icons";
 
 type Props = {
@@ -17,7 +17,7 @@ export function DeleteWorkspace(props: Props) {
   const [
     deleteWorkspaceQueryState,
     deleteWorkspaceMutation,
-  ] = useMutation((id: string) => deleteWorkspace({ workspaceId: id }));
+  ] = useMutation((id: string) => leaveWorkspace({ workspaceId: id }));
 
   const [needsNotify, setNeedsNotify] = useState(true);
 

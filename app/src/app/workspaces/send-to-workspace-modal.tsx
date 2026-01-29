@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { Spinner, useToast } from "@chakra-ui/react";
-import { AnalysisResult, Workspace } from "sap-client";
+import { AnalysisResult, Workspace, UserInfo } from "sap-client";
 import {
   Button,
   Modal,
@@ -35,6 +35,7 @@ export const SendToWorkspaceModal = (props: Props) => {
   const { selection, onClose } = props;
   const [isSending, setIsSending] = useState<boolean>(false);
   const [workspace, setWorkspace] = React.useState<string>();
+  const user = useSelector<RootState>((s) => s.entities.user ?? {}) as UserInfo;
   const history = useHistory();
   const toast = useToast();
   const workspaces = useSelector<RootState>((s) =>
@@ -46,10 +47,13 @@ export const SendToWorkspaceModal = (props: Props) => {
       const samples = Object.values(selection).map((s) => s.original.id);
       if (workspace === "-- New workspace") {
         setWorkspace(name);
-        return createWorkspace({
-          name,
-          samples,
-        });
+        return createWorkspace(
+          {
+            name,
+            samples,
+          },
+          user.institution
+        );
       }
       return updateWorkspace({
         workspaceId: workspace,

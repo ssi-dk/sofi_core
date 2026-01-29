@@ -1,6 +1,4 @@
-import { Square } from "@chakra-ui/react";
 import {
-  AnalysisResult,
   ApprovalStatus,
   AnalysisSorting,
   QueryExpression,
@@ -321,7 +319,7 @@ export const checkExpressionEquality = (
 export const buildQueryFromFilters = (
   propFilters: { [field: string]: string[] },
   rangeFilters: { [field: string]: { min?: any; max?: any } },
-  approvalFilter: ApprovalStatus[],
+  approvalFilter: ApprovalStatus[]
 ): QueryExpression => {
   const expressions: QueryExpression[] = [];
 

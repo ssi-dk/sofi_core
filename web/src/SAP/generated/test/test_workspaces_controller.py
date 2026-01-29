@@ -8,9 +8,12 @@ from six import BytesIO
 from web.src.SAP.generated.models.any_type import AnyType  # noqa: E501
 from web.src.SAP.generated.models.clone_workspace import CloneWorkspace  # noqa: E501
 from web.src.SAP.generated.models.create_workspace import CreateWorkspace  # noqa: E501
+from web.src.SAP.generated.models.set_favorite import SetFavorite  # noqa: E501
+from web.src.SAP.generated.models.set_ws_tag import SetWsTag  # noqa: E501
 from web.src.SAP.generated.models.update_workspace import UpdateWorkspace  # noqa: E501
 from web.src.SAP.generated.models.workspace import Workspace  # noqa: E501
 from web.src.SAP.generated.models.workspace_info import WorkspaceInfo  # noqa: E501
+from web.src.SAP.generated.models.workspace_search_query import WorkspaceSearchQuery  # noqa: E501
 from .test import BaseTestCase
 
 
@@ -83,21 +86,6 @@ class TestWorkspacesController(BaseTestCase):
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
 
-    def test_delete_workspace(self):
-        """Test case for delete_workspace
-
-        
-        """
-        headers = { 
-            'Authorization': 'Bearer special-key',
-        }
-        response = self.client.open(
-            '/api/workspaces/{workspace_id}'.format(workspace_id='workspace_id_example'),
-            method='DELETE',
-            headers=headers)
-        self.assert200(response,
-                       'Response body is : ' + response.data.decode('utf-8'))
-
     def test_delete_workspace_sample(self):
         """Test case for delete_workspace_sample
 
@@ -109,6 +97,22 @@ class TestWorkspacesController(BaseTestCase):
         response = self.client.open(
             '/api/workspace/{workspace_id}/{sample_id}'.format(workspace_id='workspace_id_example')sample_id='sample_id_example'),
             method='DELETE',
+            headers=headers)
+        self.assert200(response,
+                       'Response body is : ' + response.data.decode('utf-8'))
+
+    def test_get_tags(self):
+        """Test case for get_tags
+
+        
+        """
+        headers = { 
+            'Accept': 'application/json',
+            'Authorization': 'Bearer special-key',
+        }
+        response = self.client.open(
+            '/api/workspace/tags',
+            method='GET',
             headers=headers)
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
@@ -161,6 +165,36 @@ class TestWorkspacesController(BaseTestCase):
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
 
+    def test_join_workspace(self):
+        """Test case for join_workspace
+
+        
+        """
+        headers = { 
+            'Authorization': 'Bearer special-key',
+        }
+        response = self.client.open(
+            '/api/workspaces/{workspace_id}/join'.format(workspace_id='workspace_id_example'),
+            method='POST',
+            headers=headers)
+        self.assert200(response,
+                       'Response body is : ' + response.data.decode('utf-8'))
+
+    def test_leave_workspace(self):
+        """Test case for leave_workspace
+
+        
+        """
+        headers = { 
+            'Authorization': 'Bearer special-key',
+        }
+        response = self.client.open(
+            '/api/workspaces/{workspace_id}'.format(workspace_id='workspace_id_example'),
+            method='DELETE',
+            headers=headers)
+        self.assert200(response,
+                       'Response body is : ' + response.data.decode('utf-8'))
+
     def test_post_workspace(self):
         """Test case for post_workspace
 
@@ -178,6 +212,96 @@ class TestWorkspacesController(BaseTestCase):
             method='POST',
             headers=headers,
             data=json.dumps(update_workspace),
+            content_type='application/json')
+        self.assert200(response,
+                       'Response body is : ' + response.data.decode('utf-8'))
+
+    def test_remove_workspace_samples(self):
+        """Test case for remove_workspace_samples
+
+        
+        """
+        update_workspace = {
+  "samples" : [ "samples", "samples" ]
+}
+        headers = { 
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer special-key',
+        }
+        response = self.client.open(
+            '/api/workspace/{workspace_id}/remove'.format(workspace_id='workspace_id_example'),
+            method='POST',
+            headers=headers,
+            data=json.dumps(update_workspace),
+            content_type='application/json')
+        self.assert200(response,
+                       'Response body is : ' + response.data.decode('utf-8'))
+
+    def test_set_tag(self):
+        """Test case for set_tag
+
+        
+        """
+        set_ws_tag = {
+  "tag" : "tag",
+  "addOrRemove" : true,
+  "workspaceId" : "workspaceId"
+}
+        headers = { 
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer special-key',
+        }
+        response = self.client.open(
+            '/api/workspace/tags',
+            method='POST',
+            headers=headers,
+            data=json.dumps(set_ws_tag),
+            content_type='application/json')
+        self.assert200(response,
+                       'Response body is : ' + response.data.decode('utf-8'))
+
+    def test_set_ws_favorite(self):
+        """Test case for set_ws_favorite
+
+        
+        """
+        set_favorite = {
+  "workspaceId" : "workspaceId",
+  "isFavorite" : true
+}
+        headers = { 
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer special-key',
+        }
+        response = self.client.open(
+            '/api/workspace/setFavorite',
+            method='POST',
+            headers=headers,
+            data=json.dumps(set_favorite),
+            content_type='application/json')
+        self.assert200(response,
+                       'Response body is : ' + response.data.decode('utf-8'))
+
+    def test_ws_search(self):
+        """Test case for ws_search
+
+        
+        """
+        workspace_search_query = {
+  "withoutTags" : [ "withoutTags", "withoutTags" ],
+  "searchString" : "searchString",
+  "withTags" : [ "withTags", "withTags" ]
+}
+        headers = { 
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer special-key',
+        }
+        response = self.client.open(
+            '/api/workspace/search',
+            method='POST',
+            headers=headers,
+            data=json.dumps(workspace_search_query),
             content_type='application/json')
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))

@@ -17,31 +17,46 @@ class Workspace(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, id=None, name=None, samples=None):  # noqa: E501
+    def __init__(self, id=None, name=None, is_favorite=None, samples=None, institution=None, tags=None):  # noqa: E501
         """Workspace - a model defined in OpenAPI
 
         :param id: The id of this Workspace.  # noqa: E501
         :type id: str
         :param name: The name of this Workspace.  # noqa: E501
         :type name: str
+        :param is_favorite: The is_favorite of this Workspace.  # noqa: E501
+        :type is_favorite: bool
         :param samples: The samples of this Workspace.  # noqa: E501
         :type samples: List[str]
+        :param institution: The institution of this Workspace.  # noqa: E501
+        :type institution: str
+        :param tags: The tags of this Workspace.  # noqa: E501
+        :type tags: List[str]
         """
         self.openapi_types = {
             'id': str,
             'name': str,
+            'is_favorite': bool,
             'samples': List[str],
+            'institution': str,
+            'tags': List[str],
         }
 
         self.attribute_map = {
             'id': 'id',
             'name': 'name',
+            'is_favorite': 'isFavorite',
             'samples': 'samples',
+            'institution': 'institution',
+            'tags': 'tags',
         }
 
         self._id = id
         self._name = name
+        self._is_favorite = is_favorite
         self._samples = samples
+        self._institution = institution
+        self._tags = tags
 
     @classmethod
     def from_dict(cls, dikt):
@@ -101,6 +116,27 @@ class Workspace(Model):
         self._name = name
 
     @property
+    def is_favorite(self):
+        """Gets the is_favorite of this Workspace.
+
+
+        :return: The is_favorite of this Workspace.
+        :rtype: bool
+        """
+        return self._is_favorite
+
+    @is_favorite.setter
+    def is_favorite(self, is_favorite):
+        """Sets the is_favorite of this Workspace.
+
+
+        :param is_favorite: The is_favorite of this Workspace.
+        :type is_favorite: bool
+        """
+
+        self._is_favorite = is_favorite
+
+    @property
     def samples(self):
         """Gets the samples of this Workspace.
 
@@ -120,3 +156,45 @@ class Workspace(Model):
         """
 
         self._samples = samples
+
+    @property
+    def institution(self):
+        """Gets the institution of this Workspace.
+
+
+        :return: The institution of this Workspace.
+        :rtype: str
+        """
+        return self._institution
+
+    @institution.setter
+    def institution(self, institution):
+        """Sets the institution of this Workspace.
+
+
+        :param institution: The institution of this Workspace.
+        :type institution: str
+        """
+
+        self._institution = institution
+
+    @property
+    def tags(self):
+        """Gets the tags of this Workspace.
+
+
+        :return: The tags of this Workspace.
+        :rtype: List[str]
+        """
+        return self._tags
+
+    @tags.setter
+    def tags(self, tags):
+        """Sets the tags of this Workspace.
+
+
+        :param tags: The tags of this Workspace.
+        :type tags: List[str]
+        """
+
+        self._tags = tags

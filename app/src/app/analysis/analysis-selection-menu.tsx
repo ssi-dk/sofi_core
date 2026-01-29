@@ -49,7 +49,7 @@ export const AnalysisSelectionMenu = (props: Props) => {
         <MenuList>
           <ResistanceMenuItem selection={selection} disabled={disabled} />
           <NearestNeighborMenuItem selection={selection} disabled={disabled} />
-          <SendToWorkspaceMenuItem selection={selection} disabled={disabled} />
+          {/* <SendToWorkspaceMenuItem selection={selection} disabled={disabled} /> */}
           <MenuItem
             aria-label="Select All In view"
             title="SelectAllInView"

@@ -1,7 +1,7 @@
 # import .database
 from datetime import datetime
 import re
-from typing import Any, Dict
+from typing import Any, Dict, List, Optional
 import pymongo
 import logging
 import json
@@ -24,7 +24,7 @@ def remove_id(item):
     item.pop("_id", None)
     return item
 
-def get_analysis_page(query, page_size, offset, columns, institution, data_clearance, unique_sequences=True, sorting=None):
+def get_analysis_page(query, page_size, offset, columns, institution, data_clearance, unique_sequences=True, sorting=None, workspace_items: Optional[List[str]] = None):
     conn, encryption_client = get_connection(with_enc=True)
 
 
@@ -36,6 +36,7 @@ def get_analysis_page(query, page_size, offset, columns, institution, data_clear
         sort_step = {"$sort": sort_obj}
     else:
         sort_step = {"$sort": {"_id": pymongo.DESCENDING}} if unique_sequences else None
+
 
     q = encrypt_dict(encryption_client, query, pii_columns())
 
@@ -100,7 +101,7 @@ def get_analysis_page(query, page_size, offset, columns, institution, data_clear
                 "foreignField": "project_number",
                 "as": "project_privacy",
             }
-        } if data_clearance == "cross-institution" else {"$match": {}},
+        } if data_clearance == "cross-institution" else None,
         {
             "$match": {
                 "$or": [
@@ -108,7 +109,7 @@ def get_analysis_page(query, page_size, offset, columns, institution, data_clear
                     {"project_privacy.institution": institution}  # User has access to this institution
                 ]
             }
-        } if data_clearance == "cross-institution" else {"$match": {}},
+        } if data_clearance == "cross-institution" else None,
         {"$lookup": {
             "from": "sap_approvals",
             "let": { "seqId": "$sequence_id" },
@@ -133,7 +134,7 @@ def get_analysis_page(query, page_size, offset, columns, institution, data_clear
                 "approval_info": 0
             }
         },
-        {"$match": q},
+        {"$match": q} if q else None,
         {"$sort": {"_id": pymongo.DESCENDING}},
         {
             "$group": {
@@ -143,6 +144,11 @@ def get_analysis_page(query, page_size, offset, columns, institution, data_clear
         } if unique_sequences else None,
         { "$replaceRoot": { "newRoot": "$record" } } if unique_sequences else None,
         {"$project": column_projection},
+        {
+            "$match": {
+                "id": {"$in": workspace_items}
+            }
+        } if workspace_items else None,
         sort_step,
         {"$skip": offset},
         {"$limit": (int(page_size))},
@@ -155,7 +161,7 @@ def get_analysis_page(query, page_size, offset, columns, institution, data_clear
     # For now, there is no handing of missing metadata, so the full_analysis table is used. The above aggregate pipeline should work though.
     return list(analysis.aggregate(fetch_pipeline))
 
-def get_analysis_count(query, institution, data_clearance):
+def get_analysis_count(query, institution, data_clearance,workspace_items: Optional[List[str]] = None):
     conn, encryption_client = get_connection(with_enc=True)
     mydb = conn[DB_NAME]
     analysis = mydb[ANALYSIS_COL_NAME]
@@ -202,7 +208,12 @@ def get_analysis_count(query, institution, data_clearance):
                 "approval_info": 0
             }
         },
-        { "$match": q },
+        {
+            "$match": {
+                "id": {"$in": workspace_items}
+            }
+        } if workspace_items else None,
+        { "$match": q } if q else None,
         {
             "$group": {
                 "_id": "$sequence_id",
@@ -212,6 +223,8 @@ def get_analysis_count(query, institution, data_clearance):
         { "$count": "record" },
         { "$project": { "count": "$record"}}
     ]
+
+    fetch_pipeline = list(filter(lambda x: x != None, fetch_pipeline))
 
     res = list(analysis.aggregate(fetch_pipeline))
     if len(res) == 1:
@@ -305,9 +318,6 @@ def get_analysis_with_metadata(sequence_id: str) -> Dict[str, Any]:
     ]
 
     res = list(analysis.aggregate(fetch_pipeline))
-
-    print("is in analysis.py result")
-    print(res)
 
     if len(res) == 1:
         return res[0]
@@ -452,7 +462,6 @@ def get_filter_metadata(authorized_columns, institution, data_clearance):
 
 
 def rewrite_str_range_query(q: Dict[str,Any]):
-
     for key in q.keys():
         v = q[key]
         # Must be a full range

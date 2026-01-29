@@ -91,11 +91,11 @@ div[role="cell"].selectedRow {
 }
 
 div[role="cell"].selectedRow.rejectedCell {
-  background-color: #ECC9CB;
+  background-color: #ecc9cb;
 }
 
 div[role="cell"].selectedRow.unapprovedCell {
-  background-color: #B5D7EC;
+  background-color: #b5d7ec;
 }
 
 div[role="cell"].isNotLatest::before {

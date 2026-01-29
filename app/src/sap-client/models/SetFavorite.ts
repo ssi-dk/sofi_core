@@ -15,28 +15,36 @@ import { exists, mapValues } from '../runtime';
 /**
  * 
  * @export
- * @interface InlineObject
+ * @interface SetFavorite
  */
-export interface InlineObject  {
+export interface SetFavorite  {
+    /**
+     * 
+     * @type {string}
+     * @memberof SetFavorite
+     */
+    workspaceId: string;
     /**
      * 
      * @type {boolean}
-     * @memberof InlineObject
+     * @memberof SetFavorite
      */
     isFavorite: boolean;
 }
 
-export function InlineObjectFromJSON(json: any): InlineObject {
+export function SetFavoriteFromJSON(json: any): SetFavorite {
     return {
+        'workspaceId': json['workspaceId'],
         'isFavorite': json['isFavorite'],
     };
 }
 
-export function InlineObjectToJSON(value?: InlineObject): any {
+export function SetFavoriteToJSON(value?: SetFavorite): any {
     if (value === undefined) {
         return undefined;
     }
     return {
+        'workspaceId': value.workspaceId,
         'isFavorite': value.isFavorite,
     };
 }

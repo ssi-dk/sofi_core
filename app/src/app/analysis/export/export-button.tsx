@@ -12,11 +12,8 @@ type ExportButtonProps = {
   selection: DataTableSelection<AnalysisResult>;
 };
 
-const isSelectionEmpty = (sel) => Object.keys(sel).length === 0;
-
 const ExportButton = (props: ExportButtonProps) => {
-  const { data, columns, selection } = props;
-
+  const { data, columns } = props;
 
   const download = React.useCallback(() => {
     const tableState = spyDataTable();

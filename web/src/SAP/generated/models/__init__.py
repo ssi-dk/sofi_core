@@ -54,6 +54,8 @@ from .sample import Sample
 from .sample_categories import SampleCategories
 from .sample_categories_resistance import SampleCategoriesResistance
 from .sample_categories_resistance_report import SampleCategoriesResistanceReport
+from .set_favorite import SetFavorite
+from .set_ws_tag import SetWsTag
 from .single_upload_request import SingleUploadRequest
 from .tbr_metadata import TbrMetadata
 from .tbr_specific_metadata import TbrSpecificMetadata
@@ -67,3 +69,4 @@ from .user_defined_view_sort_by import UserDefinedViewSortBy
 from .user_info import UserInfo
 from .workspace import Workspace
 from .workspace_info import WorkspaceInfo
+from .workspace_search_query import WorkspaceSearchQuery

@@ -641,6 +641,96 @@ paths:
       tags:
       - workspaces
       x-openapi-router-controller: web.src.SAP.generated.controllers.workspaces_controller
+  /workspace/search:
+    post:
+      description: Search for a workspace with a search query
+      operationId: ws_search
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WorkspaceSearchQuery'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Workspace'
+                type: array
+          description: Result of ws search query
+      tags:
+      - workspaces
+      x-openapi-router-controller: web.src.SAP.generated.controllers.workspaces_controller
+  /workspace/setFavorite:
+    post:
+      description: Add or remove the user from this workspaces' favorite list
+      operationId: set_ws_favorite
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SetFavorite'
+      responses:
+        "204":
+          description: Favorite updated
+      tags:
+      - workspaces
+      x-openapi-router-controller: web.src.SAP.generated.controllers.workspaces_controller
+  /workspace/tags:
+    get:
+      description: Get all tags used in institution
+      operationId: get_tags
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  type: string
+                type: array
+          description: All tags used in institution
+      tags:
+      - workspaces
+      x-openapi-router-controller: web.src.SAP.generated.controllers.workspaces_controller
+    post:
+      description: Add or remove a tag from a workspace
+      operationId: set_tag
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SetWsTag'
+      responses:
+        "204":
+          description: Successfully added or removed tag from workspace
+      tags:
+      - workspaces
+      x-openapi-router-controller: web.src.SAP.generated.controllers.workspaces_controller
+  /workspace/{workspace_id}/remove:
+    post:
+      description: Remove samples from workspace
+      operationId: remove_workspace_samples
+      parameters:
+      - description: Id of workspace to update
+        explode: false
+        in: path
+        name: workspace_id
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateWorkspace'
+      responses:
+        "204":
+          description: Workspace updated successfully.
+      tags:
+      - workspaces
+      x-openapi-router-controller: web.src.SAP.generated.controllers.workspaces_controller
   /workspace/{workspace_id}/{sample_id}:
     delete:
       description: Delete sample from workspace
@@ -713,8 +803,8 @@ paths:
       x-openapi-router-controller: web.src.SAP.generated.controllers.workspaces_controller
   /workspaces/{workspace_id}:
     delete:
-      description: Delete an existing workspace
-      operationId: delete_workspace
+      description: Leave an existing workspace
+      operationId: leave_workspace
       parameters:
       - description: Id of workspace to delete
         explode: false
@@ -726,7 +816,7 @@ paths:
         style: simple
       responses:
         "204":
-          description: Workspace deleted successfully.
+          description: Workspace left successfully.
       tags:
       - workspaces
       x-openapi-router-controller: web.src.SAP.generated.controllers.workspaces_controller
@@ -800,6 +890,25 @@ paths:
           description: Data
       security:
       - microreactjwt: []
+      tags:
+      - workspaces
+      x-openapi-router-controller: web.src.SAP.generated.controllers.workspaces_controller
+  /workspaces/{workspace_id}/join:
+    post:
+      description: Join an existing workspace
+      operationId: join_workspace
+      parameters:
+      - description: Id of workspace to join
+        explode: false
+        in: path
+        name: workspace_id
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          description: Succesfully joined
       tags:
       - workspaces
       x-openapi-router-controller: web.src.SAP.generated.controllers.workspaces_controller
@@ -1102,6 +1211,7 @@ components:
       type: object
     AnalysisQuery:
       example:
+        workspace_id: workspace_id
         analysis_sorting:
           column: column
           ascending: true
@@ -1141,6 +1251,10 @@ components:
           $ref: '#/components/schemas/AnalysisSorting'
         filters:
           type: object
+        workspace_id:
+          format: byte
+          nullable: true
+          type: string
     HealthResponse:
       example:
         exception:
@@ -1798,11 +1912,16 @@ components:
       type: string
     Workspace:
       example:
+        institution: institution
         name: name
         id: id
         samples:
         - samples
         - samples
+        isFavorite: true
+        tags:
+        - tags
+        - tags
       properties:
         id:
           title: Id
@@ -1810,14 +1929,77 @@ components:
         name:
           title: Name
           type: string
+        isFavorite:
+          title: IsFavorite
+          type: boolean
         samples:
           items:
             type: string
           title: Samples
           type: array
+        institution:
+          type: string
+        tags:
+          items:
+            type: string
+          type: array
       required:
       - id
       - name
+      type: object
+    WorkspaceSearchQuery:
+      example:
+        withoutTags:
+        - withoutTags
+        - withoutTags
+        searchString: searchString
+        withTags:
+        - withTags
+        - withTags
+      properties:
+        searchString:
+          type: string
+        withTags:
+          items:
+            type: string
+          type: array
+        withoutTags:
+          items:
+            type: string
+          type: array
+      required:
+      - searchString
+      type: object
+    SetWsTag:
+      example:
+        tag: tag
+        addOrRemove: true
+        workspaceId: workspaceId
+      properties:
+        workspaceId:
+          type: string
+        tag:
+          type: string
+        addOrRemove:
+          description: true -> Adds tag to workspace. false -> remove tag from workspace
+          type: boolean
+      required:
+      - addOrRemove
+      - tag
+      - workspaceId
+      type: object
+    SetFavorite:
+      example:
+        workspaceId: workspaceId
+        isFavorite: true
+      properties:
+        workspaceId:
+          type: string
+        isFavorite:
+          type: boolean
+      required:
+      - isFavorite
+      - workspaceId
       type: object
     MicroreactProject:
       example:
@@ -1898,6 +2080,9 @@ components:
       type: object
     WorkspaceInfo:
       example:
+        sequence_ids:
+        - sequence_ids
+        - sequence_ids
         name: name
         microreact:
           id: id
@@ -1917,6 +2102,11 @@ components:
           items:
             $ref: '#/components/schemas/AnalysisResult'
           title: Samples
+          type: array
+        sequence_ids:
+          items:
+            type: string
+          title: SequenceIds
           type: array
         microreact:
           $ref: '#/components/schemas/MicroreactProject'

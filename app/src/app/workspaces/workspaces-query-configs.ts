@@ -1,16 +1,26 @@
 import {
   getWorkspaces,
   Workspace,
-  deleteWorkspace as deleteWorkspaceApi,
+  leaveWorkspace as leaveWorkspaceApi,
   createWorkspace as createWorkspaceApi,
   createWorkspaceFromSequenceIds as createWorkspaceFromSequenceIdsApi,
   getWorkspace as getWorkspaceApi,
   postWorkspace as postWorkspaceApi,
   deleteWorkspaceSample as deleteWorkspaceSampleApi,
-  DeleteWorkspaceRequest,
+  LeaveWorkspaceRequest,
   PostWorkspaceRequest,
   DeleteWorkspaceSampleRequest,
   cloneWorkspace as cloneWorkspaceApi,
+  removeWorkspaceSamples as removeWorkspaceSamplesApi,
+  setWsFavorite as setFavoriteApi,
+  SetWsFavoriteRequest,
+  getTags as getTagsApi,
+  setTag as setTagApi,
+  SetTagRequest,
+  wsSearch as wsSearchApi,
+  WsSearchRequest,
+  joinWorkspace as joinWorkspaceApi,
+  JoinWorkspaceRequest,
 } from "sap-client";
 import {
   CreateWorkspace,
@@ -59,8 +69,8 @@ export const getWorkspace = (id: string) => {
   return base;
 };
 
-export const deleteWorkspace = (params: DeleteWorkspaceRequest) => {
-  const base = deleteWorkspaceApi(params);
+export const leaveWorkspace = (params: LeaveWorkspaceRequest) => {
+  const base = leaveWorkspaceApi(params);
   base.url = getUrl(base.url);
   base.update = {
     workspaces: (oldValue) => {
@@ -89,7 +99,7 @@ export const removeWorkspaceSample = (params: DeleteWorkspaceSampleRequest) => {
   return base;
 };
 
-export const createWorkspace = (params: CreateWorkspace) => {
+export const createWorkspace = (params: CreateWorkspace, userInst: string) => {
   const base = createWorkspaceApi({ createWorkspace: params });
   base.url = getUrl(base.url);
 
@@ -97,7 +107,17 @@ export const createWorkspace = (params: CreateWorkspace) => {
     if (!response.id) {
       return undefined;
     }
-    return { workspaces: [{ id: response.id, name: params.name }] };
+    return {
+      workspaces: [
+        {
+          id: response.id,
+          name: params.name,
+          samples: params.samples,
+          tags: [],
+          institution: userInst,
+        },
+      ],
+    };
   };
 
   base.update = {
@@ -168,6 +188,137 @@ export const updateWorkspace = (params: PostWorkspaceRequest) => {
   const base = postWorkspaceApi(params);
   base.url = getUrl(base.url);
 
+  base.update = {
+    workspaces: (oldValue) => {
+      return oldValue.map((ws) => {
+        if (ws.id != params.workspaceId) {
+          return ws;
+        }
+        return {
+          ...ws,
+          samples: [
+            ...new Set([...ws.samples, ...params.updateWorkspace.samples]),
+          ],
+        };
+      });
+    },
+  };
   base.force = true;
+  return base;
+};
+
+export const removeWorkspaceSamples = (params: PostWorkspaceRequest) => {
+  const base = removeWorkspaceSamplesApi(params);
+  base.url = getUrl(base.url);
+
+  base.update = {
+    workspaces: (oldValue) => {
+      return oldValue.map((ws) => {
+        if (ws.id != params.workspaceId) {
+          return ws;
+        }
+        return {
+          ...ws,
+          samples: ws.samples.filter(
+            (sid) => !params.updateWorkspace.samples.find((rid) => sid === rid)
+          ),
+        };
+      });
+    },
+  };
+  base.force = true;
+  return base;
+};
+
+export const setWorkspaceFavorite = (params: SetWsFavoriteRequest) => {
+  const base = setFavoriteApi(params);
+  base.url = getUrl(base.url);
+
+  base.update = {
+    workspaces: (oldValue) => {
+      const { workspaceId, isFavorite } = params.setFavorite;
+
+      return oldValue.map((ws) => {
+        if (ws.id !== workspaceId) {
+          return ws;
+        }
+        return {
+          ...ws,
+          isFavorite,
+        };
+      });
+    },
+  };
+
+  base.force = true;
+  return base;
+};
+
+export const fetchWorkspaceTags = () => {
+  const base = getTagsApi();
+  base.url = getUrl(base.url);
+
+  base.transform = (response: Array<string>) => ({
+    tags: response,
+  });
+
+  base.update = {
+    tags: (_, newValue) => newValue,
+  };
+  base.force = true;
+  return base;
+};
+
+export const setWorkspaceTag = (params: SetTagRequest) => {
+  const base = setTagApi(params);
+  base.url = getUrl(base.url);
+
+  base.update = {
+    workspaces: (oldValue) => {
+      const { workspaceId, tag, addOrRemove } = params.setWsTag;
+
+      return oldValue.map((ws: Workspace) => {
+        if (ws.id !== workspaceId) {
+          return ws;
+        }
+        return {
+          ...ws,
+          tags: addOrRemove
+            ? [tag, ...ws.tags]
+            : ws.tags.filter((t) => t !== tag),
+        };
+      });
+    },
+  };
+
+  base.force = true;
+  return base;
+};
+
+export const searchWorkspaces = (params: WsSearchRequest) => {
+  const base = wsSearchApi(params);
+  base.url = getUrl(base.url);
+
+  base.transform = (response: Array<Workspace>) => {
+    return {
+      wsSearch: response,
+    };
+  };
+  base.update = {
+    wsSearch: (_, newValue) => newValue,
+  };
+  base.force = true;
+  return base;
+};
+
+export const joinWorkspace = (workspace: Workspace) => {
+  const base = joinWorkspaceApi({ workspaceId: workspace.id });
+  base.url = getUrl(base.url);
+
+  base.update = {
+    workspaces: (oldValue) => {
+      return [...oldValue, workspace];
+    },
+  };
   return base;
 };

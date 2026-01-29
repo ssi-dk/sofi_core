@@ -21,7 +21,7 @@ class AnalysisQuery(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, paging_token=None, page_size=100, expression=None, analysis_sorting=None, filters=None):  # noqa: E501
+    def __init__(self, paging_token=None, page_size=100, expression=None, analysis_sorting=None, filters=None, workspace_id=None):  # noqa: E501
         """AnalysisQuery - a model defined in OpenAPI
 
         :param paging_token: The paging_token of this AnalysisQuery.  # noqa: E501
@@ -34,6 +34,8 @@ class AnalysisQuery(Model):
         :type analysis_sorting: AnalysisSorting
         :param filters: The filters of this AnalysisQuery.  # noqa: E501
         :type filters: object
+        :param workspace_id: The workspace_id of this AnalysisQuery.  # noqa: E501
+        :type workspace_id: bytearray
         """
         self.openapi_types = {
             'paging_token': bytearray,
@@ -41,6 +43,7 @@ class AnalysisQuery(Model):
             'expression': QueryExpression,
             'analysis_sorting': AnalysisSorting,
             'filters': object,
+            'workspace_id': bytearray,
         }
 
         self.attribute_map = {
@@ -49,6 +52,7 @@ class AnalysisQuery(Model):
             'expression': 'expression',
             'analysis_sorting': 'analysis_sorting',
             'filters': 'filters',
+            'workspace_id': 'workspace_id',
         }
 
         self._paging_token = paging_token
@@ -56,6 +60,7 @@ class AnalysisQuery(Model):
         self._expression = expression
         self._analysis_sorting = analysis_sorting
         self._filters = filters
+        self._workspace_id = workspace_id
 
     @classmethod
     def from_dict(cls, dikt):
@@ -174,3 +179,24 @@ class AnalysisQuery(Model):
         """
 
         self._filters = filters
+
+    @property
+    def workspace_id(self):
+        """Gets the workspace_id of this AnalysisQuery.
+
+
+        :return: The workspace_id of this AnalysisQuery.
+        :rtype: bytearray
+        """
+        return self._workspace_id
+
+    @workspace_id.setter
+    def workspace_id(self, workspace_id):
+        """Sets the workspace_id of this AnalysisQuery.
+
+
+        :param workspace_id: The workspace_id of this AnalysisQuery.
+        :type workspace_id: bytearray
+        """
+
+        self._workspace_id = workspace_id
