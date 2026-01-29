@@ -432,12 +432,48 @@ export default function AnalysisPage() {
         setApprovalFilters([]);
       }
 
-      setRawSearchQuery((old) => ({
-        expression: recurseAndModify(old.expression),
-      }));
-    },
-    [setPropFilters, setRangeFilters, setRawSearchQuery, setApprovalFilters]
-  );
+    
+      const left = recurseAndModify(ex.left);
+      const right = recurseAndModify(ex.right);
+
+      if (!left && !right) {
+        return undefined;
+      } else if (!left) {
+        return right;
+      } else if (!right) {
+        return left;
+      } else {
+        return { ...ex, left, right };
+      }
+    };
+
+    // Also clear from prop filters
+    setPropFilters((prev) => {
+      const newFilters = { ...prev };
+      delete newFilters[field];
+      return newFilters;
+    });
+
+    // Also clear from range filters
+    setRangeFilters((prev) => {
+      const newFilters = { ...prev };
+      delete newFilters[field];
+      return newFilters;
+    });
+
+    if (field == "approval_status") {
+      setApprovalFilters([]);
+    }
+
+    setRawSearchQuery((old) => {
+      const mergedExpression = recurseAndModify(old.expression);
+      // When deleting fields, it is sometimes left in an invalid state without the root operator. This adds it back in.
+      const newExpression: QueryExpression = mergedExpression && "left" in mergedExpression ? mergedExpression : {left: mergedExpression}
+      return {
+        expression: newExpression
+      }
+    });
+  },[setPropFilters, setRangeFilters, setRawSearchQuery, setApprovalFilters]);
 
   useEffect(() => {
     isLoadingRef.current = isLoadingNextPage;
