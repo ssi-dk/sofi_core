@@ -22,7 +22,6 @@ export type SearchHistory = SearchItem[];
 export const getSearchHistory = () => {
   const rawJson = localStorage.getItem(HISTORY_STORAGE_KEY);
   const history: SearchHistory = JSON.parse(rawJson) || [];
-  console.log("HISTORY:", history)
   return history;
 };
 
