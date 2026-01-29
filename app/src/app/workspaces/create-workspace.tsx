@@ -4,15 +4,19 @@ import { useMutation } from "redux-query-react";
 import { useTranslation } from "react-i18next";
 import { createWorkspace } from "./workspaces-query-configs";
 import { AddIcon } from "@chakra-ui/icons";
+import {  useSelector } from "react-redux";
+import { RootState } from "app/root-reducer";
+import { UserInfo } from "sap-client";
 
 export function CreateWorkspace() {
   const { t } = useTranslation();
   const toast = useToast();
+  const user = useSelector<RootState>((s) => s.entities.user ?? {}) as UserInfo;
 
   const [
     createWorkspaceQueryState,
     createWorkspaceMutation,
-  ] = useMutation((name: string) => createWorkspace({ name, samples: [] }));
+  ] = useMutation((name: string) => createWorkspace({ name, samples: [] },user.institution));
 
   const [needsNotify, setNeedsNotify] = useState(true);
 

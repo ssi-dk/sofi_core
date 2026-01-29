@@ -18,11 +18,9 @@ import {
   MinusIcon,
   NotAllowedIcon,
   StarIcon,
-  LinkIcon,
-  ChatIcon,
 } from "@chakra-ui/icons";
 import { useDispatch, useSelector } from "react-redux";
-
+import { RootState } from "app/root-reducer";
 import { DataTableSelection } from "./data-table/data-table";
 import { useMutation } from "redux-query-react";
 import {
@@ -55,13 +53,13 @@ export const WorkspaceMenu = (props: WorkspaceMenuProps) => {
 
   const dispatch = useDispatch();
 
-  const [leaveWorkspaceState, leaveWs] = useMutation((workspaceId: string) => {
+  const [, leaveWs] = useMutation((workspaceId: string) => {
     return leaveWorkspace({
       workspaceId,
     });
   });
 
-  const [setFavoriteState, setFavorite] = useMutation(
+  const [, setFavorite] = useMutation(
     (workspaceId: string, isFavorite: boolean) => {
       return setWorkspaceFavorite({
         setFavorite: {
@@ -72,8 +70,8 @@ export const WorkspaceMenu = (props: WorkspaceMenuProps) => {
     }
   );
 
-  const [joinWorkspaceState, joinWs] = useMutation((workspace: Workspace) => {
-    return joinWorkspace(workspace);
+  const [, joinWs] = useMutation((workspaceToJoin: Workspace) => {
+    return joinWorkspace(workspaceToJoin);
   })
 
   const [searchStr, setSearchStr] = useState("");

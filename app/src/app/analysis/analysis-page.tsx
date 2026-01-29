@@ -14,21 +14,7 @@ import {
   Skeleton,
   useToast,
   Button,
-  IconButton,
-  Menu,
-  MenuList,
-  MenuButton,
-  MenuItem,
-  Input,
 } from "@chakra-ui/react";
-import {
-  HamburgerIcon,
-  AddIcon,
-  EditIcon,
-  DeleteIcon,
-  CheckIcon,
-} from "@chakra-ui/icons";
-import { WsTag } from "./ws-tag";
 import { TagsMenu } from "./tags-menu";
 
 import { Column, Row } from "react-table";
@@ -99,7 +85,6 @@ import {
   recurseSearchTree,
 } from "./search/search-utils";
 import { WorkspaceMenu } from "./workspace-menu";
-import { svgElements } from "framer-motion/types/render/svg/supported-elements";
 
 // When the fields in this array are 'approved', a given sequence is rendered
 // as 'approved' also.
@@ -138,7 +123,7 @@ export default function AnalysisPage() {
       );
     }
   );
-  const [workspaceAddState, addToWorkspace] = useMutation(
+  const [, addToWorkspace] = useMutation(
     (workspaceId: string) => {
       const samples = Object.values(selection).map((s) => s.original.id);
 
@@ -148,7 +133,7 @@ export default function AnalysisPage() {
       });
     }
   );
-  const [workspaceRemoveState, removeFromWorkspace] = useMutation(
+  const [, removeFromWorkspace] = useMutation(
     (workspaceId: string) => {
       const samples = Object.values(selection).map((s) => s.original.id);
 
@@ -170,7 +155,7 @@ export default function AnalysisPage() {
         // Check for equality in all fiels
         if (
           Object.entries(maybeUpdatedWorkspace).find(
-            (key, value) => value !== workspace[key]
+            ([key, value]) => value !== workspace[key]
           )
         ) {
           setWorkspace(maybeUpdatedWorkspace);
@@ -188,7 +173,7 @@ export default function AnalysisPage() {
   const [currentPage, setCurrentPage] = useState(0);
   const [isLoadingNextPage, setIsLoadingNextPage] = useState(false);
   const isLoadingRef = useRef(false);
-  const [nextPageToken, setNextPageToken] = useState<string | null>(null);
+  const [, setNextPageToken] = useState<string | null>(null);
   const nextPageTokenRef = useRef<string | null>(null);
   const currentPageRef = useRef(0);
   const [isModalOpen, setModalOpen] = useState(false);

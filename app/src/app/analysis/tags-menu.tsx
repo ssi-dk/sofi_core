@@ -1,38 +1,17 @@
 import React, {
-  useCallback,
   useEffect,
-  useMemo,
-  useRef,
   useState,
 } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import {
-  Box,
   Flex,
-  Editable,
-  EditablePreview,
-  EditableInput,
-  Skeleton,
-  useToast,
   Button,
-  IconButton,
   Menu,
   MenuList,
   MenuButton,
-  MenuItem,
   Input,
-  InputProps,
 } from "@chakra-ui/react";
 import {
-  AnalysisResult,
-  AnalysisQuery,
-  ApprovalStatus,
-  UserInfo,
-  QueryExpression,
-  QueryOperator,
-  QueryOperand,
-  FilterOptions,
-  AnalysisSorting,
   Workspace,
 } from "sap-client";
 import {
@@ -52,7 +31,7 @@ export type TagsMenuProps = {
 export const TagsMenu = (props: TagsMenuProps) => {
   const { workspace } = props;
 
-  const [tagsQueryState, refetchTags] = useRequest(fetchWorkspaceTags());
+  const [, refetchTags] = useRequest(fetchWorkspaceTags());
   const [setTagState, setTag] = useMutation(
     (tag: string, addOrRemove: boolean) => {
       return setWorkspaceTag({
@@ -68,7 +47,7 @@ export const TagsMenu = (props: TagsMenuProps) => {
     if (setTagState.isFinished) {
       refetchTags();
     }
-  }, [setTagState]);
+  }, [setTagState, refetchTags]);
 
   const allTags = useSelector<RootState>((s) =>
     Object.values(s.entities.tags ?? [])

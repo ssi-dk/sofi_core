@@ -355,5 +355,5 @@ def join_workspace(user: str, institution: str, workspace_id: str):
             "members": user
         }
     })
-    if result.matched_count == 0:
+    if result.matched_count == 0: # We use matched count instead of modified count, since joining a workspace you're already a part of is an allowed noop that can happen if using multiple browser tabs.
         flask.abort(404)

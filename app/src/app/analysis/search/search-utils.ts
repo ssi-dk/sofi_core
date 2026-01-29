@@ -1,6 +1,4 @@
-import { Square } from "@chakra-ui/react";
 import {
-  AnalysisResult,
   ApprovalStatus,
   AnalysisSorting,
   QueryExpression,
