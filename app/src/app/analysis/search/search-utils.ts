@@ -238,13 +238,23 @@ export const displayOperandName = ({
   if (term) {
     return `${field}=${term}`;
   } else if (term_max && term_min) {
-    return `${new Date(term_min).toLocaleDateString()} < ${field} < ${new Date(
-      term_max
-    ).toLocaleDateString()}`;
+    const minDate = Date.parse(term_min);
+    const minVal = isNaN(minDate) ? term_min : new Date(term_min).toLocaleDateString()
+
+    const maxDate = Date.parse(term_max);
+    const maxVal = isNaN(maxDate) ? term_max : new Date(term_max).toLocaleDateString()
+
+    return `${minVal} < ${field} < ${maxVal}`;
   } else if (term_max) {
-    return `${field} < ${new Date(term_max).toLocaleDateString()}`;
+    const maxDate = Date.parse(term_max);
+    const maxVal = isNaN(maxDate) ? term_max : new Date(term_max).toLocaleDateString()
+
+    return `${field} < ${maxVal}`;
   } else if (term_min) {
-    return `${field} > ${new Date(term_min).toLocaleDateString()}`;
+    const minDate = Date.parse(term_min);
+    const minVal = isNaN(minDate) ? term_min : new Date(term_min).toLocaleDateString()
+
+    return `${field} > ${minVal}`;
   }
 };
 

@@ -15,6 +15,7 @@ from ..repositories.analysis import (
     get_analysis_page,
     get_analysis_count,
     get_analysis_with_metadata,
+    rewrite_str_range_query,
     update_analysis,
     get_single_analysis,
     get_filter_metadata,
@@ -206,6 +207,8 @@ def search_analysis(user, token_info, query: AnalysisQuery):
     workspace_items = get_workspace_sequences_db(user,query.workspace_id) if query.workspace_id is not None else None
 
     token = parse_paging_token(query.paging_token) or default_token
+    rewrite_str_range_query(token["query"])
+    
     items = get_analysis_page(
         token["query"],
         token["page_size"],
