@@ -494,5 +494,3 @@ def rewrite_str_range_query(q: Dict[str,Any]):
         except ValueError:
             # Failed to parse number. Simply skip
             continue
-
-    return q

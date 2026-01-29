@@ -203,7 +203,7 @@ def search_analysis(user, token_info, query: AnalysisQuery):
     }
 
     token = parse_paging_token(query.paging_token) or default_token
-    token["query"] = rewrite_str_range_query(token["query"])
+    rewrite_str_range_query(token["query"])
     
     items = get_analysis_page(
         token["query"],
