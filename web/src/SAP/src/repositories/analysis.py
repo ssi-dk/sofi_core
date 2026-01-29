@@ -462,7 +462,6 @@ def get_filter_metadata(authorized_columns, institution, data_clearance):
 
 
 def rewrite_str_range_query(q: Dict[str,Any]):
-
     for key in q.keys():
         v = q[key]
         # Must be a full range
