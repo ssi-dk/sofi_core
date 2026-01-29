@@ -18,6 +18,7 @@ import {
   MinusIcon,
   NotAllowedIcon,
   StarIcon,
+  UserInfo
 } from "@chakra-ui/icons";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "app/root-reducer";
@@ -51,6 +52,7 @@ export const WorkspaceMenu = (props: WorkspaceMenuProps) => {
     setWorkspace,
   } = props;
 
+  const user = useSelector<RootState>((s) => s.entities.user ?? {}) as UserInfo;
   const dispatch = useDispatch();
 
   const [, leaveWs] = useMutation((workspaceId: string) => {
@@ -262,7 +264,7 @@ export const WorkspaceMenu = (props: WorkspaceMenuProps) => {
 
         {searchStr && (
           <h3 style={{ fontSize: "20px", marginLeft: "0.5rem" }}>
-            <b>Other workspaces</b>
+            <b>{user.institution} workspaces</b>
           </h3>
         )}
         {searchStr &&
