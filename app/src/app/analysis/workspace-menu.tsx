@@ -9,7 +9,7 @@ import {
   MenuButton,
   Input,
 } from "@chakra-ui/react";
-import { AnalysisResult, Workspace } from "sap-client";
+import { AnalysisResult, Workspace, UserInfo } from "sap-client";
 import {
   HamburgerIcon,
   AddIcon,
@@ -18,7 +18,6 @@ import {
   MinusIcon,
   NotAllowedIcon,
   StarIcon,
-  UserInfo
 } from "@chakra-ui/icons";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "app/root-reducer";

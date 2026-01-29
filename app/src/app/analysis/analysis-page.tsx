@@ -279,24 +279,24 @@ export default function AnalysisPage() {
     () =>
       Object.keys(columnConfigs || []).map(
         (k) =>
-          ({
-            accessor: k,
-            sortType: !k.startsWith("date")
-              ? "alphanumeric"
-              : (a, b, column) => {
-                  const enforceDate = (d: Date | string | undefined) => {
-                    if (typeof d == "string") {
-                      return new Date(d);
-                    }
-                    return d;
-                  };
-                  const aDate = enforceDate(a.original[column])?.getTime() ?? 0;
-                  const bDate = enforceDate(b.original[column])?.getTime() ?? 0;
+        ({
+          accessor: k,
+          sortType: !k.startsWith("date")
+            ? "alphanumeric"
+            : (a, b, column) => {
+              const enforceDate = (d: Date | string | undefined) => {
+                if (typeof d == "string") {
+                  return new Date(d);
+                }
+                return d;
+              };
+              const aDate = enforceDate(a.original[column])?.getTime() ?? 0;
+              const bDate = enforceDate(b.original[column])?.getTime() ?? 0;
 
-                  return aDate - bDate;
-                },
-            Header: t(k),
-          } as Column<AnalysisResult>)
+              return aDate - bDate;
+            },
+          Header: t(k),
+        } as Column<AnalysisResult>)
       ),
     [columnConfigs, t]
   );
@@ -432,48 +432,16 @@ export default function AnalysisPage() {
         setApprovalFilters([]);
       }
 
-    
-      const left = recurseAndModify(ex.left);
-      const right = recurseAndModify(ex.right);
+      setRawSearchQuery((old) => {
+        const mergedExpression = recurseAndModify(old.expression);
+        // When deleting fields, it is sometimes left in an invalid state without the root operator. This adds it back in.
+        const newExpression: QueryExpression = mergedExpression && "left" in mergedExpression ? mergedExpression : { left: mergedExpression }
+        return {
+          expression: newExpression
+        }
+      });
 
-      if (!left && !right) {
-        return undefined;
-      } else if (!left) {
-        return right;
-      } else if (!right) {
-        return left;
-      } else {
-        return { ...ex, left, right };
-      }
-    };
-
-    // Also clear from prop filters
-    setPropFilters((prev) => {
-      const newFilters = { ...prev };
-      delete newFilters[field];
-      return newFilters;
-    });
-
-    // Also clear from range filters
-    setRangeFilters((prev) => {
-      const newFilters = { ...prev };
-      delete newFilters[field];
-      return newFilters;
-    });
-
-    if (field == "approval_status") {
-      setApprovalFilters([]);
-    }
-
-    setRawSearchQuery((old) => {
-      const mergedExpression = recurseAndModify(old.expression);
-      // When deleting fields, it is sometimes left in an invalid state without the root operator. This adds it back in.
-      const newExpression: QueryExpression = mergedExpression && "left" in mergedExpression ? mergedExpression : {left: mergedExpression}
-      return {
-        expression: newExpression
-      }
-    });
-  },[setPropFilters, setRangeFilters, setRawSearchQuery, setApprovalFilters]);
+    }, [setPropFilters, setRangeFilters, setRawSearchQuery, setApprovalFilters]);
 
   useEffect(() => {
     isLoadingRef.current = isLoadingNextPage;
@@ -570,11 +538,11 @@ export default function AnalysisPage() {
       const newExpression = q.clearAllFields
         ? q.expression
         : mergeFilters(
-            q.expression || {},
-            propFilters,
-            rangeFilters,
-            approvalFilters
-          );
+          q.expression || {},
+          propFilters,
+          rangeFilters,
+          approvalFilters
+        );
       if (
         checkExpressionEquality(newExpression, lastSearchQuery.expression) &&
         checkSortEquality(columnSort, prevColumnSort) &&
