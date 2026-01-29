@@ -20,9 +20,9 @@ function NavBar() {
       <NavLink to="/">
         <Button leftIcon={<EditIcon />}>{t("Analysis results")}</Button>
       </NavLink>
-      <NavLink to="/workspaces">
+      {/* <NavLink to="/workspaces">
         <Button leftIcon={<ViewIcon />}>{t("Workspaces")}</Button>
-      </NavLink>
+      </NavLink> */}
       <NavLink to="/clusters">
         <Button leftIcon={<HamburgerIcon />}>{t("Clusters")}</Button>
       </NavLink>
