@@ -73,6 +73,7 @@ import {
   checkSortEquality,
   recurseSearchTree,
 } from "./search/search-utils";
+import { useInView } from "react-intersection-observer";
 
 // When the fields in this array are 'approved', a given sequence is rendered
 // as 'approved' also.
@@ -404,6 +405,14 @@ export default function AnalysisPage() {
     }
   }, [isPending, dispatch, toast]);
 
+  const [ref,inView] = useInView({});
+  const prevInViewRef = useRef({inView: false});
+  useEffect(() => {
+    if (!inView) {
+      prevInViewRef.current.inView = false;
+    }
+  },[inView, prevInViewRef])
+
   const onSearch = React.useCallback(
     (q: SearchQuery, pageSize: number) => {
       const mergeFilters = (
@@ -443,15 +452,19 @@ export default function AnalysisPage() {
         }
       };
 
+      const forceUpdate = inView && !prevInViewRef.current.inView;
+
       const newExpression = q.clearAllFields
         ? q.expression
         : mergeFilters(q.expression || {}, propFilters, rangeFilters, approvalFilters);
       if (
+        !forceUpdate && 
         checkExpressionEquality(newExpression, lastSearchQuery.expression) &&
         checkSortEquality(columnSort, prevColumnSort)
       ) {
         return;
       }
+      prevInViewRef.current.inView = inView;
       setPrevColumnSort(columnSort);
 
       // Reset pagination state when starting a new search
@@ -506,7 +519,7 @@ export default function AnalysisPage() {
         );
       }
     },
-    [dispatch, propFilters, rangeFilters, lastSearchQuery, approvalFilters, columnSort, prevColumnSort, setPrevColumnSort]
+    [dispatch, propFilters, rangeFilters, lastSearchQuery, approvalFilters, columnSort, prevColumnSort, setPrevColumnSort, inView, prevInViewRef]
   );
 
   useEffect(() => {
@@ -952,7 +965,7 @@ export default function AnalysisPage() {
           </Box>
         </Flex>
       </Box>
-      <Box role="main" gridColumn="2 / 4" borderWidth="1px" rounded="md">
+      <Box role="main" gridColumn="2 / 4" borderWidth="1px" rounded="md" ref={ref}>
         <Flex m={2} alignItems="center">
           <Judgement<AnalysisResult>
             isNarrowed={pageState.isNarrowed}
