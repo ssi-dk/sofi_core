@@ -462,7 +462,7 @@ def get_filter_metadata(authorized_columns, institution, data_clearance):
 
 
 def rewrite_str_range_query(q: Dict[str,Any]):
-    for key in q.keys():
+    for key in list(q.keys()):
         v = q[key]
         # Must be a full range
         # Frontend parser can for some reason only use GTE and LTE. No need to support GT/LT
@@ -493,13 +493,30 @@ def rewrite_str_range_query(q: Dict[str,Any]):
             if gteNumber >= lteNumber:
                 # Irrelevant range. Simply skip
                 continue
-
-            if lteNumber - gteNumber > 10000:
-                # Far to big range. Ignore
-                continue
-
-            allowedValues = [prefix + str(index) for index in range(gteNumber,lteNumber+1)]
-            q[key] = {"$in": allowedValues}
+            
+            # First, remove all which are not the prefix + number
+            q[key] = {"$regex": "^" + prefix + "[0-9]+$"}
+            q["$expr"] = {
+                "$let": {
+                    "vars": {
+                        "value": {
+                            "$toInt": {
+                                "$replaceAll": {
+                                "input": "$run_id",
+                                "find": "N_WGS_",
+                                "replacement": ""
+                                }
+                            }
+                        }
+                    },
+                    "in": {
+                        "$and": [
+                            {"$gte": ["$$value",gteNumber]},
+                            {"$lte": ["$$value", lteNumber]}
+                        ]
+                    }
+                }
+            }
         except ValueError:
             # Failed to parse number. Simply skip
             continue
