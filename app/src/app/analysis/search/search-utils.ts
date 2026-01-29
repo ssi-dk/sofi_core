@@ -1,7 +1,7 @@
 import { Square } from "@chakra-ui/react";
 import {
   AnalysisResult,
-  ApprovalStatus,  
+  ApprovalStatus,
   AnalysisSorting,
   QueryExpression,
   QueryOperand,
@@ -240,13 +240,23 @@ export const displayOperandName = ({
   if (term) {
     return `${field}=${term}`;
   } else if (term_max && term_min) {
-    return `${new Date(term_min).toLocaleDateString()} < ${field} < ${new Date(
-      term_max
-    ).toLocaleDateString()}`;
+    const min_date = Date.parse(term_min);
+    const min_val = isNaN(min_date) ? term_min : new Date(term_min).toLocaleDateString()
+
+    const max_date = Date.parse(term_max);
+    const max_val = isNaN(max_date) ? term_max : new Date(term_max).toLocaleDateString()
+
+    return `${min_val} < ${field} < ${max_val}`;
   } else if (term_max) {
-    return `${field} < ${new Date(term_max).toLocaleDateString()}`;
+    const max_date = Date.parse(term_max);
+    const max_val = isNaN(max_date) ? term_max : new Date(term_max).toLocaleDateString()
+
+    return `${field} < ${max_val}`;
   } else if (term_min) {
-    return `${field} > ${new Date(term_min).toLocaleDateString()}`;
+    const min_date = Date.parse(term_min);
+    const min_val = isNaN(min_date) ? term_min : new Date(term_min).toLocaleDateString()
+
+    return `${field} > ${min_val}`;
   }
 };
 
