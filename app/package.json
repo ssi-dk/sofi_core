@@ -76,7 +76,7 @@
     "react-datepicker": "^3.3.0",
     "react-dom": "^16.13.1",
     "react-i18next": "^11.7.3",
-    "react-intersection-observer": "^10.0.2",
+    "react-intersection-observer": "8",
     "react-redux": "7.1.0",
     "react-router": "~5",
     "react-router-cache-route": "^1.11.0",

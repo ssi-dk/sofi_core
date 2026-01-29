@@ -240,23 +240,23 @@ export const displayOperandName = ({
   if (term) {
     return `${field}=${term}`;
   } else if (term_max && term_min) {
-    const min_date = Date.parse(term_min);
-    const min_val = isNaN(min_date) ? term_min : new Date(term_min).toLocaleDateString()
+    const minDate = Date.parse(term_min);
+    const minVal = isNaN(minDate) ? term_min : new Date(term_min).toLocaleDateString()
 
-    const max_date = Date.parse(term_max);
-    const max_val = isNaN(max_date) ? term_max : new Date(term_max).toLocaleDateString()
+    const maxDate = Date.parse(term_max);
+    const maxVal = isNaN(maxDate) ? term_max : new Date(term_max).toLocaleDateString()
 
-    return `${min_val} < ${field} < ${max_val}`;
+    return `${minVal} < ${field} < ${maxVal}`;
   } else if (term_max) {
-    const max_date = Date.parse(term_max);
-    const max_val = isNaN(max_date) ? term_max : new Date(term_max).toLocaleDateString()
+    const maxDate = Date.parse(term_max);
+    const maxVal = isNaN(maxDate) ? term_max : new Date(term_max).toLocaleDateString()
 
-    return `${field} < ${max_val}`;
+    return `${field} < ${maxVal}`;
   } else if (term_min) {
-    const min_date = Date.parse(term_min);
-    const min_val = isNaN(min_date) ? term_min : new Date(term_min).toLocaleDateString()
+    const minDate = Date.parse(term_min);
+    const minVal = isNaN(minDate) ? term_min : new Date(term_min).toLocaleDateString()
 
-    return `${field} > ${min_val}`;
+    return `${field} > ${minVal}`;
   }
 };
 
