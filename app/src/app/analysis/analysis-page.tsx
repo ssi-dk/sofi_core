@@ -1135,7 +1135,6 @@ export default function AnalysisPage() {
                   setWorkspace(null);
                 }}
               >
-                {" "}
                 Leave workspace
               </Button>
             )}

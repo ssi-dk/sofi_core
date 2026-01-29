@@ -55,6 +55,9 @@ export const WorkspaceMenu = (props: WorkspaceMenuProps) => {
   const dispatch = useDispatch();
 
   const [, leaveWs] = useMutation((workspaceId: string) => {
+    if (workspaceId === workspace.id) {
+      setWorkspace(null);
+    }
     return leaveWorkspace({
       workspaceId,
     });
