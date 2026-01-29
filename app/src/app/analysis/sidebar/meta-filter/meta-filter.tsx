@@ -277,7 +277,16 @@ function MetaFilter(props: MetaFilterProps) {
           newApprovalFilterState.push(v);
         }
       } else if (op.field && op.term) {
-        const usedFields = ["institution", "project_title", "project_number", "animal", "run_id", "isolate_id", "fud_no", "cluster_id"];
+        const usedFields = [
+          "institution",
+          "project_title",
+          "project_number",
+          "animal",
+          "run_id",
+          "isolate_id",
+          "fud_no",
+          "cluster_id",
+        ];
 
         if (usedFields.includes(op.field)) {
           if (!newPropFilterState[op.field]) {

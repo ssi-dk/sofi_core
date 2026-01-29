@@ -1,7 +1,4 @@
-import React, {
-  useEffect,
-  useState,
-} from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import {
   Flex,
@@ -10,10 +7,9 @@ import {
   MenuList,
   MenuButton,
   Input,
+  Checkbox
 } from "@chakra-ui/react";
-import {
-  Workspace,
-} from "sap-client";
+import { Workspace } from "sap-client";
 import {
   fetchWorkspaceTags,
   setWorkspaceTag,
@@ -57,7 +53,7 @@ export const TagsMenu = (props: TagsMenuProps) => {
 
   const displayTags = [...allTags]
     .filter(
-      (tag) => !searchStr || tag.toLowerCase().includes(searchStr.toLowerCase())
+      (tag) => !searchStr.trim() || tag.toLowerCase().includes(searchStr.trim().toLowerCase())
     )
     .sort(
       (a, b) =>
@@ -82,13 +78,13 @@ export const TagsMenu = (props: TagsMenuProps) => {
           variant="outline"
           placeholder="Search for, or create tags"
           onChange={(e) => setSearchStr(e.target.value)}
+          value={searchStr}
         />
         {displayTags.map((tag) => (
           <Flex key={tag} direction="row" style={{ margin: "0.3rem" }}>
-            <input
+            <Checkbox
               disabled={setTagState.isPending}
-              type="checkbox"
-              checked={workspace.tags.includes(tag)}
+              isChecked={workspace.tags.includes(tag)}
               onChange={() => {
                 setTag(tag, !workspace.tags.includes(tag));
               }}
@@ -105,7 +101,10 @@ export const TagsMenu = (props: TagsMenuProps) => {
             }}
           >
             <Button
-              onClick={() => setTag(searchStr.trim(), true)}
+              onClick={() => {
+                setTag(searchStr.trim(), true);
+                setSearchStr("");
+              }}
               disabled={
                 allTags.includes(searchStr.trim()) || setTagState.isPending
               }

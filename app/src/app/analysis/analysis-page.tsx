@@ -123,26 +123,22 @@ export default function AnalysisPage() {
       );
     }
   );
-  const [, addToWorkspace] = useMutation(
-    (workspaceId: string) => {
-      const samples = Object.values(selection).map((s) => s.original.id);
+  const [, addToWorkspace] = useMutation((workspaceId: string) => {
+    const samples = Object.values(selection).map((s) => s.original.id);
 
-      return updateWorkspace({
-        workspaceId,
-        updateWorkspace: { samples },
-      });
-    }
-  );
-  const [, removeFromWorkspace] = useMutation(
-    (workspaceId: string) => {
-      const samples = Object.values(selection).map((s) => s.original.id);
+    return updateWorkspace({
+      workspaceId,
+      updateWorkspace: { samples },
+    });
+  });
+  const [, removeFromWorkspace] = useMutation((workspaceId: string) => {
+    const samples = Object.values(selection).map((s) => s.original.id);
 
-      return removeWorkspaceSamples({
-        workspaceId,
-        updateWorkspace: { samples },
-      });
-    }
-  );
+    return removeWorkspaceSamples({
+      workspaceId,
+      updateWorkspace: { samples },
+    });
+  });
 
   useEffect(() => {
     if (workspace) {
@@ -279,24 +275,24 @@ export default function AnalysisPage() {
     () =>
       Object.keys(columnConfigs || []).map(
         (k) =>
-        ({
-          accessor: k,
-          sortType: !k.startsWith("date")
-            ? "alphanumeric"
-            : (a, b, column) => {
-              const enforceDate = (d: Date | string | undefined) => {
-                if (typeof d == "string") {
-                  return new Date(d);
-                }
-                return d;
-              };
-              const aDate = enforceDate(a.original[column])?.getTime() ?? 0;
-              const bDate = enforceDate(b.original[column])?.getTime() ?? 0;
+          ({
+            accessor: k,
+            sortType: !k.startsWith("date")
+              ? "alphanumeric"
+              : (a, b, column) => {
+                  const enforceDate = (d: Date | string | undefined) => {
+                    if (typeof d == "string") {
+                      return new Date(d);
+                    }
+                    return d;
+                  };
+                  const aDate = enforceDate(a.original[column])?.getTime() ?? 0;
+                  const bDate = enforceDate(b.original[column])?.getTime() ?? 0;
 
-              return aDate - bDate;
-            },
-          Header: t(k),
-        } as Column<AnalysisResult>)
+                  return aDate - bDate;
+                },
+            Header: t(k),
+          } as Column<AnalysisResult>)
       ),
     [columnConfigs, t]
   );
@@ -435,13 +431,17 @@ export default function AnalysisPage() {
       setRawSearchQuery((old) => {
         const mergedExpression = recurseAndModify(old.expression);
         // When deleting fields, it is sometimes left in an invalid state without the root operator. This adds it back in.
-        const newExpression: QueryExpression = mergedExpression && "left" in mergedExpression ? mergedExpression : { left: mergedExpression }
+        const newExpression: QueryExpression =
+          mergedExpression && "left" in mergedExpression
+            ? mergedExpression
+            : { left: mergedExpression };
         return {
-          expression: newExpression
-        }
+          expression: newExpression,
+        };
       });
-
-    }, [setPropFilters, setRangeFilters, setRawSearchQuery, setApprovalFilters]);
+    },
+    [setPropFilters, setRangeFilters, setRawSearchQuery, setApprovalFilters]
+  );
 
   useEffect(() => {
     isLoadingRef.current = isLoadingNextPage;
@@ -538,11 +538,11 @@ export default function AnalysisPage() {
       const newExpression = q.clearAllFields
         ? q.expression
         : mergeFilters(
-          q.expression || {},
-          propFilters,
-          rangeFilters,
-          approvalFilters
-        );
+            q.expression || {},
+            propFilters,
+            rangeFilters,
+            approvalFilters
+          );
       if (
         checkExpressionEquality(newExpression, lastSearchQuery.expression) &&
         checkSortEquality(columnSort, prevColumnSort) &&

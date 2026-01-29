@@ -312,13 +312,13 @@ export const searchWorkspaces = (params: WsSearchRequest) => {
 };
 
 export const joinWorkspace = (workspace: Workspace) => {
-  const base = joinWorkspaceApi({workspaceId: workspace.id});
+  const base = joinWorkspaceApi({ workspaceId: workspace.id });
   base.url = getUrl(base.url);
 
   base.update = {
     workspaces: (oldValue) => {
-        return [...oldValue,workspace]
-    }
-  }
+      return [...oldValue, workspace];
+    },
+  };
   return base;
-}
+};

@@ -47,10 +47,13 @@ export const SendToWorkspaceModal = (props: Props) => {
       const samples = Object.values(selection).map((s) => s.original.id);
       if (workspace === "-- New workspace") {
         setWorkspace(name);
-        return createWorkspace({
-          name,
-          samples,
-        }, user.institution);
+        return createWorkspace(
+          {
+            name,
+            samples,
+          },
+          user.institution
+        );
       }
       return updateWorkspace({
         workspaceId: workspace,

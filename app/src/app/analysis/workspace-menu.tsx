@@ -76,7 +76,7 @@ export const WorkspaceMenu = (props: WorkspaceMenuProps) => {
 
   const [, joinWs] = useMutation((workspaceToJoin: Workspace) => {
     return joinWorkspace(workspaceToJoin);
-  })
+  });
 
   const [searchStr, setSearchStr] = useState("");
 
