@@ -165,6 +165,21 @@ class TestWorkspacesController(BaseTestCase):
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
 
+    def test_join_workspace(self):
+        """Test case for join_workspace
+
+        
+        """
+        headers = { 
+            'Authorization': 'Bearer special-key',
+        }
+        response = self.client.open(
+            '/api/workspaces/{workspace_id}/join'.format(workspace_id='workspace_id_example'),
+            method='POST',
+            headers=headers)
+        self.assert200(response,
+                       'Response body is : ' + response.data.decode('utf-8'))
+
     def test_leave_workspace(self):
         """Test case for leave_workspace
 

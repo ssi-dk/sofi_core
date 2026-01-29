@@ -10,7 +10,6 @@ function stringToColor(str: string) {
 
 export const WsTag = (props: { tag: string }) => (
   <div
-    id={props.tag}
     style={{
       margin: "2px",
       padding: "2px",

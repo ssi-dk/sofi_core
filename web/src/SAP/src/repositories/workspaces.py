@@ -1,6 +1,7 @@
 import sys
 from typing import Any, Dict, List, TypedDict, Union
 from bson.objectid import ObjectId
+import flask
 from ...src.security.permission_check import authorized_columns
 from ...generated.models.update_workspace import UpdateWorkspace
 from ...src.repositories.analysis import (
@@ -283,11 +284,21 @@ def set_favorite(user: str, workspace_id: str, is_favorite: bool):
     return workspaces.update_one(filter, update)
 
 
-def search_workspaces(user:str,institution: str, search_sting, with_tags: List[str], without_tags: List[str]):
+def search_workspaces(user:str,institution: str, search_string, with_tags: List[str], without_tags: List[str]):
     workspaces = get_collection(WORKSPACES_COL_NAME)
 
     query = {
-        "name": {"$regex": search_sting},
+        "$or": [
+            {"name": {"$regex": search_string, "$options": "i"}},
+            {
+                "tags": {
+                    "$elemMatch": {
+                        "$regex": search_string,
+                        "$options": "i"
+                    }
+                }
+            }
+        ],
         "institution": institution,
         "tags": {"$nin": without_tags}
     }
@@ -333,3 +344,16 @@ def set_tag(user: str, workspace_id: str,tag: str, add_or_remove: bool):
         workspaces.update_one(query, {
             "$pull": {"tags": tag}
         })
+
+def join_workspace(user: str, institution: str, workspace_id: str):
+    workspaces = get_collection(WORKSPACES_COL_NAME)
+    result = workspaces.update_one({
+        "_id": ObjectId(workspace_id),
+        "institution": institution, # This should already be prevented since searching only returns workspaces in own institution, but just to be sure.
+    },{
+        "$addToSet": {
+            "members": user
+        }
+    })
+    if result.matched_count == 0:
+        flask.abort(404)

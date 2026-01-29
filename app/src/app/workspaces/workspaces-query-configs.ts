@@ -17,6 +17,10 @@ import {
   getTags as getTagsApi,
   setTag as setTagApi,
   SetTagRequest,
+  wsSearch as wsSearchApi,
+  WsSearchRequest,
+  joinWorkspace as joinWorkspaceApi,
+  JoinWorkspaceRequest,
 } from "sap-client";
 import {
   CreateWorkspace,
@@ -279,7 +283,9 @@ export const setWorkspaceTag = (params: SetTagRequest) => {
         }
         return {
           ...ws,
-          tags: addOrRemove ? [tag,...ws.tags] : ws.tags.filter(t => t !== tag),
+          tags: addOrRemove
+            ? [tag, ...ws.tags]
+            : ws.tags.filter((t) => t !== tag),
         };
       });
     },
@@ -288,3 +294,31 @@ export const setWorkspaceTag = (params: SetTagRequest) => {
   base.force = true;
   return base;
 };
+
+export const searchWorkspaces = (params: WsSearchRequest) => {
+  const base = wsSearchApi(params);
+  base.url = getUrl(base.url);
+
+  base.transform = (response: Array<Workspace>) => {
+    return {
+      wsSearch: response,
+    };
+  };
+  base.update = {
+    wsSearch: (_, newValue) => newValue,
+  };
+  base.force = true;
+  return base;
+};
+
+export const joinWorkspace = (workspace: Workspace) => {
+  const base = joinWorkspaceApi({workspaceId: workspace.id});
+  base.url = getUrl(base.url);
+
+  base.update = {
+    workspaces: (oldValue) => {
+        return [...oldValue,workspace]
+    }
+  }
+  return base;
+}

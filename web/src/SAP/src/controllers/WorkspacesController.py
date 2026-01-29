@@ -18,12 +18,12 @@ from ..repositories.workspaces import set_favorite as set_favorite_db
 from ..repositories.workspaces import search_workspaces as search_workspaces_db
 from ..repositories.workspaces import get_all_tags as get_all_tags_db
 from ..repositories.workspaces import set_tag as set_tag_db
+from ..repositories.workspaces import join_workspace as join_workspace_db
 
 
 from ..utils import validate_sample_ids
 
 def get_workspaces(user, token_info: Dict):
-    print("TOKEN",token_info,file=sys.stderr)
     return jsonify(get_workspaces_db(user,token_info["institution"]))
 
 def leave_workspace(user, token_info, workspace_id: str):
@@ -101,3 +101,7 @@ def get_tags(user,token_info):
 
 def set_tag(user,token_info,body):
     set_tag_db(user,body.workspace_id,body.tag,body.add_or_remove)
+
+
+def join_workspace(user,token_info,workspace_id):
+    join_workspace_db(user,token_info["institution"],workspace_id)

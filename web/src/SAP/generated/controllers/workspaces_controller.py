@@ -107,6 +107,18 @@ def get_workspaces(user, token_info):  # noqa: E501
     """
     return WorkspacesController.get_workspaces(user, token_info)
 
+def join_workspace(user, token_info, workspace_id):  # noqa: E501
+    """join_workspace
+
+    Join an existing workspace # noqa: E501
+
+    :param workspace_id: Id of workspace to join
+    :type workspace_id: str
+
+    :rtype: None
+    """
+    return WorkspacesController.join_workspace(user, token_info, workspace_id)
+
 def leave_workspace(user, token_info, workspace_id):  # noqa: E501
     """leave_workspace
 

@@ -161,6 +161,25 @@ paths:
       responses:
         '204':
           description: Workspace updated successfully.
+  
+  /workspaces/{workspace_id}/join:
+    post:
+      description: Join an existing workspace
+      operationId: join_workspace
+      tags:
+        - workspaces
+      x-openapi-router-controller: web.src.SAP.generated.controllers.workspaces_controller
+      parameters:
+        - name: workspace_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Id of workspace to join
+      responses:
+        '200':
+          description: Succesfully joined
+  
   /workspace/{workspace_id}/{sample_id}:
     delete:
       description: Delete sample from workspace

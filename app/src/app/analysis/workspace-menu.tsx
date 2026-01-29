@@ -1,58 +1,35 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
-
+import React, { useMemo, useState, useEffect, useRef } from "react";
+import { requestAsync } from "redux-query";
 import {
-  Box,
   Flex,
-  Editable,
-  EditablePreview,
-  EditableInput,
-  Skeleton,
-  useToast,
   Button,
   IconButton,
   Menu,
   MenuList,
   MenuButton,
-  MenuItem,
   Input,
-  InputProps,
 } from "@chakra-ui/react";
-import {
-  AnalysisResult,
-  AnalysisQuery,
-  ApprovalStatus,
-  UserInfo,
-  QueryExpression,
-  QueryOperator,
-  QueryOperand,
-  FilterOptions,
-  AnalysisSorting,
-  Workspace,
-} from "sap-client";
+import { AnalysisResult, Workspace } from "sap-client";
 import {
   HamburgerIcon,
   AddIcon,
-  EditIcon,
   DeleteIcon,
   CheckIcon,
   MinusIcon,
   NotAllowedIcon,
   StarIcon,
+  LinkIcon,
+  ChatIcon,
 } from "@chakra-ui/icons";
-import DataTable, {
-  ColumnReordering,
-  DataTableSelection,
-} from "./data-table/data-table";
+import { useDispatch, useSelector } from "react-redux";
+
+import { DataTableSelection } from "./data-table/data-table";
 import { useMutation } from "redux-query-react";
 import {
   setWorkspaceFavorite,
   leaveWorkspace,
+  searchWorkspaces,
+  joinWorkspace,
 } from "../workspaces/workspaces-query-configs";
 
 import { WsTag } from "./ws-tag";
@@ -76,6 +53,8 @@ export const WorkspaceMenu = (props: WorkspaceMenuProps) => {
     setWorkspace,
   } = props;
 
+  const dispatch = useDispatch();
+
   const [leaveWorkspaceState, leaveWs] = useMutation((workspaceId: string) => {
     return leaveWorkspace({
       workspaceId,
@@ -92,14 +71,57 @@ export const WorkspaceMenu = (props: WorkspaceMenuProps) => {
       });
     }
   );
+
+  const [joinWorkspaceState, joinWs] = useMutation((workspace: Workspace) => {
+    return joinWorkspace(workspace);
+  })
+
   const [searchStr, setSearchStr] = useState("");
+
+  const searchStrRef = useRef({ str: "" });
+
+  useEffect(() => {
+    if (searchStr) {
+      searchStrRef.current.str = searchStr;
+      const TIMEOUT = 250;
+      // We want to wait until the user is done writing. We only dispatch a request when is has not changed for {TIMEOUT} ms
+      setTimeout(() => {
+        if (searchStrRef.current.str === searchStr) {
+          // We wait {TIMEOUT} ms, then if the searchstring has not changed, do dispatch.
+          dispatch(
+            requestAsync(
+              searchWorkspaces({
+                workspaceSearchQuery: { searchString: searchStr },
+              })
+            )
+          );
+        }
+      }, TIMEOUT);
+    } else {
+    }
+  }, [searchStr, dispatch]);
+
+  const rawSearchRes = useSelector<RootState>((s) =>
+    Object.values(s.entities.wsSearch ?? [])
+  ) as Array<Workspace>;
 
   const displayWorkspaces = useMemo(
     () =>
       workspaces
-        .filter((w) => !searchStr || w.name.includes(searchStr))
+        .filter(
+          (w) =>
+            !searchStr ||
+            w.name.toLowerCase().includes(searchStr.toLowerCase()) ||
+            w.tags.find((t) =>
+              t.toLowerCase().includes(searchStr.toLowerCase())
+            )
+        )
         .sort((a, b) => Number(b.isFavorite) - Number(a.isFavorite)),
     [workspaces, searchStr]
+  );
+
+  const searchRes = rawSearchRes.filter(
+    (ws) => !workspaces.find((dws) => dws.id === ws.id)
   );
 
   return (
@@ -117,12 +139,17 @@ export const WorkspaceMenu = (props: WorkspaceMenuProps) => {
         style={{ maxHeight: "30rem", minWidth: "20rem", overflowY: "scroll" }}
       >
         <Input
-          style={{ width: "calc(100% - 1rem)",marginBottom: "0.5rem" }}
+          style={{ width: "calc(100% - 1rem)", marginBottom: "0.5rem" }}
           marginX={2}
           variant="outline"
           placeholder="Search for workspaces"
           onChange={(e) => setSearchStr(e.target.value)}
         />
+        {searchStr && displayWorkspaces.length && (
+          <h3 style={{ fontSize: "20px", marginLeft: "0.5rem" }}>
+            <b>My workspaces</b>
+          </h3>
+        )}
         {displayWorkspaces.map((w) => {
           const fullySelected = Object.values(selection)
             .map((sv) => sv.original.id)
@@ -179,7 +206,7 @@ export const WorkspaceMenu = (props: WorkspaceMenuProps) => {
                         style={{ maxWidth: "14rem" }}
                       >
                         {w.tags.map((tag) => (
-                          <WsTag tag={tag} />
+                          <WsTag key={tag} tag={tag} />
                         ))}
                       </Flex>
                     </Flex>
@@ -234,6 +261,44 @@ export const WorkspaceMenu = (props: WorkspaceMenuProps) => {
             </div>
           );
         })}
+
+        {searchStr && (
+          <h3 style={{ fontSize: "20px", marginLeft: "0.5rem" }}>
+            <b>Other workspaces</b>
+          </h3>
+        )}
+        {searchStr &&
+          searchRes.map((w) => (
+            <Flex direction="row" key={w.id}>
+              <Button
+                style={{
+                  flexGrow: 1,
+                  margin: "4px",
+                  padding: "4px",
+                  height: "fit-content",
+                  minHeight: "2.5rem",
+                }}
+                onClick={() => {
+                  if (confirm("Join workspace?")) {
+                    joinWs(w);
+                  }
+                }}
+              >
+                <Flex direction="column">
+                  {w.name}
+                  <Flex
+                    direction="row"
+                    wrap="wrap"
+                    style={{ maxWidth: "14rem" }}
+                  >
+                    {w.tags.map((tag) => (
+                      <WsTag key={tag} tag={tag} />
+                    ))}
+                  </Flex>
+                </Flex>
+              </Button>
+            </Flex>
+          ))}
       </MenuList>
     </Menu>
   );

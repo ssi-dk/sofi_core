@@ -66,6 +66,10 @@ export interface GetWorkspaceDataRequest {
     workspaceId: string;
 }
 
+export interface JoinWorkspaceRequest {
+    workspaceId: string;
+}
+
 export interface LeaveWorkspaceRequest {
     workspaceId: string;
 }
@@ -445,6 +449,52 @@ function getWorkspacesRaw<T>( requestConfig: runtime.TypedQueryConfig<T, Array<W
 */
 export function getWorkspaces<T>( requestConfig?: runtime.TypedQueryConfig<T, Array<Workspace>>): QueryConfig<T> {
     return getWorkspacesRaw( requestConfig);
+}
+
+/**
+ * Join an existing workspace
+ */
+function joinWorkspaceRaw<T>(requestParameters: JoinWorkspaceRequest, requestConfig: runtime.TypedQueryConfig<T, void> = {}): QueryConfig<T> {
+    if (requestParameters.workspaceId === null || requestParameters.workspaceId === undefined) {
+        throw new runtime.RequiredError('workspaceId','Required parameter requestParameters.workspaceId was null or undefined when calling joinWorkspace.');
+    }
+
+    let queryParameters = null;
+
+
+    const headerParameters : runtime.HttpHeaders = {};
+
+
+    const { meta = {} } = requestConfig;
+
+    meta.authType = ['bearer'];
+    const config: QueryConfig<T> = {
+        url: `${runtime.Configuration.basePath}/workspaces/{workspace_id}/join`.replace(`{${"workspace_id"}}`, encodeURIComponent(String(requestParameters.workspaceId))),
+        meta,
+        update: requestConfig.update,
+        queryKey: requestConfig.queryKey,
+        optimisticUpdate: requestConfig.optimisticUpdate,
+        force: requestConfig.force,
+        rollback: requestConfig.rollback,
+        options: {
+            method: 'POST',
+            headers: headerParameters,
+        },
+        body: queryParameters,
+    };
+
+    const { transform: requestTransform } = requestConfig;
+    if (requestTransform) {
+    }
+
+    return config;
+}
+
+/**
+* Join an existing workspace
+*/
+export function joinWorkspace<T>(requestParameters: JoinWorkspaceRequest, requestConfig?: runtime.TypedQueryConfig<T, void>): QueryConfig<T> {
+    return joinWorkspaceRaw(requestParameters, requestConfig);
 }
 
 /**

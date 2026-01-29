@@ -168,7 +168,11 @@ export default function AnalysisPage() {
       // Does not exist in temp workspaces, so null check is needed
       if (maybeUpdatedWorkspace) {
         // Check for equality in all fiels
-        if (Object.entries(maybeUpdatedWorkspace).find((key,value) => value !== workspace[key])) {
+        if (
+          Object.entries(maybeUpdatedWorkspace).find(
+            (key, value) => value !== workspace[key]
+          )
+        ) {
           setWorkspace(maybeUpdatedWorkspace);
         }
       }
