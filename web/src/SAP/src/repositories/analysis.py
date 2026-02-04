@@ -2,6 +2,7 @@
 from datetime import datetime
 import re
 from typing import Any, Dict, List, Optional
+import flask
 import pymongo
 import logging
 import json
@@ -461,9 +462,29 @@ def get_filter_metadata(authorized_columns, institution, data_clearance):
 
 
 
-def rewrite_str_range_query(q: Dict[str,Any]):
-    for key in list(q.keys()):
+def rewrite_str_range_query(q):
+
+    print("IN QUERY:",q,file=sys.stderr)
+
+    if not isinstance(q,Dict):
+        return q
+
+    conditions = []
+    for key in q.keys():
         v = q[key]
+
+
+        if key in ["$and","$or"]:
+            if not isinstance(v,List):
+                flask.abort(500)
+            conditions.append({
+                key: list(map(rewrite_str_range_query,v))
+            })
+            continue
+
+        # Initially add the query condition, then remove it later if it should be replaced
+        conditions.append({key: v})
+
         # Must be a full range
         # Frontend parser can for some reason only use GTE and LTE. No need to support GT/LT
         if "$gte" not in v or "$lte" not in v:
@@ -494,9 +515,12 @@ def rewrite_str_range_query(q: Dict[str,Any]):
                 # Irrelevant range. Simply skip
                 continue
             
+            # All the conditions for creating the range are fulfilled. Replace the old with the new
+            conditions.pop()
+            
             # First, remove all which are not the prefix + number
-            q[key] = {"$regex": "^" + prefix + "[0-9]+$"}
-            q["$expr"] = {
+            conditions.append({key: {"$regex": "^" + prefix + "[0-9]+$"}})
+            conditions.append({"$expr": {
                 "$let": {
                     "vars": {
                         "value": {
@@ -511,12 +535,16 @@ def rewrite_str_range_query(q: Dict[str,Any]):
                     },
                     "in": {
                         "$and": [
-                            {"$gte": ["$$value",gteNumber]},
+                            {"$gte": ["$$value", gteNumber]},
                             {"$lte": ["$$value", lteNumber]}
                         ]
                     }
                 }
-            }
+            }})
         except ValueError:
             # Failed to parse number. Simply skip
             continue
+    if len(conditions) > 1:
+        return {"$and": conditions}
+
+    return conditions[0]
