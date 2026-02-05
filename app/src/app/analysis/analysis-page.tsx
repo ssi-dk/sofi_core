@@ -264,7 +264,7 @@ export default function AnalysisPage() {
 
   const searchTerms = useMemo(() => {
     const current = new Set(data.flatMap(Object.keys));
-    prevSearchTerms = new Set(...prevSearchTerms, ...current);
+    prevSearchTerms = new Set([...prevSearchTerms, ...current]);
     return prevSearchTerms;
   }, [data]);
 
