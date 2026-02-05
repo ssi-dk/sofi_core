@@ -203,7 +203,7 @@ export default function AnalysisPage() {
     setDetailsIsolate(undefined);
   }, []);
 
-  const [pageSize, setPageSize] = useState(200);
+  const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
 
   const [columnLoadState] = useRequest(requestColumns());
 
@@ -258,7 +258,6 @@ export default function AnalysisPage() {
 
 
   useEffect(() => {
-
     if (selectAllOnLoadRef.current.value && isFinished) {
       dispatch(setSelection(Object.fromEntries(data.filter(row => row?.sequence_id).map(row => [row.sequence_id, { original: row, cells: {sequence_id: true} }]))));
       selectAllOnLoadRef.current.value = false;
@@ -537,7 +536,6 @@ export default function AnalysisPage() {
 
   const onSearch = React.useCallback(
     (q: SearchQuery, withPageSize: number) => {
-
       if (isPending) {
         return;
       }
