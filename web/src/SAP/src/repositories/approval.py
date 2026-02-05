@@ -117,4 +117,6 @@ def find_all_active_approvals():
     mydb = conn[DB_NAME]
     approvals = mydb[APPROVALS_COL_NAME]
 
-    return list(map(remove_id, approvals.find({"status": "submitted"})))
+    return list(map(remove_id, approvals.find({"status": "submitted"}).sort(
+                "timestamp", pymongo.DESCENDING
+            )))
