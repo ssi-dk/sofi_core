@@ -69,67 +69,87 @@ def coerce_term(term: str):
         return term
 
 
-def structure_wildcard(field, node):
+def structure_range_or_wildcard(field, node):
     if field in pii_columns():
         if field == "cpr_nr":   # because cpr is saved as a string in the DB, so don't convert even when consists of only digits
-            return node.term
-        return coerce_term(node.term)
+            return node.term, False
+        return coerce_term(node.term), False
     
     if node.term is not None:
         coerced = coerce_term(node.term)
         if isinstance(coerced, str):
-            return check_for_wildcard(field, coerced)
+            return check_for_wildcard(field, coerced), False
         elif isinstance(coerced, datetime):
-            return {"$gte": coerced.isoformat(), "$lte": (coerced + timedelta(days=1)).isoformat()}
+            return {"$gte": coerced.isoformat(), "$lte": (coerced + timedelta(days=1)).isoformat()}, False
         else:
-            return {"$in": [coerced, node.term]}
+            return {"$in": [coerced, node.term]}, False
     elif node.term_max is not None or node.term_min is not None:
         coerced_min = coerce_term(node.term_min)
         coerced_max = coerce_term(node.term_max)
 
-        # Force correct types. This will never fail but otherwise it complains
         if not ((coerced_max is None or isinstance(coerced_max,datetime)) and (coerced_min is None or isinstance(coerced_min,datetime))):
-            raise TypeError("Non-date values as term_min or term_max in search query.")
+            # If either value is not a date. It is likely a ID based range search.
+            return id_range_search(field,str(coerced_min),str(coerced_max)), True
 
         if coerced_max is None:
-            return {"$gte": coerced_min.isoformat()}  
+            return {"$gte": coerced_min.isoformat()}, False
         if coerced_min is None:
-            return {"$lte": coerced_max.isoformat()}
+            return {"$lte": coerced_max.isoformat()}, False
 
-        return {"$gte": coerced_min.isoformat(), "$lte": coerced_max.isoformat()}
-
-
-def structure_ranged(field, node):
-    min_op = "$gte" if node.inclusive == "left" or node.inclusive == "both" else "$gt"
-    max_op = "$lte" if node.inclusive == "right" or node.inclusive == "both" else "$lt"
-    
-    #if the hours, minutes and seconds are not in the search like this 2022-04-08T09:01:07 it is assumed that the entire day is intended to be included
-    #default with the specific time of day not specified it is as if they are 00, which would exclude all records from during that day, which is not the behavior we expect is wanted   
-    max_term = coerce_term(node.term_max)
-    if type(max_term) == datetime and max_op =="$lte" and max_term.hour == 0 and max_term.minute == 0 and max_term.second == 0:
-        max_term = max_term + timedelta(days = 1 ) - timedelta(seconds = 1)
-
-    if node.term_min == "*":
-        return {max_op: max_term}
-    if node.term_max == "*":
-        return {min_op: coerce_term(node.term_min)}
-    
-    return {min_op: coerce_term(node.term_min), max_op: max_term}
-
+        return {"$gte": coerced_min.isoformat(), "$lte": coerced_max.isoformat()}, False
+    raise ValueError("Invalid query. Leaf missing field or term.")
 
 def structure_leaf(node, is_negated):
     field = node.field if node.field != "<implicit>" else IMPLICIT_FIELD
-    dispatch = structure_wildcard
-    # presence of inclusivity denotes a range-based query
-    if node.inclusive:
-        dispatch = structure_ranged
-    res = dispatch(field, node)
-    print("leaf node:", res, file=sys.stderr, flush=True)
-    if is_negated:
-        return {field: {"$not": res}}
+    res,skipField = structure_range_or_wildcard(field, node)
+    if skipField:
+        return res
     else:
-        return {field: res}
+        if is_negated:
+            return {field: {"$not": res}}
+        else:
+            return {field: res}
+def id_range_search(field: str, min: str,max: str):
+    # Both non-number sections must be identical. 
+    # This ONLY works when the target number is at the end of the string. This is ideal since the prefix may contain irrelevant digits.
+    prefix = min.rstrip('0123456789')
+    if prefix != max.rstrip('0123456789'):
+        raise ValueError("ID prefixes do not match")
+    
+    # Both non-number sections are equal, next remove non-number part
+    minIndexStr = min[len(prefix):]
+    maxIndexStr = max[len(prefix):]
 
+    minNumber = int(minIndexStr)
+    maxNumber = int(maxIndexStr)
+
+    if minNumber > maxNumber:
+        raise ValueError("Min search ID is larger than max search ID")
+    
+    return {"$and": [
+        {field: {"$regex": "^" + prefix + "[0-9]+$"}},
+        {"$expr": {
+            "$let": {
+                "vars": {
+                    "value": {
+                        "$toInt": {
+                            "$replaceAll": {
+                            "input": "$"+field,
+                            "find": "N_WGS_",
+                            "replacement": ""
+                            }
+                        }
+                    }
+                },
+                "in": {
+                    "$and": [
+                        {"$gte": ["$$value", minNumber]},
+                        {"$lte": ["$$value", maxNumber]}
+                    ]
+                }
+            }
+        }}
+    ]}
 
 def is_negated_op(node):
     operator = node.operator
