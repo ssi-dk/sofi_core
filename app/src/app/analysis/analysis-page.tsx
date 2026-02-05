@@ -90,6 +90,7 @@ import { useInView } from "react-intersection-observer";
 // When the fields in this array are 'approved', a given sequence is rendered
 // as 'approved' also.
 const PRIMARY_APPROVAL_FIELDS = ["st_final", "qc_final"];
+const DEFAULT_PAGE_SIZE = 200;
 
 export type SearchQuery = AnalysisQuery & { clearAllFields?: boolean };
 
@@ -103,7 +104,7 @@ export default function AnalysisPage() {
   const user = useSelector<RootState>((s) => s.entities.user ?? {}) as UserInfo;
 
   const [workspace, setWorkspace] = useState<Workspace | null>(null);
-  const [workspacesQueryState] = useRequest(fetchWorkspaces());
+  useRequest(fetchWorkspaces());
 
   const workspaces = useSelector<RootState>((s) =>
     Object.values(s.entities.workspaces ?? {})
@@ -186,6 +187,15 @@ export default function AnalysisPage() {
     value: "",
   });
 
+  const queries = useSelector<RootState>((s) => s.queries);
+  const isPending = useMemo(() => {
+    // Find all analysis queries, check is any of them is pending. When no query is used, the key contains /api/analysis. 
+    // Otherwise the key is the request body.
+    return !!Object.entries(queries).find(([key, value]) => (key.includes("/api/analysis") || key.includes("expression")) && value.isPending);
+  }, [queries]);
+
+  const isFinished = !isPending;
+
   const [detailsIsolate, setDetailsIsolate] = useState<
     React.ComponentProps<typeof AnalysisDetailsModal>["isolate"]
   >();
@@ -193,12 +203,9 @@ export default function AnalysisPage() {
     setDetailsIsolate(undefined);
   }, []);
 
-  const PAGE_SIZE = 100;
+  const [pageSize, setPageSize] = useState(200);
 
   const [columnLoadState] = useRequest(requestColumns());
-  const [{ isPending, isFinished }] = useRequest({
-    ...requestPageOfAnalysis({ pageSize: PAGE_SIZE }, false),
-  });
 
   useRequest({ ...fetchApprovalMatrix() });
 
@@ -231,6 +238,33 @@ export default function AnalysisPage() {
   const data = React.useMemo(() => {
     return Object.values(rootStateData ?? {}) as AnalysisResult[];
   }, [rootStateData]);
+
+  const selectionDataIntersection = useMemo(() => Object.keys(selection).filter(s => data.find(d => d.sequence_id === s)).length, [selection, data]);
+
+  const selectAllOnLoadRef = useRef({ value: false, needsFetch: false });
+
+  const selectAll = useCallback(() => {
+    if (data.length < pageSize) {
+      dispatch(setSelection(
+        Object.fromEntries(data.filter(row => row?.sequence_id).map(row => [row.sequence_id, { original: row, cells: {sequence_id: true} }]))
+      ));
+    } else {
+      // Force loading all data
+      setPageSize(100000);
+      selectAllOnLoadRef.current.value = true;
+      selectAllOnLoadRef.current.needsFetch = true;
+    }
+  }, [setPageSize, dispatch, data, pageSize]);
+
+
+  useEffect(() => {
+
+    if (selectAllOnLoadRef.current.value && isFinished) {
+      dispatch(setSelection(Object.fromEntries(data.filter(row => row?.sequence_id).map(row => [row.sequence_id, { original: row, cells: {sequence_id: true} }]))));
+      selectAllOnLoadRef.current.value = false;
+      setPageSize(DEFAULT_PAGE_SIZE);
+    }
+  }, [data, selectAllOnLoadRef, dispatch, isFinished])
 
   const currentPagingToken = useSelector<RootState>(
     (s) => s.entities.analysisPagingToken
@@ -276,24 +310,24 @@ export default function AnalysisPage() {
     () =>
       Object.keys(columnConfigs || []).map(
         (k) =>
-          ({
-            accessor: k,
-            sortType: !k.startsWith("date")
-              ? "alphanumeric"
-              : (a, b, column) => {
-                  const enforceDate = (d: Date | string | undefined) => {
-                    if (typeof d == "string") {
-                      return new Date(d);
-                    }
-                    return d;
-                  };
-                  const aDate = enforceDate(a.original[column])?.getTime() ?? 0;
-                  const bDate = enforceDate(b.original[column])?.getTime() ?? 0;
+        ({
+          accessor: k,
+          sortType: !k.startsWith("date")
+            ? "alphanumeric"
+            : (a, b, column) => {
+              const enforceDate = (d: Date | string | undefined) => {
+                if (typeof d == "string") {
+                  return new Date(d);
+                }
+                return d;
+              };
+              const aDate = enforceDate(a.original[column])?.getTime() ?? 0;
+              const bDate = enforceDate(b.original[column])?.getTime() ?? 0;
 
-                  return aDate - bDate;
-                },
-            Header: t(k),
-          } as Column<AnalysisResult>)
+              return aDate - bDate;
+            },
+          Header: t(k),
+        } as Column<AnalysisResult>)
       ),
     [columnConfigs, t]
   );
@@ -493,16 +527,21 @@ export default function AnalysisPage() {
     }
   }, [isPending, dispatch, toast]);
 
-  const [ref,inView] = useInView({});
-  const prevInViewRef = useRef({inView: false});
+  const [ref, inView] = useInView({});
+  const prevInViewRef = useRef({ inView: false });
   useEffect(() => {
     if (!inView) {
       prevInViewRef.current.inView = false;
     }
-  },[inView, prevInViewRef])
+  }, [inView, prevInViewRef])
 
   const onSearch = React.useCallback(
-    (q: SearchQuery, pageSize: number) => {
+    (q: SearchQuery, withPageSize: number) => {
+
+      if (isPending) {
+        return;
+      }
+
       const mergeFilters = (
         searchExpression: QueryExpression,
         propFilter: PropFilter<AnalysisResult>,
@@ -544,18 +583,18 @@ export default function AnalysisPage() {
         }
       };
 
-      const forceUpdate = inView && !prevInViewRef.current.inView;
-
+      const forceUpdate = (inView && !prevInViewRef.current.inView) || selectAllOnLoadRef.current.needsFetch;
+      selectAllOnLoadRef.current.needsFetch = false;
       const newExpression = q.clearAllFields
         ? q.expression
         : mergeFilters(
-            q.expression || {},
-            propFilters,
-            rangeFilters,
-            approvalFilters
-          );
+          q.expression || {},
+          propFilters,
+          rangeFilters,
+          approvalFilters
+        );
       if (
-        !forceUpdate && 
+        !forceUpdate &&
         checkExpressionEquality(newExpression, lastSearchQuery.expression) &&
         checkSortEquality(columnSort, prevColumnSort) &&
         lastSearchWs === workspace
@@ -598,7 +637,7 @@ export default function AnalysisPage() {
           requestAsync({
             ...requestPageOfAnalysis(
               {
-                pageSize: pageSize,
+                pageSize: withPageSize,
                 sortingColumn: columnSort?.column,
                 sortingAscending: columnSort?.ascending,
               },
@@ -614,7 +653,7 @@ export default function AnalysisPage() {
                 query: {
                   analysis_sorting: columnSort,
                   expression: newExpression,
-                  page_size: pageSize,
+                  page_size: withPageSize,
                   workspace_id: searchingWithWs ? workspace.id : undefined,
                 },
               },
@@ -638,13 +677,15 @@ export default function AnalysisPage() {
       setLastSearchWs,
       lastSearchWs,
       inView,
-      prevInViewRef
+      prevInViewRef,
+      selectAllOnLoadRef,
+      isPending
     ]
   );
 
   useEffect(() => {
-    onSearch(rawSearchQuery, PAGE_SIZE);
-  }, [onSearch, rawSearchQuery]);
+    onSearch(rawSearchQuery, pageSize);
+  }, [onSearch, rawSearchQuery, pageSize]);
 
   const { hiddenColumns } = view;
 
@@ -1215,18 +1256,19 @@ export default function AnalysisPage() {
             onLoadNextPage={loadNextPage}
             hasMoreData={hasMoreData}
             isLoadingNextPage={isLoadingNextPage}
+            selectAll={selectAll}
           />
         </Box>
 
         <Box role="status" gridColumn="2 / 4" margin={2}>
-          {isPending && `${t("Fetching...")} ${data.length}`}
+          {isPending && `${t("Fetching...")}`}
           {isFinished &&
             !pageState.isNarrowed &&
             `${t("Showing")} ${displayData.length} ${t("of")} ${totalCount} ${t(
               "records"
             )}.`}
           {!pageState.isNarrowed && Object.keys(selection).length > 0
-            ? ` ${Object.keys(selection).length} selected. (${new Set(Object.keys(selection)).intersection(new Set(data.map(d => d.sequence_id))).size} in current search)`
+            ? ` ${Object.keys(selection).length} selected. (${selectionDataIntersection} in current search)`
             : null}
           {isFinished &&
             pageState.isNarrowed &&

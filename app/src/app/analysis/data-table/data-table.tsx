@@ -76,6 +76,7 @@ type DataTableProps<T extends NotEmpty> = {
   onLoadNextPage: () => void;
   hasMoreData: boolean;
   isLoadingNextPage: boolean;
+  selectAll: () => void;
 };
 
 function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
@@ -113,6 +114,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
     onLoadNextPage,
     hasMoreData,
     isLoadingNextPage,
+    selectAll,
   } = props;
 
   const isInSelection = React.useCallback(
@@ -412,18 +414,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
       if (col.id === "sequence_id") {
         if (selection && Object.keys(selection).length > 0) {
         } else {
-          // Select all rows, all approvable cells
-          incSel = rows
-            .map((r) => ({
-              [r.original[primaryKey]]: {
-                original: r.original,
-                cells: getAllApprovableCellsInSelection(
-                  r.original[primaryKey],
-                  visibleColumns
-                ),
-              },
-            }))
-            .reduce((acc, val) => ({ ...acc, ...val }), {});
+          selectAll();
         }
       } else {
         const sel = rows
@@ -461,8 +452,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
       getDependentColumns,
       onColumnResize,
       selection,
-      visibleColumns,
-      getAllApprovableCellsInSelection,
+      selectAll,
     ]
   );
 
