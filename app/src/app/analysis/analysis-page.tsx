@@ -1226,7 +1226,7 @@ export default function AnalysisPage() {
               "records"
             )}.`}
           {!pageState.isNarrowed && Object.keys(selection).length > 0
-            ? ` ${Object.keys(selection).length} selected.`
+            ? ` ${Object.keys(selection).length} selected. (${new Set(Object.keys(selection)).intersection(new Set(data.map(d => d.sequence_id))).size} in current search)`
             : null}
           {isFinished &&
             pageState.isNarrowed &&
