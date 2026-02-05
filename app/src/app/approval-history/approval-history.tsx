@@ -50,7 +50,7 @@ const StatusIcon = React.memo((props: StatusIconProps) => {
 
 export default function ApprovalHistory() {
   const [historyLoadState] = useRequest(fetchApprovals());
-  const [_, refetchApprovalMatrix] = useRequest({ ...fetchApprovalMatrix() });
+  const [, refetchApprovalMatrix] = useRequest({ ...fetchApprovalMatrix() });
 
   // TODO: Figure out how to make this strongly typed
   const approvalHistory = useSelector<RootState>((s) =>
@@ -79,7 +79,7 @@ export default function ApprovalHistory() {
     if (revocationLoadState.isFinished) {
       refetchApprovalMatrix();
     }
-  },[revocationLoadState])
+  },[revocationLoadState, refetchApprovalMatrix])
 
   const [needsNotify, setNeedsNotify] = useState(true);
   const [expandedRows, setExpandedRows] = useState<string[]>([]);
