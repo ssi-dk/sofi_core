@@ -1,0 +1,42 @@
+{
+    "$and": [
+        {
+            "run_id": {
+                "$regex": "^N_WGS_[0-9]+$"
+        }
+    },
+    {
+        "$expr": {
+            "$let": {
+                "vars": {
+                    "value": {
+                        "$toInt": {
+                            "$replaceAll": {
+                                "input": "$run_id",
+                                "find": "N_WGS_",
+                                "replacement": ""
+                            }
+                        }
+                    }
+                },
+                "in": {
+                    "$and": [
+                        {
+                            "$gte": [
+                                "$$value",
+                                0
+                            ]
+                        },
+                        {
+                            "$lte": [
+                                "$$value",
+                                1001
+                            ]
+                        }
+                    ]
+                }
+            }
+        }
+    }
+]
+}
