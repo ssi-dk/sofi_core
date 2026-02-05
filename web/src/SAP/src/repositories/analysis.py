@@ -114,6 +114,8 @@ def get_analysis_page(query, page_size, offset, columns, institution, data_clear
             "from": "sap_approvals",
             "let": { "seqId": "$sequence_id" },
             "pipeline": [
+                { "$match": {"status": "submitted"}},
+                { "$sort": { "timestamp": -1, }},
                 { "$project": { "status": 1, "matrixKeys": { "$objectToArray": "$matrix" } } },
                 { "$unwind": "$matrixKeys" },
                 { "$match": { "$expr": { "$eq": ["$matrixKeys.k", "$$seqId"] } } },
@@ -188,6 +190,8 @@ def get_analysis_count(query, institution, data_clearance,workspace_items: Optio
             "from": "sap_approvals",
             "let": { "seqId": "$sequence_id" },
             "pipeline": [
+                { "$match": {"status": "submitted"}},
+                { "$sort": { "timestamp": -1, }},
                 { "$project": { "status": 1, "matrixKeys": { "$objectToArray": "$matrix" } } },
                 { "$unwind": "$matrixKeys" },
                 { "$match": { "$expr": { "$eq": ["$matrixKeys.k", "$$seqId"] } } },

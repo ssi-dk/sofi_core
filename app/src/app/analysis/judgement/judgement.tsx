@@ -186,7 +186,7 @@ export const Judgement = <T extends NotEmpty>(props: Props<T>) => {
     const requiredValues = {};
     Object.keys(selection).forEach((key) => {
       matrix[key] = Object.fromEntries(
-        Object.entries(selection[key].cells).filter(([k, _]) =>
+        Object.entries(selection[key].original).filter(([k, _]) =>
           checkColumnIsVisible(k as keyof AnalysisResult)
         )
       );

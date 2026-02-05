@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Flex,
@@ -30,6 +30,7 @@ import { RootState } from "app/root-reducer";
 import {
   revokeApproval,
   fetchApprovals,
+  fetchApprovalMatrix,
 } from "app/analysis/analysis-approval-configs";
 import HalfHolyGrailLayout from "layouts/half-holy-grail";
 
@@ -49,6 +50,7 @@ const StatusIcon = React.memo((props: StatusIconProps) => {
 
 export default function ApprovalHistory() {
   const [historyLoadState] = useRequest(fetchApprovals());
+  const [_, refetchApprovalMatrix] = useRequest({ ...fetchApprovalMatrix() });
 
   // TODO: Figure out how to make this strongly typed
   const approvalHistory = useSelector<RootState>((s) =>
@@ -73,6 +75,11 @@ export default function ApprovalHistory() {
       });
     }
   );
+  useEffect(() => {
+    if (revocationLoadState.isFinished) {
+      refetchApprovalMatrix();
+    }
+  },[revocationLoadState])
 
   const [needsNotify, setNeedsNotify] = useState(true);
   const [expandedRows, setExpandedRows] = useState<string[]>([]);
