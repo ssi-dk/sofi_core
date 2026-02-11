@@ -23,6 +23,10 @@ import { StickyVariableSizeGrid } from "./sticky-variable-size-grid";
 import DataTableColumnHeader from "./data-table-column-header";
 import "./data-table.css";
 import "./data-table-cell-styles.css";
+import { useSelector } from "react-redux";
+import { RootState } from "app/root-reducer";
+import { ColumnSlice } from "../analysis-query-configs";
+import { AnalysisResult } from "sap-client";
 
 export type ColumnReordering =
   | {
@@ -114,6 +118,10 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
     hasMoreData,
     isLoadingNextPage,
   } = props;
+
+   const columnConfigs = useSelector<RootState>(
+      (s) => s.entities.columns
+    ) as ColumnSlice;
 
   const isInSelection = React.useCallback(
     (rowId, columnId) => {
@@ -506,6 +514,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
               onSelectColumn={onSelectColumn}
               onSort={setColumnSort}
               onResize={onColumnResize}
+              isEncrypted={columnConfigs[col.id as keyof AnalysisResult].pii}
             />
           </div>
         );
