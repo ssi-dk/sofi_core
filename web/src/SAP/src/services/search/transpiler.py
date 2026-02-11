@@ -135,7 +135,7 @@ def id_range_search(field: str, min: str,max: str):
                         "$toInt": {
                             "$replaceAll": {
                             "input": "$"+field,
-                            "find": "N_WGS_",
+                            "find": prefix,
                             "replacement": ""
                             }
                         }
