@@ -239,31 +239,6 @@ export default function AnalysisPage() {
     return Object.values(rootStateData ?? {}) as AnalysisResult[];
   }, [rootStateData]);
 
-  const selectionDataIntersection = useMemo(() => Object.keys(selection).filter(s => data.find(d => d.sequence_id === s)).length, [selection, data]);
-
-  const selectAllOnLoadRef = useRef({ value: false, needsFetch: false });
-
-  const selectAll = useCallback(() => {
-    if (data.length < pageSize) {
-      dispatch(setSelection(
-        Object.fromEntries(data.filter(row => row?.sequence_id).map(row => [row.sequence_id, { original: row, cells: {sequence_id: true} }]))
-      ));
-    } else {
-      // Force loading all data
-      setPageSize(100000);
-      selectAllOnLoadRef.current.value = true;
-      selectAllOnLoadRef.current.needsFetch = true;
-    }
-  }, [setPageSize, dispatch, data, pageSize]);
-
-
-  useEffect(() => {
-    if (selectAllOnLoadRef.current.value && isFinished) {
-      dispatch(setSelection(Object.fromEntries(data.filter(row => row?.sequence_id).map(row => [row.sequence_id, { original: row, cells: {sequence_id: true} }]))));
-      selectAllOnLoadRef.current.value = false;
-      setPageSize(DEFAULT_PAGE_SIZE);
-    }
-  }, [data, selectAllOnLoadRef, dispatch, isFinished])
 
   const currentPagingToken = useSelector<RootState>(
     (s) => s.entities.analysisPagingToken
@@ -330,6 +305,53 @@ export default function AnalysisPage() {
       ),
     [columnConfigs, t]
   );
+
+  const approvableColumns = React.useMemo(
+    () => [
+      ...new Set(
+        Object.values(columnConfigs || {})
+          .map((c) => c?.approves_with)
+          .reduce((a, b) => a.concat(b), [])
+          .concat(
+            Object.values(columnConfigs || {})
+              .filter((c) => c?.approvable)
+              .filter((c) => !c?.computed)
+              .map((c) => c?.field_name)
+          )
+          .filter((x) => x !== undefined)
+      ),
+    ],
+    [columnConfigs]
+  );
+
+  const selectionDataIntersection = useMemo(() => Object.keys(selection).filter(s => data.find(d => d.sequence_id === s)).length, [selection, data]);
+
+  const selectAllOnLoadRef = useRef({ value: false, needsFetch: false });
+
+  const selectAll = useCallback(() => {
+    if (data.length < pageSize) {
+      const cells = Object.fromEntries(approvableColumns.map(c => [c, true]))
+
+      dispatch(setSelection(
+        Object.fromEntries(data.filter(row => row?.sequence_id).map(row => [row.sequence_id, { original: row, cells }]))
+      ));
+    } else {
+      // Force loading all data
+      setPageSize(100000);
+      selectAllOnLoadRef.current.value = true;
+      selectAllOnLoadRef.current.needsFetch = true;
+    }
+  }, [setPageSize, dispatch, data, pageSize, approvableColumns]);
+
+
+  useEffect(() => {
+    if (selectAllOnLoadRef.current.value && isFinished) {
+      const cells = Object.fromEntries(approvableColumns.map(c => [c, true]))
+      dispatch(setSelection(Object.fromEntries(data.filter(row => row?.sequence_id).map(row => [row.sequence_id, { original: row, cells }]))));
+      selectAllOnLoadRef.current.value = false;
+      setPageSize(DEFAULT_PAGE_SIZE);
+    }
+  }, [data, selectAllOnLoadRef, dispatch, isFinished, approvableColumns])
 
   const [pageState, setPageState] = useState({ isNarrowed: false });
 
@@ -738,23 +760,6 @@ export default function AnalysisPage() {
     [columnConfigs]
   );
 
-  const approvableColumns = React.useMemo(
-    () => [
-      ...new Set(
-        Object.values(columnConfigs || {})
-          .map((c) => c?.approves_with)
-          .reduce((a, b) => a.concat(b), [])
-          .concat(
-            Object.values(columnConfigs || {})
-              .filter((c) => c?.approvable)
-              .filter((c) => !c?.computed)
-              .map((c) => c?.field_name)
-          )
-          .filter((x) => x !== undefined)
-      ),
-    ],
-    [columnConfigs]
-  );
 
   const isPrimaryApprovalColumn = React.useCallback(
     (columnName: string) => {
