@@ -598,6 +598,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
       renderCellControl,
       cellClickHandler,
       onSelect,
+      columnConfigs,
     ]
   );
 
