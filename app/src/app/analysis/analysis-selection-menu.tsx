@@ -30,14 +30,6 @@ export const AnalysisSelectionMenu = (props: Props) => {
     dispatch(clearSelection());
   }, [dispatch]);
 
-  const onSelectAllInView = useCallback(() => {
-    dispatch(selectAllInView(data));
-  }, [dispatch, data]);
-
-  const onSelectAll = useCallback(() => {
-    dispatch(selectAllThunk({ searchFunc: search, query: lastSearchQuery }));
-  }, [dispatch, lastSearchQuery, search]);
-
   const disabled = isNarrowed || Object.keys(selection).length == 0;
 
   return (
@@ -50,22 +42,6 @@ export const AnalysisSelectionMenu = (props: Props) => {
           <ResistanceMenuItem selection={selection} disabled={disabled} />
           <NearestNeighborMenuItem selection={selection} disabled={disabled} />
           {/* <SendToWorkspaceMenuItem selection={selection} disabled={disabled} /> */}
-          <MenuItem
-            aria-label="Select All In view"
-            title="SelectAllInView"
-            icon={<SmallAddIcon />}
-            onClick={onSelectAllInView}
-          >
-            Select All In View
-          </MenuItem>
-          <MenuItem
-            aria-label="Select All"
-            title="SelectAll"
-            icon={<SmallAddIcon />}
-            onClick={onSelectAll}
-          >
-            Select All
-          </MenuItem>
           <MenuItem
             aria-label="Clear Selection"
             title="Clear Selection"
