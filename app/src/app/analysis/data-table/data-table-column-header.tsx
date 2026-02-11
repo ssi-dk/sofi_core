@@ -6,10 +6,12 @@ import { Tooltip } from "@chakra-ui/react";
 import { columnStyle, headerButton, headerName } from "./data-table-styles";
 import { NotEmpty } from "utils";
 import SelectionCheckBox from "./selection-check-box";
+import { LockIcon } from "@chakra-ui/icons";
 
 type DataTableColumnHeaderProps<T extends NotEmpty> = {
   column: ColumnInstance<T>;
   columnIndex: number;
+  isEncrypted: boolean;
   calcColSelectionState: (
     column: Column<T>
   ) => { checked: boolean; indeterminate: boolean; visible?: boolean };
@@ -30,6 +32,7 @@ function DataTableColumnHeader<T extends NotEmpty>(
     onSelectColumn,
     onResize,
     onSort,
+    isEncrypted,
   } = props;
 
   const noop = React.useCallback(() => {}, []);
@@ -78,7 +81,7 @@ function DataTableColumnHeader<T extends NotEmpty>(
         )}
         <Tooltip placement="top" label={`Internal name: ${column.id}`}>
           <div>
-            <span css={headerName}>{column.render("Header")}</span>
+            <span css={headerName}>{column.render("Header")} {isEncrypted && <LockIcon />}</span>
           </div>
         </Tooltip>
         {onSort ? (
