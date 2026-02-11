@@ -981,7 +981,7 @@ export default function AnalysisPage() {
 
         if (editIsAllowed) {
           return (
-            <Box minWidth="100%" minHeight="100%">
+            <div style={{minWidth: "100%", minHeight: "100%"}}>
               <Editable
                 minW="100%"
                 minH="100%"
@@ -1013,7 +1013,7 @@ export default function AnalysisPage() {
                 )}
               </Editable>
               <hr />
-            </Box>
+            </div>
           );
         }
       }
