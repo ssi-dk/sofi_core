@@ -86,6 +86,7 @@ import {
 } from "./search/search-utils";
 import { WorkspaceMenu } from "./workspace-menu";
 import { useInView } from "react-intersection-observer";
+import { RenderCellControl } from "./data-table/renderCellControl";
 
 // When the fields in this array are 'approved', a given sequence is rendered
 // as 'approved' also.
@@ -276,24 +277,24 @@ export default function AnalysisPage() {
     () =>
       Object.keys(columnConfigs || []).map(
         (k) =>
-          ({
-            accessor: k,
-            sortType: !k.startsWith("date")
-              ? "alphanumeric"
-              : (a, b, column) => {
-                  const enforceDate = (d: Date | string | undefined) => {
-                    if (typeof d == "string") {
-                      return new Date(d);
-                    }
-                    return d;
-                  };
-                  const aDate = enforceDate(a.original[column])?.getTime() ?? 0;
-                  const bDate = enforceDate(b.original[column])?.getTime() ?? 0;
+        ({
+          accessor: k,
+          sortType: !k.startsWith("date")
+            ? "alphanumeric"
+            : (a, b, column) => {
+              const enforceDate = (d: Date | string | undefined) => {
+                if (typeof d == "string") {
+                  return new Date(d);
+                }
+                return d;
+              };
+              const aDate = enforceDate(a.original[column])?.getTime() ?? 0;
+              const bDate = enforceDate(b.original[column])?.getTime() ?? 0;
 
-                  return aDate - bDate;
-                },
-            Header: t(k),
-          } as Column<AnalysisResult>)
+              return aDate - bDate;
+            },
+          Header: t(k),
+        } as Column<AnalysisResult>)
       ),
     [columnConfigs, t]
   );
@@ -493,13 +494,13 @@ export default function AnalysisPage() {
     }
   }, [isPending, dispatch, toast]);
 
-  const [ref,inView] = useInView({});
-  const prevInViewRef = useRef({inView: false});
+  const [ref, inView] = useInView({});
+  const prevInViewRef = useRef({ inView: false });
   useEffect(() => {
     if (!inView) {
       prevInViewRef.current.inView = false;
     }
-  },[inView, prevInViewRef])
+  }, [inView, prevInViewRef])
 
   const onSearch = React.useCallback(
     (q: SearchQuery, pageSize: number) => {
@@ -549,13 +550,13 @@ export default function AnalysisPage() {
       const newExpression = q.clearAllFields
         ? q.expression
         : mergeFilters(
-            q.expression || {},
-            propFilters,
-            rangeFilters,
-            approvalFilters
-          );
+          q.expression || {},
+          propFilters,
+          rangeFilters,
+          approvalFilters
+        );
       if (
-        !forceUpdate && 
+        !forceUpdate &&
         checkExpressionEquality(newExpression, lastSearchQuery.expression) &&
         checkSortEquality(columnSort, prevColumnSort) &&
         lastSearchWs === workspace
@@ -895,129 +896,23 @@ export default function AnalysisPage() {
     [columnConfigs, submitChange]
   );
 
-  const renderCellControl = React.useCallback(
+  const renderCellControlCB = React.useCallback(
     (rowId: string, columnId: string, value: any) => {
-      if (cellUpdating(rowId, columnId)) {
-        return <Skeleton width="100px" height="20px" />;
-      }
-      const rowInstitution = displayData.find((row) => row.sequence_id == rowId)
-        .institution;
-      const editIsAllowed =
-        columnConfigs[columnId].editable ||
-        user.institution == rowInstitution ||
-        columnConfigs[columnId].cross_org_editable ||
-        user.data_clearance === "all";
-
-      if (value !== 0 && value !== false && !value && !editIsAllowed) {
-        return <div />;
-      }
-      let v = `${value}`;
-      if (v === "Invalid Date") {
-        return <div />;
-      }
-      // any other dates
-      else if (value instanceof Date) {
-        // Fancy libraries could be used, but this will do the trick just fine
-        v = value.toISOString().split("T")[0];
-      } else if (
-        (columnId.toLowerCase().startsWith("date") ||
-          columnId.toLowerCase().endsWith("date")) &&
-        value !== undefined
-      ) {
-        if (
-          typeof value?.getTime === "function" &&
-          !Number.isNaN(value?.getTime())
-        ) {
-          v = value?.toISOString()?.split("T")[0];
-        } else {
-          v = value?.split("T")[0];
-        }
-      } else if (typeof value === "object") {
-        v = `${JSON.stringify(value)}`;
-        if (columnId === "qc_failed_tests") {
-          v = (value as Array<AnalysisResultAllOfQcFailedTests>).reduce(
-            (acc, x) => {
-              if (acc !== "") {
-                acc += ", ";
-              }
-              acc += `${x.display_name}: ${x.reason}`;
-              return acc;
-            },
-            ""
-          );
-        }
-        if (columnId === "st_alleles") {
-          v = Object.entries(value).reduce((acc, [k, val]) => {
-            if (acc !== "") {
-              acc += ", ";
-            }
-            acc += `${k}: ${val}`;
-            return acc;
-          }, "");
-        }
-      }
-      // cannot edit cells that have already been approved
-      if (approvals?.[rowId]?.[columnId] !== ApprovalStatus.approved) {
-        if (columnId === "species_final") {
-          return (
-            <InlineAutoComplete
-              options={speciesOptions}
-              onChange={onAutocompleteEdit(rowId, columnId)}
-              defaultValue={v}
-              isLoading={rowUpdating(rowId)}
-            />
-          );
-        }
-        if (columnId === "serotype_final") {
-          return (
-            <InlineAutoComplete
-              options={serotypeOptions}
-              onChange={onAutocompleteEdit(rowId, columnId)}
-              defaultValue={v}
-              isLoading={rowUpdating(rowId)}
-            />
-          );
-        }
-
-        if (editIsAllowed) {
-          return (
-            <div style={{minWidth: "100%", minHeight: "100%"}}>
-              <Editable
-                minW="100%"
-                minH="100%"
-                defaultValue={value || value === 0 ? v : ""}
-                submitOnBlur={false}
-                onSubmit={onFreeTextEdit(rowId, columnId)}
-              >
-                <EditablePreview
-                  height="100%"
-                  minWidth="400px"
-                  minHeight="22px"
-                />
-                {columnConfigs[columnId].editable_format === "date" ? (
-                  <EditableInput
-                    pattern="\d{4}-\d{1,2}-\d{1,2}"
-                    title="Date in yyyy-mm-dd format"
-                    height="100%"
-                    minWidth="100%"
-                  />
-                ) : columnConfigs[columnId].editable_format === "number" ? (
-                  <EditableInput
-                    pattern="\d+"
-                    type="numeric"
-                    height="100%"
-                    width="100%"
-                  />
-                ) : (
-                  <EditableInput height="100%" width="100%" />
-                )}
-              </Editable>
-              <hr />
-            </div>
-          );
-        }
-      }
-      return <div>{`${v}`}</div>;
+      return <RenderCellControl
+        approvals={approvals}
+        cellUpdating={cellUpdating}
+        columnConfigs={columnConfigs}
+        columnId={columnId}
+        displayData={displayData}
+        onAutocompleteEdit={onAutocompleteEdit}
+        onFreeTextEdit={onFreeTextEdit}
+        rowId={rowId}
+        rowUpdating={rowUpdating}
+        serotypeOptions={serotypeOptions}
+        speciesOptions={speciesOptions}
+        user={user}
+        value={value}
+      />
     },
     [
       columnConfigs,
@@ -1205,7 +1100,7 @@ export default function AnalysisPage() {
             getCellStyle={getCellStyle}
             getStickyCellStyle={getStickyCellStyle}
             data={displayData}
-            renderCellControl={renderCellControl}
+            renderCellControl={renderCellControlCB}
             primaryKey="sequence_id"
             selectionClassName={pageState.isNarrowed ? "approvingCell" : ""}
             onSelect={onSelectCallback}

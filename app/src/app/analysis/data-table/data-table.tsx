@@ -26,11 +26,11 @@ import "./data-table-cell-styles.css";
 
 export type ColumnReordering =
   | {
-      sourceIdx: number;
-      destIdx: number;
-      targetId: string;
-      timestamp: number;
-    }
+    sourceIdx: number;
+    destIdx: number;
+    targetId: string;
+    timestamp: number;
+  }
   | undefined;
 
 export type DataTableSelection<T extends object> = Record<
@@ -487,8 +487,10 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
     [canApproveColumn, onSelectCell]
   );
 
+  
   const RenderCell = React.useCallback(
     ({ columnIndex, rowIndex, style }) => {
+      
       // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
       if (rowIndex === 0) {
         // we are the header 'row'
@@ -538,7 +540,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
           onClick={cellClickHandler(rowId, columnId)}
           key={columnIndex}
         >
-          <div style={{minWidth: "full", minHeight: "full", display: "flex"}}>
+          <div style={{ minWidth: "100%", minHeight: "100%", display: "flex" }}>
             {columnIndex === 0 && (
               <React.Fragment>
                 {onSelect ? (
