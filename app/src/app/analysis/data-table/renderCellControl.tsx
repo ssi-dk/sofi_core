@@ -44,10 +44,6 @@ export const RenderCellControl = (props: RenderCellControlProps) => {
     const inputRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
-        console.log("INPUT SET",value,inputRef.current)
-    },[inputRef.current])
-
-    useEffect(() => {
         if (isContainerFocus) {
             setTimeout(() => {
                 console.log("SETTING FOCUS TO:",value,inputRef.current)
@@ -56,9 +52,6 @@ export const RenderCellControl = (props: RenderCellControlProps) => {
             },500)
         }
     }, [isContainerFocus]);
-    useEffect(() => {
-        console.log("INPUT FOCUS CHANGED ",value, isInputFocus)
-    }, [isInputFocus])
 
     if (cellUpdating(rowId, columnId)) {
         return <Skeleton width="100px" height="20px" />;
@@ -156,8 +149,8 @@ export const RenderCellControl = (props: RenderCellControlProps) => {
                 onBlur={() => setIsContainerFocus(false)}
 
                 style={{ flexGrow: 1, minWidth: "100%", minHeight: "100%" }}>
-                {!isHover && <>{value || value === 0 ? v : ""}</>}
-                {isHover && <Editable
+                {!isEditing && <>{value || value === 0 ? v : ""}</>}
+                {isEditing && <Editable
                     minW="100%"
                     minH="100%"
                     defaultValue={value || value === 0 ? v : ""}
