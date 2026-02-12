@@ -156,7 +156,6 @@ export const RenderCellControl = (props: RenderCellControlProps) => {
                         height="100%"
                         minWidth="400px"
                         minHeight="22px"
-
                     />
                     {columnConfigs[columnId].editable_format === "date" ? (
                         <EditableInput
