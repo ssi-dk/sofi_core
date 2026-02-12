@@ -1,6 +1,6 @@
 //   const renderCellControl = React.useCallback(
 //     (rowId: string, columnId: string, value: any) => {
-import React, { useEffect, useRef } from "react";
+import React, { useCallback, useEffect, useRef } from "react";
 import { AnalysisResult, AnalysisResultAllOfQcFailedTests, ApprovalStatus, UserInfo } from "sap-client";
 import { ColumnSlice } from "../analysis-query-configs";
 import {
@@ -32,30 +32,34 @@ export type RenderCellControlProps = {
     user: UserInfo,
 }
 
+const global_editing_cb: Map<string, ((a: number) => void)[]> = new Map()
+
 export const RenderCellControl = (props: RenderCellControlProps) => {
     const { approvals, cellUpdating, columnConfigs, columnId, displayData, onAutocompleteEdit, onFreeTextEdit, rowId, rowUpdating, serotypeOptions, speciesOptions, user, value } = props;
 
-    const [isHover, setisHover] = useState(false);
-    const [isContainerFocus, setIsContainerFocus] = useState(false);
-    const [isInputFocus, setIsInputFocus] = useState(false);
-
-    const isEditing = isContainerFocus || isHover || isInputFocus;
-
-    const inputRef = useRef<HTMLInputElement>(null);
+    const [editReasonCount, setEditReasonCount] = useState(0);
 
     useEffect(() => {
-        if (isContainerFocus) {
-            setTimeout(() => {
-                console.log("SETTING FOCUS TO:",value,inputRef.current)
-                inputRef.current?.focus();
-                inputRef.current?.select();
-            },500)
+        if (global_editing_cb.has(rowId)) {
+            global_editing_cb.get(rowId).push(setEditReasonCount);
+        } else {
+            global_editing_cb.set(rowId,[setEditReasonCount])
         }
-    }, [isContainerFocus]);
+        return () => {
+            global_editing_cb.set(rowId, global_editing_cb.get(rowId).filter(cb => cb != setEditReasonCount))
+        }
+    },[setEditReasonCount])
 
-    if (cellUpdating(rowId, columnId)) {
-        return <Skeleton width="100px" height="20px" />;
-    }
+    const incrementEditReason = useCallback(() => {
+        global_editing_cb.get(rowId).forEach(cb => cb(editReasonCount+1))
+    },[editReasonCount])
+
+    
+    const decrementEditReason = useCallback(() => {
+        global_editing_cb.get(rowId).forEach(cb => cb(editReasonCount-1))
+    },[editReasonCount])
+
+    const isEditing = editReasonCount > 0;
 
     const rowInstitution = displayData.find((row) => row.sequence_id == rowId)
         .institution;
@@ -137,16 +141,9 @@ export const RenderCellControl = (props: RenderCellControlProps) => {
         }
 
         if (editIsAllowed) {
-            if (isEditing) {
-                console.log("RENDERING",value)
-            }
-
             return <div
-                tabIndex={0}
-                onMouseEnter={() => setisHover(true)}
-                onMouseLeave={() => setisHover(false)}
-                onFocus={() => setIsContainerFocus(true)}
-                onBlur={() => setIsContainerFocus(false)}
+                onMouseEnter={incrementEditReason}
+                onMouseLeave={decrementEditReason}
 
                 style={{ flexGrow: 1, minWidth: "100%", minHeight: "100%" }}>
                 {!isEditing && <>{value || value === 0 ? v : ""}</>}
@@ -156,37 +153,31 @@ export const RenderCellControl = (props: RenderCellControlProps) => {
                     defaultValue={value || value === 0 ? v : ""}
                     submitOnBlur={false}
                     onSubmit={onFreeTextEdit(rowId, columnId)}
+                    
                 >
                     <EditablePreview
                         height="100%"
                         minWidth="400px"
                         minHeight="22px"
+                        
                     />
                     {columnConfigs[columnId].editable_format === "date" ? (
                         <EditableInput
-                            onFocus={() => setIsInputFocus(true)}
-                            onBlur={() => setIsInputFocus(false)}
-                            ref={inputRef}
                             pattern="\d{4}-\d{1,2}-\d{1,2}"
                             title="Date in yyyy-mm-dd format"
                             height="100%"
                             minWidth="100%"
+                            
                         />
                     ) : columnConfigs[columnId].editable_format === "number" ? (
                         <EditableInput
-                            onFocus={() => setIsInputFocus(true)}
-                            onBlur={() => setIsInputFocus(false)}
-                            ref={inputRef}
                             pattern="\d+"
                             type="numeric"
                             height="100%"
                             width="100%"
                         />
                     ) : (
-                        <EditableInput height="100%" width="100%" 
-                            ref={inputRef} 
-                            onFocus={() => setIsInputFocus(true)}
-                            onBlur={() => setIsInputFocus(false)} />
+                        <EditableInput height="100%" width="100%"/>
                     )}
                 </Editable>}
             </div>;
