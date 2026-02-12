@@ -146,7 +146,7 @@ export const RenderCellControl = (props: RenderCellControlProps) => {
                 onMouseLeave={decrementEditReason}
 
                 style={{ flexGrow: 1, minWidth: "100%", minHeight: "100%" }}>
-                {!isEditing && <>{value || value === 0 ? v : ""}</>}
+                {!isEditing && <p style={{marginTop: "3px"}}>{value || value === 0 ? v : ""}</p>}
                 {isEditing && <Editable
                     minW="100%"
                     minH="100%"
