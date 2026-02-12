@@ -1,5 +1,3 @@
-//   const renderCellControl = React.useCallback(
-//     (rowId: string, columnId: string, value: any) => {
 import React, { useCallback, useEffect, useRef } from "react";
 import { AnalysisResult, AnalysisResultAllOfQcFailedTests, ApprovalStatus, UserInfo } from "sap-client";
 import { ColumnSlice } from "../analysis-query-configs";
@@ -44,21 +42,20 @@ export const RenderCellControl = (props: RenderCellControlProps) => {
         if (global_editing_cb.has(rowId)) {
             global_editing_cb.get(rowId).push(setEditReasonCount);
         } else {
-            global_editing_cb.set(rowId,[setEditReasonCount])
+            global_editing_cb.set(rowId, [setEditReasonCount])
         }
         return () => {
             global_editing_cb.set(rowId, global_editing_cb.get(rowId).filter(cb => cb != setEditReasonCount))
         }
-    },[setEditReasonCount])
+    }, [setEditReasonCount])
 
     const incrementEditReason = useCallback(() => {
-        global_editing_cb.get(rowId).forEach(cb => cb(editReasonCount+1))
-    },[editReasonCount])
+        global_editing_cb.get(rowId).forEach(cb => cb(editReasonCount + 1))
+    }, [editReasonCount])
 
-    
     const decrementEditReason = useCallback(() => {
-        global_editing_cb.get(rowId).forEach(cb => cb(editReasonCount-1))
-    },[editReasonCount])
+        global_editing_cb.get(rowId).forEach(cb => cb(editReasonCount - 1))
+    }, [editReasonCount])
 
     const isEditing = editReasonCount > 0;
 
@@ -147,20 +144,19 @@ export const RenderCellControl = (props: RenderCellControlProps) => {
                 onMouseLeave={decrementEditReason}
 
                 style={{ flexGrow: 1, minWidth: "100%", minHeight: "100%" }}>
-                {!isEditing && <p style={{marginTop: "3px"}}>{value || value === 0 ? v : ""}</p>}
+                {!isEditing && <p style={{ marginTop: "3px" }}>{value || value === 0 ? v : ""}</p>}
                 {isEditing && <Editable
                     minW="100%"
                     minH="100%"
                     defaultValue={value || value === 0 ? v : ""}
                     submitOnBlur={false}
                     onSubmit={onFreeTextEdit(rowId, columnId)}
-                    
                 >
                     <EditablePreview
                         height="100%"
                         minWidth="400px"
                         minHeight="22px"
-                        
+
                     />
                     {columnConfigs[columnId].editable_format === "date" ? (
                         <EditableInput
@@ -168,7 +164,6 @@ export const RenderCellControl = (props: RenderCellControlProps) => {
                             title="Date in yyyy-mm-dd format"
                             height="100%"
                             minWidth="100%"
-                            
                         />
                     ) : columnConfigs[columnId].editable_format === "number" ? (
                         <EditableInput
@@ -178,7 +173,7 @@ export const RenderCellControl = (props: RenderCellControlProps) => {
                             width="100%"
                         />
                     ) : (
-                        <EditableInput height="100%" width="100%"/>
+                        <EditableInput height="100%" width="100%" />
                     )}
                 </Editable>}
             </div>;

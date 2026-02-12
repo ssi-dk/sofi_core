@@ -487,10 +487,8 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
     [canApproveColumn, onSelectCell]
   );
 
-  
   const RenderCell = React.useCallback(
     ({ columnIndex, rowIndex, style }) => {
-      
       // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
       if (rowIndex === 0) {
         // we are the header 'row'
