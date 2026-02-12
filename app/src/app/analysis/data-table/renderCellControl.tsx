@@ -37,6 +37,7 @@ const global_editing_cb: Map<string, ((a: number) => void)[]> = new Map()
 export const RenderCellControl = (props: RenderCellControlProps) => {
     const { approvals, cellUpdating, columnConfigs, columnId, displayData, onAutocompleteEdit, onFreeTextEdit, rowId, rowUpdating, serotypeOptions, speciesOptions, user, value } = props;
 
+    // We need to keep a counter, not a boolean, since there is overlap when moving the mouse inside the row.
     const [editReasonCount, setEditReasonCount] = useState(0);
 
     useEffect(() => {
