@@ -12,7 +12,7 @@ import {
 } from "react-table";
 import { GridOnScrollProps, VariableSizeGrid } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
-import { Flex, IconButton } from "@chakra-ui/react";
+import { IconButton } from "@chakra-ui/react";
 import { ExternalLinkIcon } from "@chakra-ui/icons";
 import deepmerge from "lodash.merge";
 import { UserDefinedViewInternal } from "models";
@@ -26,11 +26,11 @@ import "./data-table-cell-styles.css";
 
 export type ColumnReordering =
   | {
-      sourceIdx: number;
-      destIdx: number;
-      targetId: string;
-      timestamp: number;
-    }
+    sourceIdx: number;
+    destIdx: number;
+    targetId: string;
+    timestamp: number;
+  }
   | undefined;
 
 export type DataTableSelection<T extends object> = Record<
@@ -538,7 +538,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
           onClick={cellClickHandler(rowId, columnId)}
           key={columnIndex}
         >
-          <Flex minWidth="full" minHeight="full">
+          <div style={{ minWidth: "100%", minHeight: "100%", display: "flex" }}>
             {columnIndex === 0 && (
               <React.Fragment>
                 {onSelect ? (
@@ -566,7 +566,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
               columnIndex,
               rows[rowIndex - 1].original
             )}
-          </Flex>
+          </div>
         </div>
       );
     },
