@@ -200,6 +200,7 @@ export function Workspace(props: Props) {
               onLoadNextPage={null}
               hasMoreData={false}
               isLoadingNextPage={false}
+              selectAll={() => {}}
             />
           </Box>
         </Box>
