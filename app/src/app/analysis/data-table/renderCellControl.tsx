@@ -30,7 +30,7 @@ export type RenderCellControlProps = {
     user: UserInfo,
 }
 
-const global_editing_cb: Map<string, ((a: number) => void)[]> = new Map()
+const GLOBAL_EDITING_CB: Map<string, ((a: number) => void)[]> = new Map()
 
 export const RenderCellControl = (props: RenderCellControlProps) => {
     const { approvals, cellUpdating, columnConfigs, columnId, displayData, onAutocompleteEdit, onFreeTextEdit, rowId, rowUpdating, serotypeOptions, speciesOptions, user, value } = props;
@@ -39,23 +39,23 @@ export const RenderCellControl = (props: RenderCellControlProps) => {
     const [editReasonCount, setEditReasonCount] = useState(0);
 
     useEffect(() => {
-        if (global_editing_cb.has(rowId)) {
-            global_editing_cb.get(rowId).push(setEditReasonCount);
+        if (GLOBAL_EDITING_CB.has(rowId)) {
+            GLOBAL_EDITING_CB.get(rowId).push(setEditReasonCount);
         } else {
-            global_editing_cb.set(rowId, [setEditReasonCount])
+            GLOBAL_EDITING_CB.set(rowId, [setEditReasonCount])
         }
         return () => {
-            global_editing_cb.set(rowId, global_editing_cb.get(rowId).filter(cb => cb != setEditReasonCount))
+            GLOBAL_EDITING_CB.set(rowId, GLOBAL_EDITING_CB.get(rowId).filter(cb => cb != setEditReasonCount))
         }
-    }, [setEditReasonCount])
+    }, [setEditReasonCount, rowId])
 
     const incrementEditReason = useCallback(() => {
-        global_editing_cb.get(rowId).forEach(cb => cb(editReasonCount + 1))
-    }, [editReasonCount])
+        GLOBAL_EDITING_CB.get(rowId).forEach(cb => cb(editReasonCount + 1))
+    }, [editReasonCount, rowId])
 
     const decrementEditReason = useCallback(() => {
-        global_editing_cb.get(rowId).forEach(cb => cb(editReasonCount - 1))
-    }, [editReasonCount])
+        GLOBAL_EDITING_CB.get(rowId).forEach(cb => cb(editReasonCount - 1))
+    }, [editReasonCount, rowId])
 
     const isEditing = editReasonCount > 0;
 
