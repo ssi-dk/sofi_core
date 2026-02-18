@@ -2,6 +2,7 @@
 from datetime import datetime
 import re
 from typing import Any, Dict, List, Optional
+import flask
 import pymongo
 import logging
 import json
@@ -458,48 +459,3 @@ def get_filter_metadata(authorized_columns, institution, data_clearance):
         metadata[k] = list(filter(lambda v: v is not None,metadata[k]))
 
     return metadata
-
-
-
-def rewrite_str_range_query(q: Dict[str,Any]):
-    for key in q.keys():
-        v = q[key]
-        # Must be a full range
-        # Frontend parser can for some reason only use GTE and LTE. No need to support GT/LT
-        if "$gte" not in v or "$lte" not in v:
-            continue
-        
-        # Both range limits MUST be strings
-        gteV = v["$gte"]
-        lteV = v["$lte"]
-        if not isinstance(gteV,str) or not isinstance(lteV,str):
-            continue
-
-        # Both non-number sections must be identical. 
-        # This ONLY works when the target number is at the end of the string. This is ideal since the prefix may contain irrelevant digits.
-        prefix = gteV.rstrip('0123456789')
-        if prefix != lteV.rstrip('0123456789'):
-            continue
-
-
-        # Both non-number sections are equal, next remove non-number part
-        gteIndexStr = gteV[len(prefix):]
-        lteIndexStr = lteV[len(prefix):]
-
-        
-        try:
-            gteNumber = int(gteIndexStr)
-            lteNumber = int(lteIndexStr)
-            if gteNumber >= lteNumber:
-                # Irrelevant range. Simply skip
-                continue
-
-            if lteNumber - gteNumber > 10000:
-                # Far to big range. Ignore
-                continue
-
-            allowedValues = [prefix + str(index) for index in range(gteNumber,lteNumber+1)]
-            q[key] = {"$in": allowedValues}
-        except ValueError:
-            # Failed to parse number. Simply skip
-            continue

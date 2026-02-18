@@ -62,7 +62,7 @@ const SearchHistoryMenu = (props: {
               icon={<SearchIcon />}
               ml="1"
               onClick={() =>
-                onSearchChange({ expression: s.query, clearAllFields: true })
+                onSearchChange({ expression: s.query, clearAllFields: false })
               }
               style={{ margin: "4px" }}
             />
