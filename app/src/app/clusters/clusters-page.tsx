@@ -15,6 +15,7 @@ import {
   Tr,
   Th,
   Td,
+  Checkbox,
 } from "@chakra-ui/react";
 import { AnalysisResult, Permission, QueryExpression } from "sap-client";
 import { useTranslation } from "react-i18next";
@@ -70,14 +71,16 @@ const displayValue = (key: string, v: any) => {
   return v.toString();
 };
 
-const ClusterTable = (props: { sequences: AnalysisResult[] }) => {
+const DEFAULT_DISPLAY_KEYS: (keyof AnalysisResult)[] = ["sequence_id", "isolate_id", "date_sample", "gender", "age", "kma", "travel_country", "product_type", "amr_profile", "comment_cluster"]
+
+const ClusterTable = (props: { sequences: AnalysisResult[], expand: boolean }) => {
   // To avoid user confusion we use a differently inner styled table
-  const { sequences } = props;
+  const { sequences, expand } = props;
 
   // Remove the headers where no sequences have values
-  const tableHeaders = [
+  const tableHeaders = expand ? [
     ...new Set(sequences.flatMap((r) => Object.keys(r).filter((k) => r[k]))),
-  ] as (keyof AnalysisResult)[];
+  ] as (keyof AnalysisResult)[] : DEFAULT_DISPLAY_KEYS;
 
   //Ensure sequence_id is first
   const index = tableHeaders.indexOf("sequence_id");
@@ -118,11 +121,13 @@ const ClusterTable = (props: { sequences: AnalysisResult[] }) => {
   );
 };
 
+
 export const Clusterspage = () => {
   const { t } = useTranslation();
   const toast = useToast();
 
   const [openClusters, setOpenClusters] = useState<string[]>([]);
+  const [expandClusters, setExpandClusters] = useState<string[]>([]);
 
   const [reqState] = useRequest({
     ...searchPageOfAnalysis({ query: { expression, page_size: 100 } }),
@@ -283,8 +288,16 @@ export const Clusterspage = () => {
                           </ul>
                         </>
                       )}
-                      {openClusters.find((c) => c == cluster_id) && (
-                        <ClusterTable sequences={sequences} />
+                      {openClusters.find((c) => c == cluster_id) && (<>
+                        <Flex direction="row" align="center">Expand: <Checkbox isChecked={expandClusters.includes(cluster_id)} marginLeft={3} style={{ border: "2px black", borderRadius: "5px" }} onChange={(e) => {
+                          if (e.currentTarget.checked) {
+                            setExpandClusters(old => [cluster_id, ...old]);
+                          } else {
+                            setExpandClusters(old => old.filter(cid => cid !== cluster_id));
+                          }
+                        }} /></Flex>
+                        <ClusterTable sequences={sequences} expand={expandClusters.includes(cluster_id)} />
+                      </>
                       )}
                     </Td>
                     <Td>
