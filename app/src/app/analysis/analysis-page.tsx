@@ -1162,7 +1162,7 @@ export default function AnalysisPage() {
           {isPending && `${t("Fetching...")}`}
           {isFinished &&
             !pageState.isNarrowed &&
-            `${t("Showing")} ${displayData.length} ${t("of")} ${totalCount} ${t(
+            `${t("Found")} ${totalCount} ${t(
               "records"
             )}.`}
           {!pageState.isNarrowed && Object.keys(selection).length > 0
