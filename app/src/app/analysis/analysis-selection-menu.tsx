@@ -7,8 +7,6 @@ import { Menu, MenuList, MenuButton, Button, MenuItem } from "@chakra-ui/react";
 import { useCallback } from "react";
 import {
   clearSelection,
-  selectAllInView,
-  selectAllThunk,
 } from "./analysis-selection-configs";
 import { useDispatch } from "react-redux";
 import { SendToWorkspaceMenuItem } from "app/workspaces/send-to-workspace-menu-item";
