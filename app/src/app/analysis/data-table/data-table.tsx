@@ -419,10 +419,14 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
     (col: Column<T>) => {
       const { checked, indeterminate } = calcColSelectionState(col);
       let incSel: DataTableSelection<T> = {};
+      let doIncSel = true;
       if (col.id === "sequence_id") {
         if (selection && Object.keys(selection).length > 0) {
         } else {
+          // This immediately selectes all if the data is ready. We dont want to redo the select all with an empty
+          // selection
           selectAll();
+          doIncSel = false;
         }
       } else {
         const sel = rows
@@ -448,7 +452,9 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
             });
         });
       }
-      onSelect(incSel);
+      if (doIncSel){
+        onSelect(incSel);
+      }
       onColumnResize(0);
     },
     [

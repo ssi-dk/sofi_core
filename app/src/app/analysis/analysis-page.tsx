@@ -330,33 +330,36 @@ export default function AnalysisPage() {
   const loadAllRef = useRef({ value: false, needsFetch: false,callbacks: [] as ((newData: AnalysisResult[]) => void)[] });
 
   const loadAllData = useCallback((cb: (newData: AnalysisResult[]) => void) => {
-    if (data.length < pageSize) {
+    if (data.length == totalCount) {
       // All data is present. Perform the callback immediately
+      console.log("ALL DATA PRESENT! ",data.length, totalCount);
       cb(data);
     } else {
       // Some data is missing. Save the callback and load the data
+      console.log("DATA IS MISSING!",data.length, "/",totalCount);
       loadAllRef.current.callbacks.push(cb);
       setPageSize(100000);
       loadAllRef.current.value = true;
       loadAllRef.current.needsFetch = true;
     }
-  }, [setPageSize, dispatch, data, pageSize, approvableColumns]);
+  }, [loadAllRef, setPageSize, data, totalCount]);
 
 
   const downloadAll = useCallback(() => {
     loadAllData((newData) => {
       downloadDataToCsv(newData, columns.map((x) => x.accessor) as any)
     });
-  }, [loadAllRef,loadAllData, columns])
+  }, [loadAllData, columns])
 
   const selectAll = useCallback(() => {
     loadAllData((newData) => {
+      console.log("SELETING ALL WITH:", newData);
       const cells = Object.fromEntries(approvableColumns.map(c => [c, true]))
       dispatch(setSelection(
         Object.fromEntries(newData.filter(row => row?.sequence_id).map(row => [row.sequence_id, { original: row, cells }]))
       ));
     });
-  },[loadAllRef, loadAllData, approvableColumns])
+  },[loadAllData, approvableColumns, dispatch])
 
   useEffect(() => {
     if (loadAllRef.current.value && isFinished) {
