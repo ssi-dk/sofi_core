@@ -10,13 +10,11 @@ type ExportButtonProps = {
   data: AnalysisResult[];
   columns: (keyof AnalysisResult)[];
   selection: DataTableSelection<AnalysisResult>;
+  onClickOverwrite: () => void | null
 };
 
-const ExportButton = (props: ExportButtonProps) => {
-  const { data, columns } = props;
-
-  const download = React.useCallback(() => {
-    const tableState = spyDataTable();
+export const downloadDataToCsv = (data: AnalysisResult[], columns: (keyof AnalysisResult)[]) => {
+  const tableState = spyDataTable();
     let columnsToExport = columns;
 
     if (tableState.columnOrder && tableState.columnOrder.length) {
@@ -30,6 +28,13 @@ const ExportButton = (props: ExportButtonProps) => {
 
     const tsv = convertToCsv<AnalysisResult>(data, columnsToExport, "\t");
     downloadFile(tsv, "sofi-export.tsv");
+}
+
+const ExportButton = (props: ExportButtonProps) => {
+  const { data, columns, onClickOverwrite } = props;
+
+  const downloadPropData = React.useCallback(() => {
+    downloadDataToCsv(data, columns);
   }, [columns, data]);
 
   return (
@@ -38,7 +43,7 @@ const ExportButton = (props: ExportButtonProps) => {
       icon={<DownloadIcon />}
       size="sm"
       ml="1"
-      onClick={download}
+      onClick={onClickOverwrite || downloadPropData}
     />
   );
 };
