@@ -329,12 +329,13 @@ export default function AnalysisPage() {
 
   const loadAllRef = useRef({ value: false, needsFetch: false,callbacks: [] as ((newData: AnalysisResult[]) => void)[] });
 
-  const loadAllData = useCallback(() => {
+  const loadAllData = useCallback((cb: (newData: AnalysisResult[]) => void) => {
     if (data.length < pageSize) {
-      loadAllRef.current.callbacks.forEach(cb => cb(data));
-      loadAllRef.current.callbacks = [];
+      // All data is present. Perform the callback immediately
+      cb(data);
     } else {
-      // Force loading all data
+      // Some data is missing. Save the callback and load the data
+      loadAllRef.current.callbacks.push(cb);
       setPageSize(100000);
       loadAllRef.current.value = true;
       loadAllRef.current.needsFetch = true;
@@ -343,20 +344,18 @@ export default function AnalysisPage() {
 
 
   const downloadAll = useCallback(() => {
-    loadAllRef.current.callbacks.push((newData) => {
+    loadAllData((newData) => {
       downloadDataToCsv(newData, columns.map((x) => x.accessor) as any)
-    })
-    loadAllData();
+    });
   }, [loadAllRef,loadAllData, columns])
 
   const selectAll = useCallback(() => {
-    loadAllRef.current.callbacks.push((newData) => {
+    loadAllData((newData) => {
       const cells = Object.fromEntries(approvableColumns.map(c => [c, true]))
       dispatch(setSelection(
         Object.fromEntries(newData.filter(row => row?.sequence_id).map(row => [row.sequence_id, { original: row, cells }]))
       ));
     });
-    loadAllData();
   },[loadAllRef, loadAllData, approvableColumns])
 
   useEffect(() => {
