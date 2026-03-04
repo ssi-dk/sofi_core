@@ -33,7 +33,6 @@ const initialState: SelectionState = {
 export const selectionReducer = createReducer(initialState, (builder) => {
   builder
     .addCase(setSelection, (state, action) => {
-      console.trace();
       state.selection = action.payload;
     })
     .addCase(updateSelectionOriginal, (state, action) => {
