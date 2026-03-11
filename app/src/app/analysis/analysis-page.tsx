@@ -1096,7 +1096,7 @@ export default function AnalysisPage() {
                 Leave workspace
               </Button>
             )}
-            {workspace && <SendToMicroreactButton workspace={workspace.id} />}
+            {workspace && workspace.id !== "temp-workspace" && <SendToMicroreactButton workspace={workspace.id} />}
             {workspace && workspace.id !== "temp-workspace" && (
               <TagsMenu workspace={workspace} />
             )}
