@@ -211,7 +211,7 @@ def get_analysis_page_bundle(
     count = res["count"][0]["count"] if res["count"] else 0
     md = res["filter_op"][0] if res["filter_op"] else {}
 
-    metadata = {
+    filter_options = {
         "institutions": md.get("institution", []),
         "project_titles": md.get("project_title", []),
         "project_numbers": md.get("project_number", []),
@@ -224,13 +224,13 @@ def get_analysis_page_bundle(
         "fud_numbers": md.get("fud_number",[])
     }
 
-    for k in metadata:
-        metadata[k] = list(filter(lambda v: v is not None, metadata[k]))
+    for k in filter_options:
+        filter_options[k] = list(filter(lambda v: v is not None, filter_options[k]))
 
     return {
         "items": res["items"],
         "count": count,
-        "filter_op": metadata,
+        "filter_op": filter_options,
     }
 
 
