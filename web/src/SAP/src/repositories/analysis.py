@@ -25,29 +25,61 @@ def remove_id(item):
     item.pop("_id", None)
     return item
 
-def get_analysis_page(query, page_size, offset, columns, institution, data_clearance, unique_sequences=True, sorting=None, workspace_items: Optional[List[str]] = None):
+def get_analysis_page_bundle(
+    query,
+    page_size,
+    offset,
+    columns,
+    institution,
+    data_clearance,
+    unique_sequences=True,
+    sorting=None,
+    workspace_items: Optional[List[str]] = None,
+):
     conn, encryption_client = get_connection(with_enc=True)
-
-
-    if sorting is not None:
-        sort_obj = {
-            sorting["column"]: pymongo.DESCENDING if sorting["ascending"] else pymongo.ASCENDING,  # For some reason, the frontend defines ascending=true as a decending ordering.
-            "_id": pymongo.DESCENDING 
-        }
-        sort_step = {"$sort": sort_obj}
-    else:
-        sort_step = {"$sort": {"_id": pymongo.DESCENDING}} if unique_sequences else None
-
+    mydb = conn[DB_NAME]
+    analysis = mydb[ANALYSIS_COL_NAME]
 
     q = encrypt_dict(encryption_client, query, pii_columns())
 
     if data_clearance == "own-institution":
         q["institution"] = institution
+
     column_projection = {x: 1 for x in columns}
-    column_projection["id"] = { "$toString": "$_id" }
-    mydb = conn[DB_NAME]
-    analysis = mydb[ANALYSIS_COL_NAME]
-    fetch_pipeline = [
+    column_projection["id"] = {"$toString": "$_id"}
+
+    auth_projection = {x: 1 for x in columns}
+    auth_projection["id"] = {"$toString": "$_id"}
+
+    if sorting is not None:
+        sort_obj = {
+            sorting["column"]: pymongo.DESCENDING
+            if sorting["ascending"]
+            else pymongo.ASCENDING,
+            "_id": pymongo.DESCENDING,
+        }
+    else:
+        sort_obj = {"_id": pymongo.DESCENDING}
+
+    distinct = [
+        "institution",
+        "project_title",
+        "project_number",
+        "animal",
+        "run_id",
+        "isolate_id",
+        "fud_no",
+        "cluster_id",
+        "qc_provided_species",
+        "serotype_final",
+        "st_final",
+    ]
+
+    distinct_group = {"_id": None}
+    for field in distinct:
+        distinct_group[field] = {"$addToSet": f"${field}"}
+
+    base_pipeline = [
         {
             "$lookup": {
                 "from": TBR_METADATA_COL_NAME,
@@ -60,9 +92,7 @@ def get_analysis_page(query, page_size, offset, columns, institution, data_clear
         # {"$match": {"metadata": {"$ne": []}}},
         {
             "$replaceRoot": {
-                "newRoot": {
-                    "$mergeObjects": [{"$arrayElemAt": ["$metadata", 0]}, "$$ROOT"]
-                }
+                "newRoot": {"$mergeObjects": [{"$arrayElemAt": ["$metadata", 0]}, "$$ROOT"]}
             }
         },
         {
@@ -75,9 +105,7 @@ def get_analysis_page(query, page_size, offset, columns, institution, data_clear
         },
         {
             "$replaceRoot": {
-                "newRoot": {
-                    "$mergeObjects": [{"$arrayElemAt": ["$metadata", 0]}, "$$ROOT"]
-                }
+                "newRoot": {"$mergeObjects": [{"$arrayElemAt": ["$metadata", 0]}, "$$ROOT"]}
             }
         },
         {
@@ -90,9 +118,7 @@ def get_analysis_page(query, page_size, offset, columns, institution, data_clear
         },
         {
             "$replaceRoot": {
-                "newRoot": {
-                    "$mergeObjects": [{"$arrayElemAt": ["$metadata", 0]}, "$$ROOT"]
-                }
+                "newRoot": {"$mergeObjects": [{"$arrayElemAt": ["$metadata", 0]}, "$$ROOT"]}
             }
         },
         {
@@ -102,140 +128,110 @@ def get_analysis_page(query, page_size, offset, columns, institution, data_clear
                 "foreignField": "project_number",
                 "as": "project_privacy",
             }
-        } if data_clearance == "cross-institution" else None,
+        }
+        if data_clearance == "cross-institution"
+        else None,
         {
             "$match": {
                 "$or": [
-                    {"project_privacy": {"$eq": []}},  # No privacy restrictions
-                    {"project_privacy.institution": institution}  # User has access to this institution
+                    {"project_privacy": {"$eq": []}},
+                    {"project_privacy.institution": institution},
                 ]
             }
-        } if data_clearance == "cross-institution" else None,
-        {"$lookup": {
-            "from": "sap_approvals",
-            "let": { "seqId": "$sequence_id" },
-            "pipeline": [
-                { "$match": {"status": "submitted"}},
-                { "$sort": { "timestamp": -1, }},
-                { "$project": { "status": 1, "matrixKeys": { "$objectToArray": "$matrix" } } },
-                { "$unwind": "$matrixKeys" },
-                { "$match": { "$expr": { "$eq": ["$matrixKeys.k", "$$seqId"] } } },
-                { "$limit": 1 }
-            ],
-            "as": "approval_info"
+        }
+        if data_clearance == "cross-institution"
+        else None,
+        {
+            "$lookup": {
+                "from": "sap_approvals",
+                "let": {"seqId": "$sequence_id"},
+                "pipeline": [
+                    {"$match": {"status": "submitted"}},
+                    {"$sort": {"timestamp": -1}},
+                    {"$project": {"status": 1, "matrixKeys": {"$objectToArray": "$matrix"}}},
+                    {"$unwind": "$matrixKeys"},
+                    {"$match": {"$expr": {"$eq": ["$matrixKeys.k", "$$seqId"]}}},
+                    {"$limit": 1},
+                ],
+                "as": "approval_info",
             }
         },
         {
             "$addFields": {
                 "approval_status": {
-                    "$ifNull": [{ "$arrayElemAt": ["$approval_info.matrixKeys.v.sequence_id", 0] }, "pending"]
+                    "$ifNull": [
+                        {"$arrayElemAt": ["$approval_info.matrixKeys.v.sequence_id", 0]},
+                        "pending",
+                    ]
                 }
             }
         },
-        {
-            "$project": {
-                "approval_info": 0
-            }
-        },
+        {"$project": {"approval_info": 0}},
         {"$match": q} if q else None,
         {"$sort": {"_id": pymongo.DESCENDING}},
         {
-            "$group": {
-            "_id": "$sequence_id",
-            "record": { "$first": "$$ROOT" }
-            }
-        } if unique_sequences else None,
-        { "$replaceRoot": { "newRoot": "$record" } } if unique_sequences else None,
-        {"$project": column_projection},
+            "$group": {"_id": "$sequence_id", "record": {"$first": "$$ROOT"}}
+        }
+        if unique_sequences
+        else None,
+        {"$replaceRoot": {"newRoot": "$record"}} if unique_sequences else None,
         {
-            "$match": {
-                "id": {"$in": workspace_items}
-            }
-        } if workspace_items else None,
-        sort_step,
-        {"$skip": offset},
-        {"$limit": (int(page_size))},
-        {"$unset": ["_id", "metadata"]},
+            "$match": {"_id": {"$in": workspace_items}}
+        }
+        if workspace_items
+        else None,
     ]
 
-    fetch_pipeline = list(filter(lambda x: x != None, fetch_pipeline))
+    base_pipeline = list(filter(lambda x: x is not None, base_pipeline))
 
-    # return list(map(remove_id, samples.find(query).sort('run_date',pymongo.DESCENDING).skip(offset).limit(int(page_size) + 2)))
-    # For now, there is no handing of missing metadata, so the full_analysis table is used. The above aggregate pipeline should work though.
-    return list(analysis.aggregate(fetch_pipeline))
-
-def get_analysis_count(query, institution, data_clearance,workspace_items: Optional[List[str]] = None):
-    conn, encryption_client = get_connection(with_enc=True)
-    mydb = conn[DB_NAME]
-    analysis = mydb[ANALYSIS_COL_NAME]
-    q = encrypt_dict(encryption_client, query, pii_columns())
-
-    fetch_pipeline = [
+    pipeline = base_pipeline + [
         {
-            "$lookup": {
-                "from": PROJECT_PRIVACY_COL_NAME,
-                "localField": "project_number",
-                "foreignField": "project_number",
-                "as": "project_privacy",
+            "$facet": {
+                "items": [
+                    {"$project": column_projection},
+                    {"$sort": sort_obj},
+                    {"$skip": offset},
+                    {"$limit": int(page_size)},
+                    {"$unset": ["_id", "metadata"]},
+                ],
+                "count": [
+                    {"$count": "count"}
+                ],
+                "filter_op": [
+                    {"$project": auth_projection},
+                    {"$group": distinct_group},
+                    {"$project": {"_id": 0}},
+                ],
             }
-        } if data_clearance == "cross-institution" else {"$match": {}},
-        {
-            "$match": {
-                "$or": [
-                    {"project_privacy": {"$eq": []}},  # No privacy restrictions
-                    {"project_privacy.institution": institution}  # User has access to this institution
-                ]
-            }
-        } if data_clearance == "cross-institution" else {"$match": {}},
-        {"$lookup": {
-            "from": "sap_approvals",
-            "let": { "seqId": "$sequence_id" },
-            "pipeline": [
-                { "$match": {"status": "submitted"}},
-                { "$sort": { "timestamp": -1, }},
-                { "$project": { "status": 1, "matrixKeys": { "$objectToArray": "$matrix" } } },
-                { "$unwind": "$matrixKeys" },
-                { "$match": { "$expr": { "$eq": ["$matrixKeys.k", "$$seqId"] } } },
-                { "$limit": 1 }
-            ],
-            "as": "approval_info"
-            }
-        },
-        {
-            "$addFields": {
-                "approval_status": {
-                    "$ifNull": [{ "$arrayElemAt": ["$approval_info.matrixKeys.v.sequence_id", 0] }, "pending"]
-                }
-            }
-        },
-        {
-            "$project": {
-                "approval_info": 0
-            }
-        },
-        {
-            "$match": {
-                "id": {"$in": workspace_items}
-            }
-        } if workspace_items else None,
-        { "$match": q } if q else None,
-        {
-            "$group": {
-                "_id": "$sequence_id",
-                "record": { "$first": "$sequence_id" }
-            }
-        },
-        { "$count": "record" },
-        { "$project": { "count": "$record"}}
+        }
     ]
 
-    fetch_pipeline = list(filter(lambda x: x != None, fetch_pipeline))
+    res = list(analysis.aggregate(pipeline))[0]
 
-    res = list(analysis.aggregate(fetch_pipeline))
-    if len(res) == 1:
-        return res[0]["count"]
-    else:
-        return 0
+    count = res["count"][0]["count"] if res["count"] else 0
+    md = res["filter_op"][0] if res["filter_op"] else {}
+
+    metadata = {
+        "institutions": md.get("institution", []),
+        "project_titles": md.get("project_title", []),
+        "project_numbers": md.get("project_number", []),
+        "run_ids": md.get("run_id", []),
+        "isolate_ids": md.get("isolate_id", []),
+        "cluster_ids": md.get("cluster_id", []),
+        "qc_provided_species": md.get("qc_provided_species", []),
+        "serotype_finals": md.get("serotype_final", []),
+        "st_finals": md.get("st_final", []),
+    }
+
+    for k in metadata:
+        metadata[k] = list(filter(lambda v: v is not None, metadata[k]))
+
+    return {
+        "items": res["items"],
+        "count": count,
+        "filter_op": metadata,
+    }
+
 
 def update_analysis(change):
     conn = get_connection()
@@ -328,138 +324,3 @@ def get_analysis_with_metadata(sequence_id: str) -> Dict[str, Any]:
         return res[0]
     else:
         return None
-
-def get_filter_metadata(authorized_columns, institution, data_clearance):
-    """
-    Get filter metadata without applying any query filters.
-    Returns min/max dates and distinct values for various fields.
-    """
-
-    distinct = ["institution","project_title","project_number","animal","run_id","isolate_id","fud_no","cluster_id","qc_provided_species","serotype_final","st_final"]
-    distinct_group = {"_id": None}
-
-    for field in distinct:
-        distinct_group[field] = {"$addToSet": f"${field}"}
-
-
-    conn, encryption_client = get_connection(with_enc=True)
-
-    q = encrypt_dict(encryption_client, {}, pii_columns())
-
-    if data_clearance == "own-institution":
-        q["institution"] = institution
-    column_projection = {x: 1 for x in authorized_columns}
-    column_projection["id"] = { "$toString": "$_id" }
-    mydb = conn[DB_NAME]
-    analysis = mydb[ANALYSIS_COL_NAME]
-    pipeline = [
-        {
-            "$lookup": {
-                "from": TBR_METADATA_COL_NAME,
-                "localField": "isolate_id",
-                "foreignField": "isolate_id",
-                "as": "metadata",
-            }
-        },
-        {
-            "$replaceRoot": {
-                "newRoot": {
-                    "$mergeObjects": [{"$arrayElemAt": ["$metadata", 0]}, "$$ROOT"]
-                }
-            }
-        },
-        {
-            "$lookup": {
-                "from": LIMS_METADATA_COL_NAME,
-                "localField": "isolate_id",
-                "foreignField": "isolate_id",
-                "as": "metadata",
-            }
-        },
-        {
-            "$replaceRoot": {
-                "newRoot": {
-                    "$mergeObjects": [{"$arrayElemAt": ["$metadata", 0]}, "$$ROOT"]
-                }
-            }
-        },
-        {
-            "$lookup": {
-                "from": MANUAL_METADATA_COL_NAME,
-                "localField": "isolate_id",
-                "foreignField": "isolate_id",
-                "as": "metadata",
-            }
-        },
-        {
-            "$replaceRoot": {
-                "newRoot": {
-                    "$mergeObjects": [{"$arrayElemAt": ["$metadata", 0]}, "$$ROOT"]
-                }
-            }
-        },
-        {
-            "$lookup": {
-                "from": PROJECT_PRIVACY_COL_NAME,
-                "localField": "project_number",
-                "foreignField": "project_number",
-                "as": "project_privacy",
-            }
-        } if data_clearance == "cross-institution" else {"$match": {}},
-        {
-            "$match": {
-                "$or": [
-                    {"project_privacy": {"$eq": []}},  # No privacy restrictions
-                    {"project_privacy.institution": institution}  # User has access to this institution
-                ]
-            }
-        } if data_clearance == "cross-institution" else {"$match": {}},
-        {"$lookup": {
-            "from": "sap_approvals",
-            "let": { "seqId": "$sequence_id" },
-            "pipeline": [
-                { "$project": { "status": 1, "matrixKeys": { "$objectToArray": "$matrix" } } },
-                { "$unwind": "$matrixKeys" },
-                { "$match": { "$expr": { "$eq": ["$matrixKeys.k", "$$seqId"] } } },
-                { "$limit": 1 }
-            ],
-            "as": "approval_info"
-            }
-        },
-        {
-            "$addFields": {
-                "approval_status": {
-                    "$ifNull": [{ "$arrayElemAt": ["$approval_info.matrixKeys.v.sequence_id", 0] }, "pending"]
-                }
-            }
-        },
-        {
-            "$project": {
-                "approval_info": 0
-            }
-        },
-        {"$match": q},
-        {"$project": column_projection},
-        {"$unset": ["_id", "metadata"]},
-        {"$group": distinct_group},
-        {"$project": {"_id": 0}}
-    ]
-
-    result = list(analysis.aggregate(pipeline))
-    distinct_values = result[0] if result else {}
-
-    metadata = {
-        "institutions": distinct_values["institution"],
-        "project_titles": distinct_values["project_title"],
-        "project_numbers": distinct_values["project_number"],
-        "run_ids": distinct_values["run_id"],
-        "isolate_ids": distinct_values["isolate_id"],
-        "cluster_ids": distinct_values["cluster_id"],
-        "qc_provided_species": distinct_values["qc_provided_species"],
-        "serotype_finals": distinct_values["serotype_final"],
-        "st_finals": distinct_values["st_final"]
-    }
-    for k in metadata.keys():
-        metadata[k] = list(filter(lambda v: v is not None,metadata[k]))
-
-    return metadata

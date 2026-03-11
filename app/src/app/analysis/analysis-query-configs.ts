@@ -159,6 +159,21 @@ export const searchPageOfAnalysis = (
     approvalMatrix: response.approval_matrix,
     autoPage: !appendMode, // Don't auto-page when appending
     appendMode: appendMode, // Include append mode in the state
+    filterOptions: response.filter_options || {
+      date_sample: { min: null, max: null },
+      date_received: { min: null, max: null },
+      institutions: [],
+      project_titles: [],
+      project_numbers: [],
+      animals: [],
+      run_ids: [],
+      isolate_ids: [],
+      fud_nos: [],
+      cluster_ids: [],
+      qc_provided_species: [],
+      serotype_finals: [],
+      st_finals: [],
+    },
     analysis: response.items
       ? arrayToNormalizedHashmap(
           response.items.map((a) => AnalysisResultFromJSON(a)),
@@ -177,6 +192,7 @@ export const searchPageOfAnalysis = (
       ...oldValue,
       ...newValue,
     }),
+    filterOptions: (_,newValue) => newValue,
     analysis: (oldValue, newValue) => {
       // Check if this is an append operation
       if (appendMode) {
