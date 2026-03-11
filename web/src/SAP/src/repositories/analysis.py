@@ -39,7 +39,7 @@ def get_analysis_page(query, page_size, offset, columns, institution, data_clear
         sort_step = {"$sort": {"_id": pymongo.DESCENDING}} if unique_sequences else None
 
 
-    q = encrypt_dict(encryption_client, query, pii_columns())
+    q = encrypt_dict(encryption_client, query or {}, pii_columns())
 
     if data_clearance == "own-institution":
         q["institution"] = institution
