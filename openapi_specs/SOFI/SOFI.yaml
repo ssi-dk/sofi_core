@@ -963,7 +963,7 @@ components:
           type: array
           items:
             type: string
-        fud_nos:
+        fud_numbers:
           type: array
           items:
             type: string

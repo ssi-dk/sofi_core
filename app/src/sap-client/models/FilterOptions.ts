@@ -77,7 +77,7 @@ export interface FilterOptions  {
      * @type {Array<string>}
      * @memberof FilterOptions
      */
-    fud_nos?: Array<string>;
+    fud_numbers?: Array<string>;
     /**
      * 
      * @type {Array<string>}
@@ -114,7 +114,7 @@ export function FilterOptionsFromJSON(json: any): FilterOptions {
         'animals': !exists(json, 'animals') ? undefined : json['animals'],
         'run_ids': !exists(json, 'run_ids') ? undefined : json['run_ids'],
         'isolate_ids': !exists(json, 'isolate_ids') ? undefined : json['isolate_ids'],
-        'fud_nos': !exists(json, 'fud_nos') ? undefined : json['fud_nos'],
+        'fud_numbers': !exists(json, 'fud_numbers') ? undefined : json['fud_numbers'],
         'cluster_ids': !exists(json, 'cluster_ids') ? undefined : json['cluster_ids'],
         'qc_provided_species': !exists(json, 'qc_provided_species') ? undefined : json['qc_provided_species'],
         'serotype_finals': !exists(json, 'serotype_finals') ? undefined : json['serotype_finals'],
@@ -135,7 +135,7 @@ export function FilterOptionsToJSON(value?: FilterOptions): any {
         'animals': value.animals,
         'run_ids': value.run_ids,
         'isolate_ids': value.isolate_ids,
-        'fud_nos': value.fud_nos,
+        'fud_numbers': value.fud_numbers,
         'cluster_ids': value.cluster_ids,
         'qc_provided_species': value.qc_provided_species,
         'serotype_finals': value.serotype_finals,

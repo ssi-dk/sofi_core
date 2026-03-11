@@ -176,17 +176,17 @@ function MetaFilter(props: MetaFilterProps) {
   );
   const cprOptions = React.useMemo(
     () =>
-      (filterOptions.fud_nos || [])
+      (filterOptions.fud_numbers || [])
         .filter(Boolean)
         .map((x) => ({ value: x, label: x })),
-    [filterOptions.fud_nos]
+    [filterOptions.fud_numbers]
   );
   const fudOptions = React.useMemo(
     () =>
-      (filterOptions.fud_nos || [])
+      (filterOptions.fud_numbers || [])
         .filter(Boolean)
         .map((x) => ({ value: x, label: x })),
-    [filterOptions.fud_nos]
+    [filterOptions.fud_numbers]
   );
   const clusterOptions = React.useMemo(
     () =>
@@ -284,7 +284,7 @@ function MetaFilter(props: MetaFilterProps) {
           "animal",
           "run_id",
           "isolate_id",
-          "fud_no",
+          "fud_number",
           "cluster_id",
         ];
 

@@ -981,9 +981,9 @@ components:
           project_titles:
           - project_titles
           - project_titles
-          fud_nos:
-          - fud_nos
-          - fud_nos
+          fud_numbers:
+          - fud_numbers
+          - fud_numbers
           serotype_finals:
           - serotype_finals
           - serotype_finals
@@ -1046,9 +1046,9 @@ components:
         project_titles:
         - project_titles
         - project_titles
-        fud_nos:
-        - fud_nos
-        - fud_nos
+        fud_numbers:
+        - fud_numbers
+        - fud_numbers
         serotype_finals:
         - serotype_finals
         - serotype_finals
@@ -1087,7 +1087,7 @@ components:
           items:
             type: string
           type: array
-        fud_nos:
+        fud_numbers:
           items:
             type: string
           type: array

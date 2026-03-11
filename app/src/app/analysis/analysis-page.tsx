@@ -223,7 +223,7 @@ export default function AnalysisPage() {
     animals: [],
     run_ids: [],
     isolate_ids: [],
-    fud_nos: [],
+    fud_numbers: [],
     cluster_ids: [],
     qc_provided_species: [],
     serotype_finals: [],

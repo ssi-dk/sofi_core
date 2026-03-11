@@ -68,7 +68,7 @@ def get_analysis_page_bundle(
         "animal",
         "run_id",
         "isolate_id",
-        "fud_no",
+        "fud_number",
         "cluster_id",
         "qc_provided_species",
         "serotype_final",
@@ -221,6 +221,7 @@ def get_analysis_page_bundle(
         "qc_provided_species": md.get("qc_provided_species", []),
         "serotype_finals": md.get("serotype_final", []),
         "st_finals": md.get("st_final", []),
+        "fud_numbers": md.get("fud_number",[])
     }
 
     for k in metadata:
