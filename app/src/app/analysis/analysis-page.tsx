@@ -106,6 +106,7 @@ export default function AnalysisPage() {
 
   const [workspace, setWorkspace] = useState<Workspace | null>(null);
   useRequest(fetchWorkspaces());
+  const [switchWsWhenReady,setSwitchWsWhenReady] = useState(false);
 
   const workspaces = useSelector<RootState>((s) =>
     Object.values(s.entities.workspaces ?? {})
@@ -114,15 +115,17 @@ export default function AnalysisPage() {
   const selection = useSelector<RootState>(
     (s) => s.selection.selection as DataTableSelection<AnalysisResult>
   ) as DataTableSelection<AnalysisResult>;
-
+  
   const [workspaceCreationState, sendToWorkspace] = useMutation(
     (name: string) => {
+      setSwitchWsWhenReady(true);
       return createWorkspace(
         {
           name,
           samples: workspace.samples,
         },
-        user.institution
+        user.institution,
+        user.userId!
       );
     }
   );
@@ -164,10 +167,11 @@ export default function AnalysisPage() {
   }, [workspaces, workspace]);
 
   useEffect(() => {
-    if (workspaceCreationState.status === 200) {
+    if (switchWsWhenReady && workspace && workspace.id == "temp-workspace" && workspaceCreationState.status === 200) {
       setWorkspace(workspaces[workspaces.length - 1]);
+      setSwitchWsWhenReady(false);
     }
-  }, [workspaceCreationState, workspaces]);
+  }, [switchWsWhenReady, setSwitchWsWhenReady, workspaceCreationState, workspaces, workspace]);
 
   const [currentPage, setCurrentPage] = useState(0);
   const [isLoadingNextPage, setIsLoadingNextPage] = useState(false);

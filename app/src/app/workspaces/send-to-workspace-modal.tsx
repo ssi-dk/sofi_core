@@ -52,7 +52,8 @@ export const SendToWorkspaceModal = (props: Props) => {
             name,
             samples,
           },
-          user.institution
+          user.institution,
+          user.userId!
         );
       }
       return updateWorkspace({

@@ -99,7 +99,7 @@ export const removeWorkspaceSample = (params: DeleteWorkspaceSampleRequest) => {
   return base;
 };
 
-export const createWorkspace = (params: CreateWorkspace, userInst: string) => {
+export const createWorkspace = (params: CreateWorkspace, userInst: string, userId: string) => {
   const base = createWorkspaceApi({ createWorkspace: params });
   base.url = getUrl(base.url);
 
@@ -115,6 +115,7 @@ export const createWorkspace = (params: CreateWorkspace, userInst: string) => {
           samples: params.samples,
           tags: [],
           institution: userInst,
+          members: [userId]
         },
       ],
     };

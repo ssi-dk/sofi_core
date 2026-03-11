@@ -1913,6 +1913,9 @@ components:
     Workspace:
       example:
         institution: institution
+        members:
+        - members
+        - members
         name: name
         id: id
         samples:
@@ -1936,6 +1939,11 @@ components:
           items:
             type: string
           title: Samples
+          type: array
+        members:
+          items:
+            type: string
+          title: Members
           type: array
         institution:
           type: string

@@ -41,7 +41,7 @@ export type WorkspaceMenuProps = {
   selection: DataTableSelection<AnalysisResult>;
   addToWorkspace: (id: string) => void;
   removeFromWorkspace: (id: string) => void;
-  setWorkspace: (w: Workspace) => void;
+  setWorkspace: (w: Workspace | null) => void;
 };
 
 export const WorkspaceMenu = (props: WorkspaceMenuProps) => {
