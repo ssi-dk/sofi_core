@@ -24,7 +24,7 @@ export const toggleColumnVisibility = createAction<string>(
 export const setDefaultView = createAction("view/defaultView");
 
 const initialState: SelectedViewState = {
-  view: defaultView,
+  view: JSON.parse(localStorage.getItem("view")) || defaultView,
 };
 
 export const viewReducer = createReducer(initialState, (builder) => {
@@ -38,14 +38,17 @@ export const viewReducer = createReducer(initialState, (builder) => {
       } else {
         state.view.hiddenColumns.push(action.payload);
       }
+      localStorage.setItem("view",JSON.stringify(state.view))
     })
     .addCase(
       setView,
       (state, action: { type: string; payload: UserDefinedViewInternal }) => {
         state.view = { ...action.payload };
+        localStorage.setItem("view",JSON.stringify(state.view))
       }
     )
     .addCase(setDefaultView, (state) => {
       state.view = { ...defaultView };
+      localStorage.setItem("view",JSON.stringify(state.view))
     });
 });
