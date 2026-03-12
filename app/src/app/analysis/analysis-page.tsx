@@ -69,7 +69,7 @@ import InlineAutoComplete from "../inputs/inline-autocomplete";
 import Species from "../data/species.json";
 import Serotypes from "../data/serotypes.json";
 import { AnalysisDetailsModal } from "./analysis-details/analysis-details-modal";
-import ExportButton from "./export/export-button";
+import ExportButton, { downloadDataToCsv } from "./export/export-button";
 import { ColumnConfigNode } from "./data-table/column-config-node";
 import { AnalysisResultAllOfQcFailedTests } from "sap-client/models/AnalysisResultAllOfQcFailedTests";
 import { Judgement } from "./judgement/judgement";
@@ -327,32 +327,46 @@ export default function AnalysisPage() {
 
   const selectionDataIntersection = useMemo(() => Object.keys(selection).filter(s => data.find(d => d.sequence_id === s)).length, [selection, data]);
 
-  const selectAllOnLoadRef = useRef({ value: false, needsFetch: false });
+  const loadAllRef = useRef({ value: false, needsFetch: false,callbacks: [] as ((newData: AnalysisResult[]) => void)[] });
+
+  const loadAllData = useCallback((cb: (newData: AnalysisResult[]) => void) => {
+    if (data.length == totalCount) {
+      // All data is present. Perform the callback immediately
+      cb(data);
+    } else {
+      // Some data is missing. Save the callback and load the data
+      loadAllRef.current.callbacks.push(cb);
+      setPageSize(100000);
+      loadAllRef.current.value = true;
+      loadAllRef.current.needsFetch = true;
+    }
+  }, [loadAllRef, setPageSize, data, totalCount]);
+
+
+  const downloadAll = useCallback(() => {
+    loadAllData((newData) => {
+      downloadDataToCsv(newData, columns.map((x) => x.accessor) as any)
+    });
+  }, [loadAllData, columns])
 
   const selectAll = useCallback(() => {
-    if (data.length < pageSize) {
+    loadAllData((newData) => {
       const cells = Object.fromEntries(approvableColumns.map(c => [c, true]))
-
       dispatch(setSelection(
-        Object.fromEntries(data.filter(row => row?.sequence_id).map(row => [row.sequence_id, { original: row, cells }]))
+        Object.fromEntries(newData.filter(row => row?.sequence_id).map(row => [row.sequence_id, { original: row, cells }]))
       ));
-    } else {
-      // Force loading all data
-      setPageSize(100000);
-      selectAllOnLoadRef.current.value = true;
-      selectAllOnLoadRef.current.needsFetch = true;
-    }
-  }, [setPageSize, dispatch, data, pageSize, approvableColumns]);
-
+    });
+  },[loadAllData, approvableColumns, dispatch])
 
   useEffect(() => {
-    if (selectAllOnLoadRef.current.value && isFinished) {
-      const cells = Object.fromEntries(approvableColumns.map(c => [c, true]))
-      dispatch(setSelection(Object.fromEntries(data.filter(row => row?.sequence_id).map(row => [row.sequence_id, { original: row, cells }]))));
-      selectAllOnLoadRef.current.value = false;
+    if (loadAllRef.current.value && isFinished) {
+      loadAllRef.current.callbacks.forEach(cb => cb(data));
+      loadAllRef.current.callbacks = [];
+
+      loadAllRef.current.value = false;
       setPageSize(DEFAULT_PAGE_SIZE);
     }
-  }, [data, selectAllOnLoadRef, dispatch, isFinished, approvableColumns])
+  }, [data, loadAllRef, isFinished])
 
   const [pageState, setPageState] = useState({ isNarrowed: false });
 
@@ -604,8 +618,8 @@ export default function AnalysisPage() {
         }
       };
 
-      const forceUpdate = (inView && !prevInViewRef.current.inView) || selectAllOnLoadRef.current.needsFetch;
-      selectAllOnLoadRef.current.needsFetch = false;
+      const forceUpdate = (inView && !prevInViewRef.current.inView) || loadAllRef.current.needsFetch;
+      loadAllRef.current.needsFetch = false;
       const newExpression = q.clearAllFields
         ? q.expression
         : mergeFilters(
@@ -699,7 +713,7 @@ export default function AnalysisPage() {
       lastSearchWs,
       inView,
       prevInViewRef,
-      selectAllOnLoadRef,
+      loadAllRef,
       isPending
     ]
   );
@@ -1122,6 +1136,7 @@ export default function AnalysisPage() {
               )}
             </ColumnConfigWidget>
             <ExportButton
+              onClickOverwrite={hasMoreData ? downloadAll : null}
               data={displayData}
               columns={columns.map((x) => x.accessor) as any}
               selection={selection}
