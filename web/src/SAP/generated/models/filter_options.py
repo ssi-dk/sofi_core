@@ -19,7 +19,7 @@ class FilterOptions(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, date_sample=None, date_received=None, institutions=None, project_titles=None, project_numbers=None, animals=None, run_ids=None, isolate_ids=None, fud_nos=None, cluster_ids=None, qc_provided_species=None, serotype_finals=None, st_finals=None):  # noqa: E501
+    def __init__(self, date_sample=None, date_received=None, institutions=None, project_titles=None, project_numbers=None, animals=None, run_ids=None, isolate_ids=None, fud_numbers=None, cluster_ids=None, qc_provided_species=None, serotype_finals=None, st_finals=None):  # noqa: E501
         """FilterOptions - a model defined in OpenAPI
 
         :param date_sample: The date_sample of this FilterOptions.  # noqa: E501
@@ -38,8 +38,8 @@ class FilterOptions(Model):
         :type run_ids: List[str]
         :param isolate_ids: The isolate_ids of this FilterOptions.  # noqa: E501
         :type isolate_ids: List[str]
-        :param fud_nos: The fud_nos of this FilterOptions.  # noqa: E501
-        :type fud_nos: List[str]
+        :param fud_numbers: The fud_numbers of this FilterOptions.  # noqa: E501
+        :type fud_numbers: List[str]
         :param cluster_ids: The cluster_ids of this FilterOptions.  # noqa: E501
         :type cluster_ids: List[str]
         :param qc_provided_species: The qc_provided_species of this FilterOptions.  # noqa: E501
@@ -58,7 +58,7 @@ class FilterOptions(Model):
             'animals': List[str],
             'run_ids': List[str],
             'isolate_ids': List[str],
-            'fud_nos': List[str],
+            'fud_numbers': List[str],
             'cluster_ids': List[str],
             'qc_provided_species': List[str],
             'serotype_finals': List[str],
@@ -74,7 +74,7 @@ class FilterOptions(Model):
             'animals': 'animals',
             'run_ids': 'run_ids',
             'isolate_ids': 'isolate_ids',
-            'fud_nos': 'fud_nos',
+            'fud_numbers': 'fud_numbers',
             'cluster_ids': 'cluster_ids',
             'qc_provided_species': 'qc_provided_species',
             'serotype_finals': 'serotype_finals',
@@ -89,7 +89,7 @@ class FilterOptions(Model):
         self._animals = animals
         self._run_ids = run_ids
         self._isolate_ids = isolate_ids
-        self._fud_nos = fud_nos
+        self._fud_numbers = fud_numbers
         self._cluster_ids = cluster_ids
         self._qc_provided_species = qc_provided_species
         self._serotype_finals = serotype_finals
@@ -275,25 +275,25 @@ class FilterOptions(Model):
         self._isolate_ids = isolate_ids
 
     @property
-    def fud_nos(self):
-        """Gets the fud_nos of this FilterOptions.
+    def fud_numbers(self):
+        """Gets the fud_numbers of this FilterOptions.
 
 
-        :return: The fud_nos of this FilterOptions.
+        :return: The fud_numbers of this FilterOptions.
         :rtype: List[str]
         """
-        return self._fud_nos
+        return self._fud_numbers
 
-    @fud_nos.setter
-    def fud_nos(self, fud_nos):
-        """Sets the fud_nos of this FilterOptions.
+    @fud_numbers.setter
+    def fud_numbers(self, fud_numbers):
+        """Sets the fud_numbers of this FilterOptions.
 
 
-        :param fud_nos: The fud_nos of this FilterOptions.
-        :type fud_nos: List[str]
+        :param fud_numbers: The fud_numbers of this FilterOptions.
+        :type fud_numbers: List[str]
         """
 
-        self._fud_nos = fud_nos
+        self._fud_numbers = fud_numbers
 
     @property
     def cluster_ids(self):

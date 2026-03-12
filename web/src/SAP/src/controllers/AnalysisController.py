@@ -12,12 +12,10 @@ from web.src.SAP.src.security.gdpr_logger import audit_query
 from ..repositories.workspaces import get_workspace_sequences as get_workspace_sequences_db
 from flask.json import jsonify
 from ..repositories.analysis import (
-    get_analysis_page,
-    get_analysis_count,
     get_analysis_with_metadata,
     update_analysis,
     get_single_analysis,
-    get_filter_metadata,
+    get_analysis_page_bundle
 )
 from web.src.SAP.src.security.permission_check import (
     assert_authorized_to_edit,
@@ -85,7 +83,7 @@ def get_sequence_by_id(user, token_info, sequence_id):
     return jsonify(row)
 
 def get_analysis_history(user, token_info, isolate_id):
-    items = get_analysis_page(
+    page_bundle = get_analysis_page_bundle(
         {"isolate_id": isolate_id},
         1000,
         0,
@@ -95,6 +93,7 @@ def get_analysis_history(user, token_info, isolate_id):
         False,
         workspace_items=None
     )
+    items = page_bundle["items"]
     response = {
         "items": items,
     }
@@ -115,24 +114,20 @@ def get_analysis(user, token_info, paging_token, page_size,sorting_column=None, 
     elif "analysis_sorting" in token:
         sorting = token["analysis_sorting"]
     
-    items = get_analysis_page(
+
+    db_res = get_analysis_page_bundle(
         token.get("query", {}),
         token["page_size"],
         token["offset"],
         authorized_columns(token_info),
         token_info["institution"],
         token_info["sofi-data-clearance"],
-        sorting=sorting,
-    )
+        sorting=sorting,)
 
 
-    count = get_analysis_count(token.get("query", {}), token_info["institution"], token_info["sofi-data-clearance"])
-
-    filter_metadata = get_filter_metadata(
-        authorized_columns(token_info),
-        token_info["institution"],
-        token_info["sofi-data-clearance"]
-    )
+    items = db_res["items"]
+    count = db_res["count"]
+    filter_options = db_res["filter_op"]
 
     new_token = (
         None
@@ -151,24 +146,24 @@ def get_analysis(user, token_info, paging_token, page_size,sorting_column=None, 
         "approval_matrix": {},
         "filter_options": {
             "date_sample": {
-                "min": filter_metadata.get("min_date_sample"),
-                "max": filter_metadata.get("max_date_sample")
+                "min": filter_options.get("min_date_sample"),
+                "max": filter_options.get("max_date_sample")
             },
             "date_received": {
-                "min": filter_metadata.get("min_date_received"),
-                "max": filter_metadata.get("max_date_received")
+                "min": filter_options.get("min_date_received"),
+                "max": filter_options.get("max_date_received")
             },
-            "institutions": filter_metadata.get("institutions", []),
-            "project_titles": filter_metadata.get("project_titles", []),
-            "project_numbers": filter_metadata.get("project_numbers", []),
-            "animals": filter_metadata.get("animals", []),
-            "run_ids": filter_metadata.get("run_ids", []),
-            "isolate_ids": filter_metadata.get("isolate_ids", []),
-            "fud_nos": filter_metadata.get("fud_nos", []),
-            "cluster_ids": filter_metadata.get("cluster_ids", []),
-            "qc_provided_species": filter_metadata.get("qc_provided_species", []),
-            "serotype_finals": filter_metadata.get("serotype_finals", []),
-            "st_finals": filter_metadata.get("st_finals", [])
+            "institutions": filter_options.get("institutions", []),
+            "project_titles": filter_options.get("project_titles", []),
+            "project_numbers": filter_options.get("project_numbers", []),
+            "animals": filter_options.get("animals", []),
+            "run_ids": filter_options.get("run_ids", []),
+            "isolate_ids": filter_options.get("isolate_ids", []),
+            "fud_numbers": filter_options.get("fud_numbers", []),
+            "cluster_ids": filter_options.get("cluster_ids", []),
+            "qc_provided_species": filter_options.get("qc_provided_species", []),
+            "serotype_finals": filter_options.get("serotype_finals", []),
+            "st_finals": filter_options.get("st_finals", [])
         }
     }
     audit_query(token_info, items)
@@ -194,7 +189,7 @@ def search_analysis(user, token_info, query: AnalysisQuery):
     default_token = {
         "page_size": query.page_size or 1000,
         "offset": 0,
-        "query": visitor.visit(query.expression)
+        "query": visitor.visit(query.expression or {})
         if not expr_empty
         else (query.filters if not None else {}),
         "analysis_sorting": {
@@ -207,7 +202,7 @@ def search_analysis(user, token_info, query: AnalysisQuery):
 
     token = parse_paging_token(query.paging_token) or default_token
 
-    items = get_analysis_page(
+    db_res = get_analysis_page_bundle(
         token["query"],
         token["page_size"],
         token["offset"],
@@ -218,7 +213,11 @@ def search_analysis(user, token_info, query: AnalysisQuery):
         workspace_items=workspace_items
     )
 
-    count = get_analysis_count(token["query"], token_info["institution"], token_info["sofi-data-clearance"],workspace_items=workspace_items)
+
+    items = db_res["items"]
+    count = db_res["count"]
+    filter_options = db_res["filter_op"]
+
     new_token = (
         None
         if len(items) < token["page_size"]
@@ -231,6 +230,27 @@ def search_analysis(user, token_info, query: AnalysisQuery):
         "paging_token": new_token,
         "total_count": count,
         "approval_matrix": {},
+        "filter_options": {
+            "date_sample": {
+                "min": filter_options.get("min_date_sample"),
+                "max": filter_options.get("max_date_sample")
+            },
+            "date_received": {
+                "min": filter_options.get("min_date_received"),
+                "max": filter_options.get("max_date_received")
+            },
+            "institutions": filter_options.get("institutions", []),
+            "project_titles": filter_options.get("project_titles", []),
+            "project_numbers": filter_options.get("project_numbers", []),
+            "animals": filter_options.get("animals", []),
+            "run_ids": filter_options.get("run_ids", []),
+            "isolate_ids": filter_options.get("isolate_ids", []),
+            "fud_numbers": filter_options.get("fud_numbers", []),
+            "cluster_ids": filter_options.get("cluster_ids", []),
+            "qc_provided_species": filter_options.get("qc_provided_species", []),
+            "serotype_finals": filter_options.get("serotype_finals", []),
+            "st_finals": filter_options.get("st_finals", [])
+        }
     }
     audit_query(token_info, items)
     return jsonify(response)
