@@ -18,7 +18,9 @@ import {
   MinusIcon,
   NotAllowedIcon,
   StarIcon,
+  Icon,
 } from "@chakra-ui/icons";
+
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "app/root-reducer";
 import { DataTableSelection } from "./data-table/data-table";
@@ -31,6 +33,7 @@ import {
 } from "../workspaces/workspaces-query-configs";
 
 import { WsTag } from "./ws-tag";
+import { LeaveIcon } from "./ws-leave-icon";
 
 export type WorkspaceMenuProps = {
   workspaces: Workspace[];
@@ -38,7 +41,7 @@ export type WorkspaceMenuProps = {
   selection: DataTableSelection<AnalysisResult>;
   addToWorkspace: (id: string) => void;
   removeFromWorkspace: (id: string) => void;
-  setWorkspace: (w: Workspace) => void;
+  setWorkspace: (w: Workspace | null) => void;
 };
 
 export const WorkspaceMenu = (props: WorkspaceMenuProps) => {
@@ -55,7 +58,7 @@ export const WorkspaceMenu = (props: WorkspaceMenuProps) => {
   const dispatch = useDispatch();
 
   const [, leaveWs] = useMutation((workspaceId: string) => {
-    if (workspaceId === workspace.id) {
+    if (workspace && workspaceId === workspace.id) {
       setWorkspace(null);
     }
     return leaveWorkspace({
@@ -75,7 +78,8 @@ export const WorkspaceMenu = (props: WorkspaceMenuProps) => {
   );
 
   const [, joinWs] = useMutation((workspaceToJoin: Workspace) => {
-    return joinWorkspace(workspaceToJoin);
+    const newWs = {...workspaceToJoin, members: [...workspaceToJoin.members, user.userId!]}
+    return joinWorkspace(newWs);
   });
 
   const [searchStr, setSearchStr] = useState("");
@@ -135,7 +139,7 @@ export const WorkspaceMenu = (props: WorkspaceMenuProps) => {
         as={Button}
         leftIcon={<HamburgerIcon />}
       >
-        Workspaces
+        {workspace ? workspace.name : "Workspaces"}
       </MenuButton>
       <MenuList
         style={{ maxHeight: "30rem", minWidth: "20rem", overflowY: "scroll" }}
@@ -147,7 +151,7 @@ export const WorkspaceMenu = (props: WorkspaceMenuProps) => {
           placeholder="Search for workspaces"
           onChange={(e) => setSearchStr(e.target.value)}
         />
-        {searchStr && displayWorkspaces.length && (
+        {searchStr && displayWorkspaces.length > 0 && (
           <h3 style={{ fontSize: "20px", marginLeft: "0.5rem" }}>
             <b>My workspaces</b>
           </h3>
@@ -201,7 +205,7 @@ export const WorkspaceMenu = (props: WorkspaceMenuProps) => {
                     }}
                   >
                     <Flex direction="column">
-                      {w.name}
+                      <span>{w.name} {w.members.length > 1 && `(${w.members.length} members)`}</span>
                       <Flex
                         direction="row"
                         wrap="wrap"
@@ -246,7 +250,7 @@ export const WorkspaceMenu = (props: WorkspaceMenuProps) => {
                   {/* <EditIcon margin={2} /> */}
                   <IconButton
                     aria-label="leave workspace"
-                    icon={<DeleteIcon />}
+                    icon={w.members.length > 1 ? <LeaveIcon /> : <DeleteIcon />}
                     margin={2}
                     onClick={() => {
                       if (
@@ -287,7 +291,7 @@ export const WorkspaceMenu = (props: WorkspaceMenuProps) => {
                 }}
               >
                 <Flex direction="column">
-                  {w.name}
+                  <span>{w.name} {w.members.length > 1 && `(${w.members.length} members)`}</span>
                   <Flex
                     direction="row"
                     wrap="wrap"

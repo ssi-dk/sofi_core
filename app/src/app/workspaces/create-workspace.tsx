@@ -17,7 +17,7 @@ export function CreateWorkspace() {
     createWorkspaceQueryState,
     createWorkspaceMutation,
   ] = useMutation((name: string) =>
-    createWorkspace({ name, samples: [] }, user.institution)
+    createWorkspace({ name, samples: [] }, user.institution, user.userId!)
   );
 
   const [needsNotify, setNeedsNotify] = useState(true);

@@ -1879,6 +1879,11 @@ components:
           items:
             type: string
           title: Samples
+        members:
+          type: array
+          items:
+            type: string
+          title: Members
         institution:
           type: string
         tags:

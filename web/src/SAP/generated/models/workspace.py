@@ -17,7 +17,7 @@ class Workspace(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, id=None, name=None, is_favorite=None, samples=None, institution=None, tags=None):  # noqa: E501
+    def __init__(self, id=None, name=None, is_favorite=None, samples=None, members=None, institution=None, tags=None):  # noqa: E501
         """Workspace - a model defined in OpenAPI
 
         :param id: The id of this Workspace.  # noqa: E501
@@ -28,6 +28,8 @@ class Workspace(Model):
         :type is_favorite: bool
         :param samples: The samples of this Workspace.  # noqa: E501
         :type samples: List[str]
+        :param members: The members of this Workspace.  # noqa: E501
+        :type members: List[str]
         :param institution: The institution of this Workspace.  # noqa: E501
         :type institution: str
         :param tags: The tags of this Workspace.  # noqa: E501
@@ -38,6 +40,7 @@ class Workspace(Model):
             'name': str,
             'is_favorite': bool,
             'samples': List[str],
+            'members': List[str],
             'institution': str,
             'tags': List[str],
         }
@@ -47,6 +50,7 @@ class Workspace(Model):
             'name': 'name',
             'is_favorite': 'isFavorite',
             'samples': 'samples',
+            'members': 'members',
             'institution': 'institution',
             'tags': 'tags',
         }
@@ -55,6 +59,7 @@ class Workspace(Model):
         self._name = name
         self._is_favorite = is_favorite
         self._samples = samples
+        self._members = members
         self._institution = institution
         self._tags = tags
 
@@ -156,6 +161,27 @@ class Workspace(Model):
         """
 
         self._samples = samples
+
+    @property
+    def members(self):
+        """Gets the members of this Workspace.
+
+
+        :return: The members of this Workspace.
+        :rtype: List[str]
+        """
+        return self._members
+
+    @members.setter
+    def members(self, members):
+        """Sets the members of this Workspace.
+
+
+        :param members: The members of this Workspace.
+        :type members: List[str]
+        """
+
+        self._members = members
 
     @property
     def institution(self):
