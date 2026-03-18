@@ -16,13 +16,17 @@ import {
   Th,
   Td,
   Checkbox,
+  Input,
+  Editable,
+  EditableInput,
+  EditablePreview,
 } from "@chakra-ui/react";
 import { AnalysisResult, Permission, QueryExpression } from "sap-client";
 import { useTranslation } from "react-i18next";
-import { searchPageOfAnalysis } from "app/analysis/analysis-query-configs";
+import { searchPageOfAnalysis, updateAnalysis } from "app/analysis/analysis-query-configs";
 import { ChevronDownIcon, ChevronRightIcon } from "@chakra-ui/icons";
 import { DateTime } from "luxon";
-import { useRequest } from "redux-query-react";
+import { useMutation, useRequest } from "redux-query-react";
 
 const expression: QueryExpression = {
   left: {
@@ -71,7 +75,7 @@ const displayValue = (key: string, v: any) => {
   return v.toString();
 };
 
-const DEFAULT_DISPLAY_KEYS: (keyof AnalysisResult)[] = ["sequence_id", "isolate_id", "date_sample", "gender", "age", "kma", "travel_country", "product_type", "amr_profile", "comment_cluster"]
+const DEFAULT_DISPLAY_KEYS: (keyof AnalysisResult)[] = ["sequence_id", "institution", "isolate_id", "date_sample", "gender", "age", "kma", "travel_country", "product_type", "amr_profile", "comment_cluster"]
 
 const ClusterTable = (props: { sequences: AnalysisResult[], expand: boolean }) => {
   // To avoid user confusion we use a differently inner styled table
@@ -130,25 +134,24 @@ type ClusterInfo = {
   sequences: AnalysisResult[];
 }
 
-const get_cluster_datapoints = (cluster: ClusterInfo) => {
-  return {
-    "FUD": cluster.fud_number,
-    "Cluster ID": cluster.cluster_id,
-    "Species": cluster.species,
-    "Serotype": cluster.serotype,
-    "Source": "TODO, ved ikke",
-    "Human sequences": cluster.sequences.filter(s => s.institution === "SSI").length,
-    "Food sequences": cluster.sequences.filter(s => s.institution === "FVST").length,
-  }
-}
-
-
 export const Clusterspage = () => {
   const { t } = useTranslation();
   const toast = useToast();
 
   const [openClusters, setOpenClusters] = useState<string[]>([]);
   const [expandClusters, setExpandClusters] = useState<string[]>([]);
+
+  const [
+    _,
+    submitChange,
+  ] = useMutation((payload: { [K: string]: { [K: string]: string } }) =>
+    updateAnalysis(payload)
+  );
+
+  const updateClusterComment = (sequences: AnalysisResult[], commentText: string) => {
+    const payload = Object.fromEntries(sequences.map(s => [s.sequence_id,{comment_cluster: commentText}]))
+    submitChange(payload);
+  }
 
   const [reqState] = useRequest({
     ...searchPageOfAnalysis({ query: { expression, page_size: 100 } }),
@@ -176,7 +179,7 @@ export const Clusterspage = () => {
       Object.values(data)
         .filter((v) => v.cluster_id && v.fud_number)
         .forEach((value) => {
-          const key = value.cluster_id +"-" + value.fud_number;
+          const key = value.cluster_id + "-" + value.fud_number;
           const current = clusterMap.get(key);
           if (current != undefined) {
             current.sequences.push(value);
@@ -195,7 +198,7 @@ export const Clusterspage = () => {
 
     const clusterList = [...clusterMap.entries()];
 
-    clusterList.forEach(([_, {sequences}]) =>
+    clusterList.forEach(([_, { sequences }]) =>
       sequences.sort((a, b) => dateRun(b).getTime() - dateRun(a).getTime())
     );
 
@@ -243,7 +246,10 @@ export const Clusterspage = () => {
                   <Th>{t("Cluster")}</Th>
                   <Th>{t("Species")}</Th>
                   <Th>{t("Serotype")}</Th>
-                  <Th>{t("Sequences")}</Th>
+                  <Th>{t("Suspected source")}</Th>
+                  <Th>{t("Human sequences")}</Th>
+                  <Th>{t("Food sequences")}</Th>
+                  <Th>{t("All sequences")}</Th>
                   <Th>{t("New sequences")}</Th>
                   <Th>{t("Latest sample date")}</Th>
                   {/* <Th width="80px"></Th> */}
@@ -256,6 +262,20 @@ export const Clusterspage = () => {
                     <Td>{cluster.cluster_id}</Td>
                     <Td>{cluster.species}</Td>
                     <Td>{cluster.serotype}</Td>
+                    <Td>
+                      {/* Da der kan være kommentarer på flere forskellige sequences dedupper og joiner vi dem sammen til en enkelt.
+                          Ved redigering får alle rows den samme nye kommentar.
+                      */}
+                      <Editable
+                        onSubmit={(v) => updateClusterComment(cluster.sequences, v)}
+                        defaultValue={[...new Set(cluster.sequences.map(s => s.comment_cluster).filter(c => !!c))].join("\n")}
+                      >
+                        <EditablePreview aria-multiline />
+                        <EditableInput aria-multiline />
+                      </Editable>
+                    </Td>
+                    <Td>{cluster.sequences.filter(s => s.institution === "SSI").length}</Td>
+                    <Td>{cluster.sequences.filter(s => s.institution === "FVST").length}</Td>
                     <Td style={{ minWidth: "20rem" }}>
                       <Flex
                         _hover={{ backgroundColor: "gray.50" }}
