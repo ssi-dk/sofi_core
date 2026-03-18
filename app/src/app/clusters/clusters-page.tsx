@@ -250,7 +250,7 @@ export const Clusterspage = () => {
                   <Th>{t("Human sequences")}</Th>
                   <Th>{t("Food sequences")}</Th>
                   <Th>{t("All sequences")}</Th>
-                  <Th>{t("New sequences")}</Th>
+                  <Th>{t("New sequences (1 week)")}</Th>
                   <Th>{t("Latest sample date")}</Th>
                   {/* <Th width="80px"></Th> */}
                 </Tr>
@@ -330,13 +330,16 @@ export const Clusterspage = () => {
                       )}
                     </Td>
                     <Td>
-                      {
-                        cluster.sequences.filter(
+                      {(() => {
+                        const newSequences = cluster.sequences.filter(
                           (s) =>
                             dateRun(s).getTime() >
-                            Date.now() - 60 * 60 * 24 * 7 * 1000
-                        ).length
-                      }
+                            Date.now() - 60 * 60 * 24 * 7 * 1000 // 1 week
+                        )
+
+                        
+                        return `${t("Human")}: ${newSequences.filter(s => s.institution === "SSI").length}\n${t("Food")}: ${newSequences.filter(s => s.institution === "FVST").length}`;
+                      })()}
                     </Td>
                     <Td>
                       {dateRun(cluster.sequences[0]).toLocaleString("DK")} (
