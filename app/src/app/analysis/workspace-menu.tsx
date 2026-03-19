@@ -133,7 +133,7 @@ export const WorkspaceMenu = (props: WorkspaceMenuProps) => {
   return (
     <Menu>
       <MenuButton
-        style={{ minWidth: "8rem" }}
+        style={{ minWidth: Math.max(Math.floor((workspace?.name.length || 0) * 0.8),8) + "rem"}}
         marginX={2}
         paddingX={2}
         as={Button}
