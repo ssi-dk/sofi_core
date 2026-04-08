@@ -194,6 +194,14 @@ def get_analysis_page_bundle(
             }
         },
         {"$project": {"approval_info": 0}},
+        {
+            "$match": {
+                "$or": [
+                    {"_id": {"$in": workspace_items}},
+                    {"_id": {"$in": list(map(lambda id: ObjectId(id), workspace_items))}}
+                ]
+            }
+        } if workspace_items else None,
         {"$match": q} if q else None,
         {"$sort": {"_id": pymongo.DESCENDING}},
         {
@@ -201,12 +209,7 @@ def get_analysis_page_bundle(
         }
         if unique_sequences
         else None,
-        {"$replaceRoot": {"newRoot": "$record"}} if unique_sequences else None,
-        {
-            "$match": {"_id": {"$in": workspace_items}}
-        }
-        if workspace_items
-        else None,
+        {"$replaceRoot": {"newRoot": "$record"}} if unique_sequences else None
     ]
 
     base_pipeline = list(filter(lambda x: x is not None, base_pipeline))
