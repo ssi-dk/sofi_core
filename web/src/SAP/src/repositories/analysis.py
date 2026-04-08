@@ -144,26 +144,53 @@ def get_analysis_page_bundle(
         {
             "$lookup": {
                 "from": "sap_approvals",
-                "let": {"seqId": "$sequence_id"},
+                "localField": "sequence_id",
+                "foreignField": "sequence_ids",
                 "pipeline": [
-                    {"$match": {"status": "submitted"}},
-                    {"$sort": {"timestamp": -1}},
-                    {"$project": {"status": 1, "matrixKeys": {"$objectToArray": "$matrix"}}},
-                    {"$unwind": "$matrixKeys"},
-                    {"$match": {"$expr": {"$eq": ["$matrixKeys.k", "$$seqId"]}}},
-                    {"$limit": 1},
+                    { "$match": { "status": "submitted" } },
+                    { "$sort": { "timestamp": -1 } },
+                    { "$limit": 1 }
                 ],
-                "as": "approval_info",
+                "as": "approval_info"
+            }
+        },
+        {
+            "$set": {
+                "approval_info": { "$first": "$approval_info" }
+            }
+        },
+        {
+            "$set": {
+                "matched_matrix_entry": {
+                    "$first": {
+                        "$map": {
+                            "input": {
+                            "$filter": {
+                                "input": {
+                                    "$objectToArray":
+                                        "$approval_info.matrix"
+                                    },
+                                    "as": "m",
+                                    "cond": {
+                                    "$eq": ["$$m.k", "$sequence_id"]
+                                }
+                            }
+                            },
+                            "as": "m",
+                            "in": "$$m.v"
+                        }
+                    }
+                }
             }
         },
         {
             "$addFields": {
-                "approval_status": {
-                    "$ifNull": [
-                        {"$arrayElemAt": ["$approval_info.matrixKeys.v.sequence_id", 0]},
-                        "pending",
-                    ]
-                }
+            "approval_status": {
+                "$ifNull": [
+                    "$matched_matrix_entry.sequence_id",
+                    "pending"
+                ]
+            }
             }
         },
         {"$project": {"approval_info": 0}},
@@ -205,6 +232,7 @@ def get_analysis_page_bundle(
             }
         }
     ]
+    print(pipeline,file=sys.stderr)
 
     res = list(analysis.aggregate(pipeline))[0]
 
