@@ -54,7 +54,6 @@ def ensure_cache_updated():
         last_updated_timestamp = now
 
 def update_analysis_cache():
-    print("Updating analysis cache",file=sys.stderr)
     conn, encryption_client = get_connection(with_enc=True)
     mydb = conn[DB_NAME]
     analysis = mydb[ANALYSIS_COL_NAME]
