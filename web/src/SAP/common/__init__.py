@@ -15,8 +15,6 @@ migration_funcs = [
     if func.__module__ == migrations.__name__  # only functions defined there
 ]
 
-print(already_executed,file=sys.stderr)
-
 # Example: conditionally execute
 for func in migration_funcs:
     name = func.__name__ 
@@ -24,7 +22,7 @@ for func in migration_funcs:
     if name in already_executed:
         print("Skipping migration:",name,file=sys.stderr)
     else:
-        print("Executing:",name,file=sys.stderr)
+        print("Executing migration:",name,file=sys.stderr)
         try:
             func()
         except Exception:
