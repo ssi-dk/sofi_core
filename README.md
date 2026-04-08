@@ -176,6 +176,11 @@ Change the "Access token lifespan" to something more reasonable than 1 min, eg. 
 
 Consult `docs/`.
 
+## Migrations
+The migrations work by dynamically loading all the functions in the migrations.py file. Then it compares these function names to the ones in the migrations collection in the database. All migration functions whoose names are not in the migrations collection are executed, and after they are executed they are added to the collection. This way all migrations are executed exactly once on each database.
+
+All migrations are written in the `web/src/SAP/common/migrations.py` file.
+
 
 # Troubleshooting possible development errors
 ## Environment overview

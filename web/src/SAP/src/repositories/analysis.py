@@ -232,6 +232,7 @@ def get_analysis_page_bundle(
             }
         }
     ]
+    print(pipeline,file=sys.stderr)
     res = list(analysis.aggregate(pipeline))[0]
 
     count = res["count"][0]["count"] if res["count"] else 0
