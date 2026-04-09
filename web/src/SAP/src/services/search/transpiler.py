@@ -87,16 +87,22 @@ def structure_range_or_wildcard(field, node):
         coerced_min = coerce_term(node.term_min)
         coerced_max = coerce_term(node.term_max)
 
-        if not ((coerced_max is None or isinstance(coerced_max,datetime)) and (coerced_min is None or isinstance(coerced_min,datetime))):
-            # If either value is not a date. It is likely a ID based range search.
+        if ((coerced_max is None or isinstance(coerced_max,str)) and (coerced_min is None or isinstance(coerced_min,str))):
+            # Both values are strings. It is an id range search
             return id_range_search(field,str(coerced_min),str(coerced_max)), True
+        
+        if coerced_max is not None and isinstance(coerced_max, datetime):
+            coerced_max = coerced_max.isoformat()
+
+        if coerced_min is not None and isinstance(coerced_min, datetime):
+            coerced_min = coerced_min.isoformat()
 
         if coerced_max is None:
-            return {"$gte": coerced_min.isoformat()}, False
+            return {"$gte": coerced_min}, False
         if coerced_min is None:
-            return {"$lte": coerced_max.isoformat()}, False
+            return {"$lte": coerced_max}, False
 
-        return {"$gte": coerced_min.isoformat(), "$lte": coerced_max.isoformat()}, False
+        return {"$gte": coerced_min, "$lte": coerced_max}, False
     raise ValueError("Invalid query. Leaf missing field or term.")
 
 def structure_leaf(node, is_negated):
