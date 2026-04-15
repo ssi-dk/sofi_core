@@ -141,10 +141,7 @@ export const Clusterspage = () => {
   const [openClusters, setOpenClusters] = useState<string[]>([]);
   const [expandClusters, setExpandClusters] = useState<string[]>([]);
 
-  const [
-    _,
-    submitChange,
-  ] = useMutation((payload: { [K: string]: { [K: string]: string } }) =>
+  const [,submitChange] = useMutation((payload: { [K: string]: { [K: string]: string } }) =>
     updateAnalysis(payload)
   );
 
@@ -207,7 +204,7 @@ export const Clusterspage = () => {
         dateRun(b.sequences[0]).getTime() - dateRun(a.sequences[0]).getTime()
     );
     return clusterList;
-  }, [data, toast]);
+  }, [data]);
 
   const switchOpen = (c) => (e: any) => {
     e.stopPropagation();
