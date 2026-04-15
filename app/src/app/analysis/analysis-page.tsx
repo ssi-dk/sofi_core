@@ -409,7 +409,7 @@ export default function AnalysisPage() {
       ),
       ...data,
     ];
-  }, [selection, data, pageState.isNarrowed, workspace]);
+  }, [selection, data, pageState.isNarrowed]);
 
   const [lastSearchQuery, setLastSearchQuery] = useState<AnalysisQuery>({
     expression: {},

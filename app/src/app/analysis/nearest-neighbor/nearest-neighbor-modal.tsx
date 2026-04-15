@@ -148,6 +148,7 @@ export const NearestNeighborModal = (props: Props) => {
     selection,
     searchIndex,
     newReqs,
+    approvableColumns
   ]);
 
   useEffect(() => {
