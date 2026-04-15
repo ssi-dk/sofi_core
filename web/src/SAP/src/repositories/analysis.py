@@ -6,6 +6,7 @@ import flask
 import pymongo
 import logging
 import json
+from datetime import datetime, timedelta
 from web.src.SAP.generated.models import AnalysisResult
 from ...common.config.column_config import pii_columns
 from ...common.database import (
@@ -16,6 +17,7 @@ from ...common.database import (
     encrypt_dict,
     DB_NAME,
     ANALYSIS_COL_NAME,
+    ANALYSIS_CACHE_COL_NAME,
     PROJECT_PRIVACY_COL_NAME,
 )
 import sys
@@ -24,6 +26,82 @@ from bson.objectid import ObjectId
 def remove_id(item):
     item.pop("_id", None)
     return item
+
+
+
+
+last_updated_timestamp = None
+CACHE_TTL = timedelta(minutes=5)
+
+def invalidate_analysis_cache():
+    global last_updated_timestamp
+    last_updated_timestamp = None
+
+def ensure_cache_updated():
+    global last_updated_timestamp
+
+    now = datetime.utcnow()
+
+    # Case 1: never updated or invalidated
+    if last_updated_timestamp is None:
+        update_analysis_cache()
+        last_updated_timestamp = now
+        return
+
+    # Case 2: expired
+    if now - last_updated_timestamp > CACHE_TTL:
+        update_analysis_cache()
+        last_updated_timestamp = now
+
+def update_analysis_cache():
+    conn, encryption_client = get_connection(with_enc=True)
+    mydb = conn[DB_NAME]
+    analysis = mydb[ANALYSIS_COL_NAME]
+
+    pipeline = [
+        {
+            "$lookup": {
+                "from": TBR_METADATA_COL_NAME,
+                "localField": "isolate_id",
+                "foreignField": "isolate_id",
+                "as": "metadata",
+            }
+        },
+        {
+            "$replaceRoot": {
+                "newRoot": {"$mergeObjects": [{"$arrayElemAt": ["$metadata", 0]}, "$$ROOT"]}
+            }
+        },
+        {
+            "$lookup": {
+                "from": LIMS_METADATA_COL_NAME,
+                "localField": "isolate_id",
+                "foreignField": "isolate_id",
+                "as": "metadata",
+            }
+        },
+        {
+            "$replaceRoot": {
+                "newRoot": {"$mergeObjects": [{"$arrayElemAt": ["$metadata", 0]}, "$$ROOT"]}
+            }
+        },
+        {
+            "$lookup": {
+                "from": MANUAL_METADATA_COL_NAME,
+                "localField": "isolate_id",
+                "foreignField": "isolate_id",
+                "as": "metadata",
+            }
+        },
+        {
+            "$replaceRoot": {
+                "newRoot": {"$mergeObjects": [{"$arrayElemAt": ["$metadata", 0]}, "$$ROOT"]}
+            }
+        },
+        {"$out": ANALYSIS_CACHE_COL_NAME}
+    ]
+
+    analysis.aggregate(pipeline)
 
 def get_analysis_page_bundle(
     query,
@@ -36,9 +114,12 @@ def get_analysis_page_bundle(
     sorting=None,
     workspace_items: Optional[List[str]] = None,
 ):
+
+    ensure_cache_updated()
+
     conn, encryption_client = get_connection(with_enc=True)
     mydb = conn[DB_NAME]
-    analysis = mydb[ANALYSIS_COL_NAME]
+    analysis_cache = mydb[ANALYSIS_CACHE_COL_NAME]
 
     q = encrypt_dict(encryption_client, query or {}, pii_columns())
 
@@ -80,47 +161,6 @@ def get_analysis_page_bundle(
         distinct_group[field] = {"$addToSet": f"${field}"}
 
     base_pipeline = [
-        {
-            "$lookup": {
-                "from": TBR_METADATA_COL_NAME,
-                "localField": "isolate_id",
-                "foreignField": "isolate_id",
-                "as": "metadata",
-            }
-        },
-        # This removes isolates without metadata.
-        # {"$match": {"metadata": {"$ne": []}}},
-        {
-            "$replaceRoot": {
-                "newRoot": {"$mergeObjects": [{"$arrayElemAt": ["$metadata", 0]}, "$$ROOT"]}
-            }
-        },
-        {
-            "$lookup": {
-                "from": LIMS_METADATA_COL_NAME,
-                "localField": "isolate_id",
-                "foreignField": "isolate_id",
-                "as": "metadata",
-            }
-        },
-        {
-            "$replaceRoot": {
-                "newRoot": {"$mergeObjects": [{"$arrayElemAt": ["$metadata", 0]}, "$$ROOT"]}
-            }
-        },
-        {
-            "$lookup": {
-                "from": MANUAL_METADATA_COL_NAME,
-                "localField": "isolate_id",
-                "foreignField": "isolate_id",
-                "as": "metadata",
-            }
-        },
-        {
-            "$replaceRoot": {
-                "newRoot": {"$mergeObjects": [{"$arrayElemAt": ["$metadata", 0]}, "$$ROOT"]}
-            }
-        },
         {
             "$lookup": {
                 "from": PROJECT_PRIVACY_COL_NAME,
@@ -235,7 +275,7 @@ def get_analysis_page_bundle(
             }
         }
     ]
-    res = list(analysis.aggregate(pipeline))[0]
+    res = list(analysis_cache.aggregate(pipeline))[0]
 
     count = res["count"][0]["count"] if res["count"] else 0
     md = res["filter_op"][0] if res["filter_op"] else {}
@@ -276,6 +316,8 @@ def update_analysis(change):
             if field_name != "id":
                 update_data[f"userchanged_{field_name}"] = True
         analysis.update_one({"sequence_id": update_data["id"]}, {"$set": update_data})
+    
+    invalidate_analysis_cache()
 
 
 def get_single_analysis(id: str) -> Dict[str, Any]:

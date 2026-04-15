@@ -31,6 +31,7 @@ SAMPLES_COL_NAME = "samples"
 WORKSPACES_COL_NAME = "workspaces"
 PROJECT_PRIVACY_COL_NAME = "sap_project_privacy"
 MIGRATIONS_COL_NAME = "migrations"
+ANALYSIS_CACHE_COL_NAME = "analysis_cache"
 
 SOFI_BIFROST_ENCRYPTION_NAMESPACE = os.environ.get(
     "SOFI_BIFROST_ENCRYPTION_NAME", "encryption.sap_pii"
