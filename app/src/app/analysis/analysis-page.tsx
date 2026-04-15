@@ -87,6 +87,7 @@ import {
 import { WorkspaceMenu } from "./workspace-menu";
 import { useInView } from "react-intersection-observer";
 import { RenderCellControl } from "./data-table/renderCellControl";
+import { UseApprovableColumns } from "./analysis-utils";
 
 // When the fields in this array are 'approved', a given sequence is rendered
 // as 'approved' also.
@@ -311,23 +312,7 @@ export default function AnalysisPage() {
     [columnConfigs, t]
   );
 
-  const approvableColumns = React.useMemo(
-    () => [
-      ...new Set(
-        Object.values(columnConfigs || {})
-          .map((c) => c?.approves_with)
-          .reduce((a, b) => a.concat(b), [])
-          .concat(
-            Object.values(columnConfigs || {})
-              .filter((c) => c?.approvable)
-              .filter((c) => !c?.computed)
-              .map((c) => c?.field_name)
-          )
-          .filter((x) => x !== undefined)
-      ),
-    ],
-    [columnConfigs]
-  );
+  const approvableColumns = UseApprovableColumns();
 
   const selectionDataIntersection = useMemo(() => Object.keys(selection).filter(s => data.find(d => d.sequence_id === s)).length, [selection, data]);
 
