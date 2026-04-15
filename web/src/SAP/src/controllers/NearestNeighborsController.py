@@ -1,5 +1,6 @@
 import time
 from typing import cast
+import os
 
 from flask import abort
 from flask.json import jsonify
@@ -18,6 +19,14 @@ def post(user, token, body: NearestNeighborsRequest):
     assert_user_has("search", token)
     if body.id is None:
         return abort(400)
+    
+    if "DEBUG_MODE" in os.environ and  os.environ["DEBUG_MODE"] == "1":
+        return jsonify({"status": "completed",
+                        "jobId": "6bc4ae505783473e99a9b41fb5cdfa06", 
+                        "createdAt": "2026-04-15T08:10:08.7380000",
+                        "result": [
+                            get_analysis_with_metadata("2503W47426_N_WGS_910_SSI")
+                        ] })
     
     with ApiClient(Configuration(host="http://bioapi:8000")) as api_client:
         sample = get_single_sample(body.id)
