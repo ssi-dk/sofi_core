@@ -16,13 +16,17 @@ import {
   Th,
   Td,
   Checkbox,
+  Input,
+  Editable,
+  EditableInput,
+  EditablePreview,
 } from "@chakra-ui/react";
 import { AnalysisResult, Permission, QueryExpression } from "sap-client";
 import { useTranslation } from "react-i18next";
-import { searchPageOfAnalysis } from "app/analysis/analysis-query-configs";
+import { searchPageOfAnalysis, updateAnalysis } from "app/analysis/analysis-query-configs";
 import { ChevronDownIcon, ChevronRightIcon } from "@chakra-ui/icons";
 import { DateTime } from "luxon";
-import { useRequest } from "redux-query-react";
+import { useMutation, useRequest } from "redux-query-react";
 
 const expression: QueryExpression = {
   left: {
@@ -71,7 +75,7 @@ const displayValue = (key: string, v: any) => {
   return v.toString();
 };
 
-const DEFAULT_DISPLAY_KEYS: (keyof AnalysisResult)[] = ["sequence_id", "isolate_id", "date_sample", "gender", "age", "kma", "travel_country", "product_type", "amr_profile", "comment_cluster"]
+const DEFAULT_DISPLAY_KEYS: (keyof AnalysisResult)[] = ["sequence_id", "institution", "isolate_id", "date_sample", "gender", "age", "kma", "travel_country", "product_type", "amr_profile", "comment_cluster"]
 
 const ClusterTable = (props: { sequences: AnalysisResult[], expand: boolean }) => {
   // To avoid user confusion we use a differently inner styled table
@@ -121,6 +125,14 @@ const ClusterTable = (props: { sequences: AnalysisResult[], expand: boolean }) =
   );
 };
 
+type ClusterInfo = {
+  key: string;
+  fud_number: string;
+  cluster_id: string;
+  species: string;
+  serotype: string;
+  sequences: AnalysisResult[];
+}
 
 export const Clusterspage = () => {
   const { t } = useTranslation();
@@ -128,6 +140,18 @@ export const Clusterspage = () => {
 
   const [openClusters, setOpenClusters] = useState<string[]>([]);
   const [expandClusters, setExpandClusters] = useState<string[]>([]);
+
+  const [
+    _,
+    submitChange,
+  ] = useMutation((payload: { [K: string]: { [K: string]: string } }) =>
+    updateAnalysis(payload)
+  );
+
+  const updateClusterComment = (sequences: AnalysisResult[], commentText: string) => {
+    const payload = Object.fromEntries(sequences.map(s => [s.sequence_id,{comment_cluster: commentText}]))
+    submitChange(payload);
+  }
 
   const [reqState] = useRequest({
     ...searchPageOfAnalysis({ query: { expression, page_size: 100 } }),
@@ -149,56 +173,40 @@ export const Clusterspage = () => {
     return enforceDate(date || dateReceived);
   };
 
-  const [clusters, speciesMapMemo] = useMemo(() => {
-    const clusterMap = new Map<string, AnalysisResult[]>();
+  const clusters = useMemo(() => {
+    const clusterMap = new Map<string, ClusterInfo>();
     if (data) {
       Object.values(data)
-        .filter((v) => !!v.cluster_id)
+        .filter((v) => v.cluster_id && v.fud_number)
         .forEach((value) => {
-          const current = clusterMap.get(value.cluster_id);
+          const key = value.cluster_id + "-" + value.fud_number;
+          const current = clusterMap.get(key);
           if (current != undefined) {
-            current.push(value);
+            current.sequences.push(value);
           } else {
-            clusterMap.set(value.cluster_id, [value]);
+            clusterMap.set(key, {
+              key,
+              cluster_id: value.cluster_id!,
+              fud_number: value.fud_number!,
+              species: value.species_final!,
+              serotype: value.serotype_final!,
+              sequences: [value]
+            });
           }
         });
     }
 
     const clusterList = [...clusterMap.entries()];
 
-    clusterList.forEach(([_, sequences]) =>
+    clusterList.forEach(([_, { sequences }]) =>
       sequences.sort((a, b) => dateRun(b).getTime() - dateRun(a).getTime())
     );
 
     clusterList.sort(
       ([_akey, a], [_bkey, b]) =>
-        dateRun(b[0]).getTime() - dateRun(a[0]).getTime()
+        dateRun(b.sequences[0]).getTime() - dateRun(a.sequences[0]).getTime()
     );
-
-    const speciesMap = new Map(
-      clusterList.map(([cluster_id, list]) => {
-        const speciesSet: Set<string> = list
-          .filter((r) => r.species_final)
-          .reduce(
-            (set, value) => set.add(value.qc_provided_species),
-            new Set<string>()
-          );
-        if (speciesSet.size > 1) {
-          toast({
-            title: "Inconsistent species",
-            description: `Multiple different species found for ${cluster_id}: ${[
-              ...speciesSet.values(),
-            ].reduce((a, b) => `${a}, ${b}`)}`,
-            status: "error",
-            duration: 3000,
-            isClosable: true,
-          });
-        }
-        return [cluster_id, speciesSet];
-      })
-    );
-
-    return [clusterList, speciesMap, toast];
+    return clusterList;
   }, [data, toast]);
 
   const switchOpen = (c) => (e: any) => {
@@ -234,23 +242,44 @@ export const Clusterspage = () => {
             <Table variant="striped">
               <Thead>
                 <Tr>
+                  <Th>{t("Fud")}</Th>
                   <Th>{t("Cluster")}</Th>
                   <Th>{t("Species")}</Th>
-                  <Th>{t("Sequences")}</Th>
-                  <Th>{t("New sequences")}</Th>
+                  <Th>{t("Serotype")}</Th>
+                  <Th>{t("Suspected source")}</Th>
+                  <Th>{t("Human sequences")}</Th>
+                  <Th>{t("Food sequences")}</Th>
+                  <Th>{t("All sequences")}</Th>
+                  <Th>{t("New sequences (1 week)")}</Th>
                   <Th>{t("Latest sample date")}</Th>
                   {/* <Th width="80px"></Th> */}
                 </Tr>
               </Thead>
               <Tbody>
-                {clusters.map(([cluster_id, sequences]) => (
-                  <Tr key={cluster_id} verticalAlign="top">
-                    <Td>{cluster_id}</Td>
-                    <Td>{[...speciesMapMemo.get(cluster_id)].join(", ")}</Td>
+                {clusters.map(([cluster_key, cluster]) => (
+                  <Tr key={cluster.key} verticalAlign="top">
+                    <Td>{cluster.fud_number}</Td>
+                    <Td>{cluster.cluster_id}</Td>
+                    <Td>{cluster.species}</Td>
+                    <Td>{cluster.serotype}</Td>
+                    <Td>
+                      {/* Da der kan være kommentarer på flere forskellige sequences dedupper og joiner vi dem sammen til en enkelt.
+                          Ved redigering får alle rows den samme nye kommentar.
+                      */}
+                      <Editable
+                        onSubmit={(v) => updateClusterComment(cluster.sequences, v)}
+                        defaultValue={[...new Set(cluster.sequences.map(s => s.comment_cluster).filter(c => !!c))].join("\n")}
+                      >
+                        <EditablePreview aria-multiline />
+                        <EditableInput aria-multiline />
+                      </Editable>
+                    </Td>
+                    <Td>{cluster.sequences.filter(s => s.institution === "SSI").length}</Td>
+                    <Td>{cluster.sequences.filter(s => s.institution === "FVST").length}</Td>
                     <Td style={{ minWidth: "20rem" }}>
                       <Flex
                         _hover={{ backgroundColor: "gray.50" }}
-                        onClick={switchOpen(cluster_id)}
+                        onClick={switchOpen(cluster_key)}
                         p={1}
                         direction="row"
                         align="center"
@@ -260,26 +289,26 @@ export const Clusterspage = () => {
                       >
                         <IconButton
                           icon={
-                            openClusters.find((c) => c == cluster_id) ? (
+                            openClusters.find((c) => c == cluster_key) ? (
                               <ChevronDownIcon />
                             ) : (
                               <ChevronRightIcon />
                             )
                           }
                           aria-label={
-                            openClusters.find((c) => c == cluster_id)
+                            openClusters.find((c) => c == cluster_key)
                               ? "Collapse"
                               : "Expand"
                           }
                           size="sm"
                           variant="ghost"
                         />
-                        {sequences.length} sequences
+                        {cluster.sequences.length} sequences
                       </Flex>
-                      {!openClusters.find((c) => c == cluster_id) && (
+                      {!openClusters.find((c) => c == cluster_key) && (
                         <>
                           <ul>
-                            {sequences.map((s) => (
+                            {cluster.sequences.map((s) => (
                               <li key={s.sequence_id}>
                                 {s.sequence_id} (
                                 {DateTime.fromJSDate(dateRun(s)).toRelative()})
@@ -288,30 +317,33 @@ export const Clusterspage = () => {
                           </ul>
                         </>
                       )}
-                      {openClusters.find((c) => c == cluster_id) && (<>
-                        <Flex direction="row" align="center">Expand: <Checkbox isChecked={expandClusters.includes(cluster_id)} marginLeft={3} style={{ border: "2px black", borderRadius: "5px" }} onChange={(e) => {
+                      {openClusters.find((c) => c == cluster_key) && (<>
+                        <Flex direction="row" align="center">Expand: <Checkbox isChecked={expandClusters.includes(cluster_key)} marginLeft={3} style={{ border: "2px black", borderRadius: "5px" }} onChange={(e) => {
                           if (e.currentTarget.checked) {
-                            setExpandClusters(old => [cluster_id, ...old]);
+                            setExpandClusters(old => [cluster_key, ...old]);
                           } else {
-                            setExpandClusters(old => old.filter(cid => cid !== cluster_id));
+                            setExpandClusters(old => old.filter(cid => cid !== cluster_key));
                           }
                         }} /></Flex>
-                        <ClusterTable sequences={sequences} expand={expandClusters.includes(cluster_id)} />
+                        <ClusterTable sequences={cluster.sequences} expand={expandClusters.includes(cluster_key)} />
                       </>
                       )}
                     </Td>
                     <Td>
-                      {
-                        sequences.filter(
+                      {(() => {
+                        const newSequences = cluster.sequences.filter(
                           (s) =>
                             dateRun(s).getTime() >
-                            Date.now() - 60 * 60 * 24 * 7 * 1000
-                        ).length
-                      }
+                            Date.now() - 60 * 60 * 24 * 7 * 1000 // 1 week
+                        )
+
+                        
+                        return `${t("Human")}: ${newSequences.filter(s => s.institution === "SSI").length}\n${t("Food")}: ${newSequences.filter(s => s.institution === "FVST").length}`;
+                      })()}
                     </Td>
                     <Td>
-                      {dateRun(sequences[0]).toLocaleString("DK")} (
-                      {sequences[0].sequence_id})
+                      {dateRun(cluster.sequences[0]).toLocaleString("DK")} (
+                      {cluster.sequences[0].sequence_id})
                     </Td>
                   </Tr>
                 ))}

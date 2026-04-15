@@ -239,20 +239,20 @@ export const displayOperandName = ({
     return `${field}=${term}`;
   } else if (term_max && term_min) {
     const minDate = Date.parse(term_min);
-    const minVal = isNaN(minDate) ? term_min : new Date(term_min).toLocaleDateString()
+    const minVal = (isNaN(minDate) || !isNaN(Number(term_min))) ? term_min : new Date(term_min).toLocaleDateString()
 
     const maxDate = Date.parse(term_max);
-    const maxVal = isNaN(maxDate) ? term_max : new Date(term_max).toLocaleDateString()
+    const maxVal = (isNaN(maxDate) || !isNaN(Number(term_max))) ? term_max : new Date(term_max).toLocaleDateString()
 
     return `${minVal} < ${field} < ${maxVal}`;
   } else if (term_max) {
     const maxDate = Date.parse(term_max);
-    const maxVal = isNaN(maxDate) ? term_max : new Date(term_max).toLocaleDateString()
+    const maxVal = (isNaN(maxDate) || !isNaN(Number(term_max))) ? term_max : new Date(term_max).toLocaleDateString()
 
     return `${field} < ${maxVal}`;
   } else if (term_min) {
     const minDate = Date.parse(term_min);
-    const minVal = isNaN(minDate) ? term_min : new Date(term_min).toLocaleDateString()
+    const minVal = (isNaN(minDate) || !isNaN(Number(term_min))) ? term_min : new Date(term_min).toLocaleDateString()
 
     return `${field} > ${minVal}`;
   }

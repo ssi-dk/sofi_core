@@ -415,6 +415,10 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
     [dataGridRef]
   );
 
+  const totalCount = useSelector<RootState>((s) =>
+      s.entities.analysisTotalCount
+    ) as number;
+
   const onSelectColumn = React.useCallback(
     (col: Column<T>) => {
       const { checked, indeterminate } = calcColSelectionState(col);
@@ -424,9 +428,15 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
         if (selection && Object.keys(selection).length > 0) {
         } else {
           // This immediately selectes all if the data is ready. We dont want to redo the select all with an empty
-          // selection
+          // selection. Furthermore, if it has counted more than 3000 rows we REFUSE to select all, since python
+          // bson will reject a > 16mb document. Perhaps we will fix the backend later, but you would never want
+          // to select more than 3000 rows...
+          if (totalCount > 3000) {
+            throw new Error("Cannot select more than 3000 rows.")
+          }
           selectAll();
           doIncSel = false;
+          
         }
       } else {
         const sel = rows
@@ -467,6 +477,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
       onColumnResize,
       selection,
       selectAll,
+      totalCount,
     ]
   );
 

@@ -1,5 +1,5 @@
 /** @jsxImportSource @compiled/react */
-import React from "react";
+import React, { useReducer } from "react";
 import { Column, ColumnInstance } from "react-table";
 import "@compiled/react";
 import { Tooltip } from "@chakra-ui/react";
@@ -36,6 +36,7 @@ function DataTableColumnHeader<T extends NotEmpty>(
   } = props;
 
   const noop = React.useCallback(() => {}, []);
+  const [renderTrigger, forceRerender] = useReducer(o => !o,true);
 
   const doResize = React.useCallback(() => {
     onResize(columnIndex);
@@ -72,10 +73,16 @@ function DataTableColumnHeader<T extends NotEmpty>(
         {canSelectColumn(column.id) && (
           <SelectionCheckBox
             onClick={(e) => {
-              onSelectColumn(column);
+              try {
+                onSelectColumn(column);
+              } catch (err) {
+                alert((err as Error).message)
+                forceRerender();
+              }
               e.stopPropagation();
             }}
             css={headerButton}
+            renderTrigger={renderTrigger}
             {...calcColSelectionState(column)}
           />
         )}

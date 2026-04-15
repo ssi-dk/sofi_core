@@ -981,9 +981,6 @@ components:
           project_titles:
           - project_titles
           - project_titles
-          fud_numbers:
-          - fud_numbers
-          - fud_numbers
           serotype_finals:
           - serotype_finals
           - serotype_finals
@@ -993,6 +990,9 @@ components:
           animals:
           - animals
           - animals
+          fud_numbers:
+          - fud_numbers
+          - fud_numbers
       properties:
         paging_token:
           nullable: true
@@ -1046,9 +1046,6 @@ components:
         project_titles:
         - project_titles
         - project_titles
-        fud_numbers:
-        - fud_numbers
-        - fud_numbers
         serotype_finals:
         - serotype_finals
         - serotype_finals
@@ -1058,6 +1055,9 @@ components:
         animals:
         - animals
         - animals
+        fud_numbers:
+        - fud_numbers
+        - fud_numbers
       properties:
         date_sample:
           $ref: '#/components/schemas/DateRange'
