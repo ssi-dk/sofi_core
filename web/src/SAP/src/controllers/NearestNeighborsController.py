@@ -1,14 +1,18 @@
 import time
 from typing import cast
+import os
+from datetime import datetime
+from uuid import uuid4
+from random import randint
 
 from flask import abort
 from flask.json import jsonify
 from pydantic import StrictBool, StrictInt
 
 from web.src.SAP.generated.models.nearest_neighbors_request import NearestNeighborsRequest
-from web.src.SAP.src.repositories.analysis import get_analysis_with_metadata, get_single_analysis_by_object_id
+from web.src.SAP.src.repositories.analysis import get_analysis_page_bundle, get_analysis_with_metadata, get_single_analysis_by_object_id
 from web.src.SAP.src.repositories.samples import get_single_sample
-from web.src.SAP.src.security.permission_check import assert_user_has
+from web.src.SAP.src.security.permission_check import assert_user_has, authorized_columns
 from web.src.services.bio_api.openapi.api.nearest_neighbors_api import NearestNeighborsApi
 from web.src.services.bio_api.openapi.api_client import ApiClient
 from web.src.services.bio_api.openapi.configuration import Configuration
@@ -18,6 +22,9 @@ def post(user, token, body: NearestNeighborsRequest):
     assert_user_has("search", token)
     if body.id is None:
         return abort(400)
+    
+    if "DEBUG_MODE" in os.environ and  os.environ["DEBUG_MODE"] == "1":
+        return jsonify(mock_nearest_neighbors(token))
     
     with ApiClient(Configuration(host="http://bioapi:8000")) as api_client:
         sample = get_single_sample(body.id)
@@ -69,3 +76,17 @@ def post(user, token, body: NearestNeighborsRequest):
 
 def get(user, token, body:NearestNeighborsRequest):
     return post(user, token, body)
+
+def mock_nearest_neighbors(token):
+
+    page_size = randint(1,10)
+    offset = randint(0,500)
+
+    bundle = get_analysis_page_bundle({},page_size,offset,authorized_columns(token),None,"all")
+
+    return {
+        "status": "completed",
+        "jobId": str(uuid4()).replace("-",""), 
+        "createdAt": datetime.now().isoformat(),
+        "result": bundle["items"]
+    }

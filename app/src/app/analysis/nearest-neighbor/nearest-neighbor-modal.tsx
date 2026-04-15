@@ -31,6 +31,7 @@ import {
 import { Checkbox } from "@chakra-ui/react";
 import { useMutation } from "redux-query-react";
 import { setSelection } from "../analysis-selection-configs";
+import { UseApprovableColumns } from "../analysis-utils";
 
 type Props = {
   selection: DataTableSelection<AnalysisResult>;
@@ -78,6 +79,9 @@ export const NearestNeighborModal = (props: Props) => {
     searchNearestNeighbors,
   ] = useMutation((req: NearestNeighborsRequest) => getNearestNeighbors(req));
 
+
+  const approvableColumns = UseApprovableColumns();
+
   useEffect(() => {
     // Collector
     if (!isSearching || isPending || !isFinished) {
@@ -117,9 +121,10 @@ export const NearestNeighborModal = (props: Props) => {
         );
         if (Object.values(neighbors).length) {
           const newSelection = Object.assign({}, selection);
+          const cells = Object.fromEntries(approvableColumns.map(c => [c, true]))
           Object.values(neighbors).forEach((n) => {
             newSelection[n.sequence_id] = {
-              cells: {},
+              cells,
               original: n,
             };
           });

@@ -82,11 +82,13 @@ import {
   buildQueryFromFilters,
   checkExpressionEquality,
   checkSortEquality,
+  mergeExpressions,
   recurseSearchTree,
 } from "./search/search-utils";
 import { WorkspaceMenu } from "./workspace-menu";
 import { useInView } from "react-intersection-observer";
 import { RenderCellControl } from "./data-table/renderCellControl";
+import { UseApprovableColumns } from "./analysis-utils";
 
 // When the fields in this array are 'approved', a given sequence is rendered
 // as 'approved' also.
@@ -167,7 +169,7 @@ export default function AnalysisPage() {
   }, [workspaces, workspace]);
 
   useEffect(() => {
-    if (switchWsWhenReady && workspace && workspace.id == "temp-workspace" && workspaceCreationState.status === 200) {
+    if (switchWsWhenReady && workspace && workspace.id === "temp-workspace" && workspaceCreationState.status === 200) {
       setWorkspace(workspaces[workspaces.length - 1]);
       setSwitchWsWhenReady(false);
     }
@@ -311,23 +313,7 @@ export default function AnalysisPage() {
     [columnConfigs, t]
   );
 
-  const approvableColumns = React.useMemo(
-    () => [
-      ...new Set(
-        Object.values(columnConfigs || {})
-          .map((c) => c?.approves_with)
-          .reduce((a, b) => a.concat(b), [])
-          .concat(
-            Object.values(columnConfigs || {})
-              .filter((c) => c?.approvable)
-              .filter((c) => !c?.computed)
-              .map((c) => c?.field_name)
-          )
-          .filter((x) => x !== undefined)
-      ),
-    ],
-    [columnConfigs]
-  );
+  const approvableColumns = UseApprovableColumns();
 
   const selectionDataIntersection = useMemo(() => Object.keys(selection).filter(s => data.find(d => d.sequence_id === s)).length, [selection, data]);
 
@@ -415,15 +401,6 @@ export default function AnalysisPage() {
 
     if (pageState.isNarrowed) {
       return selectionValues;
-    }
-
-    if (workspace) {
-      return [
-        ...selectionValues.filter(
-          (sv) => !workspace.samples!.find((sid) => sid == sv.id)
-        ),
-        ...data.filter((d) => workspace.samples!.find((s) => s === d.id)),
-      ];
     }
 
     return [
@@ -624,10 +601,15 @@ export default function AnalysisPage() {
 
       const forceUpdate = (inView && !prevInViewRef.current.inView) || loadAllRef.current.needsFetch;
       loadAllRef.current.needsFetch = false;
+
+      const tempWsFilter = (workspace && workspace.id === "temp-workspace" && workspace.samples) ? workspace.samples.map(objectid => ({field: "_id",term: objectid} as QueryOperand)).reduce((a,b) => ({operator: QueryOperator.OR, left: a, right: b})) : null
+
+      const joinedExpression: QueryExpression = mergeExpressions(QueryOperator.AND,q.expression,tempWsFilter)
+
       const newExpression = q.clearAllFields
-        ? q.expression
+        ? joinedExpression
         : mergeFilters(
-          q.expression || {},
+          joinedExpression || {},
           propFilters,
           rangeFilters,
           approvalFilters
@@ -665,7 +647,7 @@ export default function AnalysisPage() {
       setLastSearchWs(workspace);
       appendToSearchHistory(newExpression);
 
-      const searchingWithWs = workspace && workspace.id != "temp-workspace";
+      const searchingWithWs = workspace && workspace.id !== "temp-workspace";
 
       if (
         newExpression &&
