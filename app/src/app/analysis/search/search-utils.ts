@@ -315,18 +315,66 @@ export const checkExpressionEquality = (
   return true;
 };
 
+export const clean_expression = (expr?: QueryExpression |null) => {
+  if (expr === undefined || expr === null  || Object.keys(expr).length === 0) {
+    return null
+  }
+
+  if ("field" in expr) {
+    return expr
+  }
+
+  if ("left" in expr && "right" in expr) {
+    const left = clean_expression(expr.left)
+    const right = clean_expression(expr.right)
+    if (left && right) {
+      return {
+        ...expr,
+        left,
+        right
+      }
+    }
+    if (left || right) {
+      if (expr.operator === QueryOperator.AND ||expr.operator === QueryOperator.OR) {
+        return left || right
+      } else {
+        return {
+          ...expr,
+          left: left || right,
+          right: undefined
+        }
+      }
+    }
+    return null
+  }
+  if ("left" in expr || "right" in expr) {
+    return clean_expression(expr.left || expr.right)
+  }
+
+  return null;
+}
+
 export const mergeExpressions = (operator: QueryOperator, left: QueryOperand |null, right: QueryOperand |null) => {
-  if (left && right && Object.keys(left).length && Object.keys(right).length) {
+  const clean_left = clean_expression(left);
+  const clean_right = clean_expression(right);
+  if (clean_left && clean_right ) {
     return {
       operator,
-      left,
-      right
+      left: clean_left,
+      right: clean_right
     }
-  } else if (left && Object.keys(left).length) {
-    return left
-  } else {
-    return right
+  } else if (clean_left || clean_right) {
+    const sub_expr = (clean_left || clean_right);
+    if ("left" in sub_expr) {
+      return sub_expr
+    } else {
+      return {
+        left: clean_left || clean_right
+      }
+    }
   }
+
+  return {}
 }
 
 // Helper function to build query expression from filter state
