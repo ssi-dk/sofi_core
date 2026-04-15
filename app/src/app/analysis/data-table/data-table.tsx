@@ -477,6 +477,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
       onColumnResize,
       selection,
       selectAll,
+      totalCount,
     ]
   );
 
