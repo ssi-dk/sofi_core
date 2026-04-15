@@ -32,7 +32,6 @@ import { Checkbox } from "@chakra-ui/react";
 import { useMutation } from "redux-query-react";
 import { setSelection } from "../analysis-selection-configs";
 import { UseApprovableColumns } from "../analysis-utils";
-import { RootState } from "app/root-reducer";
 
 type Props = {
   selection: DataTableSelection<AnalysisResult>;
@@ -80,8 +79,6 @@ export const NearestNeighborModal = (props: Props) => {
     searchNearestNeighbors,
   ] = useMutation((req: NearestNeighborsRequest) => getNearestNeighbors(req));
 
-  const data = useSelector<RootState, AnalysisResult[]>((s) => Object.values((s.entities.analysis) ?? {}) as AnalysisResult[]);
-  
 
   const approvableColumns = UseApprovableColumns();
 
@@ -113,11 +110,6 @@ export const NearestNeighborModal = (props: Props) => {
         for (const reqId of ids) {
           const response = nearestNeighborsResponses[reqId];
           response.result?.forEach((neighbor) => {
-
-            // We response does not necesarrily contain everything we need. We instead need to find the correct locally saved
-            // version of the AnalysisResult. If it is not stored locally because of the current query, we fall back.
-            const neighbor_local = data.find(d => d.sequence_id === neighbor.sequence_id) || neighbor
-
             if (!selection[neighbor.sequence_id]) {
               neighbors[neighbor.sequence_id] = neighbor_local;
             }
