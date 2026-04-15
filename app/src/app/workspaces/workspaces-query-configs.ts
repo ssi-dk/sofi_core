@@ -273,10 +273,15 @@ export const fetchWorkspaceTags = () => {
 export const setWorkspaceTag = (params: SetTagRequest) => {
   const base = setTagApi(params);
   base.url = getUrl(base.url);
-
+  const { workspaceId, tag, addOrRemove } = params.setWsTag;
   base.update = {
+    tags: (oldvalue) => {
+      if (!oldvalue.includes(tag)) {
+        return [...oldvalue,tag]
+      }
+      return oldvalue
+    },
     workspaces: (oldValue) => {
-      const { workspaceId, tag, addOrRemove } = params.setWsTag;
 
       return oldValue.map((ws: Workspace) => {
         if (ws.id !== workspaceId) {
@@ -289,7 +294,7 @@ export const setWorkspaceTag = (params: SetTagRequest) => {
             : ws.tags.filter((t) => t !== tag),
         };
       });
-    },
+    }
   };
 
   base.force = true;
