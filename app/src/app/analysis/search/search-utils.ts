@@ -315,7 +315,7 @@ export const checkExpressionEquality = (
   return true;
 };
 
-export const clean_expression = (expr?: QueryExpression |null) => {
+export const cleanExpression = (expr?: QueryExpression |null) => {
   if (expr === undefined || expr === null  || Object.keys(expr).length === 0) {
     return null
   }
@@ -325,8 +325,8 @@ export const clean_expression = (expr?: QueryExpression |null) => {
   }
 
   if ("left" in expr && "right" in expr) {
-    const left = clean_expression(expr.left)
-    const right = clean_expression(expr.right)
+    const left = cleanExpression(expr.left)
+    const right = cleanExpression(expr.right)
     if (left && right) {
       return {
         ...expr,
@@ -348,28 +348,28 @@ export const clean_expression = (expr?: QueryExpression |null) => {
     return null
   }
   if ("left" in expr || "right" in expr) {
-    return clean_expression(expr.left || expr.right)
+    return cleanExpression(expr.left || expr.right)
   }
 
   return null;
 }
 
 export const mergeExpressions = (operator: QueryOperator, left: QueryOperand |null, right: QueryOperand |null) => {
-  const clean_left = clean_expression(left);
-  const clean_right = clean_expression(right);
-  if (clean_left && clean_right ) {
+  const cleanLeft = cleanExpression(left);
+  const cleanRight = cleanExpression(right);
+  if (cleanLeft && cleanRight ) {
     return {
       operator,
-      left: clean_left,
-      right: clean_right
+      left: cleanLeft,
+      right: cleanRight
     }
-  } else if (clean_left || clean_right) {
-    const sub_expr = (clean_left || clean_right);
-    if ("left" in sub_expr) {
-      return sub_expr
+  } else if (cleanLeft || cleanRight) {
+    const subExpr = (cleanLeft || cleanRight);
+    if ("left" in subExpr) {
+      return subExpr
     } else {
       return {
-        left: clean_left || clean_right
+        left: cleanLeft || cleanRight
       }
     }
   }
