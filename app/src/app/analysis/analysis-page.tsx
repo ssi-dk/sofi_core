@@ -169,7 +169,7 @@ export default function AnalysisPage() {
   }, [workspaces, workspace]);
 
   useEffect(() => {
-    if (switchWsWhenReady && workspace && workspace.id == "temp-workspace" && workspaceCreationState.status === 200) {
+    if (switchWsWhenReady && workspace && workspace.id === "temp-workspace" && workspaceCreationState.status === 200) {
       setWorkspace(workspaces[workspaces.length - 1]);
       setSwitchWsWhenReady(false);
     }
@@ -401,15 +401,6 @@ export default function AnalysisPage() {
 
     if (pageState.isNarrowed) {
       return selectionValues;
-    }
-
-    if (workspace) {
-      return [
-        ...selectionValues.filter(
-          (sv) => !workspace.samples!.find((sid) => sid == sv.id)
-        ),
-        ...data.filter((d) => workspace.samples!.find((s) => s === d.id)),
-      ];
     }
 
     return [
@@ -656,7 +647,7 @@ export default function AnalysisPage() {
       setLastSearchWs(workspace);
       appendToSearchHistory(newExpression);
 
-      const searchingWithWs = workspace && workspace.id != "temp-workspace";
+      const searchingWithWs = workspace && workspace.id !== "temp-workspace";
 
       if (
         newExpression &&
