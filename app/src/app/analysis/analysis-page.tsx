@@ -82,6 +82,7 @@ import {
   buildQueryFromFilters,
   checkExpressionEquality,
   checkSortEquality,
+  mergeExpressions,
   recurseSearchTree,
 } from "./search/search-utils";
 import { WorkspaceMenu } from "./workspace-menu";
@@ -609,10 +610,15 @@ export default function AnalysisPage() {
 
       const forceUpdate = (inView && !prevInViewRef.current.inView) || loadAllRef.current.needsFetch;
       loadAllRef.current.needsFetch = false;
+
+      const tempWsFilter = (workspace && workspace.id === "temp-workspace" && workspace.samples) ? workspace.samples.map(objectid => ({field: "_id",term: objectid} as QueryOperand)).reduce((a,b) => ({operator: QueryOperator.OR, left: a, right: b})) : null
+
+      const joinedExpression: QueryExpression = mergeExpressions(QueryOperator.AND,q.expression,tempWsFilter)
+
       const newExpression = q.clearAllFields
-        ? q.expression
+        ? joinedExpression
         : mergeFilters(
-          q.expression || {},
+          joinedExpression || {},
           propFilters,
           rangeFilters,
           approvalFilters

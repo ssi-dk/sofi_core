@@ -111,7 +111,7 @@ export const NearestNeighborModal = (props: Props) => {
           const response = nearestNeighborsResponses[reqId];
           response.result?.forEach((neighbor) => {
             if (!selection[neighbor.sequence_id]) {
-              neighbors[neighbor.sequence_id] = neighbor_local;
+              neighbors[neighbor.sequence_id] = neighbor;
             }
           });
         }

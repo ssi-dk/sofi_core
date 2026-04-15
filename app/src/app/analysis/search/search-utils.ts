@@ -315,6 +315,20 @@ export const checkExpressionEquality = (
   return true;
 };
 
+export const mergeExpressions = (operator: QueryOperator, left: QueryOperand |null, right: QueryOperand |null) => {
+  if (left && right && Object.keys(left).length && Object.keys(right).length) {
+    return {
+      operator,
+      left,
+      right
+    }
+  } else if (left && Object.keys(left).length) {
+    return left
+  } else {
+    return right
+  }
+}
+
 // Helper function to build query expression from filter state
 export const buildQueryFromFilters = (
   propFilters: { [field: string]: string[] },
