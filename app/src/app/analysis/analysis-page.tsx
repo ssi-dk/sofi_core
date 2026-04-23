@@ -721,9 +721,9 @@ export default function AnalysisPage() {
   );
 
   const canSelectColumn = React.useCallback(
-    (columnName: string) => {
+    (columnName: string, columnIndex: number) => {
       return (
-        (!pageState.isNarrowed && columnName === "sequence_id") ||
+        (!pageState.isNarrowed && columnIndex === 0) ||
         (pageState.isNarrowed &&
           columnConfigs[columnName]?.approvable &&
           !columnConfigs[columnName]?.computed)
