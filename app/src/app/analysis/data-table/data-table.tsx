@@ -358,7 +358,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
   const calcColSelectionState = React.useCallback(
     (col: Column<T>) => {
       const c = Object.values(selection).filter(
-        (x) => Object.values(x.cells).some(c => c)
+        (x) => Object.values(x.cells).some(cell => cell)
       );
       if (c.length === 0) {
         return { checked: false, indeterminate: false };
@@ -426,7 +426,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
       let doIncSel = true;
 
       // Unless reordered this will be sequence_id
-      const firstColumnsid = visibleColumnInstances.at(0)?.id;
+      const firstColumnsid = visibleColumnInstances.length > 0 ? visibleColumnInstances[0].id : null;
       if (col.id === firstColumnsid) {
         if (selection && Object.keys(selection).length > 0) {
         } else {
@@ -471,6 +471,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
       onColumnResize(0);
     },
     [
+      visibleColumnInstances,
       primaryKey,
       rows,
       calcColSelectionState,
