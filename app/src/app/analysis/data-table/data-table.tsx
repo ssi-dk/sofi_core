@@ -51,7 +51,7 @@ type DataTableProps<T extends NotEmpty> = {
   setColumnSort?: (columnSort: { column: string; ascending: boolean }) => void;
   data: T[];
   primaryKey: keyof T;
-  canSelectColumn: (columnName: string) => boolean;
+  canSelectColumn: (columnName: string, columnIndex: number) => boolean;
   canApproveColumn: (columnName: string) => boolean;
   isJudgedCell: (rowId: string, columnName: string) => boolean;
   getDependentColumns: (columnName: keyof T) => Array<keyof T>;
@@ -358,7 +358,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
   const calcColSelectionState = React.useCallback(
     (col: Column<T>) => {
       const c = Object.values(selection).filter(
-        (x) => x.cells[col.id] === true
+        (x) => Object.values(x.cells).some(c => c)
       );
       if (c.length === 0) {
         return { checked: false, indeterminate: false };
@@ -424,7 +424,10 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
       const { checked, indeterminate } = calcColSelectionState(col);
       let incSel: DataTableSelection<T> = {};
       let doIncSel = true;
-      if (col.id === "sequence_id") {
+
+      // Unless reordered this will be sequence_id
+      const firstColumnsid = visibleColumnInstances.at(0)?.id;
+      if (col.id === firstColumnsid) {
         if (selection && Object.keys(selection).length > 0) {
         } else {
           // This immediately selectes all if the data is ready. We dont want to redo the select all with an empty
