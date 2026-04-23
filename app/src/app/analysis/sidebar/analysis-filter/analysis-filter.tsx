@@ -30,15 +30,15 @@ function AnalysisFilter(props: AnalysisFilterProps) {
   } = props;
 
   const providedSpeciesOptions = React.useMemo(
-    () => providedSpecies.filter(Boolean).map((x) => ({ value: x, label: x })),
+    () => providedSpecies.filter(Boolean).sort((a,b) => a > b ? 1 : -1).map((x) => ({ value: x, label: x })),
     [providedSpecies]
   );
   const serotypeOptions = React.useMemo(
-    () => serotypeFinals.filter(Boolean).map((x) => ({ value: x, label: x })),
+    () => serotypeFinals.filter(Boolean).sort((a,b) => a > b ? 1 : -1).map((x) => ({ value: x, label: x })),
     [serotypeFinals]
   );
   const stOptions = React.useMemo(
-    () => sts.filter(Boolean).map((x) => ({ value: x, label: x })),
+    () => sts.filter(Boolean).sort((a,b) => a > b ? 1 : -1).map((x) => ({ value: x, label: x })),
     [sts]
   );
 

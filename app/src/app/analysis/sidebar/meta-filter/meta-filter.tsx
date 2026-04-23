@@ -136,6 +136,7 @@ function MetaFilter(props: MetaFilterProps) {
     () =>
       (filterOptions.institutions || [])
         .filter(Boolean)
+        .sort((a,b) => a > b ? 1 : -1)
         .map((x) => ({ value: x, label: x })),
     [filterOptions.institutions]
   );
@@ -143,6 +144,7 @@ function MetaFilter(props: MetaFilterProps) {
     () =>
       (filterOptions.project_titles || [])
         .filter(Boolean)
+        .sort((a,b) => a > b ? 1 : -1)
         .map((x) => ({ value: x, label: x })),
     [filterOptions.project_titles]
   );
@@ -150,6 +152,7 @@ function MetaFilter(props: MetaFilterProps) {
     () =>
       (filterOptions.project_numbers || [])
         .filter(Boolean)
+        .sort((a,b) => a > b ? 1 : -1)
         .map((x) => ({ value: x.toString(), label: x.toString() })),
     [filterOptions.project_numbers]
   );
@@ -157,6 +160,7 @@ function MetaFilter(props: MetaFilterProps) {
     () =>
       (filterOptions.animals || [])
         .filter(Boolean)
+        .sort((a,b) => a > b ? 1 : -1)
         .map((x) => ({ value: x, label: x })),
     [filterOptions.animals]
   );
@@ -164,6 +168,7 @@ function MetaFilter(props: MetaFilterProps) {
     () =>
       (filterOptions.run_ids || [])
         .filter(Boolean)
+        .sort((a,b) => a > b ? 1 : -1)
         .map((x) => ({ value: x, label: x })),
     [filterOptions.run_ids]
   );
@@ -171,6 +176,7 @@ function MetaFilter(props: MetaFilterProps) {
     () =>
       (filterOptions.isolate_ids || [])
         .filter(Boolean)
+        .sort((a,b) => a > b ? 1 : -1)
         .map((x) => ({ value: x, label: x })),
     [filterOptions.isolate_ids]
   );
@@ -178,6 +184,7 @@ function MetaFilter(props: MetaFilterProps) {
     () =>
       (filterOptions.fud_numbers || [])
         .filter(Boolean)
+        .sort((a,b) => a > b ? 1 : -1)
         .map((x) => ({ value: x, label: x })),
     [filterOptions.fud_numbers]
   );
@@ -185,6 +192,7 @@ function MetaFilter(props: MetaFilterProps) {
     () =>
       (filterOptions.fud_numbers || [])
         .filter(Boolean)
+        .sort((a,b) => a > b ? 1 : -1)
         .map((x) => ({ value: x, label: x })),
     [filterOptions.fud_numbers]
   );
@@ -192,6 +200,7 @@ function MetaFilter(props: MetaFilterProps) {
     () =>
       (filterOptions.cluster_ids || [])
         .filter(Boolean)
+        .sort((a,b) => a > b ? 1 : -1)
         .map((x) => ({ value: x, label: x })),
     [filterOptions.cluster_ids]
   );
