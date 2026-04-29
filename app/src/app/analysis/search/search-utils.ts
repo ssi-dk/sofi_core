@@ -7,9 +7,10 @@ import {
 } from "sap-client";
 
 const HISTORY_STORAGE_KEY = "searchHistory";
-const MAX_HISTORY_LEN = 5;
+const MAX_HISTORY_LEN = 10;
 
 export type SearchItem = {
+  searchString: string;
   pinned: boolean;
   timestamp: string;
   query: QueryExpression;
@@ -20,6 +21,12 @@ export type SearchHistory = SearchItem[];
 export const getSearchHistory = () => {
   const rawJson = localStorage.getItem(HISTORY_STORAGE_KEY);
   const history: SearchHistory = JSON.parse(rawJson) || [];
+  history.forEach(item => {
+    // Old items in the search history will be missing the searchString field.
+    if (!item.searchString) {
+      item.searchString = "";
+    }
+  })
   return history;
 };
 
@@ -354,7 +361,33 @@ export const cleanExpression = (expr?: QueryExpression |null) => {
   return null;
 }
 
-export const mergeExpressions = (operator: QueryOperator, left: QueryOperand |null, right: QueryOperand |null) => {
+const extract_ands = (expr: QueryExpression): QueryExpression[] => {
+  if ("left" in expr && "right" in expr) {
+    const operator  = expr.operator || QueryOperator.AND;
+
+    if (operator === QueryOperator.AND) {
+      return [...extract_ands(expr.left),...extract_ands(expr.right)]
+    }
+  }
+  return [expr];
+}
+
+export const dedupExpression = (expr: QueryExpression):QueryExpression => {
+  if ("left" in expr && "right" in expr) {
+    const operator  = expr.operator || QueryOperator.AND;
+    if (operator === QueryOperator.AND) {
+      const operands = extract_ands(expr).map(dedupExpression);
+
+      const deduppedOperands = operands.filter((o1,i) => !operands.slice(i+1).find(o2 => o1 !== o2 && checkExpressionEquality(o1,o2)))
+      
+      return deduppedOperands.reduce((a,b) => mergeExpressions(QueryOperator.AND,a,b))
+
+    }
+  }
+  return expr;
+}
+
+export const mergeExpressions = (operator: QueryOperator, left: QueryOperand |null, right: QueryOperand |null): QueryExpression => {
   const cleanLeft = cleanExpression(left);
   const cleanRight = cleanExpression(right);
   if (cleanLeft && cleanRight ) {
@@ -415,7 +448,7 @@ export const buildQueryFromFilters = (
   return createAndExpression(expressions);
 };
 
-export const appendToSearchHistory = (query: QueryExpression) => {
+export const appendToSearchHistory = (query: QueryExpression, searchString: string) => {
   if (recurseSearchTree(query).length == 0) {
     // Ignore empty searches
     return;
@@ -429,9 +462,14 @@ export const appendToSearchHistory = (query: QueryExpression) => {
     // Move existing to top
     const withoutExisting = current.filter((c) => c !== existing);
     existing.timestamp = new Date().toISOString();
+    if (!existing.searchString) {
+      // If the old history item was made before searchString was a part of history, we need to use the most recent one
+      existing.searchString = searchString; 
+    }
     saveSearchHistory([existing, ...withoutExisting]);
   } else {
     const item: SearchItem = {
+      searchString,
       pinned: false,
       query,
       timestamp: new Date().toISOString(),

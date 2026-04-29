@@ -25,10 +25,10 @@ import { getFieldInternalName } from "app/i18n";
 import SearchHelpModal from "./search-help-modal";
 import SearchHistoryMenu from "./search-history";
 import { SearchQuery } from "../analysis-page";
-import { recurseSearchTree } from "./search-utils";
+import { deRegisterHistoryCB, getSearchHistory, recurseSearchTree, registerHistoryCB } from "./search-utils";
 
 type AnalysisSearchProps = {
-  onSearchChange: (query: SearchQuery) => void;
+  onSearchChange: (query: SearchQuery, searchString: string) => void;
   isDisabled: boolean;
   searchTerms: Set<string>;
 };
@@ -84,6 +84,22 @@ const AnalysisSearch = (props: AnalysisSearchProps) => {
     setInput,
   ]);
 
+  useEffect(() => {
+    // Hook into searchhistory, and get the latest searchhistory
+    const callback = () => {
+      const history = getSearchHistory();
+      if (history.length === 0) return;
+
+      const searchString = history[0].searchString
+      if (inputRef) {
+        setInput(searchString);
+        inputRef.current.value = searchString;
+      }
+    }
+    registerHistoryCB(callback);
+    return () => deRegisterHistoryCB(callback)
+  }, [inputRef, setInput])
+
   const error = useMemo(() => {
     return checkQueryError(input, searchTerms);
   }, [input, searchTerms]);
@@ -93,7 +109,7 @@ const AnalysisSearch = (props: AnalysisSearchProps) => {
       onSearchChange({
         expression: parseQuery(q == undefined ? input : q, toast),
         clearAllFields,
-      }),
+      }, input),
     [onSearchChange, input, toast]
   );
 

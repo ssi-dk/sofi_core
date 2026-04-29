@@ -14,7 +14,7 @@ import { AnalysisQuery } from "sap-client";
 import { SearchQuery } from "../analysis-page";
 
 const SearchHistoryMenu = (props: {
-  onSearchChange: (query: SearchQuery) => void;
+  onSearchChange: (query: SearchQuery, searchString) => void;
 }) => {
   const { onSearchChange } = props;
   const [searchHistory, setSearchHistory] = useState<SearchHistory>([]);
@@ -62,7 +62,7 @@ const SearchHistoryMenu = (props: {
               icon={<SearchIcon />}
               ml="1"
               onClick={() =>
-                onSearchChange({ expression: s.query, clearAllFields: false })
+                onSearchChange({ expression: s.query, clearAllFields: true },s.searchString)
               }
               style={{ margin: "4px" }}
             />
