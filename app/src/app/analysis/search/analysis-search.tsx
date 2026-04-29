@@ -164,8 +164,6 @@ const AnalysisSearch = (props: AnalysisSearchProps) => {
           autoFocus={false}
         >
           <PopoverTrigger >
-
-
             <InputGroup>
               <Input
                 ref={inputRef}
