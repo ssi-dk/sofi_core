@@ -1,13 +1,12 @@
 import { Button, Flex, IconButton } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import {
-  deRegisterHistoryCB,
   displayOperandName,
   getSearchHistory,
   recurseSearchTree,
-  registerHistoryCB,
   SearchHistory,
   setPinned,
+  useHistoryCB,
 } from "./search-utils";
 import { SearchIcon, StarIcon } from "@chakra-ui/icons";
 import { AnalysisQuery } from "sap-client";
@@ -19,12 +18,10 @@ const SearchHistoryMenu = (props: {
   const { onSearchChange } = props;
   const [searchHistory, setSearchHistory] = useState<SearchHistory>([]);
 
-  useEffect(() => {
-    const cb = () => setSearchHistory(getSearchHistory());
-    cb();
-    registerHistoryCB(cb);
-    return () => deRegisterHistoryCB(cb);
-  }, []);
+  useHistoryCB(() => 
+    setSearchHistory(getSearchHistory()
+  ),[setSearchHistory], true)
+
 
   return (
     <Flex direction="column" style={{ margin: "3px" }}>

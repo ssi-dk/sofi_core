@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import {
   ApprovalStatus,
   AnalysisSorting,
@@ -32,12 +33,23 @@ export const getSearchHistory = () => {
 
 let callbacks = [];
 
-export const registerHistoryCB = (cb: () => void) => {
+export const useHistoryCB = (cb: () => void, deps: any[], executeInitially: boolean) => {
+  useEffect(() => {
+    registerHistoryCB(cb);
+    if (executeInitially) {
+      cb()
+    }
+    return deRegisterHistoryCB(cb);
+  }, deps)
+}
+
+const registerHistoryCB = (cb: () => void) => {
   callbacks.push(cb);
 };
-export const deRegisterHistoryCB = (cb: () => void) => {
+const deRegisterHistoryCB = (cb: () => void) => {
   callbacks = callbacks.filter((c) => c !== cb);
 };
+
 const saveSearchHistory = (history: SearchHistory) => {
   const rawJson = JSON.stringify(history);
   localStorage.setItem(HISTORY_STORAGE_KEY, rawJson);
