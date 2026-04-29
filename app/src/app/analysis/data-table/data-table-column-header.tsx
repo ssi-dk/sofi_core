@@ -15,7 +15,7 @@ type DataTableColumnHeaderProps<T extends NotEmpty> = {
   calcColSelectionState: (
     column: Column<T>
   ) => { checked: boolean; indeterminate: boolean; visible?: boolean };
-  canSelectColumn: (column: string) => boolean;
+  canSelectColumn: (column: string, columnIndex: number) => boolean;
   onSelectColumn: (column: Column<T>) => void;
   onResize: (columnIndex: number) => void;
   onSort?: ({ column: string, ascending: boolean }) => void;
@@ -70,10 +70,11 @@ function DataTableColumnHeader<T extends NotEmpty>(
       onKeyDown={noop}
     >
       <div role="tab" css={columnStyle}>
-        {canSelectColumn(column.id) && (
+        {canSelectColumn(column.id, columnIndex) && (
           <SelectionCheckBox
             onClick={(e) => {
               try {
+                
                 onSelectColumn(column);
               } catch (err) {
                 alert((err as Error).message)
