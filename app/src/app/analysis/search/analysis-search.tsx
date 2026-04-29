@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
   Input,
   InputGroup,
@@ -25,10 +25,10 @@ import { getFieldInternalName } from "app/i18n";
 import SearchHelpModal from "./search-help-modal";
 import SearchHistoryMenu from "./search-history";
 import { SearchQuery } from "../analysis-page";
-import { recurseSearchTree } from "./search-utils";
+import { getSearchHistory, recurseSearchTree, useHistoryCB } from "./search-utils";
 
 type AnalysisSearchProps = {
-  onSearchChange: (query: SearchQuery) => void;
+  onSearchChange: (query: SearchQuery, searchString: string) => void;
   isDisabled: boolean;
   searchTerms: Set<string>;
 };
@@ -84,6 +84,19 @@ const AnalysisSearch = (props: AnalysisSearchProps) => {
     setInput,
   ]);
 
+
+  const historyCB = useCallback(() => {
+    const history = getSearchHistory();
+    if (history.length === 0) return;
+
+    const searchString = history[0].searchString
+    if (inputRef) {
+      setInput(searchString);
+      inputRef.current.value = searchString;
+    }
+  }, [inputRef, setInput])
+  useHistoryCB(historyCB, false);
+
   const error = useMemo(() => {
     return checkQueryError(input, searchTerms);
   }, [input, searchTerms]);
@@ -93,7 +106,7 @@ const AnalysisSearch = (props: AnalysisSearchProps) => {
       onSearchChange({
         expression: parseQuery(q == undefined ? input : q, toast),
         clearAllFields,
-      }),
+      }, input),
     [onSearchChange, input, toast]
   );
 
