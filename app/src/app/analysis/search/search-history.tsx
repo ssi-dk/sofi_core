@@ -1,5 +1,5 @@
 import { Button, Flex, IconButton } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   displayOperandName,
   getSearchHistory,
@@ -18,9 +18,12 @@ const SearchHistoryMenu = (props: {
   const { onSearchChange } = props;
   const [searchHistory, setSearchHistory] = useState<SearchHistory>([]);
 
-  useHistoryCB(() => 
-    setSearchHistory(getSearchHistory()
-  ),[setSearchHistory], true)
+
+  const historyCB = useCallback(() => {
+    setSearchHistory(getSearchHistory())
+  }, [setSearchHistory])
+
+  useHistoryCB(historyCB, true)
 
 
   return (
@@ -59,7 +62,7 @@ const SearchHistoryMenu = (props: {
               icon={<SearchIcon />}
               ml="1"
               onClick={() =>
-                onSearchChange({ expression: s.query, clearAllFields: true },s.searchString)
+                onSearchChange({ expression: s.query, clearAllFields: true }, s.searchString)
               }
               style={{ margin: "4px" }}
             />

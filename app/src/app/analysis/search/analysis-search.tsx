@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
   Input,
   InputGroup,
@@ -25,7 +25,7 @@ import { getFieldInternalName } from "app/i18n";
 import SearchHelpModal from "./search-help-modal";
 import SearchHistoryMenu from "./search-history";
 import { SearchQuery } from "../analysis-page";
-import { deRegisterHistoryCB, getSearchHistory, recurseSearchTree, registerHistoryCB, useHistoryCB } from "./search-utils";
+import { getSearchHistory, recurseSearchTree, useHistoryCB } from "./search-utils";
 
 type AnalysisSearchProps = {
   onSearchChange: (query: SearchQuery, searchString: string) => void;
@@ -84,7 +84,8 @@ const AnalysisSearch = (props: AnalysisSearchProps) => {
     setInput,
   ]);
 
-  useHistoryCB(() => {
+
+  const historyCB = useCallback(() => {
     const history = getSearchHistory();
     if (history.length === 0) return;
 
@@ -93,8 +94,9 @@ const AnalysisSearch = (props: AnalysisSearchProps) => {
       setInput(searchString);
       inputRef.current.value = searchString;
     }
-  },[setInput, inputRef], false);
-  
+  }, [inputRef, setInput])
+  useHistoryCB(historyCB, false);
+
   const error = useMemo(() => {
     return checkQueryError(input, searchTerms);
   }, [input, searchTerms]);

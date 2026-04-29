@@ -33,22 +33,22 @@ export const getSearchHistory = () => {
 
 let callbacks = [];
 
-export const useHistoryCB = (cb: () => void, deps: any[], executeInitially: boolean) => {
-  useEffect(() => {
-    registerHistoryCB(cb);
-    if (executeInitially) {
-      cb()
-    }
-    return deRegisterHistoryCB(cb);
-  }, deps)
-}
-
 const registerHistoryCB = (cb: () => void) => {
   callbacks.push(cb);
 };
 const deRegisterHistoryCB = (cb: () => void) => {
   callbacks = callbacks.filter((c) => c !== cb);
 };
+/// THIS NEEDS THE CALLBACK TO BE STABLE! Otherwise it will deregister and reregister on every render
+export const useHistoryCB = (cb: () => void, executeInitially: boolean) => {
+  useEffect(() => {
+    registerHistoryCB(cb);
+    if (executeInitially) {
+      cb()
+    }
+    return () => deRegisterHistoryCB(cb);
+  }, [cb, executeInitially])
+}
 
 const saveSearchHistory = (history: SearchHistory) => {
   const rawJson = JSON.stringify(history);
@@ -373,32 +373,6 @@ export const cleanExpression = (expr?: QueryExpression |null) => {
   return null;
 }
 
-const extract_ands = (expr: QueryExpression): QueryExpression[] => {
-  if ("left" in expr && "right" in expr) {
-    const operator  = expr.operator || QueryOperator.AND;
-
-    if (operator === QueryOperator.AND) {
-      return [...extract_ands(expr.left),...extract_ands(expr.right)]
-    }
-  }
-  return [expr];
-}
-
-export const dedupExpression = (expr: QueryExpression):QueryExpression => {
-  if ("left" in expr && "right" in expr) {
-    const operator  = expr.operator || QueryOperator.AND;
-    if (operator === QueryOperator.AND) {
-      const operands = extract_ands(expr).map(dedupExpression);
-
-      const deduppedOperands = operands.filter((o1,i) => !operands.slice(i+1).find(o2 => o1 !== o2 && checkExpressionEquality(o1,o2)))
-      
-      return deduppedOperands.reduce((a,b) => mergeExpressions(QueryOperator.AND,a,b))
-
-    }
-  }
-  return expr;
-}
-
 export const mergeExpressions = (operator: QueryOperator, left: QueryOperand |null, right: QueryOperand |null): QueryExpression => {
   const cleanLeft = cleanExpression(left);
   const cleanRight = cleanExpression(right);
@@ -420,6 +394,32 @@ export const mergeExpressions = (operator: QueryOperator, left: QueryOperand |nu
   }
 
   return {}
+}
+
+const extractAnds = (expr: QueryExpression): QueryExpression[] => {
+  if ("left" in expr && "right" in expr) {
+    const operator  = expr.operator || QueryOperator.AND;
+
+    if (operator === QueryOperator.AND) {
+      return [...extractAnds(expr.left),...extractAnds(expr.right)]
+    }
+  }
+  return [expr];
+}
+
+export const dedupExpression = (expr: QueryExpression):QueryExpression => {
+  if ("left" in expr && "right" in expr) {
+    const operator  = expr.operator || QueryOperator.AND;
+    if (operator === QueryOperator.AND) {
+      const operands = extractAnds(expr).map(dedupExpression);
+
+      const deduppedOperands = operands.filter((o1,i) => !operands.slice(i+1).find(o2 => o1 !== o2 && checkExpressionEquality(o1,o2)))
+      
+      return deduppedOperands.reduce((a,b) => mergeExpressions(QueryOperator.AND,a,b))
+
+    }
+  }
+  return expr;
 }
 
 // Helper function to build query expression from filter state
