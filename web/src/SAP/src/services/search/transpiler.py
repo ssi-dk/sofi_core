@@ -31,6 +31,11 @@ def check_for_wildcard(field: str, termm: str):
     if field in pii_columns():
         return termm
     term = f"{termm}"
+
+    # If the entire term is just a wildcard, we simply want to find non-null values
+    if term == "*":
+        return {"$ne": None}
+
     # Do not treat escaped asterisk '\*' as a wildcard
     termIgnoreEscaped = term.replace("\\*", "★")
     if "*" in termIgnoreEscaped:
@@ -87,8 +92,7 @@ def structure_range_or_wildcard(field, node):
         coerced_min = coerce_term(node.term_min)
         coerced_max = coerce_term(node.term_max)
 
-        if ((coerced_max is None or isinstance(coerced_max,str)) and (coerced_min is None or isinstance(coerced_min,str))):
-            # Both values are strings. It is an id range search
+        if (isinstance(coerced_max,str) and isinstance(coerced_min,str)):
             return id_range_search(field,str(coerced_min),str(coerced_max)), True
         
         if coerced_max is not None and isinstance(coerced_max, datetime):
@@ -97,9 +101,9 @@ def structure_range_or_wildcard(field, node):
         if coerced_min is not None and isinstance(coerced_min, datetime):
             coerced_min = coerced_min.isoformat()
 
-        if coerced_max is None:
+        if coerced_max is None or coerced_max == "*":
             return {"$gte": coerced_min}, False
-        if coerced_min is None:
+        if coerced_min is None or coerced_min == "*":
             return {"$lte": coerced_max}, False
 
         return {"$gte": coerced_min, "$lte": coerced_max}, False
