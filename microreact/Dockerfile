@@ -8,7 +8,8 @@ COPY ./sofi-mr-server /app/
 
 WORKDIR /app
 
-RUN git config --global url."https://github.com/".insteadOf "ssh://git@github.com/"
+RUN find . -name package.json -exec sed -i \
+  's#ssh://git@github.com/hasankzl/htmlsvg.git#https://github.com/hasankzl/htmlsvg/archive/refs/heads/main.tar.gz#g' {} \;
 
 # install produciton deps
 RUN npm install --omit=dev
