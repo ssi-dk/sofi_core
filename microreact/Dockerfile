@@ -8,6 +8,8 @@ COPY ./sofi-mr-server /app/
 
 WORKDIR /app
 
+RUN git config --global url."https://github.com/".insteadOf "ssh://git@github.com/"
+
 # install produciton deps
 RUN npm install --omit=dev
 
