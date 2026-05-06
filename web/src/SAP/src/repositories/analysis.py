@@ -60,7 +60,7 @@ def update_analysis_cache():
 
     date_approval_fields = [
         ("serotype", "serotype_final"), ("amr","amr_profile"), ("toxin", "toxins_final"), 
-        ("cluster","cluster_id"), ("qc", "qc_final"), ("st", "st_final"), ("cdiff","cdiff_details")
+        ("cluster","cluster_id"), ("qc", "qc_final"), ("st", "st_final"), ("cdiff","cdiff_details"), ("epi","date_epi")
     ]
 
     pipeline = [
