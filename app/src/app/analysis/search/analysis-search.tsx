@@ -37,6 +37,9 @@ type AnalysisSearchProps = {
 };
 
 const parseQuery = (input: string, onError) => {
+
+  const unused_var = "123";
+
   try {
     const ast = luceneParse(input);
     recurseTree(ast, (x) => {
