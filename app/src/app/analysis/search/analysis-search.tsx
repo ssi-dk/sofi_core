@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
   Input,
   InputGroup,
@@ -11,6 +11,9 @@ import {
   PopoverTrigger,
   PopoverContent,
   Tooltip,
+  PopoverBody,
+  VStack,
+  Box,
 } from "@chakra-ui/react";
 import {
   CloseIcon,
@@ -80,9 +83,37 @@ const AnalysisSearch = (props: AnalysisSearchProps) => {
   const inputRef = React.useRef<HTMLInputElement>();
   const toast = useToast();
   const [input, setInput] = React.useState("");
-  const onInput = React.useCallback((e) => setInput(e.target.value), [
+
+  const [suggestionsIsOpen, setSuggestionsIsOpen] = useState(false);
+
+  const onInput = React.useCallback((e) => {
+    setInput(e.target.value)
+    setSuggestionsIsOpen(true)
+  }, [
     setInput,
+    setSuggestionsIsOpen
   ]);
+
+  const setText = useCallback((textStr: string) => {
+    setInput(textStr);
+    if (inputRef) {
+      inputRef.current.value = textStr;
+    }
+  }, [setInput, inputRef])
+
+  const suggestions = useMemo(() => {
+    const inputParts = input.split(" ");
+    const lastInputPart = inputParts[inputParts.length - 1];
+    if (!lastInputPart) {
+      return [];
+    }
+
+    const matches = [...searchTerms].filter(t => t.startsWith(lastInputPart))
+    if (matches.length === 1 && matches[0] === lastInputPart) {
+      return []
+    }
+    return matches;
+  }, [input, searchTerms])
 
   const error = useMemo(() => {
     return checkQueryError(input, searchTerms);
@@ -126,41 +157,77 @@ const AnalysisSearch = (props: AnalysisSearchProps) => {
           isOpen={isSearchHelpModalOpen}
           onClose={onSearchHelpModalClose}
         />
-        <InputGroup>
-          <Input
-            ref={inputRef}
-            placeholder={`species_final:"Escherichia coli"`}
-            onInput={onInput}
-            onKeyDown={onEnterKey}
-            onSubmit={submit}
-            isDisabled={isDisabled}
-          />
-          <InputLeftElement>
-            <QuestionIcon
-              color="gray.400"
-              onClick={onSearchHelpModalOpen}
-              cursor="pointer"
-            />
-          </InputLeftElement>
-
-          <InputRightElement width="18" marginRight="2">
-            {error && (
-              <Tooltip label={error}>
-                <WarningIcon
-                  color="orange.400"
+        <Popover
+          placement="bottom-start"
+          isOpen={suggestionsIsOpen}
+          closeOnBlur={false}
+          autoFocus={false}
+        >
+          <PopoverTrigger >
+            <InputGroup>
+              <Input
+                ref={inputRef}
+                placeholder={`species_final:"Escherichia coli"`}
+                onInput={onInput}
+                onKeyDown={onEnterKey}
+                onSubmit={submit}
+                isDisabled={isDisabled}
+              />
+              <InputLeftElement>
+                <QuestionIcon
+                  color="gray.400"
+                  onClick={onSearchHelpModalOpen}
                   cursor="pointer"
-                  height="max"
-                  marginRight="2"
                 />
-              </Tooltip>
-            )}
-            <CloseIcon
-              color="gray.400"
-              onClick={onClearButton}
-              cursor="pointer"
-            />
-          </InputRightElement>
-        </InputGroup>
+              </InputLeftElement>
+
+              <InputRightElement width="18" marginRight="2">
+                {error && (
+                  <Tooltip label={error}>
+                    <WarningIcon
+                      color="orange.400"
+                      cursor="pointer"
+                      height="max"
+                      marginRight="2"
+                    />
+                  </Tooltip>
+                )}
+                <CloseIcon
+                  color="gray.400"
+                  onClick={onClearButton}
+                  cursor="pointer"
+                />
+              </InputRightElement>
+            </InputGroup>
+          </PopoverTrigger>
+          <PopoverContent width="100%">
+            <PopoverBody p={2}>
+              <VStack align="stretch" spacing={1}>
+                {suggestions.map((item) => (
+                  <Box
+                    key={item}
+                    p={2}
+                    borderRadius="md"
+                    _hover={{ bg: "gray.100" }}
+                    cursor="pointer"
+                    onClick={() => {
+                      const inputParts = input.split(" ")
+                      inputParts.pop()
+                      inputParts.push(item)
+                      setText(inputParts.join(" ") + ": ")
+
+                      setTimeout(() => {
+                        inputRef.current?.focus();
+                      }, 0);
+                    }}
+                  >
+                    {item}
+                  </Box>
+                ))}
+              </VStack>
+            </PopoverBody>
+          </PopoverContent>
+        </Popover>
         <IconButton
           aria-label="Search database"
           icon={<SearchIcon />}
