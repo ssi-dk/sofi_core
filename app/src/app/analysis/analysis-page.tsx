@@ -82,6 +82,8 @@ import {
   buildQueryFromFilters,
   checkExpressionEquality,
   checkSortEquality,
+  createAndExpression,
+  dedupExpression,
   mergeExpressions,
   recurseSearchTree,
 } from "./search/search-utils";
@@ -423,6 +425,7 @@ export default function AnalysisPage() {
     expression: {},
   });
 
+  const [searchString, setSearchString] = useState("");
   const [propFilters, setPropFilters] = React.useState(
     {} as PropFilter<AnalysisResult>
   );
@@ -573,30 +576,7 @@ export default function AnalysisPage() {
           Object.entries(searchExpression).filter(([_, v]) => !!v)
         ) as QueryExpression;
 
-        if (
-          searchExpression &&
-          Object.keys(searchExpression).length > 0 &&
-          filterExpression
-        ) {
-          return {
-            operator: QueryOperator.AND,
-            left: searchExpression.operator
-              ? searchExpression
-              : searchExpression.left,
-            right: filterExpression.operator
-              ? filterExpression
-              : filterExpression.left,
-          };
-        } else if (filterExpression) {
-          return filterExpression;
-        } else if (
-          searchExpression &&
-          Object.keys(searchExpression).length > 0
-        ) {
-          return searchExpression;
-        } else {
-          return {};
-        }
+        return dedupExpression(mergeExpressions(QueryOperator.AND,searchExpression,filterExpression))
       };
 
       const forceUpdate = (inView && !prevInViewRef.current.inView) || loadAllRef.current.needsFetch;
@@ -645,7 +625,7 @@ export default function AnalysisPage() {
       dispatch({ type: "RESET/Analysis" });
       setLastSearchQuery(newQ);
       setLastSearchWs(workspace);
-      appendToSearchHistory(newExpression);
+      appendToSearchHistory(newExpression, searchString);
 
       const searchingWithWs = workspace && workspace.id !== "temp-workspace";
 
@@ -700,7 +680,8 @@ export default function AnalysisPage() {
       inView,
       prevInViewRef,
       loadAllRef,
-      isPending
+      isPending,
+      searchString,
     ]
   );
 
@@ -1015,7 +996,10 @@ export default function AnalysisPage() {
       <Box role="navigation" gridColumn="2 / 4" pb={5}>
         <Flex justifyContent="flex-end">
           <AnalysisSearch
-            onSearchChange={setRawSearchQuery}
+            onSearchChange={(q,s) => {
+              setRawSearchQuery(q);
+              setSearchString(s);
+            }}
             isDisabled={pageState.isNarrowed}
             searchTerms={searchTerms}
           />
