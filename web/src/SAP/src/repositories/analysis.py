@@ -58,6 +58,11 @@ def update_analysis_cache():
     mydb = conn[DB_NAME]
     analysis = mydb[ANALYSIS_COL_NAME]
 
+    date_approval_fields = [
+        ("serotype", "serotype_final"), ("amr","amr_profile"), ("toxin", "toxins_final"), 
+        ("cluster","cluster_id"), ("qc", "qc_final"), ("st", "st_final"), ("cdiff","cdiff_details")
+    ]
+
     pipeline = [
         {
             "$lookup": {
@@ -98,93 +103,6 @@ def update_analysis_cache():
                 "newRoot": {"$mergeObjects": [{"$arrayElemAt": ["$metadata", 0]}, "$$ROOT"]}
             }
         },
-        {"$out": ANALYSIS_CACHE_COL_NAME}
-    ]
-
-    analysis.aggregate(pipeline)
-
-def get_analysis_page_bundle(
-    query,
-    page_size,
-    offset,
-    columns,
-    institution,
-    data_clearance,
-    unique_sequences=True,
-    sorting=None,
-    workspace_items: Optional[List[str]] = None,
-):
-    ensure_cache_updated()
-
-    conn, encryption_client = get_connection(with_enc=True)
-    mydb = conn[DB_NAME]
-    analysis_cache = mydb[ANALYSIS_CACHE_COL_NAME]
-
-    q = encrypt_dict(encryption_client, query or {}, pii_columns())
-
-    if data_clearance == "own-institution":
-        q["institution"] = institution
-
-    column_projection = {x: 1 for x in columns}
-    column_projection["id"] = {"$toString": "$_id"}
-
-    auth_projection = {x: 1 for x in columns}
-    auth_projection["id"] = {"$toString": "$_id"}
-
-    if sorting is not None:
-        sort_obj = {
-            sorting["column"]: pymongo.DESCENDING
-            if sorting["ascending"]
-            else pymongo.ASCENDING,
-            "_id": pymongo.DESCENDING,
-        }
-    else:
-        sort_obj = {"_id": pymongo.DESCENDING}
-
-    distinct = [
-        "institution",
-        "project_title",
-        "project_number",
-        "animal",
-        "run_id",
-        "isolate_id",
-        "fud_number",
-        "cluster_id",
-        "qc_provided_species",
-        "serotype_final",
-        "st_final",
-    ]
-
-    distinct_group = {"_id": None}
-    for field in distinct:
-        distinct_group[field] = {"$addToSet": f"${field}"}
-
-    date_approval_fields = [
-        ("serotype", "serotype_final"), ("amr","amr_profile"), ("toxin", "toxins_final"), 
-        ("cluster","cluster_id"), ("qc", "qc_final"), ("st", "st_final"), ("cdiff","cdiff_details")
-    ]
-
-    base_pipeline = [
-        {
-            "$lookup": {
-                "from": PROJECT_PRIVACY_COL_NAME,
-                "localField": "project_number",
-                "foreignField": "project_number",
-                "as": "project_privacy",
-            }
-        }
-        if data_clearance == "cross-institution"
-        else None,
-        {
-            "$match": {
-                "$or": [
-                    {"project_privacy": {"$eq": []}},
-                    {"project_privacy.institution": institution},
-                ]
-            }
-        }
-        if data_clearance == "cross-institution"
-        else None,
         {
             "$lookup": {
                 "from": "sap_approvals",
@@ -253,6 +171,88 @@ def get_analysis_page_bundle(
             }
         },
         {"$project": {"approval_info": 0, "matched_matrix_entry": 0}},
+        {"$out": ANALYSIS_CACHE_COL_NAME}
+    ]
+
+    analysis.aggregate(pipeline)
+
+def get_analysis_page_bundle(
+    query,
+    page_size,
+    offset,
+    columns,
+    institution,
+    data_clearance,
+    unique_sequences=True,
+    sorting=None,
+    workspace_items: Optional[List[str]] = None,
+):
+    ensure_cache_updated()
+
+    conn, encryption_client = get_connection(with_enc=True)
+    mydb = conn[DB_NAME]
+    analysis_cache = mydb[ANALYSIS_CACHE_COL_NAME]
+
+    q = encrypt_dict(encryption_client, query or {}, pii_columns())
+
+    if data_clearance == "own-institution":
+        q["institution"] = institution
+
+    column_projection = {x: 1 for x in columns}
+    column_projection["id"] = {"$toString": "$_id"}
+
+    auth_projection = {x: 1 for x in columns}
+    auth_projection["id"] = {"$toString": "$_id"}
+
+    if sorting is not None:
+        sort_obj = {
+            sorting["column"]: pymongo.DESCENDING
+            if sorting["ascending"]
+            else pymongo.ASCENDING,
+            "_id": pymongo.DESCENDING,
+        }
+    else:
+        sort_obj = {"_id": pymongo.DESCENDING}
+
+    distinct = [
+        "institution",
+        "project_title",
+        "project_number",
+        "animal",
+        "run_id",
+        "isolate_id",
+        "fud_number",
+        "cluster_id",
+        "qc_provided_species",
+        "serotype_final",
+        "st_final",
+    ]
+
+    distinct_group = {"_id": None}
+    for field in distinct:
+        distinct_group[field] = {"$addToSet": f"${field}"}
+
+    base_pipeline = [
+        {
+            "$lookup": {
+                "from": PROJECT_PRIVACY_COL_NAME,
+                "localField": "project_number",
+                "foreignField": "project_number",
+                "as": "project_privacy",
+            }
+        }
+        if data_clearance == "cross-institution"
+        else None,
+        {
+            "$match": {
+                "$or": [
+                    {"project_privacy": {"$eq": []}},
+                    {"project_privacy.institution": institution},
+                ]
+            }
+        }
+        if data_clearance == "cross-institution"
+        else None,
         {
             "$match": {
                 "$or": [

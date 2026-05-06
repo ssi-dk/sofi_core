@@ -1,5 +1,5 @@
 from typing import Dict
-from web.src.SAP.src.repositories.analysis import (get_single_analysis, update_analysis)
+from web.src.SAP.src.repositories.analysis import (get_single_analysis, invalidate_analysis_cache, update_analysis)
 from web.src.SAP.generated.models import Approval, ApprovalRequest, ApprovalStatus
 from ..repositories.approval import (
     find_approvals,
@@ -36,6 +36,7 @@ def get_approvals(user, token_info):
 
 def create_approval(user, token_info, body: ApprovalRequest):
     assert_user_has("approve", token_info)
+    invalidate_analysis_cache()
     for sid in body.matrix.keys():
         s = get_single_analysis(sid)
         if s == None:
