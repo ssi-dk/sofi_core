@@ -268,9 +268,5 @@
   {
     "field_name": "date_analysis_sofi",
     "computed": true
-  },
-  {
-    "field_name": "approval_status",
-    "computed": true
   }
 ]

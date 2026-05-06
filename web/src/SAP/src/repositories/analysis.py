@@ -114,8 +114,6 @@ def get_analysis_page_bundle(
     sorting=None,
     workspace_items: Optional[List[str]] = None,
 ):
-    print("QUERY:",query, file=sys.stderr)
-
     ensure_cache_updated()
 
     conn, encryption_client = get_connection(with_enc=True)
@@ -254,6 +252,8 @@ def get_analysis_page_bundle(
     ]
 
     base_pipeline = list(filter(lambda x: x is not None, base_pipeline))
+
+    print("BASE PIPELINE:",json.dumps(base_pipeline),file=sys.stderr)
 
     pipeline = base_pipeline + [
         {
