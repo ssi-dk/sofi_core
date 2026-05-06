@@ -85,7 +85,7 @@ def structure_range_or_wildcard(field, node):
         if isinstance(coerced, str):
             return check_for_wildcard(field, coerced), False
         elif isinstance(coerced, datetime):
-            return {"$gte": coerced.isoformat(), "$lte": (coerced + timedelta(days=1)).isoformat()}, False
+            return {"$gte": coerced, "$lte": (coerced + timedelta(days=1))}, False
         else:
             return {"$in": [coerced, node.term]}, False
     elif node.term_max is not None or node.term_min is not None:
@@ -94,12 +94,6 @@ def structure_range_or_wildcard(field, node):
 
         if (isinstance(coerced_max,str) and isinstance(coerced_min,str)):
             return id_range_search(field,str(coerced_min),str(coerced_max)), True
-        
-        if coerced_max is not None and isinstance(coerced_max, datetime):
-            coerced_max = coerced_max.isoformat()
-
-        if coerced_min is not None and isinstance(coerced_min, datetime):
-            coerced_min = coerced_min.isoformat()
 
         if coerced_max is None or coerced_max == "*":
             return {"$gte": coerced_min}, False
