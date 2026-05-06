@@ -2351,6 +2351,8 @@ components:
         date_approved_cdiff:
           format: date-time
           type: string
+        approval_status:
+          type: string
         qc_provided_species:
           type: string
         qc_genome1x:

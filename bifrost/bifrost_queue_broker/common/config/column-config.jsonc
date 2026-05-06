@@ -247,8 +247,7 @@
   },
   {
     "field_name": "date_approved_serotype",
-    "computed": true,
-    "editable": false
+    "computed": true
   },
   {
     "field_name": "date_approved_amr",
@@ -268,6 +267,10 @@
   },
   {
     "field_name": "date_analysis_sofi",
+    "computed": true
+  },
+  {
+    "field_name": "approval_status",
     "computed": true
   }
 ]

@@ -98,6 +98,12 @@ export interface AnalysisResultAllOf  {
      * @type {string}
      * @memberof AnalysisResultAllOf
      */
+    approval_status?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof AnalysisResultAllOf
+     */
     qc_provided_species?: string;
     /**
      * 
@@ -720,6 +726,7 @@ export function AnalysisResultAllOfFromJSON(json: any): AnalysisResultAllOf {
         'date_approved_toxin': !exists(json, 'date_approved_toxin') ? undefined : new Date(json['date_approved_toxin']),
         'date_approved_cluster': !exists(json, 'date_approved_cluster') ? undefined : new Date(json['date_approved_cluster']),
         'date_approved_cdiff': !exists(json, 'date_approved_cdiff') ? undefined : new Date(json['date_approved_cdiff']),
+        'approval_status': !exists(json, 'approval_status') ? undefined : json['approval_status'],
         'qc_provided_species': !exists(json, 'qc_provided_species') ? undefined : json['qc_provided_species'],
         'qc_genome1x': !exists(json, 'qc_genome1x') ? undefined : json['qc_genome1x'],
         'qc_genome10x': !exists(json, 'qc_genome10x') ? undefined : json['qc_genome10x'],
@@ -841,6 +848,7 @@ export function AnalysisResultAllOfToJSON(value?: AnalysisResultAllOf): any {
         'date_approved_toxin': value.date_approved_toxin === undefined ? undefined : value.date_approved_toxin.toISOString(),
         'date_approved_cluster': value.date_approved_cluster === undefined ? undefined : value.date_approved_cluster.toISOString(),
         'date_approved_cdiff': value.date_approved_cdiff === undefined ? undefined : value.date_approved_cdiff.toISOString(),
+        'approval_status': value.approval_status,
         'qc_provided_species': value.qc_provided_species,
         'qc_genome1x': value.qc_genome1x,
         'qc_genome10x': value.qc_genome10x,
