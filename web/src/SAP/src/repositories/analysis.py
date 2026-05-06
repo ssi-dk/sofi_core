@@ -159,6 +159,11 @@ def get_analysis_page_bundle(
     for field in distinct:
         distinct_group[field] = {"$addToSet": f"${field}"}
 
+    date_approval_fields = [
+        ("serotype", "serotype_final"), ("amr","amr_profile"), ("toxin", "toxins_final"), 
+        ("cluster","cluster_id"), ("qc", "qc_final"), ("st", "st_final"), ("cdiff","cdiff_details")
+    ]
+
     base_pipeline = [
         {
             "$lookup": {
@@ -223,16 +228,31 @@ def get_analysis_page_bundle(
             }
         },
         {
-            "$addFields": {
-            "approval_status": {
-                "$ifNull": [
-                    "$matched_matrix_entry.sequence_id",
-                    "pending"
-                ]
-            }
+            "$set": {
+                "approval_status": {
+                    "$ifNull": [
+                        "$matched_matrix_entry.sequence_id",
+                        "pending"
+                    ]
+                },
+                **{
+                    f"date_approved_{name}": {
+                        "$cond": [
+                            {
+                                "$eq": [
+                                    f"$matched_matrix_entry.{field}",
+                                    "approved",
+                                ]
+                            },
+                            "$approval_info.timestamp",
+                            None,
+                        ]
+                    }
+                    for name, field in date_approval_fields
+                }
             }
         },
-        {"$project": {"approval_info": 0}},
+        {"$project": {"approval_info": 0, "matched_matrix_entry": 0}},
         {
             "$match": {
                 "$or": [
@@ -252,8 +272,6 @@ def get_analysis_page_bundle(
     ]
 
     base_pipeline = list(filter(lambda x: x is not None, base_pipeline))
-
-    print("BASE PIPELINE:",json.dumps(base_pipeline),file=sys.stderr)
 
     pipeline = base_pipeline + [
         {

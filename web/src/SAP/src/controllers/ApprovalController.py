@@ -56,6 +56,8 @@ def create_approval(user, token_info, body: ApprovalRequest):
     # set approval dates on  approved sequences before sending them for
     # approval, so the timestamps can be transferred to upstream metadata
     # services, if needed.
+    # Note that this field is overwritten in the fetch query, and is computed with the approval status.
+    # This value is ONLY used when read by other services.
     analysis_timestamp_updates = {}
     seq_update = {}
     for seq in body.matrix:
