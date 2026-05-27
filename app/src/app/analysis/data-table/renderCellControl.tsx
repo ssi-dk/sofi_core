@@ -57,15 +57,19 @@ export const RenderCellControl = (props: RenderCellControlProps) => {
         GLOBAL_EDITING_CB.get(rowId).forEach(cb => cb(editReasonCount - 1))
     }, [editReasonCount, rowId])
 
-    const isEditing = editReasonCount > 0;
 
     const rowInstitution = displayData.find((row) => row.sequence_id == rowId)
         .institution;
+
     const editIsAllowed =
-        columnConfigs[columnId].editable ||
-        user.institution == rowInstitution ||
-        columnConfigs[columnId].cross_org_editable ||
-        user.data_clearance === "all";
+        !columnConfigs[columnId].computed && (
+            columnConfigs[columnId].editable ||
+            user.institution == rowInstitution ||
+            columnConfigs[columnId].cross_org_editable ||
+            user.data_clearance === "all");
+
+    const isEditing = editReasonCount > 0 && editIsAllowed;
+
 
     if (value !== 0 && value !== false && !value && !editIsAllowed) {
         return <div />;
