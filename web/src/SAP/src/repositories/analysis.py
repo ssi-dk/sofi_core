@@ -111,35 +111,40 @@ def update_analysis_cache():
                 "pipeline": [
                     { "$match": { "status": "submitted" } },
                     { "$sort": { "timestamp": -1 } },
-                    { "$limit": 1 }
                 ],
                 "as": "approval_info"
             }
         },
         {
             "$set": {
-                "approval_info": { "$first": "$approval_info" }
-            }
-        },
-        {
-            "$set": {
-                "matched_matrix_entry": {
-                    "$first": {
-                        "$map": {
-                            "input": {
-                            "$filter": {
-                                "input": {
-                                    "$objectToArray":
-                                        "$approval_info.matrix"
-                                    },
-                                    "as": "m",
-                                    "cond": {
-                                    "$eq": ["$$m.k", "$sequence_id"]
+                "sequence_approvals": {
+                    "$map": {
+                        "input": "$approval_info",
+                        "as": "approval",
+                        "in": {
+                            "timestamp": "$$approval.timestamp",
+                            "matrix_entry": {
+                                "$first": {
+                                    "$map": {
+                                        "input": {
+                                            "$filter": {
+                                                "input": {
+                                                    "$objectToArray": "$$approval.matrix"
+                                                },
+                                                "as": "m",
+                                                "cond": {
+                                                    "$eq": [
+                                                    "$$m.k",
+                                                    "$sequence_id"
+                                                    ]
+                                                }
+                                            }
+                                        },
+                                        "as": "m",
+                                        "in": "$$m.v"
+                                    }
                                 }
                             }
-                            },
-                            "as": "m",
-                            "in": "$$m.v"
                         }
                     }
                 }
@@ -148,29 +153,61 @@ def update_analysis_cache():
         {
             "$set": {
                 "approval_status": {
-                    "$ifNull": [
-                        "$matched_matrix_entry.sequence_id",
-                        "pending"
+                    "$cond": [
+                        {
+                            "$gt": [
+                                {
+                                    "$size": {
+                                        "$filter": {
+                                            "input": "$sequence_approvals",
+                                            "as": "a",
+                                            "cond": {
+                                                "$eq": [
+                                                    "$$a.matrix_entry.sequence_id",
+                                                    "approved",
+                                                ]
+                                            },
+                                        }
+                                    }
+                                },
+                                0,
+                            ]
+                        },
+                        "approved",
+                        "pending",
                     ]
                 },
                 **{
                     f"date_approved_{name}": {
-                        "$cond": [
+                        "$ifNull": [
                             {
-                                "$eq": [
-                                    f"$matched_matrix_entry.{field}",
-                                    "approved",
-                                ]
+                                "$last": {
+                                    "$map": {
+                                        "input": {
+                                            "$filter": {
+                                                "input": "$sequence_approvals",
+                                                "as": "a",
+                                                "cond": {
+                                                    "$eq": [
+                                                        f"$$a.matrix_entry.{field}",
+                                                        "approved",
+                                                    ]
+                                                },
+                                            }
+                                        },
+                                        "as": "a",
+                                        "in": "$$a.timestamp",
+                                    }
+                                }
                             },
-                            "$approval_info.timestamp",
                             None,
                         ]
                     }
                     for name, field in date_approval_fields
-                }
+                },
             }
         },
-        {"$project": {"approval_info": 0, "matched_matrix_entry": 0}},
+        {"$project": {"approval_info": 0, "sequence_approvals": 0}},
         {"$out": ANALYSIS_CACHE_COL_NAME}
     ]
 

@@ -40,6 +40,7 @@ export const Judgement = <T extends NotEmpty>(props: Props<T>) => {
   const [error, setError] = React.useState<boolean>();
 
   const rootStateData = useSelector<RootState>((s) => s.entities.analysis);
+  const approvalMatrix = useSelector<RootState>(s => s.entities);
 
   const data = React.useMemo(() => {
     return Object.values(rootStateData ?? {}) as AnalysisResult[];
@@ -137,7 +138,11 @@ export const Judgement = <T extends NotEmpty>(props: Props<T>) => {
           ([k, v]) => v && checkColumnIsVisible(k as keyof AnalysisResult)
         )
         .map(([k, _]) => k);
+
+      console.log(approvalMatrix)
       approvedFields.forEach((field) => {
+        // Only check for dependent fields that are not already approved
+        
         const needed = getDependentColumns(field as keyof AnalysisResult);
         for (const e of needed) {
           if (!approvedFields.some((x) => x === e)) {
@@ -178,6 +183,7 @@ export const Judgement = <T extends NotEmpty>(props: Props<T>) => {
     setNeedsApproveNotify,
     getDependentColumns,
     checkColumnIsVisible,
+    approvalMatrix
   ]);
 
   const rejectSelection = React.useCallback(() => {
