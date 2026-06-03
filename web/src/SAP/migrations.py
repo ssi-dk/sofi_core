@@ -1,7 +1,7 @@
 import sys
 
 from web.src.SAP.common.config.column_config import columns
-from web.src.SAP.common.database import MIGRATIONS_COL_NAME,DB_NAME,ANALYSIS_COL_NAME, get_connection
+from web.src.SAP.common.database import MIGRATIONS_COL_NAME,DB_NAME,ANALYSIS_COL_NAME, PROJECT_PRIVACY_COL_NAME, get_connection
 import pymongo
 
 def create_migrations_collection():
@@ -39,3 +39,75 @@ def enforce_dates():
                 }
             ]
         )
+
+def create_projects():
+    conn = get_connection()
+    db = conn[DB_NAME]
+    analysis = db[ANALYSIS_COL_NAME]
+    
+    project_keys_pipeline = [
+        {
+            "$group": {
+            "_id": {
+                "institution": "$institution",
+                "project_title": "$project_title",
+                "project_number": "$project_number"
+            }
+            }
+        },
+        {
+            "$project": {
+                "_id": 0,
+                "institution": "$_id.institution",
+                "project_title": "$_id.project_title",
+                "project_number": "$_id.project_number",
+
+                "project_key": {
+                    "$reduce": {
+                        "input": {
+                            "$filter": {
+                            "input": [
+                                "$_id.institution",
+                                "$_id.project_title",
+                                {
+                                "$cond": [
+                                    { "$ne": ["$_id.project_number", None] },
+                                    { "$toString": "$_id.project_number" },
+                                    None
+                                ]
+                                }
+                            ],
+                            "as": "part",
+                            "cond": { "$ne": ["$$part", None] }
+                            }
+                        },
+                        "initialValue": "",
+                        "in": {
+                            "$cond": [
+                            { "$eq": ["$$value", ""] },
+                            "$$this",
+                            { "$concat": ["$$value", "-", "$$this"] }
+                            ]
+                        }
+                    }
+                }
+            }
+        }
+    ]
+
+    project_coll = db[PROJECT_PRIVACY_COL_NAME]
+
+    for project_agg in analysis.aggregate(project_keys_pipeline):
+
+        # Find if old version of this project is private
+        private = False
+        project_number = None
+        if "project_number" in project_agg:
+            project_number = project_agg["project_number"]
+            private = project_coll.find_one({"institution": project_agg["institution"], "project_number": project_number}) is not None
+
+
+        project_coll.insert({"project_key": project_agg["project_key"], "private": private, "institution": project_agg["institution"], "project_number": project_number})
+
+    # Delete old versions
+    project_coll.delete_many({"private": None})

@@ -91,6 +91,53 @@ def update_analysis_cache():
             }
         },
         {
+            "$set": {
+                "project_key": {
+                    "$reduce": {
+                        "input": {
+                            "$filter": {
+                                "input": [
+                                    "$institution",
+                                    "$project_title",
+                                    {
+                                    "$cond": [
+                                        {
+                                        "$ne": [
+                                            "$project_number",
+                                            None
+                                        ]
+                                        },
+                                        {
+                                        "$toString":
+                                            "$project_number"
+                                        },
+                                        None
+                                    ]
+                                    }
+                                ],
+                                "as": "part",
+                                "cond": { "$ne": ["$$part", None] }
+                            }
+                        },
+                        "initialValue": "",
+                        "in": {
+                            "$cond": [
+                                { "$eq": ["$$value", ""] },
+                                "$$this",
+                                {
+                                    "$concat": [
+                                    "$$value",
+                                    "-",
+                                    "$$this"
+                                    ]
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        {
             "$lookup": {
                 "from": MANUAL_METADATA_COL_NAME,
                 "localField": "isolate_id",
@@ -238,8 +285,8 @@ def get_analysis_page_bundle(
         {
             "$lookup": {
                 "from": PROJECT_PRIVACY_COL_NAME,
-                "localField": "project_number",
-                "foreignField": "project_number",
+                "localField": "project_key",
+                "foreignField": "project_key",
                 "as": "project_privacy",
             }
         }
@@ -249,6 +296,7 @@ def get_analysis_page_bundle(
             "$match": {
                 "$or": [
                     {"project_privacy": {"$eq": []}},
+                    {"project_privacy.private": False},
                     {"project_privacy.institution": institution},
                 ]
             }
