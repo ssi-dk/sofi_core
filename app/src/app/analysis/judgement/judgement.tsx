@@ -139,7 +139,6 @@ export const Judgement = <T extends NotEmpty>(props: Props<T>) => {
         )
         .map(([k, _]) => k);
 
-      console.log(approvalMatrix)
       approvedFields.forEach((field) => {
         // Only check for dependent fields that are not already approved
         const needed = getDependentColumns(field as keyof AnalysisResult).filter(field => approvalMatrix[sequenceId][field] !== "approved");
