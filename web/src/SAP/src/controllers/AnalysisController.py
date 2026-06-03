@@ -285,7 +285,7 @@ def submit_changes(
     update_analysis(body)
     res = dict()
     for u in updates:
-        res[u] = get_single_analysis(u)
+        res[u] = get_analysis_with_metadata(u)
     return jsonify(res)
 
 

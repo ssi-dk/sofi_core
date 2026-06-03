@@ -391,66 +391,10 @@ def get_single_analysis_by_object_id(id: str) -> Dict[str, Any]:
     return analysis.find_one(ObjectId(id))
 
 def get_analysis_with_metadata(sequence_id: str) -> Dict[str, Any]:
+    ensure_cache_updated()
+
     conn = get_connection()
     mydb = conn[DB_NAME]
-    analysis = mydb[ANALYSIS_COL_NAME]
-
-    fetch_pipeline = [
-        {"$match": {"sequence_id": sequence_id}},
-        {"$sort": {"_id": pymongo.DESCENDING}},
-        {
-            "$lookup": {
-                "from": TBR_METADATA_COL_NAME,
-                "localField": "isolate_id",
-                "foreignField": "isolate_id",
-                "as": "metadata",
-            }
-        },
-        {
-            "$replaceRoot": {
-                "newRoot": {
-                    "$mergeObjects": [{"$arrayElemAt": ["$metadata", 0]}, "$$ROOT"]
-                }
-            }
-        },
-        {
-            "$lookup": {
-                "from": LIMS_METADATA_COL_NAME,
-                "localField": "isolate_id",
-                "foreignField": "isolate_id",
-                "as": "metadata",
-            }
-        },
-        {
-            "$replaceRoot": {
-                "newRoot": {
-                    "$mergeObjects": [{"$arrayElemAt": ["$metadata", 0]}, "$$ROOT"]
-                }
-            }
-        },
-        {
-            "$lookup": {
-                "from": MANUAL_METADATA_COL_NAME,
-                "localField": "isolate_id",
-                "foreignField": "isolate_id",
-                "as": "metadata",
-            }
-        },
-        {
-            "$replaceRoot": {
-                "newRoot": {
-                    "$mergeObjects": [{"$arrayElemAt": ["$metadata", 0]}, "$$ROOT"]
-                }
-            }
-        },
-        {"$set": { "id": {"$toString": "$_id"}}},
-        {"$unset": ["_id", "metadata"]},
-        {"$limit": (int(1))},
-    ]
-
-    res = list(analysis.aggregate(fetch_pipeline))
-
-    if len(res) == 1:
-        return res[0]
-    else:
-        return None
+    analysis = mydb[ANALYSIS_CACHE_COL_NAME]
+    return analysis.find_one({"sequence_id": sequence_id}, {"_id": 0})
+    
