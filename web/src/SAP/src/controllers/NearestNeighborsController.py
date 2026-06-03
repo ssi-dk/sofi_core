@@ -10,7 +10,7 @@ from flask.json import jsonify
 from pydantic import StrictBool, StrictInt
 
 from web.src.SAP.generated.models.nearest_neighbors_request import NearestNeighborsRequest
-from web.src.SAP.src.repositories.analysis import get_analysis_page_bundle, get_analysis_with_metadata, get_single_analysis_by_object_id
+from web.src.SAP.src.repositories.analysis import get_analysis_page_bundle, get_single_analysis, get_single_analysis_by_object_id
 from web.src.SAP.src.repositories.samples import get_single_sample
 from web.src.SAP.src.security.permission_check import assert_user_has, authorized_columns
 from web.src.services.bio_api.openapi.api.nearest_neighbors_api import NearestNeighborsApi
@@ -65,7 +65,7 @@ def post(user, token, body: NearestNeighborsRequest):
                 and token["institution"] != row["institution"]
             ):
                 return None
-            return get_analysis_with_metadata(row["sequence_id"])
+            return get_single_analysis(row["sequence_id"])
 
         result = list(filter(lambda x: x is not None, list(map(lambda r : get_result(r["id"]), response_dict["result"]))))
 

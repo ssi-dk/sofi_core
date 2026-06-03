@@ -378,23 +378,24 @@ def update_analysis(change):
     invalidate_analysis_cache()
 
 
-def get_single_analysis(id: str) -> Dict[str, Any]:
-    conn = get_connection()
-    mydb = conn[DB_NAME]
-    analysis = mydb[ANALYSIS_COL_NAME]
-    return analysis.find_one({"sequence_id": f"{id}"}, {"_id": 0})
-
-def get_single_analysis_by_object_id(id: str) -> Dict[str, Any]:
-    conn = get_connection()
-    mydb = conn[DB_NAME]
-    analysis = mydb[ANALYSIS_COL_NAME]
-    return analysis.find_one(ObjectId(id))
-
-def get_analysis_with_metadata(sequence_id: str) -> Dict[str, Any]:
+def get_single_analysis(sequence_id: str) -> Optional[Dict[str, Any]]:
     ensure_cache_updated()
 
     conn = get_connection()
     mydb = conn[DB_NAME]
     analysis = mydb[ANALYSIS_CACHE_COL_NAME]
     return analysis.find_one({"sequence_id": sequence_id}, {"_id": 0})
+
+def get_single_analysis_by_object_id(id: str) -> Optional[Dict[str, Any]]:
+    ensure_cache_updated()
+
+    conn = get_connection()
+    mydb = conn[DB_NAME]
+    analysis = mydb[ANALYSIS_COL_NAME]
+    analysis_obj = analysis.find_one(ObjectId(id))
+    if analysis_obj is None:
+        return None
+
+    return get_single_analysis(analysis_obj["sequence_id"])
+
     
