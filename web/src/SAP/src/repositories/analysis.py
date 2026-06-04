@@ -196,7 +196,7 @@ def update_analysis_cache():
                                     ]
                                 },
                                 "then": "pending",
-                                "else": "accepted"
+                                "else": "approved"
                             }
                         }
                     }
