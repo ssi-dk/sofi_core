@@ -63,6 +63,8 @@ def update_analysis_cache():
         ("cluster","cluster_id"), ("qc", "qc_final"), ("st", "st_final"), ("cdiff","cdiff_details"), ("epi","date_epi")
     ]
 
+    primary_approval_fields = ["sequence_id","st_final", "qc_final"]
+
     pipeline = [
         {
             "$lookup": {
@@ -152,30 +154,52 @@ def update_analysis_cache():
         },
         {
             "$set": {
-                "approval_status": {
-                    "$cond": [
-                        {
-                            "$gt": [
-                                {
-                                    "$size": {
-                                        "$filter": {
-                                            "input": "$sequence_approvals",
-                                            "as": "a",
-                                            "cond": {
-                                                "$eq": [
-                                                    "$$a.matrix_entry.sequence_id",
-                                                    "approved",
-                                                ]
-                                            },
-                                        }
+                **{
+                    f"{field}_status": {
+                        "$ifNull": [
+                            {
+                                "$last": {
+                                    "$filter": {
+                                        "input": {
+                                            "$map": {
+                                                "input": "$sequence_approvals",
+                                                "as": "a",
+                                                "in": f"$$a.matrix_entry.{field}"
+                                            }
+                                        },
+                                        "as": "status",
+                                        "cond": { "$ne": ["$$status", None] }
                                     }
-                                },
-                                0,
+                                }
+                            },
+                            "pending"
+                        ]
+                    } for field in primary_approval_fields
+                },
+            }
+        },
+        {
+            "$set": {
+                 "approval_status": {
+                    "$cond": {
+                        "if": {
+                            "$or": [
+                                {"$eq": [f"${field}_status", "rejected"]} for field in primary_approval_fields
                             ]
                         },
-                        "approved",
-                        "pending",
-                    ]
+                        "then": "rejected",
+                        "else": {
+                            "$cond": {
+                                "if": {
+                                    "$or": [
+                                           {"$eq": [f"${field}_status", "pending"]} for field in primary_approval_fields
+                                    ]
+                                },
+                                "then": "pending",
+                                "else": "accepted"
+                            }
+                        }
+                    }
                 },
                 **{
                     f"date_approved_{name}": {
@@ -210,6 +234,8 @@ def update_analysis_cache():
         {"$project": {"approval_info": 0, "sequence_approvals": 0}},
         {"$out": ANALYSIS_CACHE_COL_NAME}
     ]
+
+    print(json.dumps(pipeline),file=sys.stderr)
 
     analysis.aggregate(pipeline)
 
