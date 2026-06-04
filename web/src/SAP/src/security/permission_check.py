@@ -42,8 +42,6 @@ def user_has(permission: str, token_info: Dict[str, str]) -> bool:
     if PERMISSION_CONFIG is None:
         return False
 
-    print(PERMISSION_CONFIG,file=sys.stderr)
-
     if not "security-groups" in token_info:
         return False
 
