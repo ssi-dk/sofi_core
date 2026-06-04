@@ -38,6 +38,7 @@ export * from './Permission';
 export * from './PersonalData';
 export * from './PersonalIdentifierType';
 export * from './Phenotype';
+export * from './Project';
 export * from './QueryExpression';
 export * from './QueryOperand';
 export * from './QueryOperator';

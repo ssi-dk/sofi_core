@@ -103,7 +103,7 @@ def create_projects():
         private = False
         project_number = None
         if "project_number" in project_agg:
-            project_number = project_agg["project_number"]
+            project_number = int(project_agg["project_number"])
             private = project_coll.find_one({"institution": project_agg["institution"], "project_number": project_number}) is not None
 
 

@@ -444,6 +444,51 @@ paths:
       - nearest_neighbors
       x-openapi-router-controller: web.src.SAP.generated.controllers.nearest_neighbors_controller
       x-codegen-request-body-name: body
+  /projects:
+    get:
+      description: Gets projects available to user
+      operationId: get_projects
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Project'
+                type: array
+          description: project infos
+      tags:
+      - projects
+      x-openapi-router-controller: web.src.SAP.generated.controllers.projects_controller
+  /projects/{project_key}/{is_private}:
+    post:
+      description: Sets the private value of a project
+      operationId: set_is_private
+      parameters:
+      - description: project_key of modified project
+        explode: false
+        in: path
+        name: project_key
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: boolean value to set the is_private field
+        explode: false
+        in: path
+        name: is_private
+        required: true
+        schema:
+          type: boolean
+        style: simple
+      responses:
+        "200":
+          description: Success
+        "404":
+          description: Invalid project key or inssuficient access
+      tags:
+      - projects
+      x-openapi-router-controller: web.src.SAP.generated.controllers.projects_controller
   /samples/add_to_cluster:
     post:
       operationId: add_to_cluster
@@ -1910,6 +1955,17 @@ components:
       - error
       title: Status
       type: string
+    Project:
+      example:
+        private: true
+        project_key: project_key
+      properties:
+        project_key:
+          title: projectKey
+          type: string
+        private:
+          title: private
+          type: boolean
     Workspace:
       example:
         institution: institution

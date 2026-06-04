@@ -5,6 +5,7 @@ export * from './GdprApi';
 export * from './HealthApi';
 export * from './MicroreactApi';
 export * from './NearestNeighborsApi';
+export * from './ProjectsApi';
 export * from './SamplesApi';
 export * from './UploadApi';
 export * from './UserApi';
