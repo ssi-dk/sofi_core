@@ -26,7 +26,7 @@ export const setIsPrivate = (projectKey: string, isPrivate: boolean) => {
     base.url = getUrl(base.url);
     base.update = {
         projects: (oldvalue) => {
-            const newValue: Project[] = structuredClone(oldvalue);
+            const newValue: Project[] = [...oldvalue];
             newValue.find(p => p.project_key === projectKey)!.is_private = isPrivate;
             return newValue;
         }

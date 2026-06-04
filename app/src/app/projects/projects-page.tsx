@@ -70,7 +70,7 @@ export const ProjectsPage = () => {
                             </Td>
                             <Td>{p.project_number}</Td>
                             <Td>{p.count}</Td>
-                            <Td>{p.is_private ? t("yes") : t("no")}<IconButton icon={<RepeatClockIcon />} onClick={() => setIsPrivateMut(p.project_key, !p.is_private)} /></Td>
+                            <Td>{p.is_private ? t("yes") : t("no")}<IconButton aria-label="Switch project privacy" icon={<RepeatClockIcon />} onClick={() => setIsPrivateMut(p.project_key, !p.is_private)} /></Td>
                         </Tr>)}
                     </Tbody>
                 </Table>
