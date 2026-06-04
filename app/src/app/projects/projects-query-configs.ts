@@ -25,8 +25,8 @@ export const setIsPrivate = (projectKey: string, isPrivate: boolean) => {
     const base = setIsPrivateApi({ projectKey, isPrivate });
     base.url = getUrl(base.url);
     base.update = {
-        projects: (oldvalue) => {
-            const newValue: Project[] = [...oldvalue];
+        projects: (oldvalue: Project[]) => {
+            const newValue: Project[] = oldvalue.map(p => ({...p})); // Compiler is too old for structured clone :(((((
             newValue.find(p => p.project_key === projectKey)!.is_private = isPrivate;
             return newValue;
         }

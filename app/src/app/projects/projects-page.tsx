@@ -46,7 +46,7 @@ export const ProjectsPage = () => {
                 margin="8"
             >
                 <Heading>{institution} {t("Projects")}</Heading>
-                <Table>
+                <Table variant="striped">
                     <Thead>
                         <Tr>
                             <Th>Identifier</Th>
@@ -58,19 +58,24 @@ export const ProjectsPage = () => {
                         </Tr>
                     </Thead>
                     <Tbody>
-                        {projects && projects.map(p => <Tr key={p.project_key}>
-                            <Td>
-                                {p.project_key}
-                            </Td>
-                            <Td>
-                                {institution}
-                            </Td>
-                            <Td>
-                                {p.project_title}
-                            </Td>
+                        {projects && projects.map((p,i) => <Tr key={p.project_key}>
+                            <Td>{p.project_key}</Td>
+                            <Td>{institution}</Td>
+                            <Td>{p.project_title}</Td>
                             <Td>{p.project_number}</Td>
                             <Td>{p.count}</Td>
-                            <Td>{p.is_private ? t("yes") : t("no")}<IconButton aria-label="Switch project privacy" icon={<RepeatClockIcon />} onClick={() => setIsPrivateMut(p.project_key, !p.is_private)} /></Td>
+                            <Td>
+                                <Flex style={{width: "70px"}} justify="space-between" alignItems="center">
+
+                                {p.is_private ? t("yes") : t("no")}<IconButton 
+                                    style={ {backgroundColor: i % 2 == 0 ? "white" : undefined, border: "1px gray solid"}}
+                                    marginLeft={2}
+                                    aria-label="Switch project privacy" 
+                                    icon={<RepeatClockIcon />} 
+                                    onClick={() => setIsPrivateMut(p.project_key, !p.is_private)} 
+                                    />
+                                </Flex>
+                            </Td>
                         </Tr>)}
                     </Tbody>
                 </Table>
