@@ -107,7 +107,19 @@ def create_projects():
             private = project_coll.find_one({"institution": project_agg["institution"], "project_number": project_number}) is not None
 
 
-        project_coll.insert({"project_key": project_agg["project_key"], "private": private, "institution": project_agg["institution"], "project_number": project_number})
+        project_title = project_agg["project_title"] if "project_title" in project_agg else None
+
+
+        project_coll.insert({
+            "project_key": project_agg["project_key"], 
+            "is_private": private, 
+            "institution": project_agg["institution"], 
+            "project_number": project_number,
+            "project_title": project_title,
+        })
 
     # Delete old versions
-    project_coll.delete_many({"private": None})
+    project_coll.delete_many({"is_private": None})
+
+    #Ensure index on collection primary key
+    project_coll.create_index([("project_key", pymongo.DESCENDING)])

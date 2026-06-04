@@ -22,6 +22,7 @@
 // phylogeny.write   -- Kan bruge sammenlignings værktøjerne, samt slette phylogeny data
 // permissions.write -- Kan oprette/inaktivere brugere og tilføje/fjerne privilegier til/fra brugere
 // gdpr.manage       -- Can access PII data for the purposes of responding to GDPR inqueries, as well as forgetting users.
+// projects.manage   -- Can access and change the privacy of the their assosicated institutions projects.
 //
 // It is helpful when editing to change the file extension to .ts and uncomment the lines below:
 //
@@ -56,6 +57,7 @@
         "phylogeny.read",
         "phylogeny.write",
         "permissions.write",
-        "gdpr.manage"
+        "gdpr.manage",
+        "projects.manage"
     ]
 }

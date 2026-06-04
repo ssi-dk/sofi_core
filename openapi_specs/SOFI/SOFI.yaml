@@ -1840,7 +1840,7 @@ components:
 
     Permission:
       type: string
-      enum: ["search", "export", "approve", "phylogeny.read", "phylogeny.write", "gdpr.manage", "permissions.write"]
+      enum: ["search", "export", "approve", "phylogeny.read", "phylogeny.write", "gdpr.manage", "permissions.write", "projects.manage"]
 
     UserInfo:
       type: object
@@ -1909,9 +1909,23 @@ components:
         project_key:
           type: string
           title: projectKey
-        private:
+        project_title:
+          type: string
+          title: title
+        project_number:
+          type: string
+          title: projectNumber
+        count:
+          type: integer
+          title: count
+
+        is_private:
           type: boolean
-          title: private
+          title: isPrivate
+      required:
+      - project_key
+      - is_private
+      - count
 
     Workspace:
       properties:

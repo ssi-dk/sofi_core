@@ -17,26 +17,41 @@ class Project(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, project_key=None, private=None):  # noqa: E501
+    def __init__(self, project_key=None, project_title=None, project_number=None, count=None, is_private=None):  # noqa: E501
         """Project - a model defined in OpenAPI
 
         :param project_key: The project_key of this Project.  # noqa: E501
         :type project_key: str
-        :param private: The private of this Project.  # noqa: E501
-        :type private: bool
+        :param project_title: The project_title of this Project.  # noqa: E501
+        :type project_title: str
+        :param project_number: The project_number of this Project.  # noqa: E501
+        :type project_number: str
+        :param count: The count of this Project.  # noqa: E501
+        :type count: int
+        :param is_private: The is_private of this Project.  # noqa: E501
+        :type is_private: bool
         """
         self.openapi_types = {
             'project_key': str,
-            'private': bool,
+            'project_title': str,
+            'project_number': str,
+            'count': int,
+            'is_private': bool,
         }
 
         self.attribute_map = {
             'project_key': 'project_key',
-            'private': 'private',
+            'project_title': 'project_title',
+            'project_number': 'project_number',
+            'count': 'count',
+            'is_private': 'is_private',
         }
 
         self._project_key = project_key
-        self._private = private
+        self._project_title = project_title
+        self._project_number = project_number
+        self._count = count
+        self._is_private = is_private
 
     @classmethod
     def from_dict(cls, dikt):
@@ -67,26 +82,95 @@ class Project(Model):
         :param project_key: The project_key of this Project.
         :type project_key: str
         """
+        if project_key is None:
+            raise ValueError("Invalid value for `project_key`, must not be `None`")  # noqa: E501
 
         self._project_key = project_key
 
     @property
-    def private(self):
-        """Gets the private of this Project.
+    def project_title(self):
+        """Gets the project_title of this Project.
 
 
-        :return: The private of this Project.
+        :return: The project_title of this Project.
+        :rtype: str
+        """
+        return self._project_title
+
+    @project_title.setter
+    def project_title(self, project_title):
+        """Sets the project_title of this Project.
+
+
+        :param project_title: The project_title of this Project.
+        :type project_title: str
+        """
+
+        self._project_title = project_title
+
+    @property
+    def project_number(self):
+        """Gets the project_number of this Project.
+
+
+        :return: The project_number of this Project.
+        :rtype: str
+        """
+        return self._project_number
+
+    @project_number.setter
+    def project_number(self, project_number):
+        """Sets the project_number of this Project.
+
+
+        :param project_number: The project_number of this Project.
+        :type project_number: str
+        """
+
+        self._project_number = project_number
+
+    @property
+    def count(self):
+        """Gets the count of this Project.
+
+
+        :return: The count of this Project.
+        :rtype: int
+        """
+        return self._count
+
+    @count.setter
+    def count(self, count):
+        """Sets the count of this Project.
+
+
+        :param count: The count of this Project.
+        :type count: int
+        """
+        if count is None:
+            raise ValueError("Invalid value for `count`, must not be `None`")  # noqa: E501
+
+        self._count = count
+
+    @property
+    def is_private(self):
+        """Gets the is_private of this Project.
+
+
+        :return: The is_private of this Project.
         :rtype: bool
         """
-        return self._private
+        return self._is_private
 
-    @private.setter
-    def private(self, private):
-        """Sets the private of this Project.
+    @is_private.setter
+    def is_private(self, is_private):
+        """Sets the is_private of this Project.
 
 
-        :param private: The private of this Project.
-        :type private: bool
+        :param is_private: The is_private of this Project.
+        :type is_private: bool
         """
+        if is_private is None:
+            raise ValueError("Invalid value for `is_private`, must not be `None`")  # noqa: E501
 
-        self._private = private
+        self._is_private = is_private

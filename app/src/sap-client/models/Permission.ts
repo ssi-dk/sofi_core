@@ -23,7 +23,8 @@ export enum Permission {
     phylogeny_read = 'phylogeny.read',
     phylogeny_write = 'phylogeny.write',
     gdpr_manage = 'gdpr.manage',
-    permissions_write = 'permissions.write'
+    permissions_write = 'permissions.write',
+    projects_manage = 'projects.manage'
 }
 
 export function PermissionFromJSON(json: any): Permission {

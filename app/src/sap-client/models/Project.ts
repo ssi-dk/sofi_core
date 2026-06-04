@@ -23,19 +23,40 @@ export interface Project  {
      * @type {string}
      * @memberof Project
      */
-    project_key?: string;
+    project_key: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Project
+     */
+    project_title?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Project
+     */
+    project_number?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof Project
+     */
+    count: number;
     /**
      * 
      * @type {boolean}
      * @memberof Project
      */
-    _private?: boolean;
+    is_private: boolean;
 }
 
 export function ProjectFromJSON(json: any): Project {
     return {
-        'project_key': !exists(json, 'project_key') ? undefined : json['project_key'],
-        '_private': !exists(json, 'private') ? undefined : json['private'],
+        'project_key': json['project_key'],
+        'project_title': !exists(json, 'project_title') ? undefined : json['project_title'],
+        'project_number': !exists(json, 'project_number') ? undefined : json['project_number'],
+        'count': json['count'],
+        'is_private': json['is_private'],
     };
 }
 
@@ -45,7 +66,10 @@ export function ProjectToJSON(value?: Project): any {
     }
     return {
         'project_key': value.project_key,
-        'private': value._private,
+        'project_title': value.project_title,
+        'project_number': value.project_number,
+        'count': value.count,
+        'is_private': value.is_private,
     };
 }
 

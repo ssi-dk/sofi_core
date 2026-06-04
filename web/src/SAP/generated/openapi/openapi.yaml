@@ -1878,6 +1878,7 @@ components:
       - phylogeny.write
       - gdpr.manage
       - permissions.write
+      - projects.manage
       type: string
     UserInfo:
       example:
@@ -1957,15 +1958,31 @@ components:
       type: string
     Project:
       example:
-        private: true
+        is_private: true
+        project_number: project_number
         project_key: project_key
+        count: 0
+        project_title: project_title
       properties:
         project_key:
           title: projectKey
           type: string
-        private:
-          title: private
+        project_title:
+          title: title
+          type: string
+        project_number:
+          title: projectNumber
+          type: string
+        count:
+          title: count
+          type: integer
+        is_private:
+          title: isPrivate
           type: boolean
+      required:
+      - count
+      - is_private
+      - project_key
     Workspace:
       example:
         institution: institution

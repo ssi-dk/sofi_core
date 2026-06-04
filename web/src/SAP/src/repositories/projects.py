@@ -30,7 +30,7 @@ def set_is_private(project_key: str,institution: str, private: bool):
         conn = get_connection()
         db = conn[DB_NAME]
         project_coll = db[PROJECT_PRIVACY_COL_NAME]
-        project_coll.update_one({"project_key": project_key}, {"$set": {"private": private}} )
+        project_coll.update_one({"project_key": project_key}, {"$set": {"is_private": private}} )
 
 def ensure_up_to_date() -> Dict[str,int]:
     # First check if the unqiues in the cache are the same as the ones in the project collection
@@ -131,4 +131,4 @@ def force_update_projects_collection():
         if "project_number" in project_agg:
             project_number = project_agg["project_number"]
 
-        project_coll.insert({"project_key": project_agg["project_key"], "private": False, "institution": project_agg["institution"], "project_number": project_number})
+        project_coll.insert({"project_key": project_agg["project_key"], "is_private": False, "institution": project_agg["institution"], "project_number": project_number})
