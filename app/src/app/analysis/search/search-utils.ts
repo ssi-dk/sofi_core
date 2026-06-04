@@ -31,20 +31,22 @@ export const getSearchHistory = () => {
   return history;
 };
 
-let callbacks = [];
 
-const registerHistoryCB = (cb: () => void) => {
+type HistoryCB = (clickedInHistory: boolean) => void;
+let callbacks: HistoryCB[] = [];
+
+const registerHistoryCB = (cb: HistoryCB) => {
   callbacks.push(cb);
 };
-const deRegisterHistoryCB = (cb: () => void) => {
+const deRegisterHistoryCB = (cb: HistoryCB) => {
   callbacks = callbacks.filter((c) => c !== cb);
 };
 /// THIS NEEDS THE CALLBACK TO BE STABLE! Otherwise it will deregister and reregister on every render
-export const useHistoryCB = (cb: () => void, executeInitially: boolean) => {
+export const useHistoryCB = (cb: HistoryCB, executeInitially: boolean) => {
   useEffect(() => {
     registerHistoryCB(cb);
     if (executeInitially) {
-      cb()
+      cb(false)
     }
     return () => deRegisterHistoryCB(cb);
   }, [cb, executeInitially])
@@ -63,7 +65,7 @@ export const setPinned = (item: SearchItem, pinned: boolean) => {
     }
   });
   saveSearchHistory(history);
-  callbacks.forEach((cb) => cb());
+  callbacks.forEach((cb) => cb(false));
 };
 
 export const recurseSearchTree = (
@@ -460,7 +462,7 @@ export const buildQueryFromFilters = (
   return createAndExpression(expressions);
 };
 
-export const appendToSearchHistory = (query: QueryExpression, searchString: string) => {
+export const appendToSearchHistory = (query: QueryExpression, searchString: string, clickedInHistory: boolean) => {
   if (recurseSearchTree(query).length == 0) {
     // Ignore empty searches
     return;
@@ -499,5 +501,5 @@ export const appendToSearchHistory = (query: QueryExpression, searchString: stri
     saveSearchHistory(newHistory);
   }
 
-  callbacks.forEach((c) => c());
+  callbacks.forEach((c) => c(clickedInHistory));
 };

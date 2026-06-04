@@ -97,7 +97,7 @@ import { UseApprovableColumns } from "./analysis-utils";
 const PRIMARY_APPROVAL_FIELDS = ["st_final", "qc_final"];
 const DEFAULT_PAGE_SIZE = 200;
 
-export type SearchQuery = AnalysisQuery & { clearAllFields?: boolean };
+export type SearchQuery = AnalysisQuery & { clearAllFields?: boolean, clickedInHistory?: boolean };
 
 let prevSearchTerms: Set<string> = new Set(); // NEEDS to be outside the react component to prevent un-needed rerender
 
@@ -625,7 +625,7 @@ export default function AnalysisPage() {
       dispatch({ type: "RESET/Analysis" });
       setLastSearchQuery(newQ);
       setLastSearchWs(workspace);
-      appendToSearchHistory(newExpression, searchString);
+      appendToSearchHistory(newExpression, searchString, q.clickedInHistory || false);
 
       const searchingWithWs = workspace && workspace.id !== "temp-workspace";
 
