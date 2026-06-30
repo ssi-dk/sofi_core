@@ -165,7 +165,9 @@ def agg_pipeline(changed_ids=None):
                 **userChangedCondition("resfinder_version", "$categories.resistance.resfinder_version"),
                 **userChangedCondition("sero_enterobase", "$categories.serotype.report.enterobase_serotype1"),
                 **userChangedCondition("sero_seqsero", "$categories.serotype.report.seqsero_serotype"),
+                **userChangedCondition("sero_sistr", "$categories.serotype.report.sistr_serotype"),
                 **userChangedCondition("sero_antigen_seqsero", "$categories.serotype.summary.antigenic_profile"),
+                **userChangedCondition("sero_antigen_sistr", "$categories.serotype.report.sistr_antigenic_profile"),
                 **userChangedCondition("sero_serotype_finder", "$categories.bifrost_sp_ecoli.summary.OH"),
                 **userChangedCondition("sero_d_tartrate", "$categories.serotype.summary.D-tartrate_pos10"),
                 "mlst_schema": {"$arrayElemAt": ["$mlstlookup.schema", 0]},
@@ -203,7 +205,6 @@ def agg_pipeline(changed_ids=None):
                     }
                 ),
                 **userChangedCondition("qc_action", "$categories.stamper.stamp.value"),
-                **userChangedCondition("qc_ambiguous_sites", "$categories.mapping_qc.summary.snps.x10_10%.snps"),
                 **userChangedCondition("qc_unclassified_reads", removeNullProperty(
                     {
                         "$round": [
@@ -288,14 +289,14 @@ def agg_pipeline(changed_ids=None):
                         }
                     }
                 )),
-                **userChangedCondition("qc_genome1x", "$categories.denovo_assembly.summary.length"),
-                **userChangedCondition("qc_genome10x", "$categories.mapping_qc.summary.values_at_floor_of_depth.x10.length"),
+                **userChangedCondition("qc_genome1x", "$categories.contigs.summary.length_1x"),
+                **userChangedCondition("qc_genome10x", "$categories.contigs.summary.length_10x"),
                 **userChangedCondition("qc_gsize_diff1x10", removeNullProperty(
                     {
                         "$let": {
                             "vars": {
-                                "x1": "$categories.denovo_assembly.summary.length",
-                                "x10": "$categories.mapping_qc.summary.values_at_floor_of_depth.x10.length",
+                                "x1": "$categories.contigs.summary.length_1x",
+                                "x10": "$categories.contigs.summary.length_10x",
                             },
                             "in": {
                                 "$subtract": ["$$x1", "$$x10"],
@@ -303,8 +304,8 @@ def agg_pipeline(changed_ids=None):
                         }
                     }
                 )),
-                **userChangedCondition("qc_avg_coverage", "$categories.denovo_assembly.summary.depth"),
-                **userChangedCondition("qc_num_contigs", "$categories.denovo_assembly.summary.contigs"),
+                **userChangedCondition("qc_avg_coverage", "$categories.contigs.summary.coverage_10x"),
+                **userChangedCondition("qc_num_contigs", "$categories.contigs.summary.contigs_10x"),
                 **userChangedCondition("qc_num_reads", "$categories.size_check.summary.num_of_reads"),
                 **userChangedCondition("trst", "$categories.bifrost_sp_cdiff.summary.TRST"),
                 **userChangedCondition("tcda", "$categories.bifrost_sp_cdiff.summary.tcdA"),
