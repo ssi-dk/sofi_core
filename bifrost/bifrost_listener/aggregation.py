@@ -1815,7 +1815,8 @@ def create_userchanged_migration_pipeline():
            "$merge": {
                "into": "sap_analysis_results",
                "on": "_id",
-               "whenMatched": "merge"
+               "whenMatched": "merge",
+               "whenNotMatched": "discard"
            }
         }
     ]
