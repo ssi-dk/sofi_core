@@ -8,6 +8,11 @@ COPY ./sofi-mr-server /app/
 
 WORKDIR /app
 
+RUN find /app -name ".git" -type f -delete
+
+RUN find . -name package.json -exec sed -i \
+  's#"htmlsvg": "github:hasankzl/htmlsvg"#"htmlsvg": "https://github.com/hasankzl/htmlsvg/archive/refs/heads/main.tar.gz"#g' {} \;
+
 # install produciton deps
 RUN npm install --omit=dev
 
