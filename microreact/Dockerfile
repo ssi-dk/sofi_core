@@ -20,6 +20,7 @@ RUN npm install --omit=dev
 
 FROM backend AS frontend
 
+
 # installs dev dependencies
 RUN npm install
 
