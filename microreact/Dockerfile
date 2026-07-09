@@ -13,6 +13,8 @@ RUN find /app -name ".git" -type f -delete
 RUN find . -name package.json -exec sed -i \
   's#"htmlsvg": "github:hasankzl/htmlsvg"#"htmlsvg": "https://gitlab.com/cgps/forks/htmlsvg/-/archive/main/htmlsvg-main.tar.gz"#g' {} \;
 
+RUN find . -name package-lock.json -delete
+
 # install produciton deps
 RUN npm install --omit=dev
 
