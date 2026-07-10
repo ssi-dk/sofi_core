@@ -8,6 +8,8 @@ COPY ./sofi-mr-server /app/
 
 WORKDIR /app
 
+RUN find /app -name ".git" -type f -delete
+
 # install produciton deps
 RUN npm install --omit=dev
 
