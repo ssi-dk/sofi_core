@@ -10,6 +10,9 @@ WORKDIR /app
 
 RUN find /app -name ".git" -type f -delete
 
+RUN git config --global url."https://gitlab.com/cgps/forks/htmlsvg.git".insteadOf \
+    "ssh://git@github.com/hasankzl/htmlsvg.git"
+
 # install produciton deps
 RUN npm install --omit=dev
 
