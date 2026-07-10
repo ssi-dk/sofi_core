@@ -12,11 +12,12 @@ RUN find /app -name ".git" -type f -delete
 
 RUN find . -name package.json -exec sed -i \
   's#"htmlsvg": "github:hasankzl/htmlsvg"#"htmlsvg": "git+https://gitlab.com/cgps/forks/htmlsvg.git"#g' {} \;
+  
 
+# install produciton deps
 RUN npm install --omit=dev --legacy-peer-deps
 
-  # install produciton deps
-RUN npm install --omit=dev
+# RUN npm install --omit=dev
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 
