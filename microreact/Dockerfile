@@ -23,7 +23,10 @@ RUN find . -name package-lock.json -exec sed -i \
   -e 's#github:hasankzl/htmlsvg#https://gitlab.com/cgps/forks/htmlsvg/-/archive/main/htmlsvg-main.tar.gz#g' \
   {} \;
 
-# install produciton deps
+
+RUN find . -name package-lock.json -exec sed -i '/"integrity":/d' {} \;
+
+  # install produciton deps
 RUN npm install --omit=dev
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
