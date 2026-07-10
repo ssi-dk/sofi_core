@@ -10,21 +10,10 @@ WORKDIR /app
 
 RUN find /app -name ".git" -type f -delete
 
-# Replace htmlsvg dependency in every package.json
 RUN find . -name package.json -exec sed -i \
-  -e 's#"htmlsvg": "github:hasankzl/htmlsvg"#"htmlsvg": "https://gitlab.com/cgps/forks/htmlsvg/-/archive/main/htmlsvg-main.tar.gz"#g' \
-  -e 's#"htmlsvg": "\\^1\\.2\\.3"#"htmlsvg": "https://gitlab.com/cgps/forks/htmlsvg/-/archive/main/htmlsvg-main.tar.gz"#g' \
-  {} \;
+  's#"htmlsvg": "github:hasankzl/htmlsvg"#"htmlsvg": "git+https://gitlab.com/cgps/forks/htmlsvg.git"#g' {} \;
 
-# Replace any resolved npm tarball or GitHub reference in every package-lock.json
-RUN find . -name package-lock.json -exec sed -i \
-  -e 's#https://registry.npmjs.org/htmlsvg/-/htmlsvg-1\.2\.3\.tgz#https://gitlab.com/cgps/forks/htmlsvg/-/archive/main/htmlsvg-main.tar.gz#g' \
-  -e 's#git+ssh://git@github\.com/hasankzlhtmlsvg\.git#https://gitlab.com/cgps/forks/htmlsvg/-/archive/main/htmlsvg-main.tar.gz#g' \
-  -e 's#github:hasankzl/htmlsvg#https://gitlab.com/cgps/forks/htmlsvg/-/archive/main/htmlsvg-main.tar.gz#g' \
-  {} \;
-
-
-RUN find . -name package-lock.json -exec sed -i '/"integrity":/d' {} \;
+RUN npm install --omit=dev --legacy-peer-deps
 
   # install produciton deps
 RUN npm install --omit=dev
