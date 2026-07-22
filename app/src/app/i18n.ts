@@ -69,6 +69,7 @@ const fieldDisplayNames = {
     infection_source: "Outbreak_source",
     date_sofi: "Date_SOFI",
     qc_detected_species: "QC_detected_species",
+    qc_second_sp: "QC_second_sp",
     species_final: "Species_final",
     subspecies: "Subspecies",
     serotype_final: "Serotype_final",
