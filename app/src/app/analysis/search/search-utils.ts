@@ -463,14 +463,14 @@ export const buildQueryFromFilters = (
   return createAndExpression(expressions);
 };
 
-const is_temp_ws_search = (query: QueryExpression | QueryOperand | null | undefined): boolean => {
+const isTempWSSearch = (query: QueryExpression | QueryOperand | null | undefined): boolean => {
 
   if (!query) {
     return false;
   }
 
   if (query.left || query.right) {
-    return is_temp_ws_search(query.left) || is_temp_ws_search(query.right)
+    return isTempWSSearch(query.left) || isTempWSSearch(query.right)
   }
   return "field" in query && query.field === "_id";
 }
@@ -482,7 +482,7 @@ export const appendToSearchHistory = (query: QueryExpression, searchString: stri
   }
 
   // Ignore searched made inside a temp workspace
-  if (is_temp_ws_search(query)) {
+  if (isTempWSSearch(query)) {
     return;
   }
 
