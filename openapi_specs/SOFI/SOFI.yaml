@@ -1367,6 +1367,8 @@ components:
           type: string
         run_id:
           type: string
+        full_runid:
+              type: string
         public_number:
           type: string
         primary_isolate:
@@ -1703,8 +1705,6 @@ components:
               type: string
             year:
               type: number
-            full_runid:
-              type: string
             sero_sistr:
               type: string
             sero_antigen_sistr:

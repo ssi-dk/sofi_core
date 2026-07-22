@@ -93,6 +93,12 @@ def agg_pipeline(changed_ids=None):
                 **userChangedCondition("isolate_id", "$categories.sample_info.summary.sample_name"),
                 **userChangedCondition("sequence_id", "$categories.sample_info.summary.sofi_sequence_id"),
                 **userChangedCondition("run_id", "$categories.sample_info.summary.experiment_name"), 
+                **userChangedCondition("full_runid", {
+                    "$arrayElemAt": [
+                        {"$split": ["$name","___"]}
+                        ,0
+                    ]
+                }), 
                 **userChangedCondition("date_run", {"$toDate": "$categories.sample_info.summary.sequence_run_date"}),
                 **userChangedCondition("year", {"$year": {"$toDate": "$categories.sample_info.summary.sequence_run_date"}}),
                 **userChangedCondition("institution", "$categories.sample_info.summary.institution"),
