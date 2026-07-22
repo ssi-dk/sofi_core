@@ -1368,7 +1368,9 @@ components:
         run_id:
           type: string
         full_runid:
-              type: string
+          type: string
+        year:
+          type: number
         public_number:
           type: string
         primary_isolate:
@@ -1557,6 +1559,10 @@ components:
               type: string
             sero_serotype_finder:
               type: string
+            sero_sistr:
+              type: string
+            sero_antigen_sistr:
+              type: string
             serotype_final:
               type: string
             adhesion_final:
@@ -1703,12 +1709,8 @@ components:
               type: string
             bifrost_amrfinderplus:
               type: string
-            year:
-              type: number
-            sero_sistr:
-              type: string
-            sero_antigen_sistr:
-              type: string
+
+            
             
 
 
