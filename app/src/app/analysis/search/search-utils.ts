@@ -1,3 +1,4 @@
+import { truncateSync } from "fs";
 import { useEffect } from "react";
 import {
   ApprovalStatus,
@@ -336,8 +337,8 @@ export const checkExpressionEquality = (
   return true;
 };
 
-export const cleanExpression = (expr?: QueryExpression |null) => {
-  if (expr === undefined || expr === null  || Object.keys(expr).length === 0) {
+export const cleanExpression = (expr?: QueryExpression | null) => {
+  if (expr === undefined || expr === null || Object.keys(expr).length === 0) {
     return null
   }
 
@@ -356,7 +357,7 @@ export const cleanExpression = (expr?: QueryExpression |null) => {
       }
     }
     if (left || right) {
-      if (expr.operator === QueryOperator.AND ||expr.operator === QueryOperator.OR) {
+      if (expr.operator === QueryOperator.AND || expr.operator === QueryOperator.OR) {
         return left || right
       } else {
         return {
@@ -375,10 +376,10 @@ export const cleanExpression = (expr?: QueryExpression |null) => {
   return null;
 }
 
-export const mergeExpressions = (operator: QueryOperator, left: QueryOperand |null, right: QueryOperand |null): QueryExpression => {
+export const mergeExpressions = (operator: QueryOperator, left: QueryOperand | null, right: QueryOperand | null): QueryExpression => {
   const cleanLeft = cleanExpression(left);
   const cleanRight = cleanExpression(right);
-  if (cleanLeft && cleanRight ) {
+  if (cleanLeft && cleanRight) {
     return {
       operator,
       left: cleanLeft,
@@ -400,24 +401,24 @@ export const mergeExpressions = (operator: QueryOperator, left: QueryOperand |nu
 
 const extractAnds = (expr: QueryExpression): QueryExpression[] => {
   if ("left" in expr && "right" in expr) {
-    const operator  = expr.operator || QueryOperator.AND;
+    const operator = expr.operator || QueryOperator.AND;
 
     if (operator === QueryOperator.AND) {
-      return [...extractAnds(expr.left),...extractAnds(expr.right)]
+      return [...extractAnds(expr.left), ...extractAnds(expr.right)]
     }
   }
   return [expr];
 }
 
-export const dedupExpression = (expr: QueryExpression):QueryExpression => {
+export const dedupExpression = (expr: QueryExpression): QueryExpression => {
   if ("left" in expr && "right" in expr) {
-    const operator  = expr.operator || QueryOperator.AND;
+    const operator = expr.operator || QueryOperator.AND;
     if (operator === QueryOperator.AND) {
       const operands = extractAnds(expr).map(dedupExpression);
 
-      const deduppedOperands = operands.filter((o1,i) => !operands.slice(i+1).find(o2 => o1 !== o2 && checkExpressionEquality(o1,o2)))
-      
-      return deduppedOperands.reduce((a,b) => mergeExpressions(QueryOperator.AND,a,b))
+      const deduppedOperands = operands.filter((o1, i) => !operands.slice(i + 1).find(o2 => o1 !== o2 && checkExpressionEquality(o1, o2)))
+
+      return deduppedOperands.reduce((a, b) => mergeExpressions(QueryOperator.AND, a, b))
 
     }
   }
@@ -462,9 +463,26 @@ export const buildQueryFromFilters = (
   return createAndExpression(expressions);
 };
 
+const is_temp_ws_search = (query: QueryExpression | QueryOperand | null | undefined): boolean => {
+
+  if (!query) {
+    return false;
+  }
+
+  if (query.left || query.right) {
+    return is_temp_ws_search(query.left) || is_temp_ws_search(query.right)
+  }
+  return "field" in query && query.field === "_id";
+}
+
 export const appendToSearchHistory = (query: QueryExpression, searchString: string, clickedInHistory: boolean) => {
   if (recurseSearchTree(query).length == 0) {
     // Ignore empty searches
+    return;
+  }
+
+  // Ignore searched made inside a temp workspace
+  if (is_temp_ws_search(query)) {
     return;
   }
 
@@ -478,7 +496,7 @@ export const appendToSearchHistory = (query: QueryExpression, searchString: stri
     existing.timestamp = new Date().toISOString();
     if (!existing.searchString) {
       // If the old history item was made before searchString was a part of history, we need to use the most recent one
-      existing.searchString = searchString; 
+      existing.searchString = searchString;
     }
     saveSearchHistory([existing, ...withoutExisting]);
   } else {
