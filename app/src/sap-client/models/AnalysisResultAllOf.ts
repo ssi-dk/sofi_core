@@ -722,19 +722,13 @@ export interface AnalysisResultAllOf  {
      * @type {string}
      * @memberof AnalysisResultAllOf
      */
-    full_runid?: string;
+    sero_sistr?: string;
     /**
      * 
      * @type {string}
      * @memberof AnalysisResultAllOf
      */
-    sistr_serotype?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof AnalysisResultAllOf
-     */
-    sistr_antigenic_profile?: string;
+    sero_antigen_sistr?: string;
 }
 
 export function AnalysisResultAllOfFromJSON(json: any): AnalysisResultAllOf {
@@ -854,9 +848,8 @@ export function AnalysisResultAllOfFromJSON(json: any): AnalysisResultAllOf {
         'bifrost_sp_cdiff': !exists(json, 'bifrost_sp_cdiff') ? undefined : json['bifrost_sp_cdiff'],
         'bifrost_amrfinderplus': !exists(json, 'bifrost_amrfinderplus') ? undefined : json['bifrost_amrfinderplus'],
         'year': !exists(json, 'year') ? undefined : json['year'],
-        'full_runid': !exists(json, 'full_runid') ? undefined : json['full_runid'],
-        'sistr_serotype': !exists(json, 'sistr_serotype') ? undefined : json['sistr_serotype'],
-        'sistr_antigenic_profile': !exists(json, 'sistr_antigenic_profile') ? undefined : json['sistr_antigenic_profile'],
+        'sero_sistr': !exists(json, 'sero_sistr') ? undefined : json['sero_sistr'],
+        'sero_antigen_sistr': !exists(json, 'sero_antigen_sistr') ? undefined : json['sero_antigen_sistr'],
     };
 }
 
@@ -980,9 +973,8 @@ export function AnalysisResultAllOfToJSON(value?: AnalysisResultAllOf): any {
         'bifrost_sp_cdiff': value.bifrost_sp_cdiff,
         'bifrost_amrfinderplus': value.bifrost_amrfinderplus,
         'year': value.year,
-        'full_runid': value.full_runid,
-        'sistr_serotype': value.sistr_serotype,
-        'sistr_antigenic_profile': value.sistr_antigenic_profile,
+        'sero_sistr': value.sero_sistr,
+        'sero_antigen_sistr': value.sero_antigen_sistr,
     };
 }
 

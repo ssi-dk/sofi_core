@@ -21,7 +21,7 @@ class AnalysisResultAllOf(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, latest_for_isolate=None, resfinder_version=None, date_received_kma=None, date_analysis_sofi=None, date_approved_serotype=None, date_approved_qc=None, date_approved_amr=None, date_approved_st=None, date_approved_toxin=None, date_approved_cluster=None, date_approved_cdiff=None, qc_provided_species=None, qc_genome1x=None, qc_genome10x=None, qc_gsize_diff1x10=None, qc_avg_coverage=None, qc_final=None, qc_action=None, qc_num_contigs=None, qc_ambiguous_sites=None, qc_num_reads=None, qc_main_sp_plus_uncl=None, qc_unclassified_reads=None, qc_db_id=None, qc_db_id2=None, qc_failed_tests=None, qc_second_sp=None, call_percent=None, multiple_alleles=None, subspecies=None, species_final=None, st=None, st_final=None, st_alleles=None, pathotype=None, pathotype_final=None, sero_enterobase=None, sero_seqsero=None, sero_antigen_seqsero=None, sero_d_tartrate=None, sero_serotype_finder=None, serotype_final=None, adhesion_final=None, virulence_genes=None, toxins_final=None, infection_source=None, resistance_genes=None, amr_profile=None, comment=None, comment_cluster=None, comment_general=None, comment_supplementary=None, comment_qc=None, amr_ami=None, amr_amp=None, amr_azi=None, amr_fep=None, amr_fot=None, amr_f_c=None, amr_fox=None, amr_taz=None, amr_t_c=None, amr_chl=None, amr_cip=None, amr_cli=None, amr_col=None, amr_dap=None, amr_etp=None, amr_ery=None, amr_fus=None, amr_gen=None, amr_imi=None, amr_kan=None, amr_lzd=None, amr_mero=None, amr_mup=None, amr_nal=None, amr_pen=None, amr_syn=None, amr_rif=None, amr_str=None, amr_sul=None, amr_tei=None, amr_trm=None, amr_tet=None, amr_tia=None, amr_tgc=None, amr_tmp=None, amr_van=None, cgmlst_schema=None, trst=None, tcda=None, tcdb=None, cdta_cdtb=None, del_117=None, a117t=None, cdiff_details=None, adhaesion=None, toxin=None, toxin_details=None, bifrost_min_read_check=None, bifrost_whats_my_species=None, bifrost_assemblatron=None, bifrost_assembly_qc=None, bifrost_ssi_stamper=None, bifrost_cge_mlst=None, bifrost_cge_resfinder=None, bifrost_seqsero=None, bifrost_enterobase=None, bifrost_salmonella_subspecies_dtartrate=None, bifrost_chewbbaca=None, bifrost_sp_ecoli=None, bifrost_sp_cdiff=None, bifrost_amrfinderplus=None, year=None, full_runid=None, sistr_serotype=None, sistr_antigenic_profile=None):  # noqa: E501
+    def __init__(self, latest_for_isolate=None, resfinder_version=None, date_received_kma=None, date_analysis_sofi=None, date_approved_serotype=None, date_approved_qc=None, date_approved_amr=None, date_approved_st=None, date_approved_toxin=None, date_approved_cluster=None, date_approved_cdiff=None, qc_provided_species=None, qc_genome1x=None, qc_genome10x=None, qc_gsize_diff1x10=None, qc_avg_coverage=None, qc_final=None, qc_action=None, qc_num_contigs=None, qc_ambiguous_sites=None, qc_num_reads=None, qc_main_sp_plus_uncl=None, qc_unclassified_reads=None, qc_db_id=None, qc_db_id2=None, qc_failed_tests=None, qc_second_sp=None, call_percent=None, multiple_alleles=None, subspecies=None, species_final=None, st=None, st_final=None, st_alleles=None, pathotype=None, pathotype_final=None, sero_enterobase=None, sero_seqsero=None, sero_antigen_seqsero=None, sero_d_tartrate=None, sero_serotype_finder=None, serotype_final=None, adhesion_final=None, virulence_genes=None, toxins_final=None, infection_source=None, resistance_genes=None, amr_profile=None, comment=None, comment_cluster=None, comment_general=None, comment_supplementary=None, comment_qc=None, amr_ami=None, amr_amp=None, amr_azi=None, amr_fep=None, amr_fot=None, amr_f_c=None, amr_fox=None, amr_taz=None, amr_t_c=None, amr_chl=None, amr_cip=None, amr_cli=None, amr_col=None, amr_dap=None, amr_etp=None, amr_ery=None, amr_fus=None, amr_gen=None, amr_imi=None, amr_kan=None, amr_lzd=None, amr_mero=None, amr_mup=None, amr_nal=None, amr_pen=None, amr_syn=None, amr_rif=None, amr_str=None, amr_sul=None, amr_tei=None, amr_trm=None, amr_tet=None, amr_tia=None, amr_tgc=None, amr_tmp=None, amr_van=None, cgmlst_schema=None, trst=None, tcda=None, tcdb=None, cdta_cdtb=None, del_117=None, a117t=None, cdiff_details=None, adhaesion=None, toxin=None, toxin_details=None, bifrost_min_read_check=None, bifrost_whats_my_species=None, bifrost_assemblatron=None, bifrost_assembly_qc=None, bifrost_ssi_stamper=None, bifrost_cge_mlst=None, bifrost_cge_resfinder=None, bifrost_seqsero=None, bifrost_enterobase=None, bifrost_salmonella_subspecies_dtartrate=None, bifrost_chewbbaca=None, bifrost_sp_ecoli=None, bifrost_sp_cdiff=None, bifrost_amrfinderplus=None, year=None, sero_sistr=None, sero_antigen_sistr=None):  # noqa: E501
         """AnalysisResultAllOf - a model defined in OpenAPI
 
         :param latest_for_isolate: The latest_for_isolate of this AnalysisResultAllOf.  # noqa: E501
@@ -254,12 +254,10 @@ class AnalysisResultAllOf(Model):
         :type bifrost_amrfinderplus: str
         :param year: The year of this AnalysisResultAllOf.  # noqa: E501
         :type year: float
-        :param full_runid: The full_runid of this AnalysisResultAllOf.  # noqa: E501
-        :type full_runid: str
-        :param sistr_serotype: The sistr_serotype of this AnalysisResultAllOf.  # noqa: E501
-        :type sistr_serotype: str
-        :param sistr_antigenic_profile: The sistr_antigenic_profile of this AnalysisResultAllOf.  # noqa: E501
-        :type sistr_antigenic_profile: str
+        :param sero_sistr: The sero_sistr of this AnalysisResultAllOf.  # noqa: E501
+        :type sero_sistr: str
+        :param sero_antigen_sistr: The sero_antigen_sistr of this AnalysisResultAllOf.  # noqa: E501
+        :type sero_antigen_sistr: str
         """
         self.openapi_types = {
             'latest_for_isolate': str,
@@ -377,9 +375,8 @@ class AnalysisResultAllOf(Model):
             'bifrost_sp_cdiff': str,
             'bifrost_amrfinderplus': str,
             'year': float,
-            'full_runid': str,
-            'sistr_serotype': str,
-            'sistr_antigenic_profile': str,
+            'sero_sistr': str,
+            'sero_antigen_sistr': str,
         }
 
         self.attribute_map = {
@@ -498,9 +495,8 @@ class AnalysisResultAllOf(Model):
             'bifrost_sp_cdiff': 'bifrost_sp_cdiff',
             'bifrost_amrfinderplus': 'bifrost_amrfinderplus',
             'year': 'year',
-            'full_runid': 'full_runid',
-            'sistr_serotype': 'sistr_serotype',
-            'sistr_antigenic_profile': 'sistr_antigenic_profile',
+            'sero_sistr': 'sero_sistr',
+            'sero_antigen_sistr': 'sero_antigen_sistr',
         }
 
         self._latest_for_isolate = latest_for_isolate
@@ -618,9 +614,8 @@ class AnalysisResultAllOf(Model):
         self._bifrost_sp_cdiff = bifrost_sp_cdiff
         self._bifrost_amrfinderplus = bifrost_amrfinderplus
         self._year = year
-        self._full_runid = full_runid
-        self._sistr_serotype = sistr_serotype
-        self._sistr_antigenic_profile = sistr_antigenic_profile
+        self._sero_sistr = sero_sistr
+        self._sero_antigen_sistr = sero_antigen_sistr
 
     @classmethod
     def from_dict(cls, dikt):
@@ -3057,64 +3052,43 @@ class AnalysisResultAllOf(Model):
         self._year = year
 
     @property
-    def full_runid(self):
-        """Gets the full_runid of this AnalysisResultAllOf.
+    def sero_sistr(self):
+        """Gets the sero_sistr of this AnalysisResultAllOf.
 
 
-        :return: The full_runid of this AnalysisResultAllOf.
+        :return: The sero_sistr of this AnalysisResultAllOf.
         :rtype: str
         """
-        return self._full_runid
+        return self._sero_sistr
 
-    @full_runid.setter
-    def full_runid(self, full_runid):
-        """Sets the full_runid of this AnalysisResultAllOf.
+    @sero_sistr.setter
+    def sero_sistr(self, sero_sistr):
+        """Sets the sero_sistr of this AnalysisResultAllOf.
 
 
-        :param full_runid: The full_runid of this AnalysisResultAllOf.
-        :type full_runid: str
+        :param sero_sistr: The sero_sistr of this AnalysisResultAllOf.
+        :type sero_sistr: str
         """
 
-        self._full_runid = full_runid
+        self._sero_sistr = sero_sistr
 
     @property
-    def sistr_serotype(self):
-        """Gets the sistr_serotype of this AnalysisResultAllOf.
+    def sero_antigen_sistr(self):
+        """Gets the sero_antigen_sistr of this AnalysisResultAllOf.
 
 
-        :return: The sistr_serotype of this AnalysisResultAllOf.
+        :return: The sero_antigen_sistr of this AnalysisResultAllOf.
         :rtype: str
         """
-        return self._sistr_serotype
+        return self._sero_antigen_sistr
 
-    @sistr_serotype.setter
-    def sistr_serotype(self, sistr_serotype):
-        """Sets the sistr_serotype of this AnalysisResultAllOf.
+    @sero_antigen_sistr.setter
+    def sero_antigen_sistr(self, sero_antigen_sistr):
+        """Sets the sero_antigen_sistr of this AnalysisResultAllOf.
 
 
-        :param sistr_serotype: The sistr_serotype of this AnalysisResultAllOf.
-        :type sistr_serotype: str
+        :param sero_antigen_sistr: The sero_antigen_sistr of this AnalysisResultAllOf.
+        :type sero_antigen_sistr: str
         """
 
-        self._sistr_serotype = sistr_serotype
-
-    @property
-    def sistr_antigenic_profile(self):
-        """Gets the sistr_antigenic_profile of this AnalysisResultAllOf.
-
-
-        :return: The sistr_antigenic_profile of this AnalysisResultAllOf.
-        :rtype: str
-        """
-        return self._sistr_antigenic_profile
-
-    @sistr_antigenic_profile.setter
-    def sistr_antigenic_profile(self, sistr_antigenic_profile):
-        """Sets the sistr_antigenic_profile of this AnalysisResultAllOf.
-
-
-        :param sistr_antigenic_profile: The sistr_antigenic_profile of this AnalysisResultAllOf.
-        :type sistr_antigenic_profile: str
-        """
-
-        self._sistr_antigenic_profile = sistr_antigenic_profile
+        self._sero_antigen_sistr = sero_antigen_sistr

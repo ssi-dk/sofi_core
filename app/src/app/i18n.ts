@@ -41,6 +41,7 @@ const fieldDisplayNames = {
     date_sample: "Date_sample",
     date_received: "Date_received",
     run_id: "Run_ID",
+    full_runid: "Full_Run_ID",
     public_number: "Acc_no.",
     provided_species: "QC_provided_species",
     chr_number: "CHR_no.",
