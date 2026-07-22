@@ -281,6 +281,9 @@ def get_analysis_page_bundle(
     for field in distinct:
         distinct_group[field] = {"$addToSet": f"${field}"}
 
+
+    print("QUERY WITH DC:",data_clearance)
+
     base_pipeline = [
         {
             "$lookup": {
@@ -296,7 +299,7 @@ def get_analysis_page_bundle(
             "$match": {
                 "$or": [
                     {"project_privacy": {"$eq": []}},
-                    {"project_privacy.private": False},
+                    {"project_privacy.is_private": False},
                     {"project_privacy.institution": institution},
                 ]
             }
