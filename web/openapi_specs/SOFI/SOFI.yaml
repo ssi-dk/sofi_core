@@ -1525,6 +1525,8 @@ components:
                     type: string
                   reason:
                     type: string
+            qc_second_sp:
+              type: number
             call_percent:
               type: number
             multiple_alleles:
@@ -1699,6 +1701,15 @@ components:
               type: string
             bifrost_amrfinderplus:
               type: string
+            year:
+              type: number
+            full_runid:
+              type: string
+            sistr_serotype:
+              type: string
+            sistr_antigenic_profile:
+              type: string
+            
 
 
     NewickTreeResponse:

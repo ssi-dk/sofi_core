@@ -268,5 +268,9 @@
   {
     "field_name": "date_analysis_sofi",
     "computed": true
+  },
+  {
+    "field_name": "year",
+    "computed": true
   }
 ]

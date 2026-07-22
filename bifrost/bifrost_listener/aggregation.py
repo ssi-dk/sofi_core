@@ -94,6 +94,7 @@ def agg_pipeline(changed_ids=None):
                 **userChangedCondition("sequence_id", "$categories.sample_info.summary.sofi_sequence_id"),
                 **userChangedCondition("run_id", "$categories.sample_info.summary.experiment_name"), 
                 **userChangedCondition("date_run", {"$toDate": "$categories.sample_info.summary.sequence_run_date"}),
+                **userChangedCondition("year", {"$year": {"$toDate": "$categories.sample_info.summary.sequence_run_date"}}),
                 **userChangedCondition("institution", "$categories.sample_info.summary.institution"),
                 **userChangedCondition("project_number", "$categories.sample_info.summary.project_no"),
                 **userChangedCondition("project_title", "$categories.sample_info.summary.project_title"),
@@ -107,6 +108,7 @@ def agg_pipeline(changed_ids=None):
                         "else": "$null"
                     }
                 }),
+                **userChangedCondition("qc_second_sp", "$categories.species_detection.summary.percent_classified_species_2"),
                 **userChangedCondition("subspecies", "$categories.serotype.summary.Subspecies"),
                 **userChangedCondition("species_final", removeNullProperty(
                     {

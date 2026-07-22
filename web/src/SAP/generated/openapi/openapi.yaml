@@ -2387,6 +2387,8 @@ components:
           items:
             $ref: '#/components/schemas/AnalysisResult_allOf_qc_failed_tests'
           type: array
+        qc_second_sp:
+          type: number
         call_percent:
           type: number
         multiple_alleles:
@@ -2560,6 +2562,14 @@ components:
         bifrost_sp_cdiff:
           type: string
         bifrost_amrfinderplus:
+          type: string
+        year:
+          type: number
+        full_runid:
+          type: string
+        sistr_serotype:
+          type: string
+        sistr_antigenic_profile:
           type: string
       required:
       - isolate_id
