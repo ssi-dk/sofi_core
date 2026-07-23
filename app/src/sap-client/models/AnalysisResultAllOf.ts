@@ -188,6 +188,12 @@ export interface AnalysisResultAllOf  {
      * @type {number}
      * @memberof AnalysisResultAllOf
      */
+    qc_second_sp?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof AnalysisResultAllOf
+     */
     call_percent?: number;
     /**
      * 
@@ -705,6 +711,24 @@ export interface AnalysisResultAllOf  {
      * @memberof AnalysisResultAllOf
      */
     bifrost_amrfinderplus?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof AnalysisResultAllOf
+     */
+    year?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof AnalysisResultAllOf
+     */
+    sero_sistr?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof AnalysisResultAllOf
+     */
+    sero_antigen_sistr?: string;
 }
 
 export function AnalysisResultAllOfFromJSON(json: any): AnalysisResultAllOf {
@@ -735,6 +759,7 @@ export function AnalysisResultAllOfFromJSON(json: any): AnalysisResultAllOf {
         'qc_db_id': !exists(json, 'qc_db_id') ? undefined : json['qc_db_id'],
         'qc_db_id2': !exists(json, 'qc_db_id2') ? undefined : json['qc_db_id2'],
         'qc_failed_tests': !exists(json, 'qc_failed_tests') ? undefined : (json['qc_failed_tests'] as Array<any>).map(AnalysisResultAllOfQcFailedTestsFromJSON),
+        'qc_second_sp': !exists(json, 'qc_second_sp') ? undefined : json['qc_second_sp'],
         'call_percent': !exists(json, 'call_percent') ? undefined : json['call_percent'],
         'multiple_alleles': !exists(json, 'multiple_alleles') ? undefined : json['multiple_alleles'],
         'subspecies': !exists(json, 'subspecies') ? undefined : json['subspecies'],
@@ -822,6 +847,9 @@ export function AnalysisResultAllOfFromJSON(json: any): AnalysisResultAllOf {
         'bifrost_sp_ecoli': !exists(json, 'bifrost_sp_ecoli') ? undefined : json['bifrost_sp_ecoli'],
         'bifrost_sp_cdiff': !exists(json, 'bifrost_sp_cdiff') ? undefined : json['bifrost_sp_cdiff'],
         'bifrost_amrfinderplus': !exists(json, 'bifrost_amrfinderplus') ? undefined : json['bifrost_amrfinderplus'],
+        'year': !exists(json, 'year') ? undefined : json['year'],
+        'sero_sistr': !exists(json, 'sero_sistr') ? undefined : json['sero_sistr'],
+        'sero_antigen_sistr': !exists(json, 'sero_antigen_sistr') ? undefined : json['sero_antigen_sistr'],
     };
 }
 
@@ -856,6 +884,7 @@ export function AnalysisResultAllOfToJSON(value?: AnalysisResultAllOf): any {
         'qc_db_id': value.qc_db_id,
         'qc_db_id2': value.qc_db_id2,
         'qc_failed_tests': value.qc_failed_tests === undefined ? undefined : (value.qc_failed_tests as Array<any>).map(AnalysisResultAllOfQcFailedTestsToJSON),
+        'qc_second_sp': value.qc_second_sp,
         'call_percent': value.call_percent,
         'multiple_alleles': value.multiple_alleles,
         'subspecies': value.subspecies,
@@ -943,6 +972,9 @@ export function AnalysisResultAllOfToJSON(value?: AnalysisResultAllOf): any {
         'bifrost_sp_ecoli': value.bifrost_sp_ecoli,
         'bifrost_sp_cdiff': value.bifrost_sp_cdiff,
         'bifrost_amrfinderplus': value.bifrost_amrfinderplus,
+        'year': value.year,
+        'sero_sistr': value.sero_sistr,
+        'sero_antigen_sistr': value.sero_antigen_sistr,
     };
 }
 
