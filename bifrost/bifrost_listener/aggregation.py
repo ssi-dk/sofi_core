@@ -174,7 +174,7 @@ def agg_pipeline(changed_ids=None):
                 **userChangedCondition("sero_enterobase", "$categories.serotype.report.enterobase_serotype1"),
                 **userChangedCondition("sero_seqsero", "$categories.serotype.report.seqsero_serotype"),
                 **userChangedCondition("sero_sistr", "$categories.serotype.report.sistr_serotype"),
-                **userChangedCondition("sero_antigen_seqsero", "$categories.serotype.summary.antigenic_profile"),
+                **userChangedCondition("sero_antigen_seqsero", "$categories.serotype.report.seqsero_antigenic_profile"),
                 **userChangedCondition("sero_antigen_sistr", "$categories.serotype.report.sistr_antigenic_profile"),
                 **userChangedCondition("sero_serotype_finder", "$categories.bifrost_sp_ecoli.summary.OH"),
                 **userChangedCondition("sero_d_tartrate", "$categories.serotype.summary.D-tartrate_pos10"),
