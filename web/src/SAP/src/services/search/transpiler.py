@@ -81,13 +81,23 @@ def structure_range_or_wildcard(field, node):
         return coerce_term(node.term), False
     
     if node.term is not None:
-        coerced = coerce_term(node.term)
-        if isinstance(coerced, str):
-            return check_for_wildcard(field, coerced), False
-        elif isinstance(coerced, datetime):
-            return {"$gte": coerced, "$lte": (coerced + timedelta(days=1))}, False
+
+
+        def structure_term(term: str):
+            coerced = coerce_term(term)
+            if isinstance(coerced, str):
+                return {field: check_for_wildcard(field, coerced)}
+            elif isinstance(coerced, datetime):
+                return {field: {"$gte": coerced, "$lte": (coerced + timedelta(days=1))} }
+            else:
+                return {field: {"$in": [coerced, term]}}
+            
+        terms = list(map(structure_term,str.split(node.term,",")))
+        if len(terms) == 1:
+            return terms[0],True
         else:
-            return {"$in": [coerced, node.term]}, False
+            return {"$or": terms},True
+
     elif node.term_max is not None or node.term_min is not None:
         coerced_min = coerce_term(node.term_min)
         coerced_max = coerce_term(node.term_max)

@@ -187,8 +187,6 @@ def get_analysis_page_bundle(
     sorting=None,
     workspace_items: Optional[List[str]] = None,
 ):
-
-
     ensure_cache_updated()
 
     conn, encryption_client = get_connection(with_enc=True)
