@@ -21,6 +21,7 @@ import {
   QuestionIcon,
   TimeIcon,
   WarningIcon,
+  AttachmentIcon,
 } from "@chakra-ui/icons";
 import { parse as luceneParse } from "lucene";
 import { recurseTree } from "utils";
@@ -29,6 +30,7 @@ import SearchHelpModal from "./search-help-modal";
 import SearchHistoryMenu from "./search-history";
 import { SearchQuery } from "../analysis-page";
 import { getSearchHistory, recurseSearchTree, useHistoryCB } from "./search-utils";
+import BulkSearchModal from "./bulk-search-modal";
 
 type AnalysisSearchProps = {
   onSearchChange: (query: SearchQuery, searchString: string) => void;
@@ -39,10 +41,19 @@ type AnalysisSearchProps = {
 const parseQuery = (input: string, onError) => {
   try {
     const ast = luceneParse(input);
-    recurseTree(ast, (x) => {
-      if (x["field"]) {
-        // translate display names to internal names
-        x["field"] = getFieldInternalName(x["field"]) ?? x["field"];
+    //TODO Original
+    // recurseTree(ast, (x,) => {
+    //   if (x["field"]) {
+    //     // translate display names to internal names
+    //     x["field"] = getFieldInternalName(x["field"]) ?? x["field"];
+    //   }
+    // });
+    recurseTree(ast, (x, inheritedField) => {
+      if (x.field === "<implicit>" && inheritedField) {
+        x.field = inheritedField;
+      }
+      if (x.field) {
+        x.field = getFieldInternalName(x.field) ?? x.field;
       }
     });
     return ast;
@@ -106,7 +117,7 @@ const AnalysisSearch = (props: AnalysisSearchProps) => {
     }
   }, [inputRef, setInput])
   useHistoryCB(historyCB, false);
-  
+
   const setText = useCallback((textStr: string) => {
     setInput(textStr);
     if (inputRef) {
@@ -157,10 +168,105 @@ const AnalysisSearch = (props: AnalysisSearchProps) => {
     [submitQuery]
   );
 
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
+
+  const buildLuceneQuery = (
+    field: string,
+    values: string[]
+  ): string => {
+    return values
+      .map(v => `${field}:"${v.replace(/"/g, '\\"')}"`)
+      .join(" OR ");
+  };
+
+  // // TODO Might be a more effecient query, but we would need to change how the search bar tracks changes
+  // const buildLuceneQuery = (
+  //   field: string,
+  //   values: string[]
+  // ): string => {
+  //   return `${field}:(${values.join(" OR ")})`;
+  // };
+
+  const readValues = async (file: File): Promise<string[]> => {
+    const text = await file.text();
+
+    return text
+      .split(/\r?\n/)
+      .map(x => x.trim())
+      .filter(Boolean);
+  };
+
+  const onUploadFile = useCallback(async (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = e.target.files?.[0];
+
+    if (!file) {
+      return;
+    }
+
+    try {
+      const values = await readValues(file);
+
+      if (values.length === 0) {
+        toast({
+          title: "File is empty",
+          status: "warning",
+        });
+        return;
+      }
+
+      // Very simple v1:
+      // Require user to already have typed a field.
+      const match = input.match(/^([^:\s]+)\s*:/);
+
+      if (!match) {
+        toast({
+          title: "Missing field name",
+          description:
+            "Type a field first, e.g. Institution:",
+          status: "warning",
+        });
+        return;
+      }
+
+      const field = match[1];
+
+      const luceneQuery = buildLuceneQuery(
+        field,
+        values
+      );
+
+      setText(luceneQuery);
+
+      toast({
+        title: "Query generated",
+        description: `${values.length} values loaded`,
+        status: "success",
+      });
+    } catch (err) {
+      toast({
+        title: "Failed reading file",
+        description: String(err),
+        status: "error",
+      });
+    }
+
+    // allow selecting same file again
+    e.target.value = "";
+  }, [input, setText, toast]);
+
+
   const {
     isOpen: isSearchHelpModalOpen,
     onOpen: onSearchHelpModalOpen,
     onClose: onSearchHelpModalClose,
+  } = useDisclosure();
+
+  const {
+    isOpen: isBulkSearchModalOpen,
+    onOpen: onBulkSearchModalOpen,
+    onClose: onBulkSearchModalClose,
   } = useDisclosure();
 
   return (
@@ -169,6 +275,13 @@ const AnalysisSearch = (props: AnalysisSearchProps) => {
         <SearchHelpModal
           isOpen={isSearchHelpModalOpen}
           onClose={onSearchHelpModalClose}
+        />
+        <BulkSearchModal
+          isOpen={isBulkSearchModalOpen}
+          onClose={onBulkSearchModalClose}
+          searchTerms={searchTerms}
+          currentQuery={input}
+          onQueryGenerated={setText}
         />
         <Popover
           placement="bottom-start"
@@ -241,11 +354,19 @@ const AnalysisSearch = (props: AnalysisSearchProps) => {
             </PopoverBody>
           </PopoverContent>
         </Popover>
+        
         <IconButton
           aria-label="Search database"
           icon={<SearchIcon />}
           ml="1"
           onClick={submit}
+          isDisabled={isDisabled}
+        />
+        <IconButton
+          aria-label="Bulk search"
+          icon={<AttachmentIcon />}
+          ml="1"
+          onClick={onBulkSearchModalOpen}
           isDisabled={isDisabled}
         />
       </React.Fragment>
