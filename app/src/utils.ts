@@ -76,10 +76,27 @@ export function invertMap(
   );
 }
 
-export function recurseTree(obj: Object, fn: (o: Object) => void) {
-  fn(obj);
-  // eslint-disable-next-line
+//TODO Original
+// export function recurseTree(obj: Object, fn: (o: Object) => void) {
+//   fn(obj);
+//   // eslint-disable-next-line
+//   for (const k in obj) {
+//     if (typeof obj[k] === "object" && obj[k] !== null) recurseTree(obj[k], fn);
+//   }
+// }
+
+export function recurseTree(
+  obj: any,
+  fn: (o: any, inheritedField?: string) => string | void,
+  inheritedField?: string
+) {
+  const currentField = obj.field && obj.field !== "<implicit>" ? obj.field : inheritedField;
+
+  fn(obj, currentField);
+
   for (const k in obj) {
-    if (typeof obj[k] === "object" && obj[k] !== null) recurseTree(obj[k], fn);
+    if (typeof obj[k] === "object" && obj[k] !== null) {
+      recurseTree(obj[k], fn, currentField);
+    }
   }
 }
