@@ -13,7 +13,7 @@ from web.src.SAP.src.security.gdpr_logger import audit_query
 from ..repositories.workspaces import get_workspace_sequences as get_workspace_sequences_db
 from flask.json import jsonify
 from ..repositories.analysis import (
-    get_analysis_with_metadata,
+    get_single_analysis,
     update_analysis,
     get_single_analysis,
     get_analysis_page_bundle
@@ -68,7 +68,7 @@ def render_paging_token(page_size, query, offset, sorting):
 
 def get_sequence_by_id(user, token_info, sequence_id):
     assert_user_has("search", token_info)
-    row = get_analysis_with_metadata(sequence_id)
+    row = get_single_analysis(sequence_id)
     if row is None:
         abort(404)
     if (

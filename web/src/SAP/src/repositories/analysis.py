@@ -63,6 +63,8 @@ def update_analysis_cache():
         ("cluster","cluster_id"), ("qc", "qc_final"), ("st", "st_final"), ("cdiff","cdiff_details"), ("epi","date_epi")
     ]
 
+    primary_approval_fields = ["sequence_id","st_final", "qc_final"]
+
     pipeline = [
         {
             "$lookup": {
@@ -111,35 +113,40 @@ def update_analysis_cache():
                 "pipeline": [
                     { "$match": { "status": "submitted" } },
                     { "$sort": { "timestamp": -1 } },
-                    { "$limit": 1 }
                 ],
                 "as": "approval_info"
             }
         },
         {
             "$set": {
-                "approval_info": { "$first": "$approval_info" }
-            }
-        },
-        {
-            "$set": {
-                "matched_matrix_entry": {
-                    "$first": {
-                        "$map": {
-                            "input": {
-                            "$filter": {
-                                "input": {
-                                    "$objectToArray":
-                                        "$approval_info.matrix"
-                                    },
-                                    "as": "m",
-                                    "cond": {
-                                    "$eq": ["$$m.k", "$sequence_id"]
+                "sequence_approvals": {
+                    "$map": {
+                        "input": "$approval_info",
+                        "as": "approval",
+                        "in": {
+                            "timestamp": "$$approval.timestamp",
+                            "matrix_entry": {
+                                "$first": {
+                                    "$map": {
+                                        "input": {
+                                            "$filter": {
+                                                "input": {
+                                                    "$objectToArray": "$$approval.matrix"
+                                                },
+                                                "as": "m",
+                                                "cond": {
+                                                    "$eq": [
+                                                    "$$m.k",
+                                                    "$sequence_id"
+                                                    ]
+                                                }
+                                            }
+                                        },
+                                        "as": "m",
+                                        "in": "$$m.v"
+                                    }
                                 }
                             }
-                            },
-                            "as": "m",
-                            "in": "$$m.v"
                         }
                     }
                 }
@@ -147,32 +154,88 @@ def update_analysis_cache():
         },
         {
             "$set": {
-                "approval_status": {
-                    "$ifNull": [
-                        "$matched_matrix_entry.sequence_id",
-                        "pending"
-                    ]
+                **{
+                    f"{field}_status": {
+                        "$ifNull": [
+                            {
+                                "$last": {
+                                    "$filter": {
+                                        "input": {
+                                            "$map": {
+                                                "input": "$sequence_approvals",
+                                                "as": "a",
+                                                "in": f"$$a.matrix_entry.{field}"
+                                            }
+                                        },
+                                        "as": "status",
+                                        "cond": { "$ne": ["$$status", None] }
+                                    }
+                                }
+                            },
+                            "pending"
+                        ]
+                    } for field in primary_approval_fields
+                },
+            }
+        },
+        {
+            "$set": {
+                 "approval_status": {
+                    "$cond": {
+                        "if": {
+                            "$or": [
+                                {"$eq": [f"${field}_status", "rejected"]} for field in primary_approval_fields
+                            ]
+                        },
+                        "then": "rejected",
+                        "else": {
+                            "$cond": {
+                                "if": {
+                                    "$or": [
+                                           {"$eq": [f"${field}_status", "pending"]} for field in primary_approval_fields
+                                    ]
+                                },
+                                "then": "pending",
+                                "else": "approved"
+                            }
+                        }
+                    }
                 },
                 **{
                     f"date_approved_{name}": {
-                        "$cond": [
+                        "$ifNull": [
                             {
-                                "$eq": [
-                                    f"$matched_matrix_entry.{field}",
-                                    "approved",
-                                ]
+                                "$last": {
+                                    "$map": {
+                                        "input": {
+                                            "$filter": {
+                                                "input": "$sequence_approvals",
+                                                "as": "a",
+                                                "cond": {
+                                                    "$eq": [
+                                                        f"$$a.matrix_entry.{field}",
+                                                        "approved",
+                                                    ]
+                                                },
+                                            }
+                                        },
+                                        "as": "a",
+                                        "in": "$$a.timestamp",
+                                    }
+                                }
                             },
-                            "$approval_info.timestamp",
                             None,
                         ]
                     }
                     for name, field in date_approval_fields
-                }
+                },
             }
         },
-        {"$project": {"approval_info": 0, "matched_matrix_entry": 0}},
+        {"$project": {"approval_info": 0, "sequence_approvals": 0}},
         {"$out": ANALYSIS_CACHE_COL_NAME}
     ]
+
+    print(json.dumps(pipeline),file=sys.stderr)
 
     analysis.aggregate(pipeline)
 
@@ -341,79 +404,24 @@ def update_analysis(change):
     invalidate_analysis_cache()
 
 
-def get_single_analysis(id: str) -> Dict[str, Any]:
+def get_single_analysis(sequence_id: str) -> Optional[Dict[str, Any]]:
+    ensure_cache_updated()
+
+    conn = get_connection()
+    mydb = conn[DB_NAME]
+    analysis = mydb[ANALYSIS_CACHE_COL_NAME]
+    return analysis.find_one({"sequence_id": sequence_id}, {"_id": 0})
+
+def get_single_analysis_by_object_id(id: str) -> Optional[Dict[str, Any]]:
+    ensure_cache_updated()
+
     conn = get_connection()
     mydb = conn[DB_NAME]
     analysis = mydb[ANALYSIS_COL_NAME]
-    return analysis.find_one({"sequence_id": f"{id}"}, {"_id": 0})
-
-def get_single_analysis_by_object_id(id: str) -> Dict[str, Any]:
-    conn = get_connection()
-    mydb = conn[DB_NAME]
-    analysis = mydb[ANALYSIS_COL_NAME]
-    return analysis.find_one(ObjectId(id))
-
-def get_analysis_with_metadata(sequence_id: str) -> Dict[str, Any]:
-    conn = get_connection()
-    mydb = conn[DB_NAME]
-    analysis = mydb[ANALYSIS_COL_NAME]
-
-    fetch_pipeline = [
-        {"$match": {"sequence_id": sequence_id}},
-        {"$sort": {"_id": pymongo.DESCENDING}},
-        {
-            "$lookup": {
-                "from": TBR_METADATA_COL_NAME,
-                "localField": "isolate_id",
-                "foreignField": "isolate_id",
-                "as": "metadata",
-            }
-        },
-        {
-            "$replaceRoot": {
-                "newRoot": {
-                    "$mergeObjects": [{"$arrayElemAt": ["$metadata", 0]}, "$$ROOT"]
-                }
-            }
-        },
-        {
-            "$lookup": {
-                "from": LIMS_METADATA_COL_NAME,
-                "localField": "isolate_id",
-                "foreignField": "isolate_id",
-                "as": "metadata",
-            }
-        },
-        {
-            "$replaceRoot": {
-                "newRoot": {
-                    "$mergeObjects": [{"$arrayElemAt": ["$metadata", 0]}, "$$ROOT"]
-                }
-            }
-        },
-        {
-            "$lookup": {
-                "from": MANUAL_METADATA_COL_NAME,
-                "localField": "isolate_id",
-                "foreignField": "isolate_id",
-                "as": "metadata",
-            }
-        },
-        {
-            "$replaceRoot": {
-                "newRoot": {
-                    "$mergeObjects": [{"$arrayElemAt": ["$metadata", 0]}, "$$ROOT"]
-                }
-            }
-        },
-        {"$set": { "id": {"$toString": "$_id"}}},
-        {"$unset": ["_id", "metadata"]},
-        {"$limit": (int(1))},
-    ]
-
-    res = list(analysis.aggregate(fetch_pipeline))
-
-    if len(res) == 1:
-        return res[0]
-    else:
+    analysis_obj = analysis.find_one(ObjectId(id))
+    if analysis_obj is None:
         return None
+
+    return get_single_analysis(analysis_obj["sequence_id"])
+
+    
