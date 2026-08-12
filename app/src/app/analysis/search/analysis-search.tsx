@@ -95,7 +95,12 @@ const AnalysisSearch = (props: AnalysisSearchProps) => {
   ]);
 
 
-  const historyCB = useCallback(() => {
+  const historyCB = useCallback((clickedInHistory: boolean) => {
+    if (!clickedInHistory) {
+      // Only replace the search string when clicked in history
+      
+      return;
+    }
     const history = getSearchHistory();
     if (history.length === 0) return;
 
