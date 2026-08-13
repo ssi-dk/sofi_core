@@ -170,7 +170,6 @@ def agg_pipeline(changed_ids=None):
                 **userChangedCondition("sero_antigen_sistr", "$categories.serotype.report.sistr_antigenic_profile"),
                 **userChangedCondition("sero_serotype_finder", "$categories.bifrost_sp_ecoli.summary.OH"),
                 **userChangedCondition("sero_d_tartrate", "$categories.serotype.summary.D-tartrate_pos10"),
-                "mlst_schema": {"$arrayElemAt": ["$mlstlookup.schema", 0]},
                 "latest_for_isolate": {"$arrayElemAt": ["$siblings.sequence_id", 0]},
                 "st": "$categories.mlst.summary.sequence_type",
                 "st_alleles": removeNullProperty(
@@ -184,14 +183,9 @@ def agg_pipeline(changed_ids=None):
                                                 "input": "$categories.mlst.report.data",
                                                 "as": "elem",
                                                 "cond": {
-                                                    "$eq": [
+                                                    "$in": [
                                                         "$$elem.db",
-                                                        {
-                                                            "$arrayElemAt": [
-                                                                "$mlstlookup.schema",
-                                                                0,
-                                                            ]
-                                                        },
+                                                        "$mlstlookup.schema",
                                                     ]
                                                 },
                                             }
@@ -767,7 +761,7 @@ def agg_pipeline(changed_ids=None):
                                             },
                                             "as": "elem",
                                             "cond": {
-                                                "$eq": ["$$elem.k", "$mlst_schema"]
+                                                "$in": ["$$elem.k", "$mlstlookup.schema"]
                                             },
                                         }
                                     },
