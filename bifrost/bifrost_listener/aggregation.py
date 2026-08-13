@@ -171,7 +171,6 @@ def agg_pipeline(changed_ids=None):
                 **userChangedCondition("sero_serotype_finder", "$categories.bifrost_sp_ecoli.summary.OH"),
                 **userChangedCondition("sero_d_tartrate", "$categories.serotype.summary.D-tartrate_pos10"),
                 "latest_for_isolate": {"$arrayElemAt": ["$siblings.sequence_id", 0]},
-                "st": "$categories.mlst.summary.sequence_type",
                 "st_alleles": removeNullProperty(
                     {
                         "$let": {
@@ -743,12 +742,12 @@ def agg_pipeline(changed_ids=None):
                                                             'if': {
                                                                 '$eq': [
                                                                     {
-                                                                        '$type': '$st'
+                                                                        '$type': '$categories.mlst.summary.sequence_type'
                                                                     }, 'object'
                                                                 ]
                                                             }, 
                                                             'then': {
-                                                                '$objectToArray': '$st'
+                                                                '$objectToArray': '$categories.mlst.summary.sequence_type'
                                                             }, 
                                                             'else': []
                                                         }
