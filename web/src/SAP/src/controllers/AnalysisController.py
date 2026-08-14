@@ -2,6 +2,7 @@ import base64
 import json
 import sys
 from datetime import datetime
+import dateutil
 from flask import abort
 from typing import Any, Dict
 from web.src.SAP.generated.models.analysis_query import AnalysisQuery
@@ -12,7 +13,7 @@ from web.src.SAP.src.security.gdpr_logger import audit_query
 from ..repositories.workspaces import get_workspace_sequences as get_workspace_sequences_db
 from flask.json import jsonify
 from ..repositories.analysis import (
-    get_analysis_with_metadata,
+    get_single_analysis,
     update_analysis,
     get_single_analysis,
     get_analysis_page_bundle
@@ -67,7 +68,7 @@ def render_paging_token(page_size, query, offset, sorting):
 
 def get_sequence_by_id(user, token_info, sequence_id):
     assert_user_has("search", token_info)
-    row = get_analysis_with_metadata(sequence_id)
+    row = get_single_analysis(sequence_id)
     if row is None:
         abort(404)
     if (
@@ -270,6 +271,16 @@ def submit_changes(
             # Make sure is allowed to modify that column
             if not col in allowed_cols:
                 raise Forbidden(f"You are not authorized to edit column -{col}-")
+            
+            # Check if any of the dates are invalid dates, and then parse them
+            if col.startswith("date_"):
+                date_str = body[identifier][col]
+                try:
+                    date_val = dateutil.parser.isoparse(date_str)
+                    body[identifier][col] = date_val
+                except:
+                    raise ValueError(f"{date_str} is not a valid date.")
+
     # TODO: Verify that none of these cells are already approved
     update_analysis(body)
     res = dict()

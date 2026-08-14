@@ -6,6 +6,7 @@ import flask
 import pymongo
 import logging
 import json
+from datetime import datetime, timedelta
 from web.src.SAP.generated.models import AnalysisResult
 from ...common.config.column_config import pii_columns
 from ...common.database import (
@@ -16,6 +17,7 @@ from ...common.database import (
     encrypt_dict,
     DB_NAME,
     ANALYSIS_COL_NAME,
+    ANALYSIS_CACHE_COL_NAME,
     PROJECT_PRIVACY_COL_NAME,
 )
 import sys
@@ -24,6 +26,265 @@ from bson.objectid import ObjectId
 def remove_id(item):
     item.pop("_id", None)
     return item
+
+
+
+
+last_updated_timestamp = None
+CACHE_TTL = timedelta(minutes=5)
+
+def invalidate_analysis_cache():
+    global last_updated_timestamp
+    last_updated_timestamp = None
+
+def ensure_cache_updated():
+    global last_updated_timestamp
+
+    now = datetime.utcnow()
+
+    # Case 1: never updated or invalidated
+    if last_updated_timestamp is None:
+        update_analysis_cache()
+        last_updated_timestamp = now
+        return
+
+    # Case 2: expired
+    if now - last_updated_timestamp > CACHE_TTL:
+        update_analysis_cache()
+        last_updated_timestamp = now
+
+def update_analysis_cache():
+    conn, encryption_client = get_connection(with_enc=True)
+    mydb = conn[DB_NAME]
+    analysis = mydb[ANALYSIS_COL_NAME]
+
+    date_approval_fields = [
+        ("serotype", "serotype_final"), ("amr","amr_profile"), ("toxin", "toxins_final"), 
+        ("cluster","cluster_id"), ("qc", "qc_final"), ("st", "st_final"), ("cdiff","cdiff_details"), ("epi","date_epi")
+    ]
+
+    primary_approval_fields = ["sequence_id","st_final", "qc_final"]
+
+    pipeline = [
+        {
+            "$lookup": {
+                "from": TBR_METADATA_COL_NAME,
+                "localField": "isolate_id",
+                "foreignField": "isolate_id",
+                "as": "metadata",
+            }
+        },
+        {
+            "$replaceRoot": {
+                "newRoot": {"$mergeObjects": [{"$arrayElemAt": ["$metadata", 0]}, "$$ROOT"]}
+            }
+        },
+        {
+            "$lookup": {
+                "from": LIMS_METADATA_COL_NAME,
+                "localField": "isolate_id",
+                "foreignField": "isolate_id",
+                "as": "metadata",
+            }
+        },
+        {
+            "$replaceRoot": {
+                "newRoot": {"$mergeObjects": [{"$arrayElemAt": ["$metadata", 0]}, "$$ROOT"]}
+            }
+        },
+        {
+            "$set": {
+                "project_key": {
+                    "$reduce": {
+                        "input": {
+                            "$filter": {
+                                "input": [
+                                    "$institution",
+                                    "$project_title",
+                                    {
+                                    "$cond": [
+                                        {
+                                        "$ne": [
+                                            "$project_number",
+                                            None
+                                        ]
+                                        },
+                                        {
+                                        "$toString":
+                                            "$project_number"
+                                        },
+                                        None
+                                    ]
+                                    }
+                                ],
+                                "as": "part",
+                                "cond": { "$ne": ["$$part", None] }
+                            }
+                        },
+                        "initialValue": "",
+                        "in": {
+                            "$cond": [
+                                { "$eq": ["$$value", ""] },
+                                "$$this",
+                                {
+                                    "$concat": [
+                                    "$$value",
+                                    "-",
+                                    "$$this"
+                                    ]
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "$lookup": {
+                "from": MANUAL_METADATA_COL_NAME,
+                "localField": "isolate_id",
+                "foreignField": "isolate_id",
+                "as": "metadata",
+            }
+        },
+        {
+            "$replaceRoot": {
+                "newRoot": {"$mergeObjects": [{"$arrayElemAt": ["$metadata", 0]}, "$$ROOT"]}
+            }
+        },
+        {
+            "$lookup": {
+                "from": "sap_approvals",
+                "localField": "sequence_id",
+                "foreignField": "sequence_ids",
+                "pipeline": [
+                    { "$match": { "status": "submitted" } },
+                    { "$sort": { "timestamp": -1 } },
+                ],
+                "as": "approval_info"
+            }
+        },
+        {
+            "$set": {
+                "sequence_approvals": {
+                    "$map": {
+                        "input": "$approval_info",
+                        "as": "approval",
+                        "in": {
+                            "timestamp": "$$approval.timestamp",
+                            "matrix_entry": {
+                                "$first": {
+                                    "$map": {
+                                        "input": {
+                                            "$filter": {
+                                                "input": {
+                                                    "$objectToArray": "$$approval.matrix"
+                                                },
+                                                "as": "m",
+                                                "cond": {
+                                                    "$eq": [
+                                                    "$$m.k",
+                                                    "$sequence_id"
+                                                    ]
+                                                }
+                                            }
+                                        },
+                                        "as": "m",
+                                        "in": "$$m.v"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "$set": {
+                **{
+                    f"{field}_status": {
+                        "$ifNull": [
+                            {
+                                "$last": {
+                                    "$filter": {
+                                        "input": {
+                                            "$map": {
+                                                "input": "$sequence_approvals",
+                                                "as": "a",
+                                                "in": f"$$a.matrix_entry.{field}"
+                                            }
+                                        },
+                                        "as": "status",
+                                        "cond": { "$ne": ["$$status", None] }
+                                    }
+                                }
+                            },
+                            "pending"
+                        ]
+                    } for field in primary_approval_fields
+                },
+            }
+        },
+        {
+            "$set": {
+                 "approval_status": {
+                    "$cond": {
+                        "if": {
+                            "$or": [
+                                {"$eq": [f"${field}_status", "rejected"]} for field in primary_approval_fields
+                            ]
+                        },
+                        "then": "rejected",
+                        "else": {
+                            "$cond": {
+                                "if": {
+                                    "$or": [
+                                           {"$eq": [f"${field}_status", "pending"]} for field in primary_approval_fields
+                                    ]
+                                },
+                                "then": "pending",
+                                "else": "approved"
+                            }
+                        }
+                    }
+                },
+                **{
+                    f"date_approved_{name}": {
+                        "$ifNull": [
+                            {
+                                "$last": {
+                                    "$map": {
+                                        "input": {
+                                            "$filter": {
+                                                "input": "$sequence_approvals",
+                                                "as": "a",
+                                                "cond": {
+                                                    "$eq": [
+                                                        f"$$a.matrix_entry.{field}",
+                                                        "approved",
+                                                    ]
+                                                },
+                                            }
+                                        },
+                                        "as": "a",
+                                        "in": "$$a.timestamp",
+                                    }
+                                }
+                            },
+                            None,
+                        ]
+                    }
+                    for name, field in date_approval_fields
+                },
+            }
+        },
+        {"$project": {"approval_info": 0, "sequence_approvals": 0}},
+        {"$out": ANALYSIS_CACHE_COL_NAME}
+    ]
+
+    print(json.dumps(pipeline),file=sys.stderr)
+
+    analysis.aggregate(pipeline)
 
 def get_analysis_page_bundle(
     query,
@@ -36,9 +297,13 @@ def get_analysis_page_bundle(
     sorting=None,
     workspace_items: Optional[List[str]] = None,
 ):
+
+
+    ensure_cache_updated()
+
     conn, encryption_client = get_connection(with_enc=True)
     mydb = conn[DB_NAME]
-    analysis = mydb[ANALYSIS_COL_NAME]
+    analysis_cache = mydb[ANALYSIS_CACHE_COL_NAME]
 
     q = encrypt_dict(encryption_client, query or {}, pii_columns())
 
@@ -79,53 +344,15 @@ def get_analysis_page_bundle(
     for field in distinct:
         distinct_group[field] = {"$addToSet": f"${field}"}
 
+
+    print("QUERY WITH DC:",data_clearance)
+
     base_pipeline = [
         {
             "$lookup": {
-                "from": TBR_METADATA_COL_NAME,
-                "localField": "isolate_id",
-                "foreignField": "isolate_id",
-                "as": "metadata",
-            }
-        },
-        # This removes isolates without metadata.
-        # {"$match": {"metadata": {"$ne": []}}},
-        {
-            "$replaceRoot": {
-                "newRoot": {"$mergeObjects": [{"$arrayElemAt": ["$metadata", 0]}, "$$ROOT"]}
-            }
-        },
-        {
-            "$lookup": {
-                "from": LIMS_METADATA_COL_NAME,
-                "localField": "isolate_id",
-                "foreignField": "isolate_id",
-                "as": "metadata",
-            }
-        },
-        {
-            "$replaceRoot": {
-                "newRoot": {"$mergeObjects": [{"$arrayElemAt": ["$metadata", 0]}, "$$ROOT"]}
-            }
-        },
-        {
-            "$lookup": {
-                "from": MANUAL_METADATA_COL_NAME,
-                "localField": "isolate_id",
-                "foreignField": "isolate_id",
-                "as": "metadata",
-            }
-        },
-        {
-            "$replaceRoot": {
-                "newRoot": {"$mergeObjects": [{"$arrayElemAt": ["$metadata", 0]}, "$$ROOT"]}
-            }
-        },
-        {
-            "$lookup": {
                 "from": PROJECT_PRIVACY_COL_NAME,
-                "localField": "project_number",
-                "foreignField": "project_number",
+                "localField": "project_key",
+                "foreignField": "project_key",
                 "as": "project_privacy",
             }
         }
@@ -135,65 +362,13 @@ def get_analysis_page_bundle(
             "$match": {
                 "$or": [
                     {"project_privacy": {"$eq": []}},
+                    {"project_privacy.is_private": False},
                     {"project_privacy.institution": institution},
                 ]
             }
         }
         if data_clearance == "cross-institution"
         else None,
-        {
-            "$lookup": {
-                "from": "sap_approvals",
-                "localField": "sequence_id",
-                "foreignField": "sequence_ids",
-                "pipeline": [
-                    { "$match": { "status": "submitted" } },
-                    { "$sort": { "timestamp": -1 } },
-                    { "$limit": 1 }
-                ],
-                "as": "approval_info"
-            }
-        },
-        {
-            "$set": {
-                "approval_info": { "$first": "$approval_info" }
-            }
-        },
-        {
-            "$set": {
-                "matched_matrix_entry": {
-                    "$first": {
-                        "$map": {
-                            "input": {
-                            "$filter": {
-                                "input": {
-                                    "$objectToArray":
-                                        "$approval_info.matrix"
-                                    },
-                                    "as": "m",
-                                    "cond": {
-                                    "$eq": ["$$m.k", "$sequence_id"]
-                                }
-                            }
-                            },
-                            "as": "m",
-                            "in": "$$m.v"
-                        }
-                    }
-                }
-            }
-        },
-        {
-            "$addFields": {
-            "approval_status": {
-                "$ifNull": [
-                    "$matched_matrix_entry.sequence_id",
-                    "pending"
-                ]
-            }
-            }
-        },
-        {"$project": {"approval_info": 0}},
         {
             "$match": {
                 "$or": [
@@ -235,7 +410,7 @@ def get_analysis_page_bundle(
             }
         }
     ]
-    res = list(analysis.aggregate(pipeline))[0]
+    res = list(analysis_cache.aggregate(pipeline))[0]
 
     count = res["count"][0]["count"] if res["count"] else 0
     md = res["filter_op"][0] if res["filter_op"] else {}
@@ -276,81 +451,28 @@ def update_analysis(change):
             if field_name != "id":
                 update_data[f"userchanged_{field_name}"] = True
         analysis.update_one({"sequence_id": update_data["id"]}, {"$set": update_data})
+    
+    invalidate_analysis_cache()
 
 
-def get_single_analysis(id: str) -> Dict[str, Any]:
+def get_single_analysis(sequence_id: str) -> Optional[Dict[str, Any]]:
+    ensure_cache_updated()
+
+    conn = get_connection()
+    mydb = conn[DB_NAME]
+    analysis = mydb[ANALYSIS_CACHE_COL_NAME]
+    return analysis.find_one({"sequence_id": sequence_id}, {"_id": 0})
+
+def get_single_analysis_by_object_id(id: str) -> Optional[Dict[str, Any]]:
+    ensure_cache_updated()
+
     conn = get_connection()
     mydb = conn[DB_NAME]
     analysis = mydb[ANALYSIS_COL_NAME]
-    return analysis.find_one({"sequence_id": f"{id}"}, {"_id": 0})
-
-def get_single_analysis_by_object_id(id: str) -> Dict[str, Any]:
-    conn = get_connection()
-    mydb = conn[DB_NAME]
-    analysis = mydb[ANALYSIS_COL_NAME]
-    return analysis.find_one(ObjectId(id))
-
-def get_analysis_with_metadata(sequence_id: str) -> Dict[str, Any]:
-    conn = get_connection()
-    mydb = conn[DB_NAME]
-    analysis = mydb[ANALYSIS_COL_NAME]
-
-    fetch_pipeline = [
-        {"$match": {"sequence_id": sequence_id}},
-        {"$sort": {"_id": pymongo.DESCENDING}},
-        {
-            "$lookup": {
-                "from": TBR_METADATA_COL_NAME,
-                "localField": "isolate_id",
-                "foreignField": "isolate_id",
-                "as": "metadata",
-            }
-        },
-        {
-            "$replaceRoot": {
-                "newRoot": {
-                    "$mergeObjects": [{"$arrayElemAt": ["$metadata", 0]}, "$$ROOT"]
-                }
-            }
-        },
-        {
-            "$lookup": {
-                "from": LIMS_METADATA_COL_NAME,
-                "localField": "isolate_id",
-                "foreignField": "isolate_id",
-                "as": "metadata",
-            }
-        },
-        {
-            "$replaceRoot": {
-                "newRoot": {
-                    "$mergeObjects": [{"$arrayElemAt": ["$metadata", 0]}, "$$ROOT"]
-                }
-            }
-        },
-        {
-            "$lookup": {
-                "from": MANUAL_METADATA_COL_NAME,
-                "localField": "isolate_id",
-                "foreignField": "isolate_id",
-                "as": "metadata",
-            }
-        },
-        {
-            "$replaceRoot": {
-                "newRoot": {
-                    "$mergeObjects": [{"$arrayElemAt": ["$metadata", 0]}, "$$ROOT"]
-                }
-            }
-        },
-        {"$set": { "id": {"$toString": "$_id"}}},
-        {"$unset": ["_id", "metadata"]},
-        {"$limit": (int(1))},
-    ]
-
-    res = list(analysis.aggregate(fetch_pipeline))
-
-    if len(res) == 1:
-        return res[0]
-    else:
+    analysis_obj = analysis.find_one(ObjectId(id))
+    if analysis_obj is None:
         return None
+
+    return get_single_analysis(analysis_obj["sequence_id"])
+
+    

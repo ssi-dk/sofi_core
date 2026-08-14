@@ -1,7 +1,7 @@
 name: Test Docker Images
 
 on:
-  workflow_dispatch:
+  pull_request:
 
 jobs:
   build_check:

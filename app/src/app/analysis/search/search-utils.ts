@@ -1,3 +1,5 @@
+import { truncateSync } from "fs";
+import { useEffect } from "react";
 import {
   ApprovalStatus,
   AnalysisSorting,
@@ -7,9 +9,10 @@ import {
 } from "sap-client";
 
 const HISTORY_STORAGE_KEY = "searchHistory";
-const MAX_HISTORY_LEN = 5;
+const MAX_HISTORY_LEN = 10;
 
 export type SearchItem = {
+  searchString: string;
   pinned: boolean;
   timestamp: string;
   query: QueryExpression;
@@ -20,17 +23,36 @@ export type SearchHistory = SearchItem[];
 export const getSearchHistory = () => {
   const rawJson = localStorage.getItem(HISTORY_STORAGE_KEY);
   const history: SearchHistory = JSON.parse(rawJson) || [];
+  history.forEach(item => {
+    // Old items in the search history will be missing the searchString field.
+    if (!item.searchString) {
+      item.searchString = "";
+    }
+  })
   return history;
 };
 
-let callbacks = [];
 
-export const registerHistoryCB = (cb: () => void) => {
+type HistoryCB = (clickedInHistory: boolean) => void;
+let callbacks: HistoryCB[] = [];
+
+const registerHistoryCB = (cb: HistoryCB) => {
   callbacks.push(cb);
 };
-export const deRegisterHistoryCB = (cb: () => void) => {
+const deRegisterHistoryCB = (cb: HistoryCB) => {
   callbacks = callbacks.filter((c) => c !== cb);
 };
+/// THIS NEEDS THE CALLBACK TO BE STABLE! Otherwise it will deregister and reregister on every render
+export const useHistoryCB = (cb: HistoryCB, executeInitially: boolean) => {
+  useEffect(() => {
+    registerHistoryCB(cb);
+    if (executeInitially) {
+      cb(false)
+    }
+    return () => deRegisterHistoryCB(cb);
+  }, [cb, executeInitially])
+}
+
 const saveSearchHistory = (history: SearchHistory) => {
   const rawJson = JSON.stringify(history);
   localStorage.setItem(HISTORY_STORAGE_KEY, rawJson);
@@ -44,7 +66,7 @@ export const setPinned = (item: SearchItem, pinned: boolean) => {
     }
   });
   saveSearchHistory(history);
-  callbacks.forEach((cb) => cb());
+  callbacks.forEach((cb) => cb(false));
 };
 
 export const recurseSearchTree = (
@@ -315,6 +337,94 @@ export const checkExpressionEquality = (
   return true;
 };
 
+export const cleanExpression = (expr?: QueryExpression | null) => {
+  if (expr === undefined || expr === null || Object.keys(expr).length === 0) {
+    return null
+  }
+
+  if ("field" in expr) {
+    return expr
+  }
+
+  if ("left" in expr && "right" in expr) {
+    const left = cleanExpression(expr.left)
+    const right = cleanExpression(expr.right)
+    if (left && right) {
+      return {
+        ...expr,
+        left,
+        right
+      }
+    }
+    if (left || right) {
+      if (expr.operator === QueryOperator.AND || expr.operator === QueryOperator.OR) {
+        return left || right
+      } else {
+        return {
+          ...expr,
+          left: left || right,
+          right: undefined
+        }
+      }
+    }
+    return null
+  }
+  if ("left" in expr || "right" in expr) {
+    return cleanExpression(expr.left || expr.right)
+  }
+
+  return null;
+}
+
+export const mergeExpressions = (operator: QueryOperator, left: QueryOperand | null, right: QueryOperand | null): QueryExpression => {
+  const cleanLeft = cleanExpression(left);
+  const cleanRight = cleanExpression(right);
+  if (cleanLeft && cleanRight) {
+    return {
+      operator,
+      left: cleanLeft,
+      right: cleanRight
+    }
+  } else if (cleanLeft || cleanRight) {
+    const subExpr = (cleanLeft || cleanRight);
+    if ("left" in subExpr) {
+      return subExpr
+    } else {
+      return {
+        left: cleanLeft || cleanRight
+      }
+    }
+  }
+
+  return {}
+}
+
+const extractAnds = (expr: QueryExpression): QueryExpression[] => {
+  if ("left" in expr && "right" in expr) {
+    const operator = expr.operator || QueryOperator.AND;
+
+    if (operator === QueryOperator.AND) {
+      return [...extractAnds(expr.left), ...extractAnds(expr.right)]
+    }
+  }
+  return [expr];
+}
+
+export const dedupExpression = (expr: QueryExpression): QueryExpression => {
+  if ("left" in expr && "right" in expr) {
+    const operator = expr.operator || QueryOperator.AND;
+    if (operator === QueryOperator.AND) {
+      const operands = extractAnds(expr).map(dedupExpression);
+
+      const deduppedOperands = operands.filter((o1, i) => !operands.slice(i + 1).find(o2 => o1 !== o2 && checkExpressionEquality(o1, o2)))
+
+      return deduppedOperands.reduce((a, b) => mergeExpressions(QueryOperator.AND, a, b))
+
+    }
+  }
+  return expr;
+}
+
 // Helper function to build query expression from filter state
 export const buildQueryFromFilters = (
   propFilters: { [field: string]: string[] },
@@ -353,9 +463,26 @@ export const buildQueryFromFilters = (
   return createAndExpression(expressions);
 };
 
-export const appendToSearchHistory = (query: QueryExpression) => {
+const isTempWSSearch = (query: QueryExpression | QueryOperand | null | undefined): boolean => {
+
+  if (!query) {
+    return false;
+  }
+
+  if (query.left || query.right) {
+    return isTempWSSearch(query.left) || isTempWSSearch(query.right)
+  }
+  return "field" in query && query.field === "_id";
+}
+
+export const appendToSearchHistory = (query: QueryExpression, searchString: string, clickedInHistory: boolean) => {
   if (recurseSearchTree(query).length == 0) {
     // Ignore empty searches
+    return;
+  }
+
+  // Ignore searched made inside a temp workspace
+  if (isTempWSSearch(query)) {
     return;
   }
 
@@ -367,9 +494,14 @@ export const appendToSearchHistory = (query: QueryExpression) => {
     // Move existing to top
     const withoutExisting = current.filter((c) => c !== existing);
     existing.timestamp = new Date().toISOString();
+    if (!existing.searchString) {
+      // If the old history item was made before searchString was a part of history, we need to use the most recent one
+      existing.searchString = searchString;
+    }
     saveSearchHistory([existing, ...withoutExisting]);
   } else {
     const item: SearchItem = {
+      searchString,
       pinned: false,
       query,
       timestamp: new Date().toISOString(),
@@ -387,5 +519,5 @@ export const appendToSearchHistory = (query: QueryExpression) => {
     saveSearchHistory(newHistory);
   }
 
-  callbacks.forEach((c) => c());
+  callbacks.forEach((c) => c(clickedInHistory));
 };

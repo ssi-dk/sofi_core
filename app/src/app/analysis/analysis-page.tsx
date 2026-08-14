@@ -82,18 +82,22 @@ import {
   buildQueryFromFilters,
   checkExpressionEquality,
   checkSortEquality,
+  createAndExpression,
+  dedupExpression,
+  mergeExpressions,
   recurseSearchTree,
 } from "./search/search-utils";
 import { WorkspaceMenu } from "./workspace-menu";
 import { useInView } from "react-intersection-observer";
 import { RenderCellControl } from "./data-table/renderCellControl";
+import { UseApprovableColumns } from "./analysis-utils";
 
 // When the fields in this array are 'approved', a given sequence is rendered
 // as 'approved' also.
 const PRIMARY_APPROVAL_FIELDS = ["st_final", "qc_final"];
 const DEFAULT_PAGE_SIZE = 200;
 
-export type SearchQuery = AnalysisQuery & { clearAllFields?: boolean };
+export type SearchQuery = AnalysisQuery & { clearAllFields?: boolean, clickedInHistory?: boolean };
 
 let prevSearchTerms: Set<string> = new Set(); // NEEDS to be outside the react component to prevent un-needed rerender
 
@@ -167,7 +171,7 @@ export default function AnalysisPage() {
   }, [workspaces, workspace]);
 
   useEffect(() => {
-    if (switchWsWhenReady && workspace && workspace.id == "temp-workspace" && workspaceCreationState.status === 200) {
+    if (switchWsWhenReady && workspace && workspace.id === "temp-workspace" && workspaceCreationState.status === 200) {
       setWorkspace(workspaces[workspaces.length - 1]);
       setSwitchWsWhenReady(false);
     }
@@ -311,23 +315,7 @@ export default function AnalysisPage() {
     [columnConfigs, t]
   );
 
-  const approvableColumns = React.useMemo(
-    () => [
-      ...new Set(
-        Object.values(columnConfigs || {})
-          .map((c) => c?.approves_with)
-          .reduce((a, b) => a.concat(b), [])
-          .concat(
-            Object.values(columnConfigs || {})
-              .filter((c) => c?.approvable)
-              .filter((c) => !c?.computed)
-              .map((c) => c?.field_name)
-          )
-          .filter((x) => x !== undefined)
-      ),
-    ],
-    [columnConfigs]
-  );
+  const approvableColumns = UseApprovableColumns();
 
   const selectionDataIntersection = useMemo(() => Object.keys(selection).filter(s => data.find(d => d.sequence_id === s)).length, [selection, data]);
 
@@ -417,22 +405,13 @@ export default function AnalysisPage() {
       return selectionValues;
     }
 
-    if (workspace) {
-      return [
-        ...selectionValues.filter(
-          (sv) => !workspace.samples!.find((sid) => sid == sv.id)
-        ),
-        ...data.filter((d) => workspace.samples!.find((s) => s === d.id)),
-      ];
-    }
-
     return [
       ...selectionValues.filter(
         (sv) => !data.find((d) => d.sequence_id == sv.sequence_id)
       ),
       ...data,
     ];
-  }, [selection, data, pageState.isNarrowed, workspace]);
+  }, [selection, data, pageState.isNarrowed]);
 
   const [lastSearchQuery, setLastSearchQuery] = useState<AnalysisQuery>({
     expression: {},
@@ -446,6 +425,7 @@ export default function AnalysisPage() {
     expression: {},
   });
 
+  const [searchString, setSearchString] = useState("");
   const [propFilters, setPropFilters] = React.useState(
     {} as PropFilter<AnalysisResult>
   );
@@ -596,38 +576,20 @@ export default function AnalysisPage() {
           Object.entries(searchExpression).filter(([_, v]) => !!v)
         ) as QueryExpression;
 
-        if (
-          searchExpression &&
-          Object.keys(searchExpression).length > 0 &&
-          filterExpression
-        ) {
-          return {
-            operator: QueryOperator.AND,
-            left: searchExpression.operator
-              ? searchExpression
-              : searchExpression.left,
-            right: filterExpression.operator
-              ? filterExpression
-              : filterExpression.left,
-          };
-        } else if (filterExpression) {
-          return filterExpression;
-        } else if (
-          searchExpression &&
-          Object.keys(searchExpression).length > 0
-        ) {
-          return searchExpression;
-        } else {
-          return {};
-        }
+        return dedupExpression(mergeExpressions(QueryOperator.AND,searchExpression,filterExpression))
       };
 
       const forceUpdate = (inView && !prevInViewRef.current.inView) || loadAllRef.current.needsFetch;
       loadAllRef.current.needsFetch = false;
+
+      const tempWsFilter = (workspace && workspace.id === "temp-workspace" && workspace.samples) ? workspace.samples.map(objectid => ({field: "_id",term: objectid} as QueryOperand)).reduce((a,b) => ({operator: QueryOperator.OR, left: a, right: b})) : null
+
+      const joinedExpression: QueryExpression = mergeExpressions(QueryOperator.AND,q.expression,tempWsFilter)
+
       const newExpression = q.clearAllFields
-        ? q.expression
+        ? joinedExpression
         : mergeFilters(
-          q.expression || {},
+          joinedExpression || {},
           propFilters,
           rangeFilters,
           approvalFilters
@@ -663,9 +625,9 @@ export default function AnalysisPage() {
       dispatch({ type: "RESET/Analysis" });
       setLastSearchQuery(newQ);
       setLastSearchWs(workspace);
-      appendToSearchHistory(newExpression);
+      appendToSearchHistory(newExpression, searchString, q.clickedInHistory || false);
 
-      const searchingWithWs = workspace && workspace.id != "temp-workspace";
+      const searchingWithWs = workspace && workspace.id !== "temp-workspace";
 
       if (
         newExpression &&
@@ -718,7 +680,8 @@ export default function AnalysisPage() {
       inView,
       prevInViewRef,
       loadAllRef,
-      isPending
+      isPending,
+      searchString,
     ]
   );
 
@@ -739,9 +702,9 @@ export default function AnalysisPage() {
   );
 
   const canSelectColumn = React.useCallback(
-    (columnName: string) => {
+    (columnName: string, columnIndex: number) => {
       return (
-        (!pageState.isNarrowed && columnName === "sequence_id") ||
+        (!pageState.isNarrowed && columnIndex === 0) ||
         (pageState.isNarrowed &&
           columnConfigs[columnName]?.approvable &&
           !columnConfigs[columnName]?.computed)
@@ -1033,7 +996,10 @@ export default function AnalysisPage() {
       <Box role="navigation" gridColumn="2 / 4" pb={5}>
         <Flex justifyContent="flex-end">
           <AnalysisSearch
-            onSearchChange={setRawSearchQuery}
+            onSearchChange={(q,s) => {
+              setRawSearchQuery(q);
+              setSearchString(s);
+            }}
             isDisabled={pageState.isNarrowed}
             searchTerms={searchTerms}
           />

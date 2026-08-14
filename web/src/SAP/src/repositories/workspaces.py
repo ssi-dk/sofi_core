@@ -5,7 +5,7 @@ import flask
 from ...src.security.permission_check import authorized_columns
 from ...generated.models.update_workspace import UpdateWorkspace
 from ...src.repositories.analysis import (
-    get_analysis_with_metadata,
+    get_single_analysis,
     get_single_analysis_by_object_id,
 )
 from ...common.database import get_collection, WORKSPACES_COL_NAME
@@ -56,8 +56,9 @@ def trim(item, user: str) -> Dict:
 
 def get_sequence(sample_id: str):
     single = get_single_analysis_by_object_id(sample_id)
-    sequence = get_analysis_with_metadata(single["sequence_id"])
-    return sequence
+    if single is None:
+        return None
+    return get_single_analysis(single["sequence_id"])
 
 def my_workspaces_query(user: str)-> dict:
     return {

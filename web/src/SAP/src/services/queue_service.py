@@ -2,7 +2,7 @@ import sys
 from typing import Dict
 from web.src.SAP.generated.models.approval_status import ApprovalStatus
 from ...common.config.column_config import internal_approval_fields
-from ..repositories.analysis import get_analysis_with_metadata
+from ..repositories.analysis import get_single_analysis
 from ..repositories.metadata import fetch_metadata
 from ..repositories.queue import (
     refresh_metadata,
@@ -36,7 +36,7 @@ def post_and_await_reload(isolate_id, institution):
 
 def post_approval(sequence_id, field_mask, user_institution, required_values):
     """Post approval data and return request ID for tracking."""
-    data = get_analysis_with_metadata(sequence_id)
+    data = get_single_analysis(sequence_id)
     internal_fields = internal_approval_fields()
 
     fields = {
