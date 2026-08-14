@@ -18,6 +18,7 @@ import { Workspace } from "./workspaces/workspace";
 import { CreateWorkspaceFromMicroreact } from "./workspaces/create-workspace-from-microreact";
 import { AddToCluster } from "./analysis/add-to-cluster-page";
 import { Clusterspage } from "./clusters/clusters-page";
+import { ProjectsPage } from "./projects/projects-page";
 
 export default function App() {
   return (
@@ -46,6 +47,15 @@ export default function App() {
           render={() => (
             <Authorize>
               <Clusterspage />
+            </Authorize>
+          )}
+        />
+        <Route
+          exact
+          path="/projects"
+          render={() => (
+            <Authorize>
+              <ProjectsPage />
             </Authorize>
           )}
         />
@@ -108,6 +118,7 @@ export default function App() {
           path="/callback"
           render={() => <Callback location={window.location} />}
         />
+        
         <CacheRoute
           path="/"
           render={() => (
@@ -116,6 +127,7 @@ export default function App() {
             </Authorize>
           )}
         />
+        
       </CacheSwitch>
     </ChakraProvider>
   );

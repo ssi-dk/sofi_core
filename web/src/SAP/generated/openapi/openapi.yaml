@@ -444,6 +444,51 @@ paths:
       - nearest_neighbors
       x-openapi-router-controller: web.src.SAP.generated.controllers.nearest_neighbors_controller
       x-codegen-request-body-name: body
+  /projects:
+    get:
+      description: Gets projects available to user
+      operationId: get_projects
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Project'
+                type: array
+          description: project infos
+      tags:
+      - projects
+      x-openapi-router-controller: web.src.SAP.generated.controllers.projects_controller
+  /projects/{project_key}/{is_private}:
+    post:
+      description: Sets the private value of a project
+      operationId: set_is_private
+      parameters:
+      - description: project_key of modified project
+        explode: false
+        in: path
+        name: project_key
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: boolean value to set the is_private field
+        explode: false
+        in: path
+        name: is_private
+        required: true
+        schema:
+          type: boolean
+        style: simple
+      responses:
+        "200":
+          description: Success
+        "404":
+          description: Invalid project key or inssuficient access
+      tags:
+      - projects
+      x-openapi-router-controller: web.src.SAP.generated.controllers.projects_controller
   /samples/add_to_cluster:
     post:
       operationId: add_to_cluster
@@ -1835,6 +1880,7 @@ components:
       - phylogeny.write
       - gdpr.manage
       - permissions.write
+      - projects.manage
       type: string
     UserInfo:
       example:
@@ -1912,6 +1958,33 @@ components:
       - error
       title: Status
       type: string
+    Project:
+      example:
+        is_private: true
+        project_number: project_number
+        project_key: project_key
+        count: 0
+        project_title: project_title
+      properties:
+        project_key:
+          title: projectKey
+          type: string
+        project_title:
+          title: title
+          type: string
+        project_number:
+          title: projectNumber
+          type: string
+        count:
+          title: count
+          type: integer
+        is_private:
+          title: isPrivate
+          type: boolean
+      required:
+      - count
+      - is_private
+      - project_key
     Workspace:
       example:
         institution: institution

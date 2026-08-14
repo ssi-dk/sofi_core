@@ -14,6 +14,47 @@ security:
   - jwt: []
 
 paths:
+  /projects:
+    get:
+      description: Gets projects available to user
+      operationId: get_projects
+      x-openapi-router-controller: web.src.SAP.generated.controllers.projects_controller
+      tags:
+        - projects
+      responses:
+        '200':
+          description: project infos
+          content:
+            application/json:
+              schema:
+                type: array
+                items: 
+                  $ref: '#/components/schemas/Project'
+  /projects/{project_key}/{is_private}:
+    post:
+      description: Sets the private value of a project
+      operationId: set_is_private
+      x-openapi-router-controller: web.src.SAP.generated.controllers.projects_controller
+      tags:
+        - projects
+      parameters:
+        - name: project_key
+          in: path
+          required: true
+          schema:
+            type: string
+          description: project_key of modified project
+        - name: is_private
+          in: path
+          required: true
+          schema:
+            type: boolean
+          description: boolean value to set the is_private field
+      responses:
+        '200':
+          description: "Success"
+        '404':
+          description: "Invalid project key or inssuficient access"
   /workspaces:
     get:
       description: Gets workspaces
@@ -1812,7 +1853,7 @@ components:
 
     Permission:
       type: string
-      enum: ["search", "export", "approve", "phylogeny.read", "phylogeny.write", "gdpr.manage", "permissions.write"]
+      enum: ["search", "export", "approve", "phylogeny.read", "phylogeny.write", "gdpr.manage", "permissions.write", "projects.manage"]
 
     UserInfo:
       type: object
@@ -1875,6 +1916,29 @@ components:
       - completed
       - error
       title: Status
+
+    Project:
+      properties:
+        project_key:
+          type: string
+          title: projectKey
+        project_title:
+          type: string
+          title: title
+        project_number:
+          type: string
+          title: projectNumber
+        count:
+          type: integer
+          title: count
+
+        is_private:
+          type: boolean
+          title: isPrivate
+      required:
+      - project_key
+      - is_private
+      - count
 
     Workspace:
       properties:

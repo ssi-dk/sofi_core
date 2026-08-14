@@ -45,6 +45,7 @@ from .permission import Permission
 from .personal_data import PersonalData
 from .personal_identifier_type import PersonalIdentifierType
 from .phenotype import Phenotype
+from .project import Project
 from .query_expression import QueryExpression
 from .query_operand import QueryOperand
 from .query_operator import QueryOperator
