@@ -82,7 +82,6 @@ def structure_range_or_wildcard(field, node):
     
     if node.term is not None:
 
-
         def structure_term(term: str):
             coerced = coerce_term(term)
             if isinstance(coerced, str):
@@ -91,8 +90,13 @@ def structure_range_or_wildcard(field, node):
                 return {field: {"$gte": coerced, "$lte": (coerced + timedelta(days=1))} }
             else:
                 return {field: {"$in": [coerced, term]}}
-            
-        terms = list(map(structure_term,str.split(node.term,",")))
+
+
+        if node.term.startswith("[") and node.term.endswith("]"):
+            terms = list(map(structure_term, node.term[1:-1].split(",")))
+        else:
+            terms = [structure_term(node.term)]
+        
         if len(terms) == 1:
             return terms[0],True
         else:

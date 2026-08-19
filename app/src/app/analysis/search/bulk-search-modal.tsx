@@ -1,302 +1,4 @@
-// import React, { useMemo, useState } from "react";
-// import {
-//     Box,
-//     Button,
-//     FormControl,
-//     FormLabel,
-//     Input,
-//     Modal,
-//     ModalBody,
-//     ModalCloseButton,
-//     ModalContent,
-//     ModalFooter,
-//     ModalHeader,
-//     ModalOverlay,
-//     Select,
-//     Text,
-//     useToast,
-//     VStack,
-// } from "@chakra-ui/react";
-
-// type BulkSearchModalProps = {
-//     isOpen: boolean;
-//     onClose: () => void;
-//     searchTerms: Set<string>;
-//     currentQuery: string;
-//     onQueryGenerated: (query: string) => void;
-// };
-
-// // const escapeLuceneValue = (value: string): string => {
-// //   return value.replace(/\\/g, "\\\\").replace(/"/g, '\\"');
-// // };
-
-// // const buildBulkSearchClause = (field: string, values: string[]): string => {
-// //   return `(${values
-// //     .map((value) => `${field}:"${escapeLuceneValue(value)}"`)
-// //     .join(" OR ")})`;
-// // };
-
-// // const parseValuesFromFile = async (file: File): Promise<string[]> => {
-// //   const text = await file.text();
-
-// //   const values = text
-// //     .split(/\r?\n/)
-// //     .map((value) => value.trim())
-// //     .filter(Boolean);
-
-// //   return Array.from(new Set(values));
-// // };
-// const BulkSearchModal = ({
-//     isOpen,
-//     onClose,
-//     searchTerms,
-//     currentQuery,
-//     onQueryGenerated,
-// }: BulkSearchModalProps) => {
-//     const [field, setField] = useState("");
-//     const [file, setFile] = useState<File | null>(null);
-
-//     const onAdd = async () => {
-//         if (!field || !file) {
-//             return;
-//         }
-
-//         const text = await file.text();
-
-//         const values = text
-//             .split(/\r?\n/)
-//             .filter(Boolean);
-
-//         const clause = values
-//             .map(v => `${field}:"${v}"`)
-//             .join(" OR ");
-
-//         const nextQuery =
-//             currentQuery.length === 0
-//                 ? `(${clause})`
-//                 : `${currentQuery} AND (${clause})`;
-
-//         onQueryGenerated(nextQuery);
-//         onClose();
-//     };
-
-//     return (
-//         <Modal isOpen={isOpen} onClose={onClose}>
-//             <ModalOverlay />
-//             <ModalContent>
-//                 <ModalHeader>Bulk Search</ModalHeader>
-//                 <ModalBody>                 
-//                     {/* <VStack align="stretch">
-//                         <Select
-//                             placeholder="Select field"
-//                             value={field}
-//                             onChange={(e) => setField(e.target.value)}
-//                         >
-//                             {Array.from(searchTerms).map(term => (
-//                                 <option key={term} value={term}>
-//                                     {term}
-//                                 </option>
-//                             ))}
-//                         </Select>
-
-//                         <Input
-//                             type="file"
-//                             accept=".txt"
-//                             onChange={(e) =>
-//                                 setFile(e.target.files?.[0] ?? null)
-//                             }
-//                         />
-//                     </VStack> */}
-//                 </ModalBody>
-
-//                 <ModalFooter>
-//                     <Button onClick={onAdd}>
-//                         Add to query
-//                     </Button>
-//                 </ModalFooter>
-//             </ModalContent>
-//         </Modal>
-//     );
-// };
-
-// const BulkSearchModal = ({
-//   isOpen,
-//   onClose,
-//   searchTerms,
-//   currentQuery,
-//   onQueryGenerated,
-// }: BulkSearchModalProps) => {
-//   const toast = useToast();
-
-//   const fields = useMemo(
-//     () => Array.from(searchTerms).sort(),
-//     [searchTerms]
-//   );
-
-//   const [selectedField, setSelectedField] = useState("");
-//   const [fileName, setFileName] = useState("");
-//   const [values, setValues] = useState<string[]>([]);
-
-//   const reset = () => {
-//     setSelectedField("");
-//     setFileName("");
-//     setValues([]);
-//   };
-
-//   const handleClose = () => {
-//     reset();
-//     onClose();
-//   };
-
-//   const onFileChange = async (
-//     event: React.ChangeEvent<HTMLInputElement>
-//   ) => {
-//     const file = event.target.files?.[0];
-
-//     if (!file) return;
-
-//     try {
-//       const parsedValues = await parseValuesFromFile(file);
-
-//       setFileName(file.name);
-//       setValues(parsedValues);
-
-//       if (parsedValues.length === 0) {
-//         toast({
-//           title: "No values found",
-//           description: "The file did not contain any newline-separated values.",
-//           status: "warning",
-//           isClosable: true,
-//         });
-//       }
-//     } catch (error) {
-//       toast({
-//         title: "Could not read file",
-//         description: `${error}`,
-//         status: "error",
-//         isClosable: true,
-//       });
-//     }
-
-//     // Allows selecting the same file again
-//     event.target.value = "";
-//   };
-
-//   const onAddToQuery = () => {
-//     if (!selectedField) {
-//       toast({
-//         title: "Select a field",
-//         status: "warning",
-//         isClosable: true,
-//       });
-//       return;
-//     }
-
-//     if (values.length === 0) {
-//       toast({
-//         title: "Select a file",
-//         description: "The file must contain at least one value.",
-//         status: "warning",
-//         isClosable: true,
-//       });
-//       return;
-//     }
-
-//     const clause = buildBulkSearchClause(selectedField, values);
-
-//     const nextQuery =
-//       currentQuery.trim().length === 0
-//         ? clause
-//         : `${currentQuery.trim()} AND ${clause}`;
-
-//     onQueryGenerated(nextQuery);
-//     handleClose();
-//   };
-
-//   return (
-//     <Modal isOpen={isOpen} onClose={handleClose} size="lg">
-//       <ModalOverlay />
-
-//       <ModalContent>
-//         <ModalHeader>Bulk search</ModalHeader>
-//         <ModalCloseButton />
-
-//         <ModalBody>
-//           <VStack align="stretch" spacing={4}>
-//             <FormControl>
-//               <FormLabel>Field</FormLabel>
-//               <Select
-//                 placeholder="Select field"
-//                 value={selectedField}
-//                 onChange={(event) => setSelectedField(event.target.value)}
-//               >
-//                 {fields.map((field) => (
-//                   <option key={field} value={field}>
-//                     {field}
-//                   </option>
-//                 ))}
-//               </Select>
-//             </FormControl>
-
-//             <FormControl>
-//               <FormLabel>File</FormLabel>
-//               <Input
-//                 type="file"
-//                 accept=".txt,.csv"
-//                 onChange={onFileChange}
-//               />
-//             </FormControl>
-
-//             {fileName && (
-//               <Box borderWidth="1px" borderRadius="md" p={3}>
-//                 <Text fontWeight="bold">{fileName}</Text>
-//                 <Text color="gray.600">
-//                   {values.length} unique values loaded
-//                 </Text>
-//               </Box>
-//             )}
-
-//             {selectedField && values.length > 0 && (
-//               <Box
-//                 borderWidth="1px"
-//                 borderRadius="md"
-//                 p={3}
-//                 maxHeight="160px"
-//                 overflowY="auto"
-//                 bg="gray.50"
-//               >
-//                 <Text fontSize="sm" fontWeight="bold" mb={2}>
-//                   Query preview
-//                 </Text>
-//                 <Text fontSize="sm" whiteSpace="pre-wrap">
-//                   {buildBulkSearchClause(selectedField, values)}
-//                 </Text>
-//               </Box>
-//             )}
-//           </VStack>
-//         </ModalBody>
-
-//         <ModalFooter>
-//           <Button variant="ghost" mr={3} onClick={handleClose}>
-//             Cancel
-//           </Button>
-
-//           <Button
-//             colorScheme="blue"
-//             onClick={onAddToQuery}
-//             isDisabled={!selectedField || values.length === 0}
-//           >
-//             Add to query
-//           </Button>
-//         </ModalFooter>
-//       </ModalContent>
-//     </Modal>
-//   );
-// };
-
-//export default BulkSearchModal;
-
-import React, { useMemo, useState, useEffect } from "react";
+import React, { useMemo, useState } from "react";
 import {
   Box,
   Button,
@@ -314,6 +16,15 @@ import {
   PopoverContent,
   PopoverTrigger,
   VStack,
+  Tag,
+  TagLabel,
+  Wrap,
+  Text,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem
+
 } from "@chakra-ui/react";
 
 type BulkSearchModalProps = {
@@ -324,6 +35,9 @@ type BulkSearchModalProps = {
   onQueryGenerated: (query: string) => void;
 };
 
+const MAX_SUGGESTIONS = 10;
+const MAX_PREVIEWS = 10;
+
 const BulkSearchModal = ({
   isOpen,
   onClose,
@@ -331,42 +45,73 @@ const BulkSearchModal = ({
   currentQuery,
   onQueryGenerated,
 }: BulkSearchModalProps) => {
-
-  const [fieldInput, setFieldInput] = useState("");
+  const [selectedField, setSelectedField] = useState("");
+  const [isSelectFieldFocused, setIsSelectFieldFocused] = useState(false);
   const [file, setFile] = useState<File | null>(null);
-  const [isFocused, setIsFocused] = useState(false);
+  const [values, setValues] = useState<string[]>([]);
+
+  const hasExistingQuery = currentQuery.trim().length > 0;
+  const canAdd = searchTerms.has(selectedField) && values.length > 0;
+  const previewValues = values.slice(0, MAX_PREVIEWS);
 
   const matchingFields = useMemo(
     () =>
       Array.from(searchTerms)
         .filter((field) =>
-          field.toLowerCase().includes(fieldInput.toLowerCase())
+          field.toLowerCase().includes(selectedField.toLowerCase())
         )
-        .slice(0, 10),
-    [fieldInput, searchTerms]
+        .slice(0, MAX_SUGGESTIONS),
+    [selectedField, searchTerms]
   );
 
-  const onAdd = async () => {
-    if (!fieldInput || !file) {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = e.target.files?.[0] ?? null;
+    setFile(selectedFile);
+
+    if (!selectedFile) {
+      setValues([]);
       return;
     }
 
-    const text = await file.text();
+    const text = await selectedFile.text();
 
-    const values = text
-      .split(/\r?\n/)
-      .filter((value) => value.length > 0);
+    setValues(
+      text
+        .split(/\r?\n/)
+        .map((v) => v.trim())
+        .filter(Boolean)
+    );
+  };
 
-    const clause = `${fieldInput}:"${values.join(",")}"`;
+  const buildClause = () =>
+    `${selectedField}:"[${values.join(",")}]"`;
 
-    const nextQuery =
+  const addClause = (operator: "AND" | "OR") => {
+    const clause = buildClause();
+
+    const newQuery =
       currentQuery.trim().length === 0
         ? clause
-        : `${currentQuery} AND ${clause}`;
+        : `${currentQuery} ${operator} ${clause}`;
 
-    onQueryGenerated(nextQuery);
+    onQueryGenerated(newQuery);
+    resetForm();
     onClose();
   };
+
+  const applyQuery = () => {
+    onQueryGenerated(buildClause());
+    resetForm();
+    onClose();
+  };
+
+  const resetForm = () => {
+    setSelectedField("");
+    setFile(null);
+    setValues([]);
+    setIsSelectFieldFocused(false);
+  };
+
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
@@ -380,23 +125,23 @@ const BulkSearchModal = ({
             <FormControl>
               <FormLabel>Field</FormLabel>
 
-              <Popover              
+              <Popover
                 isOpen={
-                  isFocused &&
-                  fieldInput.length > 0
+                  isSelectFieldFocused &&
+                  selectedField.length > 0
                 }
                 placement="bottom-start"
-                autoFocus={false}                
+                autoFocus={false}
               >
                 <PopoverTrigger>
                   <Input
                     placeholder="Search field..."
-                    value={fieldInput}
+                    value={selectedField}
                     onChange={(e) =>
-                      setFieldInput(e.target.value)
-                    }                    
-                     onFocus={() => setIsFocused(true)}
-                     onBlur={() => setIsFocused(false)}
+                      setSelectedField(e.target.value)
+                    }
+                    onFocus={() => setIsSelectFieldFocused(true)}
+                    onBlur={() => setIsSelectFieldFocused(false)}
                   />
                 </PopoverTrigger>
 
@@ -410,8 +155,8 @@ const BulkSearchModal = ({
                           cursor="pointer"
                           _hover={{ bg: "gray.100" }}
                           onClick={() => {
-                            setFieldInput(field);
-                            setIsFocused(false);
+                            setSelectedField(field);
+                            setIsSelectFieldFocused(false);
                           }}
                         >
                           {field}
@@ -427,14 +172,43 @@ const BulkSearchModal = ({
               <FormLabel>File</FormLabel>
 
               <Input
-                type="file"              
+                type="file"
                 accept=".txt"
                 alignContent="center"
-                onChange={(e) =>
-                  setFile(e.target.files?.[0] ?? null)
-                }
+                cursor="pointer"
+                onChange={handleFileChange}
               />
             </FormControl>
+
+            {file && (
+              <Box
+                p={3}
+                borderWidth="1px"
+                borderRadius="md"
+                bg="gray.50"
+              >
+                <Text fontWeight="bold">{file.name}</Text>
+                <Text fontSize="sm" color="gray.600" mb={2}>
+                  {values.length} values found
+                </Text>
+
+                <Wrap spacing={2}>
+                  {previewValues.map((value) => (
+                    <Tag key={value} size="sm" colorScheme="blue">
+                      <TagLabel>{value}</TagLabel>
+                    </Tag>
+                  ))}
+
+                  {values.length > MAX_PREVIEWS && (
+                    <Tag size="sm" variant="subtle">
+                      <TagLabel>
+                        +{values.length - MAX_PREVIEWS} more
+                      </TagLabel>
+                    </Tag>
+                  )}
+                </Wrap>
+              </Box>
+            )}
           </VStack>
         </ModalBody>
 
@@ -443,18 +217,37 @@ const BulkSearchModal = ({
             Cancel
           </Button>
 
-          <Button
-            colorScheme="blue"
-            onClick={onAdd}
-            isDisabled={
-              !searchTerms.has(fieldInput) || !file
-            }
-          >
-            Add to query
-          </Button>
+          {hasExistingQuery ? (
+            <Menu>
+              <MenuButton as={Button} isDisabled={!canAdd}>
+                Add to query
+              </MenuButton>
+
+              <MenuList>
+                <MenuItem onClick={() => addClause("AND")}>
+                  Add with AND
+                </MenuItem>
+
+                <MenuItem onClick={() => addClause("OR")}>
+                  Add with OR
+                </MenuItem>
+
+                <MenuItem onClick={() => applyQuery()}>
+                  Replace query
+                </MenuItem>
+              </MenuList>
+            </Menu>
+          ) : (
+            < Button
+              colorScheme="blue"
+              onClick={applyQuery}
+              isDisabled={!canAdd}
+            >
+              Add to query
+            </Button>)}
         </ModalFooter>
       </ModalContent>
-    </Modal>
+    </Modal >
   );
 };
 
