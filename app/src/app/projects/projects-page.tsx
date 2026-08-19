@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react";
-import { Box, Flex, Heading, IconButton, Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
+import { Box, Checkbox, Heading, Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
 import Header from "app/header/header";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
@@ -7,7 +7,6 @@ import { RootState } from "app/root-reducer";
 import { Permission, Project, UserInfo } from "sap-client";
 import { useMutation, useRequest } from "redux-query-react";
 import { getProjects, setIsPrivate } from "./projects-query-configs";
-import { RepeatClockIcon } from "@chakra-ui/icons";
 import { IfPermission } from "auth/if-permission";
 
 export const ProjectsPage = () => {
@@ -65,16 +64,18 @@ export const ProjectsPage = () => {
                             <Td>{p.project_number}</Td>
                             <Td>{p.count}</Td>
                             <Td>
-                                <Flex style={{width: "70px"}} justify="space-between" alignItems="center">
-
-                                {p.is_private ? t("yes") : t("no")}<IconButton 
-                                    style={ {backgroundColor: i % 2 == 0 ? "white" : undefined, border: "1px gray solid"}}
-                                    marginLeft={2}
-                                    aria-label="Switch project privacy" 
-                                    icon={<RepeatClockIcon />} 
-                                    onClick={() => setIsPrivateMut(p.project_key, !p.is_private)} 
-                                    />
-                                </Flex>
+                                <Checkbox
+                                    isChecked={p.is_private}
+                                    onChange={(e) =>
+                                        setIsPrivateMut(p.project_key, e.target.checked)
+                                    }
+                                    sx={{
+                                        ".chakra-checkbox__control": {
+                                            borderColor: "gray.400",
+                                            background: "white",
+                                        },
+                                    }}
+                                />
                             </Td>
                         </Tr>)}
                     </Tbody>
