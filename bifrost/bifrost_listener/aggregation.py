@@ -197,6 +197,49 @@ def agg_pipeline(changed_ids=None):
                         }
                     }
                 ),
+                "st": {
+                    "$let": {
+                        "vars": {
+                            "res": {
+                                "$arrayElemAt": [
+                                    {
+                                        "$filter": {
+                                            "input": {
+                                                "$map": {
+                                                    "input": {
+                                                        '$cond': {
+                                                            'if': {
+                                                                '$eq': [
+                                                                    {
+                                                                        '$type': '$categories.mlst.summary.sequence_type'
+                                                                    }, 'object'
+                                                                ]
+                                                            }, 
+                                                            'then': {
+                                                                '$objectToArray': '$categories.mlst.summary.sequence_type'
+                                                            }, 
+                                                            'else': []
+                                                        }
+                                                    },
+                                                    "in": {
+                                                        "k": "$$this.k",
+                                                        "v": "$$this.v",
+                                                    },
+                                                }
+                                            },
+                                            "as": "elem",
+                                            "cond": {
+                                                "$in": ["$$elem.k", "$mlstlookup.schema"]
+                                            },
+                                        }
+                                    },
+                                    0,
+                                ]
+                            }
+                        },
+                        "in": "$$res.v",
+                    }
+                },
                 **userChangedCondition("qc_action", "$categories.stamper.stamp.value"),
                 **userChangedCondition("qc_unclassified_reads", removeNullProperty(
                     {
@@ -726,53 +769,6 @@ def agg_pipeline(changed_ids=None):
             },
         },
         {"$set": {"qc_final": "$qc_final.value"}},
-        {
-            "$addFields": {
-                "st": {
-                    "$let": {
-                        "vars": {
-                            "res": {
-                                "$arrayElemAt": [
-                                    {
-                                        "$filter": {
-                                            "input": {
-                                                "$map": {
-                                                    "input": {
-                                                        '$cond': {
-                                                            'if': {
-                                                                '$eq': [
-                                                                    {
-                                                                        '$type': '$categories.mlst.summary.sequence_type'
-                                                                    }, 'object'
-                                                                ]
-                                                            }, 
-                                                            'then': {
-                                                                '$objectToArray': '$categories.mlst.summary.sequence_type'
-                                                            }, 
-                                                            'else': []
-                                                        }
-                                                    },
-                                                    "in": {
-                                                        "k": "$$this.k",
-                                                        "v": "$$this.v",
-                                                    },
-                                                }
-                                            },
-                                            "as": "elem",
-                                            "cond": {
-                                                "$in": ["$$elem.k", "$mlstlookup.schema"]
-                                            },
-                                        }
-                                    },
-                                    0,
-                                ]
-                            }
-                        },
-                        "in": "$$res.v",
-                    }
-                }
-            }
-        },
         {
             "$addFields": {
                 **userChangedCondition("serotype_final", {
