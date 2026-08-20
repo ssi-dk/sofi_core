@@ -27,11 +27,7 @@ def post(user, token, body: NearestNeighborsRequest):
         return jsonify(mock_nearest_neighbors(token))
     
     with ApiClient(Configuration(host="http://bioapi:8000")) as api_client:
-        sample = get_single_sample(body.id)
-        detected_species = sample["categories"]["species_detection"]["summary"]["detected_species"]
-
         api_instance = NearestNeighborsApi(api_client)
-        filtering = {"categories.species_detection.summary.detected_species": detected_species}
         request = BioNearestNeighborsRequest(input_mongo_id=body.id,
                                              cutoff=cast(StrictInt, body.cutoff),
                                              unknowns_are_diffs=cast(StrictBool, body.unknowns_are_diffs))
