@@ -27,6 +27,7 @@ class Permission(Model):
     PHYLOGENY_WRITE = "phylogeny.write"
     GDPR_MANAGE = "gdpr.manage"
     PERMISSIONS_WRITE = "permissions.write"
+    PROJECTS_MANAGE = "projects.manage"
     def __init__(self):  # noqa: E501
         """Permission - a model defined in OpenAPI
 

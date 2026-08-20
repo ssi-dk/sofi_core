@@ -8,6 +8,7 @@ import {
   LockIcon,
   ViewIcon,
   HamburgerIcon,
+  InfoIcon
 } from "@chakra-ui/icons";
 import { Permission } from "sap-client";
 import { IfPermission } from "auth/if-permission";
@@ -39,6 +40,11 @@ function NavBar() {
       <IfPermission permission={Permission.gdpr_manage}>
         <NavLink to="/gdpr">
           <Button leftIcon={<LockIcon />}>{t("GDPR")}</Button>
+        </NavLink>
+      </IfPermission>
+      <IfPermission permission={Permission.projects_manage}>
+        <NavLink to="/projects">
+          <Button leftIcon={<InfoIcon />}>{t("Projects")}</Button>
         </NavLink>
       </IfPermission>
     </Flex>
