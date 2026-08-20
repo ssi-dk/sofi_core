@@ -10,23 +10,11 @@ type ExportButtonProps = {
   data: AnalysisResult[];
   columns: (keyof AnalysisResult)[];
   selection: DataTableSelection<AnalysisResult>;
+  onClickOverwrite: () => void | null
 };
 
-const isSelectionEmpty = (sel) => Object.keys(sel).length === 0;
-
-const ExportButton = (props: ExportButtonProps) => {
-  const { data, columns, selection } = props;
-
-  let exportData = data;
-  if (!isSelectionEmpty(selection)) {
-    const filteredData = data.filter((item) =>
-      selection.hasOwnProperty(item.sequence_id)
-    );
-    exportData = filteredData;
-  }
-
-  const download = React.useCallback(() => {
-    const tableState = spyDataTable();
+export const downloadDataToCsv = (data: AnalysisResult[], columns: (keyof AnalysisResult)[]) => {
+  const tableState = spyDataTable();
     let columnsToExport = columns;
 
     if (tableState.columnOrder && tableState.columnOrder.length) {
@@ -38,9 +26,16 @@ const ExportButton = (props: ExportButtonProps) => {
       );
     }
 
-    const tsv = convertToCsv<AnalysisResult>(exportData, columnsToExport, "\t");
+    const tsv = convertToCsv<AnalysisResult>(data, columnsToExport, "\t");
     downloadFile(tsv, "sofi-export.tsv");
-  }, [columns, exportData]);
+}
+
+const ExportButton = (props: ExportButtonProps) => {
+  const { data, columns, onClickOverwrite } = props;
+
+  const downloadPropData = React.useCallback(() => {
+    downloadDataToCsv(data, columns);
+  }, [columns, data]);
 
   return (
     <IconButton
@@ -48,7 +43,7 @@ const ExportButton = (props: ExportButtonProps) => {
       icon={<DownloadIcon />}
       size="sm"
       ml="1"
-      onClick={download}
+      onClick={onClickOverwrite || downloadPropData}
     />
   );
 };

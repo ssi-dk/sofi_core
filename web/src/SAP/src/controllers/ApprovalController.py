@@ -1,5 +1,5 @@
 from typing import Dict
-from web.src.SAP.src.repositories.analysis import (get_single_analysis, update_analysis)
+from web.src.SAP.src.repositories.analysis import (get_single_analysis, invalidate_analysis_cache, update_analysis)
 from web.src.SAP.generated.models import Approval, ApprovalRequest, ApprovalStatus
 from ..repositories.approval import (
     find_approvals,
@@ -36,6 +36,7 @@ def get_approvals(user, token_info):
 
 def create_approval(user, token_info, body: ApprovalRequest):
     assert_user_has("approve", token_info)
+    invalidate_analysis_cache()
     for sid in body.matrix.keys():
         s = get_single_analysis(sid)
         if s == None:
@@ -56,6 +57,8 @@ def create_approval(user, token_info, body: ApprovalRequest):
     # set approval dates on  approved sequences before sending them for
     # approval, so the timestamps can be transferred to upstream metadata
     # services, if needed.
+    # Note that this field is overwritten in the fetch query, and is computed with the approval status.
+    # This value is ONLY used when read by other services.
     analysis_timestamp_updates = {}
     seq_update = {}
     for seq in body.matrix:
@@ -104,7 +107,6 @@ def handle_approvals(approvals: Approval, institution: str):
     # Post_and_await_approval always fails when testing on local machine. Disable in debug mode or approvals have no sequences
     if "DEBUG_MODE" in os.environ and  os.environ["DEBUG_MODE"] == "1":
         print("Skipping approval posting in debug mode, would approve/reject:", file=sys.stderr)
-        print(approvals, file=sys.stderr)
         return []
 
     # First, post all approvals and collect request IDs

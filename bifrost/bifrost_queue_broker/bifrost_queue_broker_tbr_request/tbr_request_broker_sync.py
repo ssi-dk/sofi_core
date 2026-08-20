@@ -76,10 +76,8 @@ class TBRRequestBrokerSync(RequestBrokerSync):
             result = self.tbr_col.find_one_and_update(
                 filter={"isolate_id": isolate_id},
                 update={"$set": values},
-                return_document=ReturnDocument.AFTER,
                 upsert=True,
             )
-            logging.info(result)
 
     def approve_fields(self, request):
         isolate_id = request["isolate_id"]

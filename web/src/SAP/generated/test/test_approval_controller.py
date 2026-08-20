@@ -34,6 +34,7 @@ class TestApprovalController(BaseTestCase):
         
         """
         body = {
+  "revoked_sequence_ids" : [ "revoked_sequence_ids", "revoked_sequence_ids" ],
   "required_values" : {
     "key" : {
       "key" : "required_values"

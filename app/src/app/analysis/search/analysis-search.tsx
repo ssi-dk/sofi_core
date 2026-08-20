@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
   Input,
   InputGroup,
@@ -11,20 +11,29 @@ import {
   PopoverTrigger,
   PopoverContent,
   Tooltip,
+  PopoverBody,
+  VStack,
+  Box,
 } from "@chakra-ui/react";
-import { CloseIcon, SearchIcon, QuestionIcon, TimeIcon, WarningIcon } from "@chakra-ui/icons";
+import {
+  CloseIcon,
+  SearchIcon,
+  QuestionIcon,
+  TimeIcon,
+  WarningIcon,
+} from "@chakra-ui/icons";
 import { parse as luceneParse } from "lucene";
 import { recurseTree } from "utils";
 import { getFieldInternalName } from "app/i18n";
 import SearchHelpModal from "./search-help-modal";
 import SearchHistoryMenu from "./search-history";
 import { SearchQuery } from "../analysis-page";
-import { recurseSearchTree } from "./search-utils";
+import { getSearchHistory, recurseSearchTree, useHistoryCB } from "./search-utils";
 
 type AnalysisSearchProps = {
-  onSearchChange: (query: SearchQuery) => void;
+  onSearchChange: (query: SearchQuery, searchString: string) => void;
   isDisabled: boolean;
-  searchTerms: Set<string>
+  searchTerms: Set<string>;
 };
 
 const parseQuery = (input: string, onError) => {
@@ -53,37 +62,87 @@ const checkQueryError = (input: string, searchTerms: Set<string>) => {
 
   const onError = (err: { description: string }) => {
     error = err.description;
-  }
-  const ast = parseQuery(input, onError)
-  if (error)
-    return error;
+  };
+  const ast = parseQuery(input, onError);
+  if (error) return error;
 
   const operands = recurseSearchTree(ast);
 
-  const invalidTerms = operands.map(o => o.field == "<implicit>" ? o.term : o.field).filter(field => !searchTerms.has(field.toLowerCase()))
+  const invalidTerms = operands
+    .map((o) => (o.field == "<implicit>" ? o.term : o.field))
+    .filter((field) => !searchTerms.has(field.toLowerCase()));
   if (invalidTerms.length) {
-    return "Cannot search for " + invalidTerms.map(t => `"${t}"`).join(", ")
+    return "Cannot search for " + invalidTerms.map((t) => `"${t}"`).join(", ");
   }
 
   return null;
-}
+};
 
 const AnalysisSearch = (props: AnalysisSearchProps) => {
   const { onSearchChange, isDisabled, searchTerms } = props;
   const inputRef = React.useRef<HTMLInputElement>();
   const toast = useToast();
   const [input, setInput] = React.useState("");
-  const onInput = React.useCallback((e) => setInput(e.target.value), [
+
+  const [suggestionsIsOpen, setSuggestionsIsOpen] = useState(false);
+
+  const onInput = React.useCallback((e) => {
+    setInput(e.target.value)
+    setSuggestionsIsOpen(true)
+  }, [
     setInput,
+    setSuggestionsIsOpen
   ]);
 
-  const error = useMemo(() => {
-    return checkQueryError(input, searchTerms)
+
+  const historyCB = useCallback((clickedInHistory: boolean) => {
+    if (!clickedInHistory) {
+      // Only replace the search string when clicked in history
+      
+      return;
+    }
+    const history = getSearchHistory();
+    if (history.length === 0) return;
+
+    const searchString = history[0].searchString
+    if (inputRef) {
+      setInput(searchString);
+      inputRef.current.value = searchString;
+    }
+  }, [inputRef, setInput])
+  useHistoryCB(historyCB, false);
+  
+  const setText = useCallback((textStr: string) => {
+    setInput(textStr);
+    if (inputRef) {
+      inputRef.current.value = textStr;
+    }
+  }, [setInput, inputRef])
+
+  const suggestions = useMemo(() => {
+    const inputParts = input.split(" ");
+    const lastInputPart = inputParts[inputParts.length - 1];
+    if (!lastInputPart) {
+      return [];
+    }
+
+    const matches = [...searchTerms].filter(t => t.startsWith(lastInputPart))
+    if (matches.length === 1 && matches[0] === lastInputPart) {
+      return []
+    }
+    return matches;
   }, [input, searchTerms])
+
+  const error = useMemo(() => {
+    return checkQueryError(input, searchTerms);
+  }, [input, searchTerms]);
 
   const submitQuery = React.useCallback(
     (q?: string, clearAllFields?: boolean) =>
-      onSearchChange({ expression: parseQuery(q == undefined ? input : q, toast), clearAllFields }),
+      onSearchChange({
+        expression: parseQuery(q == undefined ? input : q, toast),
+        clearAllFields,
+      }, input),
     [onSearchChange, input, toast]
   );
 
@@ -116,40 +175,77 @@ const AnalysisSearch = (props: AnalysisSearchProps) => {
           isOpen={isSearchHelpModalOpen}
           onClose={onSearchHelpModalClose}
         />
-        <InputGroup>
-          <Input
-            ref={inputRef}
-            placeholder={`species_final:"Escherichia coli"`}
-            onInput={onInput}
-            onKeyDown={onEnterKey}
-            onSubmit={submit}
-            isDisabled={isDisabled}
-          />
-          <InputLeftElement>
-            <QuestionIcon
-              color="gray.400"
-              onClick={onSearchHelpModalOpen}
-              cursor="pointer"
-            />
-          </InputLeftElement>
-
-          <InputRightElement width="18" marginRight="2">
-            {error && <Tooltip label={error} >
-              <WarningIcon
-                color="orange.400"
-                cursor="pointer"
-                height="max"
-                marginRight="2"
+        <Popover
+          placement="bottom-start"
+          isOpen={suggestionsIsOpen}
+          closeOnBlur={false}
+          autoFocus={false}
+        >
+          <PopoverTrigger >
+            <InputGroup>
+              <Input
+                ref={inputRef}
+                placeholder={`species_final:"Escherichia coli"`}
+                onInput={onInput}
+                onKeyDown={onEnterKey}
+                onSubmit={submit}
+                isDisabled={isDisabled}
               />
-            </Tooltip>}
-            <CloseIcon
-              color="gray.400"
-              onClick={onClearButton}
-              cursor="pointer"
-            />
+              <InputLeftElement>
+                <QuestionIcon
+                  color="gray.400"
+                  onClick={onSearchHelpModalOpen}
+                  cursor="pointer"
+                />
+              </InputLeftElement>
 
-          </InputRightElement>
-        </InputGroup>
+              <InputRightElement width="18" marginRight="2">
+                {error && (
+                  <Tooltip label={error}>
+                    <WarningIcon
+                      color="orange.400"
+                      cursor="pointer"
+                      height="max"
+                      marginRight="2"
+                    />
+                  </Tooltip>
+                )}
+                <CloseIcon
+                  color="gray.400"
+                  onClick={onClearButton}
+                  cursor="pointer"
+                />
+              </InputRightElement>
+            </InputGroup>
+          </PopoverTrigger>
+          <PopoverContent width="100%">
+            <PopoverBody p={2}>
+              <VStack align="stretch" spacing={1}>
+                {suggestions.map((item) => (
+                  <Box
+                    key={item}
+                    p={2}
+                    borderRadius="md"
+                    _hover={{ bg: "gray.100" }}
+                    cursor="pointer"
+                    onClick={() => {
+                      const inputParts = input.split(" ")
+                      inputParts.pop()
+                      inputParts.push(item)
+                      setText(inputParts.join(" ") + ": ")
+
+                      setTimeout(() => {
+                        inputRef.current?.focus();
+                      }, 0);
+                    }}
+                  >
+                    {item}
+                  </Box>
+                ))}
+              </VStack>
+            </PopoverBody>
+          </PopoverContent>
+        </Popover>
         <IconButton
           aria-label="Search database"
           icon={<SearchIcon />}
@@ -157,15 +253,10 @@ const AnalysisSearch = (props: AnalysisSearchProps) => {
           onClick={submit}
           isDisabled={isDisabled}
         />
-
       </React.Fragment>
       <Popover placement="bottom-start">
         <PopoverTrigger>
-          <IconButton
-            aria-label="Open history"
-            icon={<TimeIcon />}
-            ml="1"
-          />
+          <IconButton aria-label="Open history" icon={<TimeIcon />} ml="1" />
         </PopoverTrigger>
         <PopoverContent>
           <SearchHistoryMenu onSearchChange={onSearchChange} />

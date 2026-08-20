@@ -9,6 +9,7 @@ from .analysis_query import AnalysisQuery
 from .analysis_result import AnalysisResult
 from .analysis_result_all_of import AnalysisResultAllOf
 from .analysis_result_all_of_qc_failed_tests import AnalysisResultAllOfQcFailedTests
+from .analysis_sorting import AnalysisSorting
 from .approval import Approval
 from .approval_all_of import ApprovalAllOf
 from .approval_request import ApprovalRequest
@@ -20,7 +21,9 @@ from .clone_workspace import CloneWorkspace
 from .column import Column
 from .create_workspace import CreateWorkspace
 from .data_clearance import DataClearance
+from .date_range import DateRange
 from .exception import Exception
+from .filter_options import FilterOptions
 from .gene import Gene
 from .health_response import HealthResponse
 from .health_status import HealthStatus
@@ -51,6 +54,8 @@ from .sample import Sample
 from .sample_categories import SampleCategories
 from .sample_categories_resistance import SampleCategoriesResistance
 from .sample_categories_resistance_report import SampleCategoriesResistanceReport
+from .set_favorite import SetFavorite
+from .set_ws_tag import SetWsTag
 from .single_upload_request import SingleUploadRequest
 from .tbr_metadata import TbrMetadata
 from .tbr_specific_metadata import TbrSpecificMetadata
@@ -64,3 +69,4 @@ from .user_defined_view_sort_by import UserDefinedViewSortBy
 from .user_info import UserInfo
 from .workspace import Workspace
 from .workspace_info import WorkspaceInfo
+from .workspace_search_query import WorkspaceSearchQuery

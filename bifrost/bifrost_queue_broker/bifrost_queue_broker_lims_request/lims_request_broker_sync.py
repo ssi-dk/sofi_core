@@ -76,7 +76,6 @@ class LIMSRequestBrokerSync(RequestBrokerSync):
                 result = self.lims_col.find_one_and_update(
                     {"isolate_id": isolate_id}, {"$set": values}, upsert=True
                 )
-                logging.info(result)
 
         close_lims_connection(conn_id, lms_cfg)
 

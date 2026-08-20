@@ -2,6 +2,7 @@ import base64
 import json
 import sys
 from datetime import datetime
+import dateutil
 from flask import abort
 from typing import Any, Dict
 from web.src.SAP.generated.models.analysis_query import AnalysisQuery
@@ -9,13 +10,13 @@ from werkzeug.exceptions import Forbidden
 from flask import current_app as app
 from ...generated.models.organization import Organization
 from web.src.SAP.src.security.gdpr_logger import audit_query
+from ..repositories.workspaces import get_workspace_sequences as get_workspace_sequences_db
 from flask.json import jsonify
 from ..repositories.analysis import (
-    get_analysis_page,
-    get_analysis_count,
-    get_analysis_with_metadata,
+    get_single_analysis,
     update_analysis,
     get_single_analysis,
+    get_analysis_page_bundle
 )
 from web.src.SAP.src.security.permission_check import (
     assert_authorized_to_edit,
@@ -59,15 +60,15 @@ def parse_paging_token(token):
     else:
         return None
 
-def render_paging_token(page_size, query, offset):
+def render_paging_token(page_size, query, offset, sorting):
     query = serialize_query_for_json(query)
-    body = {"page_size": int(page_size), "query": query, "offset": int(offset)}
+    body = {"page_size": int(page_size), "query": query, "offset": int(offset), "analysis_sorting": sorting}
     return str(base64.b64encode(json.dumps(body).encode("utf8")), encoding="utf8")
 
 
 def get_sequence_by_id(user, token_info, sequence_id):
     assert_user_has("search", token_info)
-    row = get_analysis_with_metadata(sequence_id)
+    row = get_single_analysis(sequence_id)
     if row is None:
         abort(404)
     if (
@@ -83,7 +84,7 @@ def get_sequence_by_id(user, token_info, sequence_id):
     return jsonify(row)
 
 def get_analysis_history(user, token_info, isolate_id):
-    items = get_analysis_page(
+    page_bundle = get_analysis_page_bundle(
         {"isolate_id": isolate_id},
         1000,
         0,
@@ -91,27 +92,44 @@ def get_analysis_history(user, token_info, isolate_id):
         token_info["institution"],
         token_info["sofi-data-clearance"],
         False,
+        workspace_items=None
     )
+    items = page_bundle["items"]
     response = {
         "items": items,
     }
     audit_query(token_info, items)
     return jsonify(response)
 
-def get_analysis(user, token_info, paging_token, page_size):
+def get_analysis(user, token_info, paging_token, page_size,sorting_column=None, sorting_ascending=None):
     assert_user_has("search", token_info)
     default_token = {"page_size": page_size or 100, "offset": 0}
     token = parse_paging_token(paging_token) or default_token
+
+    sorting = None
+    if sorting_column is not None and sorting_ascending is not None:
+        sorting = {
+            "column": sorting_column,
+            "ascending": sorting_ascending
+        }
+    elif "analysis_sorting" in token:
+        sorting = token["analysis_sorting"]
     
-    items = get_analysis_page(
+
+    db_res = get_analysis_page_bundle(
         token.get("query", {}),
         token["page_size"],
         token["offset"],
         authorized_columns(token_info),
         token_info["institution"],
-        token_info["sofi-data-clearance"]
-    )
-    count = get_analysis_count(token.get("query", {}), token_info["institution"], token_info["sofi-data-clearance"])
+        token_info["sofi-data-clearance"],
+        sorting=sorting,)
+
+
+    items = db_res["items"]
+    count = db_res["count"]
+    filter_options = db_res["filter_op"]
+
     new_token = (
         None
         if len(items) < token["page_size"]
@@ -119,6 +137,7 @@ def get_analysis(user, token_info, paging_token, page_size):
             token["page_size"],
             token.get("query", {}),
             token["offset"] + token["page_size"],
+            sorting
         )
     )
     response = {
@@ -126,6 +145,27 @@ def get_analysis(user, token_info, paging_token, page_size):
         "paging_token": new_token,
         "total_count": count,
         "approval_matrix": {},
+        "filter_options": {
+            "date_sample": {
+                "min": filter_options.get("min_date_sample"),
+                "max": filter_options.get("max_date_sample")
+            },
+            "date_received": {
+                "min": filter_options.get("min_date_received"),
+                "max": filter_options.get("max_date_received")
+            },
+            "institutions": filter_options.get("institutions", []),
+            "project_titles": filter_options.get("project_titles", []),
+            "project_numbers": filter_options.get("project_numbers", []),
+            "animals": filter_options.get("animals", []),
+            "run_ids": filter_options.get("run_ids", []),
+            "isolate_ids": filter_options.get("isolate_ids", []),
+            "fud_numbers": filter_options.get("fud_numbers", []),
+            "cluster_ids": filter_options.get("cluster_ids", []),
+            "qc_provided_species": filter_options.get("qc_provided_species", []),
+            "serotype_finals": filter_options.get("serotype_finals", []),
+            "st_finals": filter_options.get("st_finals", [])
+        }
     }
     audit_query(token_info, items)
     return jsonify(response)
@@ -150,28 +190,40 @@ def search_analysis(user, token_info, query: AnalysisQuery):
     default_token = {
         "page_size": query.page_size or 1000,
         "offset": 0,
-        "query": visitor.visit(query.expression)
+        "query": visitor.visit(query.expression or {})
         if not expr_empty
         else (query.filters if not None else {}),
+        "analysis_sorting": {
+            "column": query.analysis_sorting.column,
+            "ascending": query.analysis_sorting.ascending
+        } if query.analysis_sorting is not None else None
     }
+
+    workspace_items = get_workspace_sequences_db(user,query.workspace_id) if query.workspace_id is not None else None
 
     token = parse_paging_token(query.paging_token) or default_token
 
-    items = get_analysis_page(
+    db_res = get_analysis_page_bundle(
         token["query"],
         token["page_size"],
         token["offset"],
         authorized_columns(token_info),
         token_info["institution"],
         token_info["sofi-data-clearance"],
+        sorting=token["analysis_sorting"],
+        workspace_items=workspace_items
     )
 
-    count = get_analysis_count(token["query"], token_info["institution"], token_info["sofi-data-clearance"])
+
+    items = db_res["items"]
+    count = db_res["count"]
+    filter_options = db_res["filter_op"]
+
     new_token = (
         None
         if len(items) < token["page_size"]
         else render_paging_token(
-            token["page_size"], token["query"], token["offset"] + token["page_size"]
+            token["page_size"], token["query"], token["offset"] + token["page_size"], token["analysis_sorting"]
         )
     )
     response = {
@@ -179,6 +231,27 @@ def search_analysis(user, token_info, query: AnalysisQuery):
         "paging_token": new_token,
         "total_count": count,
         "approval_matrix": {},
+        "filter_options": {
+            "date_sample": {
+                "min": filter_options.get("min_date_sample"),
+                "max": filter_options.get("max_date_sample")
+            },
+            "date_received": {
+                "min": filter_options.get("min_date_received"),
+                "max": filter_options.get("max_date_received")
+            },
+            "institutions": filter_options.get("institutions", []),
+            "project_titles": filter_options.get("project_titles", []),
+            "project_numbers": filter_options.get("project_numbers", []),
+            "animals": filter_options.get("animals", []),
+            "run_ids": filter_options.get("run_ids", []),
+            "isolate_ids": filter_options.get("isolate_ids", []),
+            "fud_numbers": filter_options.get("fud_numbers", []),
+            "cluster_ids": filter_options.get("cluster_ids", []),
+            "qc_provided_species": filter_options.get("qc_provided_species", []),
+            "serotype_finals": filter_options.get("serotype_finals", []),
+            "st_finals": filter_options.get("st_finals", [])
+        }
     }
     audit_query(token_info, items)
     return jsonify(response)
@@ -198,6 +271,16 @@ def submit_changes(
             # Make sure is allowed to modify that column
             if not col in allowed_cols:
                 raise Forbidden(f"You are not authorized to edit column -{col}-")
+            
+            # Check if any of the dates are invalid dates, and then parse them
+            if col.startswith("date_"):
+                date_str = body[identifier][col]
+                try:
+                    date_val = dateutil.parser.isoparse(date_str)
+                    body[identifier][col] = date_val
+                except:
+                    raise ValueError(f"{date_str} is not a valid date.")
+
     # TODO: Verify that none of these cells are already approved
     update_analysis(body)
     res = dict()

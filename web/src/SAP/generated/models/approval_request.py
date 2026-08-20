@@ -19,26 +19,31 @@ class ApprovalRequest(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, matrix=None, required_values=None):  # noqa: E501
+    def __init__(self, matrix=None, required_values=None, revoked_sequence_ids=None):  # noqa: E501
         """ApprovalRequest - a model defined in OpenAPI
 
         :param matrix: The matrix of this ApprovalRequest.  # noqa: E501
         :type matrix: Dict[str, Dict[str, ApprovalStatus]]
         :param required_values: The required_values of this ApprovalRequest.  # noqa: E501
         :type required_values: Dict[str, Dict[str, str]]
+        :param revoked_sequence_ids: The revoked_sequence_ids of this ApprovalRequest.  # noqa: E501
+        :type revoked_sequence_ids: List[str]
         """
         self.openapi_types = {
             'matrix': Dict[str, Dict[str, ApprovalStatus]],
             'required_values': Dict[str, Dict[str, str]],
+            'revoked_sequence_ids': List[str],
         }
 
         self.attribute_map = {
             'matrix': 'matrix',
             'required_values': 'required_values',
+            'revoked_sequence_ids': 'revoked_sequence_ids',
         }
 
         self._matrix = matrix
         self._required_values = required_values
+        self._revoked_sequence_ids = revoked_sequence_ids
 
     @classmethod
     def from_dict(cls, dikt):
@@ -94,3 +99,24 @@ class ApprovalRequest(Model):
         """
 
         self._required_values = required_values
+
+    @property
+    def revoked_sequence_ids(self):
+        """Gets the revoked_sequence_ids of this ApprovalRequest.
+
+
+        :return: The revoked_sequence_ids of this ApprovalRequest.
+        :rtype: List[str]
+        """
+        return self._revoked_sequence_ids
+
+    @revoked_sequence_ids.setter
+    def revoked_sequence_ids(self, revoked_sequence_ids):
+        """Sets the revoked_sequence_ids of this ApprovalRequest.
+
+
+        :param revoked_sequence_ids: The revoked_sequence_ids of this ApprovalRequest.
+        :type revoked_sequence_ids: List[str]
+        """
+
+        self._revoked_sequence_ids = revoked_sequence_ids

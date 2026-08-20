@@ -13,12 +13,12 @@ export const postApprovalFailedMiddleware = (store) => (next) => (action) => {
   ) {
     // Dispatch an action to save the error response body
     store.dispatch({
-      type: 'Approval_Failed',
+      type: "Approval_Failed",
       payload: {
-        message: action.responseBody?.detail || 'Approval failed',
+        message: action.responseBody?.detail || "Approval failed",
         timestamp: new Date().toISOString(),
-        url: action.url
-      }
+        url: action.url,
+      },
     });
   }
   next(action);

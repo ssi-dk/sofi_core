@@ -23,7 +23,7 @@ class MetadataReloadResponse(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, id=None, sequence_id=None, sequence_filename=None, isolate_id=None, institution=None, project_number=None, project_title=None, date_sample=None, date_received=None, date_sofi=None, run_id=None, public_number=None, primary_isolate=None, cpr_nr=None, gender=None, name=None, age=None, travel=None, travel_country=None, date_run=None, date_received_kma=None, kma=None, region=None, fud_number=None, cluster_id=None, date_epi=None, chr_number=None, cvr_number=None, aut_number=None, product_type=None, product=None, origin_country=None, animal_species=None, sample_info=None):  # noqa: E501
+    def __init__(self, id=None, sequence_id=None, sequence_filename=None, isolate_id=None, institution=None, project_number=None, project_title=None, date_sample=None, date_received=None, date_sofi=None, run_id=None, full_runid=None, public_number=None, primary_isolate=None, cpr_nr=None, gender=None, name=None, age=None, travel=None, travel_country=None, date_run=None, date_received_kma=None, kma=None, region=None, fud_number=None, cluster_id=None, date_epi=None, chr_number=None, cvr_number=None, aut_number=None, product_type=None, product=None, origin_country=None, animal_species=None, sample_info=None):  # noqa: E501
         """MetadataReloadResponse - a model defined in OpenAPI
 
         :param id: The id of this MetadataReloadResponse.  # noqa: E501
@@ -48,6 +48,8 @@ class MetadataReloadResponse(Model):
         :type date_sofi: datetime
         :param run_id: The run_id of this MetadataReloadResponse.  # noqa: E501
         :type run_id: str
+        :param full_runid: The full_runid of this MetadataReloadResponse.  # noqa: E501
+        :type full_runid: str
         :param public_number: The public_number of this MetadataReloadResponse.  # noqa: E501
         :type public_number: str
         :param primary_isolate: The primary_isolate of this MetadataReloadResponse.  # noqa: E501
@@ -107,6 +109,7 @@ class MetadataReloadResponse(Model):
             'date_received': datetime,
             'date_sofi': datetime,
             'run_id': str,
+            'full_runid': str,
             'public_number': str,
             'primary_isolate': bool,
             'cpr_nr': str,
@@ -144,6 +147,7 @@ class MetadataReloadResponse(Model):
             'date_received': 'date_received',
             'date_sofi': 'date_sofi',
             'run_id': 'run_id',
+            'full_runid': 'full_runid',
             'public_number': 'public_number',
             'primary_isolate': 'primary_isolate',
             'cpr_nr': 'cpr_nr',
@@ -180,6 +184,7 @@ class MetadataReloadResponse(Model):
         self._date_received = date_received
         self._date_sofi = date_sofi
         self._run_id = run_id
+        self._full_runid = full_runid
         self._public_number = public_number
         self._primary_isolate = primary_isolate
         self._cpr_nr = cpr_nr
@@ -457,6 +462,27 @@ class MetadataReloadResponse(Model):
             raise ValueError("Invalid value for `run_id`, must not be `None`")  # noqa: E501
 
         self._run_id = run_id
+
+    @property
+    def full_runid(self):
+        """Gets the full_runid of this MetadataReloadResponse.
+
+
+        :return: The full_runid of this MetadataReloadResponse.
+        :rtype: str
+        """
+        return self._full_runid
+
+    @full_runid.setter
+    def full_runid(self, full_runid):
+        """Sets the full_runid of this MetadataReloadResponse.
+
+
+        :param full_runid: The full_runid of this MetadataReloadResponse.
+        :type full_runid: str
+        """
+
+        self._full_runid = full_runid
 
     @property
     def public_number(self):

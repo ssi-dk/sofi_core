@@ -4,7 +4,7 @@ import six
 from .. import util
 from ...src.controllers import AnalysisController
 
-def get_analysis(user, token_info, paging_token=None, page_size=None):  # noqa: E501
+def get_analysis(user, token_info, paging_token=None, page_size=None, sorting_column=None, sorting_ascending=None):  # noqa: E501
     """get_analysis
 
     Page through all the analysis in the system # noqa: E501
@@ -13,10 +13,14 @@ def get_analysis(user, token_info, paging_token=None, page_size=None):  # noqa: 
     :type paging_token: str
     :param page_size: 
     :type page_size: 
+    :param sorting_column: 
+    :type sorting_column: str
+    :param sorting_ascending: 
+    :type sorting_ascending: bool
 
     :rtype: PageOfAnalysis
     """
-    return AnalysisController.get_analysis(user, token_info, paging_token, page_size)
+    return AnalysisController.get_analysis(user, token_info, paging_token, page_size, sorting_column, sorting_ascending)
 
 def get_analysis_history(user, token_info, isolate_id):  # noqa: E501
     """get_analysis_history

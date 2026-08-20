@@ -14,8 +14,8 @@ type AnalysisFilterProps = {
   sts: string[];
   onFilterChange: (resultingFilter: PropFilter<AnalysisResult>) => void;
   isDisabled: boolean;
-  queryOperands: QueryOperand[]
-  clearFieldFromSearch: (field: keyof AnalysisResult) => void
+  queryOperands: QueryOperand[];
+  clearFieldFromSearch: (field: keyof AnalysisResult) => void;
 };
 
 function AnalysisFilter(props: AnalysisFilterProps) {
@@ -26,19 +26,19 @@ function AnalysisFilter(props: AnalysisFilterProps) {
     onFilterChange,
     isDisabled,
     queryOperands,
-    clearFieldFromSearch
+    clearFieldFromSearch,
   } = props;
 
   const providedSpeciesOptions = React.useMemo(
-    () => providedSpecies.filter(Boolean).map((x) => ({ value: x, label: x })),
+    () => providedSpecies.filter(Boolean).sort((a,b) => a > b ? 1 : -1).map((x) => ({ value: x, label: x })),
     [providedSpecies]
   );
   const serotypeOptions = React.useMemo(
-    () => serotypeFinals.filter(Boolean).map((x) => ({ value: x, label: x })),
+    () => serotypeFinals.filter(Boolean).sort((a,b) => a > b ? 1 : -1).map((x) => ({ value: x, label: x })),
     [serotypeFinals]
   );
   const stOptions = React.useMemo(
-    () => sts.filter(Boolean).map((x) => ({ value: x, label: x })),
+    () => sts.filter(Boolean).sort((a,b) => a > b ? 1 : -1).map((x) => ({ value: x, label: x })),
     [sts]
   );
 
@@ -49,17 +49,23 @@ function AnalysisFilter(props: AnalysisFilterProps) {
 
   // When a query changes, set all UI filter to match the query, this is useful when choosing a query from the user history
   useEffect(() => {
-    const newState = {} as { [K in keyof AnalysisResult]: ValueType<OptionTypeBase, true> };
+    const newState = {} as {
+      [K in keyof AnalysisResult]: ValueType<OptionTypeBase, true>;
+    };
 
-    queryOperands.forEach(op => {
-      if (op.field && op.term) {
+    const usedFields = ["qc_provided_species", "serotype_final", "st_final"];
+
+    queryOperands.forEach((op) => {
+      if (op.field && op.term && usedFields.includes(op.field)) {
         newState[op.field] = [op.term];
       }
-    })
-    setState(newState)
-  }, [queryOperands, setState])
+    });
+    setState(newState);
+  }, [queryOperands, setState]);
 
-  const valueBuilder = (key: keyof AnalysisResult) => state[key]?.map(i => ({ value: i.toString(), label: i.toString() })) || []
+  const valueBuilder = (key: keyof AnalysisResult) =>
+    state[key]?.map((i) => ({ value: i.toString(), label: i.toString() })) ||
+    [];
 
   const onChangeBuilder: (
     field: keyof AnalysisResult

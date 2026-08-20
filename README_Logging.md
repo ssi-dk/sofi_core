@@ -1,6 +1,8 @@
 # Grafana logging
 
-To access the user-facing logging application (Grafana) in your browser, go to the /grafana/ page. For example in the production enviroment this would be https://sofi-platform.dk/grafana/.
+~~To access the user-facing logging application (Grafana) in your browser, go to the /grafana/ page. For example in the production enviroment this would be https://sofi-platform.dk/grafana/.~~
+
+The /grafana/ endpoint temporarily does not work. Instead, have two ssh sessions open in the server at the same time. In one session, open k9s as root and begin a portforwarding (shift-f) on the grafana pod. While k9s is open, in a x11 ssh session open firefox and go to `localhost:3000/grafana/`.
 
 ## Log exploration
 The usual way to access logs in grafana is the expore page, which can be accces by to clicking the `Explore` menu on the left side.

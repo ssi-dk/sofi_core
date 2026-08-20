@@ -14,12 +14,14 @@ type SelectionCheckBoxProps = DetailedHTMLProps<
   checked?: boolean;
   indeterminate?: boolean;
   visible?: boolean;
+  // Change this value to force a rerender
+  renderTrigger?: boolean;
   onClick?: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
 };
 
 const SelectionCheckBox = forwardRef(
   (
-    { indeterminate, checked, visible, ...rest }: SelectionCheckBoxProps,
+    { indeterminate, checked, visible, renderTrigger, ...rest }: SelectionCheckBoxProps,
     ref
   ) => {
     const defaultRef = React.useRef<HTMLInputElement>();
@@ -31,7 +33,7 @@ const SelectionCheckBox = forwardRef(
       resolvedRef.current.checked = checked;
       resolvedRef.current.style.visibility =
         visible !== false ? "visible" : "hidden";
-    }, [resolvedRef, indeterminate, checked, visible]);
+    }, [resolvedRef, indeterminate, checked, visible, renderTrigger]);
 
     return (
       <input

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
   useTable,
   useBlockLayout,
@@ -10,9 +10,9 @@ import {
   TableState,
   IdType,
 } from "react-table";
-import { VariableSizeGrid } from "react-window";
+import { GridOnScrollProps, VariableSizeGrid } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
-import { Flex, IconButton } from "@chakra-ui/react";
+import { IconButton } from "@chakra-ui/react";
 import { ExternalLinkIcon } from "@chakra-ui/icons";
 import deepmerge from "lodash.merge";
 import { UserDefinedViewInternal } from "models";
@@ -23,14 +23,18 @@ import { StickyVariableSizeGrid } from "./sticky-variable-size-grid";
 import DataTableColumnHeader from "./data-table-column-header";
 import "./data-table.css";
 import "./data-table-cell-styles.css";
+import { useSelector } from "react-redux";
+import { RootState } from "app/root-reducer";
+import { ColumnSlice } from "../analysis-query-configs";
+import { AnalysisResult } from "sap-client";
 
 export type ColumnReordering =
   | {
-      sourceIdx: number;
-      destIdx: number;
-      targetId: string;
-      timestamp: number;
-    }
+    sourceIdx: number;
+    destIdx: number;
+    targetId: string;
+    timestamp: number;
+  }
   | undefined;
 
 export type DataTableSelection<T extends object> = Record<
@@ -47,7 +51,7 @@ type DataTableProps<T extends NotEmpty> = {
   setColumnSort?: (columnSort: { column: string; ascending: boolean }) => void;
   data: T[];
   primaryKey: keyof T;
-  canSelectColumn: (columnName: string) => boolean;
+  canSelectColumn: (columnName: string, columnIndex: number) => boolean;
   canApproveColumn: (columnName: string) => boolean;
   isJudgedCell: (rowId: string, columnName: string) => boolean;
   getDependentColumns: (columnName: keyof T) => Array<keyof T>;
@@ -73,10 +77,15 @@ type DataTableProps<T extends NotEmpty> = {
     columnIndex: number,
     original: T
   ) => JSX.Element;
+  onLoadNextPage: () => void;
+  hasMoreData: boolean;
+  isLoadingNextPage: boolean;
+  selectAll: () => void;
 };
 
 function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
   const dataGridRef = React.useRef<VariableSizeGrid>(null);
+  const scrollTimeoutRef = React.useRef<NodeJS.Timeout>();
 
   const defaultColumn = React.useMemo(
     () => ({
@@ -106,13 +115,53 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
     renderCellControl,
     view,
     selection,
+    onLoadNextPage,
+    hasMoreData,
+    isLoadingNextPage,
+    selectAll,
   } = props;
+
+   const columnConfigs = useSelector<RootState>(
+      (s) => s.entities.columns
+    ) as ColumnSlice;
 
   const isInSelection = React.useCallback(
     (rowId, columnId) => {
       return selection[rowId]?.cells?.[columnId];
     },
     [selection]
+  );
+
+  const handleScroll = useCallback(
+    (scrollProps: GridOnScrollProps) => {
+      // Clear previous timeout
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current);
+      }
+
+      const { scrollTop } = scrollProps;
+      // Get the grid element to calculate scroll dimensions
+      const gridElement = dataGridRef.current;
+      if (!gridElement) return;
+
+      // Access the underlying DOM element
+      const scrollElement = (gridElement as any)._outerRef;
+      if (!scrollElement) return;
+
+      const { scrollHeight, clientHeight } = scrollElement;
+      const scrollPercentage = (scrollTop + clientHeight) / scrollHeight;
+
+      // Load next page when user scrolls to 80% of the content
+      if (
+        scrollPercentage > 0.8 &&
+        hasMoreData &&
+        !isLoadingNextPage &&
+        onLoadNextPage
+      ) {
+        onLoadNextPage();
+      }
+    },
+    [hasMoreData, isLoadingNextPage, onLoadNextPage]
   );
 
   const [lastView, setLastView] = useState(view);
@@ -206,7 +255,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
       (c) => hiddenColumnIds.indexOf(c) === -1
     );
     return newVisibleColumns;
-  },[view, columns]);
+  }, [view, columns]);
 
   const { columnResizing } = state;
 
@@ -248,7 +297,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
 
     column?.toggleSortBy(columnSort.ascending);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [columnSort]);
+  }, [columnSort, data]);
 
   // Make data table configuration externally visible
   exportDataTable(state);
@@ -309,7 +358,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
   const calcColSelectionState = React.useCallback(
     (col: Column<T>) => {
       const c = Object.values(selection).filter(
-        (x) => x.cells[col.id] === true
+        (x) => Object.values(x.cells).some(cell => cell)
       );
       if (c.length === 0) {
         return { checked: false, indeterminate: false };
@@ -366,25 +415,31 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
     [dataGridRef]
   );
 
+  const totalCount = useSelector<RootState>((s) =>
+      s.entities.analysisTotalCount
+    ) as number;
+
   const onSelectColumn = React.useCallback(
     (col: Column<T>) => {
       const { checked, indeterminate } = calcColSelectionState(col);
       let incSel: DataTableSelection<T> = {};
-      if (col.id === "sequence_id") {
+      let doIncSel = true;
+
+      // Unless reordered this will be sequence_id
+      const firstColumnsid = visibleColumnInstances.length > 0 ? visibleColumnInstances[0].id : null;
+      if (col.id === firstColumnsid) {
         if (selection && Object.keys(selection).length > 0) {
         } else {
-          // Select all rows, all approvable cells
-          incSel = rows
-            .map((r) => ({
-              [r.original[primaryKey]]: {
-                original: r.original,
-                cells: getAllApprovableCellsInSelection(
-                  r.original[primaryKey],
-                  visibleColumns
-                ),
-              },
-            }))
-            .reduce((acc, val) => ({ ...acc, ...val }), {});
+          // This immediately selectes all if the data is ready. We dont want to redo the select all with an empty
+          // selection. Furthermore, if it has counted more than 3000 rows we REFUSE to select all, since python
+          // bson will reject a > 16mb document. Perhaps we will fix the backend later, but you would never want
+          // to select more than 3000 rows...
+          if (totalCount > 3000) {
+            throw new Error("Cannot select more than 3000 rows.")
+          }
+          selectAll();
+          doIncSel = false;
+          
         }
       } else {
         const sel = rows
@@ -410,10 +465,13 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
             });
         });
       }
-      onSelect(incSel);
+      if (doIncSel){
+        onSelect(incSel);
+      }
       onColumnResize(0);
     },
     [
+      visibleColumnInstances,
       primaryKey,
       rows,
       calcColSelectionState,
@@ -422,8 +480,8 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
       getDependentColumns,
       onColumnResize,
       selection,
-      visibleColumns,
-      getAllApprovableCellsInSelection,
+      selectAll,
+      totalCount,
     ]
   );
 
@@ -467,6 +525,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
               onSelectColumn={onSelectColumn}
               onSort={setColumnSort}
               onResize={onColumnResize}
+              isEncrypted={columnConfigs[col.id as keyof AnalysisResult].pii}
             />
           </div>
         );
@@ -499,7 +558,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
           onClick={cellClickHandler(rowId, columnId)}
           key={columnIndex}
         >
-          <Flex minWidth="full" minHeight="full">
+          <div style={{ minWidth: "100%", minHeight: "100%", display: "flex" }}>
             {columnIndex === 0 && (
               <React.Fragment>
                 {onSelect ? (
@@ -527,7 +586,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
               columnIndex,
               rows[rowIndex - 1].original
             )}
-          </Flex>
+          </div>
         </div>
       );
     },
@@ -550,6 +609,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
       renderCellControl,
       cellClickHandler,
       onSelect,
+      columnConfigs,
     ]
   );
 
@@ -593,6 +653,7 @@ function DataTable<T extends NotEmpty>(props: DataTableProps<T>) {
                 overscanColumnCount={2}
                 width={width}
                 columnCount={visibleColumnInstances.length}
+                onScroll={onLoadNextPage ? handleScroll : undefined}
               >
                 {RenderCell}
               </StickyVariableSizeGrid>

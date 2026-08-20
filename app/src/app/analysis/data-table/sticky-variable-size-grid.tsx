@@ -32,11 +32,7 @@ function getShownIndicies(children) {
   };
 }
 
-function useInnerElementType(
-  Cell,
-  columnWidth,
-  rowHeight
-) {
+function useInnerElementType(Cell, columnWidth, rowHeight) {
   return React.useMemo(
     () =>
       React.forwardRef((props, ref) => {
@@ -175,11 +171,7 @@ export const StickyVariableSizeGrid: React.FC<StickyVariableSizeGridProps> = (
       <Grid
         {...props}
         ref={gridRef}
-        innerElementType={useInnerElementType(
-          children,
-          columnWidth,
-          rowHeight
-        )}
+        innerElementType={useInnerElementType(children, columnWidth, rowHeight)}
       />
     </React.Fragment>
   );

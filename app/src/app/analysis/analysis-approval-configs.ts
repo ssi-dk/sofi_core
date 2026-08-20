@@ -117,7 +117,7 @@ export const fetchApprovalMatrix = () => {
   base.transform = (response: ApprovalMatrix) => ({ approvalMatrix: response });
 
   base.update = {
-    approvalMatrix: (oldValue, newValue) => deepmerge(oldValue, newValue),
+    approvalMatrix: (_, newValue) => newValue,
   };
   base.force = true;
   return base;

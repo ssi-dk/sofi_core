@@ -30,7 +30,8 @@ const FilterHelpModal = (props: Props) => {
         <ModalCloseButton />
         <ModalBody overflowY="auto" px="7">
           <Box>
-            Filters can be used to search for relevant results. They are eqvivalent to the search bar.
+            Filters can be used to search for relevant results. They are
+            eqvivalent to the search bar.
           </Box>
         </ModalBody>
         <ModalFooter>

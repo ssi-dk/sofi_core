@@ -1,9 +1,7 @@
 import React from "react";
 import { Box } from "@chakra-ui/react";
 import { useSelector } from "react-redux";
-import {
-  ComparativeAnalysisNewickSlice,
-} from "./comparative-analysis-configs";
+import { ComparativeAnalysisNewickSlice } from "./comparative-analysis-configs";
 import Header from "../header/header";
 import Tree from "./phylo/phylo";
 import ComparativeAnalysisSidebar from "./sidebar/comparative-analysis-sidebar";

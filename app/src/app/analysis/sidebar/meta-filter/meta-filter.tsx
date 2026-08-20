@@ -1,45 +1,44 @@
-import React, { useEffect, useState } from "react";
-import { Text, Flex, OrderedList } from "@chakra-ui/react";
+import React, { useCallback, useEffect, useState } from "react";
+import { Text, Flex } from "@chakra-ui/react";
 import Select, { ActionMeta, OptionTypeBase, ValueType } from "react-select";
 import { selectTheme } from "app/app.styles";
 import { useTranslation } from "react-i18next";
-import { AnalysisResult, DataClearance, Organization, QueryOperand } from "sap-client";
+import {
+  AnalysisResult,
+  DataClearance,
+  Organization,
+  QueryOperand,
+  FilterOptions,
+  DateRange,
+  ApprovalStatus,
+} from "sap-client";
 import { IfPermission } from "auth/if-permission";
 import { PropFilter, RangeFilter } from "utils";
 import FilterBox from "../filter-box";
 import DatePicker from "./date-picker";
-import { displayOperandName } from "app/analysis/search/search-utils";
 
 type MetaFilterProps = {
-  organisations: string[];
-  projects: string[];
-  projectNrs: string[];
-  dyreart: string[];
-  runIds: string[];
-  isolateIds: string[];
-  cprs: string[];
-  fuds: string[];
-  clusters: string[];
+  filterOptions: FilterOptions;
   onPropFilterChange: (resultingFilter: PropFilter<AnalysisResult>) => void;
   onRangeFilterChange: (resultingFilter: RangeFilter<AnalysisResult>) => void;
+  onApprovalFilterChange: (resultingFilter: ApprovalStatus[]) => void;
   isDisabled: boolean;
-  queryOperands: QueryOperand[]
-  clearFieldFromSearch: (field: keyof AnalysisResult) => void
+  queryOperands: QueryOperand[];
+  clearFieldFromSearch: (field: string) => void;
 };
+
+const approvalFilterOptions = [
+  { label: "Approved", value: ApprovalStatus.approved },
+  { label: "Rejected", value: ApprovalStatus.rejected },
+  { label: "Pending", value: ApprovalStatus.pending },
+];
 
 function MetaFilter(props: MetaFilterProps) {
   const {
-    organisations,
-    projects,
-    projectNrs,
-    dyreart,
-    runIds,
-    isolateIds,
-    cprs,
-    fuds,
-    clusters,
+    filterOptions,
     onPropFilterChange,
     onRangeFilterChange,
+    onApprovalFilterChange,
     isDisabled,
     queryOperands,
     clearFieldFromSearch,
@@ -64,8 +63,20 @@ function MetaFilter(props: MetaFilterProps) {
     }
   );
 
+  const [approvalFilterState, setApprovalFilterState] = useState<
+    ApprovalStatus[]
+  >([]);
+
   // eslint-disable-next-line
   type RangeEnd = keyof RangeFilter<any>[0];
+
+  const maxDate = (date1: DateRange | null) => {
+    return date1?.max ? new Date(date1.max) : null;
+  };
+
+  const minDate = (date: DateRange | null) => {
+    return date?.min ? new Date(date.min) : null;
+  };
 
   const onDateChange = React.useCallback(
     (
@@ -75,18 +86,34 @@ function MetaFilter(props: MetaFilterProps) {
     ) => (d: Date) => {
       cb(d);
 
-
       const opposite = end === "min" ? "max" : "min";
-      const minDate = null;
-      const maxDate = null;
+
+      // Use filter options for default min/max dates
+      const minimumDate =
+        field === "date_sample"
+          ? minDate(filterOptions.date_sample)
+          : field === "date_received"
+          ? minDate(filterOptions.date_received)
+          : null;
+
+      const maximumDate =
+        field === "date_sample"
+          ? maxDate(filterOptions.date_sample)
+          : field === "date_received"
+          ? maxDate(filterOptions.date_received)
+          : null;
+
       const oppositeValue =
         opposite === "min"
-          ? rangeFilterState[field]?.min ?? minDate
-          : rangeFilterState[field]?.max ?? maxDate;
-      const val = d !== null ? d : end === "min" ? minDate : maxDate;
+          ? rangeFilterState[field]?.min ?? minimumDate
+          : rangeFilterState[field]?.max ?? maximumDate;
+      const val = d !== null ? d : end === "min" ? minimumDate : maximumDate;
       const resolvedState = {
         ...rangeFilterState,
-        [field]: (val || oppositeValue) ? { [end]: val, [opposite]: oppositeValue } : undefined,
+        [field]:
+          val || oppositeValue
+            ? { [end]: val, [opposite]: oppositeValue }
+            : undefined,
       };
 
       if (val == null && oppositeValue == null) {
@@ -96,44 +123,109 @@ function MetaFilter(props: MetaFilterProps) {
       setRangeFilterState(resolvedState);
       onRangeFilterChange(resolvedState);
     },
-    [rangeFilterState, setRangeFilterState, onRangeFilterChange, clearFieldFromSearch]
+    [
+      rangeFilterState,
+      setRangeFilterState,
+      onRangeFilterChange,
+      clearFieldFromSearch,
+      filterOptions,
+    ]
   );
 
   const organisationOptions = React.useMemo(
-    () => organisations.filter(Boolean).map((x) => ({ value: x, label: x })),
-    [organisations]
+    () =>
+      (filterOptions.institutions || [])
+        .filter(Boolean)
+        .sort((a,b) => a > b ? 1 : -1)
+        .map((x) => ({ value: x, label: x })),
+    [filterOptions.institutions]
   );
   const projectOptions = React.useMemo(
-    () => projects.filter(Boolean).map((x) => ({ value: x, label: x })),
-    [projects]
+    () =>
+      (filterOptions.project_titles || [])
+        .filter(Boolean)
+        .sort((a,b) => a > b ? 1 : -1)
+        .map((x) => ({ value: x, label: x })),
+    [filterOptions.project_titles]
   );
   const projectNrOptions = React.useMemo(
-    () => projectNrs.filter(Boolean).map((x) => ({ value: x.toString(), label: x.toString() })),
-    [projectNrs]
+    () =>
+      (filterOptions.project_numbers || [])
+        .filter(Boolean)
+        .sort((a,b) => a > b ? 1 : -1)
+        .map((x) => ({ value: x.toString(), label: x.toString() })),
+    [filterOptions.project_numbers]
   );
   const dyreartOptions = React.useMemo(
-    () => dyreart.filter(Boolean).map((x) => ({ value: x, label: x })),
-    [dyreart]
+    () =>
+      (filterOptions.animals || [])
+        .filter(Boolean)
+        .sort((a,b) => a > b ? 1 : -1)
+        .map((x) => ({ value: x, label: x })),
+    [filterOptions.animals]
   );
   const runIdsOptions = React.useMemo(
-    () => runIds.filter(Boolean).map((x) => ({ value: x, label: x })),
-    [runIds]
+    () =>
+      (filterOptions.run_ids || [])
+        .filter(Boolean)
+        .sort((a,b) => a > b ? 1 : -1)
+        .map((x) => ({ value: x, label: x })),
+    [filterOptions.run_ids]
   );
   const isolateIdsOptions = React.useMemo(
-    () => isolateIds.filter(Boolean).map((x) => ({ value: x, label: x })),
-    [isolateIds]
+    () =>
+      (filterOptions.isolate_ids || [])
+        .filter(Boolean)
+        .sort((a,b) => a > b ? 1 : -1)
+        .map((x) => ({ value: x, label: x })),
+    [filterOptions.isolate_ids]
   );
   const cprOptions = React.useMemo(
-    () => cprs.filter(Boolean).map((x) => ({ value: x, label: x })),
-    [cprs]
+    () =>
+      (filterOptions.fud_numbers || [])
+        .filter(Boolean)
+        .sort((a,b) => a > b ? 1 : -1)
+        .map((x) => ({ value: x, label: x })),
+    [filterOptions.fud_numbers]
   );
   const fudOptions = React.useMemo(
-    () => fuds.filter(Boolean).map((x) => ({ value: x, label: x })),
-    [fuds]
+    () =>
+      (filterOptions.fud_numbers || [])
+        .filter(Boolean)
+        .sort((a,b) => a > b ? 1 : -1)
+        .map((x) => ({ value: x, label: x })),
+    [filterOptions.fud_numbers]
   );
   const clusterOptions = React.useMemo(
-    () => clusters.filter(Boolean).map((x) => ({ value: x, label: x })),
-    [clusters]
+    () =>
+      (filterOptions.cluster_ids || [])
+        .filter(Boolean)
+        .sort((a,b) => a > b ? 1 : -1)
+        .map((x) => ({ value: x, label: x })),
+    [filterOptions.cluster_ids]
+  );
+
+  const onApprovalChange = useCallback(
+    (
+      val: ValueType<OptionTypeBase, true>,
+      action: ActionMeta<OptionTypeBase>
+    ) => {
+      if (action.action == "clear") {
+        setApprovalFilterState([]);
+        onApprovalFilterChange([]);
+        clearFieldFromSearch("approval_status");
+        return;
+      }
+      const values = Array.isArray(val) ? val.map((x) => x.value) : [];
+
+      if (values.length === 0) {
+        clearFieldFromSearch("approval_status");
+      }
+
+      setApprovalFilterState(values);
+      onApprovalFilterChange(values);
+    },
+    [setApprovalFilterState, clearFieldFromSearch, onApprovalFilterChange]
   );
 
   const onChangeBuilder: (
@@ -151,64 +243,108 @@ function MetaFilter(props: MetaFilterProps) {
           default:
             break;
         }
-        if (!Boolean(value) || value.length == 0) {
+        if (!Boolean(value) || (Array.isArray(value) && value.length === 0)) {
           clearFieldFromSearch(field);
         }
 
+        const values = Array.isArray(value) ? value.map((x) => x.value) : [];
+
         const resolvedState = {
           ...propFilterState,
-          [field]: [...(value?.values() || [])].map((x) => x.value),
+          [field]: values,
         };
+
         setPropFilterState(resolvedState);
-        // eslint-disable-next-line
         onPropFilterChange(resolvedState as any);
       };
     },
-    [setPropFilterState, onPropFilterChange, propFilterState, clearFieldFromSearch]
+    [
+      setPropFilterState,
+      onPropFilterChange,
+      propFilterState,
+      clearFieldFromSearch,
+    ]
   );
 
   // When a query changes, set all UI filter to match the query, this is useful when choosing a query from the user history
   useEffect(() => {
-    const newPropFilterState = {} as { [K in keyof AnalysisResult]: ValueType<OptionTypeBase, true> };
+    const newPropFilterState = {} as {
+      [K in keyof AnalysisResult]: ValueType<OptionTypeBase, true>;
+    };
     const newRangeFilterState = {} as {
       [K in keyof AnalysisResult]: {
         min: AnalysisResult[K] | null;
         max: AnalysisResult[K] | null;
       };
-    }
+    };
+    const newApprovalFilterState: ApprovalStatus[] = [];
 
+    queryOperands.forEach((op) => {
+      if (op.field == "approval_status") {
+        const v = op.term as ApprovalStatus;
+        if (!newApprovalFilterState.find((nv) => nv === v)) {
+          newApprovalFilterState.push(v);
+        }
+      } else if (op.field && op.term) {
+        const usedFields = [
+          "institution",
+          "project_title",
+          "project_number",
+          "animal",
+          "run_id",
+          "isolate_id",
+          "fud_number",
+          "cluster_id",
+        ];
 
-    queryOperands.forEach(op => {
-      if (op.field && op.term) {
-        newPropFilterState[op.field] = [op.term];
+        if (usedFields.includes(op.field)) {
+          if (!newPropFilterState[op.field]) {
+            newPropFilterState[op.field] = [];
+          }
+          if (!newPropFilterState[op.field].includes(op.term)) {
+            newPropFilterState[op.field].push(op.term);
+          }
+        }
       } else if (op.field && (op.term_max || op.term_min)) {
-        newRangeFilterState[op.field] = { max: op.term_max, min: op.term_min }
+        newRangeFilterState[op.field] = { max: op.term_max, min: op.term_min };
 
         if (op.field === "date_sample") {
-          setSampledStartDate(op.term_min ? new Date(op.term_min) : null)
-          setSampledEndDate(op.term_max ? new Date(op.term_max) : null)
+          setSampledStartDate(op.term_min ? new Date(op.term_min) : null);
+          setSampledEndDate(op.term_max ? new Date(op.term_max) : null);
         }
         if (op.field === "date_received") {
-          setReceivedStartDate(op.term_min ? new Date(op.term_min) : null)
-          setReceivedEndDate(op.term_max ? new Date(op.term_max) : null)
+          setReceivedStartDate(op.term_min ? new Date(op.term_min) : null);
+          setReceivedEndDate(op.term_max ? new Date(op.term_max) : null);
         }
       }
-    })
+    });
 
-    if (!queryOperands.find(q => q.field === "date_sample")) {
+    if (!queryOperands.find((q) => q.field === "date_sample")) {
       setSampledStartDate(null);
       setSampledEndDate(null);
     }
-    if (!queryOperands.find(q => q.field === "date_received")) {
+    if (!queryOperands.find((q) => q.field === "date_received")) {
       setReceivedStartDate(null);
       setReceivedEndDate(null);
     }
 
-    setPropFilterState(newPropFilterState)
-    setRangeFilterState(newRangeFilterState)
-  }, [queryOperands])
+    if (!queryOperands.find((q) => q.field === "approval_status")) {
+      setApprovalFilterState([]);
+    }
 
-  const valueBuilder = (key: keyof AnalysisResult) => propFilterState[key]?.map(i => ({ label: i.toString(), value: i.toString() })) || []
+    setPropFilterState(newPropFilterState);
+    setRangeFilterState(newRangeFilterState);
+    setApprovalFilterState(newApprovalFilterState);
+  }, [queryOperands]);
+
+  const valueBuilder = (key: keyof AnalysisResult) => {
+    return (
+      propFilterState[key]?.map((i) => ({
+        label: i.toString(),
+        value: i.toString(),
+      })) || []
+    );
+  };
 
   return (
     <FilterBox title="Metadata filter">
@@ -236,6 +372,17 @@ function MetaFilter(props: MetaFilterProps) {
         isMulti
         theme={selectTheme}
         onChange={onChangeBuilder("institution")}
+        isDisabled={isDisabled}
+      />
+      <Text mt={2}>{t("Approved")}</Text>
+      <Select
+        options={approvalFilterOptions}
+        value={approvalFilterState.map(
+          (v) => approvalFilterOptions.find((f) => f.value === v)!
+        )}
+        isMulti
+        theme={selectTheme}
+        onChange={onApprovalChange}
         isDisabled={isDisabled}
       />
       <Flex justifyContent="space-between" direction="row">
@@ -295,7 +442,6 @@ function MetaFilter(props: MetaFilterProps) {
             options={runIdsOptions}
             isMulti
             value={valueBuilder("run_id")}
-
             theme={selectTheme}
             onChange={onChangeBuilder("run_id")}
             isDisabled={isDisabled}

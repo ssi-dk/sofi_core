@@ -5,6 +5,7 @@ import logging
 import json
 from web.src.SAP.generated.models import BaseMetadata, Organization
 from web.src.SAP.generated.models.upload_metadata_fields import UploadMetadataFields
+from web.src.SAP.src.repositories.analysis import invalidate_analysis_cache
 from ...common.database import (
     ANALYSIS_COL_NAME,
     get_connection,
@@ -37,6 +38,7 @@ def upsert_analysis_result_for_upload(
         },
         upsert=True,
     )
+    invalidate_analysis_cache()
 
 
 def upsert_manual_metadata(metadata: UploadMetadataFields):

@@ -17,6 +17,7 @@ import { Workspaces } from "./workspaces/workspaces";
 import { Workspace } from "./workspaces/workspace";
 import { CreateWorkspaceFromMicroreact } from "./workspaces/create-workspace-from-microreact";
 import { AddToCluster } from "./analysis/add-to-cluster-page";
+import { Clusterspage } from "./clusters/clusters-page";
 
 export default function App() {
   return (
@@ -36,6 +37,15 @@ export default function App() {
           render={() => (
             <Authorize>
               <ApprovalHistory />
+            </Authorize>
+          )}
+        />
+        <Route
+          exact
+          path="/clusters"
+          render={() => (
+            <Authorize>
+              <Clusterspage />
             </Authorize>
           )}
         />

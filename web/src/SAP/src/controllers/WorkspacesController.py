@@ -1,22 +1,34 @@
+import sys
+from typing import Dict
 from flask import abort
 from flask.json import jsonify
+
+from web.src.SAP.generated.models.update_workspace import UpdateWorkspace
 from ..repositories.workspaces import get_workspaces as get_workspaces_db
-from ..repositories.workspaces import delete_workspace as delete_workspace_db
+from ..repositories.workspaces import leave_workspace as leave_workspace_db
 from ..repositories.workspaces import delete_workspace_sample as delete_workspace_sample_db
 from ..repositories.workspaces import create_workspace as create_workspace_db
 from ..repositories.workspaces import create_workspace_from_sequence_ids as create_workspace_from_sequence_ids_db
 from ..repositories.workspaces import clone_workspace as clone_workspace_db
 from ..repositories.workspaces import update_workspace as update_workspace_db
+from ..repositories.workspaces import remove_from_workspace as remove_from_workspace_db
 from ..repositories.workspaces import get_workspace as get_workspace_db
 from ..repositories.workspaces import get_workspace_data as get_workspace_data_db
+from ..repositories.workspaces import set_favorite as set_favorite_db
+from ..repositories.workspaces import search_workspaces as search_workspaces_db
+from ..repositories.workspaces import get_all_tags as get_all_tags_db
+from ..repositories.workspaces import set_tag as set_tag_db
+from ..repositories.workspaces import join_workspace as join_workspace_db
+
+
 from ..utils import validate_sample_ids
 
-def get_workspaces(user, token_info):
-    return jsonify(get_workspaces_db(user))
+def get_workspaces(user, token_info: Dict):
+    return jsonify(get_workspaces_db(user,token_info["institution"]))
 
-def delete_workspace(user, token_info, workspace_id: str):
-    res = delete_workspace_db(user, workspace_id)
-    return None if res.deleted_count > 0 else abort(404)
+def leave_workspace(user, token_info, workspace_id: str):
+    res = leave_workspace_db(user, workspace_id)
+    return None if res.modified_count == 1 else abort(404)
 
 def create_workspace(user, token_info, body):
     if body.samples:
@@ -61,6 +73,10 @@ def delete_workspace_sample(user, token_info, workspace_id, sample_id):
     res = delete_workspace_sample_db(user, workspace_id, sample_id)
     return None if res.modified_count > 0 else abort(404)
 
+def remove_workspace_samples(user,token_info, workspace_id, update):
+    remove_from_workspace_db(user,workspace_id,update.samples)
+    
+
 def get_workspace_data(user, token_info, workspace_id):
     res = get_workspace_data_db(user, token_info, workspace_id)
 
@@ -68,3 +84,24 @@ def get_workspace_data(user, token_info, workspace_id):
         return abort(404)
 
     return res
+
+def set_ws_favorite(user, token_info, body):
+    workspace_id = body.workspace_id
+    is_favorite = body.is_favorite
+    set_favorite_db(user, workspace_id, is_favorite)
+
+def ws_search(user, token_info, body):
+    with_tags = body.with_tags if body.with_tags is not None else []
+    without_tags = body.without_tags if body.without_tags is not None else []
+    return jsonify(search_workspaces_db(user,token_info["institution"], body.search_string, with_tags, without_tags))
+
+
+def get_tags(user,token_info):
+    return jsonify(get_all_tags_db(token_info["institution"]))
+
+def set_tag(user,token_info,body):
+    set_tag_db(user,body.workspace_id,body.tag,body.add_or_remove)
+
+
+def join_workspace(user,token_info,workspace_id):
+    join_workspace_db(user,token_info["institution"],workspace_id)

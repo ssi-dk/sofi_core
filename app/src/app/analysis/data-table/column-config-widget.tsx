@@ -46,19 +46,19 @@ export const ColumnConfigWidget: FC<ColumnConfigWidgetProps> = ({
   ) as UserDefinedViewInternal;
 
   const selectAllColumns = () => {
-    view.hiddenColumns.forEach(hiddenId => {
-         dispatch(toggleColumnVisibility(hiddenId))
-    })
+    view.hiddenColumns.forEach((hiddenId) => {
+      dispatch(toggleColumnVisibility(hiddenId));
+    });
   };
 
   const deselectAllColumns = () => {
-      const renderedColumns = children as { key: string }[]
-      renderedColumns.forEach(r => {
-        const key = r["key"]
-        if (!view.hiddenColumns.find(c => c == key)) {
-          dispatch(toggleColumnVisibility(key))
-        }
-      })
+    const renderedColumns = children as { key: string }[];
+    renderedColumns.forEach((r) => {
+      const key = r["key"];
+      if (!view.hiddenColumns.find((c) => c == key)) {
+        dispatch(toggleColumnVisibility(key));
+      }
+    });
   };
 
   const onDragEnd = useCallback(
@@ -97,10 +97,13 @@ export const ColumnConfigWidget: FC<ColumnConfigWidgetProps> = ({
               <PopoverArrow />
               <PopoverCloseButton />
               <Heading size="sm">Visible columns</Heading>
-              <Flex direction="row" >
-                <Button size="sm" marginRight={2} onClick={selectAllColumns}>Select all</Button>
-                <Button size="sm" onClick={deselectAllColumns}>Deselect all</Button>
-                
+              <Flex direction="row">
+                <Button size="sm" marginRight={2} onClick={selectAllColumns}>
+                  Select all
+                </Button>
+                <Button size="sm" onClick={deselectAllColumns}>
+                  Deselect all
+                </Button>
               </Flex>
               <Divider />
               <Box maxHeight="90vh" overflowY="auto">

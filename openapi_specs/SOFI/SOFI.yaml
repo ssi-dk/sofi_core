@@ -71,6 +71,115 @@ paths:
       tags:
         - workspaces
       x-openapi-router-controller: web.src.SAP.generated.controllers.workspaces_controller
+  /workspace/search:
+    post:
+      description: Search for a workspace with a search query
+      operationId: ws_search
+      tags:
+        - workspaces
+      x-openapi-router-controller: web.src.SAP.generated.controllers.workspaces_controller
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WorkspaceSearchQuery'
+      responses:
+        '200':
+          description: Result of ws search query
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Workspace'
+  /workspace/tags:
+    get:
+      description: Get all tags used in institution
+      operationId: get_tags
+      tags:
+        - workspaces
+      x-openapi-router-controller: web.src.SAP.generated.controllers.workspaces_controller
+      responses:
+        '200':
+          description: All tags used in institution
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+    post:
+      description: Add or remove a tag from a workspace
+      operationId: set_tag
+      tags:
+        - workspaces
+      x-openapi-router-controller: web.src.SAP.generated.controllers.workspaces_controller
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SetWsTag'
+      responses:
+        '204':
+          description: Successfully added or removed tag from workspace
+          
+  
+  /workspace/setFavorite:
+    post:
+      description: Add or remove the user from this workspaces' favorite list
+      operationId: set_ws_favorite
+      tags:
+        - workspaces
+      x-openapi-router-controller: web.src.SAP.generated.controllers.workspaces_controller
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SetFavorite'
+      responses:
+        '204':
+          description: Favorite updated
+  /workspace/{workspace_id}/remove:
+    post:
+      description: Remove samples from workspace
+      operationId: remove_workspace_samples
+      tags:
+        - workspaces
+      x-openapi-router-controller: web.src.SAP.generated.controllers.workspaces_controller
+      parameters:
+        - name: workspace_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Id of workspace to update
+      requestBody:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UpdateWorkspace"
+      responses:
+        '204':
+          description: Workspace updated successfully.
+  
+  /workspaces/{workspace_id}/join:
+    post:
+      description: Join an existing workspace
+      operationId: join_workspace
+      tags:
+        - workspaces
+      x-openapi-router-controller: web.src.SAP.generated.controllers.workspaces_controller
+      parameters:
+        - name: workspace_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Id of workspace to join
+      responses:
+        '200':
+          description: Succesfully joined
+  
   /workspace/{workspace_id}/{sample_id}:
     delete:
       description: Delete sample from workspace
@@ -144,8 +253,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/WorkspaceInfo'
     delete:
-      description: Delete an existing workspace
-      operationId: delete_workspace
+      description: Leave an existing workspace
+      operationId: leave_workspace
       tags:
         - workspaces
       x-openapi-router-controller: web.src.SAP.generated.controllers.workspaces_controller
@@ -158,7 +267,7 @@ paths:
           description: Id of workspace to delete
       responses:
         '204':
-          description: Workspace deleted successfully.
+          description: Workspace left successfully.
     post:
       description: Updates an existing workspace
       operationId: post_workspace
@@ -180,7 +289,6 @@ paths:
       responses:
         '204':
           description: Workspace updated successfully.
-
   /microreact_integration:
     post:
       description: Send to Microreact
@@ -276,6 +384,18 @@ paths:
           schema:
             type: number
             default: 100
+        - name: sorting_column
+          in: query
+          required: false
+          schema:
+            type: string
+            format: byte
+        - name: sorting_ascending
+          in: query
+          required: false
+          schema:
+            type: boolean
+            format: byte
       responses:
         '200':
           description: Page of isolates
@@ -796,6 +916,7 @@ components:
         - total_count
         - items
         - approval_matrix
+        - filter_options
       properties:
         paging_token:
           type: string
@@ -808,6 +929,72 @@ components:
             $ref: '#/components/schemas/AnalysisResult'
         approval_matrix:
           $ref: '#/components/schemas/ApprovalMatrix'
+        filter_options:
+          $ref: '#/components/schemas/FilterOptions'
+
+    FilterOptions:
+      type: object
+      properties:
+        date_sample:
+          $ref: '#/components/schemas/DateRange'
+        date_received:
+          $ref: '#/components/schemas/DateRange'
+        institutions:
+          type: array
+          items:
+            type: string
+        project_titles:
+          type: array
+          items:
+            type: string
+        project_numbers:
+          type: array
+          items:
+            type: string
+        animals:
+          type: array
+          items:
+            type: string
+        run_ids:
+          type: array
+          items:
+            type: string
+        isolate_ids:
+          type: array
+          items:
+            type: string
+        fud_numbers:
+          type: array
+          items:
+            type: string
+        cluster_ids:
+          type: array
+          items:
+            type: string
+        qc_provided_species:
+          type: array
+          items:
+            type: string
+        serotype_finals:
+          type: array
+          items:
+            type: string
+        st_finals:
+          type: array
+          items:
+            type: string
+
+    DateRange:
+      type: object
+      properties:
+        min:
+          type: string
+          format: date-time
+          nullable: true
+        max:
+          type: string
+          format: date-time
+          nullable: true
 
     QueryOperator:
       type: string
@@ -843,6 +1030,16 @@ components:
         prefix:
           nullable: true
           type: string
+    AnalysisSorting: 
+      type: object
+      properties:
+        column:
+          nullable: false
+          type: string
+          description: Name of the column to sort
+        ascending:
+          nullable: false
+          type: boolean
 
     QueryExpression:
       type: object
@@ -867,8 +1064,16 @@ components:
           nullable: true
         expression:
           $ref: "#/components/schemas/QueryExpression"
+        analysis_sorting: 
+          nullable: true
+          $ref: "#/components/schemas/AnalysisSorting"
         filters:
           type: object
+        workspace_id:
+          nullable: true
+          type: string
+          format: byte
+
 
     HealthResponse:
       type: object
@@ -1061,6 +1266,10 @@ components:
             type: object
             additionalProperties:
               type: string
+        revoked_sequence_ids:
+          type: array
+          items:
+            type: string
 
     Approval:
       allOf:
@@ -1121,7 +1330,7 @@ components:
 
     Resistance:
       type: string
-      enum: ["Sensitiv", "Resistent"]
+      enum: ["Sensitiv", "Resistent","No data"]
 
     BaseMetadata:
       required:
@@ -1158,6 +1367,10 @@ components:
           type: string
         run_id:
           type: string
+        full_runid:
+          type: string
+        year:
+          type: number
         public_number:
           type: string
         primary_isolate:
@@ -1316,6 +1529,8 @@ components:
                     type: string
                   reason:
                     type: string
+            qc_second_sp:
+              type: number
             call_percent:
               type: number
             multiple_alleles:
@@ -1343,6 +1558,10 @@ components:
             sero_d_tartrate:
               type: string
             sero_serotype_finder:
+              type: string
+            sero_sistr:
+              type: string
+            sero_antigen_sistr:
               type: string
             serotype_final:
               type: string
@@ -1490,6 +1709,9 @@ components:
               type: string
             bifrost_amrfinderplus:
               type: string
+
+            
+            
 
 
     NewickTreeResponse:
@@ -1662,16 +1884,68 @@ components:
         name:
           type: string
           title: Name
+        isFavorite:
+          type: boolean
+          title: IsFavorite
         samples:
           type: array
           items:
             type: string
-          title: Samples          
+          title: Samples
+        members:
+          type: array
+          items:
+            type: string
+          title: Members
+        institution:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
       type: object
       required:
       - id
       - name
-
+    WorkspaceSearchQuery:
+      type: object
+      properties:
+        searchString:
+          type: string
+        withTags:
+          type: array
+          items: 
+            type: string
+        withoutTags:
+          type: array
+          items: 
+            type: string
+      required:
+        - searchString
+    SetWsTag:
+      type: object
+      properties:
+        workspaceId:
+          type: string
+        tag:
+          type: string
+        addOrRemove:
+          description: true -> Adds tag to workspace. false -> remove tag from workspace
+          type: boolean
+      required:
+        - tag
+        - addOrRemove
+        - workspaceId
+    SetFavorite:
+      type: object
+      properties:
+        workspaceId:
+          type: string
+        isFavorite:
+          type: boolean
+      required:
+        - isFavorite
+        - workspaceId
     MicroreactProject:
       properties:
         id:
@@ -1747,6 +2021,11 @@ components:
           items:
             $ref: '#/components/schemas/AnalysisResult'
           title: Samples
+        sequence_ids:
+          type: array
+          items: 
+            type: string
+          title: SequenceIds
         microreact:
           $ref: '#/components/schemas/MicroreactProject'
           title: Microreact

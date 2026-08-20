@@ -20,15 +20,15 @@ import { exists, mapValues } from '../runtime';
 export interface InlineObject  {
     /**
      * 
-     * @type {string}
+     * @type {boolean}
      * @memberof InlineObject
      */
-    name: string;
+    isFavorite: boolean;
 }
 
 export function InlineObjectFromJSON(json: any): InlineObject {
     return {
-        'name': json['name'],
+        'isFavorite': json['isFavorite'],
     };
 }
 
@@ -37,7 +37,7 @@ export function InlineObjectToJSON(value?: InlineObject): any {
         return undefined;
     }
     return {
-        'name': value.name,
+        'isFavorite': value.isFavorite,
     };
 }
 

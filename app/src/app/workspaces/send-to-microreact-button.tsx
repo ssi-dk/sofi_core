@@ -12,10 +12,12 @@ export const SendToMicroreactButton = ({ workspace }: Props) => {
   return (
     <>
       {isOpen ? (
-        <SendToMicroreactModal workspace={ workspace } onClose={onClose} />
+        <SendToMicroreactModal workspace={workspace} onClose={onClose} />
       ) : null}
 
-      <Button onClick={onOpen}>Send to Microreact</Button>
+      <Button marginLeft={2} onClick={onOpen}>
+        Send workspace to Microreact
+      </Button>
     </>
   );
 };

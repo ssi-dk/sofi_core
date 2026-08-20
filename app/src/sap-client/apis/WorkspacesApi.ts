@@ -21,6 +21,12 @@ import {
     CreateWorkspace,
     CreateWorkspaceFromJSON,
     CreateWorkspaceToJSON,
+    SetFavorite,
+    SetFavoriteFromJSON,
+    SetFavoriteToJSON,
+    SetWsTag,
+    SetWsTagFromJSON,
+    SetWsTagToJSON,
     UpdateWorkspace,
     UpdateWorkspaceFromJSON,
     UpdateWorkspaceToJSON,
@@ -30,6 +36,9 @@ import {
     WorkspaceInfo,
     WorkspaceInfoFromJSON,
     WorkspaceInfoToJSON,
+    WorkspaceSearchQuery,
+    WorkspaceSearchQueryFromJSON,
+    WorkspaceSearchQueryToJSON,
 } from '../models';
 
 export interface CloneWorkspaceRequest {
@@ -42,10 +51,6 @@ export interface CreateWorkspaceRequest {
 
 export interface CreateWorkspaceFromSequenceIdsRequest {
     createWorkspace?: CreateWorkspace;
-}
-
-export interface DeleteWorkspaceRequest {
-    workspaceId: string;
 }
 
 export interface DeleteWorkspaceSampleRequest {
@@ -61,9 +66,34 @@ export interface GetWorkspaceDataRequest {
     workspaceId: string;
 }
 
+export interface JoinWorkspaceRequest {
+    workspaceId: string;
+}
+
+export interface LeaveWorkspaceRequest {
+    workspaceId: string;
+}
+
 export interface PostWorkspaceRequest {
     workspaceId: string;
     updateWorkspace?: UpdateWorkspace;
+}
+
+export interface RemoveWorkspaceSamplesRequest {
+    workspaceId: string;
+    updateWorkspace?: UpdateWorkspace;
+}
+
+export interface SetTagRequest {
+    setWsTag?: SetWsTag;
+}
+
+export interface SetWsFavoriteRequest {
+    setFavorite?: SetFavorite;
+}
+
+export interface WsSearchRequest {
+    workspaceSearchQuery?: WorkspaceSearchQuery;
 }
 
 
@@ -194,52 +224,6 @@ export function createWorkspaceFromSequenceIds<T>(requestParameters: CreateWorks
 }
 
 /**
- * Delete an existing workspace
- */
-function deleteWorkspaceRaw<T>(requestParameters: DeleteWorkspaceRequest, requestConfig: runtime.TypedQueryConfig<T, void> = {}): QueryConfig<T> {
-    if (requestParameters.workspaceId === null || requestParameters.workspaceId === undefined) {
-        throw new runtime.RequiredError('workspaceId','Required parameter requestParameters.workspaceId was null or undefined when calling deleteWorkspace.');
-    }
-
-    let queryParameters = null;
-
-
-    const headerParameters : runtime.HttpHeaders = {};
-
-
-    const { meta = {} } = requestConfig;
-
-    meta.authType = ['bearer'];
-    const config: QueryConfig<T> = {
-        url: `${runtime.Configuration.basePath}/workspaces/{workspace_id}`.replace(`{${"workspace_id"}}`, encodeURIComponent(String(requestParameters.workspaceId))),
-        meta,
-        update: requestConfig.update,
-        queryKey: requestConfig.queryKey,
-        optimisticUpdate: requestConfig.optimisticUpdate,
-        force: requestConfig.force,
-        rollback: requestConfig.rollback,
-        options: {
-            method: 'DELETE',
-            headers: headerParameters,
-        },
-        body: queryParameters,
-    };
-
-    const { transform: requestTransform } = requestConfig;
-    if (requestTransform) {
-    }
-
-    return config;
-}
-
-/**
-* Delete an existing workspace
-*/
-export function deleteWorkspace<T>(requestParameters: DeleteWorkspaceRequest, requestConfig?: runtime.TypedQueryConfig<T, void>): QueryConfig<T> {
-    return deleteWorkspaceRaw(requestParameters, requestConfig);
-}
-
-/**
  * Delete sample from workspace
  */
 function deleteWorkspaceSampleRaw<T>(requestParameters: DeleteWorkspaceSampleRequest, requestConfig: runtime.TypedQueryConfig<T, void> = {}): QueryConfig<T> {
@@ -287,6 +271,48 @@ function deleteWorkspaceSampleRaw<T>(requestParameters: DeleteWorkspaceSampleReq
 */
 export function deleteWorkspaceSample<T>(requestParameters: DeleteWorkspaceSampleRequest, requestConfig?: runtime.TypedQueryConfig<T, void>): QueryConfig<T> {
     return deleteWorkspaceSampleRaw(requestParameters, requestConfig);
+}
+
+/**
+ * Get all tags used in institution
+ */
+function getTagsRaw<T>( requestConfig: runtime.TypedQueryConfig<T, Array<string>> = {}): QueryConfig<T> {
+    let queryParameters = null;
+
+
+    const headerParameters : runtime.HttpHeaders = {};
+
+
+    const { meta = {} } = requestConfig;
+
+    meta.authType = ['bearer'];
+    const config: QueryConfig<T> = {
+        url: `${runtime.Configuration.basePath}/workspace/tags`,
+        meta,
+        update: requestConfig.update,
+        queryKey: requestConfig.queryKey,
+        optimisticUpdate: requestConfig.optimisticUpdate,
+        force: requestConfig.force,
+        rollback: requestConfig.rollback,
+        options: {
+            method: 'GET',
+            headers: headerParameters,
+        },
+        body: queryParameters,
+    };
+
+    const { transform: requestTransform } = requestConfig;
+    if (requestTransform) {
+    }
+
+    return config;
+}
+
+/**
+* Get all tags used in institution
+*/
+export function getTags<T>( requestConfig?: runtime.TypedQueryConfig<T, Array<string>>): QueryConfig<T> {
+    return getTagsRaw( requestConfig);
 }
 
 /**
@@ -426,6 +452,98 @@ export function getWorkspaces<T>( requestConfig?: runtime.TypedQueryConfig<T, Ar
 }
 
 /**
+ * Join an existing workspace
+ */
+function joinWorkspaceRaw<T>(requestParameters: JoinWorkspaceRequest, requestConfig: runtime.TypedQueryConfig<T, void> = {}): QueryConfig<T> {
+    if (requestParameters.workspaceId === null || requestParameters.workspaceId === undefined) {
+        throw new runtime.RequiredError('workspaceId','Required parameter requestParameters.workspaceId was null or undefined when calling joinWorkspace.');
+    }
+
+    let queryParameters = null;
+
+
+    const headerParameters : runtime.HttpHeaders = {};
+
+
+    const { meta = {} } = requestConfig;
+
+    meta.authType = ['bearer'];
+    const config: QueryConfig<T> = {
+        url: `${runtime.Configuration.basePath}/workspaces/{workspace_id}/join`.replace(`{${"workspace_id"}}`, encodeURIComponent(String(requestParameters.workspaceId))),
+        meta,
+        update: requestConfig.update,
+        queryKey: requestConfig.queryKey,
+        optimisticUpdate: requestConfig.optimisticUpdate,
+        force: requestConfig.force,
+        rollback: requestConfig.rollback,
+        options: {
+            method: 'POST',
+            headers: headerParameters,
+        },
+        body: queryParameters,
+    };
+
+    const { transform: requestTransform } = requestConfig;
+    if (requestTransform) {
+    }
+
+    return config;
+}
+
+/**
+* Join an existing workspace
+*/
+export function joinWorkspace<T>(requestParameters: JoinWorkspaceRequest, requestConfig?: runtime.TypedQueryConfig<T, void>): QueryConfig<T> {
+    return joinWorkspaceRaw(requestParameters, requestConfig);
+}
+
+/**
+ * Leave an existing workspace
+ */
+function leaveWorkspaceRaw<T>(requestParameters: LeaveWorkspaceRequest, requestConfig: runtime.TypedQueryConfig<T, void> = {}): QueryConfig<T> {
+    if (requestParameters.workspaceId === null || requestParameters.workspaceId === undefined) {
+        throw new runtime.RequiredError('workspaceId','Required parameter requestParameters.workspaceId was null or undefined when calling leaveWorkspace.');
+    }
+
+    let queryParameters = null;
+
+
+    const headerParameters : runtime.HttpHeaders = {};
+
+
+    const { meta = {} } = requestConfig;
+
+    meta.authType = ['bearer'];
+    const config: QueryConfig<T> = {
+        url: `${runtime.Configuration.basePath}/workspaces/{workspace_id}`.replace(`{${"workspace_id"}}`, encodeURIComponent(String(requestParameters.workspaceId))),
+        meta,
+        update: requestConfig.update,
+        queryKey: requestConfig.queryKey,
+        optimisticUpdate: requestConfig.optimisticUpdate,
+        force: requestConfig.force,
+        rollback: requestConfig.rollback,
+        options: {
+            method: 'DELETE',
+            headers: headerParameters,
+        },
+        body: queryParameters,
+    };
+
+    const { transform: requestTransform } = requestConfig;
+    if (requestTransform) {
+    }
+
+    return config;
+}
+
+/**
+* Leave an existing workspace
+*/
+export function leaveWorkspace<T>(requestParameters: LeaveWorkspaceRequest, requestConfig?: runtime.TypedQueryConfig<T, void>): QueryConfig<T> {
+    return leaveWorkspaceRaw(requestParameters, requestConfig);
+}
+
+/**
  * Updates an existing workspace
  */
 function postWorkspaceRaw<T>(requestParameters: PostWorkspaceRequest, requestConfig: runtime.TypedQueryConfig<T, void> = {}): QueryConfig<T> {
@@ -471,5 +589,186 @@ function postWorkspaceRaw<T>(requestParameters: PostWorkspaceRequest, requestCon
 */
 export function postWorkspace<T>(requestParameters: PostWorkspaceRequest, requestConfig?: runtime.TypedQueryConfig<T, void>): QueryConfig<T> {
     return postWorkspaceRaw(requestParameters, requestConfig);
+}
+
+/**
+ * Remove samples from workspace
+ */
+function removeWorkspaceSamplesRaw<T>(requestParameters: RemoveWorkspaceSamplesRequest, requestConfig: runtime.TypedQueryConfig<T, void> = {}): QueryConfig<T> {
+    if (requestParameters.workspaceId === null || requestParameters.workspaceId === undefined) {
+        throw new runtime.RequiredError('workspaceId','Required parameter requestParameters.workspaceId was null or undefined when calling removeWorkspaceSamples.');
+    }
+
+    let queryParameters = null;
+
+
+    const headerParameters : runtime.HttpHeaders = {};
+
+    headerParameters['Content-Type'] = 'application/json';
+
+
+    const { meta = {} } = requestConfig;
+
+    meta.authType = ['bearer'];
+    const config: QueryConfig<T> = {
+        url: `${runtime.Configuration.basePath}/workspace/{workspace_id}/remove`.replace(`{${"workspace_id"}}`, encodeURIComponent(String(requestParameters.workspaceId))),
+        meta,
+        update: requestConfig.update,
+        queryKey: requestConfig.queryKey,
+        optimisticUpdate: requestConfig.optimisticUpdate,
+        force: requestConfig.force,
+        rollback: requestConfig.rollback,
+        options: {
+            method: 'POST',
+            headers: headerParameters,
+        },
+        body: queryParameters || UpdateWorkspaceToJSON(requestParameters.updateWorkspace),
+    };
+
+    const { transform: requestTransform } = requestConfig;
+    if (requestTransform) {
+    }
+
+    return config;
+}
+
+/**
+* Remove samples from workspace
+*/
+export function removeWorkspaceSamples<T>(requestParameters: RemoveWorkspaceSamplesRequest, requestConfig?: runtime.TypedQueryConfig<T, void>): QueryConfig<T> {
+    return removeWorkspaceSamplesRaw(requestParameters, requestConfig);
+}
+
+/**
+ * Add or remove a tag from a workspace
+ */
+function setTagRaw<T>(requestParameters: SetTagRequest, requestConfig: runtime.TypedQueryConfig<T, void> = {}): QueryConfig<T> {
+    let queryParameters = null;
+
+
+    const headerParameters : runtime.HttpHeaders = {};
+
+    headerParameters['Content-Type'] = 'application/json';
+
+
+    const { meta = {} } = requestConfig;
+
+    meta.authType = ['bearer'];
+    const config: QueryConfig<T> = {
+        url: `${runtime.Configuration.basePath}/workspace/tags`,
+        meta,
+        update: requestConfig.update,
+        queryKey: requestConfig.queryKey,
+        optimisticUpdate: requestConfig.optimisticUpdate,
+        force: requestConfig.force,
+        rollback: requestConfig.rollback,
+        options: {
+            method: 'POST',
+            headers: headerParameters,
+        },
+        body: queryParameters || SetWsTagToJSON(requestParameters.setWsTag),
+    };
+
+    const { transform: requestTransform } = requestConfig;
+    if (requestTransform) {
+    }
+
+    return config;
+}
+
+/**
+* Add or remove a tag from a workspace
+*/
+export function setTag<T>(requestParameters: SetTagRequest, requestConfig?: runtime.TypedQueryConfig<T, void>): QueryConfig<T> {
+    return setTagRaw(requestParameters, requestConfig);
+}
+
+/**
+ * Add or remove the user from this workspaces\' favorite list
+ */
+function setWsFavoriteRaw<T>(requestParameters: SetWsFavoriteRequest, requestConfig: runtime.TypedQueryConfig<T, void> = {}): QueryConfig<T> {
+    let queryParameters = null;
+
+
+    const headerParameters : runtime.HttpHeaders = {};
+
+    headerParameters['Content-Type'] = 'application/json';
+
+
+    const { meta = {} } = requestConfig;
+
+    meta.authType = ['bearer'];
+    const config: QueryConfig<T> = {
+        url: `${runtime.Configuration.basePath}/workspace/setFavorite`,
+        meta,
+        update: requestConfig.update,
+        queryKey: requestConfig.queryKey,
+        optimisticUpdate: requestConfig.optimisticUpdate,
+        force: requestConfig.force,
+        rollback: requestConfig.rollback,
+        options: {
+            method: 'POST',
+            headers: headerParameters,
+        },
+        body: queryParameters || SetFavoriteToJSON(requestParameters.setFavorite),
+    };
+
+    const { transform: requestTransform } = requestConfig;
+    if (requestTransform) {
+    }
+
+    return config;
+}
+
+/**
+* Add or remove the user from this workspaces\' favorite list
+*/
+export function setWsFavorite<T>(requestParameters: SetWsFavoriteRequest, requestConfig?: runtime.TypedQueryConfig<T, void>): QueryConfig<T> {
+    return setWsFavoriteRaw(requestParameters, requestConfig);
+}
+
+/**
+ * Search for a workspace with a search query
+ */
+function wsSearchRaw<T>(requestParameters: WsSearchRequest, requestConfig: runtime.TypedQueryConfig<T, Array<Workspace>> = {}): QueryConfig<T> {
+    let queryParameters = null;
+
+
+    const headerParameters : runtime.HttpHeaders = {};
+
+    headerParameters['Content-Type'] = 'application/json';
+
+
+    const { meta = {} } = requestConfig;
+
+    meta.authType = ['bearer'];
+    const config: QueryConfig<T> = {
+        url: `${runtime.Configuration.basePath}/workspace/search`,
+        meta,
+        update: requestConfig.update,
+        queryKey: requestConfig.queryKey,
+        optimisticUpdate: requestConfig.optimisticUpdate,
+        force: requestConfig.force,
+        rollback: requestConfig.rollback,
+        options: {
+            method: 'POST',
+            headers: headerParameters,
+        },
+        body: queryParameters || WorkspaceSearchQueryToJSON(requestParameters.workspaceSearchQuery),
+    };
+
+    const { transform: requestTransform } = requestConfig;
+    if (requestTransform) {
+        config.transform = (body: ResponseBody, text: ResponseBody) => requestTransform(body.map(WorkspaceFromJSON), text);
+    }
+
+    return config;
+}
+
+/**
+* Search for a workspace with a search query
+*/
+export function wsSearch<T>(requestParameters: WsSearchRequest, requestConfig?: runtime.TypedQueryConfig<T, Array<Workspace>>): QueryConfig<T> {
+    return wsSearchRaw(requestParameters, requestConfig);
 }
 

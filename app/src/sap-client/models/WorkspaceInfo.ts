@@ -47,6 +47,12 @@ export interface WorkspaceInfo  {
     samples: Array<AnalysisResult>;
     /**
      * 
+     * @type {Array<string>}
+     * @memberof WorkspaceInfo
+     */
+    sequence_ids?: Array<string>;
+    /**
+     * 
      * @type {MicroreactProject}
      * @memberof WorkspaceInfo
      */
@@ -58,6 +64,7 @@ export function WorkspaceInfoFromJSON(json: any): WorkspaceInfo {
         'id': !exists(json, 'id') ? undefined : json['id'],
         'name': json['name'],
         'samples': (json['samples'] as Array<any>).map(AnalysisResultFromJSON),
+        'sequence_ids': !exists(json, 'sequence_ids') ? undefined : json['sequence_ids'],
         'microreact': !exists(json, 'microreact') ? undefined : MicroreactProjectFromJSON(json['microreact']),
     };
 }
@@ -70,6 +77,7 @@ export function WorkspaceInfoToJSON(value?: WorkspaceInfo): any {
         'id': value.id,
         'name': value.name,
         'samples': (value.samples as Array<any>).map(AnalysisResultToJSON),
+        'sequence_ids': value.sequence_ids,
         'microreact': MicroreactProjectToJSON(value.microreact),
     };
 }

@@ -4,6 +4,7 @@ import logging
 import json
 from web.src.SAP.generated.models import Approval
 from web.src.SAP.generated.models.approval_status import ApprovalStatus
+from web.src.SAP.src.repositories.analysis import invalidate_analysis_cache
 from ...common.database import get_connection, DB_NAME, APPROVALS_COL_NAME
 import sys
 
@@ -39,7 +40,7 @@ def find_approvals_by_sequence_id(sequence_id: str):
     return list(
         map(
             remove_id,
-            approvals.find({f"matrix.{sequence_id}": {"$exists": 1}}).sort(
+            approvals.find({f"matrix.{sequence_id}": {"$exists": 1}, "status": "submitted"}).sort(
                 "timestamp", pymongo.ASCENDING
             ),
         )
@@ -76,6 +77,8 @@ def insert_approval(username: str,institution: str, approval: Approval):
 
 
 def revoke_approval(institution: str, approval_id: str, sequences: List[str]):
+    invalidate_analysis_cache()
+    
     conn = get_connection()
     mydb = conn[DB_NAME]
     approvals = mydb[APPROVALS_COL_NAME]
@@ -117,4 +120,6 @@ def find_all_active_approvals():
     mydb = conn[DB_NAME]
     approvals = mydb[APPROVALS_COL_NAME]
 
-    return list(map(remove_id, approvals.find({"status": "submitted"})))
+    return list(map(remove_id, approvals.find({"status": "submitted"}).sort(
+                "timestamp", pymongo.DESCENDING
+            )))

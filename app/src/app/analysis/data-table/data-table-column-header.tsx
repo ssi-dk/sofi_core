@@ -1,19 +1,21 @@
 /** @jsxImportSource @compiled/react */
-import React from "react";
+import React, { useReducer } from "react";
 import { Column, ColumnInstance } from "react-table";
 import "@compiled/react";
 import { Tooltip } from "@chakra-ui/react";
 import { columnStyle, headerButton, headerName } from "./data-table-styles";
 import { NotEmpty } from "utils";
 import SelectionCheckBox from "./selection-check-box";
+import { LockIcon } from "@chakra-ui/icons";
 
 type DataTableColumnHeaderProps<T extends NotEmpty> = {
   column: ColumnInstance<T>;
   columnIndex: number;
+  isEncrypted: boolean;
   calcColSelectionState: (
     column: Column<T>
   ) => { checked: boolean; indeterminate: boolean; visible?: boolean };
-  canSelectColumn: (column: string) => boolean;
+  canSelectColumn: (column: string, columnIndex: number) => boolean;
   onSelectColumn: (column: Column<T>) => void;
   onResize: (columnIndex: number) => void;
   onSort?: ({ column: string, ascending: boolean }) => void;
@@ -30,9 +32,11 @@ function DataTableColumnHeader<T extends NotEmpty>(
     onSelectColumn,
     onResize,
     onSort,
+    isEncrypted,
   } = props;
 
   const noop = React.useCallback(() => {}, []);
+  const [renderTrigger, forceRerender] = useReducer(o => !o,true);
 
   const doResize = React.useCallback(() => {
     onResize(columnIndex);
@@ -66,19 +70,26 @@ function DataTableColumnHeader<T extends NotEmpty>(
       onKeyDown={noop}
     >
       <div role="tab" css={columnStyle}>
-        {canSelectColumn(column.id) && (
+        {canSelectColumn(column.id, columnIndex) && (
           <SelectionCheckBox
             onClick={(e) => {
-              onSelectColumn(column);
+              try {
+                
+                onSelectColumn(column);
+              } catch (err) {
+                alert((err as Error).message)
+                forceRerender();
+              }
               e.stopPropagation();
             }}
             css={headerButton}
+            renderTrigger={renderTrigger}
             {...calcColSelectionState(column)}
           />
         )}
         <Tooltip placement="top" label={`Internal name: ${column.id}`}>
           <div>
-            <span css={headerName}>{column.render("Header")}</span>
+            <span css={headerName}>{column.render("Header")} {isEncrypted && <LockIcon />}</span>
           </div>
         </Tooltip>
         {onSort ? (
