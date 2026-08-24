@@ -83,17 +83,21 @@ const BulkSearchModal = ({
     );
   };
 
+  const resetForm = () => {
+    setSelectedField("");
+    setFile(null);
+    setValues([]);
+    setIsSelectFieldFocused(false);
+  };
+
   const buildClause = () => `${selectedField}:"[${values.join(",")}]"`;
 
   const addToQuery = (operator: "AND" | "OR") => {
     const clause = buildClause();
 
-    const newQuery =
-      currentQuery.trim().length === 0
-        ? clause
-        : `${currentQuery} ${operator} ${clause}`;
+    const updatedQuery = `${currentQuery} ${operator} ${clause}`;
 
-    onQueryGenerated(newQuery);
+    onQueryGenerated(updatedQuery);
     resetForm();
     onClose();
   };
@@ -102,13 +106,6 @@ const BulkSearchModal = ({
     onQueryGenerated(buildClause());
     resetForm();
     onClose();
-  };
-
-  const resetForm = () => {
-    setSelectedField("");
-    setFile(null);
-    setValues([]);
-    setIsSelectFieldFocused(false);
   };
 
   return (
