@@ -83,10 +83,9 @@ const BulkSearchModal = ({
     );
   };
 
-  const buildClause = () =>
-    `${selectedField}:"[${values.join(",")}]"`;
+  const buildClause = () => `${selectedField}:"[${values.join(",")}]"`;
 
-  const addClause = (operator: "AND" | "OR") => {
+  const addToQuery = (operator: "AND" | "OR") => {
     const clause = buildClause();
 
     const newQuery =
@@ -99,7 +98,7 @@ const BulkSearchModal = ({
     onClose();
   };
 
-  const applyQuery = () => {
+  const addQuery = () => {
     onQueryGenerated(buildClause());
     resetForm();
     onClose();
@@ -111,7 +110,6 @@ const BulkSearchModal = ({
     setValues([]);
     setIsSelectFieldFocused(false);
   };
-
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
@@ -219,32 +217,29 @@ const BulkSearchModal = ({
 
           {hasExistingQuery ? (
             <Menu>
-              <MenuButton as={Button} isDisabled={!canAdd}>
+              <MenuButton as={Button} isDisabled={!canAdd} colorScheme="blue">
                 Add to query
               </MenuButton>
 
               <MenuList>
-                <MenuItem onClick={() => addClause("AND")}>
+                <MenuItem onClick={() => addToQuery("AND")}>
                   Add with AND
                 </MenuItem>
 
-                <MenuItem onClick={() => addClause("OR")}>
+                <MenuItem onClick={() => addToQuery("OR")}>
                   Add with OR
                 </MenuItem>
 
-                <MenuItem onClick={() => applyQuery()}>
+                <MenuItem onClick={() => addQuery()}>
                   Replace query
                 </MenuItem>
               </MenuList>
             </Menu>
           ) : (
-            < Button
-              colorScheme="blue"
-              onClick={applyQuery}
-              isDisabled={!canAdd}
-            >
-              Add to query
-            </Button>)}
+            < Button onClick={addQuery} isDisabled={!canAdd} colorScheme="blue">
+              Add query
+            </Button>
+          )}
         </ModalFooter>
       </ModalContent>
     </Modal >

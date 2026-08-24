@@ -114,6 +114,7 @@ def get_analysis(user, token_info, paging_token, page_size,sorting_column=None, 
         }
     elif "analysis_sorting" in token:
         sorting = token["analysis_sorting"]
+    
 
     db_res = get_analysis_page_bundle(
         token.get("query", {}),
@@ -196,16 +197,11 @@ def search_analysis(user, token_info, query: AnalysisQuery):
             "ascending": query.analysis_sorting.ascending
         } if query.analysis_sorting is not None else None
     }
-    app.logger.debug("!!!!!!!!!!!!!!!!!!!! SEARCH")
-   
 
     workspace_items = get_workspace_sequences_db(user,query.workspace_id) if query.workspace_id is not None else None
 
     token = parse_paging_token(query.paging_token) or default_token
 
-    app.logger.debug(default_token)
-    app.logger.debug(query)
-    
     db_res = get_analysis_page_bundle(
         token["query"],
         token["page_size"],

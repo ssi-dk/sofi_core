@@ -41,7 +41,7 @@ type AnalysisSearchProps = {
 const parseQuery = (input: string, onError) => {
   try {
     const ast = luceneParse(input);
-    recurseTree(ast, (x,) => {
+    recurseTree(ast, (x) => {
       if (x["field"]) {
         // translate display names to internal names
         x["field"] = getFieldInternalName(x["field"]) ?? x["field"];
