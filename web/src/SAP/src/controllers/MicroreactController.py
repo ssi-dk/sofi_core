@@ -6,6 +6,7 @@ from flask import abort
 from flask.json import jsonify
 from pydantic import StrictStr
 from os import environ
+from pprint import pprint
 
 from .....microreact_integration.functions import (
     new_project_2 as new_microreact_project,
@@ -49,7 +50,11 @@ def send_to_microreact(user, token_info, body: NewMicroreactProjectRequestData):
 
     # Calculate tree
     tree_calcs = []
-    samples = list(map(lambda s: s["id"], workspace["samples"]))
+    try:
+        samples = list(map(lambda s: s["id"], workspace["samples"]))
+    except KeyError:
+        pprint(workspace)
+        raise
     dmx = []
 
     with ApiClient(Configuration(host="http://bioapi:8000")) as api_client:
@@ -83,7 +88,8 @@ def send_to_microreact(user, token_info, body: NewMicroreactProjectRequestData):
                 dmx = distance_get_api_response.result["distances"] or []
 
         if status == "error":
-            return abort(500)
+            pprint("Distance matrix creation failed")
+            return abort(500, description=distance_get_api_response)
 
         # Trees
         api_instance = TreesApi(api_client)
@@ -108,7 +114,8 @@ def send_to_microreact(user, token_info, body: NewMicroreactProjectRequestData):
                 status = trees_get_api_response.status.value
 
             if status == "error":
-                return abort(500, description=result)
+                pprint("Tree generation failed")
+                return abort(500, description=trees_get_api_response)
             
             if status == "completed":
                 trees_get_api_response = api_instance.hc_tree_result_v1_trees_tc_id_get(
