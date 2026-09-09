@@ -21,6 +21,7 @@ import {
   QuestionIcon,
   TimeIcon,
   WarningIcon,
+  AttachmentIcon,
 } from "@chakra-ui/icons";
 import { parse as luceneParse } from "lucene";
 import { recurseTree } from "utils";
@@ -29,6 +30,7 @@ import SearchHelpModal from "./search-help-modal";
 import SearchHistoryMenu from "./search-history";
 import { SearchQuery } from "../analysis-page";
 import { getSearchHistory, recurseSearchTree, useHistoryCB } from "./search-utils";
+import BulkSearchModal from "./bulk-search-modal";
 
 type AnalysisSearchProps = {
   onSearchChange: (query: SearchQuery, searchString: string) => void;
@@ -111,7 +113,7 @@ const AnalysisSearch = (props: AnalysisSearchProps) => {
     }
   }, [inputRef, setInput])
   useHistoryCB(historyCB, false);
-  
+
   const setText = useCallback((textStr: string) => {
     setInput(textStr);
     if (inputRef) {
@@ -168,12 +170,25 @@ const AnalysisSearch = (props: AnalysisSearchProps) => {
     onClose: onSearchHelpModalClose,
   } = useDisclosure();
 
+  const {
+    isOpen: isBulkSearchModalOpen,
+    onOpen: onBulkSearchModalOpen,
+    onClose: onBulkSearchModalClose,
+  } = useDisclosure();
+
   return (
     <>
       <React.Fragment>
         <SearchHelpModal
           isOpen={isSearchHelpModalOpen}
           onClose={onSearchHelpModalClose}
+        />
+        <BulkSearchModal
+          isOpen={isBulkSearchModalOpen}
+          onClose={onBulkSearchModalClose}
+          searchTerms={searchTerms}
+          currentQuery={input}
+          onQueryGenerated={setText}
         />
         <Popover
           placement="bottom-start"
@@ -246,11 +261,19 @@ const AnalysisSearch = (props: AnalysisSearchProps) => {
             </PopoverBody>
           </PopoverContent>
         </Popover>
+        
         <IconButton
           aria-label="Search database"
           icon={<SearchIcon />}
           ml="1"
           onClick={submit}
+          isDisabled={isDisabled}
+        />
+        <IconButton
+          aria-label="Bulk search"
+          icon={<AttachmentIcon />}
+          ml="1"
+          onClick={onBulkSearchModalOpen}
           isDisabled={isDisabled}
         />
       </React.Fragment>
