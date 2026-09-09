@@ -40,7 +40,6 @@ def migrate_workspaces(found_workspaces: List[Dict],user:str,institution:str) ->
         migrate_field(found_workspaces,"tags",[])
     ])
 
-
 def trim(item, user: str) -> Dict:
     item["id"] = str(item["_id"])
     item.pop("_id", None)
@@ -52,13 +51,6 @@ def trim(item, user: str) -> Dict:
         item["isFavorite"] = False
 
     return item
-
-
-def get_sequence(sample_id: str):
-    single = get_single_analysis_by_object_id(sample_id)
-    if single is None:
-        return None
-    return get_single_analysis(single["sequence_id"])
 
 def my_workspaces_query(user: str)-> dict:
     return {
@@ -112,6 +104,7 @@ def get_workspace_sequences(user: str, workspace_id: str):
     return workspace["samples"]
 
 # UNUSED IN NEW ITERATION. ALSO DOES NOT WORK. THIS ALWAYS CRASHES
+# TODO This *is* used. Figure out if above comment is still relevant.
 def get_workspace(user: str, workspace_id: str):
     workspaces = get_collection(WORKSPACES_COL_NAME)
 
@@ -132,7 +125,7 @@ def get_workspace(user: str, workspace_id: str):
     if workspace["samples"] is None:
         workspace["samples"] = []
     else:
-        workspace["samples"] = list(map(get_sequence, workspace["samples"]))
+        workspace["samples"] = list(map(get_single_analysis_by_object_id, workspace["samples"]))
 
     return workspace
 

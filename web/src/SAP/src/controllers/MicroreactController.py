@@ -51,7 +51,7 @@ def send_to_microreact(user, token_info, body: NewMicroreactProjectRequestData):
     # Calculate tree
     tree_calcs = []
     try:
-        samples = list(map(lambda s: s["id"], workspace["samples"]))
+        samples = list(map(lambda s: str(s["_id"]), workspace["samples"]))
     except KeyError:
         pprint(workspace)
         raise
