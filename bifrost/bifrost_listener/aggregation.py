@@ -647,15 +647,20 @@ def agg_pipeline(changed_ids=None):
                             "component": {
                                 "$arrayElemAt": [
                                     {
-                                        "$sortArray":{
+                                        "$filter": {
                                             "input": {
-                                                "$filter": {
-                                                    "input": "$components",
-                                                    "as": "component",
-                                                    "cond": {"$regexMatch": {"input": "$$component.name", "regex": "^chewbbaca"}}
+                                            "$filter": {
+                                                "input": "$components",
+                                                "as": "component",
+                                                "cond": { "$regexMatch": {
+                                                    "input": "$$component.name",
+                                                    "regex": "^chewbbaca"
+                                                    }
                                                 }
-                                            },
-                                            "sortBy":{"name":-1}
+                                            }
+                                        },
+                                        "as": "chewbbaca",
+                                        "cond": { "$ne": [ "$$chewbbaca.status", "Requirements not met"]}
                                         }
                                     },
                                     0
