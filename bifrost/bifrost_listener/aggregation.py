@@ -285,32 +285,7 @@ def agg_pipeline(changed_ids=None):
                         ]
                     }
                 )),
-                **userChangedCondition("qc_db_id", removeNullProperty(
-                    {
-                        "$let": {
-                            "vars": {
-                                "res": {
-                                    "$arrayElemAt": [
-                                        {
-                                            "$filter": {
-                                                "input": "$categories.stamper.summary.tests",
-                                                "as": "elem",
-                                                "cond": {
-                                                    "$eq": [
-                                                        "$$elem.name",
-                                                        "species_in_db",
-                                                    ]
-                                                },
-                                            }
-                                        },
-                                        0,
-                                    ]
-                                },
-                            },
-                            "in": "$$res.value",
-                        }
-                    }
-                )),
+                **userChangedCondition("qc_db_id", "$categories.species_detection.summary.species"),
                 **userChangedCondition("qc_db_id2", "$categories.species_detection.summary.name_classified_species_2"),
                 **userChangedCondition("qc_failed_tests", removeNullProperty(
                     {
@@ -647,15 +622,20 @@ def agg_pipeline(changed_ids=None):
                             "component": {
                                 "$arrayElemAt": [
                                     {
-                                        "$sortArray":{
+                                        "$filter": {
                                             "input": {
-                                                "$filter": {
-                                                    "input": "$components",
-                                                    "as": "component",
-                                                    "cond": {"$regexMatch": {"input": "$$component.name", "regex": "^chewbbaca"}}
+                                            "$filter": {
+                                                "input": "$components",
+                                                "as": "component",
+                                                "cond": { "$regexMatch": {
+                                                    "input": "$$component.name",
+                                                    "regex": "^chewbbaca"
+                                                    }
                                                 }
-                                            },
-                                            "sortBy":{"name":-1}
+                                            }
+                                        },
+                                        "as": "chewbbaca",
+                                        "cond": { "$ne": [ "$$chewbbaca.status", "Requirements not met"]}
                                         }
                                     },
                                     0
