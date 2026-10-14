@@ -62,11 +62,7 @@ def post(user, token, body: NearestNeighborsRequest):
             ):
                 return None
             
-            analysis = get_single_analysis(row["sequence_id"])
-
-            if analysis:
-                analysis.pop("_id", None)
-            return analysis
+            return get_single_analysis(row["sequence_id"])           
 
         result = list(filter(lambda x: x is not None, list(map(lambda r : get_result(r["id"]), response_dict["result"]))))
 
