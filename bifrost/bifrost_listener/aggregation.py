@@ -131,10 +131,16 @@ def agg_pipeline(changed_ids=None):
                     }
                 )),
                 **userChangedCondition("sequence_filename", {
-                    "$reduce": {
-                        "input": "$categories.paired_reads.summary.data",
-                        "initialValue": "",
-                        "in": {"$concat": ["$$value", "$$this", " "]},
+                    "$cond":{
+                        "if": "$categories.paired_reads.summary.data",
+                        "then": {
+                            "$reduce": {
+                                "input": "$categories.paired_reads.summary.data",
+                                "initialValue": "",
+                                "in": {"$concat": ["$$value", "$$this", " "]},
+                            }
+                        },
+                        "else": "$categories.contigs.summary.data"
                     }
                 }),
                 **userChangedCondition("resistance_genes", {
