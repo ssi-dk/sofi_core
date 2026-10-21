@@ -131,10 +131,16 @@ def agg_pipeline(changed_ids=None):
                     }
                 )),
                 **userChangedCondition("sequence_filename", {
-                    "$reduce": {
-                        "input": "$categories.paired_reads.summary.data",
-                        "initialValue": "",
-                        "in": {"$concat": ["$$value", "$$this", " "]},
+                    "$cond":{
+                        "if": "$categories.paired_reads.summary.data",
+                        "then": {
+                            "$reduce": {
+                                "input": "$categories.paired_reads.summary.data",
+                                "initialValue": "",
+                                "in": {"$concat": ["$$value", "$$this", " "]},
+                            }
+                        },
+                        "else": "$categories.contigs.summary.data"
                     }
                 }),
                 **userChangedCondition("resistance_genes", {
@@ -308,14 +314,14 @@ def agg_pipeline(changed_ids=None):
                         }
                     }
                 )),
-                **userChangedCondition("qc_genome1x", "$categories.contigs.summary.length_1x"),
-                **userChangedCondition("qc_genome10x", "$categories.contigs.summary.length_10x"),
+                **userChangedCondition("qc_genome1x", "$ifNull": ["$categories.contigs.summary.length_1x","$categories.denovo_assembly.summary.length"]),
+                **userChangedCondition("qc_genome10x", "$ifNull": ["$categories.contigs.summary.length_10x","$categories.mapping_qc.summary.values_at_floor_of_depth.x10.length"]),
                 **userChangedCondition("qc_gsize_diff1x10", removeNullProperty(
                     {
                         "$let": {
                             "vars": {
-                                "x1": "$categories.contigs.summary.length_1x",
-                                "x10": "$categories.contigs.summary.length_10x",
+                                "x1": "$qc_genome1x",
+                                "x10": "$qc_genome10x",
                             },
                             "in": {
                                 "$subtract": ["$$x1", "$$x10"],
@@ -323,8 +329,8 @@ def agg_pipeline(changed_ids=None):
                         }
                     }
                 )),
-                **userChangedCondition("qc_avg_coverage", "$categories.contigs.summary.coverage_10x"),
-                **userChangedCondition("qc_num_contigs", "$categories.contigs.summary.contigs_10x"),
+                **userChangedCondition("qc_avg_coverage", "$ifNull": ["$categories.contigs.summary.coverage_10x","$categories.denovo_assembly.summary.depth"]),
+                **userChangedCondition("qc_num_contigs", "$ifNull": ["$categories.contigs.summary.contigs_10x","$categories.denovo_assembly.summary.contigs"]),
                 **userChangedCondition("qc_num_reads", "$categories.size_check.summary.num_of_reads"),
                 **userChangedCondition("trst", "$categories.bifrost_sp_cdiff.summary.TRST"),
                 **userChangedCondition("tcda", "$categories.bifrost_sp_cdiff.summary.tcdA"),
