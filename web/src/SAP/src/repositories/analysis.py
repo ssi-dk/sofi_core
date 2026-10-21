@@ -460,6 +460,7 @@ def get_single_analysis(sequence_id: str) -> Optional[Dict[str, Any]]:
     mydb = conn[DB_NAME]
     analysis = mydb[ANALYSIS_CACHE_COL_NAME]
     item = analysis.find_one({"sequence_id": sequence_id})
+    # TODO Remove after testing
     if item:
         item["_id"] = str(item["_id"])
     return item
