@@ -30,12 +30,10 @@ def leave_workspace(user, token_info, workspace_id: str):
     res = leave_workspace_db(user, workspace_id)
     return None if res.modified_count == 1 else abort(404)
 
-# TODO Remove after testing
 def create_workspace(user, token_info, body):
     if body.samples:
         validate_sample_ids(body.samples)
 
-    #res = create_workspace_from_sequence_ids_db(user, body)
     res = create_workspace_db(user, body)
 
     if res.upserted_id:
@@ -43,13 +41,14 @@ def create_workspace(user, token_info, body):
     return jsonify(body)
 
 def create_workspace_from_sequence_ids(user, token_info, body):
-    if body.samples:
-        validate_sample_ids(body.samples)
 
     res = create_workspace_from_sequence_ids_db(user, body)
     
     if res.upserted_id:
-        return jsonify({"id": str(res.upserted_id)})
+        return jsonify({
+            "id": str(res.upserted_id),
+            "samples": body.samples,
+        })
     return jsonify(body)
 
 def clone_workspace(user, token_info, body):

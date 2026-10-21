@@ -41,7 +41,7 @@ import { PropFilter, RangeFilter } from "utils";
 import { Loading } from "loading";
 import {
   fetchWorkspaces,
-  createWorkspace,
+  createWorkspaceFromSequenceIds,
   updateWorkspace,
   removeWorkspaceSamples,
 } from "../workspaces/workspaces-query-configs";
@@ -123,7 +123,7 @@ export default function AnalysisPage() {
   const [workspaceCreationState, sendToWorkspace] = useMutation(
     (name: string) => {
       setSwitchWsWhenReady(true);
-      return createWorkspace(
+      return createWorkspaceFromSequenceIds(
         {
           name,
           samples: workspace.samples,
@@ -582,7 +582,7 @@ export default function AnalysisPage() {
       const forceUpdate = (inView && !prevInViewRef.current.inView) || loadAllRef.current.needsFetch;
       loadAllRef.current.needsFetch = false;
 
-      const tempWsFilter = (workspace && workspace.id === "temp-workspace" && workspace.samples) ? workspace.samples.map(objectid => ({field: "_id",term: objectid} as QueryOperand)).reduce((a,b) => ({operator: QueryOperator.OR, left: a, right: b})) : null
+      const tempWsFilter = (workspace && workspace.id === "temp-workspace" && workspace.samples) ? workspace.samples.map(sequenceId => ({ field: "sequence_id", term: sequenceId } as QueryOperand)).reduce((a, b) => ({ operator: QueryOperator.OR, left: a, right: b })) : null
 
       const joinedExpression: QueryExpression = mergeExpressions(QueryOperator.AND,q.expression,tempWsFilter)
 
@@ -1044,7 +1044,7 @@ export default function AnalysisPage() {
                       id: "temp-workspace",
                       name: "temp-workspace",
                       samples: Object.values(selection).map(
-                        (s) => s.original.id
+                        (s) => s.original.sequence_id
                       ),
                     });
                     dispatch(setSelection({}));

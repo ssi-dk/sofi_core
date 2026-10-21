@@ -190,18 +190,20 @@ def create_workspace(user: str, workspace: CreateWorkspace):
         {"created_by": user, "name": workspace.name, "members": [user]}, {"$set": record}, upsert=True
     )
 
-# UNUSED IN NEW ITERATION
+# UNUSED IN NEW ITERATION - BACK IN USE TEMPORARILY 21/10/2026
 def create_workspace_from_sequence_ids(user: str, workspace: CreateWorkspace):
     workspaces = get_collection(WORKSPACES_COL_NAME)
     
     if workspace.samples is None:
         workspace.samples = []
-        
+
+    # TODO: Migrate workspace sample references from MongoDB _id to sequence_id, including existing workspace data and all create/add/remove/search paths.
+    # Remove this compatibility conversion once the migration is complete.
     workspace.samples = list(map(lambda x: get_sample_id_from_sequence_id(x), workspace.samples))
         
     record = {**workspace.to_dict(), "created_by": user}
     return workspaces.update_one(
-        {"created_by": user, "name": workspace.name}, {"$set": record}, upsert=True
+        {"created_by": user, "name": workspace.name, "members": [user]}, {"$set": record}, upsert=True
     )
 
 # UNUSED IN NEW ITERATION
