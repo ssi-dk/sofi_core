@@ -303,6 +303,20 @@ def get_analysis_page_bundle(
     mydb = conn[DB_NAME]
     analysis_cache = mydb[ANALYSIS_CACHE_COL_NAME]
 
+    if "_id" in query:
+        id_query = query["_id"]
+
+        if isinstance(id_query, str) and ObjectId.is_valid(id_query):
+            query["_id"] = ObjectId(id_query)
+
+        elif isinstance(id_query, dict) and "$in" in id_query:
+            query["_id"]["$in"] = [
+                ObjectId(value)
+                if isinstance(value, str) and ObjectId.is_valid(value)
+                else value
+                for value in id_query["$in"]
+            ]
+
     q = encrypt_dict(encryption_client, query or {}, pii_columns())
 
     if data_clearance == "own-institution":
