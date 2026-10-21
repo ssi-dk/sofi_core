@@ -133,7 +133,7 @@ export const createWorkspace = (params: CreateWorkspace, userInst: string, userI
   return base;
 };
 
-export const createWorkspaceFromSequenceIds = (params: CreateWorkspace, userInst: string, userId: string) => {
+export const createWorkspaceFromSequenceIds = (params: CreateWorkspace, userInst?: string, userId?: string) => {
   const base = createWorkspaceFromSequenceIdsApi({ createWorkspace: params });
   base.url = getUrl(base.url);
 
@@ -148,8 +148,8 @@ export const createWorkspaceFromSequenceIds = (params: CreateWorkspace, userInst
           name: params.name,
           samples: params.samples,
           tags: [],
-          institution: userInst,
-          members: [userId]
+          ...(userInst !== undefined ? { institution: userInst } : {}),
+          ...(userId !== undefined ? { members: [userId] } : {}),
         },
       ],
     };
