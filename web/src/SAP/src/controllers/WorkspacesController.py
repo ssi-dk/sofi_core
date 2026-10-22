@@ -45,10 +45,7 @@ def create_workspace_from_sequence_ids(user, token_info, body):
     res = create_workspace_from_sequence_ids_db(user, body)
     
     if res.upserted_id:
-        return jsonify({
-            "id": str(res.upserted_id),
-            "samples": body.samples,
-        })
+            return jsonify({"id": str(res.upserted_id)})
     return jsonify(body)
 
 def clone_workspace(user, token_info, body):
