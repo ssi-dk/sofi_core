@@ -459,7 +459,11 @@ def get_single_analysis(sequence_id: str) -> Optional[Dict[str, Any]]:
     conn = get_connection()
     mydb = conn[DB_NAME]
     analysis = mydb[ANALYSIS_CACHE_COL_NAME]
-    return analysis.find_one({"sequence_id": sequence_id})
+    item = analysis.find_one({"sequence_id": sequence_id})
+    if item:
+        item["id"] = str(item["_id"])
+        item.pop("_id")
+    return item
 
 def get_single_analysis_by_object_id(id: str) -> Optional[Dict[str, Any]]:
     ensure_cache_updated()
