@@ -125,7 +125,6 @@ def get_analysis(user, token_info, paging_token, page_size,sorting_column=None, 
         token_info["sofi-data-clearance"],
         sorting=sorting,)
 
-
     items = db_res["items"]
     count = db_res["count"]
     filter_options = db_res["filter_op"]
