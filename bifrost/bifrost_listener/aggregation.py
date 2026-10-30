@@ -314,8 +314,8 @@ def agg_pipeline(changed_ids=None):
                         }
                     }
                 )),
-                **userChangedCondition("qc_genome1x", "$ifNull": ["$categories.contigs.summary.length_1x","$categories.denovo_assembly.summary.length"]),
-                **userChangedCondition("qc_genome10x", "$ifNull": ["$categories.contigs.summary.length_10x","$categories.mapping_qc.summary.values_at_floor_of_depth.x10.length"]),
+                **userChangedCondition("qc_genome1x", {"$ifNull": ["$categories.contigs.summary.length_1x","$categories.denovo_assembly.summary.length"]}),
+                **userChangedCondition("qc_genome10x", {"$ifNull": ["$categories.contigs.summary.length_10x","$categories.mapping_qc.summary.values_at_floor_of_depth.x10.length"]}),
                 **userChangedCondition("qc_gsize_diff1x10", removeNullProperty(
                     {
                         "$let": {
@@ -329,8 +329,8 @@ def agg_pipeline(changed_ids=None):
                         }
                     }
                 )),
-                **userChangedCondition("qc_avg_coverage", "$ifNull": ["$categories.contigs.summary.coverage_10x","$categories.denovo_assembly.summary.depth"]),
-                **userChangedCondition("qc_num_contigs", "$ifNull": ["$categories.contigs.summary.contigs_10x","$categories.denovo_assembly.summary.contigs"]),
+                **userChangedCondition("qc_avg_coverage", {"$ifNull": ["$categories.contigs.summary.coverage_10x","$categories.denovo_assembly.summary.depth"]}),
+                **userChangedCondition("qc_num_contigs", {"$ifNull": ["$categories.contigs.summary.contigs_10x","$categories.denovo_assembly.summary.contigs"]}),
                 **userChangedCondition("qc_num_reads", "$categories.size_check.summary.num_of_reads"),
                 **userChangedCondition("trst", "$categories.bifrost_sp_cdiff.summary.TRST"),
                 **userChangedCondition("tcda", "$categories.bifrost_sp_cdiff.summary.tcdA"),
