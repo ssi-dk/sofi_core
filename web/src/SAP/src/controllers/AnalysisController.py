@@ -198,6 +198,9 @@ def search_analysis(user, token_info, query: AnalysisQuery):
         } if query.analysis_sorting is not None else None
     }
 
+    print(query.expression)
+    print(expr_empty)
+
     workspace_items = get_workspace_sequences_db(user,query.workspace_id) if query.workspace_id is not None else None
 
     token = parse_paging_token(query.paging_token) or default_token
@@ -213,6 +216,7 @@ def search_analysis(user, token_info, query: AnalysisQuery):
         workspace_items=workspace_items
     )
 
+    print("RES !!!!!!!!!!!!!!!!!!!!!!!!", db_res)
 
     items = db_res["items"]
     count = db_res["count"]

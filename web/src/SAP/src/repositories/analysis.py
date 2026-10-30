@@ -301,10 +301,19 @@ def get_analysis_page_bundle(
 
     conn, encryption_client = get_connection(with_enc=True)
     mydb = conn[DB_NAME]
+    
     analysis_cache = mydb[ANALYSIS_CACHE_COL_NAME]
+
+    document = analysis_cache.find_one({
+        "sequence_id": "2009T00362_N_WGS_900_SSI"
+    })
+
+    print("VALUE:", repr(document.get("comment_general")))
+    print("TYPE:", type(document.get("comment_general")))
 
     q = encrypt_dict(encryption_client, query or {}, pii_columns())
 
+    print("Q !!!!!!!!!!!", q)
     if data_clearance == "own-institution":
         q["institution"] = institution
 
@@ -437,17 +446,24 @@ def get_analysis_page_bundle(
 
 
 def update_analysis(change):
-    conn = get_connection()
+    conn, encryption_client = get_connection(with_enc=True)
     mydb = conn[DB_NAME]
     analysis = mydb[ANALYSIS_COL_NAME]
     updates = map(lambda x: {**change[x], "id": x}, change.keys())
     for u in updates:
         # Create update object with userchanged_ prefixed fields, this is used in the analysis pipeline to avoid changing fields that contain user data
         update_data = u.copy()
+        print("UPDAYE DATA", update_data)
         # For each field being updated (except 'id'), add a userchanged_ version
         for field_name in u.keys():
             if field_name != "id":
                 update_data[f"userchanged_{field_name}"] = True
+        #TODO HERE        
+        update_data = encrypt_dict(
+            encryption_client,
+            update_data,
+            pii_columns(),
+        )
         analysis.update_one({"sequence_id": update_data["id"]}, {"$set": update_data})
     
     invalidate_analysis_cache()
