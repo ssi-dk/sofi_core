@@ -1,8 +1,10 @@
 import sys
-
-from web.src.SAP.common.config.column_config import columns
-from web.src.SAP.common.database import MIGRATIONS_COL_NAME,DB_NAME,ANALYSIS_COL_NAME, PROJECT_PRIVACY_COL_NAME, get_connection
 import pymongo
+from bson.binary import Binary
+
+from web.src.SAP.common.config.column_config import columns, pii_columns
+from web.src.SAP.common.database import MIGRATIONS_COL_NAME, DB_NAME, ANALYSIS_COL_NAME, PROJECT_PRIVACY_COL_NAME, get_connection, get_raw_connection, encrypt_dict
+from web.src.SAP.src.repositories.analysis import invalidate_analysis_cache
 
 def create_migrations_collection():
 
@@ -123,3 +125,68 @@ def create_projects():
 
     #Ensure index on collection primary key
     project_coll.create_index([("project_key", pymongo.DESCENDING)])
+
+def encrypt_plaintext_pii_fields(is_dry_run=True):
+    raw_conn = get_raw_connection()
+    _, encryption_client = get_connection(with_enc=True)
+
+    db = raw_conn[DB_NAME]
+    analysis = db[ANALYSIS_COL_NAME]
+
+    pii_fields = pii_columns()
+
+    documents_scanned = 0
+    documents_with_unencrypted_pii = 0
+    unencrypted_fields = 0
+
+    print(f"Starting PII encryption migration (dry_run={is_dry_run})")
+
+    for document in analysis.find():
+        documents_scanned += 1
+
+        fields_to_encrypt = {}
+
+        for field in pii_fields:
+            if field not in document:
+                continue
+
+            value = document[field]
+
+            if value is None:
+                continue
+
+            # Encrypted MongoDB values use BSON binary subtype 6
+            if isinstance(value, Binary) and value.subtype == 6:
+                continue
+
+            fields_to_encrypt[field] = value
+
+        if not fields_to_encrypt:
+            continue
+
+        documents_with_unencrypted_pii += 1
+        unencrypted_fields += len(fields_to_encrypt)
+
+        print(f"Document with sequence_id {document['sequence_id']} has unencrypted PII fields: {list(fields_to_encrypt.keys())}")
+
+        if not is_dry_run:
+            encrypted_fields = encrypt_dict(
+                encryption_client,
+                fields_to_encrypt,
+                pii_fields,
+            )
+            analysis.update_one(
+                {"_id": document["_id"]},
+                {"$set": encrypted_fields},
+            )
+
+    changes_applied = not is_dry_run and documents_with_unencrypted_pii > 0
+
+    if changes_applied:
+        invalidate_analysis_cache()
+
+    print(f"Documents scanned: {documents_scanned}")
+    print(f"Documents with unencrypted PII: {documents_with_unencrypted_pii}")
+    print(f"Unencrypted PII fields: {unencrypted_fields}")
+    print(f"Dry run: {is_dry_run}")
+    print(f"Values encrypted and cache invalidated: {changes_applied}")

@@ -437,7 +437,7 @@ def get_analysis_page_bundle(
 
 
 def update_analysis(change):
-    conn = get_connection()
+    conn, encryption_client = get_connection(with_enc=True)
     mydb = conn[DB_NAME]
     analysis = mydb[ANALYSIS_COL_NAME]
     updates = map(lambda x: {**change[x], "id": x}, change.keys())
@@ -448,6 +448,13 @@ def update_analysis(change):
         for field_name in u.keys():
             if field_name != "id":
                 update_data[f"userchanged_{field_name}"] = True
+
+        encrypt_dict(
+            encryption_client,
+            update_data,
+            pii_columns(),
+        )
+
         analysis.update_one({"sequence_id": update_data["id"]}, {"$set": update_data})
     
     invalidate_analysis_cache()
