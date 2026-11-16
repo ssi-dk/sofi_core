@@ -133,6 +133,12 @@ def get_connection(with_enc=False):
         else:
             return CONNECTION
 
+def get_raw_connection() -> MongoClient:
+    if DEBUG:
+        return MongoClient()
+
+    return MongoClient(BIFROST_MONGO_CONN)
+
 def get_collection(collection: str):
     conn = get_connection()
     db = conn[DB_NAME]
