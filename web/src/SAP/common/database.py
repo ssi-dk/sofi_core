@@ -165,10 +165,10 @@ def recursive_replace(data, replacement_fn, filter_list=None, filtered_parent=Fa
                     data[k] = replacement_text
                 except EncryptionError as e:
                     logging.debug(f"{e}: {type(v)}")
-                    logging.error(f"{e}: {type(v)}") #TODO REMOVE AFTER DEBUGGING
+                    # logging.error(f"{e}: {type(v)}") #TODO REMOVE AFTER DEBUGGING
                 except Exception as e:
                     logging.debug(str(e))
-                    logging.error(str(e)) #TODO REMOVE AFTER DEBUGGING
+                    # logging.error(str(e)) #TODO REMOVE AFTER DEBUGGING
                     pass
             else:
                 data[k] = recursive_replace(v, replacement_fn, filter_list, do_filter)
