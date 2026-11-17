@@ -22,6 +22,8 @@ from ...common.database import (
 )
 import sys
 from bson.objectid import ObjectId
+import os
+import socket
 
 def remove_id(item):
     item.pop("_id", None)
@@ -35,23 +37,40 @@ CACHE_TTL = timedelta(minutes=5)
 
 def invalidate_analysis_cache():
     global last_updated_timestamp
+
+    print(
+        "INVALIDATE CACHE",
+        f"pid={os.getpid()}",
+        f"host={socket.gethostname()}",
+        f"previous_timestamp={last_updated_timestamp}",
+    )
+
     last_updated_timestamp = None
 
 def ensure_cache_updated():
     global last_updated_timestamp
 
+    print(
+        "ENSURE CACHE",
+        f"pid={os.getpid()}",
+        f"host={socket.gethostname()}",
+        f"last_updated={last_updated_timestamp}",
+    )
+
     now = datetime.utcnow()
 
     # Case 1: never updated or invalidated
     if last_updated_timestamp is None:
+        print("REBUILDING CACHE: invalidated")
         update_analysis_cache()
-        last_updated_timestamp = now
+        last_updated_timestamp = datetime.utcnow()
         return
 
     # Case 2: expired
     if now - last_updated_timestamp > CACHE_TTL:
+        print("REBUILDING CACHE: expired")
         update_analysis_cache()
-        last_updated_timestamp = now
+        last_updated_timestamp = datetime.utcnow()
 
 def update_analysis_cache():
     conn, encryption_client = get_connection(with_enc=True)
