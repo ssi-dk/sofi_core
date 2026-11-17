@@ -133,6 +133,16 @@ def get_connection(with_enc=False):
         else:
             return CONNECTION
 
+def get_raw_connection() -> MongoClient:
+    """
+    Returns a MongoDB connection without automatic encryption or decryption.
+    Intended for migration that need to inspect the actual stored BSON values.
+    """
+    if DEBUG:
+        return MongoClient()
+
+    return MongoClient(BIFROST_MONGO_CONN)
+
 def get_collection(collection: str):
     conn = get_connection()
     db = conn[DB_NAME]
@@ -155,8 +165,10 @@ def recursive_replace(data, replacement_fn, filter_list=None, filtered_parent=Fa
                     data[k] = replacement_text
                 except EncryptionError as e:
                     logging.debug(f"{e}: {type(v)}")
+                    # logging.error(f"{e}: {type(v)}") #TODO REMOVE AFTER DEBUGGING
                 except Exception as e:
                     logging.debug(str(e))
+                    # logging.error(str(e)) #TODO REMOVE AFTER DEBUGGING
                     pass
             else:
                 data[k] = recursive_replace(v, replacement_fn, filter_list, do_filter)

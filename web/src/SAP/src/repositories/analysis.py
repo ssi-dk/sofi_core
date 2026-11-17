@@ -22,6 +22,8 @@ from ...common.database import (
 )
 import sys
 from bson.objectid import ObjectId
+import os
+import socket
 
 def remove_id(item):
     item.pop("_id", None)
@@ -284,7 +286,16 @@ def update_analysis_cache():
 
     print(json.dumps(pipeline),file=sys.stderr)
 
+    # doc = analysis.find_one({"sequence_id": '24000019-MW-ESCEC_run999'}) #TODO REMOVE AFTER DEBUGGING
+    # print("SOURCE BEFORE CACHE BUILD:", doc["chr_number"], file=sys.stderr) #TODO REMOVE AFTER DEBUGGING
+
     analysis.aggregate(pipeline)
+
+    # cache = mydb[ANALYSIS_CACHE_COL_NAME]#TODO REMOVE AFTER DEBUGGING
+    # doc = cache.find_one({"sequence_id": '24000019-MW-ESCEC_run999'})#TODO REMOVE AFTER DEBUGGING
+    # print("CACHE AFTER BUILD:", doc["chr_number"], file=sys.stderr)#TODO REMOVE AFTER DEBUGGING
+
+
 
 def get_analysis_page_bundle(
     query,
@@ -437,7 +448,7 @@ def get_analysis_page_bundle(
 
 
 def update_analysis(change):
-    conn = get_connection()
+    conn, encryption_client = get_connection(with_enc=True)
     mydb = conn[DB_NAME]
     analysis = mydb[ANALYSIS_COL_NAME]
     updates = map(lambda x: {**change[x], "id": x}, change.keys())
@@ -448,7 +459,17 @@ def update_analysis(change):
         for field_name in u.keys():
             if field_name != "id":
                 update_data[f"userchanged_{field_name}"] = True
+
+        encrypt_dict(
+            encryption_client,
+            update_data,
+            pii_columns(),
+        )
+
         analysis.update_one({"sequence_id": update_data["id"]}, {"$set": update_data})
+
+        # doc = analysis.find_one({"sequence_id": update_data["id"]}) #TODO REMOVE AFTER DEBUGGING
+        # print("SOURCE AFTER UPDATE:", doc["chr_number"], file=sys.stderr) #TODO REMOVE AFTER DEBUGGING
     
     invalidate_analysis_cache()
 
