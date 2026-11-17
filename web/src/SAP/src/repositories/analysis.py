@@ -37,42 +37,23 @@ CACHE_TTL = timedelta(minutes=5)
 
 def invalidate_analysis_cache():
     global last_updated_timestamp
-
-    print(
-        "INVALIDATE CACHE",
-        f"pid={os.getpid()}",
-        f"host={socket.gethostname()}",
-        f"previous_timestamp={last_updated_timestamp}",
-        file = sys.stderr
-    )
-
     last_updated_timestamp = None
 
 def ensure_cache_updated():
     global last_updated_timestamp
 
-    print(
-        "ENSURE CACHE",
-        f"pid={os.getpid()}",
-        f"host={socket.gethostname()}",
-        f"last_updated={last_updated_timestamp}",
-        file = sys.stderr
-    )
-
     now = datetime.utcnow()
 
     # Case 1: never updated or invalidated
     if last_updated_timestamp is None:
-        print("REBUILDING CACHE: invalidated", file=sys.stderr)
         update_analysis_cache()
-        last_updated_timestamp = datetime.utcnow()
+        last_updated_timestamp = now
         return
 
     # Case 2: expired
     if now - last_updated_timestamp > CACHE_TTL:
-        print("REBUILDING CACHE: expired", file=sys.stderr)
         update_analysis_cache()
-        last_updated_timestamp = datetime.utcnow()
+        last_updated_timestamp = now
 
 def update_analysis_cache():
     conn, encryption_client = get_connection(with_enc=True)
@@ -305,7 +286,16 @@ def update_analysis_cache():
 
     print(json.dumps(pipeline),file=sys.stderr)
 
+    doc = analysis.find_one({"sequence_id": '24000019-MV-ESCEC_run999'}) #TODO REMOVE AFTER DEBUGGING
+    print("SOURCE BEFORE CACHE BUILD:", doc["chr_number"], file=sys.stderr) #TODO REMOVE AFTER DEBUGGING
+
     analysis.aggregate(pipeline)
+
+    cache = mydb[ANALYSIS_CACHE_COL_NAME]#TODO REMOVE AFTER DEBUGGING
+    doc = cache.find_one({"sequence_id": '24000019-MV-ESCEC_run999'})#TODO REMOVE AFTER DEBUGGING
+    print("CACHE AFTER BUILD:", doc["chr_number"], file=sys.stderr)#TODO REMOVE AFTER DEBUGGING
+
+
 
 def get_analysis_page_bundle(
     query,
@@ -477,6 +467,9 @@ def update_analysis(change):
         )
 
         analysis.update_one({"sequence_id": update_data["id"]}, {"$set": update_data})
+
+        doc = analysis.find_one({"sequence_id": update_data["id"]}) #TODO REMOVE AFTER DEBUGGING
+        print("SOURCE AFTER UPDATE:", doc["your_pii_field"], file=sys.stderr) #TODO REMOVE AFTER DEBUGGING
     
     invalidate_analysis_cache()
 
