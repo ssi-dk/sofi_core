@@ -44,7 +44,10 @@ for func in migration_funcs:
         except Exception:
             print("Migration",name,"failed with error:",sys.exception(),"Stopping all migration until this is fixed!",file=sys.stderr)
             break
-        migrations_coll.insert({"name": name})
+
+        # TODO TEMPORARY HACK TO RERUN MIGRATION 11/11/26
+        if name != "encrypt_plaintext_pii_fields":
+            migrations_coll.insert({"name": name})
         
 
 ## --- Running the app ---

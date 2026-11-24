@@ -213,7 +213,6 @@ def search_analysis(user, token_info, query: AnalysisQuery):
         workspace_items=workspace_items
     )
 
-
     items = db_res["items"]
     count = db_res["count"]
     filter_options = db_res["filter_op"]
