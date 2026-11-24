@@ -286,14 +286,14 @@ def update_analysis_cache():
 
     print(json.dumps(pipeline),file=sys.stderr)
 
-    # doc = analysis.find_one({"sequence_id": '24000019-MW-ESCEC_run999'}) #TODO REMOVE AFTER DEBUGGING
-    # print("SOURCE BEFORE CACHE BUILD:", doc["chr_number"], file=sys.stderr) #TODO REMOVE AFTER DEBUGGING
+    doc = analysis.find_one({"sequence_id": '24000019-MW-ESCEC_run999'}) #TODO REMOVE AFTER DEBUGGING
+    print("SOURCE BEFORE CACHE BUILD:", doc["cpr_nr"], file=sys.stderr) #TODO REMOVE AFTER DEBUGGING
 
     analysis.aggregate(pipeline)
 
-    # cache = mydb[ANALYSIS_CACHE_COL_NAME]#TODO REMOVE AFTER DEBUGGING
-    # doc = cache.find_one({"sequence_id": '24000019-MW-ESCEC_run999'})#TODO REMOVE AFTER DEBUGGING
-    # print("CACHE AFTER BUILD:", doc["chr_number"], file=sys.stderr)#TODO REMOVE AFTER DEBUGGING
+    cache = mydb[ANALYSIS_CACHE_COL_NAME]#TODO REMOVE AFTER DEBUGGING
+    doc = cache.find_one({"sequence_id": '24000019-MW-ESCEC_run999'})#TODO REMOVE AFTER DEBUGGING
+    print("CACHE AFTER BUILD:", doc["cpr_nr"], file=sys.stderr)#TODO REMOVE AFTER DEBUGGING
 
 
 
@@ -468,8 +468,8 @@ def update_analysis(change):
 
         analysis.update_one({"sequence_id": update_data["id"]}, {"$set": update_data})
 
-        # doc = analysis.find_one({"sequence_id": update_data["id"]}) #TODO REMOVE AFTER DEBUGGING
-        # print("SOURCE AFTER UPDATE:", doc["chr_number"], file=sys.stderr) #TODO REMOVE AFTER DEBUGGING
+        doc = analysis.find_one({"sequence_id": update_data["id"]}) #TODO REMOVE AFTER DEBUGGING
+        print("SOURCE AFTER UPDATE:", doc["cpr_nr"], file=sys.stderr) #TODO REMOVE AFTER DEBUGGING
     
     invalidate_analysis_cache()
 
