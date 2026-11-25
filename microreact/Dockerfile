@@ -5,13 +5,14 @@ RUN apk add --update --no-cache curl g++ git make openssh-client python2
 RUN mkdir -p ~/.ssh/ && ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
 
 COPY ./sofi-mr-server /app/
+COPY ./htmlsvg /app/htmlsvg/
 
 WORKDIR /app
 
 RUN find /app -name ".git" -type f -delete
 
 RUN find . -name package.json -exec sed -i \
-  's#"htmlsvg": "github:hasankzl/htmlsvg"#"htmlsvg": "https://gitlab.com/cgps/forks/htmlsvg/-/archive/main/htmlsvg-main.tar.gz"#g' {} \;
+ 's#"htmlsvg": "gitlab:cgps/forks/htmlsvg"#"htmlsvg": "file:/app/htmlsvg"#g' {} \;
 
 # install produciton deps
 RUN npm install --omit=dev
